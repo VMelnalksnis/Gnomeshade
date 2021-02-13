@@ -4,6 +4,11 @@
         <name>Tracking.Finance.Web</name>
     </assembly>
     <members>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.AccountController"/> class.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Controllers.HomeController">
             <summary>
             Contains views for home page accessible by all users.
@@ -44,6 +49,71 @@
             </summary>
             <param name="options">The options to be used by a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Accounts">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Accounts.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.AccountsInCurrencies">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Accounts in Currencies.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Counterparties">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Counterparties.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Currencies">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Currencies.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.FinanceUsers">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Finance users.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Products">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Products.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.ProductCategories">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Product Categories.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.ProductCategoryClosures">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Product Category Closures.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Transactions">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transactions.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.TransactionCategories">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transaction Categories.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.TransactionItems">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transaction Items.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Units">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Units.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.UnitClosures">
+            <summary>
+            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Unit Closures.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema">
             <summary>
             EF Core migration for creating schema for <see cref="T:Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext"/>.
@@ -66,6 +136,17 @@
         <member name="T:Tracking.Finance.Web.Data.Models.AccountInCurrency">
             <summary>
             Represents an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> in a specific <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> belonging to a <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.AccountDetailsViewModel"/> class.
+            </summary>
+            <param name="account">The account on which to base the detail view model.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.AccountsIndexViewModel.#ctor(System.Collections.Generic.List{Tracking.Finance.Web.Data.Models.Account})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.AccountsIndexViewModel"/> class.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Models.ErrorViewModel">

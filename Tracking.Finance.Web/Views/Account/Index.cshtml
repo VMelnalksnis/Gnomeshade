@@ -1,0 +1,30 @@
+﻿@using Tracking.Finance.Web.Models
+
+@model AccountsIndexViewModel
+
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>@Html.DisplayNameFor(model => model.Accounts[0].Name)</th>
+		<th>Actions</th>
+	</tr>
+	@if (Model.Accounts.Count == 0)
+	{
+		<tr>
+			<td colspan="2">No accounts</td>
+		</tr>
+	}
+	else
+	{
+		foreach (var account in Model.Accounts)
+		{
+			<tr>
+				<td>
+					<a asp-controller="Account" asp-action="Details" asp-route-id="@account.Id">
+						@Html.DisplayFor(model => account.Name)
+					</a>
+				</td>
+				<td>Todo</td>
+			</tr>
+		}
+	}
+</table>

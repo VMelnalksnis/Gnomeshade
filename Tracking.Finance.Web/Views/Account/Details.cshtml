@@ -1,0 +1,25 @@
+﻿@using Tracking.Finance.Web.Models;
+
+@model AccountDetailsViewModel
+
+<h1>@Model.Name</h1>
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>Currency</th>
+		<th>Sum</th>
+	</tr>
+	@if (Model.Currencies.Count == 0)
+	{
+		<tr><td colspan="2">No currencies added</td></tr>
+	}
+	else
+	{
+		foreach (var currency in Model.Currencies)
+		{
+			<tr>
+				<td>@Html.DisplayFor(model => currency.Currency.AlphabeticCode)</td>
+				<td>todo</td>
+			</tr>
+		}
+	}
+</table>

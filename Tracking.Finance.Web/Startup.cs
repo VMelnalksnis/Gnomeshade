@@ -40,10 +40,16 @@ namespace Tracking.Finance.Web
 				.AddDatabaseDeveloperPageExceptionFilter();
 
 			services
-				.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+				.AddDefaultIdentity<IdentityUser>(options =>
+				{
+					options.SignIn.RequireConfirmedAccount = true;
+				})
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
 			services.AddControllersWithViews();
+
+			services.AddAuthentication();
+			services.AddAuthorization();
 		}
 
 		/// <summary>
@@ -68,8 +74,10 @@ namespace Tracking.Finance.Web
 
 			application.UseHttpsRedirection();
 			application.UseStaticFiles();
+			application.UseCookiePolicy();
 
 			application.UseRouting();
+			application.UseRequestLocalization();
 
 			application.UseAuthentication();
 			application.UseAuthorization();
@@ -79,6 +87,7 @@ namespace Tracking.Finance.Web
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}");
+
 				endpoints.MapRazorPages();
 			});
 		}
