@@ -3,5 +3,8 @@
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
 			<Link>stylecop.json</Link>
 		</AdditionalFiles>
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory).editorconfig">
+			<Link>.editorconfig</Link>
+		</AdditionalFiles>
 	</ItemGroup>
 </Project>

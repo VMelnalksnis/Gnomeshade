@@ -1,25 +1,34 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>aspnet-Tracking.Finance.Web-5053CBBE-858B-4F33-98A1-727675378CC6</UserSecretsId>
-    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
-    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <RepositoryType>git</RepositoryType>
-    <NeutralLanguage>en</NeutralLanguage>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<UserSecretsId>aspnet-Tracking.Finance.Web-5053CBBE-858B-4F33-98A1-727675378CC6</UserSecretsId>
+		<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DocumentationFile>C:\Users\valte\source\repos\Tracking.Finance\Tracking.Finance.Web\Tracking.Finance.Web.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DocumentationFile>C:\Users\valte\source\repos\Tracking.Finance\Tracking.Finance.Web\Tracking.Finance.Web.xml</DocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.3" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
 </Project>

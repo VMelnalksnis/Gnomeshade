@@ -3,11 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 using System;
-
-using Tracking.Finance.Web.Data;
 
 namespace Tracking.Finance.Web.Data.Migrations
 {
@@ -15,6 +12,7 @@ namespace Tracking.Finance.Web.Data.Migrations
 	[Migration("00000000000000_CreateIdentitySchema")]
 	partial class CreateIdentitySchema
 	{
+		/// <inheritdoc/>
 		protected override void BuildTargetModel(ModelBuilder modelBuilder)
 		{
 #pragma warning disable 612, 618

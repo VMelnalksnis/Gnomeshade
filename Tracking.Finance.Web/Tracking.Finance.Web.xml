@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tracking.Finance.Web</name>
+    </assembly>
+    <members>
+        <member name="T:Tracking.Finance.Web.Controllers.HomeController">
+            <summary>
+            Contains views for home page accessible by all users.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.HomeController.#ctor(Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Web.Controllers.HomeController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.HomeController"/> class.
+            </summary>
+            <param name="logger">Logger used in the context of this controller.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.HomeController.Index">
+            <summary>
+            Returns the home page view.
+            </summary>
+            <returns>Home page view.</returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.HomeController.Privacy">
+            <summary>
+            Returns the privacy information page view.
+            </summary>
+            <returns>Privacy information page view.</returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.HomeController.Error">
+            <summary>
+            Returns a view containg information about an internal error.
+            </summary>
+            <returns>Interal error information page view.</returns>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.ApplicationDbContext">
+            <summary>
+            Application specific implementation of the <see cref="T:Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext"/> class used for identity.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{Tracking.Finance.Web.Data.ApplicationDbContext})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> class.
+            </summary>
+            <param name="options">The options to be used by a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema">
+            <summary>
+            EF Core migration for creating schema for <see cref="T:Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.ErrorViewModel">
+            <summary>
+            Contains information which should be displayed to the user in case of an internal error.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.ErrorViewModel.RequestId">
+            <summary>
+            Gets or sets the id of the request during which an error occured.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.ErrorViewModel.ShowRequestId">
+            <summary>
+            Gets a value indicating whether request id should be showed.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Startup">
+            <summary>
+            Configures services and HTTP request pipeline.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Startup"/> class.
+            </summary>
+            <param name="configuration">Configuration for configuring services and request pipeline.</param>
+        </member>
+        <member name="P:Tracking.Finance.Web.Startup.Configuration">
+            <summary>
+            Gets the configuration used for configuring services and request pipeline.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Service collection to which to add services to.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="application">Application builder used to configure the HTTP request pipeline.</param>
+            <param name="environment">The current application environment.</param>
+        </member>
+    </members>
+</doc>
