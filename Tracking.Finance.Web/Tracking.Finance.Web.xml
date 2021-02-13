@@ -55,6 +55,19 @@
         <member name="M:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc/>
         </member>
+        <member name="M:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.Account">
+            <summary>
+            Represents an account in multiple currencies belonging to a specific <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.AccountInCurrency">
+            <summary>
+            Represents an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> in a specific <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> belonging to a <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Models.ErrorViewModel">
             <summary>
             Contains information which should be displayed to the user in case of an internal error.

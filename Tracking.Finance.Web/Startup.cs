@@ -35,10 +35,9 @@ namespace Tracking.Finance.Web
 		/// <param name="services">Service collection to which to add services to.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(
-					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDatabaseDeveloperPageExceptionFilter();
+			services
+				.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"))
+				.AddDatabaseDeveloperPageExceptionFilter();
 
 			services
 				.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
