@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+using Tracking.Finance.Web.Data.Models;
+
 namespace Tracking.Finance.Web.Data
 {
 	/// <summary>
@@ -16,5 +18,13 @@ namespace Tracking.Finance.Web.Data
 			: base(options)
 		{
 		}
+
+		public DbSet<Account> Accounts => Set<Account>();
+
+		public DbSet<AccountInCurrency> AccountsInCurrencies => Set<AccountInCurrency>();
+
+		public DbSet<Currency> Currencies => Set<Currency>();
+
+		public DbSet<FinanceUser> FinanceUsers => Set<FinanceUser>();
 	}
 }
