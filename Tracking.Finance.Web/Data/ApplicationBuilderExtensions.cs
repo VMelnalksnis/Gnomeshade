@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+
+using Tracking.Finance.Web.Data.Models;
 
 namespace Tracking.Finance.Web.Data
 {
@@ -31,6 +34,62 @@ namespace Tracking.Finance.Web.Data
 			{
 				throw new ApplicationException("Failed to seed database");
 			}
+
+			var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
+
+			await context.FinanceUsers.AddAsync(
+				new FinanceUser
+				{
+					IdentityUserId = context.Users.Single().Id,
+				});
+			await context.SaveChangesAsync();
+
+			var euroCurrency = await context.Currencies.AddAsync(
+				new Currency
+				{
+					AlphabeticCode = "EUR",
+					Crypto = false,
+					NumericCode = 978,
+					Name = "Euro",
+					From = new DateTimeOffset(new DateTime(1999, 1, 1), TimeSpan.Zero),
+					Historical = false,
+					MinorUnit = 2,
+					Official = true,
+					Until = null,
+				});
+			var dollarCurrency = await context.Currencies.AddAsync(
+				new Currency
+				{
+					AlphabeticCode = "USD",
+					Crypto = false,
+					NumericCode = 840,
+					Name = "United Stated dollar",
+					From = new DateTimeOffset(new DateTime(1792, 4, 2), TimeSpan.Zero),
+					Historical = false,
+					MinorUnit = 2,
+					Official = true,
+					Until = null,
+				});
+			await context.SaveChangesAsync();
+
+			var account = await context.Accounts.AddAsync(
+				new Account
+				{
+					FinanceUserId = context.FinanceUsers.Single().Id,
+					Name = "Spending",
+					NormalizedName = "SPENDING",
+					SingleCurrency = true,
+				});
+			await context.SaveChangesAsync();
+
+			var accountInCurrency = await context.AccountsInCurrencies.AddAsync(
+				new AccountInCurrency
+				{
+					AccountId = context.Accounts.Single().Id,
+					CurrencyId = context.Currencies.Single(currency => currency.AlphabeticCode == "EUR").Id,
+					FinanceUserId = context.FinanceUsers.Single().Id,
+				});
+			await context.SaveChangesAsync();
 		}
 	}
 }
