@@ -4,6 +4,9 @@
         <name>Tracking.Finance.Web</name>
     </assembly>
     <members>
+        <member name="M:Tracking.Finance.Web.Areas.Identity.IdentityHostingStartup.Configure(Microsoft.AspNetCore.Hosting.IWebHostBuilder)">
+            <inheritdoc/>
+        </member>
         <member name="M:Tracking.Finance.Web.Controllers.AccountController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.AccountController"/> class.
