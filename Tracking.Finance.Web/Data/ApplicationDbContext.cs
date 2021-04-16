@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 using Tracking.Finance.Web.Data.Models;
@@ -83,5 +85,13 @@ namespace Tracking.Finance.Web.Data
 		/// Gets the <see cref="DbSet{TEntity}"/> of Unit Closures.
 		/// </summary>
 		public DbSet<UnitClosure> UnitClosures => Set<UnitClosure>();
+
+		/// <inheritdoc/>
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder
+				.LogTo(Console.WriteLine)
+				.EnableSensitiveDataLogging();
+		}
 	}
 }

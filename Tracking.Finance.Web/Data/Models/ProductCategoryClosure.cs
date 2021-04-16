@@ -1,7 +1,8 @@
 ﻿namespace Tracking.Finance.Web.Data.Models
 {
-	public class ProductCategoryClosure
+	public class ProductCategoryClosure : IEntity
 	{
+		/// <inheritdoc/>
 		public int Id { get; set; }
 
 		public int ParentProductCategoryId { get; set; }

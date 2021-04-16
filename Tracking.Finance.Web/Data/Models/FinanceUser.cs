@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Tracking.Finance.Web.Data.Models
 {
-	public class FinanceUser
+	public class FinanceUser : IEntity
 	{
+		/// <inheritdoc/>
 		public int Id { get; set; }
 
 		public string IdentityUserId { get; set; }
@@ -13,5 +14,7 @@ namespace Tracking.Finance.Web.Data.Models
 		public IdentityUser IdentityUser { get; set; }
 
 		public ICollection<Account> Accounts { get; set; }
+
+		public ICollection<Transaction> Transactions { get; set; }
 	}
 }

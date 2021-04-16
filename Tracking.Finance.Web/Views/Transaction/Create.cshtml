@@ -1,0 +1,60 @@
+﻿@using Tracking.Finance.Web.Models;
+
+@model TransactionCreationModel
+
+<form asp-controller="Transaction" asp-action="Create" method="post">
+	@Html.ValidationSummary()
+	@Html.HiddenFor(model => model.Accounts)
+	@Html.HiddenFor(model => model.Categories)
+	@Html.HiddenFor(model => model.Counterparties)
+	@Html.HiddenFor(model => model.FinanceUserId)
+	<div class="form-group">
+		@Html.LabelFor(model => model.TransactionCategoryId)
+		<select asp-for="@Model.TransactionCategoryId" asp-items="@Model.Categories" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.TransactionCategoryId)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.SourceAccountId)
+		<select asp-for="@Model.SourceAccountId" asp-items="@Model.Accounts" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.SourceAccountId)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.TargetAccountId)
+		<select asp-for="@Model.TargetAccountId" asp-items="@Model.Accounts" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.TargetAccountId)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.CompletedAt)
+		<div class="form-row">
+			<div class="col-6">
+				@Html.EditorFor(model => model.CompletedAt, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.CompletedAt)
+			</div>
+			<div class="col-6">
+				@Html.EditorFor(model => model.CompletedAtTime, new { htmlAttributes = new { @class = "form-control" } })
+				@Html.ValidationMessageFor(model => model.CompletedAtTime)
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.CounterpartyId)
+		<select asp-for="@Model.CounterpartyId" asp-items="@Model.Counterparties" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.CounterpartyId)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.BankReference)
+		@Html.EditorFor(model => model.BankReference, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.BankReference)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.InternalReference)
+		@Html.EditorFor(model => model.InternalReference, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.InternalReference)
+	</div>
+	<div class="form-group">
+		@Html.LabelFor(model => model.ExternalReference)
+		@Html.EditorFor(model => model.ExternalReference, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.ExternalReference)
+	</div>
+	<button type="submit" class="btn btn-success">Create</button>
+</form>

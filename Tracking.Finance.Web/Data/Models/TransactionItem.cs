@@ -2,10 +2,12 @@
 
 namespace Tracking.Finance.Web.Data.Models
 {
-	public class TransactionItem
+	public class TransactionItem : IEntity, IUserSpecificEntity, IModifiableEntity
 	{
+		/// <inheritdoc/>
 		public int Id { get; set; }
 
+		/// <inheritdoc/>
 		public int FinanceUserId { get; set; }
 
 		public int TransactionId { get; set; }
@@ -18,8 +20,10 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public int TargetCurrencyId { get; set; }
 
+		/// <inheritdoc/>
 		public DateTimeOffset CreatedAt { get; set; }
 
+		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
 
 		public int ProductId { get; set; }

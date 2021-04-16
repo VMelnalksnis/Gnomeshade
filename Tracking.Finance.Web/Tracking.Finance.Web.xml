@@ -38,6 +38,11 @@
             </summary>
             <returns>Interal error information page view.</returns>
         </member>
+        <member name="M:Tracking.Finance.Web.Controllers.TransactionController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.TransactionController"/> class.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Data.ApplicationDbContext">
             <summary>
             Application specific implementation of the <see cref="T:Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext"/> class used for identity.
@@ -113,6 +118,9 @@
             <summary>
             Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Unit Closures.
             </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
+            <inheritdoc/>
         </member>
         <member name="T:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema">
             <summary>

@@ -2,8 +2,9 @@
 
 namespace Tracking.Finance.Web.Data.Models
 {
-	public class Currency
+	public class Currency : IEntity, INamedEntity
 	{
+		/// <inheritdoc/>
 		public int Id { get; set; }
 
 		public short NumericCode { get; set; }
@@ -12,7 +13,11 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public short MinorUnit { get; set; }
 
+		/// <inheritdoc/>
 		public string Name { get; set; }
+
+		/// <inheritdoc/>
+		public string NormalizedName { get; set; }
 
 		public bool Official { get; set; }
 

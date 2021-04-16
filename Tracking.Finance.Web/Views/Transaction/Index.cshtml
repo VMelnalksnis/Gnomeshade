@@ -1,0 +1,41 @@
+﻿@using Tracking.Finance.Web.Models
+
+@model TransactionIndexViewModel
+
+<a asp-controller="Transaction" asp-action="Create" class="btn">Create Transaction</a>
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>@Html.DisplayNameFor(model => model.Transactions[0].Id)</th>
+		<th>@Html.DisplayNameFor(model => model.Transactions[0].SourceAccount)</th>
+		<th>@Html.DisplayNameFor(model => model.Transactions[0].TargetAccount)</th>
+	</tr>
+	@if (Model.Transactions.Count == 0)
+	{
+		<tr>
+			<td colspan="3">No transactions</td>
+		</tr>
+	}
+	else
+	{
+		foreach (var transaction in Model.Transactions)
+		{
+			<tr>
+				<td>
+					<a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.Id">
+						@Html.DisplayFor(model => transaction.Id)
+					</a>
+				</td>
+				<td>
+					<a asp-controller="Account" asp-action="Details" asp-route-id="@transaction.SourceAccountId">
+						@Html.DisplayFor(model => transaction.SourceAccount.Name)
+					</a>
+				</td>
+				<td>
+					<a asp-controller="Account" asp-action="Details" asp-route-id="@transaction.TargetAccountId">
+						@Html.DisplayFor(model => transaction.TargetAccount.Name)
+					</a>
+				</td>
+			</tr>
+		}
+	}
+</table>

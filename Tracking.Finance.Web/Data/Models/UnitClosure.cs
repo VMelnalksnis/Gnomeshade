@@ -1,7 +1,8 @@
 ﻿namespace Tracking.Finance.Web.Data.Models
 {
-	public class UnitClosure
+	public class UnitClosure : IEntity
 	{
+		/// <inheritdoc/>
 		public int Id { get; set; }
 
 		public int ParentUnitId { get; set; }

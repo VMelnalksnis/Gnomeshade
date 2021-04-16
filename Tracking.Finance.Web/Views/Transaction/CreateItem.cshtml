@@ -1,0 +1,42 @@
+﻿@using Tracking.Finance.Web.Models;
+
+@model TransactionItemCreationModel
+
+<form asp-controller="Transaction" asp-action="CreateItem" method="post">
+	@Html.ValidationSummary()
+	@Html.HiddenFor(model => model.FinanceUserId)
+	@Html.HiddenFor(model => model.TransactionId)
+	@Html.HiddenFor(model => model.Currencies)
+	@Html.HiddenFor(model => model.Products)
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.SourceCurrencyId)
+		<select asp-for="@Model.SourceCurrencyId" asp-items="@Model.Currencies" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.SourceCurrencyId)
+	</div>
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.SourceAmount)
+		@Html.EditorFor(model => model.SourceAmount, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.SourceCurrencyId)
+	</div>
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.TargetCurrencyId)
+		<select asp-for="@Model.TargetCurrencyId" asp-items="@Model.Currencies" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.TargetCurrencyId)
+	</div>
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.TargetAmount)
+		@Html.EditorFor(model => model.TargetAmount, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.TargetAmount)
+	</div>
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.ProductId)
+		<select asp-for="@Model.ProductId" asp-items="@Model.Products" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.ProductId)
+	</div>
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.Amount)
+		@Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.Amount)
+	</div>
+	<button type="submit" class="btn btn-success">Create</button>
+</form>

@@ -37,14 +37,14 @@ namespace Tracking.Finance.Web.Data
 
 			var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
-			await context.FinanceUsers.AddAsync(
+			var financeUser = (await context.FinanceUsers.AddAsync(
 				new FinanceUser
 				{
 					IdentityUserId = context.Users.Single().Id,
-				});
+				})).Entity;
 			await context.SaveChangesAsync();
 
-			var euroCurrency = await context.Currencies.AddAsync(
+			await context.Currencies.AddRangeAsync(
 				new Currency
 				{
 					AlphabeticCode = "EUR",
@@ -56,8 +56,7 @@ namespace Tracking.Finance.Web.Data
 					MinorUnit = 2,
 					Official = true,
 					Until = null,
-				});
-			var dollarCurrency = await context.Currencies.AddAsync(
+				},
 				new Currency
 				{
 					AlphabeticCode = "USD",
@@ -72,23 +71,58 @@ namespace Tracking.Finance.Web.Data
 				});
 			await context.SaveChangesAsync();
 
-			var account = await context.Accounts.AddAsync(
+			await context.Accounts.AddRangeAsync(
 				new Account
 				{
-					FinanceUserId = context.FinanceUsers.Single().Id,
+					FinanceUserId = financeUser.Id,
 					Name = "Spending",
 					NormalizedName = "SPENDING",
 					SingleCurrency = true,
+				},
+				new Account
+				{
+					FinanceUserId = financeUser.Id,
+					Name = "Cash",
+					NormalizedName = "CASH",
+					SingleCurrency = false,
 				});
 			await context.SaveChangesAsync();
 
 			var accountInCurrency = await context.AccountsInCurrencies.AddAsync(
 				new AccountInCurrency
 				{
-					AccountId = context.Accounts.Single().Id,
+					AccountId = context.Accounts.Single(account => account.Name == "Spending").Id,
 					CurrencyId = context.Currencies.Single(currency => currency.AlphabeticCode == "EUR").Id,
-					FinanceUserId = context.FinanceUsers.Single().Id,
+					FinanceUserId = financeUser.Id,
 				});
+			await context.SaveChangesAsync();
+
+			var transactionCategory = await context.TransactionCategories.AddAsync(
+				new TransactionCategory
+				{
+					FinanceUserId = financeUser.Id,
+					Name = "Groceries",
+					NormalizedName = "GROCERIES",
+				});
+
+			await context.SaveChangesAsync();
+
+			await context.Counterparties.AddAsync(
+				new Counterparty
+				{
+					FinanceUserId = financeUser.Id,
+					Name = financeUser.IdentityUser.UserName,
+					NormalizedName = financeUser.IdentityUser.NormalizedUserName,
+				});
+
+			await context.Products.AddAsync(
+				new Product
+				{
+					FinanceUserId = financeUser.Id,
+					Name = "Test product",
+					NormalizedName = "TEST PRODUCT",
+				});
+
 			await context.SaveChangesAsync();
 		}
 	}
