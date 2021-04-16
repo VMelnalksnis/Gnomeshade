@@ -141,10 +141,189 @@
             Represents an account in multiple currencies belonging to a specific <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
             </summary>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.NormalizedName">
+            <inheritdoc/>
+        </member>
         <member name="T:Tracking.Finance.Web.Data.Models.AccountInCurrency">
             <summary>
             Represents an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> in a specific <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> belonging to a <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
             </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Currency.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Currency.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Currency.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.FinanceUser.Id">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.IEntity">
+            <summary>
+            Represents an entity.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.IEntity.Id">
+            <summary>
+            Gets the database Id of the entity.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.INamedEntity">
+            <summary>
+            Represents an entity which has a name.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.INamedEntity.Name">
+            <summary>
+            Gets the name of the entity.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.INamedEntity.NormalizedName">
+            <summary>
+            Gets the normalized name of the entity which should be used for comparison.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.IUserSpecificEntity">
+            <summary>
+            Represents an entity which belongs to a specific <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.IUserSpecificEntity.FinanceUserId">
+            <summary>
+            Gets the Id of the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> which owns this entity.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.ProductCategory.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.ProductCategory.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.ProductCategory.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.ProductCategory.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.ProductCategoryClosure.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Transaction.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Transaction.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Transaction.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Transaction.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.CreatedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.ModifiedAt">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.Id">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.FinanceUserId">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.NormalizedName">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
+            <inheritdoc/>
         </member>
         <member name="M:Tracking.Finance.Web.Models.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account)">
             <summary>

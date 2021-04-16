@@ -22,6 +22,9 @@ namespace Tracking.Finance.Web
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+
+			using var database = new ApplicationDbContext();
+			database.Database.EnsureCreated();
 		}
 
 		/// <summary>
@@ -36,7 +39,7 @@ namespace Tracking.Finance.Web
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services
-				.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("InMemoryDatabase"))
+				.AddDbContext<ApplicationDbContext>(options => options.UseSqlite())
 				.AddDatabaseDeveloperPageExceptionFilter();
 
 			services

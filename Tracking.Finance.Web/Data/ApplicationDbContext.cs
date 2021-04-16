@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 using Tracking.Finance.Web.Data.Models;
@@ -18,6 +19,10 @@ namespace Tracking.Finance.Web.Data
 		/// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
 		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 			: base(options)
+		{
+		}
+
+		public ApplicationDbContext()
 		{
 		}
 
@@ -89,9 +94,14 @@ namespace Tracking.Finance.Web.Data
 		/// <inheritdoc/>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
+			var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "TestDatabase.db" };
+			var connectionString = connectionStringBuilder.ToString();
+			var connection = new SqliteConnection(connectionString);
+
 			optionsBuilder
 				.LogTo(Console.WriteLine)
-				.EnableSensitiveDataLogging();
+				.EnableSensitiveDataLogging()
+				.UseSqlite(connection);
 		}
 	}
 }
