@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
@@ -10,50 +11,48 @@ using Microsoft.EntityFrameworkCore;
 using Tracking.Finance.Web.Data;
 using Tracking.Finance.Web.Data.Models;
 using Tracking.Finance.Web.Models;
+using Tracking.Finance.Web.Models.Accounts;
 
 namespace Tracking.Finance.Web.Controllers
 {
 	[Authorize]
-	public class AccountController : Controller
+	public class AccountController : FinanceController
 	{
-		private readonly ApplicationDbContext _dbContext;
-		private readonly UserManager<IdentityUser> _userManager;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountController"/> class.
 		/// </summary>
 		public AccountController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
+			: base(dbContext, userManager)
 		{
-			_dbContext = dbContext;
-			_userManager = userManager;
 		}
 
-		public async Task<ViewResult> Index()
+		public async Task<ViewResult> Index(CancellationToken cancellationToken)
 		{
-			var accounts = await GetCurrentUserAccounts();
-			return View(new AccountsIndexViewModel(accounts));
+			var accounts = await GetCurrentUserAccounts(cancellationToken);
+			var viewModel = new AccountIndexViewModel(accounts);
+			return View(viewModel);
 		}
 
-		public async Task<ViewResult> Details(int id)
+		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
 		{
-			var accounts = await GetCurrentUserAccounts();
+			var accounts = await GetCurrentUserAccounts(cancellationToken);
 			var selectedAccount = accounts.Single(account => account.Id == id);
-			return View(new AccountDetailsViewModel(selectedAccount));
+			var viewModel = new AccountDetailsViewModel(selectedAccount);
+			return View(viewModel);
 		}
 
-		private async Task<List<Account>> GetCurrentUserAccounts()
+		private async Task<List<Account>> GetCurrentUserAccounts(CancellationToken cancellationToken)
 		{
-			var identityUserTask = _userManager.GetUserAsync(User);
-			var financeUsers =
-				_dbContext
-					.FinanceUsers
-					.Include(user => user.Accounts)
-					.ThenInclude(account => account.AccountsInCurrencies)
-					.ThenInclude(accountInCurrency => accountInCurrency.Currency);
+			var financeUser = await GetCurrentUser(cancellationToken);
 
-			var identityUser = await identityUserTask;
-			var financeUser = financeUsers.Single(user => user.IdentityUserId == identityUser.Id);
-			return financeUser.Accounts.ToList();
+			var accounts =
+				await DbContext.Accounts
+					.WhichBelongToUser(financeUser)
+					.Include(account => account.AccountsInCurrencies)
+					.ThenInclude(account => account.Currency)
+					.ToListAsync(cancellationToken);
+
+			return accounts;
 		}
 	}
 }

@@ -328,15 +328,15 @@
         <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
             <inheritdoc/>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account)">
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account)">
             <summary>
-            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.AccountDetailsViewModel"/> class.
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel"/> class.
             </summary>
             <param name="account">The account on which to base the detail view model.</param>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.AccountsIndexViewModel.#ctor(System.Collections.Generic.List{Tracking.Finance.Web.Data.Models.Account})">
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.#ctor(System.Collections.Generic.List{Tracking.Finance.Web.Data.Models.Account})">
             <summary>
-            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.AccountsIndexViewModel"/> class.
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel"/> class.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Models.ErrorViewModel">
