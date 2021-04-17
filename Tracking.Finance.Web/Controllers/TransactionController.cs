@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Tracking.Finance.Web.Data;
 using Tracking.Finance.Web.Models;
+using Tracking.Finance.Web.Models.Transactions;
 
 namespace Tracking.Finance.Web.Controllers
 {

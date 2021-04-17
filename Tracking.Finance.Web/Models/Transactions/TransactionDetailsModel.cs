@@ -3,7 +3,7 @@ using System.Linq;
 
 using Tracking.Finance.Web.Data.Models;
 
-namespace Tracking.Finance.Web.Models
+namespace Tracking.Finance.Web.Models.Transactions
 {
 	public class TransactionDetailsModel
 	{

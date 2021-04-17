@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Tracking.Finance.Web.Models
+namespace Tracking.Finance.Web.Models.Transactions
 {
 	public class TransactionCreationModel
 	{
