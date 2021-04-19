@@ -94,6 +94,7 @@ namespace Tracking.Finance.Web.Data
 		/// <inheritdoc/>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
+			base.OnConfiguring(optionsBuilder);
 			var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "TestDatabase.db" };
 			var connectionString = connectionStringBuilder.ToString();
 			var connection = new SqliteConnection(connectionString);
@@ -102,6 +103,27 @@ namespace Tracking.Finance.Web.Data
 				.LogTo(Console.WriteLine)
 				.EnableSensitiveDataLogging()
 				.UseSqlite(connection);
+		}
+
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+			var euro = new Currency
+			{
+				Id = 1,
+				AlphabeticCode = "EUR",
+				Crypto = false,
+				NumericCode = 978,
+				Name = "Euro",
+				NormalizedName = "EURO",
+				From = new DateTimeOffset(new DateTime(1999, 01, 01)),
+				Historical = false,
+				MinorUnit = 2,
+				Official = true,
+				Until = null,
+			};
+
+			builder.Entity<Currency>().HasData(euro);
 		}
 	}
 }
