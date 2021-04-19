@@ -1,0 +1,30 @@
+﻿@using Tracking.Finance.Web.Models.Counterparties;
+
+@model List<CounterpartyIndexModel>
+
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>@Html.DisplayNameFor(model => model[0].Name)</th>
+		<th>Actions</th>
+	</tr>
+	@if (Model.Count == 0)
+	{
+		<tr>
+			<td colspan="2">No counterparties</td>
+		</tr>
+	}
+	else
+	{
+		foreach (var counterparty in Model)
+		{
+			<tr>
+				<td>
+					<a asp-controller="Counterparty" asp-action="Details" asp-route-id="@counterparty.Id">
+						@Html.DisplayFor(model => counterparty.Name)
+					</a>
+				</td>
+				<td>Todo</td>
+			</tr>
+		}
+	}
+</table>  
