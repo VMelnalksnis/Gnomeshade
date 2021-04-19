@@ -1,0 +1,14 @@
+﻿@using Tracking.Finance.Web.Models.Transactions;
+
+@model TransactionCategoryCreationModel
+
+<form asp-controller="Transaction" asp-action="CreateCategory" method="post">
+	@Html.ValidationSummary()
+	@Html.HiddenFor(model => model.FinanceUserId)
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.Name)
+		@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+		@Html.ValidationMessageFor(model => model.Name)
+	</div>
+	<button type="submit" class="btn btn-success">Create</button>
+</form>

@@ -12,6 +12,32 @@
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.AccountController"/> class.
             </summary>
         </member>
+        <member name="M:Tracking.Finance.Web.Controllers.FinanceController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.FinanceController"/> class.
+            </summary>
+            <param name="dbContext"><see cref="P:Tracking.Finance.Web.Controllers.FinanceController.DbContext"/> for accessing and modifying finance data.</param>
+            <param name="userManager"><see cref="T:Microsoft.AspNetCore.Identity.UserManager`1"/> for getting the currently authenticated user.</param>
+        </member>
+        <member name="P:Tracking.Finance.Web.Controllers.FinanceController.DbContext">
+            <summary>
+            Gets a <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> for accessing and modifying finance data.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.FinanceController.GetCurrentUser(System.Threading.CancellationToken)">
+            <summary>
+            Gets the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> linked to the currently authenticated <see cref="T:Microsoft.AspNetCore.Identity.IdentityUser"/>.
+            </summary>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            <returns><see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> representing the currently authenticated user.</returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.FinanceController.SaveChangesAsync(System.Int32)">
+            <summary>
+            Saves changes made to <see cref="P:Tracking.Finance.Web.Controllers.FinanceController.DbContext"/>.
+            </summary>
+            <param name="expectedCount">Expected written entry count, used for <see cref="M:System.Diagnostics.Debug.Assert(System.Boolean,System.String)"/>.</param>
+            <returns>A task that represents the asynchronous save operation.</returns>
+        </member>
         <member name="T:Tracking.Finance.Web.Controllers.HomeController">
             <summary>
             Contains views for home page accessible by all users.
@@ -56,6 +82,11 @@
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> class.
             </summary>
             <param name="options">The options to be used by a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> class.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Accounts">
             <summary>
@@ -123,6 +154,9 @@
             </summary>
         </member>
         <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc/>
         </member>
         <member name="T:Tracking.Finance.Web.Data.Migrations.CreateIdentitySchema">

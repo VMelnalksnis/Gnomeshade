@@ -22,6 +22,9 @@ namespace Tracking.Finance.Web.Data
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
+		/// </summary>
 		public ApplicationDbContext()
 		{
 		}
@@ -105,6 +108,7 @@ namespace Tracking.Finance.Web.Data
 				.UseSqlite(connection);
 		}
 
+		/// <inheritdoc/>
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
