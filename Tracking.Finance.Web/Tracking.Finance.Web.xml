@@ -243,6 +243,11 @@
         <member name="P:Tracking.Finance.Web.Data.Models.FinanceUser.Id">
             <inheritdoc/>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.IDescribable.Description">
+            <summary>
+            Gets the description of this entity.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Data.Models.IEntity">
             <summary>
             Represents an entity.
@@ -278,11 +283,31 @@
             Gets the Id of the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> which owns this entity.
             </summary>
         </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.Product">
+            <summary>
+            Represents a product that was exchanged in a <see cref="T:Tracking.Finance.Web.Data.Models.TransactionItem"/>.
+            </summary>
+        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Product.Id">
             <inheritdoc/>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Product.FinanceUserId">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.ProductCategoryId">
+            <summary>
+            Gets or sets the id of the <see cref="P:Tracking.Finance.Web.Data.Models.Product.ProductCategory"/> to which this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.UnitId">
+            <summary>
+            Gets or sets the id of the <see cref="P:Tracking.Finance.Web.Data.Models.Product.Unit"/> in which the amount of this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> is expressed in.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.SupplierId">
+            <summary>
+            Gets or sets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Counterparty"/> whichs supplies/manufactures this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/>.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Product.CreatedAt">
             <inheritdoc/>
@@ -295,6 +320,29 @@
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Product.NormalizedName">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.Description">
+            <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.FinanceUser">
+            <summary>
+            Gets or sets the user who owns this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.ProductCategory">
+            <summary>
+            Gets or sets the product category to which this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.Unit">
+            <summary>
+            Gets or sets the <see cref="P:Tracking.Finance.Web.Data.Models.Product.Unit"/> in which the amount of this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> is expressed in.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Product.Supplier">
+            <summary>
+            Gets or sets the <see cref="T:Tracking.Finance.Web.Data.Models.Counterparty"/> whichs supplies/manufactures this <see cref="T:Tracking.Finance.Web.Data.Models.Product"/>.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.ProductCategory.Id">
             <inheritdoc/>
