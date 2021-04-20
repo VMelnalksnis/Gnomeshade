@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,6 +42,12 @@ namespace Tracking.Finance.Web.Controllers
 			var selectedAccount = accounts.Single(account => account.Id == id);
 			var viewModel = new AccountDetailsViewModel(selectedAccount);
 			return View(viewModel);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddCurrency(int id, int currencyId)
+		{
+			throw new NotImplementedException();
 		}
 
 		[HttpGet]

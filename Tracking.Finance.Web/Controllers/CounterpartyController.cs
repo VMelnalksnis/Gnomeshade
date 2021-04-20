@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,6 +34,12 @@ namespace Tracking.Finance.Web.Controllers
 
 			var viewModel = counterparties.GetViewModels().ToList();
 			return View(viewModel);
+		}
+
+		[HttpGet]
+		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
 		}
 
 		[HttpGet]
