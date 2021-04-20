@@ -75,6 +75,12 @@ namespace Tracking.Finance.Web
 				application.UseHsts();
 			}
 
+			application.Use(async (context, next) =>
+			{
+				context.Response.Headers.Add("Permissions-Policy", "interest-cohort=()");
+				await next.Invoke();
+			});
+
 			application.UseHttpsRedirection();
 			application.UseStaticFiles();
 			application.UseCookiePolicy();
