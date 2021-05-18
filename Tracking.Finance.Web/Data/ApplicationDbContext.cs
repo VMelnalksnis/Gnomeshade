@@ -128,6 +128,23 @@ namespace Tracking.Finance.Web.Data
 			};
 
 			builder.Entity<Currency>().HasData(euro);
+
+			var dollars = new Currency
+			{
+				Id = 2,
+				AlphabeticCode = "USD",
+				Crypto = false,
+				NumericCode = 0,
+				Name = "United States Dollar",
+				NormalizedName = "UNITED STATES DOLLAR",
+				From = new DateTimeOffset(DateTime.Today),
+				Historical = false,
+				MinorUnit = 2,
+				Official = true,
+				Until = null,
+			};
+
+			builder.Entity<Currency>().HasData(dollars);
 		}
 	}
 }

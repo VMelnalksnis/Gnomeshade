@@ -101,10 +101,8 @@ namespace Tracking.Finance.Web.Controllers
 				ProductCategoryId = model.ProductCategoryId.Value,
 				SupplierId = model.SupplierId.Value,
 				UnitId = model.UnitId.Value,
-				Name = model.Name,
-				NormalizedName = model.Name.ToUpperInvariant().Trim(),
 				Description = model.Description,
-			}.SetCreationDate();
+			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var entity = await DbContext.Products.AddAsync(product);
 			await SaveChangesAsync();
@@ -139,12 +137,10 @@ namespace Tracking.Finance.Web.Controllers
 				return View(model);
 			}
 
-			var productCategory = new ProductCategory
-			{
-				FinanceUserId = model.FinanceUserId.Value,
-				Name = model.Name,
-				NormalizedName = model.Name.ToUpperInvariant().Trim(),
-			};
+			var productCategory =
+				new ProductCategory { FinanceUserId = model.FinanceUserId.Value, }
+					.WithName(model.Name);
+
 			var entity = await DbContext.ProductCategories.AddAsync(productCategory);
 			await SaveChangesAsync();
 

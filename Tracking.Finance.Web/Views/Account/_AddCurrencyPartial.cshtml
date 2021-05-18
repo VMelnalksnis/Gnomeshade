@@ -1,0 +1,15 @@
+﻿@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Accounts;
+
+@model AddCurrencyModel
+
+<form asp-controller="Account" asp-action="@nameof(AccountController.AddCurrency)" method="post">
+	@Html.HiddenFor(model => model.AccountId)
+	@Html.HiddenFor(model => model.Currencies)
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.CurrencyId)
+		<select asp-for="@Model.CurrencyId" asp-items="@Model.Currencies" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.CurrencyId)
+	</div>
+	<button type="submit" class="btn btn-success">Create</button>
+</form>

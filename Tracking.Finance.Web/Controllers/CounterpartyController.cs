@@ -58,12 +58,11 @@ namespace Tracking.Finance.Web.Controllers
 				return View(model);
 			}
 
-			var counterparty = new Counterparty
-			{
-				FinanceUserId = model.FinanceUserId.Value,
-				Name = model.Name,
-				NormalizedName = model.Name.ToUpperInvariant().Trim(),
-			}.SetCreationDate();
+			var counterparty =
+				new Counterparty { FinanceUserId = model.FinanceUserId.Value }
+					.WithName(model.Name)
+					.CreatedAndModifiedNow();
+
 			var entity = await DbContext.Counterparties.AddAsync(counterparty);
 			await SaveChangesAsync();
 

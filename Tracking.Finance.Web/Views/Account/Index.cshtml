@@ -1,7 +1,9 @@
-﻿@using Tracking.Finance.Web.Models.Accounts;
+﻿@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Accounts;
 
 @model AccountIndexViewModel
 
+<a asp-controller="Account" asp-action="@nameof(AccountController.Create)" class="btn btn-info">Create Account</a>
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model.Accounts[0].Name)</th>

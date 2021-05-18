@@ -17,9 +17,14 @@
 		foreach (var currency in Model.Currencies)
 		{
 			<tr>
-				<td>@Html.DisplayFor(model => currency.Currency.AlphabeticCode)</td>
-				<td>todo</td>
+				<td>@Html.DisplayFor(model => currency.Currency)</td>
+				<td>@Html.DisplayFor(model => currency.Balance)</td>
 			</tr>
 		}
 	}
 </table>
+
+@if (Model.CurrencyListItems.Any())
+{
+	await Html.RenderPartialAsync("_AddCurrencyPartial", new AddCurrencyModel { AccountId = Model.Id, Currencies = Model.CurrencyListItems });
+}

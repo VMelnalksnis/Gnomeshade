@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -33,16 +32,6 @@ namespace Tracking.Finance.Web.Models
 			where TEntity : class, IUserSpecificEntity
 		{
 			return entitySet.Where(entity => entity.FinanceUserId == financeUser.Id);
-		}
-
-		public static TModifiable SetCreationDate<TModifiable>(this TModifiable modifiableEntity)
-			where TModifiable : IModifiableEntity
-		{
-			var creationDate = DateTimeOffset.Now;
-			modifiableEntity.CreatedAt = creationDate;
-			modifiableEntity.ModifiedAt = creationDate;
-
-			return modifiableEntity;
 		}
 	}
 }

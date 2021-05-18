@@ -410,7 +410,7 @@
         <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
             <inheritdoc/>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account)">
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account,System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel},System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem})">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel"/> class.
             </summary>
@@ -435,6 +435,16 @@
             <summary>
             Gets a value indicating whether request id should be showed.
             </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.SelectListItemExtensions.SetName``1(``0,System.String)">
+            <summary>
+            Sets <see cref="P:Tracking.Finance.Web.Data.Models.INamedEntity.Name"/> and <see cref="P:Tracking.Finance.Web.Data.Models.INamedEntity.NormalizedName"/> of the entity.
+            </summary>
+            <param name="name">The value to which to set the name of the entity.</param>
+            <returns>The given enitity.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="name"/> is <see langword="null"/>, <see cref="F:System.String.Empty"/> or white space.
+            </exception>
         </member>
         <member name="T:Tracking.Finance.Web.Startup">
             <summary>

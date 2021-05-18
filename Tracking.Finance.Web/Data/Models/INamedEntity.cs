@@ -6,13 +6,13 @@
 	public interface INamedEntity
 	{
 		/// <summary>
-		/// Gets the name of the entity.
+		/// Gets or sets the name of the entity.
 		/// </summary>
-		string Name { get; }
+		string Name { get; set; }
 
 		/// <summary>
-		/// Gets the normalized name of the entity which should be used for comparison.
+		/// Gets or sets the normalized name of the entity which should be used for comparison.
 		/// </summary>
-		string NormalizedName { get; }
+		string NormalizedName { get; set; }
 	}
 }

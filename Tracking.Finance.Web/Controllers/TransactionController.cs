@@ -106,7 +106,7 @@ namespace Tracking.Finance.Web.Controllers
 				return View(model);
 			}
 
-			var transaction = model.Map().SetCreationDate();
+			var transaction = model.Map().CreatedAndModifiedNow();
 			var entity = await DbContext.Transactions.AddAsync(transaction);
 			await SaveChangesAsync();
 
@@ -154,7 +154,7 @@ namespace Tracking.Finance.Web.Controllers
 				return View(model);
 			}
 
-			var transactionItem = model.Map().SetCreationDate();
+			var transactionItem = model.Map().CreatedAndModifiedNow();
 			var entity = await DbContext.TransactionItems.AddAsync(transactionItem);
 			await SaveChangesAsync();
 

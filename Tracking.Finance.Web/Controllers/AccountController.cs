@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,16 +37,95 @@ namespace Tracking.Finance.Web.Controllers
 		[HttpGet]
 		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
 		{
-			var accounts = await GetCurrentUserAccounts(cancellationToken);
-			var selectedAccount = accounts.Single(account => account.Id == id);
-			var viewModel = new AccountDetailsViewModel(selectedAccount);
+			var financeUser = await GetCurrentUser(cancellationToken);
+
+			var account =
+				await DbContext.Accounts
+					.WhichBelongToUser(financeUser)
+					.Where(account => account.Id == id)
+					.Include(account => account.AccountsInCurrencies)
+					.ThenInclude(accountInCurrency => accountInCurrency.Currency)
+					.SingleAsync(cancellationToken);
+
+			var accountsInCurrencies = account.AccountsInCurrencies;
+
+			var transactionsFromAccount =
+				(await DbContext.Transactions
+					.WhichBelongToUser(financeUser)
+					.Where(transaction => transaction.SourceAccountId == account.Id)
+					.Include(transaction => transaction.TransactionItems)
+					.ToListAsync(cancellationToken))
+					.SelectMany(transaction => transaction.TransactionItems);
+
+			var transactionsToAccount =
+				(await DbContext.Transactions
+					.WhichBelongToUser(financeUser)
+					.Where(transaction => transaction.TargetAccountId == account.Id)
+					.Include(transaction => transaction.TransactionItems)
+					.ToListAsync(cancellationToken))
+					.SelectMany(transaction => transaction.TransactionItems);
+
+			var viewModels =
+				accountsInCurrencies
+					.Select(ac =>
+					{
+						var fromAccount =
+							transactionsFromAccount
+								.Where(item => item.SourceCurrencyId == ac.CurrencyId)
+								.Select(item => item.SourceAmount)
+								.Sum();
+
+						var toAccount =
+							transactionsToAccount
+								.Where(item => item.TargetCurrencyId == ac.CurrencyId)
+								.Select(item => item.TargetAmount)
+								.Sum();
+
+						return new AccountDetailsCurrencyViewModel(ac, toAccount - fromAccount);
+					})
+					.ToList();
+
+			var existingCurrencies = accountsInCurrencies.Select(ac => ac.CurrencyId).ToList();
+
+			var currencies =
+				await DbContext.Currencies
+					.Where(currency => !existingCurrencies.Contains(currency.Id))
+					.ToListAsync(cancellationToken);
+
+			var currencyItems = currencies.GetSelectListItems();
+
+			var viewModel = new AccountDetailsViewModel(account, viewModels, currencyItems);
 			return View(viewModel);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> AddCurrency(int id, int currencyId)
+		public async Task<IActionResult> AddCurrency(AddCurrencyModel model)
 		{
-			throw new NotImplementedException();
+			var financeUser = await GetCurrentUser();
+
+			// todo validation
+			var account =
+				await DbContext.Accounts
+					.WhichBelongToUser(financeUser)
+					.Where(account => account.Id == model.AccountId)
+					.SingleAsync();
+
+			var currency =
+				await DbContext.Currencies
+					.Where(currency => currency.Id == model.CurrencyId)
+					.SingleAsync();
+
+			var accountInCurrency = new AccountInCurrency
+			{
+				FinanceUserId = financeUser.Id,
+				AccountId = account.Id,
+				CurrencyId = currency.Id,
+			}.CreatedAndModifiedNow();
+
+			var entity = await DbContext.AccountsInCurrencies.AddAsync(accountInCurrency);
+			await SaveChangesAsync();
+
+			return RedirectToAction(nameof(Details), new { id = account.Id });
 		}
 
 		[HttpGet]
@@ -82,13 +160,11 @@ namespace Tracking.Finance.Web.Controllers
 			var account = new Account
 			{
 				FinanceUserId = model.FinanceUserId.Value,
-				Name = model.Name,
-				NormalizedName = model.Name.ToUpperInvariant().Trim(),
 				SingleCurrency = model.SingleCurrency,
-			}.SetCreationDate();
+			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var accountEntity = await DbContext.AddAsync(account);
-			_ = await DbContext.SaveChangesAsync();
+			await SaveChangesAsync();
 
 			if (model.CurrencyId.HasValue)
 			{
@@ -97,10 +173,10 @@ namespace Tracking.Finance.Web.Controllers
 					FinanceUserId = model.FinanceUserId.Value,
 					AccountId = accountEntity.Entity.Id,
 					CurrencyId = model.CurrencyId.Value,
-				}.SetCreationDate();
+				}.CreatedAndModifiedNow();
 
 				var accountInCurrencyEntity = await DbContext.AddAsync(accountInCurrency);
-				_ = await DbContext.SaveChangesAsync();
+				await SaveChangesAsync();
 			}
 
 			return RedirectToAction(nameof(Details), new { id = accountEntity.Entity.Id });
