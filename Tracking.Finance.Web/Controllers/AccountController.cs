@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +28,15 @@ namespace Tracking.Finance.Web.Controllers
 		[HttpGet]
 		public async Task<ViewResult> Index(CancellationToken cancellationToken)
 		{
-			var accounts = await GetCurrentUserAccounts(cancellationToken);
+			var financeUser = await GetCurrentUser(cancellationToken);
+
+			var accounts =
+				await DbContext.Accounts
+					.WhichBelongToUser(financeUser)
+					.Include(account => account.AccountsInCurrencies)
+					.ThenInclude(account => account.Currency)
+					.ToListAsync(cancellationToken);
+
 			var viewModel = new AccountIndexViewModel(accounts);
 			return View(viewModel);
 		}
@@ -81,7 +88,7 @@ namespace Tracking.Finance.Web.Controllers
 								.Select(item => item.TargetAmount)
 								.Sum();
 
-						return new AccountDetailsCurrencyViewModel(ac, toAccount - fromAccount);
+						return new AccountDetailsCurrencyViewModel(ac, toAccount, fromAccount, toAccount - fromAccount);
 					})
 					.ToList();
 
@@ -147,6 +154,7 @@ namespace Tracking.Finance.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create(AccountCreationModel model)
 		{
+			// todo move validation
 			if (model.SingleCurrency && model.CurrencyId is null)
 			{
 				ModelState.AddModelError(nameof(AccountCreationModel.CurrencyId), "Currency is required if account is in single currency");
@@ -161,6 +169,7 @@ namespace Tracking.Finance.Web.Controllers
 			{
 				FinanceUserId = model.FinanceUserId.Value,
 				SingleCurrency = model.SingleCurrency,
+				UserAccount = model.UserAccount,
 			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var accountEntity = await DbContext.AddAsync(account);
@@ -180,20 +189,6 @@ namespace Tracking.Finance.Web.Controllers
 			}
 
 			return RedirectToAction(nameof(Details), new { id = accountEntity.Entity.Id });
-		}
-
-		private async Task<List<Account>> GetCurrentUserAccounts(CancellationToken cancellationToken)
-		{
-			var financeUser = await GetCurrentUser(cancellationToken);
-
-			var accounts =
-				await DbContext.Accounts
-					.WhichBelongToUser(financeUser)
-					.Include(account => account.AccountsInCurrencies)
-					.ThenInclude(account => account.Currency)
-					.ToListAsync(cancellationToken);
-
-			return accounts;
 		}
 	}
 }

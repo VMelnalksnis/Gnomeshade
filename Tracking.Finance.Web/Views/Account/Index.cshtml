@@ -7,12 +7,13 @@
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model.Accounts[0].Name)</th>
+		<th>@Html.DisplayNameFor(model => model.Accounts[0].UserAccount)</th>
 		<th>Actions</th>
 	</tr>
 	@if (Model.Accounts.Count == 0)
 	{
 		<tr>
-			<td colspan="2">No accounts</td>
+			<td colspan="3">No accounts</td>
 		</tr>
 	}
 	else
@@ -24,6 +25,9 @@
 					<a asp-controller="Account" asp-action="Details" asp-route-id="@account.Id">
 						@Html.DisplayFor(model => account.Name)
 					</a>
+				</td>
+				<td>
+					@Html.DisplayFor(model => account.UserAccount)
 				</td>
 				<td>Todo</td>
 			</tr>

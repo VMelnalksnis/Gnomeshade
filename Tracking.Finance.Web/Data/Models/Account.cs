@@ -28,6 +28,11 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public bool SingleCurrency { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this account is owned by the user.
+		/// </summary>
+		public bool UserAccount { get; set; }
+
 		public FinanceUser FinanceUser { get; set; }
 
 		public ICollection<AccountInCurrency> AccountsInCurrencies { get; set; }

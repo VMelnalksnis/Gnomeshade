@@ -36,6 +36,7 @@ namespace Tracking.Finance.Web.Controllers
 					.Include(transaction => transaction.TransactionItems)
 					.Include(transaction => transaction.SourceAccount)
 					.Include(transaction => transaction.TargetAccount)
+					.Include(transaction => transaction.TransactionCategory)
 					.ToListAsync(cancellationToken);
 
 			var viewModel =
@@ -60,7 +61,9 @@ namespace Tracking.Finance.Web.Controllers
 									items.Sum(item => item.SourceAmount),
 									items.FirstOrDefault()?.SourceCurrency?.AlphabeticCode,
 									items.Sum(item => item.TargetAmount),
-									items.FirstOrDefault()?.TargetCurrency?.AlphabeticCode);
+									items.FirstOrDefault()?.TargetCurrency?.AlphabeticCode,
+									transaction.TransactionCategory.Id,
+									transaction.TransactionCategory.Name);
 						})
 					.ToList();
 

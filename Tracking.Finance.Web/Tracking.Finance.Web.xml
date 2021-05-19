@@ -196,6 +196,11 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Account.NormalizedName">
             <inheritdoc/>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.UserAccount">
+            <summary>
+            Gets or sets a value indicating whether this account is owned by the user.
+            </summary>
+        </member>
         <member name="T:Tracking.Finance.Web.Data.Models.AccountInCurrency">
             <summary>
             Represents an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> in a specific <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> belonging to a <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/>.

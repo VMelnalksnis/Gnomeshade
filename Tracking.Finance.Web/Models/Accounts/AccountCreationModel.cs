@@ -14,6 +14,8 @@ namespace Tracking.Finance.Web.Models.Accounts
 
 		public bool SingleCurrency { get; set; }
 
+		public bool UserAccount { get; set; }
+
 		public int? CurrencyId { get; set; }
 
 		public IEnumerable<SelectListItem> Currencies { get; set; }

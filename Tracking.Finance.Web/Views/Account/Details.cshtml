@@ -5,12 +5,14 @@
 <h1>@Model.Name</h1>
 <table class="table table-bordered table-hover">
 	<tr>
-		<th>Currency</th>
-		<th>Sum</th>
+		<th>@Html.DisplayNameFor(model => model.Currencies[0].Currency)</th>
+		<th>@Html.DisplayNameFor(model => model.Currencies[0].In)</th>
+		<th>@Html.DisplayNameFor(model => model.Currencies[0].Out)</th>
+		<th>@Html.DisplayNameFor(model => model.Currencies[0].Balance)</th>
 	</tr>
 	@if (Model.Currencies.Count == 0)
 	{
-		<tr><td colspan="2">No currencies added</td></tr>
+		<tr><td colspan="4">No currencies added</td></tr>
 	}
 	else
 	{
@@ -18,6 +20,8 @@
 		{
 			<tr>
 				<td>@Html.DisplayFor(model => currency.Currency)</td>
+				<td>@Html.DisplayFor(model => currency.In)</td>
+				<td>@Html.DisplayFor(model => currency.Out)</td>
 				<td>@Html.DisplayFor(model => currency.Balance)</td>
 			</tr>
 		}
