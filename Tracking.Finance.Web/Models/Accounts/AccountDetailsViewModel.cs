@@ -2,33 +2,18 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-using Tracking.Finance.Web.Data.Models;
-
 namespace Tracking.Finance.Web.Models.Accounts
 {
 	public class AccountDetailsViewModel
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountDetailsViewModel"/> class.
-		/// </summary>
-		/// <param name="account">The account on which to base the detail view model.</param>
-		public AccountDetailsViewModel(Account account, List<AccountDetailsCurrencyViewModel> accountsInCurrencies, List<SelectListItem> currencies)
-		{
-			Id = account.Id;
-			Name = account.Name;
-			SingleCurrency = account.SingleCurrency;
-			CurrencyListItems = currencies;
-			Currencies = accountsInCurrencies;
-		}
+		public int Id { get; init; }
 
-		public int Id { get; }
+		public string Name { get; init; }
 
-		public string Name { get; }
+		public bool SingleCurrency { get; init; }
 
-		public bool SingleCurrency { get; }
+		public List<SelectListItem> CurrencyListItems { get; init; }
 
-		public List<SelectListItem> CurrencyListItems { get; }
-
-		public List<AccountDetailsCurrencyViewModel> Currencies { get; }
+		public List<AccountDetailsCurrencyViewModel> Currencies { get; init; }
 	}
 }

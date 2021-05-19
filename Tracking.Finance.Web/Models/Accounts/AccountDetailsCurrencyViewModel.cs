@@ -4,20 +4,24 @@ namespace Tracking.Finance.Web.Models.Accounts
 {
 	public class AccountDetailsCurrencyViewModel
 	{
-		public AccountDetailsCurrencyViewModel(AccountInCurrency accountInCurrency, decimal @in, decimal @out, decimal balance)
-		{
-			Currency = accountInCurrency.Currency.AlphabeticCode;
-			In = @in;
-			Out = @out;
-			Balance = balance;
-		}
+		/// <summary>
+		/// Gets the <see cref="Currency.AlphabeticCode"/> of the amount currency.
+		/// </summary>
+		public string Currency { get; init; }
 
-		public string Currency { get; }
+		/// <summary>
+		/// Gets the total incoming amount to the <see cref="Account"/>.
+		/// </summary>
+		public decimal In { get; init; }
 
-		public decimal In { get; }
+		/// <summary>
+		/// Gets the total outgoing amount from the <see cref="Account"/>.
+		/// </summary>
+		public decimal Out { get; init; }
 
-		public decimal Out { get; }
-
-		public decimal Balance { get; }
+		/// <summary>
+		/// Gets the total balance of the <see cref="Account"/>.
+		/// </summary>
+		public decimal Balance => In - Out;
 	}
 }

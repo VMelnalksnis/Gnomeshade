@@ -15,14 +15,30 @@ using Tracking.Finance.Web.Models.Units;
 
 namespace Tracking.Finance.Web.Controllers
 {
+	/// <summary>
+	/// MVC controller for managing <see cref="Unit"/> and <see cref="UnitClosure"/> entities.
+	/// </summary>
 	[Authorize]
 	public class UnitController : FinanceController
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UnitController"/> class.
+		/// </summary>
+		/// <param name="dbContext"><see cref="DbContext"/> for accessing and modifying finance data.</param>
+		/// <param name="userManager"><see cref="UserManager{TUser}"/> for getting the currently authenticated user.</param>
 		public UnitController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
 			: base(dbContext, userManager)
 		{
 		}
 
+		/// <summary>
+		/// Get an overview of all units.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> containing information about all units.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Index(CancellationToken cancellationToken)
 		{
@@ -40,12 +56,29 @@ namespace Tracking.Finance.Web.Controllers
 			return View(viewModel);
 		}
 
+		/// <summary>
+		/// Get details about the specified <see cref="Unit"/>.
+		/// </summary>
+		/// <param name="id">The id of the <see cref="Unit"/>.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> containing information about the specified <see cref="Unit"/>.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
 		{
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Unit"/>.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> for creating a new <see cref="Unit"/>.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Create(CancellationToken cancellationToken)
 		{
@@ -64,6 +97,14 @@ namespace Tracking.Finance.Web.Controllers
 			return View(model);
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Unit"/>.
+		/// </summary>
+		/// <param name="model">The details needed for creating a unit.</param>
+		///
+		/// <returns>
+		/// <see cref="RedirectToActionResult"/> if <paramref name="model"/> is valid; otherwise <see cref="ViewResult"/>.
+		/// </returns>
 		[HttpPost]
 		public async Task<IActionResult> Create(UnitCreationModel model)
 		{

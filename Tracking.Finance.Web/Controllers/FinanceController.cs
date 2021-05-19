@@ -11,6 +11,9 @@ using Tracking.Finance.Web.Data.Models;
 
 namespace Tracking.Finance.Web.Controllers
 {
+	/// <summary>
+	/// A base class for an MVC finance tracking controller with view support.
+	/// </summary>
 	public abstract class FinanceController : Controller
 	{
 		private readonly UserManager<IdentityUser> _userManager;

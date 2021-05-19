@@ -7,9 +7,72 @@
         <member name="M:Tracking.Finance.Web.Areas.Identity.IdentityHostingStartup.Configure(Microsoft.AspNetCore.Hosting.IWebHostBuilder)">
             <inheritdoc/>
         </member>
+        <member name="T:Tracking.Finance.Web.Controllers.AccountController">
+            <summary>
+            MVC controller for managing <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> and <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> entities.
+            </summary>
+        </member>
         <member name="M:Tracking.Finance.Web.Controllers.AccountController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.AccountController"/> class.
+            </summary>
+            <param name="dbContext"><see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> for accessing and modifying finance data.</param>
+            <param name="userManager"><see cref="T:Microsoft.AspNetCore.Identity.UserManager`1"/> for getting the currently authenticated user.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.Index(System.Threading.CancellationToken)">
+             <summary>
+             Get an overview of all accounts.
+             </summary>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> containing information about all accounts.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.Details(System.Int32,System.Threading.CancellationToken)">
+             <summary>
+             Get details about the specified <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </summary>
+             <param name="id">The id of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.</param>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> containing information about the specified <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.AddCurrency(Tracking.Finance.Web.Models.Accounts.AddCurrencyModel)">
+             <summary>
+             Add another supported currency to an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </summary>
+             <param name="model">The details needed for adding a currency to an account.</param>
+            
+             <returns>
+             <see cref="T:Microsoft.AspNetCore.Mvc.RedirectToActionResult"/> if currency is successfully added.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.Create(System.Threading.CancellationToken)">
+             <summary>
+             Create a new <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </summary>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> for creating a new <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.AccountController.Create(Tracking.Finance.Web.Models.Accounts.AccountCreationModel)">
+             <summary>
+             Create a new <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+             </summary>
+             <param name="model">The details needed for creating an account.</param>
+            
+             <returns>
+             <see cref="T:Microsoft.AspNetCore.Mvc.RedirectToActionResult"/> if <paramref name="model"/> is valid; otherwise <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/>.
+             </returns>
+        </member>
+        <member name="T:Tracking.Finance.Web.Controllers.FinanceController">
+            <summary>
+            A base class for an MVC finance tracking controller with view support.
             </summary>
         </member>
         <member name="M:Tracking.Finance.Web.Controllers.FinanceController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
@@ -71,6 +134,59 @@
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.TransactionController"/> class.
             </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Controllers.UnitController">
+            <summary>
+            MVC controller for managing <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> and <see cref="T:Tracking.Finance.Web.Data.Models.UnitClosure"/> entities.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.UnitController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Controllers.UnitController"/> class.
+            </summary>
+            <param name="dbContext"><see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> for accessing and modifying finance data.</param>
+            <param name="userManager"><see cref="T:Microsoft.AspNetCore.Identity.UserManager`1"/> for getting the currently authenticated user.</param>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.UnitController.Index(System.Threading.CancellationToken)">
+             <summary>
+             Get an overview of all units.
+             </summary>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> containing information about all units.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.UnitController.Details(System.Int32,System.Threading.CancellationToken)">
+             <summary>
+             Get details about the specified <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+             </summary>
+             <param name="id">The id of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.</param>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> containing information about the specified <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.UnitController.Create(System.Threading.CancellationToken)">
+             <summary>
+             Create a new <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+             </summary>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns>
+             A <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/> for creating a new <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+             </returns>
+        </member>
+        <member name="M:Tracking.Finance.Web.Controllers.UnitController.Create(Tracking.Finance.Web.Models.Units.UnitCreationModel)">
+             <summary>
+             Create a new <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+             </summary>
+             <param name="model">The details needed for creating a unit.</param>
+            
+             <returns>
+             <see cref="T:Microsoft.AspNetCore.Mvc.RedirectToActionResult"/> if <paramref name="model"/> is valid; otherwise <see cref="T:Microsoft.AspNetCore.Mvc.ViewResult"/>.
+             </returns>
         </member>
         <member name="T:Tracking.Finance.Web.Data.ApplicationDbContext">
             <summary>
@@ -421,15 +537,79 @@
         <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
             <inheritdoc/>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(Tracking.Finance.Web.Data.Models.Account,System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel},System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem})">
+        <member name="T:Tracking.Finance.Web.Models.Accounts.AccountCreationModel">
             <summary>
-            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel"/> class.
+            Information needed in order to create an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>
-            <param name="account">The account on which to base the detail view model.</param>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.#ctor(System.Collections.Generic.List{Tracking.Finance.Web.Data.Models.Account})">
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.FinanceUserId">
             <summary>
-            Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel"/> class.
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> to which the account belongs to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.Name">
+            <summary>
+            Gets or sets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.SingleCurrency">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> supports only a single <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.UserAccount">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> is owned by the user.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.CurrencyId">
+            <summary>
+            Gets or sets the id of the first <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> that will be added to the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.Currencies">
+            <summary>
+            Gets a collection of <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.SelectListItem"/> containing available currencies that can be selected for <see cref="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.CurrencyId"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Currency">
+            <summary>
+            Gets the <see cref="P:Tracking.Finance.Web.Data.Models.Currency.AlphabeticCode"/> of the amount currency.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.In">
+            <summary>
+            Gets the total incoming amount to the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Out">
+            <summary>
+            Gets the total outgoing amount from the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Balance">
+            <summary>
+            Gets the total balance of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.Accounts.AddCurrencyModel">
+            <summary>
+            Information needed in order to add an <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> to an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AddCurrencyModel.AccountId">
+            <summary>
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> to which to add the <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AddCurrencyModel.CurrencyId">
+            <summary>
+            Gets or sets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> which to add to the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AddCurrencyModel.Currencies">
+            <summary>
+            Gets a collection of <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.SelectListItem"/> containing available currencies that can be added to the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>
         </member>
         <member name="M:Tracking.Finance.Web.Models.EnitityExtensions.WithName``1(``0,System.String)">

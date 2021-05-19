@@ -14,17 +14,30 @@ using Tracking.Finance.Web.Models.Accounts;
 
 namespace Tracking.Finance.Web.Controllers
 {
+	/// <summary>
+	/// MVC controller for managing <see cref="Account"/> and <see cref="AccountInCurrency"/> entities.
+	/// </summary>
 	[Authorize]
 	public class AccountController : FinanceController
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountController"/> class.
 		/// </summary>
+		/// <param name="dbContext"><see cref="DbContext"/> for accessing and modifying finance data.</param>
+		/// <param name="userManager"><see cref="UserManager{TUser}"/> for getting the currently authenticated user.</param>
 		public AccountController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)
 			: base(dbContext, userManager)
 		{
 		}
 
+		/// <summary>
+		/// Get an overview of all accounts.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> containing information about all accounts.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Index(CancellationToken cancellationToken)
 		{
@@ -37,10 +50,19 @@ namespace Tracking.Finance.Web.Controllers
 					.ThenInclude(account => account.Currency)
 					.ToListAsync(cancellationToken);
 
-			var viewModel = new AccountIndexViewModel(accounts);
+			var viewModel = new AccountIndexViewModel { Accounts = accounts };
 			return View(viewModel);
 		}
 
+		/// <summary>
+		/// Get details about the specified <see cref="Account"/>.
+		/// </summary>
+		/// <param name="id">The id of the <see cref="Account"/>.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> containing information about the specified <see cref="Account"/>.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
 		{
@@ -79,16 +101,19 @@ namespace Tracking.Finance.Web.Controllers
 						var fromAccount =
 							transactionsFromAccount
 								.Where(item => item.SourceCurrencyId == ac.CurrencyId)
-								.Select(item => item.SourceAmount)
-								.Sum();
+								.Sum(item => item.SourceAmount);
 
 						var toAccount =
 							transactionsToAccount
 								.Where(item => item.TargetCurrencyId == ac.CurrencyId)
-								.Select(item => item.TargetAmount)
-								.Sum();
+								.Sum(item => item.TargetAmount);
 
-						return new AccountDetailsCurrencyViewModel(ac, toAccount, fromAccount, toAccount - fromAccount);
+						return new AccountDetailsCurrencyViewModel
+						{
+							Currency = ac.Currency.AlphabeticCode,
+							In = toAccount,
+							Out = fromAccount,
+						};
 					})
 					.ToList();
 
@@ -99,12 +124,25 @@ namespace Tracking.Finance.Web.Controllers
 					.Where(currency => !existingCurrencies.Contains(currency.Id))
 					.ToListAsync(cancellationToken);
 
-			var currencyItems = currencies.GetSelectListItems();
-
-			var viewModel = new AccountDetailsViewModel(account, viewModels, currencyItems);
+			var viewModel = new AccountDetailsViewModel
+			{
+				Id = account.Id,
+				Name = account.Name,
+				SingleCurrency = account.SingleCurrency,
+				Currencies = viewModels,
+				CurrencyListItems = currencies.GetSelectListItems(),
+			};
 			return View(viewModel);
 		}
 
+		/// <summary>
+		/// Add another supported currency to an <see cref="Account"/>.
+		/// </summary>
+		/// <param name="model">The details needed for adding a currency to an account.</param>
+		///
+		/// <returns>
+		/// <see cref="RedirectToActionResult"/> if currency is successfully added.
+		/// </returns>
 		[HttpPost]
 		public async Task<IActionResult> AddCurrency(AddCurrencyModel model)
 		{
@@ -135,6 +173,14 @@ namespace Tracking.Finance.Web.Controllers
 			return RedirectToAction(nameof(Details), new { id = account.Id });
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Account"/>.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns>
+		/// A <see cref="ViewResult"/> for creating a new <see cref="Account"/>.
+		/// </returns>
 		[HttpGet]
 		public async Task<ViewResult> Create(CancellationToken cancellationToken)
 		{
@@ -151,6 +197,14 @@ namespace Tracking.Finance.Web.Controllers
 			return View(viewModel);
 		}
 
+		/// <summary>
+		/// Create a new <see cref="Account"/>.
+		/// </summary>
+		/// <param name="model">The details needed for creating an account.</param>
+		///
+		/// <returns>
+		/// <see cref="RedirectToActionResult"/> if <paramref name="model"/> is valid; otherwise <see cref="ViewResult"/>.
+		/// </returns>
 		[HttpPost]
 		public async Task<IActionResult> Create(AccountCreationModel model)
 		{
