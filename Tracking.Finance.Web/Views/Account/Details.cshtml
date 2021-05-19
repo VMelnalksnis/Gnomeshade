@@ -24,7 +24,7 @@
 	}
 </table>
 
-@if (Model.CurrencyListItems.Any())
+@if (!Model.SingleCurrency && Model.CurrencyListItems.Any())
 {
 	await Html.RenderPartialAsync("_AddCurrencyPartial", new AddCurrencyModel { AccountId = Model.Id, Currencies = Model.CurrencyListItems });
 }

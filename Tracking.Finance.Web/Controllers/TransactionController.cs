@@ -49,9 +49,6 @@ namespace Tracking.Finance.Web.Controllers
 									.Include(item => item.SourceCurrency)
 									.ToList();
 
-							var amount = items.Sum(item => item.SourceAmount);
-							var currency = items.FirstOrDefault()?.SourceCurrency?.AlphabeticCode;
-
 							return
 								new TransactionIndexViewModel(
 									transaction.Id,
@@ -60,8 +57,10 @@ namespace Tracking.Finance.Web.Controllers
 									transaction.TargetAccount.Id,
 									transaction.TargetAccount.Name,
 									transaction.CompletedAt.Value.LocalDateTime,
-									amount,
-									currency);
+									items.Sum(item => item.SourceAmount),
+									items.FirstOrDefault()?.SourceCurrency?.AlphabeticCode,
+									items.Sum(item => item.TargetAmount),
+									items.FirstOrDefault()?.TargetCurrency?.AlphabeticCode);
 						})
 					.ToList();
 

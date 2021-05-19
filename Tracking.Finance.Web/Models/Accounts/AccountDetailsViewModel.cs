@@ -16,6 +16,7 @@ namespace Tracking.Finance.Web.Models.Accounts
 		{
 			Id = account.Id;
 			Name = account.Name;
+			SingleCurrency = account.SingleCurrency;
 			CurrencyListItems = currencies;
 			Currencies = accountsInCurrencies;
 		}
@@ -23,6 +24,8 @@ namespace Tracking.Finance.Web.Models.Accounts
 		public int Id { get; }
 
 		public string Name { get; }
+
+		public bool SingleCurrency { get; }
 
 		public List<SelectListItem> CurrencyListItems { get; }
 

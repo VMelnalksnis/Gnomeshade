@@ -10,7 +10,11 @@ namespace Tracking.Finance.Web.Models.Transactions
 			string sourceAccountName,
 			int targetAccountId,
 			string targetAccountName,
-			DateTime completedAt, decimal amount, string currency)
+			DateTime completedAt,
+			decimal sourceAmount,
+			string sourceCurrency,
+			decimal targetAmount,
+			string targetCurrency)
 		{
 			Id = id;
 			SourceAccountId = sourceAccountId;
@@ -18,8 +22,10 @@ namespace Tracking.Finance.Web.Models.Transactions
 			TargetAccountId = targetAccountId;
 			TargetAccountName = targetAccountName;
 			CompletedAt = completedAt;
-			Amount = amount;
-			Currency = currency;
+			SourceAmount = sourceAmount;
+			SourceCurrency = sourceCurrency;
+			TargetAmount = targetAmount;
+			TargetCurrency = targetCurrency;
 		}
 
 		public int Id { get; }
@@ -34,8 +40,12 @@ namespace Tracking.Finance.Web.Models.Transactions
 
 		public DateTime CompletedAt { get; }
 
-		public decimal Amount { get; }
+		public decimal SourceAmount { get; }
 
-		public string Currency { get; }
+		public string SourceCurrency { get; }
+
+		public decimal TargetAmount { get; }
+
+		public string TargetCurrency { get; }
 	}
 }
