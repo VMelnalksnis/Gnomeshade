@@ -77,13 +77,13 @@
             Application specific implementation of the <see cref="T:Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext"/> class used for identity.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{Tracking.Finance.Web.Data.ApplicationDbContext})">
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{Tracking.Finance.Web.Data.ApplicationDbContext},Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> class.
             </summary>
             <param name="options">The options to be used by a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
         </member>
-        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor">
+        <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Web.Data.ApplicationDbContext"/> class.
             </summary>

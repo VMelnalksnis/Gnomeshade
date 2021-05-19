@@ -1,8 +1,8 @@
 ﻿using System;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 using Tracking.Finance.Web.Data.Models;
 
@@ -13,20 +13,24 @@ namespace Tracking.Finance.Web.Data
 	/// </summary>
 	public class ApplicationDbContext : IdentityDbContext
 	{
+		private readonly IConfiguration _configuration;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
 		/// </summary>
 		/// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
-		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
 			: base(options)
 		{
+			_configuration = configuration;
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ApplicationDbContext"/> class.
 		/// </summary>
-		public ApplicationDbContext()
+		public ApplicationDbContext(IConfiguration configuration)
 		{
+			_configuration = configuration;
 		}
 
 		/// <summary>
@@ -97,15 +101,12 @@ namespace Tracking.Finance.Web.Data
 		/// <inheritdoc/>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			base.OnConfiguring(optionsBuilder);
-			var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "TestDatabase.db" };
-			var connectionString = connectionStringBuilder.ToString();
-			var connection = new SqliteConnection(connectionString);
+			if (optionsBuilder.IsConfigured)
+			{
+				return;
+			}
 
-			optionsBuilder
-				.LogTo(Console.WriteLine)
-				.EnableSensitiveDataLogging()
-				.UseSqlite(connection);
+			optionsBuilder.ConfigurePostgres(_configuration);
 		}
 
 		/// <inheritdoc/>
@@ -134,7 +135,7 @@ namespace Tracking.Finance.Web.Data
 				Id = 2,
 				AlphabeticCode = "USD",
 				Crypto = false,
-				NumericCode = 0,
+				NumericCode = 840,
 				Name = "United States Dollar",
 				NormalizedName = "UNITED STATES DOLLAR",
 				From = new DateTimeOffset(DateTime.Today),
