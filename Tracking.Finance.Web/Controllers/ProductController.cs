@@ -34,7 +34,6 @@ namespace Tracking.Finance.Web.Controllers
 					.Include(product => product.ProductCategory)
 					.Include(product => product.Supplier)
 					.Include(product => product.Unit)
-					.Take(10)
 					.ToListAsync(cancellationToken);
 
 			var viewModel =
@@ -119,11 +118,10 @@ namespace Tracking.Finance.Web.Controllers
 					.WhichBelongToUser(financeUser)
 					.ToListAsync(cancellationToken);
 
-			var categoryItems = categories.GetSelectListItemsWithDefault();
 			var viewModel = new ProductCategoryCreationModel
 			{
 				FinanceUserId = financeUser.Id,
-				Categories = categoryItems,
+				Categories = categories.GetSelectListItemsWithDefault(),
 			};
 
 			return View(viewModel);

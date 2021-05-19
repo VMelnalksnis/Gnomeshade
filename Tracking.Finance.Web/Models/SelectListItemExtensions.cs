@@ -40,10 +40,16 @@ namespace Tracking.Finance.Web.Models
 			return listItems;
 		}
 
-		public static IQueryable<TEntity> WhichBelongToUser<TEntity>(this DbSet<TEntity> entitySet, FinanceUser financeUser)
+		public static IQueryable<TEntity> WhichBelongToUser<TEntity>(this IQueryable<TEntity> entitySet, FinanceUser financeUser)
 			where TEntity : class, IUserSpecificEntity
 		{
 			return entitySet.Where(entity => entity.FinanceUserId == financeUser.Id);
+		}
+
+		public static IQueryable<TEntity> WithId<TEntity>(this IQueryable<TEntity> entitySet, int id)
+			where TEntity : class, IEntity
+		{
+			return entitySet.Where(entity => entity.Id == id);
 		}
 	}
 }

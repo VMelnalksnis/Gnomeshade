@@ -78,7 +78,8 @@ namespace Tracking.Finance.Web.Controllers
 			var transaction =
 				await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
-					.SingleAsync(transaction => transaction.Id == id, cancellationToken);
+					.WithId(id)
+					.SingleAsync(cancellationToken);
 
 			var items =
 				await DbContext.TransactionItems
@@ -143,7 +144,8 @@ namespace Tracking.Finance.Web.Controllers
 			var transaction =
 				await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
-					.SingleAsync(transaction => transaction.Id == id, cancellationToken);
+					.WithId(id)
+					.SingleAsync(cancellationToken);
 
 			var currencies =
 				await DbContext.Currencies
@@ -207,9 +209,7 @@ namespace Tracking.Finance.Web.Controllers
 			var transactionCategory = new TransactionCategory
 			{
 				FinanceUserId = model.FinanceUserId.Value,
-				Name = model.Name,
-				NormalizedName = model.Name.ToUpperInvariant().Trim(),
-			};
+			}.WithName(model.Name);
 
 			var entity = await DbContext.TransactionCategories.AddAsync(transactionCategory);
 			await SaveChangesAsync();

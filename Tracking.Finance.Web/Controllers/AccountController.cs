@@ -49,7 +49,7 @@ namespace Tracking.Finance.Web.Controllers
 			var account =
 				await DbContext.Accounts
 					.WhichBelongToUser(financeUser)
-					.Where(account => account.Id == id)
+					.WithId(id)
 					.Include(account => account.AccountsInCurrencies)
 					.ThenInclude(accountInCurrency => accountInCurrency.Currency)
 					.SingleAsync(cancellationToken);
@@ -114,12 +114,12 @@ namespace Tracking.Finance.Web.Controllers
 			var account =
 				await DbContext.Accounts
 					.WhichBelongToUser(financeUser)
-					.Where(account => account.Id == model.AccountId)
+					.WithId(model.AccountId.Value)
 					.SingleAsync();
 
 			var currency =
 				await DbContext.Currencies
-					.Where(currency => currency.Id == model.CurrencyId)
+					.WithId(model.CurrencyId.Value)
 					.SingleAsync();
 
 			var accountInCurrency = new AccountInCurrency
