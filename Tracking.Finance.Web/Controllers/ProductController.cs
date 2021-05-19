@@ -119,7 +119,7 @@ namespace Tracking.Finance.Web.Controllers
 					.WhichBelongToUser(financeUser)
 					.ToListAsync(cancellationToken);
 
-			var categoryItems = categories.GetSelectListItems();
+			var categoryItems = categories.GetSelectListItemsWithDefault();
 			var viewModel = new ProductCategoryCreationModel
 			{
 				FinanceUserId = financeUser.Id,
