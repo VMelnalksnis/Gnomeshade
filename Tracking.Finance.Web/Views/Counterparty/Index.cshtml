@@ -1,7 +1,9 @@
-﻿@using Tracking.Finance.Web.Models.Counterparties;
+﻿@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Counterparties;
 
 @model List<CounterpartyIndexModel>
 
+<a asp-controller="Counterparty" asp-action="@nameof(CounterpartyController.Create)" class="btn btn-info">Create Counterparty</a>
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model[0].Name)</th>
