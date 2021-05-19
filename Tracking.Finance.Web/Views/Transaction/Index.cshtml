@@ -1,23 +1,27 @@
-﻿@using Tracking.Finance.Web.Models.Transactions;
+﻿@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Transactions;
 
-@model TransactionIndexViewModel
+@model List<TransactionIndexViewModel>
 
-<a asp-controller="Transaction" asp-action="Create" class="btn">Create Transaction</a>
+<a asp-controller="Transaction" asp-action="@nameof(TransactionController.Create)" class="btn btn-info">Create Transaction</a>
+<a asp-controller="Transaction" asp-action="@nameof(TransactionController.CreateCategory)" class="btn btn-info">Create Transaction Category</a>
 <table class="table table-bordered table-hover">
 	<tr>
-		<th>@Html.DisplayNameFor(model => model.Transactions[0].Id)</th>
-		<th>@Html.DisplayNameFor(model => model.Transactions[0].SourceAccount)</th>
-		<th>@Html.DisplayNameFor(model => model.Transactions[0].TargetAccount)</th>
+		<th>@Html.DisplayNameFor(model => model[0].Id)</th>
+		<th>@Html.DisplayNameFor(model => model[0].SourceAccountName)</th>
+		<th>@Html.DisplayNameFor(model => model[0].TargetAccountName)</th>
+		<th>@Html.DisplayNameFor(model => model[0].CompletedAt)</th>
+		<th>@Html.DisplayNameFor(model => model[0].Amount)</th>
 	</tr>
-	@if (Model.Transactions.Count == 0)
+	@if (Model.Count == 0)
 	{
 		<tr>
-			<td colspan="3">No transactions</td>
+			<td colspan="5">No transactions</td>
 		</tr>
 	}
 	else
 	{
-		foreach (var transaction in Model.Transactions)
+		foreach (var transaction in Model)
 		{
 			<tr>
 				<td>
@@ -27,13 +31,19 @@
 				</td>
 				<td>
 					<a asp-controller="Account" asp-action="Details" asp-route-id="@transaction.SourceAccountId">
-						@Html.DisplayFor(model => transaction.SourceAccount.Name)
+						@Html.DisplayFor(model => transaction.SourceAccountName)
 					</a>
 				</td>
 				<td>
 					<a asp-controller="Account" asp-action="Details" asp-route-id="@transaction.TargetAccountId">
-						@Html.DisplayFor(model => transaction.TargetAccount.Name)
+						@Html.DisplayFor(model => transaction.TargetAccountName)
 					</a>
+				</td>
+				<td>
+					@Html.DisplayFor(model => transaction.CompletedAt)
+				</td>
+				<td>
+					@Html.DisplayFor(model => transaction.Currency) @Html.DisplayFor(model => transaction.Amount)
 				</td>
 			</tr>
 		}

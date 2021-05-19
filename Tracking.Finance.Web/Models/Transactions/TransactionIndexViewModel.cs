@@ -1,16 +1,41 @@
-﻿using System.Collections.Generic;
-
-using Tracking.Finance.Web.Data.Models;
+﻿using System;
 
 namespace Tracking.Finance.Web.Models.Transactions
 {
 	public class TransactionIndexViewModel
 	{
-		public TransactionIndexViewModel(List<Transaction> transactions)
+		public TransactionIndexViewModel(
+			int id,
+			int sourceAccountId,
+			string sourceAccountName,
+			int targetAccountId,
+			string targetAccountName,
+			DateTime completedAt, decimal amount, string currency)
 		{
-			Transactions = transactions;
+			Id = id;
+			SourceAccountId = sourceAccountId;
+			SourceAccountName = sourceAccountName;
+			TargetAccountId = targetAccountId;
+			TargetAccountName = targetAccountName;
+			CompletedAt = completedAt;
+			Amount = amount;
+			Currency = currency;
 		}
 
-		public List<Transaction> Transactions { get; }
+		public int Id { get; }
+
+		public int SourceAccountId { get; }
+
+		public string SourceAccountName { get; }
+
+		public int TargetAccountId { get; }
+
+		public string TargetAccountName { get; }
+
+		public DateTime CompletedAt { get; }
+
+		public decimal Amount { get; }
+
+		public string Currency { get; }
 	}
 }

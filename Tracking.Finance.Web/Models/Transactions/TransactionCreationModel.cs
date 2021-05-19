@@ -26,9 +26,6 @@ namespace Tracking.Finance.Web.Models.Transactions
 		[DataType(DataType.Time)]
 		public DateTime? CompletedAtTime { get; set; }
 
-		[Required]
-		public int? CounterpartyId { get; set; }
-
 		[DataType(DataType.Text)]
 		public string? BankReference { get; set; }
 
@@ -46,7 +43,5 @@ namespace Tracking.Finance.Web.Models.Transactions
 		public IEnumerable<SelectListItem> Categories { get; set; }
 
 		public IEnumerable<SelectListItem> Accounts { get; set; }
-
-		public IEnumerable<SelectListItem> Counterparties { get; set; }
 	}
 }

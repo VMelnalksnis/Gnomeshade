@@ -25,8 +25,6 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public DateTimeOffset? CompletedAt { get; set; }
 
-		public int CounterpartyId { get; set; }
-
 		public string? BankReference { get; set; }
 
 		public string? ExternalReference { get; set; }
@@ -48,8 +46,6 @@ namespace Tracking.Finance.Web.Data.Models
 		public Account SourceAccount { get; set; }
 
 		public Account TargetAccount { get; set; }
-
-		public Counterparty Counterparty { get; set; }
 
 		public ICollection<TransactionItem> TransactionItems { get; set; }
 	}

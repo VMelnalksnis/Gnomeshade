@@ -34,10 +34,37 @@ namespace Tracking.Finance.Web.Controllers
 				await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
 					.Include(transaction => transaction.TransactionItems)
-					.Take(10)
+					.Include(transaction => transaction.SourceAccount)
+					.Include(transaction => transaction.TargetAccount)
 					.ToListAsync(cancellationToken);
 
-			var viewModel = new TransactionIndexViewModel(transactions);
+			var viewModel =
+				transactions
+					.Select(transaction =>
+						{
+							var items =
+								DbContext.TransactionItems
+									.WhichBelongToUser(financeUser)
+									.Where(item => item.TransactionId == transaction.Id)
+									.Include(item => item.SourceCurrency)
+									.ToList();
+
+							var amount = items.Sum(item => item.SourceAmount);
+							var currency = items.FirstOrDefault()?.SourceCurrency?.AlphabeticCode;
+
+							return
+								new TransactionIndexViewModel(
+									transaction.Id,
+									transaction.SourceAccount.Id,
+									transaction.SourceAccount.Name,
+									transaction.TargetAccount.Id,
+									transaction.TargetAccount.Name,
+									transaction.CompletedAt.Value.LocalDateTime,
+									amount,
+									currency);
+						})
+					.ToList();
+
 			return View(viewModel);
 		}
 
@@ -78,20 +105,13 @@ namespace Tracking.Finance.Web.Controllers
 					.WhichBelongToUser(financeUser)
 					.ToListAsync(cancellationToken);
 
-			var counterparties =
-				await DbContext.Counterparties
-					.WhichBelongToUser(financeUser)
-					.ToListAsync(cancellationToken);
-
 			var accountItems = accounts.GetSelectListItems();
 			var categoryItems = categories.GetSelectListItems();
-			var counterpartyItems = counterparties.GetSelectListItems();
 
 			var viewModel = new TransactionCreationModel
 			{
 				Accounts = accountItems,
 				Categories = categoryItems,
-				Counterparties = counterpartyItems,
 				FinanceUserId = financeUser.Id,
 			};
 

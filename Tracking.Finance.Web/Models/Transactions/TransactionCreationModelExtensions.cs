@@ -14,7 +14,6 @@ namespace Tracking.Finance.Web.Models.Transactions
 					SourceAccountId = model.SourceAccountId.Value,
 					TargetAccountId = model.TargetAccountId.Value,
 					CompletedAt = model.CompletedAt,
-					CounterpartyId = model.CounterpartyId.Value,
 					BankReference = model.BankReference,
 					ExternalReference = model.ExternalReference,
 					InternalReference = model.InternalReference,
