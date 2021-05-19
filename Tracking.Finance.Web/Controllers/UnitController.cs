@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +26,18 @@ namespace Tracking.Finance.Web.Controllers
 		[HttpGet]
 		public async Task<ViewResult> Index(CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+			var financeUser = await GetCurrentUser(cancellationToken);
+			var units =
+				await DbContext.Units
+					.WhichBelongToUser(financeUser)
+					.ToListAsync(cancellationToken);
+
+			var viewModel =
+				units
+					.Select(unit => new UnitIndexModel(unit.Id, unit.Name, unit.Exponent, unit.Mantissa))
+					.ToList();
+
+			return View(viewModel);
 		}
 
 		[HttpGet]
@@ -46,7 +58,7 @@ namespace Tracking.Finance.Web.Controllers
 			var model = new UnitCreationModel
 			{
 				FinanceUserId = financeUser.Id,
-				Units = units.GetSelectListItems(),
+				Units = units.GetSelectListItemsWithDefault(),
 			};
 
 			return View(model);

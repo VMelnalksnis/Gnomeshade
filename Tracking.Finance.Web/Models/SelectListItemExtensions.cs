@@ -20,9 +20,21 @@ namespace Tracking.Finance.Web.Models
 			where TEntity : IEntity, INamedEntity
 		{
 			var listItems = new List<SelectListItem>();
-			/* {
-			 *     new SelectListItem(string.Empty, string.Empty, true, true),
-			 * };*/
+			listItems.AddRange(entities.Select(entity => entity.GetSelectListItem()));
+			return listItems;
+		}
+
+		public static List<SelectListItem> GetSelectListItemsWithDefault<TEntity>(
+			this IEnumerable<TEntity> entities,
+			string? name = null,
+			string? value = null,
+			bool disabled = false)
+			where TEntity : IEntity, INamedEntity
+		{
+			var listItems = new List<SelectListItem>()
+			{
+				new SelectListItem(name, value, true, disabled),
+			};
 
 			listItems.AddRange(entities.Select(entity => entity.GetSelectListItem()));
 			return listItems;

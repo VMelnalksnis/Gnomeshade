@@ -1,0 +1,38 @@
+﻿@using Tracking.Finance.Web.Controllers
+@using Tracking.Finance.Web.Models.Units
+
+@model List<UnitIndexModel>
+
+<a asp-controller="Unit" asp-action="@nameof(UnitController.Create)" class="btn btn-info">Create Unit</a>
+<table class="table table-bordered table-hover">
+	<tr>
+		<th>@Html.DisplayNameFor(model => model[0].Name)</th>
+		<th>@Html.DisplayNameFor(model => model[0].Exponent)</th>
+		<th>@Html.DisplayNameFor(model => model[0].Mantissa)</th>
+	</tr>
+	@if (Model.Count == 0)
+	{
+		<tr>
+			<td colspan="4">No units</td>
+		</tr>
+	}
+	else
+	{
+		foreach (var unit in Model)
+		{
+			<tr>
+				<td>
+					<a asp-controller="Unit" asp-action="@nameof(UnitController.Details)" asp-route-id="@unit.Id">
+						@Html.DisplayFor(model => unit.Name)
+					</a>
+				</td>
+				<td>
+					@Html.DisplayFor(model => unit.Exponent)
+				</td>
+				<td>
+					@Html.DisplayFor(model => unit.Mantissa)
+				</td>
+			</tr>
+		}
+	}
+</table> 
