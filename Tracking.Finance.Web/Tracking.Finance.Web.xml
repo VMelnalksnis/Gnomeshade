@@ -556,11 +556,27 @@
         <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.ModifiedAt">
             <inheritdoc/>
         </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.Unit">
+            <summary>
+            A unit for describing the <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> amount in <see cref="T:Tracking.Finance.Web.Data.Models.TransactionItem"/>.
+            </summary>
+            <seealso cref="T:Tracking.Finance.Web.Data.Models.UnitClosure"/>.
+        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.Id">
             <inheritdoc/>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.FinanceUserId">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.Exponent">
+            <summary>
+            Gets or sets the exponent of the scaling multiplier from the parent unit.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.Mantissa">
+            <summary>
+            Gets or sets the mantissa of the scaling multiplier from the parent unit.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.Name">
             <inheritdoc/>
@@ -574,8 +590,43 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.ModifiedAt">
             <inheritdoc/>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Unit.FinanceUser">
+            <summary>
+            Gets or sets the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> to which the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> belongs to.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Data.Models.UnitClosure">
+            <summary>
+            Describes hierarchical relationship between two <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> entities.
+            </summary>
+        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ParentUnitId">
+            <summary>
+            Gets or sets the id of the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ChildUnitId">
+            <summary>
+            Gets or sets the id of the child <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Depth">
+            <summary>
+            Gets or sets the depth of the hierarchy.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ParentUnit">
+            <summary>
+            Gets or sets the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ChildUnit">
+            <summary>
+            Gets or sets the child <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Models.Accounts.AccountCreationModel">
             <summary>
@@ -745,6 +796,86 @@
         <member name="P:Tracking.Finance.Web.Models.ErrorViewModel.ShowRequestId">
             <summary>
             Gets a value indicating whether request id should be showed.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.Units.UnitCreationModel">
+            <summary>
+            Information needed to create a <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.FinanceUserId">
+            <summary>
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> to which the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.Exponent">
+            <summary>
+            Gets or sets the exponent of the scaling multiplier from <see cref="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.ParentUnitId"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.Mantissa">
+            <summary>
+            Gets or sets the mantissa of the scaling multiplier from <see cref="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.ParentUnitId"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.Name">
+            <summary>
+            Gets or sets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.ParentUnitId">
+            <summary>
+            Gets or sets the id of the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.Units">
+            <summary>
+            Gets or sets a collection of <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.SelectListItem"/> containing units that can be set as <see cref="P:Tracking.Finance.Web.Models.Units.UnitCreationModel.ParentUnitId"/>.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.Units.UnitIndexModel">
+            <summary>
+            General information about a <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.Units.UnitIndexModel.#ctor(System.Int32,System.String,System.Int16,System.Decimal,System.Nullable{System.Int32},System.String)">
+            <summary>
+            General information about a <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.Id">
+            <summary>
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.Name">
+            <summary>
+            Gets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.Exponent">
+            <summary>
+            Gets the exponent of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.Mantissa">
+            <summary>
+            Gets the Mantissa of the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.ParentUnitId">
+            <summary>
+            Gets the id of the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.ParentUnitName">
+            <summary>
+            Gets the name of the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Units.UnitIndexModel.ScaledParentName">
+            <summary>
+            Gets a formatted scaling factor with parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Startup">

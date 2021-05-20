@@ -1,21 +1,50 @@
-﻿namespace Tracking.Finance.Web.Models.Units
+﻿using System;
+
+using Tracking.Finance.Web.Data.Models;
+
+namespace Tracking.Finance.Web.Models.Units
 {
-	public class UnitIndexModel
+	/// <summary>
+	/// General information about a <see cref="Unit"/>.
+	/// </summary>
+	public record UnitIndexModel(int Id, string Name, short Exponent, decimal Mantissa, int? ParentUnitId, string? ParentUnitName)
 	{
-		public UnitIndexModel(int id, string name, short exponent, decimal mantissa)
-		{
-			Id = id;
-			Name = name;
-			Exponent = exponent;
-			Mantissa = mantissa;
-		}
+		/// <summary>
+		/// Gets the id of the <see cref="Unit"/>.
+		/// </summary>
+		public int Id { get; init; } = Id;
 
-		public int Id { get; }
+		/// <summary>
+		/// Gets the name of the <see cref="Unit"/>.
+		/// </summary>
+		public string Name { get; init; } = Name;
 
-		public string Name { get; }
+		/// <summary>
+		/// Gets the exponent of the <see cref="Unit"/>.
+		/// </summary>
+		public short Exponent { get; init; } = Exponent;
 
-		public short Exponent { get; }
+		/// <summary>
+		/// Gets the Mantissa of the <see cref="Unit"/>.
+		/// </summary>
+		public decimal Mantissa { get; init; } = Mantissa;
 
-		public decimal Mantissa { get; }
+		/// <summary>
+		/// Gets the id of the parent <see cref="Unit"/>.
+		/// </summary>
+		public int? ParentUnitId { get; init; } = ParentUnitId;
+
+		/// <summary>
+		/// Gets the name of the parent <see cref="Unit"/>.
+		/// </summary>
+		public string? ParentUnitName { get; init; } = ParentUnitName;
+
+		/// <summary>
+		/// Gets a formatted scaling factor with parent <see cref="Unit"/>.
+		/// </summary>
+		public string? ScaledParentName =>
+			ParentUnitName is null
+				? null
+				: $"{Mantissa * (decimal)Math.Pow(10, Exponent)} {ParentUnitName}";
 	}
 }

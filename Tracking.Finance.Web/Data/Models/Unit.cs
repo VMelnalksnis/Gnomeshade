@@ -2,6 +2,10 @@
 
 namespace Tracking.Finance.Web.Data.Models
 {
+	/// <summary>
+	/// A unit for describing the <see cref="Product"/> amount in <see cref="TransactionItem"/>.
+	/// </summary>
+	/// <seealso cref="UnitClosure"/>.
 	public class Unit : IEntity, INamedEntity, IUserSpecificEntity, IModifiableEntity
 	{
 		/// <inheritdoc/>
@@ -10,8 +14,14 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public int FinanceUserId { get; set; }
 
+		/// <summary>
+		/// Gets or sets the exponent of the scaling multiplier from the parent unit.
+		/// </summary>
 		public short Exponent { get; set; }
 
+		/// <summary>
+		/// Gets or sets the mantissa of the scaling multiplier from the parent unit.
+		/// </summary>
 		public decimal Mantissa { get; set; }
 
 		/// <inheritdoc/>
@@ -26,6 +36,9 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
 
+		/// <summary>
+		/// Gets or sets the <see cref="Models.FinanceUser"/> to which the <see cref="Unit"/> belongs to.
+		/// </summary>
 		public FinanceUser FinanceUser { get; set; }
 	}
 }

@@ -48,9 +48,15 @@ namespace Tracking.Finance.Web.Controllers
 					.WhichBelongToUser(financeUser)
 					.ToListAsync(cancellationToken);
 
-			var viewModel =
+			var closures =
 				units
-					.Select(unit => new UnitIndexModel(unit.Id, unit.Name, unit.Exponent, unit.Mantissa))
+					.Select(unit => new { unit, parentClosure = DbContext.UnitClosures.Where(closure => closure.ChildUnitId == unit.Id).SingleOrDefault() })
+					.Select(unit => new { unit.unit, parentUnit = units.SingleOrDefault(u => u.Id == unit.parentClosure?.ParentUnitId) })
+					.ToList();
+
+			var viewModel =
+				closures
+					.Select(unit => new UnitIndexModel(unit.unit.Id, unit.unit.Name, unit.unit.Exponent, unit.unit.Mantissa, unit.parentUnit?.Id, unit.parentUnit?.Name))
 					.ToList();
 
 			return View(viewModel);
@@ -66,7 +72,7 @@ namespace Tracking.Finance.Web.Controllers
 		/// A <see cref="ViewResult"/> containing information about the specified <see cref="Unit"/>.
 		/// </returns>
 		[HttpGet]
-		public async Task<ViewResult> Details(int id, CancellationToken cancellationToken)
+		public Task<ViewResult> Details(int id, CancellationToken cancellationToken)
 		{
 			throw new NotImplementedException();
 		}
@@ -115,15 +121,36 @@ namespace Tracking.Finance.Web.Controllers
 
 			var unit = new Unit
 			{
-				FinanceUserId = model.FinanceUserId.Value,
-				Exponent = model.Exponent.Value,
-				Mantissa = model.Mantissa.Value,
+				FinanceUserId = model.FinanceUserId!.Value,
+				Exponent = model.Exponent,
+				Mantissa = model.Mantissa,
 			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var unitEntity = await DbContext.Units.AddAsync(unit);
 			await SaveChangesAsync();
 
-			return RedirectToAction(nameof(Details), new { id = unitEntity.Entity.Id });
+			if (model.ParentUnitId.HasValue)
+			{
+				var financeUser = await GetCurrentUser();
+				var parentUnit =
+					await DbContext.Units
+						.WhichBelongToUser(financeUser)
+						.WithId(model.ParentUnitId.Value)
+						.SingleAsync();
+
+				var closure = new UnitClosure
+				{
+					ChildUnitId = unitEntity.Entity.Id,
+					ParentUnitId = parentUnit.Id,
+				};
+
+				var closureEntity = await DbContext.UnitClosures.AddAsync(closure);
+				await SaveChangesAsync();
+			}
+
+			return RedirectToAction(nameof(Index));
+
+			// return RedirectToAction(nameof(Details), new { id = unitEntity.Entity.Id });
 		}
 	}
 }

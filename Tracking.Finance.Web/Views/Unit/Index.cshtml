@@ -7,13 +7,12 @@
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model[0].Name)</th>
-		<th>@Html.DisplayNameFor(model => model[0].Exponent)</th>
-		<th>@Html.DisplayNameFor(model => model[0].Mantissa)</th>
+		<th>@Html.DisplayNameFor(model => model[0].ScaledParentName)</th>
 	</tr>
 	@if (Model.Count == 0)
 	{
 		<tr>
-			<td colspan="4">No units</td>
+			<td colspan="2">No units</td>
 		</tr>
 	}
 	else
@@ -27,10 +26,9 @@
 					</a>
 				</td>
 				<td>
-					@Html.DisplayFor(model => unit.Exponent)
-				</td>
-				<td>
-					@Html.DisplayFor(model => unit.Mantissa)
+					<a asp-controller="Unit" asp-action="@nameof(UnitController.Details)" asp-route-id="@unit.ParentUnitId">
+						@Html.DisplayFor(model => unit.ScaledParentName)
+					</a>
 				</td>
 			</tr>
 		}
