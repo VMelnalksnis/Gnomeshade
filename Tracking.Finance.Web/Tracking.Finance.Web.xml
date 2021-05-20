@@ -312,9 +312,24 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Account.NormalizedName">
             <inheritdoc/>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.SingleCurrency">
+            <summary>
+            Gets or sets a value indicating whether this account can contain only a single currency.
+            </summary>
+        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Account.UserAccount">
             <summary>
             Gets or sets a value indicating whether this account is owned by the user.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.FinanceUser">
+            <summary>
+            Gets or sets the <see cref="P:Tracking.Finance.Web.Data.Models.Account.FinanceUser"/> which owns this <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.AccountsInCurrencies">
+            <summary>
+            Gets or sets a collection of currencies which the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> can hold.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Data.Models.AccountInCurrency">
@@ -325,14 +340,39 @@
         <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.Id">
             <inheritdoc/>
         </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.AccountId">
+            <summary>
+            Gets or sets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> to wchich this <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> belongs to.
+            </summary>
+        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.FinanceUserId">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.CurrencyId">
+            <summary>
+            Gets or sets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> which this <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> represents for an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.CreatedAt">
             <inheritdoc/>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.ModifiedAt">
             <inheritdoc/>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.Account">
+            <summary>
+            Gets or sets the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> to which this <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> belongs to.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.FinanceUser">
+            <summary>
+            Gets or sets the <see cref="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.FinanceUser"/> which owns this <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Data.Models.AccountInCurrency.Currency">
+            <summary>
+            Gets or sets the <see cref="T:Tracking.Finance.Web.Data.Models.Currency"/> which this <see cref="T:Tracking.Finance.Web.Data.Models.AccountInCurrency"/> represents for an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Counterparty.Id">
             <inheritdoc/>
@@ -572,6 +612,16 @@
             Gets a collection of <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.SelectListItem"/> containing available currencies that can be selected for <see cref="P:Tracking.Finance.Web.Models.Accounts.AccountCreationModel.CurrencyId"/>.
             </summary>
         </member>
+        <member name="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel">
+            <summary>
+            Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> and <see cref="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Currency"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.#ctor(System.String,System.Decimal,System.Decimal)">
+            <summary>
+            Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> and <see cref="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Currency"/>.
+            </summary>
+        </member>
         <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Currency">
             <summary>
             Gets the <see cref="P:Tracking.Finance.Web.Data.Models.Currency.AlphabeticCode"/> of the amount currency.
@@ -590,6 +640,66 @@
         <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel.Balance">
             <summary>
             Gets the total balance of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel">
+            <summary>
+            Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(System.Int32,System.String,System.Boolean,System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem},System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel})">
+            <summary>
+            Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.Id">
+            <summary>
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.Name">
+            <summary>
+            Gets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.SingleCurrency">
+            <summary>
+            Gets a value indicating whether the account can contain only a single currency.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.CurrencyListItems">
+            <summary>
+            Gets a collection of <see cref="T:Microsoft.AspNetCore.Mvc.Rendering.SelectListItem"/> containing available currencies that can be added to the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.Currencies">
+            <summary>
+            Gets a collection of <see cref="T:Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel"/> containing details about <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> balance in different currencies.
+            </summary>
+        </member>
+        <member name="T:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel">
+            <summary>
+            General information about an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.#ctor(System.Int32,System.String,System.Boolean)">
+            <summary>
+            General information about an <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.Id">
+            <summary>
+            Gets the id of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.Name">
+            <summary>
+            Gets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
+            </summary>
+        </member>
+        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountIndexViewModel.UserAccount">
+            <summary>
+            Gets a value indicating whether the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/> is owned by the user.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Models.Accounts.AddCurrencyModel">

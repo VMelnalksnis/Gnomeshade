@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,7 +51,11 @@ namespace Tracking.Finance.Web.Controllers
 					.ThenInclude(account => account.Currency)
 					.ToListAsync(cancellationToken);
 
-			var viewModel = new AccountIndexViewModel { Accounts = accounts };
+			var viewModel =
+				accounts
+					.Select(account => new AccountIndexViewModel(account.Id, account.Name, account.UserAccount))
+					.ToList();
+
 			return View(viewModel);
 		}
 
@@ -96,24 +101,23 @@ namespace Tracking.Finance.Web.Controllers
 
 			var viewModels =
 				accountsInCurrencies
-					.Select(ac =>
+					.Select(currencyAccount =>
 					{
 						var fromAccount =
 							transactionsFromAccount
-								.Where(item => item.SourceCurrencyId == ac.CurrencyId)
+								.Where(item => item.SourceCurrencyId == currencyAccount.CurrencyId)
 								.Sum(item => item.SourceAmount);
 
 						var toAccount =
 							transactionsToAccount
-								.Where(item => item.TargetCurrencyId == ac.CurrencyId)
+								.Where(item => item.TargetCurrencyId == currencyAccount.CurrencyId)
 								.Sum(item => item.TargetAmount);
 
-						return new AccountDetailsCurrencyViewModel
-						{
-							Currency = ac.Currency.AlphabeticCode,
-							In = toAccount,
-							Out = fromAccount,
-						};
+						return
+							new AccountDetailsCurrencyViewModel(
+								currencyAccount.Currency.AlphabeticCode,
+								toAccount,
+								fromAccount);
 					})
 					.ToList();
 
@@ -124,14 +128,14 @@ namespace Tracking.Finance.Web.Controllers
 					.Where(currency => !existingCurrencies.Contains(currency.Id))
 					.ToListAsync(cancellationToken);
 
-			var viewModel = new AccountDetailsViewModel
-			{
-				Id = account.Id,
-				Name = account.Name,
-				SingleCurrency = account.SingleCurrency,
-				Currencies = viewModels,
-				CurrencyListItems = currencies.GetSelectListItems(),
-			};
+			var viewModel =
+				new AccountDetailsViewModel(
+					account.Id,
+					account.Name,
+					account.SingleCurrency,
+					currencies.GetSelectListItems(),
+					viewModels);
+
 			return View(viewModel);
 		}
 
@@ -148,16 +152,21 @@ namespace Tracking.Finance.Web.Controllers
 		{
 			var financeUser = await GetCurrentUser();
 
+			if (!ModelState.IsValid)
+			{
+				throw new NotImplementedException();
+			}
+
 			// todo validation
 			var account =
 				await DbContext.Accounts
 					.WhichBelongToUser(financeUser)
-					.WithId(model.AccountId.Value)
+					.WithId(model.AccountId!.Value)
 					.SingleAsync();
 
 			var currency =
 				await DbContext.Currencies
-					.WithId(model.CurrencyId.Value)
+					.WithId(model.CurrencyId!.Value)
 					.SingleAsync();
 
 			var accountInCurrency = new AccountInCurrency
@@ -221,7 +230,7 @@ namespace Tracking.Finance.Web.Controllers
 
 			var account = new Account
 			{
-				FinanceUserId = model.FinanceUserId.Value,
+				FinanceUserId = model.FinanceUserId!.Value,
 				SingleCurrency = model.SingleCurrency,
 				UserAccount = model.UserAccount,
 			}.WithName(model.Name).CreatedAndModifiedNow();

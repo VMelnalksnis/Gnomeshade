@@ -24,6 +24,6 @@ namespace Tracking.Finance.Web.Models.Accounts
 		/// <summary>
 		/// Gets a collection of <see cref="SelectListItem"/> containing available currencies that can be added to the <see cref="Account"/>.
 		/// </summary>
-		public List<SelectListItem> Currencies { get; init; }
+		public List<SelectListItem> Currencies { get; init; } = new List<SelectListItem>();
 	}
 }

@@ -2,18 +2,38 @@
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+using Tracking.Finance.Web.Data.Models;
+
 namespace Tracking.Finance.Web.Models.Accounts
 {
-	public class AccountDetailsViewModel
+	/// <summary>
+	/// Information about a specific <see cref="Account"/>.
+	/// </summary>
+	public record AccountDetailsViewModel(int Id, string Name, bool SingleCurrency, List<SelectListItem> CurrencyListItems, List<AccountDetailsCurrencyViewModel> Currencies)
 	{
-		public int Id { get; init; }
+		/// <summary>
+		/// Gets the id of the <see cref="Account"/>.
+		/// </summary>
+		public int Id { get; init; } = Id;
 
-		public string Name { get; init; }
+		/// <summary>
+		/// Gets the name of the <see cref="Account"/>.
+		/// </summary>
+		public string Name { get; init; } = Name;
 
-		public bool SingleCurrency { get; init; }
+		/// <summary>
+		/// Gets a value indicating whether the account can contain only a single currency.
+		/// </summary>
+		public bool SingleCurrency { get; init; } = SingleCurrency;
 
-		public List<SelectListItem> CurrencyListItems { get; init; }
+		/// <summary>
+		/// Gets a collection of <see cref="SelectListItem"/> containing available currencies that can be added to the <see cref="Account"/>.
+		/// </summary>
+		public List<SelectListItem> CurrencyListItems { get; init; } = CurrencyListItems;
 
-		public List<AccountDetailsCurrencyViewModel> Currencies { get; init; }
+		/// <summary>
+		/// Gets a collection of <see cref="AccountDetailsCurrencyViewModel"/> containing details about <see cref="Account"/> balance in different currencies.
+		/// </summary>
+		public List<AccountDetailsCurrencyViewModel> Currencies { get; init; } = Currencies;
 	}
 }

@@ -42,6 +42,6 @@ namespace Tracking.Finance.Web.Models.Accounts
 		/// <summary>
 		/// Gets a collection of <see cref="SelectListItem"/> containing available currencies that can be selected for <see cref="CurrencyId"/>.
 		/// </summary>
-		public IEnumerable<SelectListItem> Currencies { get; init; }
+		public List<SelectListItem> Currencies { get; init; } = new List<SelectListItem>();
 	}
 }

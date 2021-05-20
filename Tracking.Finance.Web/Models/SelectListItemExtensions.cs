@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 using Tracking.Finance.Web.Data.Models;
 
@@ -40,16 +39,16 @@ namespace Tracking.Finance.Web.Models
 			return listItems;
 		}
 
-		public static IQueryable<TEntity> WhichBelongToUser<TEntity>(this IQueryable<TEntity> entitySet, FinanceUser financeUser)
+		public static IQueryable<TEntity> WhichBelongToUser<TEntity>(this IQueryable<TEntity> entities, FinanceUser financeUser)
 			where TEntity : class, IUserSpecificEntity
 		{
-			return entitySet.Where(entity => entity.FinanceUserId == financeUser.Id);
+			return entities.Where(entity => entity.FinanceUserId == financeUser.Id);
 		}
 
-		public static IQueryable<TEntity> WithId<TEntity>(this IQueryable<TEntity> entitySet, int id)
+		public static IQueryable<TEntity> WithId<TEntity>(this IQueryable<TEntity> entities, int id)
 			where TEntity : class, IEntity
 		{
-			return entitySet.Where(entity => entity.Id == id);
+			return entities.Where(entity => entity.Id == id);
 		}
 	}
 }

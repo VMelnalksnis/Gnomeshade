@@ -26,6 +26,9 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public string NormalizedName { get; set; }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether this account can contain only a single currency.
+		/// </summary>
 		public bool SingleCurrency { get; set; }
 
 		/// <summary>
@@ -33,8 +36,14 @@ namespace Tracking.Finance.Web.Data.Models
 		/// </summary>
 		public bool UserAccount { get; set; }
 
+		/// <summary>
+		/// Gets or sets the <see cref="FinanceUser"/> which owns this <see cref="Account"/>.
+		/// </summary>
 		public FinanceUser FinanceUser { get; set; }
 
+		/// <summary>
+		/// Gets or sets a collection of currencies which the <see cref="Account"/> can hold.
+		/// </summary>
 		public ICollection<AccountInCurrency> AccountsInCurrencies { get; set; }
 	}
 }
