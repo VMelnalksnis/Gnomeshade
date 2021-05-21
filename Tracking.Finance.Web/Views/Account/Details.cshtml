@@ -1,8 +1,12 @@
 ﻿@using Tracking.Finance.Web.Models.Accounts;
+@using VMelnalksnis.SvgCharts;
 
 @model AccountDetailsViewModel
 
 <h1>@Model.Name</h1>
+
+@Html.Display(model => model.Chart)
+
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model.Currencies[0].Currency)</th>

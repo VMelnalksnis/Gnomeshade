@@ -43,4 +43,8 @@
 		</PackageReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\VMelnalksnis.SvgCharts\VMelnalksnis.SvgCharts.csproj" />
+	</ItemGroup>
+
 </Project>

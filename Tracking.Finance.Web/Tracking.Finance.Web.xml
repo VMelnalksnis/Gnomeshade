@@ -698,7 +698,7 @@
             Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(System.Int32,System.String,System.Boolean,System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem},System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel})">
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(System.Int32,System.String,System.Boolean,VMelnalksnis.SvgCharts.Charts.LineChart,System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem},System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel})">
             <summary>
             Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>

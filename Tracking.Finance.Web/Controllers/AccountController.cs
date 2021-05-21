@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +14,8 @@ using Tracking.Finance.Web.Data;
 using Tracking.Finance.Web.Data.Models;
 using Tracking.Finance.Web.Models;
 using Tracking.Finance.Web.Models.Accounts;
+
+using VMelnalksnis.SvgCharts.Charts;
 
 namespace Tracking.Finance.Web.Controllers
 {
@@ -128,11 +132,23 @@ namespace Tracking.Finance.Web.Controllers
 					.Where(currency => !existingCurrencies.Contains(currency.Id))
 					.ToListAsync(cancellationToken);
 
+			var lineChart = new LineChart
+			{
+				ViewBox = new Rectangle(0, 0, 500, 100),
+				Points = new List<Point>
+				{
+					new Point(0, 40),
+					new Point(100, 100),
+					new Point(200, 0),
+				},
+			};
+
 			var viewModel =
 				new AccountDetailsViewModel(
 					account.Id,
 					account.Name,
 					account.SingleCurrency,
+					lineChart,
 					currencies.GetSelectListItems(),
 					viewModels);
 
