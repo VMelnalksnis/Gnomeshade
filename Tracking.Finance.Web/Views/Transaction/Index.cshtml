@@ -4,11 +4,9 @@
 @model List<TransactionIndexViewModel>
 
 <a asp-controller="Transaction" asp-action="@nameof(TransactionController.Create)" class="btn btn-info">Create Transaction</a>
-<a asp-controller="Transaction" asp-action="@nameof(TransactionController.CreateCategory)" class="btn btn-info">Create Transaction Category</a>
 <table class="table table-bordered table-hover">
 	<tr>
 		<th>@Html.DisplayNameFor(model => model[0].Id)</th>
-		<th>@Html.DisplayNameFor(model => model[0].CategoryName)</th>
 		<th>@Html.DisplayNameFor(model => model[0].SourceAccountName)</th>
 		<th>@Html.DisplayNameFor(model => model[0].TargetAccountName)</th>
 		<th>@Html.DisplayNameFor(model => model[0].CompletedAt)</th>
@@ -18,7 +16,7 @@
 	@if (Model.Count == 0)
 	{
 		<tr>
-			<td colspan="7">No transactions</td>
+			<td colspan="6">No transactions</td>
 		</tr>
 	}
 	else
@@ -29,11 +27,6 @@
 				<td>
 					<a asp-controller="Transaction" asp-action="Details" asp-route-id="@transaction.Id">
 						@Html.DisplayFor(model => transaction.Id)
-					</a>
-				</td>
-				<td>
-					<a asp-controller="Transaction" asp-action="@nameof(TransactionController.CreateCategory)" asp-route-id="@transaction.CategoryId">
-						@Html.DisplayFor(model => transaction.CategoryName)
 					</a>
 				</td>
 				<td>

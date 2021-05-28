@@ -50,13 +50,18 @@ namespace Tracking.Finance.Web.Controllers
 			var accounts =
 				await DbContext.Accounts
 					.WhichBelongToUser(financeUser)
+					.Include(account => account.Counterparty)
 					.Include(account => account.AccountsInCurrencies)
 					.ThenInclude(account => account.Currency)
 					.ToListAsync(cancellationToken);
 
 			var viewModel =
 				accounts
-					.Select(account => new AccountIndexViewModel(account.Id, account.Name, account.UserAccount))
+					.Select(account =>
+						new AccountIndexViewModel(
+							account.Id,
+							account.Name,
+							financeUser.CounterpartyId.HasValue && financeUser.CounterpartyId == account.CounterpartyId))
 					.ToList();
 
 			return View(viewModel);
@@ -89,18 +94,20 @@ namespace Tracking.Finance.Web.Controllers
 			var transactionsFromAccount =
 				(await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
-					.Where(transaction => transaction.SourceAccountId == account.Id)
 					.Include(transaction => transaction.TransactionItems)
+					.ThenInclude(item => item.SourceAccount)
 					.ToListAsync(cancellationToken))
-					.SelectMany(transaction => transaction.TransactionItems);
+					.SelectMany(transaction => transaction.TransactionItems)
+					.Where(item => accountsInCurrencies.Select(aic => aic.Id).Contains(item.SourceAccountId));
 
 			var transactionsToAccount =
 				(await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
-					.Where(transaction => transaction.TargetAccountId == account.Id)
 					.Include(transaction => transaction.TransactionItems)
+					.ThenInclude(item => item.TargetAccount)
 					.ToListAsync(cancellationToken))
-					.SelectMany(transaction => transaction.TransactionItems);
+					.SelectMany(transaction => transaction.TransactionItems)
+					.Where(item => accountsInCurrencies.Select(aic => aic.Id).Contains(item.TargetAccountId));
 
 			var viewModels =
 				accountsInCurrencies
@@ -108,12 +115,12 @@ namespace Tracking.Finance.Web.Controllers
 					{
 						var fromAccount =
 							transactionsFromAccount
-								.Where(item => item.SourceCurrencyId == currencyAccount.CurrencyId)
+								.Where(item => item.SourceAccountId == currencyAccount.Id)
 								.Sum(item => item.SourceAmount);
 
 						var toAccount =
 							transactionsToAccount
-								.Where(item => item.TargetCurrencyId == currencyAccount.CurrencyId)
+								.Where(item => item.TargetAccountId == currencyAccount.Id)
 								.Sum(item => item.TargetAmount);
 
 						return
@@ -145,7 +152,6 @@ namespace Tracking.Finance.Web.Controllers
 				new AccountDetailsViewModel(
 					account.Id,
 					account.Name,
-					account.SingleCurrency,
 					lineChart,
 					currencies.GetSelectListItems(),
 					viewModels);
@@ -245,8 +251,6 @@ namespace Tracking.Finance.Web.Controllers
 			var account = new Account
 			{
 				FinanceUserId = model.FinanceUserId!.Value,
-				SingleCurrency = model.SingleCurrency,
-				UserAccount = model.UserAccount,
 			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var accountEntity = await DbContext.AddAsync(account);

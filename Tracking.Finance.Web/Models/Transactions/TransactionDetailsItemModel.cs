@@ -9,9 +9,9 @@ namespace Tracking.Finance.Web.Models.Transactions
 			TransactionItem = transactionItem;
 			Id = transactionItem.Id;
 			SourceAmount = transactionItem.SourceAmount;
-			SourceCurrency = transactionItem.SourceCurrency.Name;
+			SourceCurrency = transactionItem.SourceAccount.Currency.Name;
 			TargetAmount = transactionItem.TargetAmount;
-			TargetCurrency = transactionItem.TargetCurrency.Name;
+			TargetCurrency = transactionItem.TargetAccount.Currency.Name;
 			Amount = transactionItem.Amount;
 			Product = transactionItem.Product.Name;
 			Description = transactionItem.Description;

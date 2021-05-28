@@ -12,13 +12,7 @@ namespace Tracking.Finance.Web.Models.Transactions
 				new Transaction
 				{
 					FinanceUserId = model.FinanceUserId.Value,
-					TransactionCategoryId = model.TransactionCategoryId.Value,
-					SourceAccountId = model.SourceAccountId.Value,
-					TargetAccountId = model.TargetAccountId.Value,
-					CompletedAt = model.CompletedAt.Value.Add(new TimeSpan(model.CompletedAtTime.Value.Hour, model.CompletedAtTime.Value.Minute, model.CompletedAtTime.Value.Second)),
-					BankReference = model.BankReference,
-					ExternalReference = model.ExternalReference,
-					InternalReference = model.InternalReference,
+					Date = model.Date.Value.Add(new TimeSpan(model.Time.Value.Hour, model.Time.Value.Minute, model.Time.Value.Second)),
 					Description = model.Description,
 					Completed = model.Completed,
 					Generated = false,

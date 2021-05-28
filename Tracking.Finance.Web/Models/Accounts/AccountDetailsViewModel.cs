@@ -11,7 +11,7 @@ namespace Tracking.Finance.Web.Models.Accounts
 	/// <summary>
 	/// Information about a specific <see cref="Account"/>.
 	/// </summary>
-	public record AccountDetailsViewModel(int Id, string Name, bool SingleCurrency, LineChart Chart, List<SelectListItem> CurrencyListItems, List<AccountDetailsCurrencyViewModel> Currencies)
+	public record AccountDetailsViewModel(int Id, string Name, LineChart Chart, List<SelectListItem> CurrencyListItems, List<AccountDetailsCurrencyViewModel> Currencies)
 	{
 		/// <summary>
 		/// Gets the id of the <see cref="Account"/>.
@@ -22,11 +22,6 @@ namespace Tracking.Finance.Web.Models.Accounts
 		/// Gets the name of the <see cref="Account"/>.
 		/// </summary>
 		public string Name { get; init; } = Name;
-
-		/// <summary>
-		/// Gets a value indicating whether the account can contain only a single currency.
-		/// </summary>
-		public bool SingleCurrency { get; init; } = SingleCurrency;
 
 		public LineChart Chart { get; init; } = Chart;
 

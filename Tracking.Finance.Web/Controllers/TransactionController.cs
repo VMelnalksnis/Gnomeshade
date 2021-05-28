@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Tracking.Finance.Web.Data;
-using Tracking.Finance.Web.Data.Models;
 using Tracking.Finance.Web.Models;
 using Tracking.Finance.Web.Models.Transactions;
 
@@ -34,9 +33,6 @@ namespace Tracking.Finance.Web.Controllers
 				await DbContext.Transactions
 					.WhichBelongToUser(financeUser)
 					.Include(transaction => transaction.TransactionItems)
-					.Include(transaction => transaction.SourceAccount)
-					.Include(transaction => transaction.TargetAccount)
-					.Include(transaction => transaction.TransactionCategory)
 					.ToListAsync(cancellationToken);
 
 			var viewModel =
@@ -47,23 +43,38 @@ namespace Tracking.Finance.Web.Controllers
 								DbContext.TransactionItems
 									.WhichBelongToUser(financeUser)
 									.Where(item => item.TransactionId == transaction.Id)
-									.Include(item => item.SourceCurrency)
+									.Include(item => item.SourceAccount)
+									.ThenInclude(account => account.Currency)
+									.Include(item => item.TargetAccount)
+									.ThenInclude(account => account.Currency)
 									.ToList();
+
+							var firstItem = items.First();
+
+							var sourceAccount =
+								DbContext.Accounts
+									.WhichBelongToUser(financeUser)
+									.Where(account => account.Id == firstItem.SourceAccountId)
+									.Single();
+
+							var targetAccount =
+								DbContext.Accounts
+									.WhichBelongToUser(financeUser)
+									.Where(account => account.Id == firstItem.TargetAccountId)
+									.Single();
 
 							return
 								new TransactionIndexViewModel(
 									transaction.Id,
-									transaction.SourceAccount.Id,
-									transaction.SourceAccount.Name,
-									transaction.TargetAccount.Id,
-									transaction.TargetAccount.Name,
-									transaction.CompletedAt.Value.LocalDateTime,
+									sourceAccount.Id,
+									sourceAccount.Name,
+									targetAccount.Id,
+									targetAccount.Name,
+									transaction.Date.LocalDateTime,
 									items.Sum(item => item.SourceAmount),
-									items.FirstOrDefault()?.SourceCurrency?.AlphabeticCode,
+									firstItem.SourceAccount.Currency.AlphabeticCode,
 									items.Sum(item => item.TargetAmount),
-									items.FirstOrDefault()?.TargetCurrency?.AlphabeticCode,
-									transaction.TransactionCategory.Id,
-									transaction.TransactionCategory.Name);
+									firstItem.TargetAccount.Currency.AlphabeticCode);
 						})
 					.ToList();
 
@@ -84,7 +95,8 @@ namespace Tracking.Finance.Web.Controllers
 			var items =
 				await DbContext.TransactionItems
 					.Where(item => item.TransactionId == transaction.Id)
-					.Include(item => item.SourceCurrency)
+					.Include(item => item.SourceAccount)
+					.ThenInclude(account => account.Currency)
 					.Include(item => item.Product)
 					.ToListAsync(cancellationToken);
 
@@ -98,23 +110,8 @@ namespace Tracking.Finance.Web.Controllers
 		{
 			var financeUser = await GetCurrentUser(cancellationToken);
 
-			var accounts =
-				await DbContext.Accounts
-					.WhichBelongToUser(financeUser)
-					.ToListAsync(cancellationToken);
-
-			var categories =
-				await DbContext.TransactionCategories
-					.WhichBelongToUser(financeUser)
-					.ToListAsync(cancellationToken);
-
-			var accountItems = accounts.GetSelectListItems();
-			var categoryItems = categories.GetSelectListItems();
-
 			var viewModel = new TransactionCreationModel
 			{
-				Accounts = accountItems,
-				Categories = categoryItems,
 				FinanceUserId = financeUser.Id,
 			};
 
@@ -183,38 +180,6 @@ namespace Tracking.Finance.Web.Controllers
 			await SaveChangesAsync();
 
 			return RedirectToAction(nameof(Details), new { id = entity.Entity.TransactionId });
-		}
-
-		[HttpGet]
-		public async Task<ViewResult> CreateCategory(CancellationToken cancellationToken)
-		{
-			var financeUser = await GetCurrentUser(cancellationToken);
-
-			var viewModel = new TransactionCategoryCreationModel
-			{
-				FinanceUserId = financeUser.Id,
-			};
-
-			return View(viewModel);
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> CreateCategory(TransactionCategoryCreationModel model)
-		{
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
-
-			var transactionCategory = new TransactionCategory
-			{
-				FinanceUserId = model.FinanceUserId.Value,
-			}.WithName(model.Name);
-
-			var entity = await DbContext.TransactionCategories.AddAsync(transactionCategory);
-			await SaveChangesAsync();
-
-			return RedirectToAction(nameof(Index)); // todo
 		}
 	}
 }

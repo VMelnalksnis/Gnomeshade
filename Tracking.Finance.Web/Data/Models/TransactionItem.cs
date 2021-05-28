@@ -14,17 +14,37 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public decimal SourceAmount { get; set; }
 
-		public int SourceCurrencyId { get; set; }
+		public int SourceAccountId { get; set; }
 
 		public decimal TargetAmount { get; set; }
 
-		public int TargetCurrencyId { get; set; }
+		public int TargetAccountId { get; set; }
 
 		/// <inheritdoc/>
 		public DateTimeOffset CreatedAt { get; set; }
 
 		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
+
+		public string BankReference { get; set; }
+
+		public string ExternalReference { get; set; }
+
+		public string InternalReference { get; set; }
+
+		public DateTimeOffset? InterestDate { get; set; }
+
+		public DateTimeOffset? BookDate { get; set; }
+
+		public DateTimeOffset? ProcessingDate { get; set; }
+
+		public DateTimeOffset? DueDate { get; set; }
+
+		public DateTimeOffset? PaymentDate { get; set; }
+
+		public DateTimeOffset? InvoiceDate { get; set; }
+
+		public DateTimeOffset? DeliveryDate { get; set; }
 
 		public int ProductId { get; set; }
 
@@ -36,9 +56,9 @@ namespace Tracking.Finance.Web.Data.Models
 
 		public Transaction Transaction { get; set; }
 
-		public Currency SourceCurrency { get; set; }
+		public AccountInCurrency SourceAccount { get; set; }
 
-		public Currency TargetCurrency { get; set; }
+		public AccountInCurrency TargetAccount { get; set; }
 
 		public Product Product { get; set; }
 	}

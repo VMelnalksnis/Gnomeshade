@@ -14,6 +14,8 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public int FinanceUserId { get; set; }
 
+		public int? ParentUnitId { get; set; }
+
 		/// <summary>
 		/// Gets or sets the exponent of the scaling multiplier from the parent unit.
 		/// </summary>
@@ -40,5 +42,7 @@ namespace Tracking.Finance.Web.Data.Models
 		/// Gets or sets the <see cref="Models.FinanceUser"/> to which the <see cref="Unit"/> belongs to.
 		/// </summary>
 		public FinanceUser FinanceUser { get; set; }
+
+		public Unit? ParentUnit { get; set; }
 	}
 }

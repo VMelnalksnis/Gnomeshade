@@ -44,6 +44,7 @@ namespace Tracking.Finance.Web.Controllers
 			var identityUser = await _userManager.GetUserAsync(User);
 			var financeUser =
 				await DbContext.FinanceUsers
+					.Include(user => user.Counterparty)
 					.SingleAsync(financeUser => financeUser.IdentityUserId == identityUser.Id, cancellationToken);
 
 			return financeUser;

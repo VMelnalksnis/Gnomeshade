@@ -137,7 +137,7 @@
         </member>
         <member name="T:Tracking.Finance.Web.Controllers.UnitController">
             <summary>
-            MVC controller for managing <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> and <see cref="T:Tracking.Finance.Web.Data.Models.UnitClosure"/> entities.
+            MVC controller for managing <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> and <see cref="!:UnitClosure"/> entities.
             </summary>
         </member>
         <member name="M:Tracking.Finance.Web.Controllers.UnitController.#ctor(Tracking.Finance.Web.Data.ApplicationDbContext,Microsoft.AspNetCore.Identity.UserManager{Microsoft.AspNetCore.Identity.IdentityUser})">
@@ -249,11 +249,6 @@
             Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transactions.
             </summary>
         </member>
-        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.TransactionCategories">
-            <summary>
-            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transaction Categories.
-            </summary>
-        </member>
         <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.TransactionItems">
             <summary>
             Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Transaction Items.
@@ -262,11 +257,6 @@
         <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.Units">
             <summary>
             Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Units.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.ApplicationDbContext.UnitClosures">
-            <summary>
-            Gets the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> of Unit Closures.
             </summary>
         </member>
         <member name="M:Tracking.Finance.Web.Data.ApplicationDbContext.OnConfiguring(Microsoft.EntityFrameworkCore.DbContextOptionsBuilder)">
@@ -312,15 +302,8 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Account.NormalizedName">
             <inheritdoc/>
         </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.Account.SingleCurrency">
-            <summary>
-            Gets or sets a value indicating whether this account can contain only a single currency.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.Account.UserAccount">
-            <summary>
-            Gets or sets a value indicating whether this account is owned by the user.
-            </summary>
+        <member name="P:Tracking.Finance.Web.Data.Models.Account.Description">
+            <inheritdoc/>
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Account.FinanceUser">
             <summary>
@@ -532,18 +515,6 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Transaction.ModifiedAt">
             <inheritdoc/>
         </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.Id">
-            <inheritdoc/>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.FinanceUserId">
-            <inheritdoc/>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.Name">
-            <inheritdoc/>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.TransactionCategory.NormalizedName">
-            <inheritdoc/>
-        </member>
         <member name="P:Tracking.Finance.Web.Data.Models.TransactionItem.Id">
             <inheritdoc/>
         </member>
@@ -560,7 +531,7 @@
             <summary>
             A unit for describing the <see cref="T:Tracking.Finance.Web.Data.Models.Product"/> amount in <see cref="T:Tracking.Finance.Web.Data.Models.TransactionItem"/>.
             </summary>
-            <seealso cref="T:Tracking.Finance.Web.Data.Models.UnitClosure"/>.
+            <seealso cref="!:UnitClosure"/>.
         </member>
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.Id">
             <inheritdoc/>
@@ -593,39 +564,6 @@
         <member name="P:Tracking.Finance.Web.Data.Models.Unit.FinanceUser">
             <summary>
             Gets or sets the <see cref="T:Tracking.Finance.Web.Data.Models.FinanceUser"/> to which the <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> belongs to.
-            </summary>
-        </member>
-        <member name="T:Tracking.Finance.Web.Data.Models.UnitClosure">
-            <summary>
-            Describes hierarchical relationship between two <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/> entities.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Id">
-            <inheritdoc/>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ParentUnitId">
-            <summary>
-            Gets or sets the id of the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ChildUnitId">
-            <summary>
-            Gets or sets the id of the child <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.Depth">
-            <summary>
-            Gets or sets the depth of the hierarchy.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ParentUnit">
-            <summary>
-            Gets or sets the parent <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Data.Models.UnitClosure.ChildUnit">
-            <summary>
-            Gets or sets the child <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.
             </summary>
         </member>
         <member name="T:Tracking.Finance.Web.Models.Accounts.AccountCreationModel">
@@ -698,7 +636,7 @@
             Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(System.Int32,System.String,System.Boolean,VMelnalksnis.SvgCharts.Charts.LineChart,System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem},System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel})">
+        <member name="M:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.#ctor(System.Int32,System.String,VMelnalksnis.SvgCharts.Charts.LineChart,System.Collections.Generic.List{Microsoft.AspNetCore.Mvc.Rendering.SelectListItem},System.Collections.Generic.List{Tracking.Finance.Web.Models.Accounts.AccountDetailsCurrencyViewModel})">
             <summary>
             Information about a specific <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
             </summary>
@@ -711,11 +649,6 @@
         <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.Name">
             <summary>
             Gets the name of the <see cref="T:Tracking.Finance.Web.Data.Models.Account"/>.
-            </summary>
-        </member>
-        <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.SingleCurrency">
-            <summary>
-            Gets a value indicating whether the account can contain only a single currency.
             </summary>
         </member>
         <member name="P:Tracking.Finance.Web.Models.Accounts.AccountDetailsViewModel.CurrencyListItems">

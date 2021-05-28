@@ -79,11 +79,6 @@ namespace Tracking.Finance.Web.Data
 		public DbSet<Transaction> Transactions => Set<Transaction>();
 
 		/// <summary>
-		/// Gets the <see cref="DbSet{TEntity}"/> of Transaction Categories.
-		/// </summary>
-		public DbSet<TransactionCategory> TransactionCategories => Set<TransactionCategory>();
-
-		/// <summary>
 		/// Gets the <see cref="DbSet{TEntity}"/> of Transaction Items.
 		/// </summary>
 		public DbSet<TransactionItem> TransactionItems => Set<TransactionItem>();
@@ -92,11 +87,6 @@ namespace Tracking.Finance.Web.Data
 		/// Gets the <see cref="DbSet{TEntity}"/> of Units.
 		/// </summary>
 		public DbSet<Unit> Units => Set<Unit>();
-
-		/// <summary>
-		/// Gets the <see cref="DbSet{TEntity}"/> of Unit Closures.
-		/// </summary>
-		public DbSet<UnitClosure> UnitClosures => Set<UnitClosure>();
 
 		/// <inheritdoc/>
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

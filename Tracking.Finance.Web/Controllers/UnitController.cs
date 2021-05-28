@@ -46,17 +46,12 @@ namespace Tracking.Finance.Web.Controllers
 			var units =
 				await DbContext.Units
 					.WhichBelongToUser(financeUser)
+					.Include(unit => unit.ParentUnit)
 					.ToListAsync(cancellationToken);
 
-			var closures =
-				units
-					.Select(unit => new { unit, parentClosure = DbContext.UnitClosures.Where(closure => closure.ChildUnitId == unit.Id).SingleOrDefault() })
-					.Select(unit => new { unit.unit, parentUnit = units.SingleOrDefault(u => u.Id == unit.parentClosure?.ParentUnitId) })
-					.ToList();
-
 			var viewModel =
-				closures
-					.Select(unit => new UnitIndexModel(unit.unit.Id, unit.unit.Name, unit.unit.Exponent, unit.unit.Mantissa, unit.parentUnit?.Id, unit.parentUnit?.Name))
+				units
+					.Select(unit => new UnitIndexModel(unit.Id, unit.Name, unit.Exponent, unit.Mantissa, unit.ParentUnit?.Id, unit.ParentUnit?.Name))
 					.ToList();
 
 			return View(viewModel);
@@ -122,31 +117,13 @@ namespace Tracking.Finance.Web.Controllers
 			var unit = new Unit
 			{
 				FinanceUserId = model.FinanceUserId!.Value,
+				ParentUnitId = model.ParentUnitId,
 				Exponent = model.Exponent,
 				Mantissa = model.Mantissa,
 			}.WithName(model.Name).CreatedAndModifiedNow();
 
 			var unitEntity = await DbContext.Units.AddAsync(unit);
 			await SaveChangesAsync();
-
-			if (model.ParentUnitId.HasValue)
-			{
-				var financeUser = await GetCurrentUser();
-				var parentUnit =
-					await DbContext.Units
-						.WhichBelongToUser(financeUser)
-						.WithId(model.ParentUnitId.Value)
-						.SingleAsync();
-
-				var closure = new UnitClosure
-				{
-					ChildUnitId = unitEntity.Entity.Id,
-					ParentUnitId = parentUnit.Id,
-				};
-
-				var closureEntity = await DbContext.UnitClosures.AddAsync(closure);
-				await SaveChangesAsync();
-			}
 
 			return RedirectToAction(nameof(Index));
 

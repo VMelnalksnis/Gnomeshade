@@ -11,25 +11,13 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public int FinanceUserId { get; set; }
 
-		public int TransactionCategoryId { get; set; }
-
-		public int SourceAccountId { get; set; }
-
-		public int TargetAccountId { get; set; }
-
 		/// <inheritdoc/>
 		public DateTimeOffset CreatedAt { get; set; }
 
 		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
 
-		public DateTimeOffset? CompletedAt { get; set; }
-
-		public string? BankReference { get; set; }
-
-		public string? ExternalReference { get; set; }
-
-		public string? InternalReference { get; set; }
+		public DateTimeOffset Date { get; set; }
 
 		public string? Description { get; set; }
 
@@ -40,12 +28,6 @@ namespace Tracking.Finance.Web.Data.Models
 		public bool Completed { get; set; }
 
 		public FinanceUser FinanceUser { get; set; }
-
-		public TransactionCategory TransactionCategory { get; set; }
-
-		public Account SourceAccount { get; set; }
-
-		public Account TargetAccount { get; set; }
 
 		public ICollection<TransactionItem> TransactionItems { get; set; }
 	}

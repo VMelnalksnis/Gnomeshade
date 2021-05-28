@@ -12,9 +12,9 @@ namespace Tracking.Finance.Web.Models.Transactions
 					FinanceUserId = model.FinanceUserId.Value,
 					TransactionId = model.TransactionId.Value,
 					SourceAmount = model.SourceAmount,
-					SourceCurrencyId = model.SourceCurrencyId.Value,
+					SourceAccountId = model.SourceAccountId.Value,
 					TargetAmount = model.TargetAmount,
-					TargetCurrencyId = model.TargetCurrencyId.Value,
+					TargetAccountId = model.TargetAccountId.Value,
 					Amount = model.Amount,
 					ProductId = model.ProductId.Value,
 				};

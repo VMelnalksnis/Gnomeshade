@@ -16,12 +16,12 @@ namespace Tracking.Finance.Web.Models.Transactions
 		public decimal SourceAmount { get; set; }
 
 		[Required]
-		public int? SourceCurrencyId { get; set; }
+		public int? SourceAccountId { get; set; }
 
 		public decimal TargetAmount { get; set; }
 
 		[Required]
-		public int? TargetCurrencyId { get; set; }
+		public int? TargetAccountId { get; set; }
 
 		[Required]
 		public int? ProductId { get; set; }

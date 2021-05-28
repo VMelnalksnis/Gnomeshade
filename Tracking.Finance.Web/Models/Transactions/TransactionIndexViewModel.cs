@@ -14,9 +14,7 @@ namespace Tracking.Finance.Web.Models.Transactions
 			decimal sourceAmount,
 			string sourceCurrency,
 			decimal targetAmount,
-			string targetCurrency,
-			int categoryId,
-			string categoryName)
+			string targetCurrency)
 		{
 			Id = id;
 			SourceAccountId = sourceAccountId;
@@ -28,8 +26,6 @@ namespace Tracking.Finance.Web.Models.Transactions
 			SourceCurrency = sourceCurrency;
 			TargetAmount = targetAmount;
 			TargetCurrency = targetCurrency;
-			CategoryId = categoryId;
-			CategoryName = categoryName;
 		}
 
 		public int Id { get; }
@@ -51,9 +47,5 @@ namespace Tracking.Finance.Web.Models.Transactions
 		public decimal TargetAmount { get; }
 
 		public string TargetCurrency { get; }
-
-		public int CategoryId { get; }
-
-		public string CategoryName { get; }
 	}
 }
