@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ using Tracking.Finance.Web.Data;
 
 namespace Tracking.Finance.Web.Controllers
 {
+	[Authorize]
 	public class CurrencyController : FinanceController
 	{
 		public CurrencyController(ApplicationDbContext dbContext, UserManager<IdentityUser> userManager)

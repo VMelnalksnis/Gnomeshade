@@ -1,0 +1,22 @@
+﻿@using System.Linq;
+@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Users;
+
+@model UserIndexModel
+@if (Model.CounterpartyId.HasValue)
+{
+	var item = @Model.Counterparties.Single(item => item.Value == Model.CounterpartyId.Value.ToString());
+	item.Selected = true;
+}
+
+@Html.DisplayNameFor(model => model.IdentityUserName): @Html.DisplayFor(model => model.IdentityUserName)
+
+<form asp-controller="User" asp-action="@nameof(UserController.Edit)" method="post">
+	@Html.HiddenFor(model => model.Counterparties)
+	<div class="form-group">
+		@Html.DisplayNameFor(model => model.CounterpartyId)
+		<select asp-for="@Model.CounterpartyId" asp-items="@Model.Counterparties" class="form-control"></select>
+		@Html.ValidationMessageFor(model => model.CounterpartyId)
+	</div>
+	<button type="submit" class="btn btn-success">Save</button>
+</form>
