@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 
 namespace VMelnalksnis.SvgCharts.Charts
 {
 	public class LineChart
 	{
-		public string? HorizontalAxisName { get; set; }
-
-		public string? VerticalAxisName { get; set; }
-
 		public Rectangle ViewBox { get; set; }
 
-		public List<Point> Points { get; set; }
+		public List<Dataset> Datasets { get; set; }
+
+		public Axis HorizontalAxis { get; set; }
+
+		public Axis VerticalAxis { get; set; }
 	}
 }

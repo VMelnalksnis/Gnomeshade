@@ -10,24 +10,18 @@ namespace VMelnalksnis.SvgCharts
 	{
 		public static IHtmlContent Display(this LineChart lineChart)
 		{
-			var htmlContentBuilder = new HtmlContentBuilder();
+			var builder = new HtmlContentBuilder();
 			var viewBox = $"{lineChart.ViewBox.X} {lineChart.ViewBox.Y} {lineChart.ViewBox.Width} {lineChart.ViewBox.Height}";
-			htmlContentBuilder.AppendHtmlLine($"<svg viewBox=\"{viewBox}\" class=\"chart\">");
+			builder.AppendHtmlLine($"<svg viewBox=\"{viewBox}\" class=\"chart\">");
 
-			if (lineChart.Points.Any())
+			foreach (var dataset in lineChart.Datasets)
 			{
-				htmlContentBuilder.AppendHtml($"<polyline fill=\"none\" stroke=\"#0074d9\" stroke-width=\"2\" points=\"");
-				var points =
-					lineChart.Points
-						.Select(point => $"{point.X},{point.Y}")
-						.Aggregate((pointA, pointB) => $"{pointA} {pointB}");
-				htmlContentBuilder.AppendHtml(points);
-				htmlContentBuilder.AppendHtmlLine("\"/>");
+				dataset.Display(builder);
 			}
 
-			htmlContentBuilder.AppendHtml(@"</svg>");
+			builder.AppendHtml(@"</svg>");
 
-			return htmlContentBuilder;
+			return builder;
 		}
 	}
 }
