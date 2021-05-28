@@ -1,9 +1,13 @@
+using System;
+using System.IO;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 using Tracking.Finance.Web.Data;
 
@@ -49,6 +53,31 @@ namespace Tracking.Finance.Web
 
 			services.AddAuthentication();
 			services.AddAuthorization();
+
+			services.AddSwaggerGen(options =>
+			{
+				options.SwaggerDoc(
+					"v1",
+					new OpenApiInfo
+					{
+						Title = "Finance Tracker API",
+						Version = "v1",
+						Description = "Personal finance tracking API",
+						Contact = new OpenApiContact
+						{
+							Name = "Valters Melnalksnis",
+							Email = "valters.melnalksnis@outlook.com",
+						},
+						License = new OpenApiLicense
+						{
+							Name = "AGPL-3.0-or-later",
+							Url = new Uri("https://www.gnu.org/licenses/agpl-3.0.txt"),
+						},
+					});
+
+				var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Web.xml");
+				options.IncludeXmlComments(xmlDocumentationFilepath, true);
+			});
 		}
 
 		/// <summary>
@@ -70,6 +99,12 @@ namespace Tracking.Finance.Web
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				application.UseHsts();
 			}
+
+			application.UseSwagger();
+			application.UseSwaggerUI(options =>
+			{
+				options.SwaggerEndpoint("/swagger/v1/swagger.json", "Finance Tracker API v1");
+			});
 
 			application.Use(async (context, next) =>
 			{
