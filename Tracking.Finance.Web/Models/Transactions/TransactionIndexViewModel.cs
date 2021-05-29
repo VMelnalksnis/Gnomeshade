@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Tracking.Finance.Web.Models.Transactions
 {
@@ -6,9 +7,9 @@ namespace Tracking.Finance.Web.Models.Transactions
 	{
 		public TransactionIndexViewModel(
 			int id,
-			int sourceAccountId,
+			int? sourceAccountId,
 			string sourceAccountName,
-			int targetAccountId,
+			int? targetAccountId,
 			string targetAccountName,
 			DateTime completedAt,
 			decimal sourceAmount,
@@ -28,13 +29,31 @@ namespace Tracking.Finance.Web.Models.Transactions
 			TargetCurrency = targetCurrency;
 		}
 
+		public TransactionIndexViewModel(
+			int id,
+			int? sourceAccountId,
+			string sourceAccountName,
+			int? targetAccountId,
+			string targetAccountName,
+			DateTime date,
+			List<CurrencyAmount> currencies)
+		{
+			Id = id;
+			SourceAccountId = sourceAccountId;
+			SourceAccountName = sourceAccountName;
+			TargetAccountId = targetAccountId;
+			TargetAccountName = targetAccountName;
+			CompletedAt = date;
+			Currencies = currencies;
+		}
+
 		public int Id { get; }
 
-		public int SourceAccountId { get; }
+		public int? SourceAccountId { get; }
 
 		public string SourceAccountName { get; }
 
-		public int TargetAccountId { get; }
+		public int? TargetAccountId { get; }
 
 		public string TargetAccountName { get; }
 
@@ -47,5 +66,7 @@ namespace Tracking.Finance.Web.Models.Transactions
 		public decimal TargetAmount { get; }
 
 		public string TargetCurrency { get; }
+
+		public List<CurrencyAmount> Currencies { get; }
 	}
 }

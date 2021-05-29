@@ -731,6 +731,9 @@
             Gets a value indicating whether request id should be showed.
             </summary>
         </member>
+        <member name="M:Tracking.Finance.Web.Models.Filters.ValidateModelAttribute.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <inheritdoc/>
+        </member>
         <member name="T:Tracking.Finance.Web.Models.Units.UnitCreationModel">
             <summary>
             Information needed to create a <see cref="T:Tracking.Finance.Web.Data.Models.Unit"/>.

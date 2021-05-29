@@ -1,4 +1,5 @@
-﻿@using Tracking.Finance.Web.Models.Transactions;
+﻿@using Tracking.Finance.Web.Controllers;
+@using Tracking.Finance.Web.Models.Transactions;
 
 @model TransactionDetailsModel
 
@@ -6,34 +7,58 @@
 
 <a asp-controller="Transaction" asp-action="CreateItem" asp-route-id="@Model.Transaction.Id">Create Item</a>
 
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover table-sm">
 	<tr>
-		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].Id)</th>
+		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].Date)</th>
 		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].SourceAmount)</th>
-		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].SourceCurrency)</th>
+		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].SourceAccount)</th>
 		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].TargetAmount)</th>
-		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].TargetCurrency)</th>
-		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].Amount)</th>
+		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].TargetAccount)</th>
 		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].Product)</th>
 		<th>@Html.DisplayNameFor(model => model.TransactionItems[0].Description)</th>
 	</tr>
 	@if (Model.TransactionItems.Count == 0)
 	{
-		<tr><td colspan="8">No items</td></tr>
+		<tr><td colspan="7">No items</td></tr>
 	}
 	else
 	{
 		foreach (var transactionItem in Model.TransactionItems)
 		{
 			<tr>
-				<td>@Html.DisplayFor(model => transactionItem.Id)</td>
-				<td>@Html.DisplayFor(model => transactionItem.SourceAmount)</td>
-				<td>@Html.DisplayFor(model => transactionItem.SourceCurrency)</td>
-				<td>@Html.DisplayFor(model => transactionItem.TargetAmount)</td>
-				<td>@Html.DisplayFor(model => transactionItem.TargetCurrency)</td>
-				<td>@Html.DisplayFor(model => transactionItem.Amount)</td>
-				<td>@Html.DisplayFor(model => transactionItem.Product)</td>
+				<td>@Html.DisplayFor(model => transactionItem.Date)</td>
+				<td>@Html.DisplayFor(model => transactionItem.SourceAmount) @Html.DisplayFor(model => transactionItem.SourceCurrency)</td>
+				<td>
+					<a asp-controller="Account" asp-action="@nameof(AccountController.Details)" asp-route-id="@transactionItem.SourceAccountId">
+						@Html.DisplayFor(model => transactionItem.SourceAccount)
+					</a>
+				</td>
+				<td>@Html.DisplayFor(model => transactionItem.TargetAmount) @Html.DisplayFor(model => transactionItem.TargetCurrency)</td>
+				<td>
+					<a asp-controller="Account" asp-action="@nameof(AccountController.Details)" asp-route-id="@transactionItem.TargetAccountId">
+						@Html.DisplayFor(model => transactionItem.SourceAccount)
+					</a>
+				</td>
+				<td>
+					@Html.DisplayFor(model => transactionItem.Amount) x
+					<a asp-controller="Product" asp-action="@nameof(ProductController.Details)" asp-route-id="@transactionItem.ProductId">
+						@Html.DisplayFor(model => transactionItem.Product)
+					</a>
+				</td>
 				<td>@Html.DisplayFor(model => transactionItem.Description)</td>
+			</tr>
+		}
+
+		foreach (var sum in Model.SumModels)
+		{
+			<tr>
+				<td></td>
+				<td>@Html.DisplayFor(model => sum.Source) @Html.DisplayFor(model => sum.Currency)</td>
+				<td></td>
+				<td>@Html.DisplayFor(model => sum.Target) @Html.DisplayFor(model => sum.Currency)</td>
+				<td></td>
+				<td></td>
+				<td></td>
 			</tr>
 		}
 	}

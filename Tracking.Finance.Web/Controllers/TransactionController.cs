@@ -49,32 +49,39 @@ namespace Tracking.Finance.Web.Controllers
 									.ThenInclude(account => account.Currency)
 									.ToList();
 
-							var firstItem = items.First();
+							var x =
+								items
+									.GroupBy(item => item.SourceAccount.Currency.AlphabeticCode)
+									.Select(grouping => new CurrencyAmount { Currency = grouping.Key, SourceAmount = grouping.Sum(item => item.SourceAmount) });
+
+							var firstItem = items.FirstOrDefault();
+							var firstItemSourceId = firstItem?.SourceAccountId;
+							var firstItemTargetId = firstItem?.TargetAccountId;
 
 							var sourceAccount =
 								DbContext.Accounts
 									.WhichBelongToUser(financeUser)
-									.Where(account => account.Id == firstItem.SourceAccountId)
-									.Single();
+									.Where(account => account.Id == firstItemSourceId)
+									.SingleOrDefault();
 
 							var targetAccount =
 								DbContext.Accounts
 									.WhichBelongToUser(financeUser)
-									.Where(account => account.Id == firstItem.TargetAccountId)
-									.Single();
+									.Where(account => account.Id == firstItemTargetId)
+									.SingleOrDefault();
 
 							return
 								new TransactionIndexViewModel(
 									transaction.Id,
-									sourceAccount.Id,
-									sourceAccount.Name,
-									targetAccount.Id,
-									targetAccount.Name,
+									sourceAccount?.Id,
+									sourceAccount?.Name,
+									targetAccount?.Id,
+									targetAccount?.Name,
 									transaction.Date.LocalDateTime,
 									items.Sum(item => item.SourceAmount),
-									firstItem.SourceAccount.Currency.AlphabeticCode,
+									firstItem?.SourceAccount.Currency.AlphabeticCode,
 									items.Sum(item => item.TargetAmount),
-									firstItem.TargetAccount.Currency.AlphabeticCode);
+									firstItem?.TargetAccount.Currency.AlphabeticCode);
 						})
 					.ToList();
 
@@ -97,10 +104,26 @@ namespace Tracking.Finance.Web.Controllers
 					.Where(item => item.TransactionId == transaction.Id)
 					.Include(item => item.SourceAccount)
 					.ThenInclude(account => account.Currency)
+					.Include(item => item.SourceAccount)
+					.ThenInclude(account => account.Account)
+					.Include(item => item.TargetAccount)
+					.ThenInclude(account => account.Currency)
+					.Include(item => item.TargetAccount)
+					.ThenInclude(account => account.Account)
 					.Include(item => item.Product)
 					.ToListAsync(cancellationToken);
 
-			var viewModelItems = items.Select(item => new TransactionDetailsItemModel(item)).ToList();
+			var viewModelItems = items
+				.Select(item => new TransactionDetailsItemModel(item)
+				{
+					SourceAccount = item.SourceAccount.Account.Name,
+					SourceAccountId = item.SourceAccount.Account.Id,
+					TargetAccount = item.TargetAccount.Account.Name,
+					TargetAccountId = item.TargetAccount.Account.Id,
+					ProductId = item.Product.Id,
+					Date = transaction.Date.LocalDateTime,
+				})
+				.ToList();
 			var viewModel = new TransactionDetailsModel(transaction, viewModelItems);
 			return View(viewModel);
 		}

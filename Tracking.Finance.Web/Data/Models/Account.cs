@@ -29,15 +29,15 @@ namespace Tracking.Finance.Web.Data.Models
 		public string NormalizedName { get; set; }
 
 		/// <inheritdoc/>
-		public string Description { get; set; }
+		public string? Description { get; set; }
 
 		// BIC/SWIFT
-		public string Bic { get; set; }
+		public string? Bic { get; set; }
 
 		// IBAN
-		public string Iban { get; set; }
+		public string? Iban { get; set; }
 
-		public string AccountNumber { get; set; }
+		public string? AccountNumber { get; set; }
 
 		public bool Active { get; set; }
 

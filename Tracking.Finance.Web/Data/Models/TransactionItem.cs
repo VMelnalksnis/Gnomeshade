@@ -26,11 +26,11 @@ namespace Tracking.Finance.Web.Data.Models
 		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
 
-		public string BankReference { get; set; }
+		public string? BankReference { get; set; }
 
-		public string ExternalReference { get; set; }
+		public string? ExternalReference { get; set; }
 
-		public string InternalReference { get; set; }
+		public string? InternalReference { get; set; }
 
 		public DateTimeOffset? InterestDate { get; set; }
 

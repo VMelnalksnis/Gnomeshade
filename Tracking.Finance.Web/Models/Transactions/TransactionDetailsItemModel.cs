@@ -1,4 +1,6 @@
-﻿using Tracking.Finance.Web.Data.Models;
+﻿using System;
+
+using Tracking.Finance.Web.Data.Models;
 
 namespace Tracking.Finance.Web.Models.Transactions
 {
@@ -25,14 +27,26 @@ namespace Tracking.Finance.Web.Models.Transactions
 
 		public string SourceCurrency { get; }
 
-		public decimal TargetAmount { get; }
+		public int SourceAccountId { get; set; }
+
+		public string SourceAccount { get; set; }
+
+		public decimal TargetAmount { get; set; }
 
 		public string TargetCurrency { get; }
+
+		public int TargetAccountId { get; set; }
+
+		public string TargetAccount { get; set; }
 
 		public decimal Amount { get; }
 
 		public string Product { get; }
 
+		public int ProductId { get; set; }
+
 		public string? Description { get; }
+
+		public DateTime Date { get; set; }
 	}
 }
