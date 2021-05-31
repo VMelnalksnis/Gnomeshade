@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
-using Tracking.Finance.Interfaces.WebApi.Validation;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -51,8 +50,8 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 		/// <response code="200">Successfully got all transactions.</response>
 		[HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<TransactionModel>), Status200OK)]
-		public async Task<OkObjectResult> Get(CancellationToken cancellationToken)
+		[ProducesResponseType(Status200OK)]
+		public async Task<ActionResult<IEnumerable<TransactionModel>>> Get(CancellationToken cancellationToken)
 		{
 			var transactions = await _repository.GetAllAsync(cancellationToken);
 			return Ok(transactions.Select(transaction => _mapper.Map<TransactionModel>(transaction)));
@@ -69,9 +68,9 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <response code="200">Transaction with the specified id exists.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
 		[HttpGet("{id}")]
-		[ProducesResponseType(typeof(TransactionModel), Status200OK)]
-		[ProducesResponseType(typeof(NotFoundResult), Status404NotFound)] // todo modify schema
-		public async Task<ActionResult> Get(int id, CancellationToken cancellationToken)
+		[ProducesResponseType(Status200OK)]
+		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
+		public async Task<ActionResult<TransactionModel>> Get(int id, CancellationToken cancellationToken)
 		{
 			var transaction = await _repository.FindByIdAsync(id, cancellationToken);
 			if (transaction is null)
@@ -91,8 +90,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <returns><see cref="CreatedAtActionResult"/> with the id of transaction.</returns>
 		/// <response code="201">Transaction was successfully created.</response>
 		[HttpPost]
-		[ModelValidation]
-		[ProducesResponseType(typeof(int), Status201Created)]
+		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<int>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
 		{
 			var transaction = _mapper.Map<Transaction>(creationModel);
@@ -111,9 +109,8 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <response code="200">An existing transaction was updated with the specified values.</response>
 		/// <response code="201">An new transaction was created.</response>
 		[HttpPut("{id}")]
-		[ModelValidation]
-		[ProducesResponseType(typeof(int), Status200OK)]
-		[ProducesResponseType(typeof(int), Status201Created)]
+		[ProducesResponseType(Status200OK)]
+		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<int>> Put(int id, [FromBody, BindRequired] TransactionCreationModel model)
 		{
 			var transaction = _mapper.Map<Transaction>(model);
@@ -140,8 +137,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <response code="404">Transaction with the specified id does not exist.</response>
 		[HttpDelete("{id}")]
 		[ProducesResponseType(Status204NoContent)]
-		[ProducesResponseType(typeof(NotFoundResult), Status404NotFound)]
-		[ProducesResponseType(typeof(StatusCodeResult), Status500InternalServerError)]
+		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<StatusCodeResult> Delete(int id)
 		{
 			var deletedCount = await _repository.DeleteAsync(id);

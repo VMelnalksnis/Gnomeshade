@@ -4,23 +4,24 @@
         <name>Tracking.Finance.Interfaces.WebApi</name>
     </assembly>
     <members>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ModelValidationOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
-            <inheritdoc/>
-        </member>
-        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.RemoveVersionParameterFilter">
+        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.ApiVersioningFilter">
             <summary>
-            Swagger documentation operation filter that removes {version} parameter.
+            Swagger filter that removes version parameter from operations and inserts the correct version in paths.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.RemoveVersionParameterFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ApiVersioningFilter.Swashbuckle#AspNetCore#SwaggerGen#IDocumentFilter#Apply(Microsoft.OpenApi.Models.OpenApiDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
             <inheritdoc/>
         </member>
-        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.ReplaceVersionWithExactValueInPathFilter">
-            <summary>
-            Swagger documentation document filter that inserts the actual API version parameters in operations.
-            </summary>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ApiVersioningFilter.Swashbuckle#AspNetCore#SwaggerGen#IOperationFilter#Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <inheritdoc/>
         </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ReplaceVersionWithExactValueInPathFilter.Apply(Microsoft.OpenApi.Models.OpenApiDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.SchemaFilter`1.Apply(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ValidationProblemDetailsFilter.Swashbuckle#AspNetCore#SwaggerGen#IOperationFilter#Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ValidationProblemDetailsSchemaFilter.ApplyFilter(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
             <inheritdoc/>
         </member>
         <member name="T:Tracking.Finance.Interfaces.WebApi.Startup">
@@ -138,54 +139,16 @@
             <summary>
             Represents information needed in order to create a transaction.
             </summary>
-            <param name="Date">The date on which the transaction was completed on.</param>
-            <param name="Description"></param>
-            <param name="Generated"></param>
-            <param name="Validated"></param>
-            <param name="Completed"></param>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel.#ctor(System.Nullable{System.DateTimeOffset},System.String,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Represents information needed in order to create a transaction.
             </summary>
-            <param name="Date">The date on which the transaction was completed on.</param>
-            <param name="Description"></param>
-            <param name="Generated"></param>
-            <param name="Validated"></param>
-            <param name="Completed"></param>
         </member>
-        <member name="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionModel">
+        <member name="P:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel.Date">
             <summary>
-            
+            The date on which the transaction was completed on.
             </summary>
-            <param name="Id"></param>
-            <param name="UserId"></param>
-            <param name="CreatedAt"></param>
-            <param name="CreatedByUserId"></param>
-            <param name="ModifiedAt"></param>
-            <param name="Date"></param>
-            <param name="Description"></param>
-            <param name="Generated"></param>
-            <param name="Validated"></param>
-            <param name="Completed"></param>
-        </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionModel.#ctor(System.Int32,System.Int32,System.DateTimeOffset,System.Int32,System.DateTimeOffset,System.DateTimeOffset,System.String,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="Id"></param>
-            <param name="UserId"></param>
-            <param name="CreatedAt"></param>
-            <param name="CreatedByUserId"></param>
-            <param name="ModifiedAt"></param>
-            <param name="Date"></param>
-            <param name="Description"></param>
-            <param name="Generated"></param>
-            <param name="Validated"></param>
-            <param name="Completed"></param>
-        </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.Validation.ModelValidationAttribute.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
-            <inheritdoc/>
         </member>
     </members>
 </doc>

@@ -47,9 +47,12 @@ namespace Tracking.Finance.Interfaces.WebApi
 		/// <param name="services">Service collection to which to add services to.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers().AddJsonOptions(options =>
-			{
-			});
+			services
+				.AddControllers()
+				.ConfigureApiBehaviorOptions(options =>
+				{
+					var x = options.ClientErrorMapping.Keys;
+				});
 			services.AddApiVersioning();
 
 			services.AddTransient<IDbConnection>(provider => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")));
@@ -68,14 +71,17 @@ namespace Tracking.Finance.Interfaces.WebApi
 			{
 				options.SwaggerDocV1_0();
 
-				options.OperationFilter<ModelValidationOperationFilter>();
+				options.DocumentFilter<ApiVersioningFilter>();
+				options.OperationFilter<ApiVersioningFilter>();
 
-				options.OperationFilter<RemoveVersionParameterFilter>();
-				options.DocumentFilter<ReplaceVersionWithExactValueInPathFilter>();
+				options.SchemaFilter<ValidationProblemDetailsFilter>();
+				options.SchemaFilter<ValidationProblemDetailsSchemaFilter>();
+				options.OperationFilter<ValidationProblemDetailsFilter>();
 
-				var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Interfaces.WebApi.xml");
-				options.IncludeXmlComments(xmlDocumentationFilepath, true);
+				options.OperationFilter<InternalServerErrorOperationFilter>();
 
+				// var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Interfaces.WebApi.xml");
+				// options.IncludeXmlComments(xmlDocumentationFilepath, true);
 				options.EnableAnnotations();
 			});
 		}

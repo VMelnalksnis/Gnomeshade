@@ -2,19 +2,6 @@
 
 namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="Id"></param>
-	/// <param name="UserId"></param>
-	/// <param name="CreatedAt"></param>
-	/// <param name="CreatedByUserId"></param>
-	/// <param name="ModifiedAt"></param>
-	/// <param name="Date"></param>
-	/// <param name="Description"></param>
-	/// <param name="Generated"></param>
-	/// <param name="Validated"></param>
-	/// <param name="Completed"></param>
 	public record TransactionModel(
 		int Id,
 		int UserId,
@@ -25,5 +12,26 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		string? Description,
 		bool Generated,
 		bool Validated,
-		bool Completed);
+		bool Completed)
+	{
+		public int Id { get; set; } = Id;
+
+		public int UserId { get; set; } = UserId;
+
+		public DateTimeOffset CreatedAt { get; set; } = CreatedAt;
+
+		public int CreatedByUserId { get; set; } = CreatedByUserId;
+
+		public DateTimeOffset ModifiedAt { get; set; } = ModifiedAt;
+
+		public DateTimeOffset Date { get; set; } = Date;
+
+		public string? Description { get; set; } = Description;
+
+		public bool Generated { get; set; } = Generated;
+
+		public bool Validated { get; set; } = Validated;
+
+		public bool Completed { get; set; } = Completed;
+	}
 }
