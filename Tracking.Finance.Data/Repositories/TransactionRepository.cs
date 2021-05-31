@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -11,7 +10,10 @@ namespace Tracking.Finance.Data.Repositories
 	public sealed class TransactionRepository : Repository<Transaction>, IModifiableRepository<Transaction>
 	{
 		/// <inheritdoc/>
-		protected sealed override string TableName { get; } = "Transactions";
+		protected sealed override string TableName { get; } = "public.\"transactions\"";
+
+		/// <inheritdoc/>
+		protected sealed override string ColumnNames { get; } = "id Id, user_id UserId";
 
 		public TransactionRepository(IDbConnection dbConnection)
 			: base(dbConnection)
@@ -21,13 +23,26 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc/>
 		public sealed override async Task<int> AddAsync(Transaction entity)
 		{
-			throw new NotImplementedException();
-			var sql = @$"INSERT INTO {TableName} (UserId) VALUES (@UserId)";
+			var sql = @$"
+				INSERT INTO {TableName}
+					(user_id)
+				VALUES
+					(@UserId)
+				RETURNING id";
 
-			return await DbConnection.ExecuteAsync(sql, entity);
+			return await DbConnection.QuerySingleAsync<int>(sql, entity);
 		}
 
 		/// <inheritdoc/>
-		public Task<int> UpdateAsync(Transaction entity) => throw new NotImplementedException();
+		public async Task<int> UpdateAsync(Transaction entity)
+		{
+			var sql = $@"
+				UPDATE {TableName} 
+				SET 
+					user_id = @UserId 
+				WHERE id = @Id";
+
+			return await DbConnection.ExecuteAsync(sql, entity);
+		}
 	}
 }

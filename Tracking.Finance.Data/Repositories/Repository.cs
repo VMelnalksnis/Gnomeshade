@@ -21,6 +21,8 @@ namespace Tracking.Finance.Data.Repositories
 		/// </summary>
 		protected abstract string TableName { get; }
 
+		protected abstract string ColumnNames { get; }
+
 		/// <summary>
 		/// Gets a <see cref="IDbConnection"/> that is used to manage the database entities.
 		/// </summary>
@@ -37,15 +39,15 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc/>
 		public virtual async Task<int> DeleteAsync(int id)
 		{
-			var sql = @$"DELETE FROM {TableName} WHERE Id = @id";
+			var sql = @$"DELETE FROM {TableName} WHERE id = @id";
 
-			return await DbConnection.ExecuteAsync(sql, id);
+			return await DbConnection.ExecuteAsync(sql, new { id });
 		}
 
 		/// <inheritdoc/>
-		public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+		public virtual async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var sql = @$"SELECT * FROM {TableName}";
+			var sql = @$"SELECT {ColumnNames} FROM {TableName}";
 			var commandDefinition = new CommandDefinition(sql, cancellationToken: cancellationToken);
 
 			var entities = await DbConnection.QueryAsync<TEntity>(commandDefinition);
@@ -55,10 +57,19 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc/>
 		public virtual async Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default)
 		{
-			var sql = @$"SELECT * FROM {TableName} WHERE Id = @id";
-			var commandDefinition = new CommandDefinition(sql, id, cancellationToken: cancellationToken);
+			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
+			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
 			return await DbConnection.QuerySingleAsync<TEntity>(commandDefinition);
+		}
+
+		/// <inheritdoc/>
+		public virtual async Task<TEntity?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
+		{
+			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
+			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+
+			return await DbConnection.QuerySingleOrDefaultAsync<TEntity>(commandDefinition);
 		}
 	}
 }
