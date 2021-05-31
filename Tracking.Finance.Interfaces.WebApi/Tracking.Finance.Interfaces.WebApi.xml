@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tracking.Finance.Interfaces.WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ModelValidationOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.RemoveVersionParameterFilter">
+            <summary>
+            Swagger documentation operation filter that removes {version} parameter.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.RemoveVersionParameterFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.ReplaceVersionWithExactValueInPathFilter">
+            <summary>
+            Swagger documentation document filter that inserts the actual API version parameters in operations.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ReplaceVersionWithExactValueInPathFilter.Apply(Microsoft.OpenApi.Models.OpenApiDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.Startup">
+            <summary>
+            Configures services and HTTP request pipeline.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Interfaces.WebApi.Startup"/> class.
+            </summary>
+            <param name="configuration">Configuration for configuring services and request pipeline.</param>
+        </member>
+        <member name="P:Tracking.Finance.Interfaces.WebApi.Startup.Configuration">
+            <summary>
+            Gets the configuration used for configuring services and request pipeline.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Service collection to which to add services to.</param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IWebHostEnvironment)">
+            <summary>
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="application">Application builder used to configure the HTTP request pipeline.</param>
+            <param name="environment">The current application environment.</param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi.SwaggerGenOptionsExtensions.SwaggerDocV1_0(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+             <summary>
+             Define the document to be created by Swagger generator for version 1.0.
+             </summary>
+            
+             <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions"/> in which to define the document.</param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi.SwaggerUIOptionsExtensions.SwaggerEndpointV1_0(Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions)">
+             <summary>
+             Adds Swagger JSON endpoint for version 1.0.
+             </summary>
+            
+             <param name="options">The <see cref="T:Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions"/> to which to add the endpoint.</param>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController">
+            <summary>
+            CRUD operations on transaction entity.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.#ctor(Tracking.Finance.Data.Repositories.TransactionRepository,AutoMapper.Mapper,Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController"/> class.
+            </summary>
+            <param name="repository">The repository for performing CRUD operations.</param>
+            <param name="mapper">Repository entity and API model mapper.</param>
+            <param name="logger">Logger for logging in the specified category.</param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Get(System.Threading.CancellationToken)">
+             <summary>
+             Gets all transactions.
+             </summary>
+            
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the transactions.</returns>
+             <response code="200">Successfully got all transactions.</response>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Get(System.Int32,System.Threading.CancellationToken)">
+             <summary>
+             Gets a transaction by the specified id.
+             </summary>
+            
+             <param name="id">The id of the transaction to get.</param>
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> if transaction was found, otherwise <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+             <response code="200">Transaction with the specified id exists.</response>
+             <response code="404">Transaction with the specified id does not exist.</response>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Create(Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel)">
+             <summary>
+             Creates a new transaction.
+             </summary>
+            
+             <param name="creationModel">The transaction that will be created.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> with the id of transaction.</returns>
+             <response code="201">Transaction was successfully created.</response>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Put(System.Int32,Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel)">
+             <summary>
+             Updates a transaction if one exists with the specified id, otherwise creates a new transaction.
+             </summary>
+            
+             <param name="id">The id of the transaction to update.</param>
+             <param name="model">The transaction that will be updated/created.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> if an existing transaction was updated or <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> if a new one was created.</returns>
+             <response code="200">An existing transaction was updated with the specified values.</response>
+             <response code="201">An new transaction was created.</response>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Delete(System.Int32)">
+             <summary>
+             Deletes the specified transaction.
+             </summary>
+            
+             <param name="id">The id of the transaction to delete.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> if transaction was deleted successfully, otherwise <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+             <response code="204">Transaction was successfully deleted.</response>
+             <response code="404">Transaction with the specified id does not exist.</response>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel">
+            <summary>
+            Represents information needed in order to create a transaction.
+            </summary>
+            <param name="Date">The date on which the transaction was completed on.</param>
+            <param name="Description"></param>
+            <param name="Generated"></param>
+            <param name="Validated"></param>
+            <param name="Completed"></param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel.#ctor(System.Nullable{System.DateTimeOffset},System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Represents information needed in order to create a transaction.
+            </summary>
+            <param name="Date">The date on which the transaction was completed on.</param>
+            <param name="Description"></param>
+            <param name="Generated"></param>
+            <param name="Validated"></param>
+            <param name="Completed"></param>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionModel">
+            <summary>
+            
+            </summary>
+            <param name="Id"></param>
+            <param name="UserId"></param>
+            <param name="CreatedAt"></param>
+            <param name="CreatedByUserId"></param>
+            <param name="ModifiedAt"></param>
+            <param name="Date"></param>
+            <param name="Description"></param>
+            <param name="Generated"></param>
+            <param name="Validated"></param>
+            <param name="Completed"></param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionModel.#ctor(System.Int32,System.Int32,System.DateTimeOffset,System.Int32,System.DateTimeOffset,System.DateTimeOffset,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="Id"></param>
+            <param name="UserId"></param>
+            <param name="CreatedAt"></param>
+            <param name="CreatedByUserId"></param>
+            <param name="ModifiedAt"></param>
+            <param name="Date"></param>
+            <param name="Description"></param>
+            <param name="Generated"></param>
+            <param name="Validated"></param>
+            <param name="Completed"></param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Validation.ModelValidationAttribute.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

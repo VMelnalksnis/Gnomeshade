@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts", "V
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts.Tests", "VMelnalksnis.SvgCharts.Tests\VMelnalksnis.SvgCharts.Tests.csproj", "{4F6ACD52-C239-449D-A4A1-66699A75D050}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Data", "Tracking.Finance.Data\Tracking.Finance.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data", "Tracking.Finance.Data\Tracking.Finance.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WebApi", "Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
