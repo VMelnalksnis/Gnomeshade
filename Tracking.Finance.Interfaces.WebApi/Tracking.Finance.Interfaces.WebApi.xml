@@ -15,7 +15,18 @@
         <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ApiVersioningFilter.Swashbuckle#AspNetCore#SwaggerGen#IOperationFilter#Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
             <inheritdoc/>
         </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.InternalServerErrorOperationFilter">
+            <summary>
+            Adds <see cref="F:Microsoft.AspNetCore.Http.StatusCodes.Status500InternalServerError"/> response to all operations.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.InternalServerErrorOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <inheritdoc/>
+        </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.SchemaFilter`1.Apply(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ValidationProblemDetailsFilter.Swashbuckle#AspNetCore#SwaggerGen#ISchemaFilter#Apply(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
             <inheritdoc/>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ValidationProblemDetailsFilter.Swashbuckle#AspNetCore#SwaggerGen#IOperationFilter#Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
@@ -80,16 +91,6 @@
             <param name="mapper">Repository entity and API model mapper.</param>
             <param name="logger">Logger for logging in the specified category.</param>
         </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Get(System.Threading.CancellationToken)">
-             <summary>
-             Gets all transactions.
-             </summary>
-            
-             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
-            
-             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the transactions.</returns>
-             <response code="200">Successfully got all transactions.</response>
-        </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Get(System.Int32,System.Threading.CancellationToken)">
              <summary>
              Gets a transaction by the specified id.
@@ -101,6 +102,16 @@
              <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> if transaction was found, otherwise <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
              <response code="200">Transaction with the specified id exists.</response>
              <response code="404">Transaction with the specified id does not exist.</response>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.GetAll(System.Threading.CancellationToken)">
+             <summary>
+             Gets all transactions.
+             </summary>
+            
+             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe while waiting for the task to complete.</param>
+            
+             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the transactions.</returns>
+             <response code="200">Successfully got all transactions.</response>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Create(Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel)">
              <summary>
@@ -136,11 +147,6 @@
              <response code="404">Transaction with the specified id does not exist.</response>
         </member>
         <member name="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel">
-            <summary>
-            Represents information needed in order to create a transaction.
-            </summary>
-        </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel.#ctor(System.Nullable{System.DateTimeOffset},System.String,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             Represents information needed in order to create a transaction.
             </summary>

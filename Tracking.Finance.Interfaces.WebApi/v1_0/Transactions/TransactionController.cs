@@ -42,22 +42,6 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		}
 
 		/// <summary>
-		/// Gets all transactions.
-		/// </summary>
-		///
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		///
-		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
-		/// <response code="200">Successfully got all transactions.</response>
-		[HttpGet]
-		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<TransactionModel>>> Get(CancellationToken cancellationToken)
-		{
-			var transactions = await _repository.GetAllAsync(cancellationToken);
-			return Ok(transactions.Select(transaction => _mapper.Map<TransactionModel>(transaction)));
-		}
-
-		/// <summary>
 		/// Gets a transaction by the specified id.
 		/// </summary>
 		///
@@ -79,6 +63,22 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 			}
 
 			return Ok(_mapper.Map<TransactionModel>(transaction));
+		}
+
+		/// <summary>
+		/// Gets all transactions.
+		/// </summary>
+		///
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		///
+		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
+		/// <response code="200">Successfully got all transactions.</response>
+		[HttpGet]
+		[ProducesResponseType(Status200OK)]
+		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
+		{
+			var transactions = await _repository.GetAllAsync(cancellationToken);
+			return Ok(transactions.Select(transaction => _mapper.Map<TransactionModel>(transaction)));
 		}
 
 		/// <summary>
