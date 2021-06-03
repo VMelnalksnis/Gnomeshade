@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data", "Tracking.Finance.Data\Tracking.Finance.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WebApi", "Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi", "Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Data.Tests.Integration", "Tracking.Finance.Data.Tests.Integration\Tracking.Finance.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA9C19F6-C252-4041-B869-F909F3EE7FB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

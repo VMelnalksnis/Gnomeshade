@@ -25,6 +25,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 	public sealed class TransactionController : ControllerBase
 	{
 		private readonly TransactionRepository _repository;
+		private readonly TransactionItemRepository _itemRepository;
 		private readonly Mapper _mapper;
 		private readonly ILogger<TransactionController> _logger;
 
@@ -34,9 +35,10 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <param name="repository">The repository for performing CRUD operations.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
-		public TransactionController(TransactionRepository repository, Mapper mapper, ILogger<TransactionController> logger)
+		public TransactionController(TransactionRepository repository, TransactionItemRepository itemRepository, Mapper mapper, ILogger<TransactionController> logger)
 		{
 			_repository = repository;
+			_itemRepository = itemRepository;
 			_mapper = mapper;
 			_logger = logger;
 		}
@@ -108,23 +110,23 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <returns><see cref="OkObjectResult"/> if an existing transaction was updated or <see cref="CreatedAtActionResult"/> if a new one was created.</returns>
 		/// <response code="200">An existing transaction was updated with the specified values.</response>
 		/// <response code="201">An new transaction was created.</response>
-		[HttpPut("{id}")]
-		[ProducesResponseType(Status200OK)]
-		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<int>> Put(int id, [FromBody, BindRequired] TransactionCreationModel model)
-		{
-			var transaction = _mapper.Map<Transaction>(model);
-			var existing = await _repository.FindByIdAsync(id);
-			if (existing is null)
-			{
-				var newId = await _repository.AddAsync(transaction);
-				return CreatedAtAction(nameof(Get), new { id = newId }, newId);
-			}
+		//[HttpPut("{id}")]
+		//[ProducesResponseType(Status200OK)]
+		//[ProducesResponseType(Status201Created)]
+		//public async Task<ActionResult<int>> Put(int id, [FromBody, BindRequired] TransactionCreationModel model)
+		//{
+		//	var transaction = _mapper.Map<Transaction>(model);
+		//	var existing = await _repository.FindByIdAsync(id);
+		//	if (existing is null)
+		//	{
+		//		var newId = await _repository.AddAsync(transaction);
+		//		return CreatedAtAction(nameof(Get), new { id = newId }, newId);
+		//	}
 
-			transaction.Id = id;
-			_ = await _repository.UpdateAsync(transaction);
-			return Ok(id);
-		}
+		//	transaction.Id = id;
+		//	await _repository.UpdateAsync(transaction);
+		//	return Ok(id);
+		//}
 
 		/// <summary>
 		/// Deletes the specified transaction.
@@ -151,6 +153,57 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 			StatusCodeResult HandleFailedDelete(int deletedCount, int transactionId)
 			{
 				_logger.LogError("Deleted {DeletedCount} transactions by id {TransactionId}", deletedCount, transactionId);
+				return StatusCode(Status500InternalServerError);
+			}
+		}
+
+		[HttpGet("{transactionId}/item")]
+		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(int transactionId, CancellationToken cancellationToken)
+		{
+			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
+			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
+		}
+
+		[HttpGet("item/{id}")]
+		public async Task<ActionResult<TransactionItemModel>> GetItem(int id, CancellationToken cancellationToken)
+		{
+			var item = await _itemRepository.FindByIdAsync(id, cancellationToken);
+			if (item is null)
+			{
+				return NotFound();
+			}
+
+			return _mapper.Map<TransactionItemModel>(item);
+		}
+
+		[HttpPost("{transactionId}/item")]
+		public async Task<ActionResult<int>> CreateItem(int transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
+		{
+			if (await _repository.FindByIdAsync(transactionId) is null)
+			{
+				// todo validation
+				return new BadRequestResult();
+			}
+
+			var transactionItem = _mapper.Map<TransactionItem>(creationModel);
+			transactionItem.TransactionId = transactionId;
+			return await _itemRepository.AddAsync(transactionItem);
+		}
+
+		[HttpDelete("item/{id}")]
+		public async Task<StatusCodeResult> DeleteItem(int id)
+		{
+			var deletedCount = await _itemRepository.DeleteAsync(id);
+			return deletedCount switch
+			{
+				0 => NotFound(),
+				1 => NoContent(),
+				_ => HandleFailedDelete(deletedCount, id),
+			};
+
+			StatusCodeResult HandleFailedDelete(int deletedCount, int transactionItemId)
+			{
+				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", deletedCount, transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
 		}

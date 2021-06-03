@@ -7,6 +7,6 @@ namespace Tracking.Finance.Data.Repositories
 	public interface IModifiableRepository<TEntity>
 		where TEntity : class, IEntity, IModifiableEntity
 	{
-		Task<int> UpdateAsync(TEntity entity);
+		Task UpdateAsync(TEntity entity);
 	}
 }

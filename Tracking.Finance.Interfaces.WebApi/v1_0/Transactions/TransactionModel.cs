@@ -14,24 +14,24 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		bool Validated,
 		bool Completed)
 	{
-		public int Id { get; set; } = Id;
+		public int Id { get; init; } = Id;
 
-		public int UserId { get; set; } = UserId;
+		public int UserId { get; init; } = UserId;
 
-		public DateTimeOffset CreatedAt { get; set; } = CreatedAt;
+		public DateTimeOffset CreatedAt { get; init; } = CreatedAt;
 
-		public int CreatedByUserId { get; set; } = CreatedByUserId;
+		public int CreatedByUserId { get; init; } = CreatedByUserId;
 
-		public DateTimeOffset ModifiedAt { get; set; } = ModifiedAt;
+		public DateTimeOffset ModifiedAt { get; init; } = ModifiedAt;
 
-		public DateTimeOffset Date { get; set; } = Date;
+		public DateTimeOffset Date { get; init; } = Date;
 
-		public string? Description { get; set; } = Description;
+		public string? Description { get; init; } = Description;
 
-		public bool Generated { get; set; } = Generated;
+		public bool Generated { get; init; } = Generated;
 
-		public bool Validated { get; set; } = Validated;
+		public bool Validated { get; init; } = Validated;
 
-		public bool Completed { get; set; } = Completed;
+		public bool Completed { get; init; } = Completed;
 	}
 }

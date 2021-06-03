@@ -59,11 +59,14 @@ namespace Tracking.Finance.Interfaces.WebApi
 			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
 			NpgsqlLogManager.IsParameterLoggingEnabled = true;
 			services.AddTransient<TransactionRepository>();
+			services.AddTransient<TransactionItemRepository>();
 
 			services.AddSingleton<AutoMapper.IConfigurationProvider>(provider => new MapperConfiguration(options =>
 			{
 				options.CreateMap<TransactionCreationModel, Transaction>();
 				options.CreateMap<Transaction, TransactionModel>();
+				options.CreateMap<TransactionItemCreationModel, TransactionItem>();
+				options.CreateMap<TransactionItem, TransactionItemModel>();
 			}));
 			services.AddTransient<Mapper>();
 

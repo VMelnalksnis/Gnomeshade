@@ -83,7 +83,7 @@
             CRUD operations on transaction entity.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.#ctor(Tracking.Finance.Data.Repositories.TransactionRepository,AutoMapper.Mapper,Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController})">
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.#ctor(Tracking.Finance.Data.Repositories.TransactionRepository,Tracking.Finance.Data.Repositories.TransactionItemRepository,AutoMapper.Mapper,Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController})">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController"/> class.
             </summary>
@@ -122,18 +122,6 @@
             
              <returns><see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> with the id of transaction.</returns>
              <response code="201">Transaction was successfully created.</response>
-        </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Put(System.Int32,Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionCreationModel)">
-             <summary>
-             Updates a transaction if one exists with the specified id, otherwise creates a new transaction.
-             </summary>
-            
-             <param name="id">The id of the transaction to update.</param>
-             <param name="model">The transaction that will be updated/created.</param>
-            
-             <returns><see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> if an existing transaction was updated or <see cref="T:Microsoft.AspNetCore.Mvc.CreatedAtActionResult"/> if a new one was created.</returns>
-             <response code="200">An existing transaction was updated with the specified values.</response>
-             <response code="201">An new transaction was created.</response>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.Delete(System.Int32)">
              <summary>

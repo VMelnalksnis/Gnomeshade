@@ -37,7 +37,7 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc/>
-		public async Task<int> UpdateAsync(Transaction entity)
+		public async Task UpdateAsync(Transaction entity)
 		{
 			var sql = $@"
 				UPDATE {TableName} 
@@ -54,7 +54,7 @@ namespace Tracking.Finance.Data.Repositories
 					completed = @Completed
 				WHERE id = @Id";
 
-			return await DbConnection.ExecuteAsync(sql, entity);
+			await DbConnection.ExecuteAsync(sql, entity);
 		}
 	}
 }
