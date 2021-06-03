@@ -2,7 +2,7 @@
 
 using Tracking.Finance.Data.Models.Abstractions;
 
-namespace Tracking.Finance.Web.Data.Models
+namespace Tracking.Finance.Data.Models
 {
 	public sealed class Currency : IEntity, INamedEntity
 	{
