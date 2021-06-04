@@ -31,7 +31,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 
 			_container
 				.Singleton<IWindowManager, WindowManager>()
-				.Singleton<IEventAggregator, EventAggregator>();
+				.Singleton<IEventAggregator, EventAggregator>()
+				.Singleton<IApiClient, ApiClient>();
 
 			var assemblyTypes = GetType().Assembly.GetTypes();
 			var viewModelTypes = assemblyTypes.Where(type => type.IsClass && type.Name.EndsWith("ViewModel"));
