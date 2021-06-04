@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Tests.Integration", "Tracking.Finance.Data.Tests.Integration\Tracking.Finance.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Data.Identity", "Tracking.Finance.Data.Identity\Tracking.Finance.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Identity", "Tracking.Finance.Data.Identity\Tracking.Finance.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WindowsDesktop", "Tracking.Finance.Interfaces.WindowsDesktop\Tracking.Finance.Interfaces.WindowsDesktop.csproj", "{5842D378-0672-4CCA-B920-1AC095E924DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,10 @@ Global
 		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5842D378-0672-4CCA-B920-1AC095E924DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5842D378-0672-4CCA-B920-1AC095E924DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5842D378-0672-4CCA-B920-1AC095E924DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5842D378-0672-4CCA-B920-1AC095E924DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
