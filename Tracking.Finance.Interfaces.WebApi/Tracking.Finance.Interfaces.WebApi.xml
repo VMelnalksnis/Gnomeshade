@@ -4,6 +4,42 @@
         <name>Tracking.Finance.Interfaces.WebApi</name>
     </assembly>
     <members>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.Configuration.ConfigurationExtensions">
+            <summary>
+            Provides methods to validate objects based on DataAnnotations.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Configuration.ConfigurationExtensions.ValidateAndThrow``1(``0)">
+             <summary>
+             Validates an object based on its DataAnnotations and throws an exception if the object is not valid.
+             </summary>
+            
+             <param name="options">The object to validate.</param>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Configuration.ConfigurationExtensions.Validate``1(``0)">
+             <summary>
+             Validates an object based on its DataAnnotations and returns a list of validation errors.
+             </summary>
+            
+             <param name="options">The object to validate.</param>
+             <returns>A list of validation errors.</returns>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.Configuration.ServiceCollectionExtensions">
+            <summary>
+            Provides methods to register configuration options in a <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.Configuration.ServiceCollectionExtensions.AddOptions``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+             <summary>
+             Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotion validation.
+             </summary>
+            
+             <typeparam name="TOptions">The options type to add.</typeparam>
+             <param name="services">The service collection to which to add the options.</param>
+             <param name="configuration">The configuration to which to bind the options.</param>
+            
+             <seealso cref="M:Tracking.Finance.Interfaces.WebApi.Configuration.ConfigurationExtensions.GetSectionName(System.Type)"/>
+        </member>
         <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.ApiVersioningFilter">
             <summary>
             Swagger filter that removes version parameter from operations and inserts the correct version in paths.
@@ -24,6 +60,14 @@
             <inheritdoc/>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.SchemaFilter`1.Apply(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Tracking.Finance.Interfaces.WebApi.OpenApi.UnauthorizedOperationFilter">
+            <summary>
+            Adds <see cref="F:Microsoft.AspNetCore.Http.StatusCodes.Status401Unauthorized"/> to all operations that require authorization.
+            </summary>
+        </member>
+        <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.UnauthorizedOperationFilter.Apply(Microsoft.OpenApi.Models.OpenApiOperation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
             <inheritdoc/>
         </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.OpenApi.ValidationProblemDetailsFilter.Swashbuckle#AspNetCore#SwaggerGen#ISchemaFilter#Apply(Microsoft.OpenApi.Models.OpenApiSchema,Swashbuckle.AspNetCore.SwaggerGen.SchemaFilterContext)">
@@ -64,6 +108,11 @@
             <param name="application">Application builder used to configure the HTTP request pipeline.</param>
             <param name="environment">The current application environment.</param>
         </member>
+        <member name="F:Tracking.Finance.Interfaces.WebApi.v1_0.Authentication.JwtOptions.SectionName">
+            <summary>
+            The name of the configuration section.
+            </summary>
+        </member>
         <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi.SwaggerGenOptionsExtensions.SwaggerDocV1_0(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
              <summary>
              Define the document to be created by Swagger generator for version 1.0.
@@ -83,7 +132,7 @@
             CRUD operations on transaction entity.
             </summary>
         </member>
-        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.#ctor(Tracking.Finance.Data.Repositories.TransactionRepository,Tracking.Finance.Data.Repositories.TransactionItemRepository,AutoMapper.Mapper,Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController})">
+        <member name="M:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController.#ctor(Microsoft.AspNetCore.Identity.UserManager{Tracking.Finance.Data.Identity.ApplicationUser},Tracking.Finance.Data.Repositories.UserRepository,Tracking.Finance.Data.Repositories.TransactionRepository,Tracking.Finance.Data.Repositories.TransactionItemRepository,AutoMapper.Mapper,Microsoft.Extensions.Logging.ILogger{Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController})">
             <summary>
             Initializes a new instance of the <see cref="T:Tracking.Finance.Interfaces.WebApi.v1_0.Transactions.TransactionController"/> class.
             </summary>

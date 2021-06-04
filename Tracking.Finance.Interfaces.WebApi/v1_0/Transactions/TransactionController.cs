@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
+using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
 
@@ -21,9 +25,12 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 	/// </summary>
 	[ApiController]
 	[ApiVersion("1.0")]
+	[Authorize]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	public sealed class TransactionController : ControllerBase
 	{
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly UserRepository _userRepository;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 		private readonly Mapper _mapper;
@@ -35,8 +42,16 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		/// <param name="repository">The repository for performing CRUD operations.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
-		public TransactionController(TransactionRepository repository, TransactionItemRepository itemRepository, Mapper mapper, ILogger<TransactionController> logger)
+		public TransactionController(
+			UserManager<ApplicationUser> userManager,
+			UserRepository userRepository,
+			TransactionRepository repository,
+			TransactionItemRepository itemRepository,
+			Mapper mapper,
+			ILogger<TransactionController> logger)
 		{
+			_userManager = userManager;
+			_userRepository = userRepository;
 			_repository = repository;
 			_itemRepository = itemRepository;
 			_mapper = mapper;
@@ -95,7 +110,17 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<int>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
 		{
+			var identityUser = await _userManager.GetUserAsync(User);
+			var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
+
 			var transaction = _mapper.Map<Transaction>(creationModel);
+			transaction.UserId = user.Id;
+			transaction.CreatedByUserId = user.Id;
+			transaction.ModifiedByUserId = user.Id;
+			var currentTime = DateTimeOffset.Now;
+			transaction.CreatedAt = currentTime;
+			transaction.ModifiedAt = currentTime;
+
 			var id = await _repository.AddAsync(transaction);
 			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
@@ -157,14 +182,14 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 			}
 		}
 
-		[HttpGet("{transactionId}/item")]
+		[HttpGet("{transactionId}/Item")]
 		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(int transactionId, CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
 			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
 		}
 
-		[HttpGet("item/{id}")]
+		[HttpGet("Item/{id}")]
 		public async Task<ActionResult<TransactionItemModel>> GetItem(int id, CancellationToken cancellationToken)
 		{
 			var item = await _itemRepository.FindByIdAsync(id, cancellationToken);
@@ -176,7 +201,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 			return _mapper.Map<TransactionItemModel>(item);
 		}
 
-		[HttpPost("{transactionId}/item")]
+		[HttpPost("{transactionId}/Item")]
 		public async Task<ActionResult<int>> CreateItem(int transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
 		{
 			if (await _repository.FindByIdAsync(transactionId) is null)
@@ -190,7 +215,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
 			return await _itemRepository.AddAsync(transactionItem);
 		}
 
-		[HttpDelete("item/{id}")]
+		[HttpDelete("Item/{id}")]
 		public async Task<StatusCodeResult> DeleteItem(int id)
 		{
 			var deletedCount = await _itemRepository.DeleteAsync(id);

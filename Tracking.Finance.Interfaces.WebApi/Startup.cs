@@ -1,12 +1,11 @@
-using System;
 using System.Data;
-using System.IO;
+using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,9 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Npgsql.Logging;
 
+using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
-using Tracking.Finance.Interfaces.WebApi.OpenApi;
+using Tracking.Finance.Interfaces.WebApi.Configuration;
+using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi;
 using Tracking.Finance.Interfaces.WebApi.v1_0.Transactions;
 
@@ -34,6 +35,12 @@ namespace Tracking.Finance.Interfaces.WebApi
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+
+			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
+			NpgsqlLogManager.IsParameterLoggingEnabled = true;
+
+			using var database = new ApplicationDbContext(Configuration);
+			database.Database.EnsureCreated();
 		}
 
 		/// <summary>
@@ -47,22 +54,28 @@ namespace Tracking.Finance.Interfaces.WebApi
 		/// <param name="services">Service collection to which to add services to.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services
-				.AddControllers()
-				.ConfigureApiBehaviorOptions(options =>
-				{
-					var x = options.ClientErrorMapping.Keys;
-				});
+			services.AddOptions<JwtOptions>(Configuration);
+
+			services.AddControllers();
 			services.AddApiVersioning();
 
-			services.AddTransient<IDbConnection>(provider => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")));
-			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
-			NpgsqlLogManager.IsParameterLoggingEnabled = true;
-			services.AddTransient<TransactionRepository>();
-			services.AddTransient<TransactionItemRepository>();
+			services.AddIdentityContext(Configuration);
+
+			services
+				.AddTransient<JwtSecurityTokenHandler>()
+				.AddAuthentication(Options.Authentication)
+				.AddJwtBearer(options => Options.JwtBearer(options, Configuration));
+
+			services
+				.AddTransient<IDbConnection>(provider => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
+				.AddTransient<TransactionRepository>()
+				.AddTransient<TransactionItemRepository>()
+				.AddTransient<UserRepository>();
 
 			services.AddSingleton<AutoMapper.IConfigurationProvider>(provider => new MapperConfiguration(options =>
 			{
+				options.CreateMap<RegistrationModel, ApplicationUser>();
+
 				options.CreateMap<TransactionCreationModel, Transaction>();
 				options.CreateMap<Transaction, TransactionModel>();
 				options.CreateMap<TransactionItemCreationModel, TransactionItem>();
@@ -70,23 +83,7 @@ namespace Tracking.Finance.Interfaces.WebApi
 			}));
 			services.AddTransient<Mapper>();
 
-			services.AddSwaggerGen(options =>
-			{
-				options.SwaggerDocV1_0();
-
-				options.DocumentFilter<ApiVersioningFilter>();
-				options.OperationFilter<ApiVersioningFilter>();
-
-				options.SchemaFilter<ValidationProblemDetailsFilter>();
-				options.SchemaFilter<ValidationProblemDetailsSchemaFilter>();
-				options.OperationFilter<ValidationProblemDetailsFilter>();
-
-				options.OperationFilter<InternalServerErrorOperationFilter>();
-
-				// var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Interfaces.WebApi.xml");
-				// options.IncludeXmlComments(xmlDocumentationFilepath, true);
-				options.EnableAnnotations();
-			});
+			services.AddSwaggerGen(Options.SwaggerGen);
 		}
 
 		/// <summary>
@@ -103,20 +100,13 @@ namespace Tracking.Finance.Interfaces.WebApi
 
 			application.UseRouting();
 
-			application.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-				endpoints.MapGet("/", async context =>
-				{
-					await context.Response.WriteAsync("Hello World!");
-				});
-			});
+			application.UseAuthentication();
+			application.UseAuthorization();
+
+			application.UseEndpoints(endpoints => endpoints.MapControllers());
 
 			application.UseSwagger();
-			application.UseSwaggerUI(options =>
-			{
-				options.SwaggerEndpointV1_0();
-			});
+			application.UseSwaggerUI(options => options.SwaggerEndpointV1_0());
 		}
 	}
 }
