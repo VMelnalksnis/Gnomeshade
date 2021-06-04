@@ -10,23 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.Views
 {
 	/// <summary>
-	/// Interaction logic for ShellView.xaml
+	/// Interaction logic for LoginView.xaml
 	/// </summary>
-	public partial class ShellView : Window
+	public partial class LoginView : UserControl
 	{
-		public ShellView()
+		public LoginView()
 		{
 			InitializeComponent();
-		}
-
-		private void MenuItem_Click(object sender, RoutedEventArgs e)
-		{
-
 		}
 	}
 }

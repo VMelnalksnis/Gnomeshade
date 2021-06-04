@@ -6,7 +6,17 @@
         xmlns:local="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.Views"
         mc:Ignorable="d"
         Title="ShellView" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+	<DockPanel>
+		<Menu DockPanel.Dock="Top" FontSize="18">
+			<MenuItem Header="_File">
+
+			</MenuItem>
+			<MenuItem Header="_Account" Click="MenuItem_Click">
+				<MenuItem x:Name="LoginScreen" Header="_Login" />
+			</MenuItem>
+		</Menu>
+		<Grid>
+			<ContentControl x:Name="ActiveItem" Margin="5" />
+		</Grid>
+	</DockPanel>
 </Window>
