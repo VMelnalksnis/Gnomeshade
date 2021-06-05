@@ -26,11 +26,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Ident
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WindowsDesktop", "Tracking.Finance.Interfaces.WindowsDesktop\Tracking.Finance.Interfaces.WindowsDesktop.csproj", "{5842D378-0672-4CCA-B920-1AC095E924DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WebApi.Client", "Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client", "Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WebApi.Client.Tests", "Tracking.Finance.Interfaces.WebApi.Client.Tests\Tracking.Finance.Interfaces.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client.Tests", "Tracking.Finance.Interfaces.WebApi.Client.Tests\Tracking.Finance.Interfaces.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.WebApi.Tests.Integration", "Tracking.Finance.Interfaces.WebApi.Tests.Integration\Tracking.Finance.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Tests.Integration", "Tracking.Finance.Interfaces.WebApi.Tests.Integration\Tracking.Finance.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{B92F9674-8BD0-47C2-B15B-6E3F9CADC215}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gui", "Gui", "{18D7A41E-CBA6-4AF5-A759-31F2BB9819BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +93,18 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2} = {B92F9674-8BD0-47C2-B15B-6E3F9CADC215}
+		{BA9C19F6-C252-4041-B869-F909F3EE7FB9} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
+		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7} = {B92F9674-8BD0-47C2-B15B-6E3F9CADC215}
+		{51A690B4-E021-4232-BF47-B8ECFDB20914} = {B92F9674-8BD0-47C2-B15B-6E3F9CADC215}
+		{5842D378-0672-4CCA-B920-1AC095E924DC} = {18D7A41E-CBA6-4AF5-A759-31F2BB9819BE}
+		{24E65161-93D4-49BC-B62C-C26928F37845} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
+		{2104FB4D-201F-4F96-939B-9AAF4C48C77B} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
+		{B6757CB9-998B-499F-8042-8A59E2B92577} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
+		{8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED} = {AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}
+		{18D7A41E-CBA6-4AF5-A759-31F2BB9819BE} = {AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}
