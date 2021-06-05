@@ -6,6 +6,8 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 {
 	public interface IFinanceClient
 	{
+		Task<UserModel> Info();
+
 		Task<LoginResponse> Login(LoginModel login);
 	}
 }

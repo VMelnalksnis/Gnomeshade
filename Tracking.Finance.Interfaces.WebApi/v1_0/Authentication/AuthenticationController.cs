@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -24,7 +25,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
 {
 	[ApiController]
 	[ApiVersion("1.0")]
-	[Route("api/v{version:apiVersion}/[controller]")]
+	[Route("api/v{version:apiVersion}/[controller]/[action]")]
 	public sealed class AuthenticationController : ControllerBase
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
@@ -50,7 +51,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
 			_problemDetailFactory = problemDetailsFactory;
 		}
 
-		[HttpPost("Login")]
+		[HttpPost]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(Status401Unauthorized)]
 		public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] LoginModel login)
@@ -84,7 +85,7 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
 			return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
 		}
 
-		[HttpPost("Register")]
+		[HttpPost]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult> Register([FromBody, BindRequired] RegistrationModel registration)
 		{
@@ -103,6 +104,17 @@ namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
 			await _userRepository.AddAsync(applicationUser);
 
 			return Ok();
+		}
+
+		[Authorize]
+		[HttpGet]
+		[ProducesResponseType(Status200OK)]
+		public async Task<ActionResult<UserModel>> Info()
+		{
+			var identityUser = await _userManager.GetUserAsync(User);
+
+			// var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
+			return Ok(_mapper.Map<UserModel>(identityUser));
 		}
 	}
 }

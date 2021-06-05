@@ -4,14 +4,18 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
 
 namespace Tracking.Finance.Interfaces.WebApi.Client
 {
 	public sealed class FinanceClient : IFinanceClient
 	{
-		private static readonly string LoginUri =
-			$"{typeof(AuthenticationController).GetControllerName()}/{nameof(AuthenticationController.Login)}";
+		private static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
+
+		private static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
+		private static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
 
 		private readonly HttpClient _httpClient = new();
 
@@ -28,13 +32,29 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
+		public async Task<UserModel> Info()
+		{
+			using var response = await _httpClient.GetAsync(InfoUri);
+			response.EnsureSuccessStatusCode();
+
+			return (await response.Content.ReadFromJsonAsync<UserModel>())!;
+		}
+
+		/// <inheritdoc/>
 		public async Task<LoginResponse> Login(LoginModel login)
 		{
-			var requestContent = JsonContent.Create(login);
-			using var response = await _httpClient.PostAsync(LoginUri, requestContent);
-
+			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login);
 			response.EnsureSuccessStatusCode();
-			return (await response.Content.ReadFromJsonAsync<LoginResponse>())!;
+
+			var loginResponse = (await response.Content.ReadFromJsonAsync<LoginResponse>())!;
+			_httpClient.DefaultRequestHeaders.Authorization = GetAuthenticationHeader(loginResponse.Token);
+
+			return loginResponse;
+		}
+
+		private static AuthenticationHeaderValue GetAuthenticationHeader(string token)
+		{
+			return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
 		}
 	}
 }

@@ -75,6 +75,7 @@ namespace Tracking.Finance.Interfaces.WebApi
 			services.AddSingleton<AutoMapper.IConfigurationProvider>(provider => new MapperConfiguration(options =>
 			{
 				options.CreateMap<RegistrationModel, ApplicationUser>();
+				options.CreateMap<ApplicationUser, UserModel>();
 
 				options.CreateMap<TransactionCreationModel, Transaction>();
 				options.CreateMap<Transaction, TransactionModel>();
