@@ -14,6 +14,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 
 		private string _userName;
 		private string _password;
+		private string _errorMessage;
 
 		public LoginViewModel(IFinanceClient financeClient)
 		{
@@ -42,18 +43,32 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
+		public bool IsErrorVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+		public string ErrorMessage
+		{
+			get => _errorMessage;
+			set
+			{
+				_errorMessage = value;
+				NotifyOfPropertyChange(() => ErrorMessage);
+				NotifyOfPropertyChange(() => IsErrorVisible);
+			}
+		}
+
 		public bool CanLogIn => !string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password);
 
 		public async Task LogIn()
 		{
 			try
 			{
+				ErrorMessage = string.Empty;
 				var login = new LoginModel { Username = UserName, Password = Password };
 				var result = await _financeClient.Login(login);
 			}
 			catch (Exception exception)
 			{
-				Console.Error.WriteLine(exception.ToString());
+				ErrorMessage = exception.Message;
 			}
 		}
 	}
