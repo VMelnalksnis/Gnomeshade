@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.Views"
         mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="800">
+        Title="ShellView" Height="600" Width="800">
 	<DockPanel>
 		<Menu DockPanel.Dock="Top" FontSize="18">
 			<MenuItem Header="_File">
@@ -16,7 +16,7 @@
 			</MenuItem>
 		</Menu>
 		<Grid>
-			<ContentControl x:Name="ActiveItem" Margin="5" />
+			<ContentControl x:Name="ActiveItem" Margin="20 5 20 20" />
 		</Grid>
 	</DockPanel>
 </Window>

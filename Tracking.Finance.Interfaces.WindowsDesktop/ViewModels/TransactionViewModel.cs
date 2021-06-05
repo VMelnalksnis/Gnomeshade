@@ -7,11 +7,11 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
 	public class TransactionViewModel : Screen
 	{
-		private DateTimeOffset _date = DateTimeOffset.Now;
+		private DateTime? _date = DateTime.Now;
 		private string? _description;
 		private BindingList<string> _items;
 
-		public DateTimeOffset Date
+		public DateTime? Date
 		{
 			get => _date;
 			set

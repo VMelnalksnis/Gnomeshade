@@ -29,7 +29,7 @@
 		<TextBlock Grid.Column="0" Grid.Row="0" Margin="0 0 10 0">
 			Date:
 		</TextBlock>
-		<DatePickerTextBox Grid.Column="1" Grid.Row="0" x:Name="Date"/>
+		<DatePicker Grid.Column="1" Grid.Row="0" x:Name="Date"/>
 
 		<TextBlock Grid.Column="0" Grid.Row="1" Margin="0 0 10 0">
 			Description:

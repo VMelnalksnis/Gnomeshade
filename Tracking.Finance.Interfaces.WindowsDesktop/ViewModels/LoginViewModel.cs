@@ -5,12 +5,14 @@ using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
+using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 using Tracking.Finance.Interfaces.WindowsDesktop.Models;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
 	public sealed class LoginViewModel : Screen
 	{
+		private readonly IEventAggregator _eventAggregator;
 		private readonly IFinanceClient _financeClient;
 		private readonly LoggedInUserModel _loggedInUser;
 
@@ -18,8 +20,12 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		private string _password;
 		private string _errorMessage;
 
-		public LoginViewModel(IFinanceClient financeClient, LoggedInUserModel loggedInUser)
+		public LoginViewModel(
+			IEventAggregator eventAggregator,
+			IFinanceClient financeClient,
+			LoggedInUserModel loggedInUser)
 		{
+			_eventAggregator = eventAggregator;
 			_financeClient = financeClient;
 			_loggedInUser = loggedInUser;
 		}
@@ -73,6 +79,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 				_loggedInUser.Id = userInfo.Id;
 				_loggedInUser.Email = userInfo.Email;
 				_loggedInUser.UserName = userInfo.UserName;
+
+				await _eventAggregator.PublishOnUIThreadAsync(new LogOnEvent());
 			}
 			catch (Exception exception)
 			{

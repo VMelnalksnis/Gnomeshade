@@ -1,15 +1,35 @@
-﻿using Caliburn.Micro;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+using Caliburn.Micro;
+
+using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
-	public sealed class ShellViewModel : Conductor<object>
+	public sealed class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
 	{
-		private LoginViewModel _loginViewModel;
+		private readonly IEventAggregator _eventAggregator;
+		private readonly TransactionViewModel _transactionViewModel;
+		private readonly SimpleContainer _container;
 
-		public ShellViewModel(LoginViewModel loginViewModel)
+		public ShellViewModel(
+			IEventAggregator eventAggregator,
+			TransactionViewModel transactionViewModel,
+			SimpleContainer container)
 		{
-			_loginViewModel = loginViewModel;
-			ActivateItemAsync(_loginViewModel).GetAwaiter().GetResult();
+			_eventAggregator = eventAggregator;
+			_transactionViewModel = transactionViewModel;
+			_container = container;
+
+			_eventAggregator.SubscribeOnPublishedThread(this);
+			ActivateItemAsync(_container.GetInstance<LoginViewModel>()).GetAwaiter().GetResult();
+		}
+
+		/// <inheritdoc/>
+		public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
+		{
+			await ActivateItemAsync(_transactionViewModel, cancellationToken);
 		}
 	}
 }
