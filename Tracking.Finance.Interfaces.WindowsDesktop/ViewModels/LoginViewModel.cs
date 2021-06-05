@@ -3,20 +3,21 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
-using Tracking.Finance.Interfaces.WindowsDesktop.Helpers;
+using Tracking.Finance.Interfaces.WebApi.Client;
+using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
 	public sealed class LoginViewModel : Screen
 	{
-		private readonly IApiClient _apiClient;
+		private readonly IFinanceClient _financeClient;
 
 		private string _userName;
 		private string _password;
 
-		public LoginViewModel(IApiClient apiClient)
+		public LoginViewModel(IFinanceClient financeClient)
 		{
-			_apiClient = apiClient;
+			_financeClient = financeClient;
 		}
 
 		public string UserName
@@ -47,7 +48,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		{
 			try
 			{
-				var result = await _apiClient.Authenticate(UserName, Password);
+				var login = new LoginModel { Username = UserName, Password = Password };
+				var result = await _financeClient.Login(login);
 			}
 			catch (Exception exception)
 			{
