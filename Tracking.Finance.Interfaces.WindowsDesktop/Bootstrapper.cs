@@ -13,18 +13,20 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 {
 	public sealed class Bootstrapper : BootstrapperBase
 	{
-		private SimpleContainer _container = new SimpleContainer();
+		private readonly SimpleContainer _container = new();
 
 		public Bootstrapper()
 		{
 			Initialize();
 
-			ConventionManager.AddElementConvention<PasswordBox>(
-			PasswordBoxHelper.BoundPasswordProperty,
-			"Password",
-			"PasswordChanged");
+			ConventionManager
+				.AddElementConvention<PasswordBox>(
+					PasswordBoxHelper.BoundPasswordProperty,
+					PasswordBoxHelper.ParameterPropertyName,
+					nameof(PasswordBox.PasswordChanged));
 		}
 
+		/// <inheritdoc/>
 		protected sealed override void Configure()
 		{
 			_container.Instance(_container);

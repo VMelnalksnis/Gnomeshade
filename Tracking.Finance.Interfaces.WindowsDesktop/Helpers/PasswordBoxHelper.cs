@@ -6,45 +6,47 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 {
 	public static class PasswordBoxHelper
 	{
+		public const string ParameterPropertyName = "Password";
+
 		public static readonly DependencyProperty BoundPasswordProperty =
 			DependencyProperty.RegisterAttached("BoundPassword",
 				typeof(string),
 				typeof(PasswordBoxHelper),
 				new FrameworkPropertyMetadata(string.Empty, OnBoundPasswordChanged));
 
-		public static string GetBoundPassword(DependencyObject d)
+		public static string GetBoundPassword(DependencyObject dependencyObject)
 		{
-			if (d is PasswordBox box)
+			if (dependencyObject is PasswordBox passwordBox)
 			{
 				// this funny little dance here ensures that we've hooked the
 				// PasswordChanged event once, and only once.
-				box.PasswordChanged -= PasswordChanged;
-				box.PasswordChanged += PasswordChanged;
+				passwordBox.PasswordChanged -= PasswordChanged;
+				passwordBox.PasswordChanged += PasswordChanged;
 			}
 
-			return (string)d.GetValue(BoundPasswordProperty);
+			return (string)dependencyObject.GetValue(BoundPasswordProperty);
 		}
 
-		public static void SetBoundPassword(DependencyObject d, string value)
+		public static void SetBoundPassword(DependencyObject dependencyObject, string value)
 		{
-			if (string.Equals(value, GetBoundPassword(d)))
+			if (string.Equals(value, GetBoundPassword(dependencyObject)))
 			{
 				return; // and this is how we prevent infinite recursion
 			}
 
-			d.SetValue(BoundPasswordProperty, value);
+			dependencyObject.SetValue(BoundPasswordProperty, value);
 		}
 
 		private static void OnBoundPasswordChanged(
-			DependencyObject d,
+			DependencyObject dependencyObject,
 			DependencyPropertyChangedEventArgs e)
 		{
-			if (d is not PasswordBox box)
+			if (dependencyObject is not PasswordBox box)
 			{
 				return;
 			}
 
-			box.Password = GetBoundPassword(d);
+			box.Password = GetBoundPassword(dependencyObject);
 		}
 
 		private static void PasswordChanged(object sender, RoutedEventArgs e)
@@ -53,7 +55,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 			SetBoundPassword(password, password.Password);
 
 			// set cursor past the last character in the password box
-			password.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(password, new object[] { password.Password.Length, 0 });
+			var selectMethod = password.GetType().GetMethod("Select", BindingFlags.Instance | BindingFlags.NonPublic);
+			selectMethod.Invoke(password, new object[] { password.Password.Length, 0 });
 		}
 	}
 }
