@@ -4,4 +4,18 @@ using Microsoft.Extensions.Hosting;
 
 using Tracking.Finance.Interfaces.WebApi;
 
-WebHost.CreateDefaultBuilder<Startup>(args).Build().Run();
+namespace Tracking.Finance.Web
+{
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			CreateWebHostBuilder(args).Build().Run();
+		}
+
+		public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+		{
+			return WebHost.CreateDefaultBuilder<Startup>(args);
+		}
+	}
+}
