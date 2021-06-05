@@ -1,36 +1,39 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
+
+using Microsoft.Extensions.Configuration;
 
 using Npgsql;
 using Npgsql.Logging;
 
 using NUnit.Framework;
 
-using System.Threading.Tasks;
-
 namespace Tracking.Finance.Data.Tests.Integration
 {
-    [SetUpFixture]
+	[SetUpFixture]
 	public class DatabaseInitialization
 	{
-        public static async Task<NpgsqlConnection> CreateConnection()
+		public static async Task<NpgsqlConnection> CreateConnection()
 		{
-            var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
-            var configuration = configurationBuilder.Build();
+			var builder = new ConfigurationBuilder()
+				.AddUserSecrets<DatabaseInitialization>()
+				.AddEnvironmentVariables();
 
-            var connectionString = configuration.GetConnectionString("FinanceDb");
-            var sqlConnection = new NpgsqlConnection(connectionString);
-            sqlConnection.Open();
+			var configuration = builder.Build();
+
+			var connectionString = configuration.GetConnectionString("FinanceDb");
+			var sqlConnection = new NpgsqlConnection(connectionString);
+			sqlConnection.Open();
 
 			await sqlConnection.ChangeDatabaseAsync("finance_tests");
 
-            return sqlConnection;
-        }
+			return sqlConnection;
+		}
 
-        [OneTimeSetUp]
+		[OneTimeSetUp]
 		public async Task SetupDatabase()
 		{
 			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
-            NpgsqlLogManager.IsParameterLoggingEnabled = true;
+			NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
 			var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
 			var configuration = configurationBuilder.Build();
@@ -91,26 +94,26 @@ CREATE TABLE ""public"".""transaction_items"" (
     CONSTRAINT ""transaction_items_id"" PRIMARY KEY(""id""),
     CONSTRAINT ""transaction_items_transaction_id_fkey"" FOREIGN KEY(transaction_id) REFERENCES transactions(id) NOT DEFERRABLE
 ) WITH(oids = false);";
-            await createTransactionItems.ExecuteNonQueryAsync();
+			await createTransactionItems.ExecuteNonQueryAsync();
 
-            sqlConnection.Dispose();
+			sqlConnection.Dispose();
 		}
 
-        [OneTimeTearDown]
-        public async Task DropDatabase()
+		[OneTimeTearDown]
+		public async Task DropDatabase()
 		{
-            var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
-            var configuration = configurationBuilder.Build();
+			var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
+			var configuration = configurationBuilder.Build();
 
-            NpgsqlConnection.ClearAllPools();
+			NpgsqlConnection.ClearAllPools();
 
-            var connectionString = configuration.GetConnectionString("FinanceDb");
-            using var sqlConnection = new NpgsqlConnection(connectionString);
-            sqlConnection.Open();
+			var connectionString = configuration.GetConnectionString("FinanceDb");
+			using var sqlConnection = new NpgsqlConnection(connectionString);
+			sqlConnection.Open();
 
-            var createDatabase = sqlConnection.CreateCommand();
-            createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests;";
-            await createDatabase.ExecuteNonQueryAsync();
-        }
+			var createDatabase = sqlConnection.CreateCommand();
+			createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests;";
+			await createDatabase.ExecuteNonQueryAsync();
+		}
 	}
 }

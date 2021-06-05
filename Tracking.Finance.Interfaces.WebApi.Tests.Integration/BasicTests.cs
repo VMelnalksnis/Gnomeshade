@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -31,8 +30,6 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 			_applicationFactory = new();
 
 			var builder = new ConfigurationBuilder()
-				.SetBasePath(Directory.GetCurrentDirectory())
-				.AddJsonFile("appsettings.json", false, true)
 				.AddUserSecrets<BasicTests>()
 				.AddEnvironmentVariables();
 
