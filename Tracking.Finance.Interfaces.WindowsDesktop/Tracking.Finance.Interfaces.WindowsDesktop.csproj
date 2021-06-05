@@ -19,8 +19,4 @@
 	  <ProjectReference Include="..\Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Models\" />
-	</ItemGroup>
-
 </Project>

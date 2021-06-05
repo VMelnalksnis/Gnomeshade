@@ -8,6 +8,7 @@ using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WindowsDesktop.Helpers;
+using Tracking.Finance.Interfaces.WindowsDesktop.Models;
 using Tracking.Finance.Interfaces.WindowsDesktop.ViewModels;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop
@@ -35,7 +36,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 			_container
 				.Singleton<IWindowManager, WindowManager>()
 				.Singleton<IEventAggregator, EventAggregator>()
-				.Singleton<IFinanceClient, FinanceClient>();
+				.Singleton<IFinanceClient, FinanceClient>()
+				.Singleton<LoggedInUserModel>();
 
 			var assemblyTypes = GetType().Assembly.GetTypes();
 			var viewModelTypes = assemblyTypes.Where(type => type.IsClass && type.Name.EndsWith("ViewModel"));
