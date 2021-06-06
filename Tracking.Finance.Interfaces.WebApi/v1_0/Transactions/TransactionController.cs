@@ -130,34 +130,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		}
 
 		/// <summary>
-		/// Updates a transaction if one exists with the specified id, otherwise creates a new transaction.
-		/// </summary>
-		///
-		/// <param name="id">The id of the transaction to update.</param>
-		/// <param name="model">The transaction that will be updated/created.</param>
-		///
-		/// <returns><see cref="OkObjectResult"/> if an existing transaction was updated or <see cref="CreatedAtActionResult"/> if a new one was created.</returns>
-		/// <response code="200">An existing transaction was updated with the specified values.</response>
-		/// <response code="201">An new transaction was created.</response>
-		//[HttpPut("{id}")]
-		//[ProducesResponseType(Status200OK)]
-		//[ProducesResponseType(Status201Created)]
-		//public async Task<ActionResult<int>> Put(int id, [FromBody, BindRequired] TransactionCreationModel model)
-		//{
-		//	var transaction = _mapper.Map<Transaction>(model);
-		//	var existing = await _repository.FindByIdAsync(id);
-		//	if (existing is null)
-		//	{
-		//		var newId = await _repository.AddAsync(transaction);
-		//		return CreatedAtAction(nameof(Get), new { id = newId }, newId);
-		//	}
-
-		//	transaction.Id = id;
-		//	await _repository.UpdateAsync(transaction);
-		//	return Ok(id);
-		//}
-
-		/// <summary>
 		/// Deletes the specified transaction.
 		/// </summary>
 		///
