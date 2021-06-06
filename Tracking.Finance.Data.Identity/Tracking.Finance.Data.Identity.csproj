@@ -6,7 +6,7 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Copyright>Valters Melnalksnis</Copyright>
-		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 		<RepositoryUrl>https://vmelnalksnis@dev.azure.com/vmelnalksnis/Tracking/_git/Tracking.Finance</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<Description>Identity data access for Tracking.Finance project</Description>

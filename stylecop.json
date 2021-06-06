@@ -5,7 +5,7 @@
 			"companyName": "Valters Melnalksnis",
 			"copyrightText": "Copyright 2021 {companyName}\r\nLicensed under the {licenseName}.\r\nSee {licenseFile} file in the project root for full license information.",
 			"variables": {
-				"licenseName": "GNU General Public License 3.0 or later",
+				"licenseName": "GNU Affero General Public License v3.0 or later",
 				"licenseFile": "LICENSE.txt"
 			},
 			"excludeFromPunctuationCheck": [],
