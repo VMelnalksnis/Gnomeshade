@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	public static class IdentityResultExtensions
 	{

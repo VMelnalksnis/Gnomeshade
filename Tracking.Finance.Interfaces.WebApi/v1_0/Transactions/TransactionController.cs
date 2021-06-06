@@ -22,7 +22,7 @@ using Tracking.Finance.Data.Repositories;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	/// <summary>
 	/// CRUD operations on transaction entity.

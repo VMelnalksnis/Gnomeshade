@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 
 using Swashbuckle.AspNetCore.SwaggerUI;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.OpenApi
 {
 	public static class SwaggerUIOptionsExtensions
 	{

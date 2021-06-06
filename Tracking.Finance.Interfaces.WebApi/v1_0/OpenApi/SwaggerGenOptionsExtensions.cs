@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.OpenApi
 {
 	public static class SwaggerGenOptionsExtensions
 	{

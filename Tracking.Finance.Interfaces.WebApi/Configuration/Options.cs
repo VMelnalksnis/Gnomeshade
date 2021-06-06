@@ -14,8 +14,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 using Tracking.Finance.Interfaces.WebApi.OpenApi;
-using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
-using Tracking.Finance.Interfaces.WebApi.v1_0.OpenApi;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.OpenApi;
 
 namespace Tracking.Finance.Interfaces.WebApi.Configuration
 {

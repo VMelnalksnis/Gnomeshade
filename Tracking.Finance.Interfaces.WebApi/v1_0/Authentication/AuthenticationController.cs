@@ -25,7 +25,7 @@ using Tracking.Finance.Data.Repositories;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	[ApiController]
 	[ApiVersion("1.0")]

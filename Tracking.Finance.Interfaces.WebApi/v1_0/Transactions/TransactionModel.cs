@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	public record TransactionModel(
 		int Id,

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
-using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 using Tracking.Finance.Interfaces.WindowsDesktop.Models;
 

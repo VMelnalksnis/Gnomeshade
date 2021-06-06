@@ -7,7 +7,7 @@ using System.Text;
 
 using Microsoft.IdentityModel.Tokens;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	public class JwtOptions
 	{

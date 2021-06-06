@@ -17,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 using Tracking.Finance.Interfaces.WebApi.Configuration;
-using Tracking.Finance.Interfaces.WebApi.v1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 
 namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 {

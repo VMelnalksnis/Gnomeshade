@@ -6,7 +6,7 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Transactions
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	/// <summary>
 	/// Represents information needed in order to create a transaction.

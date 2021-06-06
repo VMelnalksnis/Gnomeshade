@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Tracking.Finance.Interfaces.WebApi.v1_0.Authentication
+namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	public record LoginResponse(string Token, DateTime ValidTo)
 	{
