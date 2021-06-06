@@ -11,3 +11,18 @@ dotnet_diagnostic.SA1309.severity = none
 
 # Default severity for analyzer diagnostics with category 'StyleCop.CSharp.NamingRules'
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.NamingRules.severity = none
+
+# IDE0008: Use explicit type
+csharp_style_var_when_type_is_apparent = true
+
+# IDE0008: Use explicit type
+csharp_style_var_for_built_in_types = true
+
+# IDE0008: Use explicit type
+csharp_style_var_elsewhere = true
+
+# IDE0022: Use block body for methods
+csharp_style_expression_bodied_methods = when_on_single_line
+
+# IDE0058: Expression value is never used
+csharp_style_unused_value_expression_statement_preference = discard_variable

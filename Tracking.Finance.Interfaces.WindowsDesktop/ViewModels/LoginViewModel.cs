@@ -10,7 +10,7 @@ using Tracking.Finance.Interfaces.WindowsDesktop.Models;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
-	public sealed class LoginViewModel : Screen
+	public sealed class LoginViewModel : Screen, IViewModel
 	{
 		private readonly IEventAggregator _eventAggregator;
 		private readonly IFinanceClient _financeClient;

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WindowsDesktop.Helpers;
+using Tracking.Finance.Interfaces.WindowsDesktop.Input;
 using Tracking.Finance.Interfaces.WindowsDesktop.Models;
 using Tracking.Finance.Interfaces.WindowsDesktop.ViewModels;
 
@@ -21,7 +23,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 		{
 			Initialize();
 
-			ConventionManager
+			_ = ConventionManager
 				.AddElementConvention<PasswordBox>(
 					PasswordBoxHelper.BoundPasswordProperty,
 					PasswordBoxHelper.ParameterPropertyName,
@@ -31,20 +33,43 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 		/// <inheritdoc/>
 		protected sealed override void Configure()
 		{
-			_container.Instance(_container);
-
-			_container
+			_ = _container
+				.Instance(_container)
 				.Singleton<IWindowManager, WindowManager>()
 				.Singleton<IEventAggregator, EventAggregator>()
 				.Singleton<IFinanceClient, FinanceClient>()
 				.Singleton<LoggedInUserModel>();
 
-			var assemblyTypes = GetType().Assembly.GetTypes();
-			var viewModelTypes = assemblyTypes.Where(type => type.IsClass && type.Name.EndsWith("ViewModel"));
-			foreach (var viewModelType in viewModelTypes)
+			foreach (var viewModelType in IViewModel.GetViewModels<Bootstrapper>())
 			{
 				_container.RegisterPerRequest(viewModelType, viewModelType.ToString(), viewModelType);
 			}
+
+			var defaultCreateTrigger = Parser.CreateTrigger;
+			Parser.CreateTrigger = (target, triggerText) =>
+			{
+				if (triggerText is null)
+				{
+					return defaultCreateTrigger(target, null);
+				}
+
+				var triggerDetail = triggerText.Replace("[", string.Empty).Replace("]", string.Empty);
+				var details = triggerDetail.Split(null as char[], StringSplitOptions.RemoveEmptyEntries);
+				var actionType = details[0];
+				var action = details[1];
+				var converter = new MultiKeyGestureConverter();
+
+				return actionType switch
+				{
+					"Key" => new KeyTrigger { Key = (Key)Enum.Parse(typeof(Key), action, true) },
+					"Gesture" => new KeyTrigger
+					{
+						Modifiers = ((MultiKeyGesture)converter.ConvertFrom(action)).KeySequences.First().Modifiers,
+						Key = ((MultiKeyGesture)converter.ConvertFrom(action)).KeySequences.First().Keys.First(),
+					},
+					_ => defaultCreateTrigger(target, triggerText),
+				};
+			};
 		}
 
 		/// <inheritdoc/>

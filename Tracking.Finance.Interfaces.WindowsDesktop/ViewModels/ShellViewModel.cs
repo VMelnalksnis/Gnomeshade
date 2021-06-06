@@ -7,7 +7,7 @@ using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
-	public sealed class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
+	public sealed class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>, IViewModel
 	{
 		private readonly IEventAggregator _eventAggregator;
 		private readonly TransactionViewModel _transactionViewModel;
