@@ -1,11 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
-		<UseWPF>true</UseWPF>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>Valters Melnalksnis</Copyright>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryUrl>https://vmelnalksnis@dev.azure.com/vmelnalksnis/Tracking/_git/Tracking.Finance</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Windows Desktop GUI application for Finance.Tracker project</Description>
+
+		<OutputType>WinExe</OutputType>
+		<UseWPF>true</UseWPF>
 	</PropertyGroup>
 
 	<ItemGroup>

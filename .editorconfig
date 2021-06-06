@@ -1,17 +1,5 @@
 ﻿[*.cs]
 
-# SA1633: File should have header
-dotnet_diagnostic.SA1633.severity = none
-
-# SA1101: Prefix local calls with this
-dotnet_diagnostic.SA1101.severity = none
-
-# SA1309: Field names should not begin with underscore
-dotnet_diagnostic.SA1309.severity = none
-
-# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.NamingRules'
-dotnet_analyzer_diagnostic.category-StyleCop.CSharp.NamingRules.severity = none
-
 # IDE0008: Use explicit type
 csharp_style_var_when_type_is_apparent = true
 
@@ -26,3 +14,15 @@ csharp_style_expression_bodied_methods = when_on_single_line
 
 # IDE0058: Expression value is never used
 csharp_style_unused_value_expression_statement_preference = discard_variable
+
+# SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = none
+
+# SA1309: Field names should not begin with underscore
+dotnet_diagnostic.SA1309.severity = none
+
+# SA1512: Single-line comments should not be followed by blank line
+dotnet_diagnostic.SA1512.severity = none
+
+# SA1600: Elements should be documented
+dotnet_diagnostic.SA1600.severity = none

@@ -3,13 +3,21 @@
 	"settings": {
 		"documentationRules": {
 			"companyName": "Valters Melnalksnis",
-			"copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
+			"copyrightText": "Copyright 2021 {companyName}\r\nLicensed under the {licenseName}.\r\nSee {licenseFile} file in the project root for full license information.",
 			"variables": {
-				"licenseName": "GPL 3.0 (or any later version)",
-				"licenseFile": "LICENSE"
+				"licenseName": "GNU General Public License 3.0 or later",
+				"licenseFile": "LICENSE.txt"
 			},
 			"excludeFromPunctuationCheck": [],
-			"xmlHeader": true
+			"xmlHeader": false,
+			"documentationCulture": "en-US",
+			"documentExposedElements": true,
+			"documentInterfaces": true,
+			"documentInternalElements": true,
+			"documentPrivateElements": false,
+			"documentPrivateFields": false,
+			"fileNamingConvention": "stylecop",
+			"headerDecoration": ""
 		},
 		"indentation": {
 			"indentationSize": 4,
@@ -22,7 +30,8 @@
 		},
 		"orderingRules": {
 			"systemUsingDirectivesFirst": true,
-			"usingDirectivesPlacement": "outsideNamespace"
+			"usingDirectivesPlacement": "outsideNamespace",
+			"blankLinesBetweenUsingGroups": "require"
 		}
 	}
 }

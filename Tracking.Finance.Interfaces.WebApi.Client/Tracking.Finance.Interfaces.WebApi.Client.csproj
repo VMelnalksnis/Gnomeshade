@@ -1,19 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>Valters Melnalksnis</Copyright>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryUrl>https://vmelnalksnis@dev.azure.com/vmelnalksnis/Tracking/_git/Tracking.Finance</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Web API client for Tracking.Finance.Interfaces.WebApi project</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj" />
+		<ProjectReference Include="..\Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj" />
 	</ItemGroup>
 
 </Project>

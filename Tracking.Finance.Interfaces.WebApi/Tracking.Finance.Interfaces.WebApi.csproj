@@ -4,6 +4,13 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>Valters Melnalksnis</Copyright>
+		<PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryUrl>https://vmelnalksnis@dev.azure.com/vmelnalksnis/Tracking/_git/Tracking.Finance</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>Data access for Web API for Tracker.Finance project</Description>
+
 		<UserSecretsId>dede83ba-2690-460f-990c-f4fb3fa99ab9</UserSecretsId>
 	</PropertyGroup>
 
@@ -23,8 +30,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Npgsql" Version="5.0.5" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.6" />
