@@ -15,10 +15,16 @@ using Tracking.Finance.Interfaces.WindowsDesktop.ViewModels;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop
 {
+	/// <summary>
+	/// Caliburn Micro configuration.
+	/// </summary>
 	public sealed class Bootstrapper : BootstrapperBase
 	{
 		private readonly SimpleContainer _container = new();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Bootstrapper"/> class.
+		/// </summary>
 		public Bootstrapper()
 		{
 			Initialize();
