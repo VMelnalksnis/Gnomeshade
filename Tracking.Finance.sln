@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C52AFE6B-B740-4816-A01E-EC68430FC918}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		BuildPipeline.yml = BuildPipeline.yml
 		Directory.Build.props = Directory.Build.props
 		LICENSE.txt = LICENSE.txt
 		PullRequestPipeline.yml = PullRequestPipeline.yml
