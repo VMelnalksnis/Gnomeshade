@@ -16,6 +16,14 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class TransactionItemRepository : Repository<TransactionItem>, IModifiableRepository<TransactionItem>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionItemRepository"/> class with a database connection.
+		/// </summary>
+		public TransactionItemRepository(IDbConnection dbConnection)
+			: base(dbConnection)
+		{
+		}
+
 		/// <inheritdoc/>
 		protected sealed override string TableName { get; } = "transaction_items";
 
@@ -27,16 +35,8 @@ namespace Tracking.Finance.Data.Repositories
 			"product_id ProductId, amount Amount, bank_reference BankReference, external_reference ExternalReference, " +
 			"internal_reference InternalReference, delivery_date DeliveryDate, description Description";
 
-		public TransactionItemRepository(IDbConnection dbConnection)
-			: base(dbConnection)
-		{
-		}
-
-		/// <inheritdoc/>
-		public sealed async override Task<int> AddAsync(TransactionItem entity)
-		{
-			var sql =
-				$"INSERT INTO {TableName}" +
+		protected sealed override string InsertSql =>
+			$"INSERT INTO {TableName}" +
 					"(user_id, " +
 					"transaction_id, " +
 					"source_amount, " +
@@ -73,9 +73,6 @@ namespace Tracking.Finance.Data.Repositories
 					$"@{nameof(TransactionItem.DeliveryDate)}, " +
 					$"@{nameof(TransactionItem.Description)}) " +
 				"RETURNING id";
-
-			return await DbConnection.QuerySingleAsync<int>(sql, entity);
-		}
 
 		public async Task<List<TransactionItem>> GetAllAsync(int transationId, CancellationToken cancellationToken = default)
 		{

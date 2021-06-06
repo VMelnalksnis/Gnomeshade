@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,6 +20,7 @@ using NUnit.Framework;
 
 using Tracking.Finance.Interfaces.WebApi.Configuration;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 {
@@ -76,20 +79,51 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 		[Test]
 		public async Task Login()
 		{
-			var login = new LoginModel { Username = _userOptions.Username, Password = _userOptions.Password };
-
-			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", login);
-
-			loginResponse.EnsureSuccessStatusCode();
-			var responseContent = (await loginResponse.Content.ReadFromJsonAsync<LoginResponse>())!;
-
-			_client.DefaultRequestHeaders.Authorization =
-				new AuthenticationHeaderValue(
-					JwtBearerDefaults.AuthenticationScheme,
-					responseContent.Token);
+			await Authorize();
 
 			var authorizedResponse = await _client.GetAsync("/api/v1.0/transaction");
 			authorizedResponse.EnsureSuccessStatusCode();
+		}
+
+		[Test]
+		public async Task Create_ShouldCreateItems()
+		{
+			await Authorize();
+			var transactionsResponse = await _client.GetAsync("/api/v1.0/transaction");
+			var transactions = await transactionsResponse.Content.ReadFromJsonAsync<List<TransactionModel>>();
+
+			var transaction = new TransactionCreationModel
+			{
+				Date = DateTimeOffset.Now,
+				Description = "Transaction with items creation test",
+				Items = new List<TransactionItemCreationModel>
+				{
+					new TransactionItemCreationModel
+					{
+						SourceAccountId = 0,
+						TargetAccountId = 0,
+						SourceAmount = 0,
+						TargetAmount = 0,
+						ProductId = 0,
+						Amount = 0,
+					},
+				},
+			};
+
+			var createResponse = await _client.PostAsJsonAsync("/api/v1.0/transaction", transaction);
+			createResponse.EnsureSuccessStatusCode();
+		}
+
+		private async Task Authorize()
+		{
+			var login = new LoginModel { Username = _userOptions.Username, Password = _userOptions.Password };
+
+			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", login);
+			loginResponse.EnsureSuccessStatusCode();
+			var responseContent = (await loginResponse.Content.ReadFromJsonAsync<LoginResponse>())!;
+
+			var header = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, responseContent.Token);
+			_client.DefaultRequestHeaders.Authorization = header;
 		}
 	}
 }

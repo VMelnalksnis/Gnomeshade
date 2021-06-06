@@ -99,13 +99,6 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 
 		public async Task Save()
 		{
-			var transaction = new TransactionCreationModel
-			{
-				Description = Description,
-				Date = Date.HasValue ? new DateTimeOffset(Date.Value, DateTimeOffset.Now.Offset) : null,
-			};
-
-			var transactionId = await _financeClient.Create(transaction);
 			var items = TransactionItems
 				.Select(item => new TransactionItemCreationModel
 				{
@@ -121,10 +114,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 				})
 				.ToList();
 
-			foreach (var item in items)
+			var transaction = new TransactionCreationModel
 			{
-				_ = await _financeClient.CreateItem(transactionId, item);
-			}
+				Description = Description,
+				Date = Date.HasValue ? new DateTimeOffset(Date.Value, DateTimeOffset.Now.Offset) : null,
+				Items = items,
+			};
+
+			var transactionId = await _financeClient.Create(transaction);
 		}
 
 		public void CtrlNPressed() => AddItem();

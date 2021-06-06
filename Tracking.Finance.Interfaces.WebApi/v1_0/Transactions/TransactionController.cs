@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,10 +32,11 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 	[ApiVersion("1.0")]
 	[Authorize]
 	[Route("api/v{version:apiVersion}/[controller]")]
-	public sealed class TransactionController : ControllerBase
+	public sealed class TransactionController : ControllerBase, IDisposable
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly UserRepository _userRepository;
+		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 		private readonly Mapper _mapper;
@@ -43,12 +45,18 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionController"/> class.
 		/// </summary>
-		/// <param name="repository">The repository for performing CRUD operations.</param>
+		///
+		/// <param name="userManager">Identity user manager.</param>
+		/// <param name="userRepository">Finance user repository.</param>
+		/// <param name="dbConnection">Database connection for creating <see cref="IDbTransaction"/> for creating entities.</param>
+		/// <param name="repository">The repository for performing CRUD operations on <see cref="Transaction"/>.</param>
+		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItem"/>.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
 		public TransactionController(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
+			IDbConnection dbConnection,
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
 			Mapper mapper,
@@ -56,6 +64,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		{
 			_userManager = userManager;
 			_userRepository = userRepository;
+			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
 			_mapper = mapper;
@@ -128,8 +137,33 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			transaction.CreatedAt = currentTime;
 			transaction.ModifiedAt = currentTime;
 
-			var id = await _repository.AddAsync(transaction);
-			return CreatedAtAction(nameof(Get), new { id }, id);
+			if (!(creationModel.Items?.Any() ?? false))
+			{
+				var id = await _repository.AddAsync(transaction);
+				return CreatedAtAction(nameof(Get), new { id }, id);
+			}
+
+			_dbConnection.Open();
+			using var dbTransaction = _dbConnection.BeginTransaction();
+			try
+			{
+				var id = await _repository.AddAsync(transaction, dbTransaction);
+				foreach (var item in creationModel.Items)
+				{
+					var transactionItem = _mapper.Map<TransactionItem>(item);
+					transactionItem.UserId = user.Id;
+					transactionItem.TransactionId = id;
+					_ = await _itemRepository.AddAsync(transactionItem, dbTransaction);
+				}
+
+				dbTransaction.Commit();
+				return CreatedAtAction(nameof(Get), new { id }, id);
+			}
+			catch (Exception)
+			{
+				dbTransaction.Rollback();
+				throw;
+			}
 		}
 
 		/// <summary>
@@ -218,6 +252,16 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", deletedCount, transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
+		}
+
+		/// <inheritdoc/>
+		public void Dispose()
+		{
+			_dbConnection.Dispose();
+			_userManager.Dispose();
+			_repository.Dispose();
+			_itemRepository.Dispose();
+			_userRepository.Dispose();
 		}
 
 		private async Task<User?> GetCurrentUser()

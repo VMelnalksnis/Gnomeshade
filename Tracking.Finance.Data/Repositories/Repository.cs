@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -17,28 +18,42 @@ namespace Tracking.Finance.Data.Repositories
 	/// <summary>
 	/// A base class implementing <see cref="IRepository{TEntity}"/> with implementation of CRUD operations that are the same for all entities.
 	/// </summary>
-	public abstract class Repository<TEntity> : IRepository<TEntity>
+	public abstract class Repository<TEntity> : IRepository<TEntity>, IDisposable
 		where TEntity : class, IEntity
 	{
 		/// <summary>
-		/// Gets the name of the database table. It is directly inserted in SQL queries.
+		/// Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.
 		/// </summary>
-		protected abstract string TableName { get; }
-
-		protected abstract string ColumnNames { get; }
+		protected Repository(IDbConnection dbConnection)
+		{
+			DbConnection = dbConnection;
+		}
 
 		/// <summary>
 		/// Gets a <see cref="IDbConnection"/> that is used to manage the database entities.
 		/// </summary>
 		protected IDbConnection DbConnection { get; }
 
-		protected Repository(IDbConnection dbConnection)
-		{
-			DbConnection = dbConnection;
-		}
+		protected abstract string ColumnNames { get; }
+
+		/// <summary>
+		/// Gets the name of the database table. It is directly inserted in SQL queries.
+		/// </summary>
+		protected abstract string TableName { get; }
+
+		protected abstract string InsertSql { get; }
 
 		/// <inheritdoc/>
-		public abstract Task<int> AddAsync(TEntity entity);
+		public virtual async Task<int> AddAsync(TEntity entity)
+		{
+			return await DbConnection.QuerySingleAsync<int>(InsertSql, entity);
+		}
+
+		public virtual async Task<int> AddAsync(TEntity entity, IDbTransaction dbTransaction)
+		{
+			var commandDefinition = new CommandDefinition(InsertSql, entity, dbTransaction);
+			return await DbConnection.QuerySingleAsync<int>(commandDefinition);
+		}
 
 		/// <inheritdoc/>
 		public virtual async Task<int> DeleteAsync(int id)
@@ -75,5 +90,8 @@ namespace Tracking.Finance.Data.Repositories
 
 			return await DbConnection.QuerySingleOrDefaultAsync<TEntity>(commandDefinition);
 		}
+
+		/// <inheritdoc/>
+		public void Dispose() => DbConnection.Dispose();
 	}
 }

@@ -13,6 +13,14 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class TransactionRepository : Repository<Transaction>, IModifiableRepository<Transaction>
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.
+		/// </summary>
+		public TransactionRepository(IDbConnection dbConnection)
+			: base(dbConnection)
+		{
+		}
+
 		/// <inheritdoc/>
 		protected sealed override string TableName { get; } = "public.\"transactions\"";
 
@@ -22,23 +30,13 @@ namespace Tracking.Finance.Data.Repositories
 			"modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, date Date, " +
 			"description Description, generated \"Generated\", validated Validated, completed Completed";
 
-		public TransactionRepository(IDbConnection dbConnection)
-			: base(dbConnection)
-		{
-		}
-
 		/// <inheritdoc/>
-		public sealed override async Task<int> AddAsync(Transaction entity)
-		{
-			var sql = @$"
-				INSERT INTO {TableName}
-					(user_id, created_at, created_by_user_id, modified_at, modified_by_user_id, date, description, generated, validated, completed)
-				VALUES
-					(@UserId, @CreatedAt, @CreatedByUserId, @ModifiedAt, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
-				RETURNING id";
-
-			return await DbConnection.QuerySingleAsync<int>(sql, entity);
-		}
+		protected sealed override string InsertSql => @$"
+INSERT INTO {TableName}
+	(user_id, created_at, created_by_user_id, modified_at, modified_by_user_id, date, description, generated, validated, completed)
+VALUES
+	(@UserId, @CreatedAt, @CreatedByUserId, @ModifiedAt, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
+RETURNING id";
 
 		/// <inheritdoc/>
 		public async Task UpdateAsync(Transaction entity)

@@ -14,14 +14,6 @@
 		<UserSecretsId>dede83ba-2690-460f-990c-f4fb3fa99ab9</UserSecretsId>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DocumentationFile>C:\Users\valte\source\repos\Tracking.Finance\Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.xml</DocumentationFile>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DocumentationFile>C:\Users\valte\source\repos\Tracking.Finance\Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.xml</DocumentationFile>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="10.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.6" />
