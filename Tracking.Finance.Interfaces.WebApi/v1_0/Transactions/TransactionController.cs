@@ -114,8 +114,11 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<int>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
 		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
+			var user = await GetCurrentUser();
+			if (user is null)
+			{
+				return Unauthorized();
+			}
 
 			var transaction = _mapper.Map<Transaction>(creationModel);
 			transaction.UserId = user.Id;
@@ -180,6 +183,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[HttpPost("{transactionId}/Item")]
 		public async Task<ActionResult<int>> CreateItem(int transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
 		{
+			var user = await GetCurrentUser();
+			if (user is null)
+			{
+				return Unauthorized();
+			}
+
 			if (await _repository.FindByIdAsync(transactionId) is null)
 			{
 				// todo validation
@@ -187,7 +196,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			}
 
 			var transactionItem = _mapper.Map<TransactionItem>(creationModel);
+			transactionItem.UserId = user.Id;
 			transactionItem.TransactionId = transactionId;
+
 			return await _itemRepository.AddAsync(transactionItem);
 		}
 
@@ -207,6 +218,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", deletedCount, transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
+		}
+
+		private async Task<User?> GetCurrentUser()
+		{
+			var identityUser = await _userManager.GetUserAsync(User);
+			return (await _userRepository.GetAllAsync()).SingleOrDefault(user => user.IdentityUserId == identityUser?.Id);
 		}
 	}
 }

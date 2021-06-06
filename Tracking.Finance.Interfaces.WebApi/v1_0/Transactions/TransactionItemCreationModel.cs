@@ -7,37 +7,34 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
-	public class TransactionItemCreationModel
+	public record TransactionItemCreationModel
 	{
 		[Required]
-		public int? UserId { get; set; }
+		public decimal? SourceAmount { get; init; }
 
 		[Required]
-		public decimal? SourceAmount { get; set; }
+		public int? SourceAccountId { get; init; }
 
 		[Required]
-		public int? SourceAccountId { get; set; }
+		public decimal? TargetAmount { get; init; }
 
 		[Required]
-		public decimal? TargetAmount { get; set; }
+		public int? TargetAccountId { get; init; }
 
 		[Required]
-		public int? TargetAccountId { get; set; }
+		public int? ProductId { get; init; }
 
 		[Required]
-		public int? ProductId { get; set; }
+		public decimal? Amount { get; init; }
 
-		[Required]
-		public decimal? Amount { get; set; }
+		public string? BankReference { get; init; }
 
-		public string? BankReference { get; set; }
+		public string? ExternalReference { get; init; }
 
-		public string? ExternalReference { get; set; }
+		public string? InternalReference { get; init; }
 
-		public string? InternalReference { get; set; }
+		public DateTimeOffset? DeliveryDate { get; init; }
 
-		public DateTimeOffset? DeliveryDate { get; set; }
-
-		public string? Description { get; set; }
+		public string? Description { get; init; }
 	}
 }

@@ -11,23 +11,31 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
+
+using static Tracking.Finance.Interfaces.WebApi.Client.Routes;
 
 namespace Tracking.Finance.Interfaces.WebApi.Client
 {
+	/// <inheritdoc cref="IFinanceClient"/>
 	public sealed class FinanceClient : IFinanceClient
 	{
-		private static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
-
-		private static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
-		private static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
-
 		private readonly HttpClient _httpClient = new();
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FinanceClient"/> class.
+		/// </summary>
 		public FinanceClient()
 			: this(new Uri("https://localhost:44320/api/v1.0/"))
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FinanceClient"/> class with a base uri.
+		/// </summary>
+		///
+		/// <param name="baseUri">The base uri for all requests.</param>
+		/// <see cref="HttpClient.BaseAddress"/>
 		public FinanceClient(Uri baseUri)
 		{
 			_httpClient.BaseAddress = baseUri;
@@ -36,29 +44,41 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public async Task<UserModel> Info()
-		{
-			using var response = await _httpClient.GetAsync(InfoUri);
-			response.EnsureSuccessStatusCode();
-
-			return (await response.Content.ReadFromJsonAsync<UserModel>())!;
-		}
-
-		/// <inheritdoc/>
 		public async Task<LoginResponse> Login(LoginModel login)
 		{
-			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login);
-			response.EnsureSuccessStatusCode();
+			var loginResponse = await Post<LoginResponse, LoginModel>(LoginUri, login);
 
-			var loginResponse = (await response.Content.ReadFromJsonAsync<LoginResponse>())!;
-			_httpClient.DefaultRequestHeaders.Authorization = GetAuthenticationHeader(loginResponse.Token);
+			var header = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
+			_httpClient.DefaultRequestHeaders.Authorization = header;
 
 			return loginResponse;
 		}
 
-		private static AuthenticationHeaderValue GetAuthenticationHeader(string token)
+		/// <inheritdoc/>
+		public Task<UserModel> Info() => Get<UserModel>(InfoUri);
+
+		/// <inheritdoc/>
+		public Task<int> Create(TransactionCreationModel transaction) => Create(Transaction, transaction);
+
+		/// <inheritdoc/>
+		public Task<int> CreateItem(int transactionId, TransactionItemCreationModel transactionItem) => Create(TransactionItemUri(transactionId), transactionItem);
+
+		private async Task<TResult> Get<TResult>(string requestUri)
 		{
-			return new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+			using var response = await _httpClient.GetAsync(requestUri);
+			response.EnsureSuccessStatusCode();
+
+			return (await response.Content.ReadFromJsonAsync<TResult>())!;
 		}
+
+		private async Task<TResult> Post<TResult, TRequest>(string requestUri, TRequest request)
+		{
+			using var response = await _httpClient.PostAsJsonAsync(requestUri, request);
+			response.EnsureSuccessStatusCode();
+
+			return (await response.Content.ReadFromJsonAsync<TResult>())!;
+		}
+
+		private Task<int> Create<TRequest>(string requestUri, TRequest request) => Post<int, TRequest>(requestUri, request);
 	}
 }

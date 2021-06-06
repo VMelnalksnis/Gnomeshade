@@ -5,15 +5,21 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
-using Tracking.Finance.Interfaces.WindowsDesktop.Models;
+using Tracking.Finance.Interfaces.WebApi.Client;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
+
+using TransactionItemModel = Tracking.Finance.Interfaces.WindowsDesktop.Models.TransactionItemModel;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
 	public sealed class TransactionViewModel : Screen, IViewModel
 	{
+		private readonly IFinanceClient _financeClient;
+
 		private DateTime? _date = DateTime.Now;
 		private string? _description;
 		private ObservableCollection<TransactionItemModel> _transactionItems = new()
@@ -29,6 +35,11 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 				DeliveryDate = DateTime.Now,
 			},
 		};
+
+		public TransactionViewModel(IFinanceClient financeClient)
+		{
+			_financeClient = financeClient;
+		}
 
 		public DateTime? Date
 		{
@@ -86,13 +97,36 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			TransactionItems.Add(newItem);
 		}
 
-		public void Save()
+		public async Task Save()
 		{
+			var transaction = new TransactionCreationModel
+			{
+				Description = Description,
+				Date = Date.HasValue ? new DateTimeOffset(Date.Value, DateTimeOffset.Now.Offset) : null,
+			};
+
+			var transactionId = await _financeClient.Create(transaction);
+			var items = TransactionItems
+				.Select(item => new TransactionItemCreationModel
+				{
+					SourceAccountId = 0, // todo
+					TargetAccountId = 0, // todo
+					SourceAmount = item.SourceAmount,
+					TargetAmount = item.TargetAmount,
+					BankReference = item.BankReference,
+					ExternalReference = item.ExternalReference,
+					InternalReference = item.InternalReference,
+					ProductId = 0, // todo
+					Amount = item.Quantity,
+				})
+				.ToList();
+
+			foreach (var item in items)
+			{
+				_ = await _financeClient.CreateItem(transactionId, item);
+			}
 		}
 
-		public void CtrlNPressed()
-		{
-			AddItem();
-		}
+		public void CtrlNPressed() => AddItem();
 	}
 }
