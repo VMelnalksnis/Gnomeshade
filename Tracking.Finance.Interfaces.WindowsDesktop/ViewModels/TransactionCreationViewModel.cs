@@ -11,6 +11,7 @@ using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
+using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 using Tracking.Finance.Interfaces.WindowsDesktop.Helpers;
 
 using TransactionItemModel = Tracking.Finance.Interfaces.WindowsDesktop.Models.TransactionItemModel;
@@ -19,6 +20,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
 	public sealed class TransactionCreationViewModel : Screen, IViewModel
 	{
+		private readonly IEventAggregator _eventAggregator;
 		private readonly IFinanceClient _financeClient;
 
 		private DateTime? _date = DateTime.Now;
@@ -28,8 +30,11 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
 		/// </summary>
-		public TransactionCreationViewModel(IFinanceClient financeClient)
+		public TransactionCreationViewModel(
+			IEventAggregator eventAggregator,
+			IFinanceClient financeClient)
 		{
+			_eventAggregator = eventAggregator;
 			_financeClient = financeClient;
 
 			TransactionItems = new()
@@ -138,6 +143,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			};
 
 			var transactionId = await _financeClient.Create(transaction);
+			await _eventAggregator.PublishOnUIThreadAsync(new TransactionCreatedEvent(transactionId));
 		}
 
 		public void CtrlNPressed() => AddItem();

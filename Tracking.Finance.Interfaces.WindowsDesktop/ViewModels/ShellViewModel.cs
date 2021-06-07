@@ -11,19 +11,26 @@ using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
-	public sealed class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>, IViewModel
+	public sealed class ShellViewModel :
+		Conductor<IViewModel>,
+		IHandle<LogOnEvent>,
+		IHandle<TransactionCreatedEvent>,
+		IViewModel
 	{
 		private readonly IEventAggregator _eventAggregator;
-		private readonly TransactionCreationViewModel _transactionCreation;
 		private readonly SimpleContainer _container;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShellViewModel"/> class.
+		/// </summary>
+		///
+		/// <param name="eventAggregator"></param>
+		/// <param name="container"></param>
 		public ShellViewModel(
 			IEventAggregator eventAggregator,
-			TransactionCreationViewModel transactionCreation,
 			SimpleContainer container)
 		{
 			_eventAggregator = eventAggregator;
-			_transactionCreation = transactionCreation;
 			_container = container;
 
 			_eventAggregator.SubscribeOnPublishedThread(this);
@@ -33,7 +40,16 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <inheritdoc/>
 		public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
 		{
-			await ActivateItemAsync(_transactionCreation, cancellationToken);
+			var transactionCreation = _container.GetInstance<TransactionCreationViewModel>();
+			await ActivateItemAsync(transactionCreation, cancellationToken);
+		}
+
+		/// <inheritdoc/>
+		public async Task HandleAsync(TransactionCreatedEvent message, CancellationToken cancellationToken)
+		{
+			// todo transaction id?
+			var transaction = _container.GetInstance<TransactionViewModel>();
+			await ActivateItemAsync(transaction, cancellationToken);
 		}
 	}
 }
