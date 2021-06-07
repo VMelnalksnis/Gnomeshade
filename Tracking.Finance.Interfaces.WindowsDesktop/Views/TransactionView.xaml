@@ -65,12 +65,24 @@
 			</DataGrid.Columns>
 		</DataGrid>
 
-		<Button Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" x:Name="AddItem"
-				Padding="5" Margin="0 5">
+		<TextBlock Grid.Column="0" Grid.Row="3">
+			Source amount:
+		</TextBlock>
+		<TextBlock Grid.Column="1" Grid.Row="3"
+				   Text="{helpers:CultureAwareBinding Path=TotalSourceAmount}"/>
+
+		<TextBlock Grid.Column="0" Grid.Row="4">
+			Target amount:
+		</TextBlock>
+		<TextBlock Grid.Column="1" Grid.Row="4"
+				   Text="{helpers:CultureAwareBinding Path=TotalTargetAmount}"/>
+
+		<Button Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="1" x:Name="AddItem"
+				Padding="5" Margin="5">
 			Add item
 		</Button>
-		<Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" x:Name="Save"
-				Padding="5" Margin="0 5">
+		<Button Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="1" x:Name="Save"
+				Padding="5" Margin="5">
 			Save
 		</Button>
 	</Grid>

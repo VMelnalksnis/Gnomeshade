@@ -3,7 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ using Caliburn.Micro;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
+using Tracking.Finance.Interfaces.WindowsDesktop.Helpers;
 
 using TransactionItemModel = Tracking.Finance.Interfaces.WindowsDesktop.Models.TransactionItemModel;
 
@@ -22,23 +24,28 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 
 		private DateTime? _date = DateTime.Now;
 		private string? _description;
-		private ObservableCollection<TransactionItemModel> _transactionItems = new()
-		{
-			new TransactionItemModel
-			{
-				SourceAccount = "Wallet",
-				TargetAccount = "Rimi",
-				SourceAmount = 1.05m,
-				TargetAmount = 1.05m,
-				Product = "Bread",
-				Quantity = 1,
-				DeliveryDate = DateTime.Now,
-			},
-		};
+		private ObervableItemCollection<TransactionItemModel> _transactionItems;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
+		/// </summary>
 		public TransactionViewModel(IFinanceClient financeClient)
 		{
 			_financeClient = financeClient;
+
+			TransactionItems = new()
+			{
+				new TransactionItemModel
+				{
+					SourceAccount = "Wallet",
+					TargetAccount = "Rimi",
+					SourceAmount = 1.05m,
+					TargetAmount = 1.05m,
+					Product = "Bread",
+					Quantity = 1,
+					DeliveryDate = DateTime.Now,
+				},
+			};
 		}
 
 		public DateTime? Date
@@ -61,15 +68,25 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
-		public ObservableCollection<TransactionItemModel> TransactionItems
+		public ObervableItemCollection<TransactionItemModel> TransactionItems
 		{
 			get => _transactionItems;
 			set
 			{
+				if (_transactionItems is not null)
+				{
+					_transactionItems.CollectionChanged -= TransactionItems_CollectionChanged;
+				}
+
 				_transactionItems = value;
+				_transactionItems.CollectionChanged += TransactionItems_CollectionChanged;
 				NotifyOfPropertyChange(() => TransactionItems);
 			}
 		}
+
+		public decimal TotalSourceAmount => TransactionItems.Sum(item => item.SourceAmount);
+
+		public decimal TotalTargetAmount => TransactionItems.Sum(item => item.TargetAmount);
 
 		public bool CanAddItem => true;
 
@@ -125,5 +142,11 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		}
 
 		public void CtrlNPressed() => AddItem();
+
+		private void TransactionItems_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			NotifyOfPropertyChange(() => TotalSourceAmount);
+			NotifyOfPropertyChange(() => TotalTargetAmount);
+		}
 	}
 }
