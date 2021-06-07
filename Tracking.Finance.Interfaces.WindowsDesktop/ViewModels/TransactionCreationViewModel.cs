@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +17,7 @@ using TransactionItemModel = Tracking.Finance.Interfaces.WindowsDesktop.Models.T
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
-	public sealed class TransactionViewModel : Screen, IViewModel
+	public sealed class TransactionCreationViewModel : Screen, IViewModel
 	{
 		private readonly IFinanceClient _financeClient;
 
@@ -27,9 +26,9 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		private ObervableItemCollection<TransactionItemModel> _transactionItems;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
+		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
 		/// </summary>
-		public TransactionViewModel(IFinanceClient financeClient)
+		public TransactionCreationViewModel(IFinanceClient financeClient)
 		{
 			_financeClient = financeClient;
 

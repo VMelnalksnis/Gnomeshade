@@ -14,16 +14,16 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 	public sealed class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>, IViewModel
 	{
 		private readonly IEventAggregator _eventAggregator;
-		private readonly TransactionViewModel _transactionViewModel;
+		private readonly TransactionCreationViewModel _transactionCreation;
 		private readonly SimpleContainer _container;
 
 		public ShellViewModel(
 			IEventAggregator eventAggregator,
-			TransactionViewModel transactionViewModel,
+			TransactionCreationViewModel transactionCreation,
 			SimpleContainer container)
 		{
 			_eventAggregator = eventAggregator;
-			_transactionViewModel = transactionViewModel;
+			_transactionCreation = transactionCreation;
 			_container = container;
 
 			_eventAggregator.SubscribeOnPublishedThread(this);
@@ -33,7 +33,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <inheritdoc/>
 		public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
 		{
-			await ActivateItemAsync(_transactionViewModel, cancellationToken);
+			await ActivateItemAsync(_transactionCreation, cancellationToken);
 		}
 	}
 }

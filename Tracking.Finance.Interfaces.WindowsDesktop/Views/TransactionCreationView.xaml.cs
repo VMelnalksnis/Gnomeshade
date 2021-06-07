@@ -9,12 +9,12 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Views
 	/// <summary>
 	/// Interaction logic for TransactionView.xaml.
 	/// </summary>
-	public partial class TransactionView : UserControl
+	public partial class TransactionCreationView : UserControl
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionView"/> class.
+		/// Initializes a new instance of the <see cref="TransactionCreationView"/> class.
 		/// </summary>
-		public TransactionView()
+		public TransactionCreationView()
 		{
 			InitializeComponent();
 		}
