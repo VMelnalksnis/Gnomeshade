@@ -2,12 +2,13 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+using System.Data;
+using System.Threading.Tasks;
+
 using FluentAssertions;
 
 using NUnit.Framework;
-
-using System.Data;
-using System.Threading.Tasks;
 
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
@@ -16,14 +17,16 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
 	public class TransactionRepositoryTests
 	{
-		private IDbConnection _dbConnection;
-		private TransactionRepository _repository;
+		private IDbConnection _dbConnection = null!;
+		private TransactionRepository _repository = null!;
+		private TransactionItemRepository _itemRepository = null!;
 
 		[SetUp]
 		public async Task SetUp()
 		{
 			_dbConnection = await DatabaseInitialization.CreateConnection();
 			_repository = new TransactionRepository(_dbConnection);
+			_itemRepository = new TransactionItemRepository(_dbConnection);
 		}
 
 		[Test]
@@ -32,6 +35,12 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			var existingTransactions = await _repository.GetAllAsync();
 			foreach (var transaction in existingTransactions)
 			{
+				var items = await _itemRepository.GetAllAsync(transaction.Id);
+				foreach (var item in items)
+				{
+					await _itemRepository.DeleteAsync(item.Id);
+				}
+
 				await _repository.DeleteAsync(transaction.Id);
 			}
 
@@ -46,7 +55,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				.Should()
 				.AllBeEquivalentTo(
 					new Transaction(),
-					options => options.Excluding(transaction => transaction.Id));
+					options => FluentAssertionsConfiguration.ModifiableOptions(options).Excluding(transaction => transaction.Id));
 		}
 
 		[Test]
@@ -55,10 +64,10 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			var transaction = new Transaction();
 
 			var id = await _repository.AddAsync(transaction);
-			transaction.Id = id;
+			transaction = transaction with { Id = id };
 
 			var actual = await _repository.GetByIdAsync(id);
-			actual.Should().BeEquivalentTo(transaction);
+			actual.Should().BeEquivalentTo(transaction, FluentAssertionsConfiguration.ModifiableOptions);
 		}
 
 		[Test]
@@ -74,7 +83,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task FindByIdAsync_ShouldReturnNullIfDoesNotExist()
 		{
-			var transaction = await _repository.FindByIdAsync(int.MinValue);
+			var transaction = await _repository.FindByIdAsync(Guid.NewGuid());
 
 			transaction.Should().BeNull();
 		}
@@ -85,10 +94,10 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			var transaction = new Transaction();
 
 			var id = await _repository.AddAsync(transaction);
-			transaction.Id = id;
+			transaction = transaction with { Id = id };
 
 			var actual = await _repository.FindByIdAsync(id);
-			actual.Should().BeEquivalentTo(transaction);
+			actual.Should().BeEquivalentTo(transaction, options => options.ComparingByMembers<Transaction>().Excluding(t => t.CreatedAt).Excluding(t => t.ModifiedAt));
 		}
 
 		[TearDown]

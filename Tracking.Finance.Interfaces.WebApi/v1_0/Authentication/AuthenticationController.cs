@@ -104,8 +104,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 			}
 
 			var identityUser = await _userManager.FindByNameAsync(registration.Username);
-			var applicationUser = new User { IdentityUserId = identityUser.Id };
-			await _userRepository.AddAsync(applicationUser);
+			var applicationUser = new User { Id = new Guid(identityUser.Id) };
+
+			// todo rollback if failed to create
+			await _userRepository.AddWithIdAsync(applicationUser);
 
 			return Ok();
 		}

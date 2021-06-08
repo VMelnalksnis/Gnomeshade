@@ -84,7 +84,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[HttpGet("{id}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
-		public async Task<ActionResult<TransactionModel>> Get(int id, CancellationToken cancellationToken)
+		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
 			var transaction = await _repository.FindByIdAsync(id, cancellationToken);
 			if (transaction is null)
@@ -129,13 +129,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return Unauthorized();
 			}
 
-			var transaction = _mapper.Map<Transaction>(creationModel);
-			transaction.UserId = user.Id;
-			transaction.CreatedByUserId = user.Id;
-			transaction.ModifiedByUserId = user.Id;
-			var currentTime = DateTimeOffset.Now;
-			transaction.CreatedAt = currentTime;
-			transaction.ModifiedAt = currentTime;
+			var transaction = _mapper.Map<Transaction>(creationModel) with
+			{
+				UserId = user.Id,
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
+			};
 
 			if (!(creationModel.Items?.Any() ?? false))
 			{
@@ -178,7 +177,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[HttpDelete("{id}")]
 		[ProducesResponseType(Status204NoContent)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<StatusCodeResult> Delete(int id)
+		public async Task<StatusCodeResult> Delete(Guid id)
 		{
 			var deletedCount = await _repository.DeleteAsync(id);
 			return deletedCount switch
@@ -188,7 +187,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_ => HandleFailedDelete(deletedCount, id),
 			};
 
-			StatusCodeResult HandleFailedDelete(int deletedCount, int transactionId)
+			StatusCodeResult HandleFailedDelete(int deletedCount, Guid transactionId)
 			{
 				_logger.LogError("Deleted {DeletedCount} transactions by id {TransactionId}", deletedCount, transactionId);
 				return StatusCode(Status500InternalServerError);
@@ -196,14 +195,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		}
 
 		[HttpGet("{transactionId}/Item")]
-		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(int transactionId, CancellationToken cancellationToken)
+		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(Guid transactionId, CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
 			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
 		}
 
 		[HttpGet("Item/{id}")]
-		public async Task<ActionResult<TransactionItemModel>> GetItem(int id, CancellationToken cancellationToken)
+		public async Task<ActionResult<TransactionItemModel>> GetItem(Guid id, CancellationToken cancellationToken)
 		{
 			var item = await _itemRepository.FindByIdAsync(id, cancellationToken);
 			if (item is null)
@@ -215,7 +214,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		}
 
 		[HttpPost("{transactionId}/Item")]
-		public async Task<ActionResult<int>> CreateItem(int transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
+		public async Task<ActionResult<Guid>> CreateItem(Guid transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -229,15 +228,17 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return new BadRequestResult();
 			}
 
-			var transactionItem = _mapper.Map<TransactionItem>(creationModel);
-			transactionItem.UserId = user.Id;
-			transactionItem.TransactionId = transactionId;
+			var transactionItem = _mapper.Map<TransactionItem>(creationModel) with
+			{
+				UserId = user.Id,
+				TransactionId = transactionId,
+			};
 
 			return await _itemRepository.AddAsync(transactionItem);
 		}
 
 		[HttpDelete("Item/{id}")]
-		public async Task<StatusCodeResult> DeleteItem(int id)
+		public async Task<StatusCodeResult> DeleteItem(Guid id)
 		{
 			var deletedCount = await _itemRepository.DeleteAsync(id);
 			return deletedCount switch
@@ -247,7 +248,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_ => HandleFailedDelete(deletedCount, id),
 			};
 
-			StatusCodeResult HandleFailedDelete(int deletedCount, int transactionItemId)
+			StatusCodeResult HandleFailedDelete(int deletedCount, Guid transactionItemId)
 			{
 				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", deletedCount, transactionItemId);
 				return StatusCode(Status500InternalServerError);
@@ -267,7 +268,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		private async Task<User?> GetCurrentUser()
 		{
 			var identityUser = await _userManager.GetUserAsync(User);
-			return (await _userRepository.GetAllAsync()).SingleOrDefault(user => user.IdentityUserId == identityUser?.Id);
+			if (identityUser is null)
+			{
+				return null;
+			}
+
+			return await _userRepository.FindByIdAsync(new Guid(identityUser.Id));
 		}
 	}
 }

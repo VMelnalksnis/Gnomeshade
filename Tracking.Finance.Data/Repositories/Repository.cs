@@ -44,19 +44,19 @@ namespace Tracking.Finance.Data.Repositories
 		protected abstract string InsertSql { get; }
 
 		/// <inheritdoc/>
-		public virtual async Task<int> AddAsync(TEntity entity)
+		public virtual async Task<Guid> AddAsync(TEntity entity)
 		{
-			return await DbConnection.QuerySingleAsync<int>(InsertSql, entity);
+			return await DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
 		}
 
-		public virtual async Task<int> AddAsync(TEntity entity, IDbTransaction dbTransaction)
+		public virtual async Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction)
 		{
 			var commandDefinition = new CommandDefinition(InsertSql, entity, dbTransaction);
-			return await DbConnection.QuerySingleAsync<int>(commandDefinition);
+			return await DbConnection.QuerySingleAsync<Guid>(commandDefinition);
 		}
 
 		/// <inheritdoc/>
-		public virtual async Task<int> DeleteAsync(int id)
+		public virtual async Task<int> DeleteAsync(Guid id)
 		{
 			var sql = @$"DELETE FROM {TableName} WHERE id = @id";
 
@@ -74,7 +74,7 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc/>
-		public virtual async Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+		public virtual async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
 			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -83,7 +83,7 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc/>
-		public virtual async Task<TEntity?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
+		public virtual async Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
 			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);

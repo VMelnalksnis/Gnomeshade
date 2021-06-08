@@ -2,21 +2,23 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 namespace Tracking.Finance.Data.Models.Abstractions
 {
 	/// <summary>
-	/// Represents an entity which has a name.
+	/// Represents an entity that is owned by a <see cref="Owner"/>.
 	/// </summary>
-	public interface INamedEntity
+	public interface IOwnableEntity : IEntity
 	{
 		/// <summary>
-		/// Gets or sets the name of the entity.
+		/// Gets or sets the id of the <see cref="Owner"/> of this entity.
 		/// </summary>
-		string Name { get; set; }
+		public Guid OwnerId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the normalized name of the entity which should be used for comparison.
+		/// Gets the id of the <see cref="User"/> which created this entity.
 		/// </summary>
-		string NormalizedName { get; set; }
+		public Guid CreatedByUserId { get; init; }
 	}
 }

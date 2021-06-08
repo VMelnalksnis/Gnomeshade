@@ -13,16 +13,16 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public decimal? SourceAmount { get; init; }
 
 		[Required]
-		public int? SourceAccountId { get; init; }
+		public Guid? SourceAccountId { get; init; }
 
 		[Required]
 		public decimal? TargetAmount { get; init; }
 
 		[Required]
-		public int? TargetAccountId { get; init; }
+		public Guid? TargetAccountId { get; init; }
 
 		[Required]
-		public int? ProductId { get; init; }
+		public Guid? ProductId { get; init; }
 
 		[Required]
 		public decimal? Amount { get; init; }

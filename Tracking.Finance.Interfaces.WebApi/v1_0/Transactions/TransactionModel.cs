@@ -7,10 +7,10 @@ using System;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	public record TransactionModel(
-		int Id,
-		int UserId,
+		Guid Id,
+		Guid UserId,
 		DateTimeOffset CreatedAt,
-		int CreatedByUserId,
+		Guid CreatedByUserId,
 		DateTimeOffset ModifiedAt,
 		DateTimeOffset Date,
 		string? Description,
@@ -18,13 +18,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		bool Validated,
 		bool Completed)
 	{
-		public int Id { get; init; } = Id;
+		public Guid Id { get; init; } = Id;
 
-		public int UserId { get; init; } = UserId;
+		public Guid UserId { get; init; } = UserId;
 
 		public DateTimeOffset CreatedAt { get; init; } = CreatedAt;
 
-		public int CreatedByUserId { get; init; } = CreatedByUserId;
+		public Guid CreatedByUserId { get; init; } = CreatedByUserId;
 
 		public DateTimeOffset ModifiedAt { get; init; } = ModifiedAt;
 

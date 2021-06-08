@@ -123,14 +123,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			var items = TransactionItems
 				.Select(item => new TransactionItemCreationModel
 				{
-					SourceAccountId = 0, // todo
-					TargetAccountId = 0, // todo
+					SourceAccountId = Guid.Empty, // todo
+					TargetAccountId = Guid.Empty, // todo
 					SourceAmount = item.SourceAmount,
 					TargetAmount = item.TargetAmount,
 					BankReference = item.BankReference,
 					ExternalReference = item.ExternalReference,
 					InternalReference = item.InternalReference,
-					ProductId = 0, // todo
+					ProductId = Guid.Empty, // todo
 					Amount = item.Quantity,
 				})
 				.ToList();

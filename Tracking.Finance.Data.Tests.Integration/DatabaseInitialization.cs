@@ -47,22 +47,24 @@ namespace Tracking.Finance.Data.Tests.Integration
 			sqlConnection.Open();
 
 			var createDatabase = sqlConnection.CreateCommand();
-			createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests; CREATE DATABASE finance_tests";
+			createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests; CREATE DATABASE finance_tests;";
 			await createDatabase.ExecuteNonQueryAsync();
 
 			await sqlConnection.ChangeDatabaseAsync("finance_tests");
 
+			var cmd = sqlConnection.CreateCommand();
+			cmd.CommandText = @"CREATE EXTENSION IF NOT EXISTS ""uuid-ossp"";";
+			await cmd.ExecuteNonQueryAsync();
+
 			var createTransactions = sqlConnection.CreateCommand();
 			createTransactions.CommandText = @"
-CREATE SEQUENCE transactions_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 11 CACHE 1;
-
 CREATE TABLE ""public"".""transactions"" (
-    ""id"" integer DEFAULT nextval('transactions_id_seq') NOT NULL,
-    ""user_id"" integer NOT NULL,
-    ""created_at"" timestamptz NOT NULL,
-    ""created_by_user_id"" integer NOT NULL,
-    ""modified_at"" timestamptz NOT NULL,
-    ""modified_by_user_id"" integer NOT NULL,
+    ""id"" uuid DEFAULT uuid_generate_v4() NOT NULL,
+    ""user_id"" uuid NOT NULL,
+    ""created_at"" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ""created_by_user_id"" uuid NOT NULL,
+    ""modified_at"" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ""modified_by_user_id"" uuid NOT NULL,
     ""date"" timestamptz NOT NULL,
     ""description"" text,
     ""generated"" boolean NOT NULL,
@@ -74,31 +76,39 @@ CREATE TABLE ""public"".""transactions"" (
 
 			var createTransactionItems = sqlConnection.CreateCommand();
 			createTransactionItems.CommandText = @"
-CREATE SEQUENCE transaction_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 START 4 CACHE 1;
-
 CREATE TABLE ""public"".""transaction_items"" (
-    ""id"" integer DEFAULT nextval('transaction_items_id_seq') NOT NULL,
-    ""user_id"" integer NOT NULL,
+    ""id"" uuid DEFAULT uuid_generate_v4() NOT NULL,
+    ""user_id"" uuid NOT NULL,
+    ""transaction_id"" uuid NOT NULL,
     ""source_amount"" numeric NOT NULL,
-    ""source_account_id"" integer NOT NULL,
+    ""source_account_id"" uuid NOT NULL,
     ""target_amount"" numeric NOT NULL,
-    ""target_account_id"" integer NOT NULL,
-    ""created_at"" timestamptz NOT NULL,
-    ""created_by_user_id"" integer NOT NULL,
-    ""modified_at"" timestamptz NOT NULL,
-    ""modified_by_user_id"" integer NOT NULL,
+    ""target_account_id"" uuid NOT NULL,
+    ""created_at"" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ""created_by_user_id"" uuid NOT NULL,
+    ""modified_at"" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ""modified_by_user_id"" uuid NOT NULL,
+    ""product_id"" uuid NOT NULL,
+    ""amount"" integer NOT NULL,
     ""bank_reference"" text,
     ""external_reference"" text,
     ""internal_reference"" text,
-    ""product_id"" integer NOT NULL,
-    ""amount"" integer NOT NULL,
     ""description"" text,
-    ""transaction_id"" integer NOT NULL,
     ""delivery_date"" timestamptz,
     CONSTRAINT ""transaction_items_id"" PRIMARY KEY(""id""),
     CONSTRAINT ""transaction_items_transaction_id_fkey"" FOREIGN KEY(transaction_id) REFERENCES transactions(id) NOT DEFERRABLE
 ) WITH(oids = false);";
 			await createTransactionItems.ExecuteNonQueryAsync();
+
+			var createOwners = sqlConnection.CreateCommand();
+			createOwners.CommandText = @"
+DROP TABLE IF EXISTS ""owners"";
+CREATE TABLE ""public"".""owners""(
+	""id"" uuid DEFAULT uuid_generate_v4() NOT NULL,
+	""created_at"" timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	CONSTRAINT ""owners_id"" PRIMARY KEY(""id"")
+) WITH(oids = false);";
+			await createOwners.ExecuteNonQueryAsync();
 
 			sqlConnection.Dispose();
 		}

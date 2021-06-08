@@ -33,9 +33,9 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc/>
 		protected sealed override string InsertSql => @$"
 INSERT INTO {TableName}
-	(user_id, created_at, created_by_user_id, modified_at, modified_by_user_id, date, description, generated, validated, completed)
+	(user_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed)
 VALUES
-	(@UserId, @CreatedAt, @CreatedByUserId, @ModifiedAt, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
+	(@UserId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
 RETURNING id";
 
 		/// <inheritdoc/>

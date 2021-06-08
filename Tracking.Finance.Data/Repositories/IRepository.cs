@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,14 +14,14 @@ namespace Tracking.Finance.Data.Repositories
 	public interface IRepository<TEntity>
 		where TEntity : class, IEntity
 	{
-		Task<int> AddAsync(TEntity entity);
+		Task<Guid> AddAsync(TEntity entity);
 
-		Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+		Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-		Task<TEntity?> FindByIdAsync(int id, CancellationToken cancellationToken = default);
+		Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
 		Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
 
-		Task<int> DeleteAsync(int id);
+		Task<int> DeleteAsync(Guid id);
 	}
 }

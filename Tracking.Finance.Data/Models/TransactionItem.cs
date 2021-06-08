@@ -8,37 +8,37 @@ using Tracking.Finance.Data.Models.Abstractions;
 
 namespace Tracking.Finance.Data.Models
 {
-	public sealed class TransactionItem : IEntity, IUserSpecificEntity, IModifiableEntity
+	public sealed record TransactionItem : IEntity, IOwnableEntity, IModifiableEntity
 	{
 		/// <inheritdoc/>
-		public int Id { get; set; }
+		public Guid Id { get; init; }
 
 		/// <inheritdoc/>
-		public int UserId { get; set; }
-
-		public int TransactionId { get; set; }
-
-		public decimal SourceAmount { get; set; }
-
-		public int SourceAccountId { get; set; }
-
-		public decimal TargetAmount { get; set; }
-
-		public int TargetAccountId { get; set; }
+		public DateTimeOffset CreatedAt { get; init; }
 
 		/// <inheritdoc/>
-		public DateTimeOffset CreatedAt { get; set; }
+		public Guid CreatedByUserId { get; init; }
 
 		/// <inheritdoc/>
-		public int CreatedByUserId { get; set; }
+		public Guid OwnerId { get; set; }
 
 		/// <inheritdoc/>
 		public DateTimeOffset ModifiedAt { get; set; }
 
 		/// <inheritdoc/>
-		public int ModifiedByUserId { get; set; }
+		public Guid ModifiedByUserId { get; set; }
 
-		public int ProductId { get; set; }
+		public Guid TransactionId { get; set; }
+
+		public decimal SourceAmount { get; set; }
+
+		public Guid SourceAccountId { get; set; }
+
+		public decimal TargetAmount { get; set; }
+
+		public Guid TargetAccountId { get; set; }
+
+		public Guid ProductId { get; set; }
 
 		public decimal Amount { get; set; }
 

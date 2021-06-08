@@ -8,20 +8,17 @@ using Tracking.Finance.Data.Models.Abstractions;
 
 namespace Tracking.Finance.Data.Models
 {
-	public sealed record User : IEntity, IModifiableEntity
+	/// <summary>
+	/// Represents a collection of other entities (users, roles, groups, etc.) that can own other entities.
+	/// </summary>
+	/// <seealso cref="Ownership"/>
+	/// <seealso cref="User"/>
+	public sealed record Owner : IEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }
 
 		/// <inheritdoc/>
 		public DateTimeOffset CreatedAt { get; init; }
-
-		/// <inheritdoc/>
-		public DateTimeOffset ModifiedAt { get; set; }
-
-		/// <inheritdoc/>
-		public Guid ModifiedByUserId { get; set; }
-
-		public Guid? CounterpartyId { get; set; }
 	}
 }

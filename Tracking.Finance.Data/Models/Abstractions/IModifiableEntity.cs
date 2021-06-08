@@ -6,14 +6,20 @@ using System;
 
 namespace Tracking.Finance.Data.Models.Abstractions
 {
-	public interface IModifiableEntity
+	/// <summary>
+	/// Represents an entity that can be modified.
+	/// </summary>
+	/// <seealso cref="User"/>
+	public interface IModifiableEntity : IEntity
 	{
-		DateTimeOffset CreatedAt { get; set; }
-
-		public int CreatedByUserId { get; set; }
-
+		/// <summary>
+		/// Gets or sets the timestamp of the last modification of this entity.
+		/// </summary>
 		DateTimeOffset ModifiedAt { get; set; }
 
-		public int ModifiedByUserId { get; set; }
+		/// <summary>
+		/// Gets or sets the id of the <see cref="User"/> which last modified this entity.
+		/// </summary>
+		public Guid ModifiedByUserId { get; set; }
 	}
 }

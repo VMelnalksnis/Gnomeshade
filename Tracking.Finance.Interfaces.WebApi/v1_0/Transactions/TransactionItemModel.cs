@@ -7,48 +7,48 @@ using System;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	public record TransactionItemModel(
-		int Id,
-		int UserId,
-		int TransactionId,
+		Guid Id,
+		Guid UserId,
+		Guid TransactionId,
 		decimal SourceAmount,
-		int SourceAccountId,
+		Guid SourceAccountId,
 		decimal TargetAmount,
-		int TargetAccountId,
+		Guid TargetAccountId,
 		DateTimeOffset CreatedAt,
-		int CreatedByUserId,
+		Guid CreatedByUserId,
 		DateTimeOffset ModifiedAt,
-		int ModifiedByUserId,
-		int ProductId,
+		Guid ModifiedByUserId,
+		Guid ProductId,
 		decimal Amount,
 		string? BankReference,
 		string? ExternalReference,
-		string? InternalReference,
+		string? GuidernalReference,
 		DateTimeOffset? DeliveryDate,
 		string? Description)
 	{
-		public int Id { get; init; } = Id;
+		public Guid Id { get; init; } = Id;
 
-		public int UserId { get; init; } = UserId;
+		public Guid UserId { get; init; } = UserId;
 
-		public int TransactionId { get; init; } = TransactionId;
+		public Guid TransactionId { get; init; } = TransactionId;
 
 		public decimal SourceAmount { get; init; } = SourceAmount;
 
-		public int SourceAccountId { get; init; } = SourceAccountId;
+		public Guid SourceAccountId { get; init; } = SourceAccountId;
 
 		public decimal TargetAmount { get; init; } = TargetAmount;
 
-		public int TargetAccountId { get; init; } = TargetAccountId;
+		public Guid TargetAccountId { get; init; } = TargetAccountId;
 
 		public DateTimeOffset CreatedAt { get; init; } = CreatedAt;
 
-		public int CreatedByUserId { get; init; } = CreatedByUserId;
+		public Guid CreatedByUserId { get; init; } = CreatedByUserId;
 
 		public DateTimeOffset ModifiedAt { get; init; } = ModifiedAt;
 
-		public int ModifiedByUserId { get; init; } = ModifiedByUserId;
+		public Guid ModifiedByUserId { get; init; } = ModifiedByUserId;
 
-		public int ProductId { get; init; } = ProductId;
+		public Guid ProductId { get; init; } = ProductId;
 
 		public decimal Amount { get; init; } = Amount;
 
@@ -56,7 +56,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 		public string? ExternalReference { get; init; } = ExternalReference;
 
-		public string? InternalReference { get; init; } = InternalReference;
+		public string? GuidernalReference { get; init; } = GuidernalReference;
 
 		public DateTimeOffset? DeliveryDate { get; init; } = DeliveryDate;
 

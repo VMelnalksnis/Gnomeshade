@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -43,9 +44,7 @@ namespace Tracking.Finance.Data.Repositories
 					"source_account_id, " +
 					"target_amount, " +
 					"target_account_id, " +
-					"created_at, " +
 					"created_by_user_id, " +
-					"modified_at, " +
 					"modified_by_user_id, " +
 					"product_id, " +
 					"amount, " +
@@ -61,9 +60,7 @@ namespace Tracking.Finance.Data.Repositories
 					$"@{nameof(TransactionItem.SourceAccountId)}, " +
 					$"@{nameof(TransactionItem.TargetAmount)}, " +
 					$"@{nameof(TransactionItem.TargetAccountId)}, " +
-					$"@{nameof(TransactionItem.CreatedAt)}, " +
 					$"@{nameof(TransactionItem.CreatedByUserId)}, " +
-					$"@{nameof(TransactionItem.ModifiedAt)}, " +
 					$"@{nameof(TransactionItem.ModifiedByUserId)}, " +
 					$"@{nameof(TransactionItem.ProductId)}, " +
 					$"@{nameof(TransactionItem.Amount)}, " +
@@ -74,7 +71,7 @@ namespace Tracking.Finance.Data.Repositories
 					$"@{nameof(TransactionItem.Description)}) " +
 				"RETURNING id";
 
-		public async Task<List<TransactionItem>> GetAllAsync(int transationId, CancellationToken cancellationToken = default)
+		public async Task<List<TransactionItem>> GetAllAsync(Guid transationId, CancellationToken cancellationToken = default)
 		{
 			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE transaction_id = @TransactionId;";
 			var commandDefinition = new CommandDefinition(sql, new { TransactionId = transationId }, cancellationToken: cancellationToken);
@@ -95,8 +92,6 @@ namespace Tracking.Finance.Data.Repositories
 					source_account_id = @{nameof(TransactionItem.CreatedAt)}, 
 					target_amount = @{nameof(TransactionItem.CreatedAt)}, 
 					target_account_id = @{nameof(TransactionItem.CreatedAt)}, 
-					created_at = @{nameof(TransactionItem.CreatedAt)}, 
-					created_by_user_id = @{nameof(TransactionItem.CreatedByUserId)},
 					modified_at = @{nameof(TransactionItem.ModifiedAt)},
 					modified_by_user_id = @{nameof(TransactionItem.ModifiedByUserId)},
 				WHERE id = @Id";

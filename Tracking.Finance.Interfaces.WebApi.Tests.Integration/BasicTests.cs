@@ -100,11 +100,11 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 				{
 					new TransactionItemCreationModel
 					{
-						SourceAccountId = 0,
-						TargetAccountId = 0,
+						SourceAccountId = Guid.Empty,
+						TargetAccountId = Guid.Empty,
 						SourceAmount = 0,
 						TargetAmount = 0,
-						ProductId = 0,
+						ProductId = Guid.Empty,
 						Amount = 0,
 					},
 				},

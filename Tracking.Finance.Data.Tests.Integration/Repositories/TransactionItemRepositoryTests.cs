@@ -50,10 +50,10 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			var transactionItem = new TransactionItem { TransactionId = transactionId };
 
 			var id = await _repository.AddAsync(transactionItem);
-			transactionItem.Id = id;
+			transactionItem = transactionItem with { Id = id };
 			var actual = await _repository.GetByIdAsync(id);
 
-			actual.Should().BeEquivalentTo(transactionItem);
+			actual.Should().BeEquivalentTo(transactionItem, FluentAssertionsConfiguration.ModifiableOptions);
 			await _repository.DeleteAsync(id);
 		}
 
@@ -70,7 +70,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			items.Should().HaveCount(3);
 			items.Should().AllBeEquivalentTo(
 				new TransactionItem { TransactionId = transactionId },
-				options => options.Excluding(item => item.Id));
+				FluentAssertionsConfiguration.ModifiableWithoutIdOptions);
 
 			await _repository.DeleteAsync(id1);
 			await _repository.DeleteAsync(id2);
