@@ -21,7 +21,7 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 			{
 				operation.Responses.Add(
 					"500",
-					new OpenApiResponse
+					new()
 					{
 						Description = "Internal Server Error",
 					});

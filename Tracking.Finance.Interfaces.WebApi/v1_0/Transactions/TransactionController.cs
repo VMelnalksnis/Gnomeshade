@@ -131,7 +131,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 			var transaction = _mapper.Map<Transaction>(creationModel) with
 			{
-				UserId = user.Id,
+				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
 				ModifiedByUserId = user.Id,
 			};
@@ -150,7 +150,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				foreach (var item in creationModel.Items)
 				{
 					var transactionItem = _mapper.Map<TransactionItem>(item);
-					transactionItem.UserId = user.Id;
+					transactionItem.OwnerId = user.Id; // todo
 					transactionItem.TransactionId = id;
 					_ = await _itemRepository.AddAsync(transactionItem, dbTransaction);
 				}
@@ -187,9 +187,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_ => HandleFailedDelete(deletedCount, id),
 			};
 
-			StatusCodeResult HandleFailedDelete(int deletedCount, Guid transactionId)
+			StatusCodeResult HandleFailedDelete(int count, Guid transactionId)
 			{
-				_logger.LogError("Deleted {DeletedCount} transactions by id {TransactionId}", deletedCount, transactionId);
+				_logger.LogError("Deleted {DeletedCount} transactions by id {TransactionId}", count, transactionId);
 				return StatusCode(Status500InternalServerError);
 			}
 		}
@@ -230,7 +230,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 			var transactionItem = _mapper.Map<TransactionItem>(creationModel) with
 			{
-				UserId = user.Id,
+				OwnerId = user.Id, // todo
 				TransactionId = transactionId,
 			};
 
@@ -248,9 +248,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				_ => HandleFailedDelete(deletedCount, id),
 			};
 
-			StatusCodeResult HandleFailedDelete(int deletedCount, Guid transactionItemId)
+			StatusCodeResult HandleFailedDelete(int count, Guid transactionItemId)
 			{
-				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", deletedCount, transactionItemId);
+				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", count, transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
 		}
@@ -273,7 +273,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return null;
 			}
 
-			return await _userRepository.FindByIdAsync(new Guid(identityUser.Id));
+			return await _userRepository.FindByIdAsync(new(identityUser.Id));
 		}
 	}
 }

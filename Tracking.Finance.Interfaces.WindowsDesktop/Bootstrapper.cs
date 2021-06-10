@@ -41,7 +41,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 		}
 
 		/// <inheritdoc/>
-		protected sealed override void Configure()
+		protected override void Configure()
 		{
 			_ = _container
 				.Instance(_container)
@@ -74,8 +74,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 					"Key" => new KeyTrigger { Key = (Key)Enum.Parse(typeof(Key), action, true) },
 					"Gesture" => new KeyTrigger
 					{
-						Modifiers = ((MultiKeyGesture)converter.ConvertFrom(action)).KeySequences.First().Modifiers,
-						Key = ((MultiKeyGesture)converter.ConvertFrom(action)).KeySequences.First().Keys.First(),
+						Modifiers = ((MultiKeyGesture)converter.ConvertFrom(action)!).KeySequences.First().Modifiers,
+						Key = ((MultiKeyGesture)converter.ConvertFrom(action)!).KeySequences.First().Keys.First(),
 					},
 					_ => defaultCreateTrigger(target, triggerText),
 				};
@@ -83,15 +83,15 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop
 		}
 
 		/// <inheritdoc/>
-		protected sealed override void OnStartup(object sender, StartupEventArgs e) => DisplayRootViewFor<ShellViewModel>();
+		protected override void OnStartup(object sender, StartupEventArgs e) => DisplayRootViewFor<ShellViewModel>();
 
 		/// <inheritdoc/>
-		protected sealed override object GetInstance(Type service, string key) => _container.GetInstance(service, key);
+		protected override object GetInstance(Type service, string key) => _container.GetInstance(service, key);
 
 		/// <inheritdoc/>
-		protected sealed override IEnumerable<object> GetAllInstances(Type service) => _container.GetAllInstances(service);
+		protected override IEnumerable<object> GetAllInstances(Type service) => _container.GetAllInstances(service);
 
 		/// <inheritdoc/>
-		protected sealed override void BuildUp(object instance) => _container.BuildUp(instance);
+		protected override void BuildUp(object instance) => _container.BuildUp(instance);
 	}
 }

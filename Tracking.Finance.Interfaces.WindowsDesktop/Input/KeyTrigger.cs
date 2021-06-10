@@ -1,12 +1,15 @@
 ﻿// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
+
 // Modified version of https://github.com/Caliburn-Micro/Caliburn.Micro/blob/master/samples/scenarios/Scenario.KeyBinding/Input/KeyTrigger.cs
 // Original Copyright (c) 2010 Blue Spire Consulting, Inc.
 // Originally licensed under The MIT License.
 
 using System.Windows;
 using System.Windows.Input;
+
+using JetBrains.Annotations;
 
 using Microsoft.Xaml.Behaviors;
 
@@ -20,12 +23,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		public static readonly DependencyProperty ModifiersProperty =
 			DependencyProperty.Register(nameof(Modifiers), typeof(ModifierKeys), typeof(KeyTrigger), null);
 
+		[UsedImplicitly]
 		public Key Key
 		{
 			get => (Key)GetValue(KeyProperty);
 			set => SetValue(KeyProperty, value);
 		}
 
+		[UsedImplicitly]
 		public ModifierKeys Modifiers
 		{
 			get => (ModifierKeys)GetValue(ModifiersProperty);
@@ -33,14 +38,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		}
 
 		/// <inheritdoc/>
-		protected sealed override void OnAttached()
+		protected override void OnAttached()
 		{
 			base.OnAttached();
 			AssociatedObject.KeyDown += OnAssociatedObjectKeyDown;
 		}
 
 		/// <inheritdoc/>
-		protected sealed override void OnDetaching()
+		protected override void OnDetaching()
 		{
 			base.OnDetaching();
 			AssociatedObject.KeyDown -= OnAssociatedObjectKeyDown;
@@ -48,9 +53,9 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 
 		private static ModifierKeys GetActualModifiers(Key key, ModifierKeys modifiers) => key switch
 		{
-			Key.LeftCtrl or Key.RightCtrl => modifiers |= ModifierKeys.Control,
-			Key.LeftAlt or Key.RightAlt => modifiers |= ModifierKeys.Alt,
-			Key.LeftShift or Key.RightShift => modifiers |= ModifierKeys.Shift,
+			Key.LeftCtrl or Key.RightCtrl => modifiers | ModifierKeys.Control,
+			Key.LeftAlt or Key.RightAlt => modifiers | ModifierKeys.Alt,
+			Key.LeftShift or Key.RightShift => modifiers | ModifierKeys.Shift,
 			_ => modifiers,
 		};
 

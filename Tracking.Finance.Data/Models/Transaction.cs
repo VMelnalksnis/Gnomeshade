@@ -8,7 +8,7 @@ using Tracking.Finance.Data.Models.Abstractions;
 
 namespace Tracking.Finance.Data.Models
 {
-	public sealed record Transaction : IEntity, IOwnableEntity, IModifiableEntity
+	public sealed record Transaction : IOwnableEntity, IModifiableEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }

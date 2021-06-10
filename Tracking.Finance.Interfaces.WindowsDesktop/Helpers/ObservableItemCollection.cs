@@ -15,28 +15,28 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 	/// </summary>
 	///
 	/// <typeparam name="T">The type of elements in the collection.</typeparam>
-	public class ObervableItemCollection<T> : ObservableCollection<T>
+	public sealed class ObservableItemCollection<T> : ObservableCollection<T>
 		where T : INotifyPropertyChanged
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ObervableItemCollection{T}"/> class.
+		/// Initializes a new instance of the <see cref="ObservableItemCollection{T}"/> class.
 		/// </summary>
-		public ObervableItemCollection()
+		public ObservableItemCollection()
 		{
 			CollectionChanged += Items_CollectionChanged;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ObervableItemCollection{T}"/> class
+		/// Initializes a new instance of the <see cref="ObservableItemCollection{T}"/> class
 		/// that contains elements copied from the specified collection.
 		/// </summary>
 		///
 		/// <param name="collection">The collection from which the elements are copied.</param>
-		public ObervableItemCollection(IEnumerable<T> collection)
+		public ObservableItemCollection(IEnumerable<T> collection)
 			: base(collection)
 		{
 			CollectionChanged += Items_CollectionChanged;
-			foreach (INotifyPropertyChanged item in collection)
+			foreach (var item in collection)
 			{
 				item.PropertyChanged += Item_PropertyChanged;
 			}
@@ -44,11 +44,6 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 
 		private void Items_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs eventArgs)
 		{
-			if (eventArgs is null)
-			{
-				return;
-			}
-
 			if (eventArgs.OldItems is not null)
 			{
 				foreach (INotifyPropertyChanged item in eventArgs.OldItems)

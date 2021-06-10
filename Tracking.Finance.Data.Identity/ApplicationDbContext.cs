@@ -24,7 +24,7 @@ namespace Tracking.Finance.Data.Identity
 		}
 
 		/// <inheritdoc/>
-		protected sealed override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			if (optionsBuilder.IsConfigured)
 			{

@@ -7,15 +7,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	/// <summary>
 	/// Represents information needed in order to create a transaction.
 	/// </summary>
+	[PublicAPI]
 	public record TransactionCreationModel
 	{
 		/// <summary>
-		/// The date on which the transaction was completed on.
+		/// Gets the date on which the transaction was completed on.
 		/// </summary>
 		[Required]
 		public DateTimeOffset? Date { get; init; }
@@ -26,10 +29,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public bool Generated { get; init; } = true;
 
 		[DefaultValue(false)]
-		public bool Validated { get; init; } = false;
+		public bool Validated { get; init; }
 
 		[DefaultValue(false)]
-		public bool Completed { get; init; } = false;
+		public bool Completed { get; init; }
 
 		public List<TransactionItemCreationModel>? Items { get; init; }
 	}

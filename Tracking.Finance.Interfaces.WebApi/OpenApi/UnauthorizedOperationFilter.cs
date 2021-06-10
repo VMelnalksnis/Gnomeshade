@@ -18,19 +18,19 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 	/// </summary>
 	public sealed class UnauthorizedOperationFilter : IOperationFilter
 	{
-		private static readonly string UnauthorizedCode = StatusCodes.Status401Unauthorized.ToString();
+		private static readonly string _unauthorizedCode = StatusCodes.Status401Unauthorized.ToString();
 
 		/// <inheritdoc/>
 		public void Apply(OpenApiOperation operation, OperationFilterContext context)
 		{
 			if ((!HasAuthorizationAttribute(context.MethodInfo) &&
 				!HasAuthorizationAttribute(context.MethodInfo?.DeclaringType)) ||
-				operation.Responses.ContainsKey(UnauthorizedCode))
+				operation.Responses.ContainsKey(_unauthorizedCode))
 			{
 				return;
 			}
 
-			operation.Responses.Add(UnauthorizedCode, new OpenApiResponse { Description = "Unauthorized" });
+			operation.Responses.Add(_unauthorizedCode, new() { Description = "Unauthorized" });
 		}
 
 		private bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)

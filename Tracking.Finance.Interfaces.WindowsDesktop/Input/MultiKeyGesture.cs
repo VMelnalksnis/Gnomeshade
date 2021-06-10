@@ -1,6 +1,7 @@
 ﻿// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
+
 // Modified version of https://github.com/Caliburn-Micro/Caliburn.Micro/blob/master/samples/scenarios/Scenario.KeyBinding/Input/MultiKeyGesture.cs
 // Original Copyright (c) 2010 Blue Spire Consulting, Inc.
 // Originally licensed under The MIT License.
@@ -21,22 +22,22 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// <summary>
 		/// The maximum delay between key presses.
 		/// </summary>
-		private static readonly TimeSpan maximumDelay = TimeSpan.FromSeconds(1);
+		private static readonly TimeSpan _maximumDelay = TimeSpan.FromSeconds(1);
 
 		/// <summary>
 		/// The index of the current gesture key.
 		/// </summary>
-		private int currentKeyIndex;
+		private int _currentKeyIndex;
 
 		/// <summary>
 		/// The current sequence index.
 		/// </summary>
-		private int currentSequenceIndex;
+		private int _currentSequenceIndex;
 
 		/// <summary>
 		/// The last time a gesture key was pressed.
 		/// </summary>
-		private DateTime lastKeyPress;
+		private DateTime _lastKeyPress;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MultiKeyGesture" /> class.
@@ -105,8 +106,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 				return false;
 			}
 
-			var currentSequence = KeySequences[currentSequenceIndex];
-			var currentKey = currentSequence.Keys[currentKeyIndex];
+			var currentSequence = KeySequences[_currentSequenceIndex];
+			var currentKey = currentSequence.Keys[_currentKeyIndex];
 
 			// Check if the key is a modifier...
 			if (IsModifierKey(key))
@@ -116,7 +117,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 			}
 
 			// Check if the current key press happened too late...
-			if (currentSequenceIndex != 0 && DateTime.Now - lastKeyPress > maximumDelay)
+			if (_currentSequenceIndex != 0 && DateTime.Now - _lastKeyPress > _maximumDelay)
 			{
 				// The delay has expired, abort the match...
 				ResetState();
@@ -149,21 +150,21 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 			}
 
 			// Move on the index, pointing to the next key...
-			currentKeyIndex++;
+			_currentKeyIndex++;
 
 			// Check if the key is the last of the current sequence...
-			if (currentKeyIndex == KeySequences[currentSequenceIndex].Keys.Length)
+			if (_currentKeyIndex == KeySequences[_currentSequenceIndex].Keys.Length)
 			{
 				// The key is the last of the current sequence, go to the next sequence...
-				currentSequenceIndex++;
-				currentKeyIndex = 0;
+				_currentSequenceIndex++;
+				_currentKeyIndex = 0;
 			}
 
 			// Check if the sequence is the last one of the gesture...
-			if (currentSequenceIndex != KeySequences.Length)
+			if (_currentSequenceIndex != KeySequences.Length)
 			{
 				// If the key is not the last one, get the current date time, handle the match event but do nothing...
-				lastKeyPress = DateTime.Now;
+				_lastKeyPress = DateTime.Now;
 				inputEventArgs.Handled = true;
 #if DEBUG_MESSAGES
       System.Diagnostics.Debug.WriteLine("Waiting for " + (m_KeySequences.Length - m_CurrentSequenceIndex) + " sequences", "[" + MultiKeyGestureConverter.Default.ConvertToString(this) + "]");
@@ -181,7 +182,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		}
 
 		/// <summary>
-		/// Determines whether the keyis define.
+		/// Determines whether the key is defined.
 		/// </summary>
 		///
 		/// <param name="key">The key to check.</param>
@@ -209,7 +210,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 
 			var builder = new StringBuilder();
 
-			_ = builder.Append(sequences[0].ToString());
+			_ = builder.Append(sequences[0]);
 
 			for (var i = 1; i < sequences.Length; i++)
 			{
@@ -244,8 +245,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// </summary>
 		private void ResetState()
 		{
-			currentSequenceIndex = 0;
-			currentKeyIndex = 0;
+			_currentSequenceIndex = 0;
+			_currentKeyIndex = 0;
 		}
 	}
 }

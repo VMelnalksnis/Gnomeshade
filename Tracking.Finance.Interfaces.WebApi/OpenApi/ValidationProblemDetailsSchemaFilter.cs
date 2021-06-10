@@ -13,7 +13,7 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 	public sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
 	{
 		/// <inheritdoc/>
-		protected sealed override void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context)
+		protected override void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context)
 		{
 			schema.Properties["status"].Default = new OpenApiInteger(400);
 		}

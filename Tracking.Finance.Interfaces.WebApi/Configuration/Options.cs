@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -36,7 +35,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 			options.Audience = jwtOptions.ValidAudience;
 			options.SaveToken = true;
 			options.RequireHttpsMetadata = true;
-			options.TokenValidationParameters = new TokenValidationParameters
+			options.TokenValidationParameters = new()
 			{
 				ValidateIssuer = true,
 				ValidateAudience = true,
@@ -67,7 +66,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 			options.EnableAnnotations();
 
 			const string jwtSecurityDefinition = "JWT";
-			options.AddSecurityDefinition(jwtSecurityDefinition, new OpenApiSecurityScheme
+			options.AddSecurityDefinition(jwtSecurityDefinition, new()
 			{
 				Description = "JWT Authorization header using the Bearer scheme.",
 				BearerFormat = "JWT",
@@ -76,12 +75,13 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 				Type = SecuritySchemeType.Http,
 			});
 
-			options.AddSecurityRequirement(new OpenApiSecurityRequirement
+			options.AddSecurityRequirement(new()
 			{
 				{
-					new OpenApiSecurityScheme
+					new()
 					{
-						Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = jwtSecurityDefinition },
+						Reference = new()
+							{ Type = ReferenceType.SecurityScheme, Id = jwtSecurityDefinition },
 					},
 					new List<string>()
 				},

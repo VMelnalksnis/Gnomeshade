@@ -13,6 +13,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="5.0.6" />

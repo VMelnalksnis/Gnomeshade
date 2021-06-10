@@ -8,7 +8,7 @@ using Tracking.Finance.Data.Models.Abstractions;
 
 namespace Tracking.Finance.Data.Repositories
 {
-	public interface IModifiableRepository<TEntity>
+	public interface IModifiableRepository<in TEntity>
 		where TEntity : class, IEntity, IModifiableEntity
 	{
 		Task UpdateAsync(TEntity entity);

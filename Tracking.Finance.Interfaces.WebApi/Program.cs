@@ -4,11 +4,8 @@
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
-using Tracking.Finance.Interfaces.WebApi;
-
-namespace Tracking.Finance.Web
+namespace Tracking.Finance.Interfaces.WebApi
 {
 	public class Program
 	{

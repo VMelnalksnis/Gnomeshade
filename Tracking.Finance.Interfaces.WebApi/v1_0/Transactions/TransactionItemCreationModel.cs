@@ -5,8 +5,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
+	[PublicAPI]
 	public record TransactionItemCreationModel
 	{
 		[Required]

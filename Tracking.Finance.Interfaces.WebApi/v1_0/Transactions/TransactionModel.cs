@@ -6,36 +6,26 @@ using System;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
-	public record TransactionModel(
-		Guid Id,
-		Guid UserId,
-		DateTimeOffset CreatedAt,
-		Guid CreatedByUserId,
-		DateTimeOffset ModifiedAt,
-		DateTimeOffset Date,
-		string? Description,
-		bool Generated,
-		bool Validated,
-		bool Completed)
+	public record TransactionModel
 	{
-		public Guid Id { get; init; } = Id;
+		public Guid Id { get; init; }
 
-		public Guid UserId { get; init; } = UserId;
+		public Guid UserId { get; init; }
 
-		public DateTimeOffset CreatedAt { get; init; } = CreatedAt;
+		public DateTimeOffset CreatedAt { get; init; }
 
-		public Guid CreatedByUserId { get; init; } = CreatedByUserId;
+		public Guid CreatedByUserId { get; init; }
 
-		public DateTimeOffset ModifiedAt { get; init; } = ModifiedAt;
+		public DateTimeOffset ModifiedAt { get; init; }
 
-		public DateTimeOffset Date { get; init; } = Date;
+		public DateTimeOffset Date { get; init; }
 
-		public string? Description { get; init; } = Description;
+		public string? Description { get; init; }
 
-		public bool Generated { get; init; } = Generated;
+		public bool Generated { get; init; }
 
-		public bool Validated { get; init; } = Validated;
+		public bool Validated { get; init; }
 
-		public bool Completed { get; init; } = Completed;
+		public bool Completed { get; init; }
 	}
 }

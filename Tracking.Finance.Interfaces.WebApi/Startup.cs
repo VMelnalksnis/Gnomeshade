@@ -9,7 +9,6 @@ using AutoMapper;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -71,12 +70,12 @@ namespace Tracking.Finance.Interfaces.WebApi
 				.AddJwtBearer(options => Options.JwtBearer(options, Configuration));
 
 			services
-				.AddTransient<IDbConnection>(provider => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
+				.AddTransient<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
 				.AddTransient<TransactionRepository>()
 				.AddTransient<TransactionItemRepository>()
 				.AddTransient<UserRepository>();
 
-			services.AddSingleton<AutoMapper.IConfigurationProvider>(provider => new MapperConfiguration(options =>
+			services.AddSingleton<AutoMapper.IConfigurationProvider>(_ => new MapperConfiguration(options =>
 			{
 				options.CreateMap<RegistrationModel, ApplicationUser>();
 				options.CreateMap<ApplicationUser, UserModel>();

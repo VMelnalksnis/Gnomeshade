@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 using Microsoft.Extensions.Configuration;
 
 namespace Tracking.Finance.Interfaces.WebApi.Configuration
@@ -15,7 +17,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 	/// </summary>
 	public static class ConfigurationExtensions
 	{
-		public static TOptions GetValid<TOptions>(this IConfiguration configuration)
+		public static TOptions GetValid<[MeansImplicitUse(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]TOptions>(this IConfiguration configuration)
 			where TOptions : notnull
 		{
 			var sectionName = typeof(TOptions).GetSectionName();
@@ -25,39 +27,30 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 		public static string GetSectionName(this Type type)
 		{
 			return type.Name.EndsWith("Options")
-				? type.Name.Substring(0, type.Name.LastIndexOf("Options"))
+				? type.Name[..type.Name.LastIndexOf("Options", StringComparison.Ordinal)]
 				: type.Name;
-		}
-
-		/// <summary>
-		/// Validates an object based on its DataAnnotations and throws an exception if the object is not valid.
-		/// </summary>
-		///
-		/// <param name="options">The object to validate.</param>
-		public static TOptions ValidateAndThrow<TOptions>(this TOptions options)
-			where TOptions : notnull
-		{
-			Validator.ValidateObject(options, new ValidationContext(options), true);
-			return options;
 		}
 
 		/// <summary>
 		/// Validates an object based on its DataAnnotations and returns a list of validation errors.
 		/// </summary>
 		///
+		/// <typeparam name="TOptions">The type of the options object.</typeparam>
 		/// <param name="options">The object to validate.</param>
 		/// <returns>A list of validation errors.</returns>
 		public static ICollection<ValidationResult> Validate<TOptions>(this TOptions options)
 			where TOptions : notnull
 		{
-			var Results = new List<ValidationResult>();
-			var Context = new ValidationContext(options);
-			if (!Validator.TryValidateObject(options, Context, Results, true))
-			{
-				return Results;
-			}
+			var results = new List<ValidationResult>();
+			var context = new ValidationContext(options);
+			return !Validator.TryValidateObject(options, context, results, true) ? results : new();
+		}
 
-			return new List<ValidationResult>();
+		private static TOptions ValidateAndThrow<TOptions>(this TOptions options)
+			where TOptions : notnull
+		{
+			Validator.ValidateObject(options, new(options), true);
+			return options;
 		}
 	}
 }

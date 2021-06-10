@@ -25,8 +25,8 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		public async Task SetUp()
 		{
 			_dbConnection = await DatabaseInitialization.CreateConnection();
-			_repository = new TransactionRepository(_dbConnection);
-			_itemRepository = new TransactionItemRepository(_dbConnection);
+			_repository = new(_dbConnection);
+			_itemRepository = new(_dbConnection);
 		}
 
 		[Test]
@@ -44,9 +44,9 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				await _repository.DeleteAsync(transaction.Id);
 			}
 
-			await _repository.AddAsync(new Transaction());
-			await _repository.AddAsync(new Transaction());
-			await _repository.AddAsync(new Transaction());
+			await _repository.AddAsync(new());
+			await _repository.AddAsync(new());
+			await _repository.AddAsync(new());
 
 			var transactions = await _repository.GetAllAsync();
 
@@ -73,7 +73,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task DeleteAsync_ShouldDelete()
 		{
-			var id = await _repository.AddAsync(new Transaction());
+			var id = await _repository.AddAsync(new());
 
 			var result = await _repository.DeleteAsync(id);
 

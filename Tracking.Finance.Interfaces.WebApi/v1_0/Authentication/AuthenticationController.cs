@@ -68,9 +68,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 
 			var claims = new List<Claim>
 			{
-				new Claim(ClaimTypes.NameIdentifier, user.Id),
-				new Claim(ClaimTypes.Name, user.UserName),
-				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+				new(ClaimTypes.NameIdentifier, user.Id),
+				new(ClaimTypes.Name, user.UserName),
+				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 			};
 
 			var roles = await _userManager.GetRolesAsync(user);
@@ -84,7 +84,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 				claims,
 				DateTime.Now,
 				DateTime.Now.AddHours(3),
-				new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
+				new(authSigningKey, SecurityAlgorithms.HmacSha256));
 
 			return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
 		}
@@ -104,7 +104,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 			}
 
 			var identityUser = await _userManager.FindByNameAsync(registration.Username);
-			var applicationUser = new User { Id = new Guid(identityUser.Id) };
+			var applicationUser = new User { Id = new(identityUser.Id) };
 
 			// todo rollback if failed to create
 			await _userRepository.AddWithIdAsync(applicationUser);

@@ -4,8 +4,11 @@
 
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
+	[PublicAPI]
 	public class RegistrationModel
 	{
 		[Required(AllowEmptyStrings = false)]

@@ -90,15 +90,15 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 		{
 			await Authorize();
 			var transactionsResponse = await _client.GetAsync("/api/v1.0/transaction");
-			var transactions = await transactionsResponse.Content.ReadFromJsonAsync<List<TransactionModel>>();
+			await transactionsResponse.Content.ReadFromJsonAsync<List<TransactionModel>>();
 
 			var transaction = new TransactionCreationModel
 			{
 				Date = DateTimeOffset.Now,
 				Description = "Transaction with items creation test",
-				Items = new List<TransactionItemCreationModel>
+				Items = new()
 				{
-					new TransactionItemCreationModel
+					new()
 					{
 						SourceAccountId = Guid.Empty,
 						TargetAccountId = Guid.Empty,

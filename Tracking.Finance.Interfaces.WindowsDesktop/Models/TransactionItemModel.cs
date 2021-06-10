@@ -6,8 +6,11 @@ using System;
 
 using Caliburn.Micro;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WindowsDesktop.Models
 {
+	[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
 	public sealed class TransactionItemModel : PropertyChangedBase
 	{
 		private string _targetAccount;

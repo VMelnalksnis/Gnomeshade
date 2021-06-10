@@ -22,7 +22,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 				throw new ArgumentException("The specified type must be a controller", nameof(controllerType));
 			}
 
-			return controllerType.Name.Substring(0, controllerType.Name.LastIndexOf("Controller"));
+			return controllerType.Name.Substring(0, controllerType.Name.LastIndexOf("Controller", StringComparison.Ordinal));
 		}
 	}
 }

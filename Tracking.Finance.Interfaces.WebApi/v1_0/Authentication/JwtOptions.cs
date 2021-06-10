@@ -25,6 +25,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 		[Required(AllowEmptyStrings = false)]
 		public string Secret { get; set; }
 
-		public SymmetricSecurityKey SecurityKey => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Secret));
+		public SymmetricSecurityKey SecurityKey => new(Encoding.UTF8.GetBytes(Secret));
 	}
 }

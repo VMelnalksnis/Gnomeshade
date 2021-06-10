@@ -22,20 +22,19 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc/>
-		protected sealed override string TableName { get; } = "public.\"transactions\"";
+		protected override string TableName => "public.\"transactions\"";
 
 		/// <inheritdoc/>
-		protected sealed override string ColumnNames { get; } =
-			"id Id, user_id UserId, created_at CreatedAt, created_by_user_id CreatedByUserId, " +
+		protected override string ColumnNames => "id Id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, " +
 			"modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, date Date, " +
 			"description Description, generated \"Generated\", validated Validated, completed Completed";
 
 		/// <inheritdoc/>
-		protected sealed override string InsertSql => @$"
+		protected override string InsertSql => @$"
 INSERT INTO {TableName}
-	(user_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed)
+	(owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed)
 VALUES
-	(@UserId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
+	(@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed)
 RETURNING id";
 
 		/// <inheritdoc/>
@@ -44,7 +43,7 @@ RETURNING id";
 			var sql = $@"
 				UPDATE {TableName} 
 				SET 
-					user_id = @UserId, 
+					owner_id = @OwnerId, 
 					created_at = @CreatedAt, 
 					created_by_user_id = @CreatedByUserId,
 					modified_at = @ModifiedAt,

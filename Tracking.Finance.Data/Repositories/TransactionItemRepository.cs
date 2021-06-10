@@ -26,19 +26,18 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc/>
-		protected sealed override string TableName { get; } = "transaction_items";
+		protected override string TableName => "transaction_items";
 
 		/// <inheritdoc/>
-		protected sealed override string ColumnNames { get; } =
-			"id Id, user_id UserId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, " +
+		protected override string ColumnNames => "id Id, owner_id OwnerId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, " +
 			"target_amount TargetAmount, target_account_id TargetAccountId, created_at CreatedAt, " +
 			"created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, " +
 			"product_id ProductId, amount Amount, bank_reference BankReference, external_reference ExternalReference, " +
 			"internal_reference InternalReference, delivery_date DeliveryDate, description Description";
 
-		protected sealed override string InsertSql =>
+		protected override string InsertSql =>
 			$"INSERT INTO {TableName}" +
-					"(user_id, " +
+					"(owner_id, " +
 					"transaction_id, " +
 					"source_amount, " +
 					"source_account_id, " +
@@ -54,7 +53,7 @@ namespace Tracking.Finance.Data.Repositories
 					"delivery_date, " +
 					"description) " +
 				"VALUES " +
-					$"(@{nameof(TransactionItem.UserId)}, " +
+					$"(@{nameof(TransactionItem.OwnerId)}, " +
 					$"@{nameof(TransactionItem.TransactionId)}, " +
 					$"@{nameof(TransactionItem.SourceAmount)}, " +
 					$"@{nameof(TransactionItem.SourceAccountId)}, " +
@@ -71,10 +70,10 @@ namespace Tracking.Finance.Data.Repositories
 					$"@{nameof(TransactionItem.Description)}) " +
 				"RETURNING id";
 
-		public async Task<List<TransactionItem>> GetAllAsync(Guid transationId, CancellationToken cancellationToken = default)
+		public async Task<List<TransactionItem>> GetAllAsync(Guid transactionId, CancellationToken cancellationToken = default)
 		{
 			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE transaction_id = @TransactionId;";
-			var commandDefinition = new CommandDefinition(sql, new { TransactionId = transationId }, cancellationToken: cancellationToken);
+			var commandDefinition = new CommandDefinition(sql, new { TransactionId = transactionId }, cancellationToken: cancellationToken);
 
 			var entities = await DbConnection.QueryAsync<TransactionItem>(commandDefinition);
 			return entities.ToList();
@@ -86,8 +85,8 @@ namespace Tracking.Finance.Data.Repositories
 			var sql = $@"
 				UPDATE {TableName} 
 				SET 
-					user_id = @{nameof(TransactionItem.UserId)}, 
-					user_id = @{nameof(TransactionItem.TransactionId)}, 
+					owner_id = @{nameof(TransactionItem.OwnerId)}, 
+					transaction_id = @{nameof(TransactionItem.TransactionId)}, 
 					source_amount = @{nameof(TransactionItem.CreatedAt)}, 
 					source_account_id = @{nameof(TransactionItem.CreatedAt)}, 
 					target_amount = @{nameof(TransactionItem.CreatedAt)}, 

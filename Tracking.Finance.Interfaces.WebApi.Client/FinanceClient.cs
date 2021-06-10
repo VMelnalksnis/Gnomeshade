@@ -4,7 +4,6 @@
 
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// Initializes a new instance of the <see cref="FinanceClient"/> class.
 		/// </summary>
 		public FinanceClient()
-			: this(new Uri("https://localhost:44320/api/v1.0/"))
+			: this(new("https://localhost:44320/api/v1.0/"))
 		{
 		}
 
@@ -40,16 +39,14 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		{
 			_httpClient.BaseAddress = baseUri;
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
-			_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 		}
 
 		/// <inheritdoc/>
 		public async Task<LoginResponse> Login(LoginModel login)
 		{
 			var loginResponse = await Post<LoginResponse, LoginModel>(LoginUri, login);
-
-			var header = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
-			_httpClient.DefaultRequestHeaders.Authorization = header;
+			_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
 
 			return loginResponse;
 		}

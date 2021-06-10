@@ -42,7 +42,7 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 
 			operation.Responses.Add(
 				"400",
-				new OpenApiResponse
+				new()
 				{
 					Content = new Dictionary<string, OpenApiMediaType>
 					{

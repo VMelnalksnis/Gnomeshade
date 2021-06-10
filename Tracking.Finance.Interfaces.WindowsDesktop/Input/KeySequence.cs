@@ -1,6 +1,7 @@
 ﻿// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
+
 // Modified version of https://github.com/Caliburn-Micro/Caliburn.Micro/blob/master/samples/scenarios/Scenario.KeyBinding/Input/KeySequence.cs
 // Original Copyright (c) 2010 Blue Spire Consulting, Inc.
 // Originally licensed under The MIT License.
@@ -51,7 +52,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// </summary>
 		///
 		/// <returns>A <see cref="string" /> that represents the current <see cref="object" />.</returns>
-		public sealed override string ToString()
+		public override string ToString()
 		{
 			var builder = new StringBuilder();
 			if (Modifiers != ModifierKeys.None)

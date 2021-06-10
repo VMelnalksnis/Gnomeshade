@@ -1,6 +1,7 @@
 ﻿// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
+
 // Modified version of https://github.com/Caliburn-Micro/Caliburn.Micro/blob/master/samples/scenarios/Scenario.KeyBinding/Input/MultiKeyGestureConverter.cs
 // Original Copyright (c) 2010 Blue Spire Consulting, Inc.
 // Originally licensed under The MIT License.
@@ -31,12 +32,12 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// <summary>
 		/// The inner key converter.
 		/// </summary>
-		private static readonly KeyConverter keyConverter = new();
+		private static readonly KeyConverter _keyConverter = new();
 
 		/// <summary>
 		/// The inner modifier key converter.
 		/// </summary>
-		private static readonly ModifierKeysConverter modifierKeysConverter = new();
+		private static readonly ModifierKeysConverter _modifierKeysConverter = new();
 
 		/// <summary>
 		/// Returns whether this converter can convert an object of the given type to the type of this converter,
@@ -47,7 +48,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// <param name="sourceType">A <see cref="Type" /> that represents the type you want to convert from.</param>
 		/// <returns><see langword="true"/> if this converter can perform the conversion;
 		/// otherwise, <see langword="false"/>.</returns>
-		public sealed override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => sourceType == typeof(string);
 
 		/// <summary>
 		/// Converts the given object to the type of this converter, using the specified context and culture information.
@@ -58,7 +59,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// <param name="value">The <see cref="object" /> to convert.</param>
 		/// <returns>An <see cref="object" /> that represents the converted value.</returns>
 		/// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
-		public sealed override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
 			var stringValue = value as string;
 			if (string.IsNullOrEmpty(stringValue))
@@ -87,14 +88,11 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 				for (var i = modifiersCount; i < keyStrings.Length; i++)
 				{
 					var keyString = keyStrings[i];
-					if (keyString != null)
-					{
-						var key = (Key)keyConverter.ConvertFrom(keyString.Trim());
-						keys.Add(key);
-					}
+					var key = (Key)_keyConverter.ConvertFrom(keyString.Trim());
+					keys.Add(key);
 				}
 
-				keySequences.Add(new KeySequence(modifier, keys.ToArray()));
+				keySequences.Add(new(modifier, keys.ToArray()));
 			}
 
 			return new MultiKeyGesture(stringValue, keySequences.ToArray());
@@ -111,7 +109,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 		/// <returns>An <see cref="object" /> that represents the converted value.</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="destinationType" /> is <see langword="null"/>.</exception>
 		/// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
-		public sealed override object ConvertTo(
+		public override object ConvertTo(
 			ITypeDescriptorContext context,
 			CultureInfo culture,
 			object value,
@@ -134,16 +132,16 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Input
 				var sequence = gesture.KeySequences[i];
 				if (sequence.Modifiers != ModifierKeys.None)
 				{
-					_ = builder.Append((string)modifierKeysConverter.ConvertTo(context, culture, sequence.Modifiers, destinationType));
+					_ = builder.Append((string)_modifierKeysConverter.ConvertTo(context, culture, sequence.Modifiers, destinationType)!);
 					_ = builder.Append('+');
 				}
 
-				_ = builder.Append((string)keyConverter.ConvertTo(context, culture, sequence.Keys[0], destinationType));
+				_ = builder.Append((string)_keyConverter.ConvertTo(context, culture, sequence.Keys[0], destinationType));
 
 				for (var j = 1; j < sequence.Keys.Length; j++)
 				{
 					_ = builder.Append('+');
-					_ = builder.Append((string)keyConverter.ConvertTo(context, culture, sequence.Keys[0], destinationType));
+					_ = builder.Append((string)_keyConverter.ConvertTo(context, culture, sequence.Keys[0], destinationType));
 				}
 			}
 

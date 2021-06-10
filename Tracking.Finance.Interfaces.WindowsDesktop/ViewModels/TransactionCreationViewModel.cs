@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Caliburn.Micro;
 
+using JetBrains.Annotations;
+
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 using Tracking.Finance.Interfaces.WindowsDesktop.Events;
@@ -18,6 +20,7 @@ using TransactionItemModel = Tracking.Finance.Interfaces.WindowsDesktop.Models.T
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
+	[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
 	public sealed class TransactionCreationViewModel : Screen, IViewModel
 	{
 		private readonly IEventAggregator _eventAggregator;
@@ -25,7 +28,19 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 
 		private DateTime? _date = DateTime.Now;
 		private string? _description;
-		private ObervableItemCollection<TransactionItemModel> _transactionItems;
+		private ObservableItemCollection<TransactionItemModel> _transactionItems = new()
+		{
+			new()
+			{
+				SourceAccount = "Wallet",
+				TargetAccount = "Rimi",
+				SourceAmount = 1.05m,
+				TargetAmount = 1.05m,
+				Product = "Bread",
+				Quantity = 1,
+				DeliveryDate = DateTime.Now,
+			},
+		};
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
@@ -36,20 +51,6 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		{
 			_eventAggregator = eventAggregator;
 			_financeClient = financeClient;
-
-			TransactionItems = new()
-			{
-				new TransactionItemModel
-				{
-					SourceAccount = "Wallet",
-					TargetAccount = "Rimi",
-					SourceAmount = 1.05m,
-					TargetAmount = 1.05m,
-					Product = "Bread",
-					Quantity = 1,
-					DeliveryDate = DateTime.Now,
-				},
-			};
 		}
 
 		public DateTime? Date
@@ -72,15 +73,12 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
-		public ObervableItemCollection<TransactionItemModel> TransactionItems
+		public ObservableItemCollection<TransactionItemModel> TransactionItems
 		{
 			get => _transactionItems;
 			set
 			{
-				if (_transactionItems is not null)
-				{
-					_transactionItems.CollectionChanged -= TransactionItems_CollectionChanged;
-				}
+				_transactionItems.CollectionChanged -= TransactionItems_CollectionChanged;
 
 				_transactionItems = value;
 				_transactionItems.CollectionChanged += TransactionItems_CollectionChanged;
@@ -100,7 +98,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		{
 			if (!TransactionItems.Any())
 			{
-				TransactionItems.Add(new TransactionItemModel());
+				TransactionItems.Add(new());
 				return;
 			}
 

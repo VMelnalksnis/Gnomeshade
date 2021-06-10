@@ -24,7 +24,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		public async Task SetUp()
 		{
 			_dbConnection = await DatabaseInitialization.CreateConnection();
-			_ownerRepository = new OwnerRepository(_dbConnection);
+			_ownerRepository = new(_dbConnection);
 		}
 
 		[Test]

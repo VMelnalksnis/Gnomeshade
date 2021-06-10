@@ -22,11 +22,11 @@ namespace Tracking.Finance.Data.Repositories
 			DbConnection = dbConnection;
 		}
 
-		protected IDbConnection DbConnection { get; }
+		private static string TableName => "users";
 
-		protected string TableName { get; } = "users";
+		private static string ColumnNames => "id Id, counterparty_id CounterpartyId";
 
-		protected string ColumnNames { get; } = "id Id, counterparty_id CounterpartyId";
+		private IDbConnection DbConnection { get; }
 
 		public async Task<Guid> AddWithIdAsync(User entity)
 		{

@@ -2,14 +2,14 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Data;
+using System.Threading.Tasks;
+
 using FluentAssertions;
 
 using Npgsql;
 
 using NUnit.Framework;
-
-using System.Data;
-using System.Threading.Tasks;
 
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
@@ -18,16 +18,16 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
 	public class TransactionItemRepositoryTests
 	{
-		private IDbConnection _dbConnection;
-		private TransactionRepository _transactionRepository;
-		private TransactionItemRepository _repository;
+		private IDbConnection _dbConnection = null!;
+		private TransactionRepository _transactionRepository = null!;
+		private TransactionItemRepository _repository = null!;
 
 		[SetUp]
 		public async Task SetUp()
 		{
 			_dbConnection = await DatabaseInitialization.CreateConnection();
-			_transactionRepository = new TransactionRepository(_dbConnection);
-			_repository = new TransactionItemRepository(_dbConnection);
+			_transactionRepository = new(_dbConnection);
+			_repository = new(_dbConnection);
 		}
 
 		[Test]
@@ -46,7 +46,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task AddAsync_ShouldBeEquivalent()
 		{
-			var transactionId = await _transactionRepository.AddAsync(new Transaction());
+			var transactionId = await _transactionRepository.AddAsync(new());
 			var transactionItem = new TransactionItem { TransactionId = transactionId };
 
 			var id = await _repository.AddAsync(transactionItem);
@@ -60,10 +60,13 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task GetAllAsync_ShouldReturnExpected()
 		{
-			var transactionId = await _transactionRepository.AddAsync(new Transaction());
-			var id1 = await _repository.AddAsync(new TransactionItem { TransactionId = transactionId });
-			var id2 = await _repository.AddAsync(new TransactionItem { TransactionId = transactionId });
-			var id3 = await _repository.AddAsync(new TransactionItem { TransactionId = transactionId });
+			var transactionId = await _transactionRepository.AddAsync(new());
+			var id1 = await _repository.AddAsync(new()
+				{ TransactionId = transactionId });
+			var id2 = await _repository.AddAsync(new()
+				{ TransactionId = transactionId });
+			var id3 = await _repository.AddAsync(new()
+				{ TransactionId = transactionId });
 
 			var items = await _repository.GetAllAsync(transactionId);
 

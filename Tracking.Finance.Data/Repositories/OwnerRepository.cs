@@ -29,7 +29,7 @@ namespace Tracking.Finance.Data.Repositories
 			_insertSql = $"INSERT INTO {_tableName} VALUES (DEFAULT) RETURNING id";
 		}
 
-		protected IDbConnection DbConnection { get; }
+		private IDbConnection DbConnection { get; }
 
 		public async Task<Guid> AddAsync(Owner entity)
 		{

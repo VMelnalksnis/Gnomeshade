@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 {
 	public static class PasswordBoxHelper
@@ -21,19 +23,23 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Helpers
 					typeof(PasswordBoxHelper),
 					new FrameworkPropertyMetadata(string.Empty, OnBoundPasswordChanged));
 
+		[UsedImplicitly]
 		public static string GetBoundPassword(DependencyObject dependencyObject)
 		{
-			if (dependencyObject is PasswordBox passwordBox)
+			if (dependencyObject is not PasswordBox passwordBox)
 			{
-				// this funny little dance here ensures that we've hooked the
-				// PasswordChanged event once, and only once.
-				passwordBox.PasswordChanged -= PasswordChanged;
-				passwordBox.PasswordChanged += PasswordChanged;
+				return (string)dependencyObject.GetValue(BoundPasswordProperty);
 			}
+
+			// this funny little dance here ensures that we've hooked the
+			// PasswordChanged event once, and only once.
+			passwordBox.PasswordChanged -= PasswordChanged;
+			passwordBox.PasswordChanged += PasswordChanged;
 
 			return (string)dependencyObject.GetValue(BoundPasswordProperty);
 		}
 
+		[UsedImplicitly]
 		public static void SetBoundPassword(DependencyObject dependencyObject, string value)
 		{
 			if (string.Equals(value, GetBoundPassword(dependencyObject), StringComparison.Ordinal))
