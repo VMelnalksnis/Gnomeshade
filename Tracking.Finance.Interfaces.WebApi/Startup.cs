@@ -71,6 +71,8 @@ namespace Tracking.Finance.Interfaces.WebApi
 
 			services
 				.AddTransient<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
+				.AddTransient<OwnerRepository>()
+				.AddTransient<OwnershipRepository>()
 				.AddTransient<TransactionRepository>()
 				.AddTransient<TransactionItemRepository>()
 				.AddTransient<UserRepository>();

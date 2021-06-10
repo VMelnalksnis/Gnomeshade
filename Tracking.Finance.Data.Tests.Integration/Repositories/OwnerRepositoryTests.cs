@@ -10,7 +10,6 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
 
 namespace Tracking.Finance.Data.Tests.Integration.Repositories
@@ -30,9 +29,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task AddAsync_ShouldGenerateGuid()
 		{
-			var owner = new Owner();
-
-			var id = await _ownerRepository.AddAsync(owner);
+			var id = await _ownerRepository.AddAsync();
 			id.Should().NotBe(Guid.Empty);
 		}
 

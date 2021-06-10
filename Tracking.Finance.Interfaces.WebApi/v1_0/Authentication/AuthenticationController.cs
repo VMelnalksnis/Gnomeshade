@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,26 +35,38 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 	public sealed class AuthenticationController : ControllerBase
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IDbConnection _dbConnection;
 		private readonly UserRepository _userRepository;
+		private readonly OwnerRepository _ownerRepository;
+		private readonly OwnershipRepository _ownershipRepository;
 		private readonly Mapper _mapper;
 		private readonly JwtOptions _jwtOptions;
 		private readonly JwtSecurityTokenHandler _securityTokenHandler;
 		private readonly ProblemDetailsFactory _problemDetailFactory;
+		private readonly ILogger<AuthenticationController> _logger;
 
 		public AuthenticationController(
 			UserManager<ApplicationUser> userManager,
+			IDbConnection dbConnection,
 			UserRepository userRepository,
+			OwnerRepository ownerRepository,
+			OwnershipRepository ownershipRepository,
 			Mapper mapper,
 			IOptions<JwtOptions> jwtOptions,
 			JwtSecurityTokenHandler securityTokenHandler,
-			ProblemDetailsFactory problemDetailsFactory)
+			ProblemDetailsFactory problemDetailsFactory,
+			ILogger<AuthenticationController> logger)
 		{
 			_userManager = userManager;
+			_dbConnection = dbConnection;
 			_userRepository = userRepository;
+			_ownerRepository = ownerRepository;
+			_ownershipRepository = ownershipRepository;
 			_mapper = mapper;
 			_jwtOptions = jwtOptions.Value;
 			_securityTokenHandler = securityTokenHandler;
 			_problemDetailFactory = problemDetailsFactory;
+			_logger = logger;
 		}
 
 		[HttpPost]
@@ -96,6 +110,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 			var user = _mapper.Map<ApplicationUser>(registration);
 			user.SecurityStamp = Guid.NewGuid().ToString();
 
+			// todo rollback if failed to create
 			var creationResult = await _userManager.CreateAsync(user, registration.Password);
 			if (!creationResult.Succeeded)
 			{
@@ -104,10 +119,24 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 			}
 
 			var identityUser = await _userManager.FindByNameAsync(registration.Username);
-			var applicationUser = new User { Id = new(identityUser.Id) };
+			var identityUserId = new Guid(identityUser.Id);
+			var applicationUser = new User { Id = identityUserId };
+			_dbConnection.Open();
+			using var dbTransaction = _dbConnection.BeginTransaction();
 
-			// todo rollback if failed to create
-			await _userRepository.AddWithIdAsync(applicationUser);
+			try
+			{
+				_ = await _userRepository.AddWithIdAsync(applicationUser, dbTransaction);
+				_ = await _ownerRepository.AddAsync(identityUserId, dbTransaction);
+				_ = await _ownershipRepository.AddDefaultAsync(identityUserId, dbTransaction);
+				dbTransaction.Commit();
+			}
+			catch (Exception exception)
+			{
+				_logger.LogError(exception, "Failed creating user");
+				dbTransaction.Rollback();
+				throw;
+			}
 
 			return Ok();
 		}

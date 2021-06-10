@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -17,58 +16,52 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class OwnerRepository : IDisposable
 	{
-		private readonly string _columnNames;
-		private readonly string _tableName;
-		private readonly string _insertSql;
+		private readonly IDbConnection _dbConnection;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="OwnerRepository"/> class.
+		/// </summary>
+		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public OwnerRepository(IDbConnection dbConnection)
 		{
-			DbConnection = dbConnection;
-			_columnNames = "id Id";
-			_tableName = "owners";
-			_insertSql = $"INSERT INTO {_tableName} VALUES (DEFAULT) RETURNING id";
+			_dbConnection = dbConnection;
 		}
 
-		private IDbConnection DbConnection { get; }
-
-		public async Task<Guid> AddAsync(Owner entity)
+		/// <summary>
+		/// Adds a new owner.
+		/// </summary>
+		/// <returns>The id of the new entity.</returns>
+		public async Task<Guid> AddAsync()
 		{
-			return await DbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
+			const string sql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";
+			return await _dbConnection.QuerySingleAsync<Guid>(sql);
 		}
 
-		public async Task<int> DeleteAsync(int id)
+		/// <summary>
+		/// Adds a new owner with the specified <see cref="Owner.Id"/>.
+		/// </summary>
+		/// <param name="id">The id with which to create the entity.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The id of the new entity.</returns>
+		public async Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			var sql = @$"DELETE FROM {_tableName} WHERE id = @id";
-
-			return await DbConnection.ExecuteAsync(sql, new { id });
+			const string sql = "INSERT INTO owners (id) VALUES (@Id) RETURNING id";
+			var command = new CommandDefinition(sql, new { id }, dbTransaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		public async Task<List<Owner>> GetAllAsync(CancellationToken cancellationToken = default)
+		/// <summary>
+		/// Gets all owners.
+		/// </summary>
+		/// <returns>A collection of all owners</returns>
+		public async Task<List<Owner>> GetAllAsync()
 		{
-			var sql = @$"SELECT {_columnNames} FROM {_tableName}";
-			var commandDefinition = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-			var entities = await DbConnection.QueryAsync<Owner>(commandDefinition);
+			const string? sql = "SELECT id Id, created_at CreatedAt FROM owners";
+			var entities = await _dbConnection.QueryAsync<Owner>(sql);
 			return entities.ToList();
 		}
 
-		public async Task<Owner> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			var sql = @$"SELECT {_columnNames} FROM {_tableName} WHERE id = @id";
-			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			return await DbConnection.QuerySingleAsync<Owner>(commandDefinition);
-		}
-
-		public async Task<Owner?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			var sql = @$"SELECT {_columnNames} FROM {_tableName} WHERE id = @id";
-			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			return await DbConnection.QuerySingleOrDefaultAsync<Owner>(commandDefinition);
-		}
-
 		/// <inheritdoc/>
-		public void Dispose() => DbConnection.Dispose();
+		public void Dispose() => _dbConnection.Dispose();
 	}
 }

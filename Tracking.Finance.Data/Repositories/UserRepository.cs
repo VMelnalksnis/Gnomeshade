@@ -3,10 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -17,56 +14,43 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class UserRepository : IDisposable
 	{
+		private readonly IDbConnection _dbConnection;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UserRepository"/> class.
+		/// </summary>
+		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public UserRepository(IDbConnection dbConnection)
 		{
-			DbConnection = dbConnection;
+			_dbConnection = dbConnection;
 		}
 
-		private static string TableName => "users";
-
-		private static string ColumnNames => "id Id, counterparty_id CounterpartyId";
-
-		private IDbConnection DbConnection { get; }
-
-		public async Task<Guid> AddWithIdAsync(User entity)
+		/// <summary>
+		/// Adds a new user with the specified values, including id.
+		/// </summary>
+		/// <param name="entity">The values to insert.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The id of the created user.</returns>
+		public async Task<Guid> AddWithIdAsync(User entity, IDbTransaction dbTransaction)
 		{
-			var sql = $"INSERT INTO {TableName} (id, counterparty_id) VALUES (@{nameof(User.Id)}, @{nameof(User.CounterpartyId)}) RETURNING id";
-			return await DbConnection.QuerySingleAsync<Guid>(sql, entity);
+			const string sql = "INSERT INTO users (id, counterparty_id) VALUES (@Id, @CounterpartyId) RETURNING id";
+			var command = new CommandDefinition(sql, entity, dbTransaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		public async Task<int> DeleteAsync(Guid id)
+		/// <summary>
+		/// Finds a user with the specified id.
+		/// </summary>
+		/// <param name="id">The id to search by.</param>
+		/// <returns>The <see cref="User"/> if one exists, otherwise <see langword="null"/>.</returns>
+		public async Task<User?> FindByIdAsync(Guid id)
 		{
-			var sql = @$"DELETE FROM {TableName} WHERE id = @id";
-
-			return await DbConnection.ExecuteAsync(sql, new { id });
-		}
-
-		public async Task<List<User>> GetAllAsync(CancellationToken cancellationToken = default)
-		{
-			var sql = @$"SELECT {ColumnNames} FROM {TableName}";
-			var commandDefinition = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-			var entities = await DbConnection.QueryAsync<User>(commandDefinition);
-			return entities.ToList();
-		}
-
-		public async Task<User> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
-			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			return await DbConnection.QuerySingleAsync<User>(commandDefinition);
-		}
-
-		public async Task<User?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			var sql = @$"SELECT {ColumnNames} FROM {TableName} WHERE id = @id";
-			var commandDefinition = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			return await DbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition);
+			const string sql = "SELECT id, created_at, counterparty_id FROM users WHERE id = @id";
+			var commandDefinition = new CommandDefinition(sql, new { id });
+			return await _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition);
 		}
 
 		/// <inheritdoc/>
-		public void Dispose() => DbConnection.Dispose();
+		public void Dispose() => _dbConnection.Dispose();
 	}
 }
