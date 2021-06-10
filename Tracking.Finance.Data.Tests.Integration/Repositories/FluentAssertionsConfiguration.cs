@@ -10,14 +10,6 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
 	public static class FluentAssertionsConfiguration
 	{
-		public static EquivalencyAssertionOptions<TEntity> Options<TEntity>(EquivalencyAssertionOptions<TEntity> options)
-			where TEntity : IEntity
-		{
-			return options
-				.ComparingByMembers<TEntity>()
-				.Excluding(entity => entity.CreatedAt);
-		}
-
 		public static EquivalencyAssertionOptions<TModifiable> ModifiableOptions<TModifiable>(EquivalencyAssertionOptions<TModifiable> options)
 			where TModifiable : IEntity, IModifiableEntity
 		{
@@ -28,6 +20,14 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			where TModifiable : IEntity, IModifiableEntity
 		{
 			return ModifiableOptions(options).Excluding(modifiable => modifiable.Id);
+		}
+
+		private static EquivalencyAssertionOptions<TEntity> Options<TEntity>(EquivalencyAssertionOptions<TEntity> options)
+			where TEntity : IEntity
+		{
+			return options
+				.ComparingByMembers<TEntity>()
+				.Excluding(entity => entity.CreatedAt);
 		}
 	}
 }

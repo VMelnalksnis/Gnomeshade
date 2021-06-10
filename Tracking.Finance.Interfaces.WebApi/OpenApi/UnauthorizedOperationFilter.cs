@@ -33,7 +33,7 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 			operation.Responses.Add(_unauthorizedCode, new() { Description = "Unauthorized" });
 		}
 
-		private bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)
+		private static bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)
 		{
 			return customAttributeProvider?.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() ?? false;
 		}

@@ -17,7 +17,7 @@ namespace Tracking.Finance.Data.Repositories
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="UserRepository"/> class.
+		/// Initializes a new instance of the <see cref="UserRepository"/> class with a database connection.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public UserRepository(IDbConnection dbConnection)
@@ -39,7 +39,7 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <summary>
-		/// Finds a user with the specified id.
+		/// Searches for a user with the specified id.
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
 		/// <returns>The <see cref="User"/> if one exists, otherwise <see langword="null"/>.</returns>

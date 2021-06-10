@@ -81,7 +81,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <returns><see cref="OkObjectResult"/> if transaction was found, otherwise <see cref="NotFoundResult"/>.</returns>
 		/// <response code="200">Transaction with the specified id exists.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
-		[HttpGet("{id}")]
+		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
 		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellationToken)
@@ -174,7 +174,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <returns><see cref="NoContentResult"/> if transaction was deleted successfully, otherwise <see cref="NotFoundResult"/>.</returns>
 		/// <response code="204">Transaction was successfully deleted.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
-		[HttpDelete("{id}")]
+		[HttpDelete("{id:guid}")]
 		[ProducesResponseType(Status204NoContent)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<StatusCodeResult> Delete(Guid id)
@@ -194,14 +194,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			}
 		}
 
-		[HttpGet("{transactionId}/Item")]
+		[HttpGet("{transactionId:guid}/Item")]
 		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(Guid transactionId, CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
 			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
 		}
 
-		[HttpGet("Item/{id}")]
+		[HttpGet("Item/{id:guid}")]
 		public async Task<ActionResult<TransactionItemModel>> GetItem(Guid id, CancellationToken cancellationToken)
 		{
 			var item = await _itemRepository.FindByIdAsync(id, cancellationToken);
@@ -213,7 +213,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			return _mapper.Map<TransactionItemModel>(item);
 		}
 
-		[HttpPost("{transactionId}/Item")]
+		[HttpPost("{transactionId:guid}/Item")]
 		public async Task<ActionResult<Guid>> CreateItem(Guid transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
 		{
 			var user = await GetCurrentUser();
@@ -237,7 +237,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			return await _itemRepository.AddAsync(transactionItem);
 		}
 
-		[HttpDelete("Item/{id}")]
+		[HttpDelete("Item/{id:guid}")]
 		public async Task<StatusCodeResult> DeleteItem(Guid id)
 		{
 			var deletedCount = await _itemRepository.DeleteAsync(id);

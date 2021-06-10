@@ -19,7 +19,7 @@ namespace Tracking.Finance.Data.Repositories
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OwnerRepository"/> class.
+		/// Initializes a new instance of the <see cref="OwnerRepository"/> class with a database connection.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public OwnerRepository(IDbConnection dbConnection)
@@ -53,7 +53,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <summary>
 		/// Gets all owners.
 		/// </summary>
-		/// <returns>A collection of all owners</returns>
+		/// <returns>A collection of all owners.</returns>
 		public async Task<List<Owner>> GetAllAsync()
 		{
 			const string? sql = "SELECT id Id, created_at CreatedAt FROM owners";

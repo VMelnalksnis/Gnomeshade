@@ -62,7 +62,7 @@ namespace Tracking.Finance.Interfaces.WebApi
 			services.AddControllers();
 			services.AddApiVersioning();
 
-			services.AddIdentityContext(Configuration);
+			services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
 
 			services
 				.AddTransient<JwtSecurityTokenHandler>()

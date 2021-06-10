@@ -13,7 +13,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 	public static class ServiceCollectionExtensions
 	{
 		/// <summary>
-		/// Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotion validation.
+		/// Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotation validation.
 		/// </summary>
 		///
 		/// <typeparam name="TOptions">The options type to add.</typeparam>

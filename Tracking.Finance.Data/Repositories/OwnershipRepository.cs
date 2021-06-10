@@ -17,7 +17,7 @@ namespace Tracking.Finance.Data.Repositories
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OwnershipRepository"/> class.
+		/// Initializes a new instance of the <see cref="OwnershipRepository"/> class with a database connection.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public OwnershipRepository(IDbConnection dbConnection)

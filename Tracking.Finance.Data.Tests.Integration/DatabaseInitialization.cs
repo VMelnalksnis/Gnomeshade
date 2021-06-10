@@ -16,22 +16,11 @@ namespace Tracking.Finance.Data.Tests.Integration
 	[SetUpFixture]
 	public class DatabaseInitialization
 	{
-		public static async Task<NpgsqlConnection> CreateConnection()
-		{
-			var builder = new ConfigurationBuilder()
+		private static readonly string _connectionString =
+			new ConfigurationBuilder()
 				.AddUserSecrets<DatabaseInitialization>()
-				.AddEnvironmentVariables();
-
-			var configuration = builder.Build();
-
-			var connectionString = configuration.GetConnectionString("FinanceDb");
-			var sqlConnection = new NpgsqlConnection(connectionString);
-			sqlConnection.Open();
-
-			await sqlConnection.ChangeDatabaseAsync("finance_tests");
-
-			return sqlConnection;
-		}
+				.Build()
+				.GetConnectionString("FinanceDb");
 
 		[OneTimeSetUp]
 		public async Task SetupDatabase()
@@ -39,11 +28,7 @@ namespace Tracking.Finance.Data.Tests.Integration
 			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
 			NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
-			var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
-			var configuration = configurationBuilder.Build();
-
-			var connectionString = configuration.GetConnectionString("FinanceDb");
-			await using var sqlConnection = new NpgsqlConnection(connectionString);
+			await using var sqlConnection = new NpgsqlConnection(_connectionString);
 			sqlConnection.Open();
 
 			var createDatabase = sqlConnection.CreateCommand();
@@ -78,14 +63,9 @@ namespace Tracking.Finance.Data.Tests.Integration
 		[OneTimeTearDown]
 		public async Task DropDatabase()
 		{
-			var configurationBuilder = new ConfigurationBuilder().AddUserSecrets<DatabaseInitialization>();
-			var configuration = configurationBuilder.Build();
-
 			NpgsqlConnection.ClearAllPools();
 
-			var connectionString = configuration.GetConnectionString("FinanceDb");
-
-			await using var sqlConnection = new NpgsqlConnection(connectionString);
+			await using var sqlConnection = new NpgsqlConnection(_connectionString);
 			await sqlConnection.OpenAsync();
 
 			var clearConnections = sqlConnection.CreateCommand();
@@ -97,6 +77,23 @@ namespace Tracking.Finance.Data.Tests.Integration
 			var createDatabase = sqlConnection.CreateCommand();
 			createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests;";
 			await createDatabase.ExecuteNonQueryAsync();
+		}
+
+		public static async Task<NpgsqlConnection> CreateConnection()
+		{
+			var builder = new ConfigurationBuilder()
+				.AddUserSecrets<DatabaseInitialization>()
+				.AddEnvironmentVariables();
+
+			var configuration = builder.Build();
+
+			var connectionString = configuration.GetConnectionString("FinanceDb");
+			var sqlConnection = new NpgsqlConnection(connectionString);
+			sqlConnection.Open();
+
+			await sqlConnection.ChangeDatabaseAsync("finance_tests");
+
+			return sqlConnection;
 		}
 	}
 }

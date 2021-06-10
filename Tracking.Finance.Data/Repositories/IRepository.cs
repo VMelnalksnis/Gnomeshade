@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,12 +16,17 @@ namespace Tracking.Finance.Data.Repositories
 	{
 		Task<Guid> AddAsync(TEntity entity);
 
-		Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+		Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction);
 
 		Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-		Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+		Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
+		/// <summary>
+		/// Deletes the specified entity.
+		/// </summary>
+		/// <param name="id">The id of the entity to delete.</param>
+		/// <returns>The number of rows affected.</returns>
 		Task<int> DeleteAsync(Guid id);
 	}
 }

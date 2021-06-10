@@ -30,12 +30,9 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 					.GetCustomAttributes(true)
 					.OfType<ApiControllerAttribute>();
 
-			if (apiControllerAttributes is null || !apiControllerAttributes.Any())
-			{
-				return;
-			}
-
-			if (!operation.Parameters.Any() && !(operation.RequestBody?.Required ?? false))
+			if (apiControllerAttributes is null ||
+				!apiControllerAttributes.Any() ||
+				(!operation.Parameters.Any() && !(operation.RequestBody?.Required ?? false)))
 			{
 				return;
 			}

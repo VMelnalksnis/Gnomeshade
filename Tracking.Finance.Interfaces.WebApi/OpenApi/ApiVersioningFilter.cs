@@ -19,9 +19,9 @@ namespace Tracking.Finance.Interfaces.WebApi.OpenApi
 		void IDocumentFilter.Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
 		{
 			var paths = new OpenApiPaths();
-			foreach (var path in swaggerDoc.Paths)
+			foreach (var (key, pathItem) in swaggerDoc.Paths)
 			{
-				paths.Add(path.Key.Replace("v{version}", swaggerDoc.Info.Version), path.Value);
+				paths.Add(key.Replace("v{version}", swaggerDoc.Info.Version), pathItem);
 			}
 
 			swaggerDoc.Paths = paths;

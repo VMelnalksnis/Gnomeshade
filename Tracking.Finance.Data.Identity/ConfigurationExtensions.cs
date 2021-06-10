@@ -13,11 +13,11 @@ namespace Tracking.Finance.Data.Identity
 {
 	public static class ConfigurationExtensions
 	{
-		public static IdentityBuilder AddIdentityContext(this IServiceCollection services, IConfiguration configuration)
+		public static IdentityBuilder AddIdentityContext(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
 		{
 			return
 				services
-					.AddDbContext<ApplicationDbContext>(options => options.ConfigureIdentityContext(configuration))
+					.AddDbContext<ApplicationDbContext>(optionsAction)
 					.AddIdentity<ApplicationUser, IdentityRole>()
 					.AddEntityFrameworkStores<ApplicationDbContext>()
 					.AddDefaultTokenProviders();
@@ -28,7 +28,7 @@ namespace Tracking.Finance.Data.Identity
 			options
 				.LogTo(Console.WriteLine)
 				.EnableSensitiveDataLogging()
-				.UseNpgsql(configuration.GetConnectionString("IdentityDb"));
+				.UseNpgsql(configuration.GetConnectionString("IdentityDb")); // todo remove dependency on Npgsql
 		}
 	}
 }

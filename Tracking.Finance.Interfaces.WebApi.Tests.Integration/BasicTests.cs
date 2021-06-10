@@ -10,6 +10,8 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
+using Bogus;
+
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -74,6 +76,23 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 			var response = await _client.GetAsync("/api/v1.0/transaction");
 
 			response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+		}
+
+		[Test]
+		public async Task Register()
+		{
+			var registrationModel = new Faker<RegistrationModel>()
+				.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
+				.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
+				.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
+				.Generate();
+
+			var response = await _client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
+			response.EnsureSuccessStatusCode();
+
+			var loginModel = new LoginModel { Username = registrationModel.Username, Password = registrationModel.Password };
+			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", loginModel);
+			loginResponse.EnsureSuccessStatusCode();
 		}
 
 		[Test]
