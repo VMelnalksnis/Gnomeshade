@@ -108,7 +108,17 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var transactions = await _repository.GetAllAsync(cancellationToken);
-			return Ok(transactions.Select(transaction => _mapper.Map<TransactionModel>(transaction)));
+			var transactionModels = transactions
+				.Select(transaction => _mapper.Map<TransactionModel>(transaction))
+				.Select(transaction =>
+				{
+					var items = _itemRepository.GetAllAsync(transaction.Id, cancellationToken).GetAwaiter().GetResult();
+					var itemModels = items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
+					return transaction with { Items = itemModels };
+				})
+				.ToList();
+
+			return Ok(transactionModels);
 		}
 
 		/// <summary>

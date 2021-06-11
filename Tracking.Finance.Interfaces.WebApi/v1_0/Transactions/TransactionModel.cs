@@ -3,10 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
-	public record TransactionModel
+	public sealed record TransactionModel
 	{
 		public Guid Id { get; init; }
 
@@ -27,5 +28,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public bool Validated { get; init; }
 
 		public bool Completed { get; init; }
+
+		public List<TransactionItemModel> Items { get; init; }
 	}
 }

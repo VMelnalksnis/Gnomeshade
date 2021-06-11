@@ -40,8 +40,8 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <inheritdoc/>
 		public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
 		{
-			var transactionCreation = _container.GetInstance<TransactionCreationViewModel>();
-			await ActivateItemAsync(transactionCreation, cancellationToken);
+			var transactions = _container.GetInstance<TransactionViewModel>();
+			await ActivateItemAsync(transactions, cancellationToken);
 		}
 
 		/// <inheritdoc/>

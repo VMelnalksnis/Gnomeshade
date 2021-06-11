@@ -14,7 +14,5 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 
 		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
 		internal static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
-
-		internal static string TransactionItemUri(int transactionId) => $"{Transaction}/{transactionId}/Item";
 	}
 }

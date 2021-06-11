@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 namespace Tracking.Finance.Interfaces.WindowsDesktop.Events
 {
 	/// <summary>
@@ -9,5 +11,5 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.Events
 	/// </summary>
 	///
 	/// <param name="Id">The id of the created transaction.</param>
-	public sealed record TransactionCreatedEvent(int Id);
+	public sealed record TransactionCreatedEvent(Guid Id);
 }

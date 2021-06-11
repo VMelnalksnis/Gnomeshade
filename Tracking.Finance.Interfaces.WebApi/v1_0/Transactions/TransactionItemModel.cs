@@ -6,23 +6,42 @@ using System;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
-	public record TransactionItemModel(
-		Guid Id,
-		Guid UserId,
-		Guid TransactionId,
-		decimal SourceAmount,
-		Guid SourceAccountId,
-		decimal TargetAmount,
-		Guid TargetAccountId,
-		DateTimeOffset CreatedAt,
-		Guid CreatedByUserId,
-		DateTimeOffset ModifiedAt,
-		Guid ModifiedByUserId,
-		Guid ProductId,
-		decimal Amount,
-		string? BankReference,
-		string? ExternalReference,
-		string? InternalReference,
-		DateTimeOffset? DeliveryDate,
-		string? Description);
+	public sealed record TransactionItemModel
+	{
+		public Guid Id { get; init; }
+
+		public Guid UserId { get; init; }
+
+		public Guid TransactionId { get; init; }
+
+		public decimal SourceAmount { get; init; }
+
+		public Guid SourceAccountId { get; init; }
+
+		public decimal TargetAmount { get; init; }
+
+		public Guid TargetAccountId { get; init; }
+
+		public DateTimeOffset CreatedAt { get; init; }
+
+		public Guid CreatedByUserId { get; init; }
+
+		public DateTimeOffset ModifiedAt { get; init; }
+
+		public Guid ModifiedByUserId { get; init; }
+
+		public Guid ProductId { get; init; }
+
+		public decimal Amount { get; init; }
+
+		public string? BankReference { get; init; }
+
+		public string? ExternalReference { get; init; }
+
+		public string? InternalReference { get; init; }
+
+		public DateTimeOffset? DeliveryDate { get; init; }
+
+		public string? Description { get; init; }
+	}
 }

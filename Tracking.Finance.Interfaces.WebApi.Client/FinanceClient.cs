@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// Initializes a new instance of the <see cref="FinanceClient"/> class.
 		/// </summary>
 		public FinanceClient()
-			: this(new("https://localhost:44320/api/v1.0/"))
+			: this(new("https://localhost:5001/api/v1.0/"))
 		{
 		}
 
@@ -55,10 +56,16 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		public Task<UserModel> Info() => Get<UserModel>(InfoUri);
 
 		/// <inheritdoc/>
-		public Task<int> Create(TransactionCreationModel transaction) => Create(Transaction, transaction);
+		public Task<Guid> Create(TransactionCreationModel transaction)
+		{
+			return Post<Guid, TransactionCreationModel>(Transaction, transaction);
+		}
 
-		/// <inheritdoc/>
-		public Task<int> CreateItem(int transactionId, TransactionItemCreationModel transactionItem) => Create(TransactionItemUri(transactionId), transactionItem);
+		/// <inheritdoc />
+		public Task<List<TransactionModel>> Get()
+		{
+			return Get<List<TransactionModel>>(Transaction);
+		}
 
 		private async Task<TResult> Get<TResult>(string requestUri)
 		{
@@ -75,7 +82,5 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 
 			return (await response.Content.ReadFromJsonAsync<TResult>())!;
 		}
-
-		private Task<int> Create<TRequest>(string requestUri, TRequest request) => Post<int, TRequest>(requestUri, request);
 	}
 }

@@ -5,8 +5,27 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:viewmodels="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.ViewModels"
+	xmlns:helpers="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.Helpers"
 	d:DataContext="{d:DesignInstance Type=viewmodels:TransactionViewModel}"
 	mc:Ignorable="d"
 	d:DesignHeight="450" d:DesignWidth="800">
-	<Grid />
+	<Grid>
+		<DataGrid x:Name="Overviews"
+		          AutoGenerateColumns="False"
+		          VirtualizingPanel.IsVirtualizing="True"
+		          VirtualizingPanel.VirtualizationMode="Recycling"
+		          EnableColumnVirtualization="True"
+		          EnableRowVirtualization="True"
+		          CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False"
+		          CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn IsReadOnly="True" Header="Date" Binding="{helpers:CultureAwareBinding Date}" />
+				<DataGridTextColumn IsReadOnly="True" Header="Description" Binding="{Binding Description}" />
+				<DataGridTextColumn IsReadOnly="True" Header="Source Account" Binding="{Binding SourceAccount}" />
+				<DataGridTextColumn IsReadOnly="True" Header="Target Account" Binding="{Binding TargetAccount}" />
+				<DataGridTextColumn IsReadOnly="True" Header="Source Amount" Binding="{helpers:CultureAwareBinding SourceAmount}" />
+				<DataGridTextColumn IsReadOnly="True" Header="Target Amount" Binding="{helpers:CultureAwareBinding TargetAmount}" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </UserControl>
