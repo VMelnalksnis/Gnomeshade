@@ -27,9 +27,9 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		private readonly IFinanceClient _financeClient;
 		private readonly LoggedInUserModel _loggedInUser;
 
-		private string _userName = string.Empty;
-		private string _password = string.Empty;
-		private string _errorMessage = string.Empty;
+		private string? _userName;
+		private string _password;
+		private string? _errorMessage;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
@@ -50,28 +50,29 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <summary>
 		/// Gets or sets the user name to use for authentication.
 		/// </summary>
-		public string UserName
+		public string? UserName
 		{
 			get => _userName;
 			set
 			{
 				_userName = value;
-				NotifyOfPropertyChange(() => UserName);
-				NotifyOfPropertyChange(() => CanLogIn);
+				NotifyOfPropertyChange(nameof(UserName));
+				NotifyOfPropertyChange(nameof(CanLogIn));
 			}
 		}
 
 		/// <summary>
 		/// Gets or sets the password to use for authentication.
 		/// </summary>
+		// todo do not bind password
 		public string Password
 		{
 			get => _password;
 			set
 			{
 				_password = value;
-				NotifyOfPropertyChange(() => Password);
-				NotifyOfPropertyChange(() => CanLogIn);
+				NotifyOfPropertyChange(nameof(Password));
+				NotifyOfPropertyChange(nameof(CanLogIn));
 			}
 		}
 
@@ -83,14 +84,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		/// <summary>
 		/// Gets or sets the login error message.
 		/// </summary>
-		public string ErrorMessage
+		public string? ErrorMessage
 		{
 			get => _errorMessage;
 			set
 			{
 				_errorMessage = value;
-				NotifyOfPropertyChange(() => ErrorMessage);
-				NotifyOfPropertyChange(() => IsErrorVisible);
+				NotifyOfPropertyChange(nameof(ErrorMessage));
+				NotifyOfPropertyChange(nameof(IsErrorVisible));
 			}
 		}
 
@@ -108,7 +109,7 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			try
 			{
 				ErrorMessage = string.Empty;
-				var login = new LoginModel { Username = UserName, Password = Password };
+				var login = new LoginModel { Username = UserName!, Password = Password };
 				_ = await _financeClient.Login(login);
 				var userInfo = await _financeClient.Info();
 
