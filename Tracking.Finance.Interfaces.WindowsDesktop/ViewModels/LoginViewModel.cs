@@ -13,9 +13,13 @@ using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WindowsDesktop.Events;
 using Tracking.Finance.Interfaces.WindowsDesktop.Models;
+using Tracking.Finance.Interfaces.WindowsDesktop.Views;
 
 namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 {
+	/// <summary>
+	/// Log in form for authenticating the user at startup.
+	/// </summary>
 	[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
 	public sealed class LoginViewModel : Screen, IViewModel
 	{
@@ -23,10 +27,16 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 		private readonly IFinanceClient _financeClient;
 		private readonly LoggedInUserModel _loggedInUser;
 
-		private string _userName;
-		private string _password;
-		private string _errorMessage;
+		private string _userName = string.Empty;
+		private string _password = string.Empty;
+		private string _errorMessage = string.Empty;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
+		/// </summary>
+		/// <param name="eventAggregator">Event aggregator for publishing events.</param>
+		/// <param name="financeClient">API client for authentication the user.</param>
+		/// <param name="loggedInUser">The user info model which to modify after successful log in.</param>
 		public LoginViewModel(
 			IEventAggregator eventAggregator,
 			IFinanceClient financeClient,
@@ -37,6 +47,9 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			_loggedInUser = loggedInUser;
 		}
 
+		/// <summary>
+		/// Gets or sets the user name to use for authentication.
+		/// </summary>
 		public string UserName
 		{
 			get => _userName;
@@ -48,6 +61,9 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the password to use for authentication.
+		/// </summary>
 		public string Password
 		{
 			get => _password;
@@ -59,8 +75,14 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the login error message should be visible.
+		/// </summary>
 		public bool IsErrorVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
 
+		/// <summary>
+		/// Gets or sets the login error message.
+		/// </summary>
 		public string ErrorMessage
 		{
 			get => _errorMessage;
@@ -72,15 +94,22 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether <see cref="LogIn"/> can be called.
+		/// </summary>
 		public bool CanLogIn => !string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(Password);
 
+		/// <summary>
+		/// Authenticates the user using <see cref="UserName"/> and <see cref="Password"/>.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		public async Task LogIn()
 		{
 			try
 			{
 				ErrorMessage = string.Empty;
 				var login = new LoginModel { Username = UserName, Password = Password };
-				var loginResponse = await _financeClient.Login(login);
+				_ = await _financeClient.Login(login);
 				var userInfo = await _financeClient.Info();
 
 				_loggedInUser.Id = userInfo.Id;
@@ -93,6 +122,25 @@ namespace Tracking.Finance.Interfaces.WindowsDesktop.ViewModels
 			{
 				ErrorMessage = exception.Message;
 			}
+		}
+
+		/// <summary>
+		/// Handles Enter key press in the password input.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task PasswordEnterPressed()
+		{
+			if (CanLogIn)
+			{
+				await LogIn();
+			}
+		}
+
+		/// <inheritdoc />
+		protected override void OnViewLoaded(object view)
+		{
+			_ = ((LoginView)view).UserName.Focus();
+			base.OnViewLoaded(view);
 		}
 	}
 }
