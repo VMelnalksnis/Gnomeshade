@@ -16,25 +16,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts", "VMelnalksnis.SvgCharts\VMelnalksnis.SvgCharts.csproj", "{B4207819-C57B-4663-A168-D147016F1921}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts", "source\VMelnalksnis.SvgCharts\VMelnalksnis.SvgCharts.csproj", "{B4207819-C57B-4663-A168-D147016F1921}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts.Tests", "VMelnalksnis.SvgCharts.Tests\VMelnalksnis.SvgCharts.Tests.csproj", "{4F6ACD52-C239-449D-A4A1-66699A75D050}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VMelnalksnis.SvgCharts.Tests", "tests\VMelnalksnis.SvgCharts.Tests\VMelnalksnis.SvgCharts.Tests.csproj", "{4F6ACD52-C239-449D-A4A1-66699A75D050}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data", "Tracking.Finance.Data\Tracking.Finance.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data", "source\Tracking.Finance.Data\Tracking.Finance.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi", "Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi", "source\Tracking.Finance.Interfaces.WebApi\Tracking.Finance.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Tests.Integration", "Tracking.Finance.Data.Tests.Integration\Tracking.Finance.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Tests.Integration", "tests\Tracking.Finance.Data.Tests.Integration\Tracking.Finance.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Identity", "Tracking.Finance.Data.Identity\Tracking.Finance.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Data.Identity", "source\Tracking.Finance.Data.Identity\Tracking.Finance.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WindowsDesktop", "Tracking.Finance.Interfaces.WindowsDesktop\Tracking.Finance.Interfaces.WindowsDesktop.csproj", "{5842D378-0672-4CCA-B920-1AC095E924DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WindowsDesktop", "source\Tracking.Finance.Interfaces.WindowsDesktop\Tracking.Finance.Interfaces.WindowsDesktop.csproj", "{5842D378-0672-4CCA-B920-1AC095E924DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client", "Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client", "source\Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client.Tests", "Tracking.Finance.Interfaces.WebApi.Client.Tests\Tracking.Finance.Interfaces.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Client.Tests", "tests\Tracking.Finance.Interfaces.WebApi.Client.Tests\Tracking.Finance.Interfaces.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Tests.Integration", "Tracking.Finance.Interfaces.WebApi.Tests.Integration\Tracking.Finance.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Tests.Integration", "tests\Tracking.Finance.Interfaces.WebApi.Tests.Integration\Tracking.Finance.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{B92F9674-8BD0-47C2-B15B-6E3F9CADC215}"
 EndProject

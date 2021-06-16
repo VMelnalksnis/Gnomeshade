@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
@@ -9,11 +9,9 @@
 		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
 		<RepositoryUrl>https://vmelnalksnis@dev.azure.com/vmelnalksnis/Tracking/_git/Tracking.Finance</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Description>Integration tests for Tracking.Finance.Data project</Description>
+		<Description>Unit tests for Tracking.Finance.Interfaces.WebApi.Client project</Description>
 
 		<IsPackable>false</IsPackable>
-
-		<UserSecretsId>bd035713-1852-448a-b3e7-7a0ee75e5043</UserSecretsId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -23,9 +21,6 @@
 		</PackageReference>
 		<PackageReference Include="FluentAssertions" Version="5.10.3" />
 		<PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
-		<PackageReference Include="Npgsql" Version="5.0.5" />
 		<PackageReference Include="NUnit" Version="3.13.2" />
 		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
@@ -36,7 +31,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Tracking.Finance.Data\Tracking.Finance.Data.csproj" />
+		<ProjectReference Include="..\..\source\Tracking.Finance.Interfaces.WebApi.Client\Tracking.Finance.Interfaces.WebApi.Client.csproj" />
 	</ItemGroup>
 
 </Project>
