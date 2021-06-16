@@ -4,17 +4,18 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:viewmodels="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.ViewModels"
+	xmlns:vms="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.ViewModels"
 	xmlns:helpers="clr-namespace:Tracking.Finance.Interfaces.WindowsDesktop.Helpers"
-	d:DataContext="{d:DesignInstance Type=viewmodels:TransactionViewModel}"
+	xmlns:cal="http://caliburnmicro.com"
+	d:DataContext="{d:DesignInstance Type=vms:TransactionViewModel}"
 	mc:Ignorable="d"
-	d:DesignHeight="450" d:DesignWidth="800">
+	d:DesignHeight="450" d:DesignWidth="800"
+	cal:Message.Attach="[Gesture Ctrl+N] = [CtrlNPressed]">
 	<Grid>
 		<DataGrid x:Name="Overviews"
 		          AutoGenerateColumns="False"
 		          VirtualizingPanel.IsVirtualizing="True"
 		          VirtualizingPanel.VirtualizationMode="Recycling"
-		          EnableColumnVirtualization="True"
 		          EnableRowVirtualization="True"
 		          CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False"
 		          CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
