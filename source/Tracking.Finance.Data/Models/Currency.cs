@@ -60,11 +60,11 @@ namespace Tracking.Finance.Data.Models
 		/// <summary>
 		/// Gets or sets the date from which the currency has been active.
 		/// </summary>
-		public DateTimeOffset? From { get; set; }
+		public DateTimeOffset? ActiveFrom { get; set; }
 
 		/// <summary>
 		/// Gets or sets the date until which the currency has been/will be active.
 		/// </summary>
-		public DateTimeOffset? Until { get; set; }
+		public DateTimeOffset? ActiveUntil { get; set; }
 	}
 }
