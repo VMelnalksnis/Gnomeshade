@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stylecop.json = stylecop.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.Desktop", "source\Tracking.Finance.Interfaces.Desktop\Tracking.Finance.Interfaces.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{B6757CB9-998B-499F-8042-8A59E2B92577} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
 		{8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED} = {AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}
 		{18D7A41E-CBA6-4AF5-A759-31F2BB9819BE} = {AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}
+		{D2ED2F80-3638-405E-BAA0-2788A47D853D} = {18D7A41E-CBA6-4AF5-A759-31F2BB9819BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}
