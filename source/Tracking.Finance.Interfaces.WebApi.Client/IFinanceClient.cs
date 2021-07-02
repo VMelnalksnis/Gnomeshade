@@ -22,25 +22,25 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="login">The credentials to use to log in.</param>
 		/// <returns>Object indicating whether the login was successful or not.</returns>
-		Task<LoginResult> Login(LoginModel login);
+		Task<LoginResult> LogInAsync(LoginModel login);
 
 		/// <summary>
 		/// Gets information about the currently logged in user.
 		/// </summary>
 		/// <returns>Information about the currently logged in user.</returns>
-		Task<UserModel> Info();
+		Task<UserModel> InfoAsync();
 
 		/// <summary>
 		/// Creates a new transaction.
 		/// </summary>
 		/// <param name="transaction">Information for creating the transaction.</param>
 		/// <returns>The id of the created transaction.</returns>
-		Task<Guid> Create(TransactionCreationModel transaction);
+		Task<Guid> CreateAsync(TransactionCreationModel transaction);
 
 		/// <summary>
 		/// Gets all transactions.
 		/// </summary>
 		/// <returns>A collection with all transactions.</returns>
-		Task<List<TransactionModel>> Get();
+		Task<List<TransactionModel>> GetAsync();
 	}
 }

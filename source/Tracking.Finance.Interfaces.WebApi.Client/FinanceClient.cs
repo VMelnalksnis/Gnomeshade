@@ -45,7 +45,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public async Task<LoginResult> Login(LoginModel login)
+		public async Task<LoginResult> LogInAsync(LoginModel login)
 		{
 			try
 			{
@@ -67,16 +67,16 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public Task<UserModel> Info() => Get<UserModel>(InfoUri);
+		public Task<UserModel> InfoAsync() => Get<UserModel>(InfoUri);
 
 		/// <inheritdoc/>
-		public Task<Guid> Create(TransactionCreationModel transaction)
+		public Task<Guid> CreateAsync(TransactionCreationModel transaction)
 		{
 			return Post<Guid, TransactionCreationModel>(Transaction, transaction);
 		}
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> Get()
+		public Task<List<TransactionModel>> GetAsync()
 		{
 			return Get<List<TransactionModel>>(Transaction);
 		}

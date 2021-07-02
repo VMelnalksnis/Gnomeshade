@@ -90,7 +90,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			ErrorMessage = string.Empty;
 
 			var loginModel = new LoginModel { Username = Username!, Password = Password! };
-			var loginResult = await _financeClient.Login(loginModel).ConfigureAwait(false);
+			var loginResult = await _financeClient.LogInAsync(loginModel).ConfigureAwait(false);
 
 			switch (loginResult)
 			{
