@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
@@ -20,8 +21,8 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// Log in using the specified credentials.
 		/// </summary>
 		/// <param name="login">The credentials to use to log in.</param>
-		/// <returns>Information about the created user session.</returns>
-		Task<LoginResponse> Login(LoginModel login);
+		/// <returns>Object indicating whether the login was successful or not.</returns>
+		Task<LoginResult> Login(LoginModel login);
 
 		/// <summary>
 		/// Gets information about the currently logged in user.

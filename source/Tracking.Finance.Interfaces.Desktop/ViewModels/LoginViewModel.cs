@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
+using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
@@ -86,17 +87,23 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 
 		public async Task LogInAsync()
 		{
-			try
-			{
-				ErrorMessage = string.Empty;
+			ErrorMessage = string.Empty;
 
-				var loginModel = new LoginModel { Username = Username!, Password = Password! };
-				_ = await _financeClient.Login(loginModel).ConfigureAwait(false);
-				_mainWindow.ActiveView = new TransactionViewModel(_mainWindow);
-			}
-			catch (Exception exception)
+			var loginModel = new LoginModel { Username = Username!, Password = Password! };
+			var loginResult = await _financeClient.Login(loginModel).ConfigureAwait(false);
+
+			switch (loginResult)
 			{
-				ErrorMessage = exception.Message;
+				case SuccessfulLogin:
+					_mainWindow.ActiveView = new TransactionViewModel(_mainWindow);
+					break;
+
+				case FailedLogin failedLogin:
+					ErrorMessage = failedLogin.Message;
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException(nameof(loginResult));
 			}
 		}
 	}

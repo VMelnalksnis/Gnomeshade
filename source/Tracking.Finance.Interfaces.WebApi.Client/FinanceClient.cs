@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
@@ -44,12 +45,25 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public async Task<LoginResponse> Login(LoginModel login)
+		public async Task<LoginResult> Login(LoginModel login)
 		{
-			var loginResponse = await Post<LoginResponse, LoginModel>(LoginUri, login);
-			_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
+			try
+			{
+				using var response = await _httpClient.PostAsJsonAsync(LoginUri, login);
+				if (response.IsSuccessStatusCode)
+				{
+					var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+					_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
+					return new SuccessfulLogin(loginResponse);
+				}
 
-			return loginResponse;
+				var errorResponse = await response.Content.ReadAsStringAsync();
+				return new FailedLogin(response.StatusCode, errorResponse);
+			}
+			catch (HttpRequestException httpException)
+			{
+				return new FailedLogin(httpException.StatusCode, httpException.Message);
+			}
 		}
 
 		/// <inheritdoc/>
