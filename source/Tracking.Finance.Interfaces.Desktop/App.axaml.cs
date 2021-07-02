@@ -11,7 +11,7 @@ using Tracking.Finance.Interfaces.Desktop.Views;
 
 namespace Tracking.Finance.Interfaces.Desktop
 {
-	public class App : Application
+	public sealed class App : Application
 	{
 		public override void Initialize()
 		{

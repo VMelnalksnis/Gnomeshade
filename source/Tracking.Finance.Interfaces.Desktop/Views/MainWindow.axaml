@@ -6,13 +6,40 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Tracking.Finance.Interfaces.Desktop.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="Tracking.Finance.Interfaces.Desktop">
+        Title="Tracking.Finance.Interfaces.Desktop"
+
+        WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="False">
 
 	<Design.DataContext>
 		<vm:MainWindowViewModel />
 	</Design.DataContext>
 
-	<TextBlock Text="{Binding Greeting}"
-	           HorizontalAlignment="Center" VerticalAlignment="Center" />
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Black"
+					TintOpacity="1"
+					MaterialOpacity="0.65" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+
+		<DockPanel>
+			<Menu DockPanel.Dock="Top" FontSize="18">
+				<MenuItem Header="_File">
+					<MenuItem x:Name="Exit" Header="E_xit" Command="{Binding ExitCommand}"/>
+				</MenuItem>
+				<MenuItem Header="_Account">
+					<MenuItem x:Name="LoginScreen" Header="_Login" />
+				</MenuItem>
+			</Menu>
+
+			<UserControl Content="{Binding ActiveView}" />
+		</DockPanel>
+	</Panel>
 
 </Window>

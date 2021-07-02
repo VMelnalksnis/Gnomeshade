@@ -1,0 +1,57 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Tracking.Finance.Interfaces.Desktop.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="300"
+             x:Class="Tracking.Finance.Interfaces.Desktop.Views.LoginView">
+	<Design.DataContext>
+		<vm:LoginViewModel />
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="*,auto,auto,*"
+	      RowDefinitions="auto,auto,auto,auto,auto,*">
+		<TextBlock
+			Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+			HorizontalAlignment="Center" Margin="0 0 0 20"
+			FontSize="48" FontFamily="Segoe UI Light"
+			Text="Login Form" />
+
+		<TextBlock
+			Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+			VerticalAlignment="Center"
+			MaxWidth="300" Margin="0 0 0 20" TextWrapping="Wrap" Foreground="Red"
+			Text="{Binding ErrorMessage}"
+			IsVisible="{Binding IsErrorMessageVisible^, FallbackValue=false}" />
+
+		<!--Username-->
+		<TextBlock
+			Grid.Row="2" Grid.Column="1"
+			VerticalAlignment="Center" HorizontalAlignment="Left"
+			Margin="0 0 5 10"
+			Text="Username:" />
+		<TextBox
+			Grid.Row="2" Grid.Column="2"
+			MinWidth="350" Margin="0 0 0 10"
+			x:Name="Username" Text="{Binding Username}" />
+
+		<!--Password-->
+		<TextBlock
+			Grid.Row="3" Grid.Column="1"
+			VerticalAlignment="Center" HorizontalAlignment="Left"
+			Margin="0 0 5 20"
+			Text="Password:" />
+		<TextBox
+			Grid.Row="3" Grid.Column="2"
+			MinWidth="350" Margin="0 0 0 10"
+			Text="{Binding Password}" />
+
+		<Button
+			Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+			HorizontalAlignment="Center" Padding="20 5"
+			Command="{Binding LogInCommand}"
+			IsEnabled="{Binding CanLogIn^, FallbackValue=false}">
+			Log In
+		</Button>
+	</Grid>
+</UserControl>
