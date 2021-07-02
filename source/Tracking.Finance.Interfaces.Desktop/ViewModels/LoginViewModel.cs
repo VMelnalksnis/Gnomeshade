@@ -3,12 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Reactive;
 using System.Threading.Tasks;
 
 using JetBrains.Annotations;
-
-using ReactiveUI;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
@@ -36,17 +33,6 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		{
 			_mainWindow = mainWindow;
 			_financeClient = financeClient;
-
-			CanLogIn = this.WhenAnyValue(
-				model => model.Username,
-				model => model.Password,
-				(user, pass) => !string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass));
-
-			IsErrorMessageVisible = this.WhenAnyValue(
-				model => model.ErrorMessage,
-				message => !string.IsNullOrWhiteSpace(message));
-
-			LogInCommand = ReactiveCommand.CreateFromTask(LogInAsync, CanLogIn);
 		}
 
 		/// <summary>
@@ -55,13 +41,17 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? ErrorMessage
 		{
 			get => _errorMessage;
-			set => this.RaiseAndSetIfChanged(ref _errorMessage, value, nameof(ErrorMessage));
+			set
+			{
+				_errorMessage = value;
+				OnPropertiesChanged(nameof(ErrorMessage), nameof(IsErrorMessageVisible));
+			}
 		}
 
 		/// <summary>
 		/// Gets a value indicating whether or not the <see cref="ErrorMessage"/> should be visible.
 		/// </summary>
-		public IObservable<bool> IsErrorMessageVisible { get; }
+		public bool IsErrorMessageVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
 
 		/// <summary>
 		/// Gets or sets the username entered by the user.
@@ -69,7 +59,11 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? Username
 		{
 			get => _username;
-			set => this.RaiseAndSetIfChanged(ref _username, value, nameof(Username));
+			set
+			{
+				_username = value;
+				OnPropertiesChanged(nameof(Username), nameof(CanLogIn));
+			}
 		}
 
 		/// <summary>
@@ -78,20 +72,19 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? Password
 		{
 			get => _password;
-			set => this.RaiseAndSetIfChanged(ref _password, value, nameof(Password));
+			set
+			{
+				_password = value;
+				OnPropertiesChanged(nameof(Password), nameof(CanLogIn));
+			}
 		}
 
 		/// <summary>
 		/// Gets a value indicating whether or not the user can log in.
 		/// </summary>
-		public IObservable<bool> CanLogIn { get; }
+		public bool CanLogIn => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
-		/// <summary>
-		/// Gets the <see cref="ReactiveCommand{TParam,TResult}"/> for authenticating using the specified credentials.
-		/// </summary>
-		public ReactiveCommand<Unit, Unit> LogInCommand { get; }
-
-		private async Task LogInAsync()
+		public async Task LogInAsync()
 		{
 			try
 			{

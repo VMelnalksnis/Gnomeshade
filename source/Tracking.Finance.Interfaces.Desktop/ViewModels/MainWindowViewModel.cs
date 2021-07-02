@@ -2,12 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Reactive;
-
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-
-using ReactiveUI;
 
 using Tracking.Finance.Interfaces.WebApi.Client;
 
@@ -23,7 +19,6 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public MainWindowViewModel()
 		{
 			_activeView = new LoginViewModel(this, new FinanceClient());
-			ExitCommand = ReactiveCommand.Create(Exit);
 		}
 
 		/// <summary>
@@ -32,15 +27,14 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public ViewModelBase ActiveView
 		{
 			get => _activeView;
-			set => this.RaiseAndSetIfChanged(ref _activeView, value, nameof(ActiveView));
+			set
+			{
+				_activeView = value;
+				OnPropertyChanged(nameof(ActiveView));
+			}
 		}
 
-		/// <summary>
-		/// Gets the <see cref="ReactiveCommand{TParam,TResult}"/> for exiting the application.
-		/// </summary>
-		public ReactiveCommand<Unit, Unit> ExitCommand { get; }
-
-		private static void Exit()
+		public static void Exit()
 		{
 			var desktopLifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
 			desktopLifetime.Shutdown();

@@ -22,7 +22,7 @@
 			VerticalAlignment="Center"
 			MaxWidth="300" Margin="0 0 0 20" TextWrapping="Wrap" Foreground="Red"
 			Text="{Binding ErrorMessage}"
-			IsVisible="{Binding IsErrorMessageVisible^, FallbackValue=false}" />
+			IsVisible="{Binding IsErrorMessageVisible, FallbackValue=false}" />
 
 		<!--Username-->
 		<TextBlock
@@ -49,8 +49,8 @@
 		<Button
 			Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
 			HorizontalAlignment="Center" Padding="20 5"
-			Command="{Binding LogInCommand}"
-			IsEnabled="{Binding CanLogIn^, FallbackValue=false}">
+			Command="{Binding LogInAsync}"
+			IsEnabled="{Binding CanLogIn, FallbackValue=false}">
 			Log In
 		</Button>
 	</Grid>
