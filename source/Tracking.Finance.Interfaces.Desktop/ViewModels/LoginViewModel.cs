@@ -42,11 +42,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? ErrorMessage
 		{
 			get => _errorMessage;
-			set
-			{
-				_errorMessage = value;
-				OnPropertiesChanged(nameof(ErrorMessage), nameof(IsErrorMessageVisible));
-			}
+			set => SetAndNotifyWithGuard(ref _errorMessage, value, nameof(ErrorMessage), nameof(IsErrorMessageVisible));
 		}
 
 		/// <summary>
@@ -60,11 +56,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? Username
 		{
 			get => _username;
-			set
-			{
-				_username = value;
-				OnPropertiesChanged(nameof(Username), nameof(CanLogIn));
-			}
+			set => SetAndNotifyWithGuard(ref _username, value, nameof(Username), nameof(CanLogIn));
 		}
 
 		/// <summary>
@@ -73,11 +65,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public string? Password
 		{
 			get => _password;
-			set
-			{
-				_password = value;
-				OnPropertiesChanged(nameof(Password), nameof(CanLogIn));
-			}
+			set => SetAndNotifyWithGuard(ref _password, value, nameof(Password), nameof(CanLogIn));
 		}
 
 		/// <summary>
@@ -94,12 +82,12 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 
 			switch (loginResult)
 			{
-				case SuccessfulLogin:
-					_mainWindow.ActiveView = new TransactionViewModel(_mainWindow);
-					break;
-
 				case FailedLogin failedLogin:
 					ErrorMessage = failedLogin.Message;
+					break;
+
+				case SuccessfulLogin:
+					_mainWindow.ActiveView = new TransactionViewModel(_mainWindow, _financeClient);
 					break;
 
 				default:

@@ -27,11 +27,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		public ViewModelBase ActiveView
 		{
 			get => _activeView;
-			set
-			{
-				_activeView = value;
-				OnPropertyChanged(nameof(ActiveView));
-			}
+			set => SetAndNotify(ref _activeView, value, nameof(ActiveView));
 		}
 
 		public static void Exit()

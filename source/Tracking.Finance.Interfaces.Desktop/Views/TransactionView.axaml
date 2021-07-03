@@ -1,8 +1,26 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:m="using:Tracking.Finance.Interfaces.Desktop.Models"
+             xmlns:vm="using:Tracking.Finance.Interfaces.Desktop.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Tracking.Finance.Interfaces.Desktop.Views.TransactionView">
-	Welcome to Avalonia!
+	<Design.DataContext>
+		<vm:TransactionViewModel />
+	</Design.DataContext>
+
+	<DataGrid
+		Items="{Binding Transactions^, Mode=OneTime}"
+		AutoGenerateColumns="False" IsReadOnly="True"
+		CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+		<DataGrid.Columns>
+			<DataGridTextColumn Header="Date" Binding="{Binding Date}" />
+			<DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+			<DataGridTextColumn Header="Source Account" Binding="{Binding SourceAccount}" />
+			<DataGridTextColumn Header="Target Account" Binding="{Binding TargetAccount}" />
+			<DataGridTextColumn Header="Source Amount" Binding="{Binding SourceAmount, StringFormat=\{0:N2\}}" />
+			<DataGridTextColumn Header="Target Amount" Binding="{Binding TargetAmount, StringFormat=\{0:N2\}}" />
+		</DataGrid.Columns>
+	</DataGrid>
 </UserControl>

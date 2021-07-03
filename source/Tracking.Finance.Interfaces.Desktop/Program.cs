@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using Avalonia;
-using Avalonia.Logging;
 
 using JetBrains.Annotations;
 
@@ -26,7 +25,7 @@ namespace Tracking.Finance.Interfaces.Desktop
 				AppBuilder
 					.Configure<App>()
 					.UsePlatformDetect()
-					.LogToTrace(LogEventLevel.Verbose);
+					.LogToTrace();
 		}
 	}
 }

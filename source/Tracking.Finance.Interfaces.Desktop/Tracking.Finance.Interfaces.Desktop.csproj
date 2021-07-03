@@ -16,9 +16,9 @@
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.3" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.3" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.3" />
+        <PackageReference Include="Avalonia" Version="0.10.6" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.10.6" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="0.10.6" />
         <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
           <PrivateAssets>all</PrivateAssets>
