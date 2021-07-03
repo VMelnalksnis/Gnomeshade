@@ -15,8 +15,12 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class AccountRepository : IRepository<Account>, IDisposable
 	{
-		private const string _insertSql = "INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedNamed, @PreferredCurrency, @Bic, @Iban, @AccountNumber) RETURNING id";
-		private const string _selectSql = "SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, preferred_currency_id PreferredCurrencyId, bic, iban, account_number AccountNumber FROM accounts";
+		private const string _insertSql =
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedNamed, @PreferredCurrency, @Bic, @Iban, @AccountNumber) RETURNING id";
+
+		private const string _selectSql =
+			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, preferred_currency_id PreferredCurrencyId, bic, iban, account_number AccountNumber FROM accounts";
+
 		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id";
 
 		private readonly IDbConnection _dbConnection;
@@ -31,13 +35,16 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> AddAsync(Account entity) => await _dbConnection.QuerySingleAsync<Guid>(_insertSql);
+		public async Task<Guid> AddAsync(Account entity)
+		{
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql).ConfigureAwait(false);
+		}
 
 		/// <inheritdoc />
 		public async Task<Guid> AddAsync(Account entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -45,7 +52,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Account>(command);
+			return await _dbConnection.QuerySingleOrDefaultAsync<Account>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -53,11 +60,14 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Account>(command);
+			return await _dbConnection.QuerySingleAsync<Account>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
-		public async Task<int> DeleteAsync(Guid id) => await _dbConnection.ExecuteAsync(_deleteSql, new { id });
+		public async Task<int> DeleteAsync(Guid id)
+		{
+			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
+		}
 
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();

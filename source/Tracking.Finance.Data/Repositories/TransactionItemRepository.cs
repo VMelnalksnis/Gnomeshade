@@ -21,7 +21,9 @@ namespace Tracking.Finance.Data.Repositories
 			"INSERT INTO transaction_items (owner_id, transaction_id, source_amount, source_account_id, target_amount, target_account_id, created_by_user_id, modified_by_user_id, product_id, amount, bank_reference, external_reference, internal_reference, description, delivery_date) VALUES (@OwnerId, @TransactionId, @SourceAmount, @SourceAccountId, @TargetAmount, @TargetAccountId, @CreatedByUserId, @ModifiedByUserId, @ProductId, @Amount, @BankReference, @ExternalReference, @InternalReference, @Description, @DeliveryDate) RETURNING id";
 
 		private const string _selectSql =
-			"SELECT id Id, owner_id OwnerId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, target_amount TargetAmount, target_account_id TargetAccountId, created_by_user_id CreatedByUserId, modified_by_user_id ModifiedByUserId, product_id ProductId, amount Amount, bank_reference BankReference, external_reference ExternalReference, internal_reference InternalReference, description Description, delivery_date DeliveryDate FROM transaction_items";
+			"SELECT id, owner_id OwnerId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, target_amount TargetAmount, target_account_id TargetAccountId, created_by_user_id CreatedByUserId, modified_by_user_id ModifiedByUserId, product_id ProductId, amount, bank_reference BankReference, external_reference ExternalReference, internal_reference InternalReference, description, delivery_date DeliveryDate FROM transaction_items";
+
+		private const string _deleteSql = "DELETE FROM transaction_items WHERE id = @Id";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -41,7 +43,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the created transaction item.</returns>
 		public async Task<Guid> AddAsync(TransactionItem transactionItem)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, transactionItem);
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, transactionItem).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -53,7 +55,7 @@ namespace Tracking.Finance.Data.Repositories
 		public async Task<Guid> AddAsync(TransactionItem transactionItem, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, transactionItem, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -66,7 +68,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @Id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<TransactionItem>(command);
+			return await _dbConnection.QuerySingleOrDefaultAsync<TransactionItem>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -79,7 +81,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @Id";
 			var command = new CommandDefinition(_selectSql, sql, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<TransactionItem>(command);
+			return await _dbConnection.QuerySingleAsync<TransactionItem>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -88,19 +90,20 @@ namespace Tracking.Finance.Data.Repositories
 		/// <param name="transactionId">The id of the transaction for which to get all the items.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all items linked to the specified transaction.</returns>
-		public async Task<List<TransactionItem>> GetAllAsync(Guid transactionId, CancellationToken cancellationToken = default)
+		public async Task<List<TransactionItem>> GetAllAsync(
+			Guid transactionId,
+			CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE transaction_id = @TransactionId;";
-			var commandDefinition = new CommandDefinition(sql, new { TransactionId = transactionId }, cancellationToken: cancellationToken);
-			var transactionItems = await _dbConnection.QueryAsync<TransactionItem>(commandDefinition);
+			var command = new CommandDefinition(sql, new { TransactionId = transactionId }, cancellationToken: cancellationToken);
+			var transactionItems = await _dbConnection.QueryAsync<TransactionItem>(command).ConfigureAwait(false);
 			return transactionItems.ToList();
 		}
 
 		/// <inheritdoc />
 		public async Task<int> DeleteAsync(Guid id)
 		{
-			const string sql = "DELETE FROM transaction_items WHERE id = @Id";
-			return await _dbConnection.ExecuteAsync(sql, new { id });
+			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />

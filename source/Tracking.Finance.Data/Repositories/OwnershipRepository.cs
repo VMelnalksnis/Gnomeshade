@@ -14,6 +14,9 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class OwnershipRepository
 	{
+		private const string _insertSql =
+			"INSERT INTO ownerships (id, owner_id, user_id) VALUES (@Id, @Id, @Id) RETURNING id";
+
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -34,9 +37,8 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the created ownership.</returns>
 		public async Task<Guid> AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			const string sql = "INSERT INTO ownerships (id, owner_id, user_id) VALUES (@Id, @Id, @Id) RETURNING id";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			var command = new CommandDefinition(_insertSql, new { id }, dbTransaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 	}
 }

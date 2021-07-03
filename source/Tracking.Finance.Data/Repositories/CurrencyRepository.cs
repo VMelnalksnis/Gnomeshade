@@ -17,7 +17,9 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class CurrencyRepository : IDisposable
 	{
-		private const string _selectSql = "SELECT id, created_at CreatedAt, name, normalized_name NormalizedName, numeric_code NumericCode, alphabetic_code AlphabeticCode, minor_unit MinorUnit, official, crypto, historical, active_from ActiveFrom, active_until ActiveUntil FROM currencies";
+		private const string _selectSql =
+			"SELECT id, created_at CreatedAt, name, normalized_name NormalizedName, numeric_code NumericCode, alphabetic_code AlphabeticCode, minor_unit MinorUnit, official, crypto, historical, active_from ActiveFrom, active_until ActiveUntil FROM currencies";
+
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -39,7 +41,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @Id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Currency>(command);
+			return await _dbConnection.QuerySingleAsync<Currency>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -50,7 +52,7 @@ namespace Tracking.Finance.Data.Repositories
 		public async Task<List<Currency>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var currencies = await _dbConnection.QueryAsync<Currency>(command);
+			var currencies = await _dbConnection.QueryAsync<Currency>(command).ConfigureAwait(false);
 			return currencies.ToList();
 		}
 

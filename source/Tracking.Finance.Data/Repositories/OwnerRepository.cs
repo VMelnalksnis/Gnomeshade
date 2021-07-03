@@ -16,6 +16,10 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class OwnerRepository : IDisposable
 	{
+		private const string _insertSql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";
+		private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@Id) RETURNING id";
+		private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
+
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -33,8 +37,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the new entity.</returns>
 		public async Task<Guid> AddAsync()
 		{
-			const string sql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";
-			return await _dbConnection.QuerySingleAsync<Guid>(sql);
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -45,9 +48,8 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the new entity.</returns>
 		public async Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			const string sql = "INSERT INTO owners (id) VALUES (@Id) RETURNING id";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			var command = new CommandDefinition(_insertWithIdSql, new { id }, dbTransaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -56,8 +58,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>A collection of all owners.</returns>
 		public async Task<List<Owner>> GetAllAsync()
 		{
-			const string? sql = "SELECT id Id, created_at CreatedAt FROM owners";
-			var entities = await _dbConnection.QueryAsync<Owner>(sql);
+			var entities = await _dbConnection.QueryAsync<Owner>(_selectSql).ConfigureAwait(false);
 			return entities.ToList();
 		}
 

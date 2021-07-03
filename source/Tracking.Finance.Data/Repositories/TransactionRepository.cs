@@ -21,7 +21,9 @@ namespace Tracking.Finance.Data.Repositories
 			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed) RETURNING id";
 
 		private const string _selectSql =
-			"SELECT id Id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, date Date, description Description, generated \"Generated\", validated Validated, completed Completed FROM transactions";
+			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, date, description, generated \"Generated\", validated, completed FROM transactions";
+
+		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -41,7 +43,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the created transaction.</returns>
 		public async Task<Guid> AddAsync(Transaction transaction)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, transaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, transaction).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -53,7 +55,7 @@ namespace Tracking.Finance.Data.Repositories
 		public async Task<Guid> AddAsync(Transaction transaction, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, transaction, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -66,7 +68,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Transaction>(command);
+			return await _dbConnection.QuerySingleOrDefaultAsync<Transaction>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -79,7 +81,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Transaction>(command);
+			return await _dbConnection.QuerySingleAsync<Transaction>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -90,15 +92,14 @@ namespace Tracking.Finance.Data.Repositories
 		public async Task<List<Transaction>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var commandDefinition = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var transactionItems = await _dbConnection.QueryAsync<Transaction>(commandDefinition);
+			var transactionItems = await _dbConnection.QueryAsync<Transaction>(commandDefinition).ConfigureAwait(false);
 			return transactionItems.ToList();
 		}
 
 		/// <inheritdoc />
 		public async Task<int> DeleteAsync(Guid id)
 		{
-			const string sql = "DELETE FROM transactions WHERE id = @Id";
-			return await _dbConnection.ExecuteAsync(sql, new { id });
+			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />

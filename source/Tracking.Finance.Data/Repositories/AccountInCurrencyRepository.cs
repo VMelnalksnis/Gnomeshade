@@ -37,14 +37,14 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc />
 		public async Task<Guid> AddAsync(AccountInCurrency entity)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
 		public async Task<Guid> AddAsync(AccountInCurrency entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -52,7 +52,7 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<AccountInCurrency>(command);
+			return await _dbConnection.QuerySingleOrDefaultAsync<AccountInCurrency>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -60,11 +60,14 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<AccountInCurrency>(command);
+			return await _dbConnection.QuerySingleAsync<AccountInCurrency>(command).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
-		public async Task<int> DeleteAsync(Guid id) => await _dbConnection.ExecuteAsync(_deleteSql, new { id });
+		public async Task<int> DeleteAsync(Guid id)
+		{
+			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
+		}
 
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();

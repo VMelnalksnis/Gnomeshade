@@ -14,6 +14,11 @@ namespace Tracking.Finance.Data.Repositories
 {
 	public sealed class UserRepository : IDisposable
 	{
+		private const string _insertSql =
+			"INSERT INTO users (id, counterparty_id) VALUES (@Id, @CounterpartyId) RETURNING id";
+
+		private const string _selectSql = "SELECT id, created_at, counterparty_id FROM users WHERE id = @id";
+
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -33,9 +38,8 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The id of the created user.</returns>
 		public async Task<Guid> AddWithIdAsync(User entity, IDbTransaction dbTransaction)
 		{
-			const string sql = "INSERT INTO users (id, counterparty_id) VALUES (@Id, @CounterpartyId) RETURNING id";
-			var command = new CommandDefinition(sql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command);
+			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
+			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -45,9 +49,8 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The <see cref="User"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public async Task<User?> FindByIdAsync(Guid id)
 		{
-			const string sql = "SELECT id, created_at, counterparty_id FROM users WHERE id = @id";
-			var commandDefinition = new CommandDefinition(sql, new { id });
-			return await _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition);
+			var commandDefinition = new CommandDefinition(_selectSql, new { id });
+			return await _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc/>
