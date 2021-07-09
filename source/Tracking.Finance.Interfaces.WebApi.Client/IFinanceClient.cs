@@ -35,7 +35,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="transaction">Information for creating the transaction.</param>
 		/// <returns>The id of the created transaction.</returns>
-		Task<Guid> CreateAsync(TransactionCreationModel transaction);
+		Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction);
 
 		/// <summary>
 		/// Gets all transactions.

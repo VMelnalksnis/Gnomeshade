@@ -70,7 +70,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		public Task<UserModel> InfoAsync() => Get<UserModel>(InfoUri);
 
 		/// <inheritdoc/>
-		public Task<Guid> CreateAsync(TransactionCreationModel transaction)
+		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
 			return Post<Guid, TransactionCreationModel>(Transaction, transaction);
 		}
