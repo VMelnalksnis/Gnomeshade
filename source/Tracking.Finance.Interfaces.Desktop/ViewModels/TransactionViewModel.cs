@@ -36,7 +36,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 
 		private async Task<ObservableItemCollection<TransactionOverview>> GetTransactionsAsync()
 		{
-			var transactions = await _financeClient.GetAsync().ConfigureAwait(false);
+			var transactions = await _financeClient.GetTransactionsAsync().ConfigureAwait(false);
 			var overviews =
 				transactions
 					.Select(transaction => new TransactionOverview

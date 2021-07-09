@@ -41,6 +41,6 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// Gets all transactions.
 		/// </summary>
 		/// <returns>A collection with all transactions.</returns>
-		Task<List<TransactionModel>> GetAsync();
+		Task<List<TransactionModel>> GetTransactionsAsync();
 	}
 }

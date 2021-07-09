@@ -76,7 +76,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> GetAsync()
+		public Task<List<TransactionModel>> GetTransactionsAsync()
 		{
 			return Get<List<TransactionModel>>(Transaction);
 		}
