@@ -18,7 +18,6 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 	{
 		private readonly IFinanceClient _financeClient;
 		private ViewModelBase _activeView = null!;
-		private bool _canLogOut;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
@@ -55,6 +54,19 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			SwitchToLogin();
 		}
 
+		public void CreateAccount()
+		{
+			if (ActiveView is AccountCreationViewModel)
+			{
+				return;
+			}
+
+			var accountCreationViewModel = new AccountCreationViewModel(_financeClient);
+			accountCreationViewModel.AccountCreated += OnAccountCreated;
+
+			ActiveView = accountCreationViewModel;
+		}
+
 		private void SwitchToLogin()
 		{
 			var loginViewModel = new LoginViewModel(_financeClient);
@@ -63,13 +75,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			ActiveView = loginViewModel;
 		}
 
-		private void OnUserLoggedIn(object? sender, EventArgs e)
-		{
-			var accountCreationViewModel = new AccountCreationViewModel(_financeClient);
-			accountCreationViewModel.AccountCreated += OnAccountCreated;
-
-			ActiveView = accountCreationViewModel;
-		}
+		private void OnUserLoggedIn(object? sender, EventArgs e) => CreateAccount();
 
 		private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
 		{
