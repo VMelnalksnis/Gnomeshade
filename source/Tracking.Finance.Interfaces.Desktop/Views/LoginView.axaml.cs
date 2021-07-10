@@ -6,11 +6,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using JetBrains.Annotations;
-
 namespace Tracking.Finance.Interfaces.Desktop.Views
 {
-	[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 	public sealed class LoginView : UserControl
 	{
 		private readonly TextBox _username;

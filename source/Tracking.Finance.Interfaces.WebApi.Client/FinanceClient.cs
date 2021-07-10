@@ -91,6 +91,18 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 			return await FindAsync<AccountModel?>(AccountUri(id)).ConfigureAwait(false);
 		}
 
+		/// <inheritdoc />
+		public async Task<Guid> CreateAccountAsync(AccountCreationModel account)
+		{
+			return await PostAsync<Guid, AccountCreationModel>(Account, account).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<List<CurrencyModel>> GetCurrenciesAsync()
+		{
+			return await GetAsync<List<CurrencyModel>>(Currency).ConfigureAwait(false);
+		}
+
 		private async Task<TResult> GetAsync<TResult>(string requestUri)
 			where TResult : notnull
 		{

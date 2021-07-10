@@ -45,5 +45,9 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		Task<List<TransactionModel>> GetTransactionsAsync();
 
 		Task<AccountModel?> FindAccountAsync(Guid id);
+
+		Task<Guid> CreateAccountAsync(AccountCreationModel account);
+
+		Task<List<CurrencyModel>> GetCurrenciesAsync();
 	}
 }

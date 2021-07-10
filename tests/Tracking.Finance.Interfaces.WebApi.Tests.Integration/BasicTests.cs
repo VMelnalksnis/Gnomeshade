@@ -115,14 +115,26 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 			var accountCreationModel =
 				new Faker<AccountCreationModel>()
 					.RuleFor(model => model.Name, faker => faker.Finance.AccountName())
+					.RuleFor(model => model.Bic, faker => faker.Finance.Bic())
+					.RuleFor(model => model.Iban, faker => faker.Finance.Iban())
 					.RuleFor(model => model.PreferredCurrencyId, () => currency.Id)
 					.RuleFor(model => model.Currencies, () => new() { new() { CurrencyId = currency.Id } })
 					.Generate();
 
-			var accountCreationResponse = await _client.PostAsJsonAsync("/api/v1.0/account", accountCreationModel);
-			accountCreationResponse.EnsureSuccessStatusCode();
-			var accountId = await accountCreationResponse.Content.ReadFromJsonAsync<Guid>();
-			var account = (await _client.GetFromJsonAsync<AccountModel>($"/api/v1.0/account/{accountId:N}"))!;
+			var findAccountResponse = await _client.GetAsync($"/api/v1.0/account/find/{accountCreationModel.Name}");
+
+			var account =
+				findAccountResponse.IsSuccessStatusCode
+					? await findAccountResponse.Content.ReadFromJsonAsync<AccountModel>()
+					: null;
+
+			if (account is null)
+			{
+				var accountCreationResponse = await _client.PostAsJsonAsync("/api/v1.0/account", accountCreationModel);
+				accountCreationResponse.EnsureSuccessStatusCode();
+				var accountId = await accountCreationResponse.Content.ReadFromJsonAsync<Guid>();
+				account = (await _client.GetFromJsonAsync<AccountModel>($"/api/v1.0/account/{accountId:N}"))!;
+			}
 
 			var transactionsResponse = await _client.GetAsync("/api/v1.0/transaction");
 			transactionsResponse.EnsureSuccessStatusCode();

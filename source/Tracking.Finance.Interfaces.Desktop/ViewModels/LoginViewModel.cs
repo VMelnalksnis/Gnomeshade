@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
+using Tracking.Finance.Interfaces.Desktop.Views;
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 {
-	public class LoginViewModel : ViewModelBase
+	public sealed class LoginViewModel : ViewModelBase<LoginView>
 	{
-		private readonly MainWindowViewModel _mainWindow;
 		private readonly IFinanceClient _financeClient;
+
 		private string? _errorMessage;
 		private string? _username;
 		private string? _password;
@@ -26,15 +27,19 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		/// </summary>
 		[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
 		public LoginViewModel()
-			: this(new(), new FinanceClient())
+			: this(new FinanceClient())
 		{
 		}
 
-		public LoginViewModel(MainWindowViewModel mainWindow, IFinanceClient financeClient)
+		public LoginViewModel(IFinanceClient financeClient)
 		{
-			_mainWindow = mainWindow;
 			_financeClient = financeClient;
 		}
+
+		/// <summary>
+		/// Raised when a user has successfully logged in.
+		/// </summary>
+		public event EventHandler? UserLoggedIn;
 
 		/// <summary>
 		/// Gets or sets the error message to display after a failed log in attempt.
@@ -73,6 +78,11 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public bool CanLogIn => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
+		/// <summary>
+		/// Attempts to log in using the specified credentials.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
 		public async Task LogInAsync()
 		{
 			ErrorMessage = string.Empty;
@@ -87,12 +97,17 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 					break;
 
 				case SuccessfulLogin:
-					_mainWindow.ActiveView = new TransactionViewModel(_financeClient);
+					OnUserLoggedIn();
 					break;
 
 				default:
 					throw new ArgumentOutOfRangeException(nameof(loginResult));
 			}
+		}
+
+		private void OnUserLoggedIn()
+		{
+			UserLoggedIn?.Invoke(this, EventArgs.Empty);
 		}
 	}
 }

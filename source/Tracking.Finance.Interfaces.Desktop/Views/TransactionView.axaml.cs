@@ -7,14 +7,12 @@ using Avalonia.Markup.Xaml;
 
 namespace Tracking.Finance.Interfaces.Desktop.Views
 {
-	public class TransactionView : UserControl
+	public sealed class TransactionView : UserControl
 	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionView"/> class.
+		/// </summary>
 		public TransactionView()
-		{
-			InitializeComponent();
-		}
-
-		private void InitializeComponent()
 		{
 			AvaloniaXamlLoader.Load(this);
 		}

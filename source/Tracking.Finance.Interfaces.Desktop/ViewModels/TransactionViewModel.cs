@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Tracking.Finance.Interfaces.Desktop.Models;
+using Tracking.Finance.Interfaces.Desktop.Views;
 using Tracking.Finance.Interfaces.WebApi.Client;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
@@ -14,7 +15,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 	/// <summary>
 	/// All transaction overview view model.
 	/// </summary>
-	public sealed class TransactionViewModel : ViewModelBase
+	public sealed class TransactionViewModel : ViewModelBase<TransactionView>
 	{
 		private readonly IFinanceClient _financeClient;
 

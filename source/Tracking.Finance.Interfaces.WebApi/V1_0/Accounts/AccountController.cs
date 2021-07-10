@@ -68,42 +68,24 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			_logger = logger;
 		}
 
+		[HttpGet("find/{name}")]
+		[ProducesResponseType(Status200OK)]
+		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
+		public async Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellationToken)
+		{
+			return await FindAccount(
+				() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellationToken),
+				cancellationToken);
+		}
+
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			var account = await _repository.FindByIdAsync(id, cancellationToken);
-			if (account is null)
-			{
-				return NotFound();
-			}
-
-			var preferredCurrency =
-				await _currencyRepository.GetByIdAsync(account.PreferredCurrencyId, cancellationToken);
-			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(account.Id, cancellationToken);
-			var models =
-				inCurrencies
-					.Select(inCurrency =>
-					{
-						var currency =
-							_currencyRepository
-								.GetByIdAsync(inCurrency.CurrencyId, cancellationToken)
-								.GetAwaiter()
-								.GetResult();
-
-						return _mapper.Map<AccountInCurrencyModel>(inCurrency) with
-						{
-							Currency = _mapper.Map<CurrencyModel>(currency),
-						};
-					})
-					.ToList();
-
-			return Ok(_mapper.Map<AccountModel>(account) with
-			{
-				PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
-				Currencies = models,
-			});
+			return await FindAccount(
+				() => _repository.FindByIdAsync(id, cancellationToken),
+				cancellationToken);
 		}
 
 		[HttpGet]
@@ -111,46 +93,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
-
 			var models =
 				accounts
-					.Select(account =>
-					{
-						var preferredCurrency =
-							_currencyRepository
-								.GetByIdAsync(account.PreferredCurrencyId, cancellationToken)
-								.GetAwaiter()
-								.GetResult();
-
-						var inCurrencies =
-							_inCurrencyRepository
-								.GetByAccountIdAsync(account.Id, cancellationToken)
-								.GetAwaiter()
-								.GetResult();
-
-						var currencyModels =
-							inCurrencies
-								.Select(accountInCurrency =>
-								{
-									var currency =
-										_currencyRepository
-											.GetByIdAsync(accountInCurrency.CurrencyId, cancellationToken)
-											.GetAwaiter()
-											.GetResult();
-
-									return _mapper.Map<AccountInCurrencyModel>(accountInCurrency) with
-									{
-										Currency = _mapper.Map<CurrencyModel>(currency),
-									};
-								})
-								.ToList();
-
-						return _mapper.Map<AccountModel>(account) with
-						{
-							PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
-							Currencies = currencyModels,
-						};
-					})
+					.Select(account => GetAccountModel(account, cancellationToken).GetAwaiter().GetResult())
 					.ToList();
 
 			return Ok(models);
@@ -227,6 +172,49 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			}
 
 			return await _userRepository.FindByIdAsync(new(identityUser.Id));
+		}
+
+		private async Task<ActionResult<AccountModel>> FindAccount(
+			Func<Task<Account?>> selector,
+			CancellationToken cancellationToken)
+		{
+			var account = await selector();
+			if (account is null)
+			{
+				return NotFound();
+			}
+
+			var accountModel = await GetAccountModel(account, cancellationToken);
+			return Ok(accountModel);
+		}
+
+		private async Task<AccountModel> GetAccountModel(Account account, CancellationToken cancellationToken)
+		{
+			var preferredCurrency =
+				await _currencyRepository.GetByIdAsync(account.PreferredCurrencyId, cancellationToken);
+			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(account.Id, cancellationToken);
+			var models =
+				inCurrencies
+					.Select(inCurrency =>
+					{
+						var currency =
+							_currencyRepository
+								.GetByIdAsync(inCurrency.CurrencyId, cancellationToken)
+								.GetAwaiter()
+								.GetResult();
+
+						return _mapper.Map<AccountInCurrencyModel>(inCurrency) with
+						{
+							Currency = _mapper.Map<CurrencyModel>(currency),
+						};
+					})
+					.ToList();
+
+			return _mapper.Map<AccountModel>(account) with
+			{
+				PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
+				Currencies = models,
+			};
 		}
 	}
 }

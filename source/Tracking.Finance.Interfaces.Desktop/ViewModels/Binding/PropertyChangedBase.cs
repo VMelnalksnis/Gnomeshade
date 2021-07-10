@@ -85,7 +85,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 		}
 
 		[NotifyPropertyChangedInvocator]
-		private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
 		{
 			PropertyChanged?.Invoke(this, new(propertyName));
 		}
