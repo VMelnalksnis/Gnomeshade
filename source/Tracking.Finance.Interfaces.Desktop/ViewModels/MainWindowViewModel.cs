@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -17,6 +18,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 	{
 		private readonly IFinanceClient _financeClient;
 		private ViewModelBase _activeView = null!;
+		private bool _canLogOut;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
@@ -27,13 +29,15 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			SwitchToLogin();
 		}
 
+		public bool CanLogOut => ActiveView is not LoginViewModel;
+
 		/// <summary>
 		/// Gets or sets the currently active view.
 		/// </summary>
 		public ViewModelBase ActiveView
 		{
 			get => _activeView;
-			set => SetAndNotify(ref _activeView, value, nameof(ActiveView));
+			set => SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
 		}
 
 		/// <summary>
@@ -43,6 +47,12 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		{
 			var desktopLifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
 			desktopLifetime.Shutdown();
+		}
+
+		public async Task LogOut()
+		{
+			await _financeClient.LogOutAsync().ConfigureAwait(false);
+			SwitchToLogin();
 		}
 
 		private void SwitchToLogin()

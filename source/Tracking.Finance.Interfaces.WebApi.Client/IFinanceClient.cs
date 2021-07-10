@@ -26,6 +26,12 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		Task<LoginResult> LogInAsync(LoginModel login);
 
 		/// <summary>
+		/// Log out.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		Task LogOutAsync();
+
+		/// <summary>
 		/// Gets information about the currently logged in user.
 		/// </summary>
 		/// <returns>Information about the currently logged in user.</returns>
@@ -44,10 +50,24 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// <returns>A collection with all transactions.</returns>
 		Task<List<TransactionModel>> GetTransactionsAsync();
 
+		/// <summary>
+		/// Finds an account with the specified id.
+		/// </summary>
+		/// <param name="id">The id by which to search for an account.</param>
+		/// <returns>The account with the specified id if it exists; otherwise <see langword="null"/>.</returns>
 		Task<AccountModel?> FindAccountAsync(Guid id);
 
+		/// <summary>
+		/// Creates a new account.
+		/// </summary>
+		/// <param name="account">Information for creating the account.</param>
+		/// <returns>The id of the created account.</returns>
 		Task<Guid> CreateAccountAsync(AccountCreationModel account);
 
+		/// <summary>
+		/// Gets all currencies.
+		/// </summary>
+		/// <returns>A collection with all currencies.</returns>
 		Task<List<CurrencyModel>> GetCurrenciesAsync();
 	}
 }

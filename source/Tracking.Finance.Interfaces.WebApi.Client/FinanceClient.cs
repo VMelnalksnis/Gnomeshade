@@ -67,6 +67,13 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 			}
 		}
 
+		/// <inheritdoc />
+		public Task LogOutAsync()
+		{
+			_httpClient.DefaultRequestHeaders.Authorization = null;
+			return Task.CompletedTask;
+		}
+
 		/// <inheritdoc/>
 		public async Task<UserModel> InfoAsync()
 		{

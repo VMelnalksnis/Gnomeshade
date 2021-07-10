@@ -31,10 +31,15 @@
 		<DockPanel>
 			<Menu DockPanel.Dock="Top" FontSize="18">
 				<MenuItem Header="_File">
-					<MenuItem x:Name="Exit" Header="E_xit" Command="{Binding Exit}"/>
+					<MenuItem
+						x:Name="Exit" Header="E_xit"
+						Command="{Binding Exit}"/>
 				</MenuItem>
 				<MenuItem Header="_Account">
-					<MenuItem x:Name="LoginScreen" Header="_Login" />
+					<MenuItem
+						x:Name="Logout" Header="_Logout"
+						IsEnabled="{Binding CanLogOut}"
+						Command="{Binding LogOut}"/>
 				</MenuItem>
 			</Menu>
 
