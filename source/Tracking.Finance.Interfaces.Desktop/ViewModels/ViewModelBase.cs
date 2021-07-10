@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Tracking.Finance.Interfaces.Desktop.ViewModels.Observable;
+using Tracking.Finance.Interfaces.Desktop.ViewModels.Binding;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 {

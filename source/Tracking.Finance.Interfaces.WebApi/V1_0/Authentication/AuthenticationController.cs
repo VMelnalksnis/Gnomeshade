@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -32,6 +33,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 	[ApiController]
 	[ApiVersion("1.0")]
 	[Route("api/v{version:apiVersion}/[controller]/[action]")]
+	[SuppressMessage(
+		"ReSharper",
+		"AsyncConverter.ConfigureAwaitHighlighting",
+		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class AuthenticationController : ControllerBase
 	{
 		private readonly UserManager<ApplicationUser> _userManager;

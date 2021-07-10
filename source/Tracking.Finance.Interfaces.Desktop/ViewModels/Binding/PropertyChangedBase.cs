@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 using JetBrains.Annotations;
 
-namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Observable
+namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 {
 	public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyPropertyChanged
 	{

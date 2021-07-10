@@ -17,12 +17,11 @@ using Npgsql;
 using Npgsql.Logging;
 
 using Tracking.Finance.Data.Identity;
-using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
 using Tracking.Finance.Interfaces.WebApi.Configuration;
+using Tracking.Finance.Interfaces.WebApi.V1_0;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.OpenApi;
-using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi
 {
@@ -75,19 +74,17 @@ namespace Tracking.Finance.Interfaces.WebApi
 				.AddTransient<OwnershipRepository>()
 				.AddTransient<TransactionRepository>()
 				.AddTransient<TransactionItemRepository>()
-				.AddTransient<UserRepository>();
+				.AddTransient<UserRepository>()
+				.AddTransient<AccountRepository>()
+				.AddTransient<AccountInCurrencyRepository>()
+				.AddTransient<CurrencyRepository>();
 
-			services.AddSingleton<AutoMapper.IConfigurationProvider>(_ => new MapperConfiguration(options =>
-			{
-				options.CreateMap<RegistrationModel, ApplicationUser>();
-				options.CreateMap<ApplicationUser, UserModel>();
-
-				options.CreateMap<TransactionCreationModel, Transaction>();
-				options.CreateMap<Transaction, TransactionModel>();
-				options.CreateMap<TransactionItemCreationModel, TransactionItem>();
-				options.CreateMap<TransactionItem, TransactionItemModel>();
-			}));
-			services.AddTransient<Mapper>();
+			services
+				.AddTransient<Mapper>()
+				.AddSingleton<AutoMapper.IConfigurationProvider>(_ => new MapperConfiguration(options =>
+				{
+					options.CreateMapsForV1_0();
+				}));
 
 			services.AddSwaggerGen(Options.SwaggerGen);
 		}

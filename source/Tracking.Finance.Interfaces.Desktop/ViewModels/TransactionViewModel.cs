@@ -2,53 +2,72 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Tracking.Finance.Interfaces.Desktop.Models;
-using Tracking.Finance.Interfaces.Desktop.ViewModels.Observable;
 using Tracking.Finance.Interfaces.WebApi.Client;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 {
+	/// <summary>
+	/// All transaction overview view model.
+	/// </summary>
 	public sealed class TransactionViewModel : ViewModelBase
 	{
-		private readonly MainWindowViewModel _mainWindow;
 		private readonly IFinanceClient _financeClient;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
 		/// </summary>
 		public TransactionViewModel()
-			: this(new(), new FinanceClient())
+			: this(new FinanceClient())
 		{
 		}
 
-		public TransactionViewModel(MainWindowViewModel mainWindow, IFinanceClient financeClient)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
+		/// </summary>
+		/// <param name="financeClient">Finance API client for getting finance data.</param>
+		public TransactionViewModel(IFinanceClient financeClient)
 		{
-			_mainWindow = mainWindow;
 			_financeClient = financeClient;
 
 			Transactions = GetTransactionsAsync();
 		}
 
-		public Task<ObservableItemCollection<TransactionOverview>> Transactions { get; }
+		/// <summary>
+		/// Gets all transactions for the current user.
+		/// </summary>
+		public Task<List<TransactionOverview>> Transactions { get; }
 
-		private async Task<ObservableItemCollection<TransactionOverview>> GetTransactionsAsync()
+		private async Task<List<TransactionOverview>> GetTransactionsAsync()
 		{
 			var transactions = await _financeClient.GetTransactionsAsync().ConfigureAwait(false);
 			var overviews =
-				transactions
-					.Select(transaction => new TransactionOverview
+				await transactions
+					.SelectAsync(async transaction =>
 					{
-						Date = transaction.Date.LocalDateTime,
-						Description = transaction.Description,
-						SourceAccount = transaction.Items.FirstOrDefault()?.SourceAccountId.ToString(),
-						TargetAccount = transaction.Items.FirstOrDefault()?.TargetAccountId.ToString(),
-						SourceAmount = transaction.Items.Sum(item => item.SourceAmount),
-						TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
-					})
-					.ToList();
+						var firstItem = transaction.Items.FirstOrDefault(); // todo item should exist
+						var sourceAccount = firstItem is null
+							? null
+							: await _financeClient.FindAccountAsync(firstItem.SourceAccountId).ConfigureAwait(false);
+
+						var targetAccount = firstItem is null
+							? null
+							: await _financeClient.FindAccountAsync(firstItem.TargetAccountId).ConfigureAwait(false);
+
+						return new TransactionOverview
+						{
+							Date = transaction.Date.LocalDateTime,
+							Description = transaction.Description,
+							SourceAccount = sourceAccount?.Name ?? string.Empty, // todo account should exist
+							TargetAccount = targetAccount?.Name ?? string.Empty,
+							SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
+							TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
+						};
+					}).ConfigureAwait(false);
 
 			return new(overviews);
 		}

@@ -48,6 +48,9 @@ CREATE TABLE "public"."currencies"
     CONSTRAINT "currencies_pk" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
+INSERT INTO "currencies" ("id", "created_at", "name", "normalized_name", "numeric_code", "alphabetic_code", "minor_unit", "official", "crypto", "historical", "active_from", "active_until")
+VALUES (uuid_generate_v4(), CURRENT_TIMESTAMP, 'Euro', 'EURO', 978, 'EUR', 2, TRUE, FALSE, FALSE, '1999-01-01 00:00:00+00', NULL),
+       (uuid_generate_v4(), CURRENT_TIMESTAMP, 'United States dollar', 'UNITED STATES DOLLAR', 840, 'USD', 2, TRUE, FALSE, FALSE, '1792-04-02 00:00:00+00', NULL);
 
 DROP TABLE IF EXISTS "accounts";
 CREATE TABLE "public"."accounts"
@@ -106,7 +109,10 @@ CREATE TABLE "public"."transactions"
     "generated"           boolean                                NOT NULL,
     "validated"           boolean                                NOT NULL,
     "completed"           boolean                                NOT NULL,
-    CONSTRAINT "transactions_id" PRIMARY KEY ("id")
+    CONSTRAINT "transactions_id" PRIMARY KEY ("id"),
+    CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 
@@ -132,5 +138,10 @@ CREATE TABLE "public"."transaction_items"
     "description"         text,
     "delivery_date"       timestamptz,
     CONSTRAINT "transaction_items_id" PRIMARY KEY ("id"),
+    CONSTRAINT "transaction_items_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_items_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_items_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_items_source_account_id_fkey" FOREIGN KEY (source_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_items_target_account_id_fkey" FOREIGN KEY (target_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_transaction_id_fkey" FOREIGN KEY (transaction_id) REFERENCES transactions (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);

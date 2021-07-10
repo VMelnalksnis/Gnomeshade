@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Tracking.Finance.Interfaces.WebApi.Client.Login;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
@@ -49,15 +50,15 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		{
 			try
 			{
-				using var response = await _httpClient.PostAsJsonAsync(LoginUri, login);
+				using var response = await _httpClient.PostAsJsonAsync(LoginUri, login).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
-					var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
-					_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, loginResponse.Token);
+					var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false);
+					_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, loginResponse!.Token);
 					return new SuccessfulLogin(loginResponse);
 				}
 
-				var errorResponse = await response.Content.ReadAsStringAsync();
+				var errorResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				return new FailedLogin(response.StatusCode, errorResponse);
 			}
 			catch (HttpRequestException httpException)
@@ -67,34 +68,57 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public Task<UserModel> InfoAsync() => Get<UserModel>(InfoUri);
+		public async Task<UserModel> InfoAsync()
+		{
+			return await GetAsync<UserModel>(InfoUri).ConfigureAwait(false);
+		}
 
 		/// <inheritdoc/>
-		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
+		public async Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
-			return Post<Guid, TransactionCreationModel>(Transaction, transaction);
+			return await PostAsync<Guid, TransactionCreationModel>(Transaction, transaction).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> GetTransactionsAsync()
+		public async Task<List<TransactionModel>> GetTransactionsAsync()
 		{
-			return Get<List<TransactionModel>>(Transaction);
+			return await GetAsync<List<TransactionModel>>(Transaction).ConfigureAwait(false);
 		}
 
-		private async Task<TResult> Get<TResult>(string requestUri)
+		/// <inheritdoc />
+		public async Task<AccountModel?> FindAccountAsync(Guid id)
 		{
-			using var response = await _httpClient.GetAsync(requestUri);
-			response.EnsureSuccessStatusCode();
-
-			return (await response.Content.ReadFromJsonAsync<TResult>())!;
+			return await FindAsync<AccountModel?>(AccountUri(id)).ConfigureAwait(false);
 		}
 
-		private async Task<TResult> Post<TResult, TRequest>(string requestUri, TRequest request)
+		private async Task<TResult> GetAsync<TResult>(string requestUri)
+			where TResult : notnull
 		{
-			using var response = await _httpClient.PostAsJsonAsync(requestUri, request);
+			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
 			response.EnsureSuccessStatusCode();
 
-			return (await response.Content.ReadFromJsonAsync<TResult>())!;
+			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+		}
+
+		private async Task<TResult?> FindAsync<TResult>(string requestUri)
+		{
+			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false);
+			}
+
+			return default;
+		}
+
+		private async Task<TResult> PostAsync<TResult, TRequest>(string requestUri, TRequest request)
+			where TResult : notnull
+			where TRequest : notnull
+		{
+			using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
+			response.EnsureSuccessStatusCode();
+
+			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 		}
 	}
 }

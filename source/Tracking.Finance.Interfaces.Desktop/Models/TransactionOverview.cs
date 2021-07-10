@@ -4,7 +4,7 @@
 
 using System;
 
-using Tracking.Finance.Interfaces.Desktop.ViewModels.Observable;
+using Tracking.Finance.Interfaces.Desktop.ViewModels.Binding;
 
 namespace Tracking.Finance.Interfaces.Desktop.Models
 {

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 	[ApiVersion("1.0")]
 	[Authorize]
 	[Route("api/v{version:apiVersion}/[controller]")]
+	[SuppressMessage(
+		"ReSharper",
+		"AsyncConverter.ConfigureAwaitHighlighting",
+		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class TransactionController : ControllerBase, IDisposable
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
@@ -92,7 +97,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return NotFound();
 			}
 
-			return Ok(_mapper.Map<TransactionModel>(transaction));
+			var transactionModel = await GetModel(transaction, cancellationToken);
+			return Ok(transactionModel);
 		}
 
 		/// <summary>
@@ -108,15 +114,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var transactions = await _repository.GetAllAsync(cancellationToken);
-			var transactionModels = transactions
-				.Select(transaction => _mapper.Map<TransactionModel>(transaction))
-				.Select(transaction =>
-				{
-					var items = _itemRepository.GetAllAsync(transaction.Id, cancellationToken).GetAwaiter().GetResult();
-					var itemModels = items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
-					return transaction with { Items = itemModels };
-				})
-				.ToList();
+			var transactionModels =
+				transactions
+					.Select(transaction => GetModel(transaction, cancellationToken).GetAwaiter().GetResult())
+					.ToList();
 
 			return Ok(transactionModels);
 		}
@@ -156,20 +157,26 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			using var dbTransaction = _dbConnection.BeginTransaction();
 			try
 			{
-				var id = await _repository.AddAsync(transaction, dbTransaction);
+				var transactionId = await _repository.AddAsync(transaction, dbTransaction);
 				foreach (var item in creationModel.Items)
 				{
-					var transactionItem = _mapper.Map<TransactionItem>(item);
-					transactionItem.OwnerId = user.Id; // todo
-					transactionItem.TransactionId = id;
+					var transactionItem = _mapper.Map<TransactionItem>(item) with
+					{
+						OwnerId = user.Id,
+						CreatedByUserId = user.Id,
+						ModifiedByUserId = user.Id,
+						TransactionId = transactionId,
+					};
+
 					_ = await _itemRepository.AddAsync(transactionItem, dbTransaction);
 				}
 
 				dbTransaction.Commit();
-				return CreatedAtAction(nameof(Get), new { id }, id);
+				return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
 			}
-			catch (Exception)
+			catch (Exception exception)
 			{
+				_logger.LogWarning(exception, "Failed to create transaction");
 				dbTransaction.Rollback();
 				throw;
 			}
@@ -205,7 +212,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		}
 
 		[HttpGet("{transactionId:guid}/Item")]
-		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(Guid transactionId, CancellationToken cancellationToken)
+		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(
+			Guid transactionId,
+			CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
 			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
@@ -224,7 +233,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		}
 
 		[HttpPost("{transactionId:guid}/Item")]
-		public async Task<ActionResult<Guid>> CreateItem(Guid transactionId, [FromBody, BindRequired] TransactionItemCreationModel creationModel)
+		public async Task<ActionResult<Guid>> CreateItem(
+			Guid transactionId,
+			[FromBody, BindRequired] TransactionItemCreationModel creationModel)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -260,7 +271,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 			StatusCodeResult HandleFailedDelete(int count, Guid transactionItemId)
 			{
-				_logger.LogError("Deleted {DeletedCount} transaction items by id {TransactionItemId}", count, transactionItemId);
+				_logger.LogError(
+					"Deleted {DeletedCount} transaction items by id {TransactionItemId}",
+					count,
+					transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
 		}
@@ -284,6 +298,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			}
 
 			return await _userRepository.FindByIdAsync(new(identityUser.Id));
+		}
+
+		private async Task<TransactionModel> GetModel(Transaction transaction, CancellationToken cancellationToken)
+		{
+			var items = await _itemRepository.GetAllAsync(transaction.Id, cancellationToken);
+			var itemModels = items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
+			return _mapper.Map<TransactionModel>(transaction) with { Items = itemModels };
 		}
 	}
 }

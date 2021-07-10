@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,6 +63,15 @@ namespace Tracking.Finance.Data.Repositories
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return await _dbConnection.QuerySingleAsync<AccountInCurrency>(command).ConfigureAwait(false);
+		}
+
+		public async Task<List<AccountInCurrency>> GetByAccountIdAsync(
+			Guid accountId,
+			CancellationToken cancellationToken = default)
+		{
+			const string sql = _selectSql + " WHERE account_id = @accountId";
+			var command = new CommandDefinition(sql, new { accountId }, cancellationToken: cancellationToken);
+			return (await _dbConnection.QueryAsync<AccountInCurrency>(command).ConfigureAwait(false)).ToList();
 		}
 
 		/// <inheritdoc />

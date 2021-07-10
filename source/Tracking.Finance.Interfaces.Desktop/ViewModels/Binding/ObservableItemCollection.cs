@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Observable
+namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 {
 	/// <summary>
 	/// Represents a dynamic data collection that provides notifications when

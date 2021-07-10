@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -14,37 +16,35 @@ using Tracking.Finance.Data.Repositories;
 
 namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
-	public class OwnerRepositoryTests : IDisposable
+	public class CurrencyRepositoryTests : IDisposable
 	{
 		private IDbConnection _dbConnection = null!;
-		private OwnerRepository _ownerRepository = null!;
+		private CurrencyRepository _repository = null!;
 
 		[SetUp]
 		public async Task SetUpAsync()
 		{
 			_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
-			_ownerRepository = new(_dbConnection);
+			_repository = new(_dbConnection);
 		}
 
 		[TearDown]
 		public void Dispose()
 		{
 			_dbConnection.Dispose();
-			_ownerRepository.Dispose();
+			_repository.Dispose();
 		}
 
 		[Test]
-		public async Task AddAsync_ShouldGenerateGuid()
+		public async Task GetAllAsync_ShouldReturnExpected()
 		{
-			var id = await _ownerRepository.AddAsync();
-			id.Should().NotBe(Guid.Empty);
-		}
+			var currencies = await _repository.GetAllAsync();
+			var expectedCurrencies = new List<string> { "EUR", "USD" };
+			currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
 
-		[Test]
-		public async Task GetAllAsync()
-		{
-			var owners = await _ownerRepository.GetAllAsync();
-			owners.Should().OnlyHaveUniqueItems();
+			var firstCurrency = currencies.First();
+			var currencyById = await _repository.GetByIdAsync(firstCurrency.Id);
+			currencyById.Should().BeEquivalentTo(firstCurrency);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Tracking.Finance.Interfaces.WebApi.Client.Login;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
@@ -42,5 +43,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <returns>A collection with all transactions.</returns>
 		Task<List<TransactionModel>> GetTransactionsAsync();
+
+		Task<AccountModel?> FindAccountAsync(Guid id);
 	}
 }

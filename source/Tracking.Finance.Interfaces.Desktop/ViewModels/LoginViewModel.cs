@@ -87,7 +87,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 					break;
 
 				case SuccessfulLogin:
-					_mainWindow.ActiveView = new TransactionViewModel(_mainWindow, _financeClient);
+					_mainWindow.ActiveView = new TransactionViewModel(_financeClient);
 					break;
 
 				default:

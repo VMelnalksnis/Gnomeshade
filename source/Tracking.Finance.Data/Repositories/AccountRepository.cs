@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +18,7 @@ namespace Tracking.Finance.Data.Repositories
 	public sealed class AccountRepository : IRepository<Account>, IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedNamed, @PreferredCurrency, @Bic, @Iban, @AccountNumber) RETURNING id";
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id";
 
 		private const string _selectSql =
 			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, preferred_currency_id PreferredCurrencyId, bic, iban, account_number AccountNumber FROM accounts";
@@ -37,7 +39,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc />
 		public async Task<Guid> AddAsync(Account entity)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql).ConfigureAwait(false);
+			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />
@@ -61,6 +63,13 @@ namespace Tracking.Finance.Data.Repositories
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return await _dbConnection.QuerySingleAsync<Account>(command).ConfigureAwait(false);
+		}
+
+		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
+		{
+			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
+			var accounts = await _dbConnection.QueryAsync<Account>(command).ConfigureAwait(false);
+			return accounts.ToList();
 		}
 
 		/// <inheritdoc />

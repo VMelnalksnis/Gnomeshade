@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
@@ -21,6 +21,7 @@ using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 using Tracking.Finance.Interfaces.WebApi.Configuration;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
@@ -90,7 +91,8 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 			var response = await _client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
 			response.EnsureSuccessStatusCode();
 
-			var loginModel = new LoginModel { Username = registrationModel.Username, Password = registrationModel.Password };
+			var loginModel = new LoginModel
+				{ Username = registrationModel.Username, Password = registrationModel.Password };
 			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", loginModel);
 			loginResponse.EnsureSuccessStatusCode();
 		}
@@ -98,7 +100,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 		[Test]
 		public async Task Login()
 		{
-			await Authorize();
+			await AuthorizeAsync();
 
 			var authorizedResponse = await _client.GetAsync("/api/v1.0/transaction");
 			authorizedResponse.EnsureSuccessStatusCode();
@@ -107,8 +109,23 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 		[Test]
 		public async Task Create_ShouldCreateItems()
 		{
-			await Authorize();
+			await AuthorizeAsync();
+			var currency = (await _client.GetFromJsonAsync<List<CurrencyModel>>("/api/v1.0/currency"))!.First();
+
+			var accountCreationModel =
+				new Faker<AccountCreationModel>()
+					.RuleFor(model => model.Name, faker => faker.Finance.AccountName())
+					.RuleFor(model => model.PreferredCurrencyId, () => currency.Id)
+					.RuleFor(model => model.Currencies, () => new() { new() { CurrencyId = currency.Id } })
+					.Generate();
+
+			var accountCreationResponse = await _client.PostAsJsonAsync("/api/v1.0/account", accountCreationModel);
+			accountCreationResponse.EnsureSuccessStatusCode();
+			var accountId = await accountCreationResponse.Content.ReadFromJsonAsync<Guid>();
+			var account = (await _client.GetFromJsonAsync<AccountModel>($"/api/v1.0/account/{accountId:N}"))!;
+
 			var transactionsResponse = await _client.GetAsync("/api/v1.0/transaction");
+			transactionsResponse.EnsureSuccessStatusCode();
 			await transactionsResponse.Content.ReadFromJsonAsync<List<TransactionModel>>();
 
 			var transaction = new TransactionCreationModel
@@ -119,8 +136,8 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 				{
 					new()
 					{
-						SourceAccountId = Guid.Empty,
-						TargetAccountId = Guid.Empty,
+						SourceAccountId = account.Currencies.First().Id,
+						TargetAccountId = account.Currencies.First().Id,
 						SourceAmount = 0,
 						TargetAmount = 0,
 						ProductId = Guid.Empty,
@@ -133,16 +150,18 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 			createResponse.EnsureSuccessStatusCode();
 		}
 
-		private async Task Authorize()
+		private async Task AuthorizeAsync()
 		{
 			var login = new LoginModel { Username = _userOptions.Username, Password = _userOptions.Password };
 
-			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", login);
+			var loginResponse =
+				await _client.PostAsJsonAsync("/api/v1.0/authentication/login", login).ConfigureAwait(false);
 			loginResponse.EnsureSuccessStatusCode();
-			var responseContent = (await loginResponse.Content.ReadFromJsonAsync<LoginResponse>())!;
+			var responseContent =
+				(await loginResponse.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false))!;
 
-			var header = new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, responseContent.Token);
-			_client.DefaultRequestHeaders.Authorization = header;
+			_client.DefaultRequestHeaders.Authorization =
+				new(JwtBearerDefaults.AuthenticationScheme, responseContent.Token);
 		}
 	}
 }
