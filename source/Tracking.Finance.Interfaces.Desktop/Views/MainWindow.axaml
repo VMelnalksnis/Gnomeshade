@@ -43,6 +43,9 @@
 					<MenuItem
 						x:Name="CreateAccount" Header="Create _Account"
 						Command="{Binding CreateAccount}"/>
+					<MenuItem
+						x:Name="CreateTransaction" Header="Create _Transaction"
+						Command="{Binding CreateTransaction}"/>
 				</MenuItem>
 			</Menu>
 

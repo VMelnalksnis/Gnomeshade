@@ -55,7 +55,13 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="id">The id by which to search for an account.</param>
 		/// <returns>The account with the specified id if it exists; otherwise <see langword="null"/>.</returns>
-		Task<AccountModel?> FindAccountAsync(Guid id);
+		Task<AccountModel> GetAccountAsync(Guid id);
+
+		/// <summary>
+		/// Gets all accounts.
+		/// </summary>
+		/// <returns>A collection with all accounts.</returns>
+		Task<List<AccountModel>> GetAccountsAsync();
 
 		/// <summary>
 		/// Creates a new account.

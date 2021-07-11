@@ -50,21 +50,19 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 				await transactions
 					.SelectAsync(async transaction =>
 					{
-						var firstItem = transaction.Items.FirstOrDefault(); // todo item should exist
-						var sourceAccount = firstItem is null
-							? null
-							: await _financeClient.FindAccountAsync(firstItem.SourceAccountId).ConfigureAwait(false);
+						var firstItem = transaction.Items.First();
 
-						var targetAccount = firstItem is null
-							? null
-							: await _financeClient.FindAccountAsync(firstItem.TargetAccountId).ConfigureAwait(false);
+						// todo don't get all accounts
+						var accounts = await _financeClient.GetAccountsAsync().ConfigureAwait(false);
+						var sourceAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.SourceAccountId));
+						var targetAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
 
 						return new TransactionOverview
 						{
 							Date = transaction.Date.LocalDateTime,
 							Description = transaction.Description,
-							SourceAccount = sourceAccount?.Name ?? string.Empty, // todo account should exist
-							TargetAccount = targetAccount?.Name ?? string.Empty,
+							SourceAccount = sourceAccount.Name,
+							TargetAccount = targetAccount.Name,
 							SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
 							TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
 						};

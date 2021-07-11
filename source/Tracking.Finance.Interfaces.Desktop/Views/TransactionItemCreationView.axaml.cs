@@ -6,15 +6,15 @@ using Avalonia.Markup.Xaml;
 
 namespace Tracking.Finance.Interfaces.Desktop.Views
 {
-	public sealed class AccountCreationView : FocusOnInitUserControl
+	public sealed class TransactionItemCreationView : FocusOnInitUserControl
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountCreationView"/> class.
+		/// Initializes a new instance of the <see cref="TransactionItemCreationView"/> class.
 		/// </summary>
-		public AccountCreationView()
+		public TransactionItemCreationView()
 		{
 			AvaloniaXamlLoader.Load(this);
-			Focus("AccountName");
+			Focus("SourceAccount");
 		}
 	}
 }

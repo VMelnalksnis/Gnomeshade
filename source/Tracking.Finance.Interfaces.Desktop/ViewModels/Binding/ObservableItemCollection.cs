@@ -63,7 +63,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 
 		private void Item_PropertyChanged(object? sender, PropertyChangedEventArgs eventArgs)
 		{
-			OnCollectionChanged(new(NotifyCollectionChangedAction.Replace));
+			OnCollectionChanged(new(NotifyCollectionChangedAction.Reset));
 		}
 	}
 }

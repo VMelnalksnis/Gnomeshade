@@ -47,41 +47,42 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 		/// <param name="backingField">A reference to the backing field of a property.</param>
 		/// <param name="newValue">The new value to set.</param>
 		/// <param name="propertyName">The name of the property being modified.</param>
-		/// <param name="guardPropertyName">The name of the computed guard property.</param>
+		/// <param name="guardPropertyNames">The names of the computed guard properties.</param>
 		/// <typeparam name="T">The type of the property.</typeparam>
 		[NotifyPropertyChangedInvocator]
 		protected void SetAndNotifyWithGuard<T>(
 			ref T backingField,
 			T newValue,
 			[CallerMemberName] string propertyName = "",
-			[CallerMemberName] string guardPropertyName = "")
+			params string[] guardPropertyNames)
 		{
 			if (EqualityComparer<T>.Default.Equals(backingField, newValue))
 			{
 				return;
 			}
 
-			OnPropertiesChanging(propertyName, guardPropertyName);
+			OnPropertiesChanging(propertyName, guardPropertyNames);
 			backingField = newValue;
-			OnPropertiesChanged(propertyName, guardPropertyName);
+			OnPropertiesChanged(propertyName, guardPropertyNames);
 		}
 
-		[NotifyPropertyChangedInvocator]
 		private void OnPropertyChanging([CallerMemberName] string propertyName = "")
 		{
 			PropertyChanging?.Invoke(this, new(propertyName));
 		}
 
-		[NotifyPropertyChangedInvocator]
-		private void OnPropertiesChanging([CallerMemberName] string property1 = "", string property2 = "")
+		private void OnPropertiesChanging(string property, params string[] propertyNames)
 		{
 			if (PropertyChanging is null)
 			{
 				return;
 			}
 
-			PropertyChanging(this, new(property1));
-			PropertyChanging(this, new(property2));
+			PropertyChanging(this, new(property));
+			foreach (var propertyName in propertyNames)
+			{
+				PropertyChanging(this, new(propertyName));
+			}
 		}
 
 		[NotifyPropertyChangedInvocator]
@@ -90,16 +91,18 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels.Binding
 			PropertyChanged?.Invoke(this, new(propertyName));
 		}
 
-		[NotifyPropertyChangedInvocator]
-		private void OnPropertiesChanged([CallerMemberName] string property1 = "", string property2 = "")
+		private void OnPropertiesChanged(string property, params string[] propertyNames)
 		{
 			if (PropertyChanged is null)
 			{
 				return;
 			}
 
-			PropertyChanged(this, new(property1));
-			PropertyChanged(this, new(property2));
+			PropertyChanged(this, new(property));
+			foreach (var propertyName in propertyNames)
+			{
+				PropertyChanged(this, new(propertyName));
+			}
 		}
 	}
 }
