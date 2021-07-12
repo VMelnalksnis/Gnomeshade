@@ -48,9 +48,12 @@ CREATE TABLE "public"."currencies"
     CONSTRAINT "currencies_pk" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
-INSERT INTO "currencies" ("id", "created_at", "name", "normalized_name", "numeric_code", "alphabetic_code", "minor_unit", "official", "crypto", "historical", "active_from", "active_until")
-VALUES (uuid_generate_v4(), CURRENT_TIMESTAMP, 'Euro', 'EURO', 978, 'EUR', 2, TRUE, FALSE, FALSE, '1999-01-01 00:00:00+00', NULL),
-       (uuid_generate_v4(), CURRENT_TIMESTAMP, 'United States dollar', 'UNITED STATES DOLLAR', 840, 'USD', 2, TRUE, FALSE, FALSE, '1792-04-02 00:00:00+00', NULL);
+INSERT INTO "currencies" ("id", "created_at", "name", "normalized_name", "numeric_code", "alphabetic_code",
+                          "minor_unit", "official", "crypto", "historical", "active_from", "active_until")
+VALUES (uuid_generate_v4(), CURRENT_TIMESTAMP, 'Euro', 'EURO', 978, 'EUR', 2, TRUE, FALSE, FALSE,
+        '1999-01-01 00:00:00+00', NULL),
+       (uuid_generate_v4(), CURRENT_TIMESTAMP, 'United States dollar', 'UNITED STATES DOLLAR', 840, 'USD', 2, TRUE,
+        FALSE, FALSE, '1792-04-02 00:00:00+00', NULL);
 
 DROP TABLE IF EXISTS "accounts";
 CREATE TABLE "public"."accounts"
@@ -113,6 +116,26 @@ CREATE TABLE "public"."transactions"
     CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
+) WITH (OIDS = FALSE);
+
+
+DROP TABLE IF EXISTS "products";
+CREATE TABLE "public"."products"
+(
+    "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "created_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "owner_id"            uuid                                   NOT NULL,
+    "created_by_user_id"  uuid                                   NOT NULL,
+    "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "modified_by_user_id" uuid                                   NOT NULL,
+    "name"                text                                   NOT NULL,
+    "normalized_name"     text                                   NOT NULL,
+    "description"         text,
+    CONSTRAINT "products_id" PRIMARY KEY ("id"),
+    CONSTRAINT "products_normalized_name" UNIQUE ("normalized_name"),
+    CONSTRAINT "products_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "products_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "products_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 
