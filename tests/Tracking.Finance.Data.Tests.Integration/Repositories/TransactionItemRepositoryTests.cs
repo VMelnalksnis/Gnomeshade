@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Npgsql;
-
 using NUnit.Framework;
 
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Data.TestingHelpers;
 
 using static Tracking.Finance.Data.Tests.Integration.DatabaseInitialization;
 
@@ -25,58 +24,75 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		private IDbConnection _dbConnection = null!;
 		private TransactionRepository _transactionRepository = null!;
 		private TransactionItemRepository _repository = null!;
-		private Transaction _defaultTransaction = null!;
-		private TransactionItem _defaultItem = null!;
+		private TransactionItem _transactionItem = null!;
 
-		[SetUp]
-		public async Task SetUpAsync()
+		[OneTimeSetUp]
+		public async Task OneTimeSetUpAsync()
 		{
 			_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 			_transactionRepository = new(_dbConnection);
 			_repository = new(_dbConnection);
 
-			_defaultTransaction = new()
-			{
-				OwnerId = TestUser.Id,
-				CreatedByUserId = TestUser.Id,
-				ModifiedByUserId = TestUser.Id,
-			};
-
-			using var transaction = _dbConnection.BeginTransaction();
 			var currency = (await new CurrencyRepository(_dbConnection).GetAllAsync().ConfigureAwait(false)).First();
-			var accountRepository = new AccountRepository(_dbConnection);
-			var inCurrencyRepository = new AccountInCurrencyRepository(_dbConnection);
-			var account = new Account
-			{
-				OwnerId = TestUser.Id,
-				CreatedByUserId = TestUser.Id,
-				ModifiedByUserId = TestUser.Id,
-				PreferredCurrencyId = currency.Id,
-			};
+			var product = new ProductFaker(TestUser).Generate();
+			var productId = await new ProductRepository(_dbConnection).AddAsync(product).ConfigureAwait(false);
 
-			var accountId = await accountRepository.AddAsync(account, transaction).ConfigureAwait(false);
-			var inCurrency = new AccountInCurrency
+			var accountFaker = new AccountFaker(TestUser, currency);
+			var sourceAccount = accountFaker.Generate();
+			var targetAccount = accountFaker.GenerateUnique(sourceAccount);
+
+			var accountRepository = new AccountRepository(_dbConnection);
+			var accountInCurrencyRepository = new AccountInCurrencyRepository(_dbConnection);
+
+			var sourceAccountId = await accountRepository.AddAsync(sourceAccount).ConfigureAwait(false);
+			var targetAccountId = await accountRepository.AddAsync(targetAccount).ConfigureAwait(false);
+
+			var sourceInCurrency = new AccountInCurrency
 			{
 				OwnerId = TestUser.Id,
 				CreatedByUserId = TestUser.Id,
 				ModifiedByUserId = TestUser.Id,
-				AccountId = accountId,
+				AccountId = sourceAccountId,
 				CurrencyId = currency.Id,
 			};
-			var inCurrencyId = await inCurrencyRepository.AddAsync(inCurrency, transaction).ConfigureAwait(false);
-			transaction.Commit();
 
-			_defaultItem = new()
+			var targetInCurrency = new AccountInCurrency
 			{
 				OwnerId = TestUser.Id,
 				CreatedByUserId = TestUser.Id,
 				ModifiedByUserId = TestUser.Id,
-				SourceAccountId = inCurrencyId,
-				TargetAccountId = inCurrencyId,
+				AccountId = targetAccountId,
+				CurrencyId = currency.Id,
+			};
+
+			var sourceInCurrencyId = await accountInCurrencyRepository.AddAsync(sourceInCurrency).ConfigureAwait(false);
+			var targetInCurrencyId = await accountInCurrencyRepository.AddAsync(targetInCurrency).ConfigureAwait(false);
+
+			var transaction = new Transaction
+			{
+				OwnerId = TestUser.Id,
+				CreatedByUserId = TestUser.Id,
+				ModifiedByUserId = TestUser.Id,
+			};
+
+			var transactionId = await new TransactionRepository(_dbConnection).AddAsync(transaction).ConfigureAwait(false);
+
+			_transactionItem = new()
+			{
+				OwnerId = TestUser.Id,
+				CreatedByUserId = TestUser.Id,
+				ModifiedByUserId = TestUser.Id,
+				TransactionId = transactionId,
+				SourceAccountId = sourceInCurrencyId,
+				TargetAccountId = targetInCurrencyId,
+				ProductId = productId,
+				SourceAmount = 123.45m,
+				TargetAmount = 123.45m,
+				Amount = 2,
 			};
 		}
 
-		[TearDown]
+		[OneTimeTearDown]
 		public void Dispose()
 		{
 			_dbConnection.Dispose();
@@ -85,50 +101,55 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		}
 
 		[Test]
-		public void AddAsync_ShouldThrowOnInvalidForeignKey()
+		public async Task AddGetDelete_WithoutTransaction()
 		{
-			var transactionItem = _defaultItem with { };
+			var item = _transactionItem with { };
 
-			FluentActions
-				.Awaiting(() => _repository.AddAsync(transactionItem))
-				.Should()
-				.ThrowExactly<PostgresException>()
-				.Which.ConstraintName.Should()
-				.Be("transaction_items_transaction_id_fkey");
+			var itemId = await _repository.AddAsync(item);
+
+			var getItem = await _repository.GetByIdAsync(itemId);
+			var findItem = await _repository.FindByIdAsync(getItem.Id);
+			var expectedItem = item with
+			{
+				Id = itemId,
+				CreatedAt = getItem.CreatedAt,
+				ModifiedAt = getItem.ModifiedAt,
+			};
+
+			getItem.Should().BeEquivalentTo(expectedItem);
+			findItem.Should().BeEquivalentTo(expectedItem);
+
+			await _repository.DeleteAsync(itemId);
+
+			var findAfterDelete = await _repository.FindByIdAsync(itemId);
+			findAfterDelete.Should().BeNull();
 		}
 
 		[Test]
-		public async Task AddAsync_ShouldBeEquivalent()
+		public async Task AddGetDelete_WithTransaction()
 		{
-			var transactionId = await _transactionRepository.AddAsync(_defaultTransaction with { });
-			var transactionItem = _defaultItem with { TransactionId = transactionId };
+			var item = _transactionItem with { };
 
-			var id = await _repository.AddAsync(transactionItem);
-			transactionItem = transactionItem with { Id = id };
-			var actual = await _repository.GetByIdAsync(id);
+			using var dbTransaction = _dbConnection.BeginTransaction();
+			var itemId = await _repository.AddAsync(item, dbTransaction);
+			dbTransaction.Commit();
 
-			actual.Should().BeEquivalentTo(transactionItem, FluentAssertionsConfiguration.ModifiableOptions);
-			await _repository.DeleteAsync(id);
-		}
+			var getItem = await _repository.GetByIdAsync(itemId);
+			var findItem = await _repository.FindByIdAsync(getItem.Id);
+			var expectedItem = item with
+			{
+				Id = itemId,
+				CreatedAt = getItem.CreatedAt,
+				ModifiedAt = getItem.ModifiedAt,
+			};
 
-		[Test]
-		public async Task GetAllAsync_ShouldReturnExpected()
-		{
-			var transactionId = await _transactionRepository.AddAsync(_defaultTransaction with { });
-			var id1 = await _repository.AddAsync(_defaultItem with { TransactionId = transactionId });
-			var id2 = await _repository.AddAsync(_defaultItem with { TransactionId = transactionId });
-			var id3 = await _repository.AddAsync(_defaultItem with { TransactionId = transactionId });
+			getItem.Should().BeEquivalentTo(expectedItem);
+			findItem.Should().BeEquivalentTo(expectedItem);
 
-			var items = await _repository.GetAllAsync(transactionId);
+			await _repository.DeleteAsync(itemId);
 
-			items.Should().HaveCount(3);
-			items.Should().AllBeEquivalentTo(
-				_defaultItem with { TransactionId = transactionId },
-				FluentAssertionsConfiguration.ModifiableWithoutIdOptions);
-
-			await _repository.DeleteAsync(id1);
-			await _repository.DeleteAsync(id2);
-			await _repository.DeleteAsync(id3);
+			var findAfterDelete = await _repository.FindByIdAsync(itemId);
+			findAfterDelete.Should().BeNull();
 		}
 	}
 }

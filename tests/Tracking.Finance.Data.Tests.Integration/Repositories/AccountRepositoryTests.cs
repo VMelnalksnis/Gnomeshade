@@ -11,11 +11,10 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Data.TestingHelpers;
 
 using static Tracking.Finance.Data.Tests.Integration.DatabaseInitialization;
-using static Tracking.Finance.Data.Tests.Integration.Repositories.FluentAssertionsConfiguration;
 
 namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
@@ -24,8 +23,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		private IDbConnection _dbConnection = null!;
 		private AccountRepository _repository = null!;
 		private AccountInCurrencyRepository _inCurrencyRepository = null!;
-		private Guid _ownerId;
-		private Currency _currency = null!;
+		private Guid _currencyId;
 
 		[SetUp]
 		public async Task SetUpAsync()
@@ -34,10 +32,8 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			_repository = new(_dbConnection);
 			_inCurrencyRepository = new(_dbConnection);
 
-			_ownerId = TestUser.Id;
-
 			var currencyRepository = new CurrencyRepository(_dbConnection);
-			_currency = (await currencyRepository.GetAllAsync().ConfigureAwait(false)).First();
+			_currencyId = (await currencyRepository.GetAllAsync().ConfigureAwait(false)).First().Id;
 		}
 
 		[TearDown]
@@ -48,35 +44,49 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		}
 
 		[Test]
-		public async Task AddAsync()
+		public async Task AddAsync_WithTransaction()
 		{
 			using var dbTransaction = _dbConnection.BeginTransaction();
+			var account = new AccountFaker(TestUser.Id, _currencyId).Generate();
+			var accountId = await _repository.AddAsync(account, dbTransaction);
 
-			var account = new Account
-			{
-				OwnerId = _ownerId,
-				CreatedByUserId = _ownerId,
-				ModifiedByUserId = _ownerId,
-				PreferredCurrencyId = _currency.Id,
-			};
-
-			var id = await _repository.AddAsync(account, dbTransaction);
-
-			var accountInCurrency = new AccountInCurrency
-			{
-				OwnerId = _ownerId,
-				CreatedByUserId = _ownerId,
-				ModifiedByUserId = _ownerId,
-				AccountId = id,
-				CurrencyId = _currency.Id,
-			};
-
-			var inCurrencyId = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
+			var accountInCurrency = new AccountInCurrencyFaker(TestUser.Id, accountId, _currencyId).Generate();
+			var accountInCurrencyId = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
 
 			dbTransaction.Commit();
 
-			var inCurrency = await _inCurrencyRepository.FindByIdAsync(inCurrencyId);
-			inCurrency.Should().BeEquivalentTo(accountInCurrency, ModifiableWithoutIdOptions);
+			var getAccount = await _repository.GetByIdAsync(accountId);
+			var findAccount = await _repository.FindByIdAsync(getAccount.Id);
+			var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName);
+			var accounts = await _repository.GetAllAsync();
+
+			var expectedAccount = account with
+			{
+				Id = accountId,
+				CreatedAt = getAccount.CreatedAt,
+				ModifiedAt = getAccount.ModifiedAt,
+			};
+
+			getAccount.Should().BeEquivalentTo(expectedAccount);
+			findAccount.Should().BeEquivalentTo(expectedAccount);
+			findByNameAccount.Should().BeEquivalentTo(expectedAccount);
+			accounts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedAccount);
+
+			var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(accountInCurrencyId);
+			var findAccountInCurrency = await _inCurrencyRepository.FindByIdAsync(getAccountInCurrency.Id);
+
+			var expectedAccountInCurrency = accountInCurrency with
+			{
+				Id = accountInCurrencyId,
+				CreatedAt = getAccountInCurrency.CreatedAt,
+				ModifiedAt = getAccountInCurrency.ModifiedAt,
+			};
+
+			getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
+			findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
+
+			await _inCurrencyRepository.DeleteAsync(accountInCurrencyId);
+			await _repository.DeleteAsync(accountId);
 		}
 	}
 }

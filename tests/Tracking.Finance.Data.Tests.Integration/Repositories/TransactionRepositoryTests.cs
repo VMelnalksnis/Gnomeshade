@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -14,7 +16,6 @@ using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
 
 using static Tracking.Finance.Data.Tests.Integration.DatabaseInitialization;
-using static Tracking.Finance.Data.Tests.Integration.Repositories.FluentAssertionsConfiguration;
 
 namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
@@ -63,26 +64,49 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				await _repository.DeleteAsync(existingTransaction.Id);
 			}
 
-			await _repository.AddAsync(_defaultTransaction with { });
-			await _repository.AddAsync(_defaultTransaction with { });
-			await _repository.AddAsync(_defaultTransaction with { });
+			var transactionsToAdd = new List<Transaction>
+			{
+				_defaultTransaction with { },
+				_defaultTransaction with { },
+				_defaultTransaction with { },
+			};
 
-			var transactions = await _repository.GetAllAsync();
+			foreach (var transactionToAdd in transactionsToAdd)
+			{
+				await _repository.AddAsync(transactionToAdd);
+			}
 
-			transactions.Should().HaveCount(3);
-			transactions.Should().AllBeEquivalentTo(_defaultTransaction, ModifiableWithoutIdOptions);
+			var actualTransactions = await _repository.GetAllAsync();
+			var expectedTransactions =
+				transactionsToAdd.Zip(actualTransactions)
+					.Select(tuple => tuple.First with
+					{
+						Id = tuple.Second.Id,
+						CreatedAt = tuple.Second.CreatedAt,
+						ModifiedAt = tuple.Second.ModifiedAt,
+					}).ToList();
+
+			actualTransactions.Should().HaveCount(transactionsToAdd.Count);
+			actualTransactions.Should().BeEquivalentTo(expectedTransactions);
 		}
 
 		[Test]
 		public async Task AddAsync_ShouldBeEquivalent()
 		{
-			var transaction = _defaultTransaction with { };
+			var transactionToAdd = _defaultTransaction with { };
 
-			var id = await _repository.AddAsync(transaction);
-			transaction = transaction with { Id = id };
+			var transactionId = await _repository.AddAsync(transactionToAdd);
 
-			var actual = await _repository.GetByIdAsync(id);
-			actual.Should().BeEquivalentTo(transaction, ModifiableOptions);
+			var getTransaction = await _repository.GetByIdAsync(transactionId);
+			var expectedTransaction = getTransaction with
+			{
+				Id = transactionId,
+				CreatedAt = getTransaction.CreatedAt,
+				ModifiedAt = getTransaction.ModifiedAt,
+			};
+
+			getTransaction.Should().BeEquivalentTo(expectedTransaction);
+			await _repository.DeleteAsync(transactionId);
 		}
 
 		[Test]
@@ -98,21 +122,26 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task FindByIdAsync_ShouldReturnNullIfDoesNotExist()
 		{
-			var transaction = await _repository.FindByIdAsync(Guid.NewGuid());
-
-			transaction.Should().BeNull();
+			(await _repository.FindByIdAsync(Guid.NewGuid())).Should().BeNull();
 		}
 
 		[Test]
 		public async Task FindByIdAsync_ShouldReturnExpectedIfExists()
 		{
-			var transaction = _defaultTransaction with { };
+			var transactionToAdd = _defaultTransaction with { };
+			var transactionId = await _repository.AddAsync(transactionToAdd);
 
-			var id = await _repository.AddAsync(transaction);
-			transaction = transaction with { Id = id };
+			var findTransaction = await _repository.FindByIdAsync(transactionId);
+			findTransaction.Should().NotBeNull();
 
-			var actual = await _repository.FindByIdAsync(id);
-			actual.Should().BeEquivalentTo(transaction, ModifiableOptions);
+			var expectedTransaction = findTransaction! with
+			{
+				Id = transactionId,
+				CreatedAt = findTransaction.CreatedAt,
+				ModifiedAt = findTransaction.ModifiedAt,
+			};
+
+			findTransaction.Should().BeEquivalentTo(expectedTransaction);
 		}
 	}
 }

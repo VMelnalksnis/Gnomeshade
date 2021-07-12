@@ -10,8 +10,8 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Data.TestingHelpers;
 
 using static Tracking.Finance.Data.Tests.Integration.DatabaseInitialization;
 
@@ -21,23 +21,12 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 	{
 		private IDbConnection _dbConnection = null!;
 		private ProductRepository _repository = null!;
-		private Product _defaultProduct = null!;
 
 		[SetUp]
 		public async Task SetUpAsync()
 		{
 			_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 			_repository = new(_dbConnection);
-
-			_defaultProduct = new()
-			{
-				OwnerId = TestUser.Id,
-				CreatedByUserId = TestUser.Id,
-				ModifiedByUserId = TestUser.Id,
-				Name = "Foo",
-				NormalizedName = "Foo".ToUpperInvariant(),
-				Description = "Some description",
-			};
 		}
 
 		[TearDown]
@@ -50,7 +39,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task AddGetDelete_WithoutTransaction()
 		{
-			var productToAdd = _defaultProduct with { };
+			var productToAdd = new ProductFaker(TestUser).Generate();
 
 			var id = await _repository.AddAsync(productToAdd);
 			var getProduct = await _repository.GetByIdAsync(id);
@@ -77,7 +66,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task AddGetDelete_WithTransaction()
 		{
-			var productToAdd = _defaultProduct with { };
+			var productToAdd = new ProductFaker(TestUser).Generate();
 
 			using var dbTransaction = _dbConnection.BeginTransaction();
 			var id = await _repository.AddAsync(productToAdd, dbTransaction);
