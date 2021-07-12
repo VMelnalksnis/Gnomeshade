@@ -5,8 +5,11 @@
 using System;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 {
+	[PublicAPI]
 	public sealed record AccountModel
 	{
 		public Guid Id { get; init; }

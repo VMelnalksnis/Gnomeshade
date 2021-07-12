@@ -5,8 +5,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 {
+	[PublicAPI]
 	public sealed record AccountInCurrencyCreationModel
 	{
 		[Required]

@@ -4,8 +4,11 @@
 
 using System;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
+	[PublicAPI]
 	public sealed record TransactionItemModel
 	{
 		public Guid Id { get; init; }

@@ -9,16 +9,16 @@ using JetBrains.Annotations;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	[PublicAPI]
-	public class RegistrationModel
+	public sealed record RegistrationModel
 	{
 		[Required(AllowEmptyStrings = false)]
-		public string Username { get; set; }
+		public string Username { get; init; }
 
 		[EmailAddress]
 		[Required(AllowEmptyStrings = false)]
-		public string Email { get; set; }
+		public string Email { get; init; }
 
 		[Required(AllowEmptyStrings = false)]
-		public string Password { get; set; }
+		public string Password { get; init; }
 	}
 }

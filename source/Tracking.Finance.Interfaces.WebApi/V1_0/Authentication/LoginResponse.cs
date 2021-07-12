@@ -4,7 +4,10 @@
 
 using System;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
-	public record LoginResponse(string Token, DateTime ValidTo);
+	[PublicAPI]
+	public sealed record LoginResponse(string Token, DateTime ValidTo);
 }

@@ -20,7 +20,6 @@ using Microsoft.Extensions.Configuration;
 
 using NUnit.Framework;
 
-using Tracking.Finance.Data.Repositories;
 using Tracking.Finance.Interfaces.WebApi.Configuration;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;

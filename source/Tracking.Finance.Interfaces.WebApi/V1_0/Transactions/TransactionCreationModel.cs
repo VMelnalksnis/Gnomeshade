@@ -15,7 +15,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 	/// Represents information needed in order to create a transaction.
 	/// </summary>
 	[PublicAPI]
-	public record TransactionCreationModel
+	public sealed record TransactionCreationModel
 	{
 		/// <summary>
 		/// Gets the date on which the transaction was completed on.

@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	[PublicAPI]
-	public record TransactionItemCreationModel
+	public sealed record TransactionItemCreationModel
 	{
 		[Required]
 		public decimal? SourceAmount { get; init; }

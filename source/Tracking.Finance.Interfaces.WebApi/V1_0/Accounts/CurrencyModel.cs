@@ -4,8 +4,11 @@
 
 using System;
 
+using JetBrains.Annotations;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 {
+	[PublicAPI]
 	public sealed record CurrencyModel
 	{
 		public Guid Id { get; init; }

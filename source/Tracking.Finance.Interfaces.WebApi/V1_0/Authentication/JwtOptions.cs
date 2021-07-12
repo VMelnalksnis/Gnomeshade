@@ -9,7 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
-	public class JwtOptions
+	public sealed record JwtOptions
 	{
 		/// <summary>
 		/// The name of the configuration section.
@@ -17,13 +17,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 		public const string SectionName = "JWT";
 
 		[Required(AllowEmptyStrings = false)]
-		public string ValidAudience { get; set; }
+		public string ValidAudience { get; init; }
 
 		[Required(AllowEmptyStrings = false)]
-		public string ValidIssuer { get; set; }
+		public string ValidIssuer { get; init; }
 
 		[Required(AllowEmptyStrings = false)]
-		public string Secret { get; set; }
+		public string Secret { get; init; }
 
 		public SymmetricSecurityKey SecurityKey => new(Encoding.UTF8.GetBytes(Secret));
 	}

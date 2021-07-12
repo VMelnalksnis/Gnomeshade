@@ -9,12 +9,12 @@ using JetBrains.Annotations;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Authentication
 {
 	[PublicAPI]
-	public class LoginModel
+	public sealed record LoginModel
 	{
 		[Required(AllowEmptyStrings = false)]
-		public string Username { get; set; }
+		public string Username { get; init; }
 
 		[Required(AllowEmptyStrings = false)]
-		public string Password { get; set; }
+		public string Password { get; init; }
 	}
 }
