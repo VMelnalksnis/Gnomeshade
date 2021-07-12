@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -21,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -29,18 +29,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 	/// <summary>
 	/// CRUD operations on account entity.
 	/// </summary>
-	[ApiController]
-	[ApiVersion("1.0")]
-	[Authorize]
-	[Route("api/v{version:apiVersion}/[controller]")]
 	[SuppressMessage(
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class AccountController : ControllerBase, IDisposable
+	public sealed class AccountController : FinanceControllerBase<Account, AccountModel>
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly UserRepository _userRepository;
 		private readonly IDbConnection _dbConnection;
 		private readonly AccountRepository _repository;
 		private readonly AccountInCurrencyRepository _inCurrencyRepository;
@@ -57,9 +51,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			CurrencyRepository currencyRepository,
 			Mapper mapper,
 			ILogger<AccountController> logger)
+			: base(userManager, userRepository)
 		{
-			_userManager = userManager;
-			_userRepository = userRepository;
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_inCurrencyRepository = inCurrencyRepository;
@@ -73,9 +66,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellationToken)
 		{
-			return await FindAccount(
-				() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellationToken),
-				cancellationToken);
+			return await Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellationToken), cancellationToken);
 		}
 
 		[HttpGet("{id:guid}")]
@@ -83,9 +74,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await FindAccount(
-				() => _repository.FindByIdAsync(id, cancellationToken),
-				cancellationToken);
+			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
 		}
 
 		[HttpGet]
@@ -93,11 +82,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models =
-				accounts
-					.Select(account => GetAccountModel(account, cancellationToken).GetAwaiter().GetResult())
-					.ToList();
-
+			var models = (await accounts.SelectAsync(account => GetModel(account, cancellationToken))).ToList();
 			return Ok(models);
 		}
 
@@ -153,67 +138,42 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		}
 
 		/// <inheritdoc />
-		public void Dispose()
+		protected override async Task<AccountModel> GetModel(Account entity, CancellationToken cancellationToken)
 		{
-			_userManager.Dispose();
-			_userRepository.Dispose();
+			var preferredCurrency = await _currencyRepository.GetByIdAsync(entity.PreferredCurrencyId, cancellationToken);
+			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(entity.Id, cancellationToken);
+			var models = (await inCurrencies.SelectAsync(inCurrency => GetModel(inCurrency, cancellationToken))).ToList();
+
+			return _mapper.Map<AccountModel>(entity) with
+			{
+				PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
+				Currencies = models,
+			};
+		}
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (!disposing)
+			{
+				return;
+			}
+
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_inCurrencyRepository.Dispose();
 			_currencyRepository.Dispose();
+			base.Dispose(disposing);
 		}
 
-		private async Task<User?> GetCurrentUser()
-		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			if (identityUser is null)
-			{
-				return null;
-			}
-
-			return await _userRepository.FindByIdAsync(new(identityUser.Id));
-		}
-
-		private async Task<ActionResult<AccountModel>> FindAccount(
-			Func<Task<Account?>> selector,
+		private async Task<AccountInCurrencyModel> GetModel(
+			AccountInCurrency accountInCurrency,
 			CancellationToken cancellationToken)
 		{
-			var account = await selector();
-			if (account is null)
+			var currency = await _currencyRepository.GetByIdAsync(accountInCurrency.CurrencyId, cancellationToken);
+			return _mapper.Map<AccountInCurrencyModel>(accountInCurrency) with
 			{
-				return NotFound();
-			}
-
-			var accountModel = await GetAccountModel(account, cancellationToken);
-			return Ok(accountModel);
-		}
-
-		private async Task<AccountModel> GetAccountModel(Account account, CancellationToken cancellationToken)
-		{
-			var preferredCurrency =
-				await _currencyRepository.GetByIdAsync(account.PreferredCurrencyId, cancellationToken);
-			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(account.Id, cancellationToken);
-			var models =
-				inCurrencies
-					.Select(inCurrency =>
-					{
-						var currency =
-							_currencyRepository
-								.GetByIdAsync(inCurrency.CurrencyId, cancellationToken)
-								.GetAwaiter()
-								.GetResult();
-
-						return _mapper.Map<AccountInCurrencyModel>(inCurrency) with
-						{
-							Currency = _mapper.Map<CurrencyModel>(currency),
-						};
-					})
-					.ToList();
-
-			return _mapper.Map<AccountModel>(account) with
-			{
-				PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
-				Currencies = models,
+				Currency = _mapper.Map<CurrencyModel>(currency),
 			};
 		}
 	}

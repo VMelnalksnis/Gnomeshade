@@ -8,6 +8,7 @@ using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0
@@ -28,14 +29,20 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 
 			options.CreateMap<TransactionCreationModel, Transaction>();
 			options.CreateMap<Transaction, TransactionModel>();
+
 			options.CreateMap<TransactionItemCreationModel, TransactionItem>();
 			options.CreateMap<TransactionItem, TransactionItemModel>();
 
 			options.CreateMap<Account, AccountModel>();
 			options.CreateMap<AccountCreationModel, Account>();
+
 			options.CreateMap<AccountInCurrency, AccountInCurrencyModel>();
 			options.CreateMap<AccountInCurrencyCreationModel, AccountInCurrency>();
+
 			options.CreateMap<Currency, CurrencyModel>();
+
+			options.CreateMap<Product, ProductModel>();
+			options.CreateMap<ProductCreationModel, Product>();
 		}
 	}
 }

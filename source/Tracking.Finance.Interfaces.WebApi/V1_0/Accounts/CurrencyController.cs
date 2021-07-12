@@ -10,10 +10,13 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+using Tracking.Finance.Data.Identity;
+using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -22,20 +25,21 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 	/// <summary>
 	/// CRUD operations on currency entity.
 	/// </summary>
-	[ApiController]
-	[ApiVersion("1.0")]
-	[Authorize]
-	[Route("api/v{version:apiVersion}/[controller]")]
 	[SuppressMessage(
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public class CurrencyController : ControllerBase
+	public sealed class CurrencyController : FinanceControllerBase<Currency, CurrencyModel>
 	{
 		private readonly CurrencyRepository _currencyRepository;
 		private readonly Mapper _mapper;
 
-		public CurrencyController(CurrencyRepository currencyRepository, Mapper mapper)
+		public CurrencyController(
+			UserManager<ApplicationUser> userManager,
+			UserRepository userRepository,
+			CurrencyRepository currencyRepository,
+			Mapper mapper)
+			: base(userManager, userRepository)
 		{
 			_currencyRepository = currencyRepository;
 			_mapper = mapper;
@@ -46,8 +50,32 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<CurrencyModel>>> GetCurrencies(CancellationToken cancellationToken)
 		{
 			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
-			var models = currencies.Select(currency => _mapper.Map<CurrencyModel>(currency));
+			var models = (await currencies.SelectAsync(currency => GetModel(currency, cancellationToken))).ToList();
 			return Ok(models);
+		}
+
+		/// <inheritdoc />
+		protected override Task<CurrencyModel> GetModel(Currency entity, CancellationToken cancellationToken)
+		{
+			if (cancellationToken.IsCancellationRequested)
+			{
+				return Task.FromCanceled<CurrencyModel>(cancellationToken);
+			}
+
+			var model = _mapper.Map<CurrencyModel>(entity);
+			return Task.FromResult(model);
+		}
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (!disposing)
+			{
+				return;
+			}
+
+			_currencyRepository.Dispose();
+			base.Dispose(disposing);
 		}
 	}
 }

@@ -20,9 +20,11 @@ using Microsoft.Extensions.Configuration;
 
 using NUnit.Framework;
 
+using Tracking.Finance.Data.Repositories;
 using Tracking.Finance.Interfaces.WebApi.Configuration;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
@@ -111,6 +113,18 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 		{
 			await AuthorizeAsync();
 			var currency = (await _client.GetFromJsonAsync<List<CurrencyModel>>("/api/v1.0/currency"))!.First();
+			var productId = (await _client.GetFromJsonAsync<List<ProductModel>>("/api/v1.0/product"))!.FirstOrDefault()?.Id;
+			if (productId is null)
+			{
+				var productCreationModel = new Faker<ProductCreationModel>()
+					.RuleFor(model => model.Name, faker => faker.Commerce.ProductName())
+					.RuleFor(model => model.Description, faker => faker.Lorem.Sentence())
+					.Generate();
+
+				var productCreationResponse = await _client.PostAsJsonAsync("/api/v1.0/product", productCreationModel);
+				productCreationResponse.EnsureSuccessStatusCode();
+				productId = await productCreationResponse.Content.ReadFromJsonAsync<Guid>();
+			}
 
 			var accountCreationModel =
 				new Faker<AccountCreationModel>()
@@ -152,7 +166,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.Integration
 						TargetAccountId = account.Currencies.First().Id,
 						SourceAmount = 0,
 						TargetAmount = 0,
-						ProductId = Guid.Empty,
+						ProductId = productId,
 						Amount = 0,
 					},
 				},

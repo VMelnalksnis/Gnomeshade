@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -37,10 +38,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class TransactionController : ControllerBase, IDisposable
+	public sealed class TransactionController : FinanceControllerBase<Transaction, TransactionModel>
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly UserRepository _userRepository;
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
@@ -50,7 +49,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionController"/> class.
 		/// </summary>
-		///
 		/// <param name="userManager">Identity user manager.</param>
 		/// <param name="userRepository">Finance user repository.</param>
 		/// <param name="dbConnection">Database connection for creating <see cref="IDbTransaction"/> for creating entities.</param>
@@ -66,9 +64,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			TransactionItemRepository itemRepository,
 			Mapper mapper,
 			ILogger<TransactionController> logger)
+			: base(userManager, userRepository)
 		{
-			_userManager = userManager;
-			_userRepository = userRepository;
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
@@ -79,10 +76,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Gets a transaction by the specified id.
 		/// </summary>
-		///
 		/// <param name="id">The id of the transaction to get.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		///
 		/// <returns><see cref="OkObjectResult"/> if transaction was found, otherwise <see cref="NotFoundResult"/>.</returns>
 		/// <response code="200">Transaction with the specified id exists.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
@@ -91,22 +86,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
 		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			var transaction = await _repository.FindByIdAsync(id, cancellationToken);
-			if (transaction is null)
-			{
-				return NotFound();
-			}
-
-			var transactionModel = await GetModel(transaction, cancellationToken);
-			return Ok(transactionModel);
+			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
 		}
 
 		/// <summary>
 		/// Gets all transactions.
 		/// </summary>
-		///
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		///
 		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 		/// <response code="200">Successfully got all transactions.</response>
 		[HttpGet]
@@ -114,11 +100,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var transactions = await _repository.GetAllAsync(cancellationToken);
-			var transactionModels =
-				transactions
-					.Select(transaction => GetModel(transaction, cancellationToken).GetAwaiter().GetResult())
-					.ToList();
-
+			var transactionModels = transactions.Select(transaction => GetModel(transaction, cancellationToken).GetAwaiter().GetResult()).ToList();
 			return Ok(transactionModels);
 		}
 
@@ -279,32 +261,26 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			}
 		}
 
-		/// <inheritdoc/>
-		public void Dispose()
-		{
-			_dbConnection.Dispose();
-			_userManager.Dispose();
-			_repository.Dispose();
-			_itemRepository.Dispose();
-			_userRepository.Dispose();
-		}
-
-		private async Task<User?> GetCurrentUser()
-		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			if (identityUser is null)
-			{
-				return null;
-			}
-
-			return await _userRepository.FindByIdAsync(new(identityUser.Id));
-		}
-
-		private async Task<TransactionModel> GetModel(Transaction transaction, CancellationToken cancellationToken)
+		/// <inheritdoc />
+		protected override async Task<TransactionModel> GetModel(Transaction transaction, CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transaction.Id, cancellationToken);
 			var itemModels = items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
 			return _mapper.Map<TransactionModel>(transaction) with { Items = itemModels };
+		}
+
+		/// <inheritdoc />
+		protected override void Dispose(bool disposing)
+		{
+			if (!disposing)
+			{
+				return;
+			}
+
+			_dbConnection.Dispose();
+			_repository.Dispose();
+			_itemRepository.Dispose();
+			base.Dispose(disposing);
 		}
 	}
 }
