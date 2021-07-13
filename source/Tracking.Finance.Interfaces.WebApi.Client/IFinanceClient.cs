@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi.Client
@@ -75,5 +76,11 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <returns>A collection with all currencies.</returns>
 		Task<List<CurrencyModel>> GetCurrenciesAsync();
+
+		/// <summary>
+		/// Gets all products.
+		/// </summary>
+		/// <returns>A collection with all products.</returns>
+		Task<List<ProductModel>> GetProductsAsync();
 	}
 }

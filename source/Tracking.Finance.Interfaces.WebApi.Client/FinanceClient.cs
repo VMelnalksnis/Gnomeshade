@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Tracking.Finance.Interfaces.WebApi.Client.Login;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 using static Tracking.Finance.Interfaces.WebApi.Client.Routes;
@@ -114,6 +115,12 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		public async Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
 			return await GetAsync<List<CurrencyModel>>(Currency).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<List<ProductModel>> GetProductsAsync()
+		{
+			return await GetAsync<List<ProductModel>>(Product).ConfigureAwait(false);
 		}
 
 		private async Task<TResult> GetAsync<TResult>(string requestUri)

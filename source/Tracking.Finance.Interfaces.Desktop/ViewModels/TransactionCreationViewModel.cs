@@ -200,7 +200,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 					SourceAmount = item.SourceAmount,
 					TargetAccountId = item.TargetAccount?.Currencies.Single(currency => item.TargetCurrency?.Id == currency.Currency.Id).Id,
 					TargetAmount = item.TargetAmount,
-					ProductId = Guid.Empty,
+					ProductId = item.Product?.Id,
 					Amount = item.Amount,
 					BankReference = string.IsNullOrWhiteSpace(item.BankReference) ? null : item.BankReference,
 					ExternalReference = string.IsNullOrWhiteSpace(item.ExternalReference) ? null : item.ExternalReference,

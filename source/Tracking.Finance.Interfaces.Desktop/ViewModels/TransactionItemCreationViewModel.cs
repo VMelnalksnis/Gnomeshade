@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Tracking.Finance.Interfaces.Desktop.Views;
 using Tracking.Finance.Interfaces.WebApi.Client;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 
 namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 {
@@ -23,7 +24,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		private AccountModel? _targetAccount;
 		private decimal? _targetAmount;
 		private CurrencyModel? _targetCurrency;
-		private string? _product;
+		private ProductModel? _product;
 		private decimal? _amount;
 		private string? _bankReference;
 		private string? _externalReference;
@@ -43,9 +44,11 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 
 			Accounts = GetAccountsAsync();
 			Currencies = GetCurrenciesAsync();
+			Products = GetProductsAsync();
 
 			AccountSelector = (_, item) => ((AccountModel)item).Name;
 			CurrencySelector = (_, item) => ((CurrencyModel)item).AlphabeticCode;
+			ProductSelector = (_, item) => ((ProductModel)item).Name;
 		}
 
 		/// <summary>
@@ -62,10 +65,9 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 
 		public AutoCompleteSelector<object> CurrencySelector { get; }
 
-		public List<string> Products { get; } = new()
-		{
-			"Bread", "Milk",
-		};
+		public Task<List<ProductModel>> Products { get; }
+
+		public AutoCompleteSelector<object> ProductSelector { get; }
 
 		/// <summary>
 		/// Gets or sets the source account of the transaction item.
@@ -150,7 +152,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			set => SetAndNotifyWithGuard(ref _targetCurrency, value, nameof(TargetCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
 		}
 
-		public string? Product
+		public ProductModel? Product
 		{
 			get => _product;
 			set => SetAndNotifyWithGuard(ref _product, value, nameof(Product), nameof(CanCreate));
@@ -193,7 +195,7 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			TargetAccount is not null &&
 			TargetAmount.HasValue &&
 			TargetCurrency is not null &&
-			!string.IsNullOrWhiteSpace(Product) &&
+			Product is not null &&
 			_amount.HasValue;
 
 		private async Task<List<AccountModel>> GetAccountsAsync()
@@ -204,6 +206,11 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 		private async Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
 			return await _financeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		}
+
+		private async Task<List<ProductModel>> GetProductsAsync()
+		{
+			return await _financeClient.GetProductsAsync().ConfigureAwait(false);
 		}
 	}
 }

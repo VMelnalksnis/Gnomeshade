@@ -6,6 +6,7 @@ using System;
 
 using Tracking.Finance.Interfaces.WebApi.V1_0.Accounts;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Tracking.Finance.Interfaces.WebApi.Client
@@ -15,6 +16,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		internal static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
 		internal static readonly string Account = typeof(AccountController).GetControllerName();
 		internal static readonly string Currency = typeof(CurrencyController).GetControllerName();
+		internal static readonly string Product = typeof(ProductController).GetControllerName();
 		internal static readonly string Transaction = typeof(TransactionController).GetControllerName();
 
 		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";

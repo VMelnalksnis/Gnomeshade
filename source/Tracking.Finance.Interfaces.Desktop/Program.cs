@@ -2,10 +2,14 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Reflection;
+
 using Avalonia;
 using Avalonia.Logging;
 
 using JetBrains.Annotations;
+
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
 
 namespace Tracking.Finance.Interfaces.Desktop
 {
@@ -22,6 +26,9 @@ namespace Tracking.Finance.Interfaces.Desktop
 		[UsedImplicitly]
 		public static AppBuilder BuildAvaloniaApp()
 		{
+			// Force assembly to be loaded
+			typeof(ProductModel).GetTypeInfo();
+
 			return
 				AppBuilder
 					.Configure<App>()
