@@ -119,6 +119,28 @@ CREATE TABLE "public"."transactions"
 ) WITH (OIDS = FALSE);
 
 
+DROP TABLE IF EXISTS "units";
+CREATE TABLE "public"."units"
+(
+    "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "created_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "owner_id"            uuid                                   NOT NULL,
+    "created_by_user_id"  uuid                                   NOT NULL,
+    "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "modified_by_user_id" uuid                                   NOT NULL,
+    "name"                text                                   NOT NULL,
+    "normalized_name"     text                                   NOT NULL,
+    "parent_unit_id"      uuid,
+    "multiplier"          numeric,
+    CONSTRAINT "units_id" PRIMARY KEY ("id"),
+    CONSTRAINT "units_normalized_name" UNIQUE ("normalized_name"),
+    CONSTRAINT "units_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "units_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "units_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
+    CONSTRAINT "units_parent_unit_id_fkey" FOREIGN KEY (parent_unit_id) REFERENCES units (id) NOT DEFERRABLE
+) WITH (OIDS = FALSE);
+
+
 DROP TABLE IF EXISTS "products";
 CREATE TABLE "public"."products"
 (
@@ -131,12 +153,15 @@ CREATE TABLE "public"."products"
     "name"                text                                   NOT NULL,
     "normalized_name"     text                                   NOT NULL,
     "description"         text,
+    "unit_id"             uuid,
     CONSTRAINT "products_id" PRIMARY KEY ("id"),
     CONSTRAINT "products_normalized_name" UNIQUE ("normalized_name"),
     CONSTRAINT "products_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "products_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
-    CONSTRAINT "products_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
+    CONSTRAINT "products_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
+    CONSTRAINT "products_unit_id_fkey" FOREIGN KEY (unit_id) REFERENCES units (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
+
 
 
 DROP TABLE IF EXISTS "transaction_items";
@@ -164,7 +189,7 @@ CREATE TABLE "public"."transaction_items"
     CONSTRAINT "transaction_items_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "transaction_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_items_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_source_account_id_fkey" FOREIGN KEY (source_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_target_account_id_fkey" FOREIGN KEY (target_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_transaction_id_fkey" FOREIGN KEY (transaction_id) REFERENCES transactions (id) NOT DEFERRABLE

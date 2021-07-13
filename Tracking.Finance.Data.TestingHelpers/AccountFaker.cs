@@ -32,10 +32,10 @@ namespace Tracking.Finance.Data.TestingHelpers
 		/// <param name="currencyId">The id of the preferred <see cref="Currency"/>.</param>
 		public AccountFaker(Guid userId, Guid currencyId)
 		{
-			RuleFor(account => account.OwnerId, () => userId);
-			RuleFor(account => account.CreatedByUserId, () => userId);
-			RuleFor(account => account.ModifiedByUserId, () => userId);
-			RuleFor(account => account.PreferredCurrencyId, () => currencyId);
+			RuleFor(account => account.OwnerId, userId);
+			RuleFor(account => account.CreatedByUserId, userId);
+			RuleFor(account => account.ModifiedByUserId, userId);
+			RuleFor(account => account.PreferredCurrencyId, currencyId);
 			RuleFor(account => account.Name, faker => faker.Finance.AccountName());
 			RuleFor(account => account.NormalizedName, (_, account) => account.Name.ToUpperInvariant());
 			RuleFor(account => account.Bic, faker => faker.Finance.Bic());

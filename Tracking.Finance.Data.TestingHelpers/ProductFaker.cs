@@ -30,12 +30,12 @@ namespace Tracking.Finance.Data.TestingHelpers
 		/// <param name="userId">The id of the <see cref="User"/> which created this product.</param>
 		public ProductFaker(Guid userId)
 		{
-			RuleFor(product => product.OwnerId, () => userId);
-			RuleFor(product => product.CreatedByUserId, () => userId);
-			RuleFor(product => product.ModifiedByUserId, () => userId);
+			RuleFor(product => product.OwnerId, userId);
+			RuleFor(product => product.CreatedByUserId,  userId);
+			RuleFor(product => product.ModifiedByUserId, userId);
 			RuleFor(product => product.Name, faker => faker.Commerce.ProductName());
 			RuleFor(product => product.NormalizedName, (_, product) => product.Name.ToUpperInvariant());
-			RuleFor(product => product.Description, faker => faker.Lorem.Sentence());
+			RuleFor(product => product.Description, faker => faker.Commerce.ProductDescription());
 		}
 	}
 }

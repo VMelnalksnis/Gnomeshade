@@ -34,11 +34,11 @@ namespace Tracking.Finance.Data.TestingHelpers
 		/// <param name="currencyId">The id of the <see cref="Currency"/> added to the account.</param>
 		public AccountInCurrencyFaker(Guid userId, Guid accountId, Guid currencyId)
 		{
-			RuleFor(account => account.OwnerId, () => userId);
-			RuleFor(account => account.CreatedByUserId, () => userId);
-			RuleFor(account => account.ModifiedByUserId, () => userId);
-			RuleFor(account => account.AccountId, () => accountId);
-			RuleFor(account => account.CurrencyId, () => currencyId);
+			RuleFor(account => account.OwnerId, userId);
+			RuleFor(account => account.CreatedByUserId, userId);
+			RuleFor(account => account.ModifiedByUserId, userId);
+			RuleFor(account => account.AccountId, accountId);
+			RuleFor(account => account.CurrencyId, currencyId);
 		}
 	}
 }

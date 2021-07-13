@@ -43,7 +43,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 
 			var id = await _repository.AddAsync(productToAdd);
 			var getProduct = await _repository.GetByIdAsync(id);
-			var findProduct = await _repository.FindByIdAsync(id);
+			var findProduct = await _repository.FindByIdAsync(getProduct.Id);
 			var allProducts = await _repository.GetAllAsync();
 
 			var expectedProduct = productToAdd with
