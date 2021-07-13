@@ -37,8 +37,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\source\Tracking.Finance.Data.TestingHelpers\Tracking.Finance.Data.TestingHelpers.csproj" />
 		<ProjectReference Include="..\..\source\Tracking.Finance.Data\Tracking.Finance.Data.csproj" />
-		<ProjectReference Include="..\..\Tracking.Finance.Data.TestingHelpers\Tracking.Finance.Data.TestingHelpers.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tracking.Finance.Interfaces.WebApi.Tests.Integration", "tests\Tracking.Finance.Interfaces.WebApi.Tests.Integration\Tracking.Finance.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.Desktop", "source\Tracking.Finance.Interfaces.Desktop\Tracking.Finance.Interfaces.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Data.TestingHelpers", "source\Tracking.Finance.Data.TestingHelpers\Tracking.Finance.Data.TestingHelpers.csproj", "{A75A439B-B1AB-4872-BF00-5049DF6FCAC4}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{B92F9674-8BD0-47C2-B15B-6E3F9CADC215}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interfaces", "Interfaces", "{AC398D5C-A733-4559-B8CC-6D4FA7EA3B0A}"
@@ -35,10 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		stylecop.json = stylecop.json
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Interfaces.Desktop", "source\Tracking.Finance.Interfaces.Desktop\Tracking.Finance.Interfaces.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracking.Finance.Data.TestingHelpers", "Tracking.Finance.Data.TestingHelpers\Tracking.Finance.Data.TestingHelpers.csproj", "{A75A439B-B1AB-4872-BF00-5049DF6FCAC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

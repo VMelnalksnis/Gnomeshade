@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\source\Tracking.Finance.Data\Tracking.Finance.Data.csproj" />
+        <ProjectReference Include="..\Tracking.Finance.Data\Tracking.Finance.Data.csproj" />
     </ItemGroup>
 
 </Project>
