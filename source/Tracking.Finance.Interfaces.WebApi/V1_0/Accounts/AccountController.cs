@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
-using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -82,7 +81,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = (await accounts.SelectAsync(account => GetModel(account, cancellationToken))).ToList();
+			var models = accounts.Select(account => GetModel(account, cancellationToken).GetAwaiter().GetResult()).ToList();
 			return Ok(models);
 		}
 
@@ -142,7 +141,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		{
 			var preferredCurrency = await _currencyRepository.GetByIdAsync(entity.PreferredCurrencyId, cancellationToken);
 			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(entity.Id, cancellationToken);
-			var models = (await inCurrencies.SelectAsync(inCurrency => GetModel(inCurrency, cancellationToken))).ToList();
+			var models = inCurrencies.Select(inCurrency => GetModel(inCurrency, cancellationToken).GetAwaiter().GetResult()).ToList();
 
 			return _mapper.Map<AccountModel>(entity) with
 			{

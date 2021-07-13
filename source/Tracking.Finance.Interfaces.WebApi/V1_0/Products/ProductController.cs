@@ -21,7 +21,6 @@ using Microsoft.Extensions.Logging;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
-using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -73,7 +72,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		public async Task<ActionResult<List<ProductModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = (await accounts.SelectAsync(account => GetModel(account, cancellationToken))).ToList();
+			var models = accounts.Select(account => GetModel(account, cancellationToken).GetAwaiter().GetResult()).ToList();
 			return Ok(models);
 		}
 

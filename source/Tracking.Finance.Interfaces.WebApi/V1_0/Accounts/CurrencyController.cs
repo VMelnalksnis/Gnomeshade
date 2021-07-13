@@ -16,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
-using Tracking.Finance.Interfaces.WebApi.Helpers;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -50,7 +49,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<CurrencyModel>>> GetCurrencies(CancellationToken cancellationToken)
 		{
 			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
-			var models = (await currencies.SelectAsync(currency => GetModel(currency, cancellationToken))).ToList();
+			var models = currencies.Select(currency => GetModel(currency, cancellationToken).GetAwaiter().GetResult()).ToList();
 			return Ok(models);
 		}
 
