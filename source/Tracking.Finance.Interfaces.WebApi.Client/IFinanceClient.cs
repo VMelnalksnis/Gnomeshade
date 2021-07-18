@@ -82,5 +82,20 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// </summary>
 		/// <returns>A collection with all products.</returns>
 		Task<List<ProductModel>> GetProductsAsync();
+
+		/// <summary>
+		/// Gets all units.
+		/// </summary>
+		/// <returns>A collection with all units.</returns>
+		Task<List<UnitModel>> GetUnitsAsync();
+
+		/// <summary>
+		/// Creates a new product.
+		/// </summary>
+		/// <param name="product">Information for creating the product.</param>
+		/// <returns>The id of the created product.</returns>
+		Task<Guid> CreateProductAsync(ProductCreationModel product);
+
+		Task<Guid> CreateUnitAsync(UnitCreationModel unit);
 	}
 }

@@ -10,13 +10,13 @@ using JetBrains.Annotations;
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 {
 	[PublicAPI]
-	public sealed record ProductCreationModel
+	public sealed record UnitCreationModel
 	{
 		[Required(AllowEmptyStrings = false)]
 		public string? Name { get; init; }
 
-		public string? Description { get; init; }
+		public Guid? ParentUnitId { get; init; }
 
-		public Guid? UnitId { get; init; }
+		public decimal? Multiplier { get; init; }
 	}
 }

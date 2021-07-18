@@ -80,6 +80,31 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			ActiveView = transactionCreationViewModel;
 		}
 
+		public void CreateProduct()
+		{
+			if (ActiveView is ProductCreationViewModel)
+			{
+				return;
+			}
+
+			var productCreationViewModel = new ProductCreationViewModel(_financeClient);
+			productCreationViewModel.ProductCreated += OnProductCreated;
+
+			ActiveView = productCreationViewModel;
+		}
+
+		public void CreateUnit()
+		{
+			if (ActiveView is UnitCreationViewModel)
+			{
+				return;
+			}
+
+			var unitCreationViewModel = new UnitCreationViewModel(_financeClient);
+			unitCreationViewModel.UnitCreated += OnUnitCreated;
+
+			ActiveView = unitCreationViewModel;
+		}
 
 		private void SwitchToLogin()
 		{
@@ -100,12 +125,24 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 			SwitchToTransactionOverview();
 		}
 
-		private void OnUserLoggedIn(object? sender, EventArgs e) => SwitchToTransactionOverview();
+		private void OnUserLoggedIn(object? sender, EventArgs e)
+		{
+			SwitchToTransactionOverview();
+		}
 
 		private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
 		{
-			var transactionViewModel = new TransactionViewModel(_financeClient);
-			ActiveView = transactionViewModel;
+			SwitchToTransactionOverview();
+		}
+
+		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+		{
+			SwitchToTransactionOverview();
+		}
+
+		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
+		{
+			SwitchToTransactionOverview();
 		}
 	}
 }

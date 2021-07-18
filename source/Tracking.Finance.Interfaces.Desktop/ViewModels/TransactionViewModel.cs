@@ -50,7 +50,11 @@ namespace Tracking.Finance.Interfaces.Desktop.ViewModels
 				await transactions
 					.SelectAsync(async transaction =>
 					{
-						var firstItem = transaction.Items.First();
+						var firstItem = transaction.Items.FirstOrDefault();
+						if (firstItem is null)
+						{
+							return null;
+						}
 
 						// todo don't get all accounts
 						var accounts = await _financeClient.GetAccountsAsync().ConfigureAwait(false);

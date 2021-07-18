@@ -41,5 +41,7 @@ namespace Tracking.Finance.Data.Models
 		/// Gets or sets the description of this product.
 		/// </summary>
 		public string? Description { get; set; }
+
+		public Guid? UnitId { get; set; }
 	}
 }

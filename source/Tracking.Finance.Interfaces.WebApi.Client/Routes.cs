@@ -18,6 +18,7 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		internal static readonly string Currency = typeof(CurrencyController).GetControllerName();
 		internal static readonly string Product = typeof(ProductController).GetControllerName();
 		internal static readonly string Transaction = typeof(TransactionController).GetControllerName();
+		internal static readonly string Unit = typeof(UnitController).GetControllerName();
 
 		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
 		internal static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";

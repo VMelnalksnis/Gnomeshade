@@ -78,7 +78,8 @@ namespace Tracking.Finance.Interfaces.WebApi
 				.AddTransient<AccountRepository>()
 				.AddTransient<AccountInCurrencyRepository>()
 				.AddTransient<CurrencyRepository>()
-				.AddTransient<ProductRepository>();
+				.AddTransient<ProductRepository>()
+				.AddTransient<UnitRepository>();
 
 			services
 				.AddTransient<Mapper>()

@@ -1,17 +1,21 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Tracking.Finance.Interfaces.Desktop.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Tracking.Finance.Interfaces.Desktop.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Tracking.Finance.Interfaces.Desktop"
+<Window
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:vm="using:Tracking.Finance.Interfaces.Desktop.ViewModels"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Tracking.Finance.Interfaces.Desktop.Views.MainWindow"
+	Icon="/Assets/avalonia-logo.ico"
+	Title="Tracking.Finance.Interfaces.Desktop"
 
-        WindowStartupLocation="CenterScreen"
-        TransparencyLevelHint="AcrylicBlur"
-        Background="Transparent"
-        ExtendClientAreaToDecorationsHint="False">
+	WindowStartupLocation="CenterScreen"
+	TransparencyLevelHint="AcrylicBlur"
+	Background="Transparent"
+	ExtendClientAreaToDecorationsHint="False"
+
+	x:CompileBindings="True"
+	x:DataType="vm:MainWindowViewModel">
 
 	<Design.DataContext>
 		<vm:MainWindowViewModel />
@@ -34,18 +38,24 @@
 					<MenuItem
 						x:Name="Logout" Header="_Logout"
 						IsEnabled="{Binding CanLogOut}"
-						Command="{Binding LogOut}"/>
+						Command="{ReflectionBinding LogOut}" />
 					<MenuItem
 						x:Name="Exit" Header="E_xit"
-						Command="{Binding Exit}"/>
+						Command="{ReflectionBinding Exit}" />
 				</MenuItem>
 				<MenuItem Header="_Edit" IsVisible="{Binding CanLogOut}">
 					<MenuItem
 						x:Name="CreateAccount" Header="Create _Account"
-						Command="{Binding CreateAccount}"/>
+						Command="{ReflectionBinding CreateAccount}" />
 					<MenuItem
 						x:Name="CreateTransaction" Header="Create _Transaction"
-						Command="{Binding CreateTransaction}"/>
+						Command="{ReflectionBinding CreateTransaction}" />
+					<MenuItem
+						x:Name="CreateProduct" Header="Create _Product"
+						Command="{ReflectionBinding CreateProduct}" />
+					<MenuItem
+						x:Name="CreateUnit" Header="Create _Unit"
+						Command="{ReflectionBinding CreateUnit}" />
 				</MenuItem>
 			</Menu>
 

@@ -36,7 +36,6 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FinanceClient"/> class with a base uri.
 		/// </summary>
-		///
 		/// <param name="baseUri">The base uri for all requests.</param>
 		/// <see cref="HttpClient.BaseAddress"/>
 		public FinanceClient(Uri baseUri)
@@ -123,6 +122,24 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 			return await GetAsync<List<ProductModel>>(Product).ConfigureAwait(false);
 		}
 
+		/// <inheritdoc />
+		public async Task<List<UnitModel>> GetUnitsAsync()
+		{
+			return await GetAsync<List<UnitModel>>(Unit).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<Guid> CreateProductAsync(ProductCreationModel product)
+		{
+			return await PostAsync<Guid, ProductCreationModel>(Product, product).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
+		public async Task<Guid> CreateUnitAsync(UnitCreationModel unit)
+		{
+			return await PostAsync<Guid, UnitCreationModel>(Unit, unit).ConfigureAwait(false);
+		}
+
 		private async Task<TResult> GetAsync<TResult>(string requestUri)
 			where TResult : notnull
 		{
@@ -130,17 +147,6 @@ namespace Tracking.Finance.Interfaces.WebApi.Client
 			response.EnsureSuccessStatusCode();
 
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
-		}
-
-		private async Task<TResult?> FindAsync<TResult>(string requestUri)
-		{
-			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
-			if (response.IsSuccessStatusCode)
-			{
-				return await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false);
-			}
-
-			return default;
 		}
 
 		private async Task<TResult> PostAsync<TResult, TRequest>(string requestUri, TRequest request)

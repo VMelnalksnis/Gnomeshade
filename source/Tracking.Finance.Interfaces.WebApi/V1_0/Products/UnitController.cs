@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -26,27 +25,24 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 {
-	/// <summary>
-	/// CRUD operations on account entity.
-	/// </summary>
 	[SuppressMessage(
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class ProductController : FinanceControllerBase<Product, ProductModel>
+	public sealed class UnitController : FinanceControllerBase<Unit, UnitModel>
 	{
 		private readonly IDbConnection _dbConnection;
-		private readonly ProductRepository _repository;
+		private readonly UnitRepository _repository;
 		private readonly Mapper _mapper;
-		private readonly ILogger<ProductController> _logger;
+		private readonly ILogger<UnitController> _logger;
 
-		public ProductController(
+		public UnitController(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
 			IDbConnection dbConnection,
-			ProductRepository repository,
+			UnitRepository repository,
 			Mapper mapper,
-			ILogger<ProductController> logger)
+			ILogger<UnitController> logger)
 			: base(userManager, userRepository)
 		{
 			_dbConnection = dbConnection;
@@ -58,23 +54,23 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<ProductModel>> Get(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<UnitModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
 			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<List<ProductModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<List<UnitModel>>> GetAll(CancellationToken cancellationToken)
 		{
-			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = accounts.Select(account => GetModel(account, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var units = await _repository.GetAllAsync(cancellationToken);
+			var models = units.Select(unit => GetModel(unit, cancellationToken).GetAwaiter().GetResult()).ToList();
 			return Ok(models);
 		}
 
 		[HttpPost]
 		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] ProductCreationModel creationModel)
+		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] UnitCreationModel creationModel)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -82,7 +78,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var product = _mapper.Map<Product>(creationModel) with
+			var unit = _mapper.Map<Unit>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -90,33 +86,20 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 				NormalizedName = creationModel.Name!.ToUpperInvariant(),
 			};
 
-			var id = await _repository.AddAsync(product);
+			var id = await _repository.AddAsync(unit);
 			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
 
 		/// <inheritdoc />
-		protected override Task<ProductModel> GetModel(Product entity, CancellationToken cancellationToken)
+		protected override Task<UnitModel> GetModel(Unit entity, CancellationToken cancellationToken)
 		{
 			if (cancellationToken.IsCancellationRequested)
 			{
-				return Task.FromCanceled<ProductModel>(cancellationToken);
+				return Task.FromCanceled<UnitModel>(cancellationToken);
 			}
 
-			var model = _mapper.Map<ProductModel>(entity);
+			var model = _mapper.Map<UnitModel>(entity);
 			return Task.FromResult(model);
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_dbConnection.Dispose();
-			_repository.Dispose();
-			base.Dispose(disposing);
 		}
 	}
 }

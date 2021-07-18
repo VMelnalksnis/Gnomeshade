@@ -43,6 +43,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 
 			options.CreateMap<Product, ProductModel>();
 			options.CreateMap<ProductCreationModel, Product>();
+
+			options.CreateMap<Unit, UnitModel>();
+			options.CreateMap<UnitCreationModel, Unit>();
 		}
 	}
 }
