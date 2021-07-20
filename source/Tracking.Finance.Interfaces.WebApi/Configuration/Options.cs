@@ -2,7 +2,9 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,8 +63,8 @@ namespace Tracking.Finance.Interfaces.WebApi.Configuration
 			options.OperationFilter<InternalServerErrorOperationFilter>();
 			options.OperationFilter<UnauthorizedOperationFilter>();
 
-			// var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Interfaces.WebApi.xml");
-			// options.IncludeXmlComments(xmlDocumentationFilepath, true);
+			var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Tracking.Finance.Interfaces.WebApi.xml");
+			options.IncludeXmlComments(xmlDocumentationFilepath, true);
 			options.EnableAnnotations();
 
 			const string jwtSecurityDefinition = "JWT";

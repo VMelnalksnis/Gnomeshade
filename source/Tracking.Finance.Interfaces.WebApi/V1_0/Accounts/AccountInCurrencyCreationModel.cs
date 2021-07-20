@@ -4,14 +4,22 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 {
+	/// <summary>
+	/// The information needed to add a currency to an account.
+	/// </summary>
 	[PublicAPI]
+	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record AccountInCurrencyCreationModel
 	{
+		/// <summary>
+		/// The currency to add to an account.
+		/// </summary>
 		[Required]
 		public Guid? CurrencyId { get; init; }
 	}
