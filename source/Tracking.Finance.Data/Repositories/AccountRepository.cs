@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Tracking.Finance.Data.Models;
+using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Repositories
 {
@@ -20,8 +21,29 @@ namespace Tracking.Finance.Data.Repositories
 		private const string _insertSql =
 			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id";
 
-		private const string _selectSql =
-			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, preferred_currency_id PreferredCurrencyId, bic, iban, account_number AccountNumber FROM accounts";
+		private const string _selectSql = @"
+SELECT accounts.id,
+       accounts.created_at            CreatedAt,
+       accounts.owner_id              OwnerId,
+       accounts.created_by_user_id    CreatedByUserId,
+       accounts.modified_at           ModifiedAt,
+       accounts.modified_by_user_id   ModifiedByUserId,
+       accounts.name,
+       accounts.normalized_name       NormalizedName,
+       accounts.preferred_currency_id PreferredCurrencyId,
+       accounts.bic,
+       accounts.iban,
+       accounts.account_number        AccountNumber,
+       aic.id,
+       aic.created_at                 CreatedAt,
+       aic.owner_id                   OwnerId,
+       aic.created_by_user_id         CreatedByUserId,
+       aic.modified_at                ModifiedAt,
+       aic.modified_by_user_id        ModifiedByUserId,
+       aic.account_id                 AccountId,
+       aic.currency_id                CurrencyId
+FROM accounts
+         LEFT JOIN accounts_in_currency aic ON accounts.id = aic.account_id";
 
 		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id";
 
@@ -37,55 +59,70 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> AddAsync(Account entity)
+		public Task<Guid> AddAsync(Account entity)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> AddAsync(Account entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(Account entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
 		/// <inheritdoc />
 		public async Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE id = @id";
+			const string sql = _selectSql + " WHERE accounts.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Account>(command).ConfigureAwait(false);
+
+			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var relationship = accountRelationships.SingleOrDefaultStruct();
+			return Account.Create(relationship);
 		}
 
 		public async Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE normalized_name = @name";
+			const string sql = _selectSql + " WHERE accounts.normalized_name = @name";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Account>(command).ConfigureAwait(false);
+
+			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var relationship = accountRelationships.SingleOrDefaultStruct();
+			return Account.Create(relationship);
 		}
 
 		/// <inheritdoc />
 		public async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE id = @id";
+			const string sql = _selectSql + " WHERE accounts.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Account>(command).ConfigureAwait(false);
+
+			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var relationship = accountRelationships.Single();
+			return Account.Create(relationship);
 		}
 
 		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var accounts = await _dbConnection.QueryAsync<Account>(command).ConfigureAwait(false);
-			return accounts.ToList();
+			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			return accountRelationships.Select(Account.Create).ToList();
 		}
 
 		/// <inheritdoc />
-		public async Task<int> DeleteAsync(Guid id)
+		public Task<int> DeleteAsync(Guid id)
 		{
-			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
+			return _dbConnection.ExecuteAsync(_deleteSql, new { id });
 		}
 
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
+
+		private Task<IEnumerable<OneToMany<Account, AccountInCurrency>>> GetAccountRelationshipsAsync(
+			CommandDefinition command)
+		{
+			return _dbConnection.QueryOneToManyAsync<Account, AccountInCurrency>(command);
+		}
 	}
 }

@@ -3,8 +3,10 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 using Tracking.Finance.Data.Models.Abstractions;
+using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Models
 {
@@ -32,10 +34,10 @@ namespace Tracking.Finance.Data.Models
 		public Guid ModifiedByUserId { get; set; }
 
 		/// <inheritdoc />
-		public string Name { get; set; } = string.Empty;
+		public string Name { get; set; } = null!;
 
 		/// <inheritdoc />
-		public string NormalizedName { get; set; } = string.Empty;
+		public string NormalizedName { get; set; } = null!;
 
 		/// <summary>
 		/// Gets or sets the id of the preferred <see cref="AccountInCurrency"/>.
@@ -56,5 +58,20 @@ namespace Tracking.Finance.Data.Models
 		/// Gets or sets the account number, which does not follow standards such as IBAN.
 		/// </summary>
 		public string? AccountNumber { get; set; }
+
+		/// <summary>
+		/// Gets the currencies used in this account.
+		/// </summary>
+		public List<AccountInCurrency> Currencies { get; init; } = null!;
+
+		internal static Account? Create(OneToMany<Account, AccountInCurrency>? relationship)
+		{
+			return relationship is null ? null : Create(relationship.Value);
+		}
+
+		internal static Account Create(OneToMany<Account, AccountInCurrency> relationship)
+		{
+			return relationship.Parent with { Currencies = relationship.Children };
+		}
 	}
 }

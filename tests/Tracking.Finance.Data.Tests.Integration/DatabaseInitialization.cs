@@ -6,6 +6,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
+using FluentAssertions;
+
 using Microsoft.Extensions.Configuration;
 
 using Npgsql;
@@ -27,7 +29,7 @@ namespace Tracking.Finance.Data.Tests.Integration
 				.Build()
 				.GetConnectionString("FinanceDb");
 
-		public static User TestUser { get; private set; }
+		public static User TestUser { get; private set; } = null!;
 
 		public static async Task<NpgsqlConnection> CreateConnectionAsync()
 		{
@@ -49,6 +51,8 @@ namespace Tracking.Finance.Data.Tests.Integration
 		[OneTimeSetUp]
 		public static async Task SetupDatabaseAsync()
 		{
+			AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<Account>());
+
 			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
 			NpgsqlLogManager.IsParameterLoggingEnabled = true;
 

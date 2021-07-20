@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -106,6 +108,18 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.V1_0.Accounts
 				Bic = "AAAA-BB-CC-123",
 				Iban = "LV97HABA0012345678910",
 				AccountNumber = "123456789",
+				Currencies = new()
+				{
+					new()
+					{
+						Id = Guid.NewGuid(),
+						CreatedAt = DateTimeOffset.Now,
+						OwnerId = Guid.NewGuid(),
+						CreatedByUserId = Guid.NewGuid(),
+						ModifiedAt = DateTimeOffset.Now,
+						ModifiedByUserId = Guid.NewGuid(),
+					},
+				},
 			};
 
 			var accountModel = _mapper.Map<AccountModel>(account);
@@ -114,9 +128,24 @@ namespace Tracking.Finance.Interfaces.WebApi.Tests.V1_0.Accounts
 				.Should()
 				.BeEquivalentTo(
 					account,
-					options => options.ByMembersExcluding<Account, AccountModel>(
-						a => a.NormalizedName,
-						a => a.PreferredCurrencyId));
+					options => options
+						.ByMembersExcluding<Account, AccountModel>(
+							a => a.NormalizedName,
+							a => a.PreferredCurrencyId,
+							a => a.Currencies));
+
+			accountModel
+				.Currencies
+				.Should()
+				.ContainSingle()
+				.Which
+				.Should()
+				.BeEquivalentTo(
+					account.Currencies.Single(),
+					options => options
+						.ByMembersExcluding<AccountInCurrency, AccountInCurrencyModel>(
+							inCurrency => inCurrency.CurrencyId,
+							inCurrency => inCurrency.AccountId));
 		}
 
 		[Test]
