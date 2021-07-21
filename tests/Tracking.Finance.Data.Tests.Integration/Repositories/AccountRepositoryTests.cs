@@ -78,6 +78,8 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				Currencies = getAccount.Currencies,
 			};
 
+			expectedAccount.Currencies.Should().NotBeNullOrEmpty();
+
 			getAccount.Should().BeEquivalentTo(expectedAccount);
 			findAccount.Should().BeEquivalentTo(expectedAccount);
 			findByNameAccount.Should().BeEquivalentTo(expectedAccount);
@@ -91,6 +93,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			{
 				CreatedAt = getAccountInCurrency.CreatedAt,
 				ModifiedAt = getAccountInCurrency.ModifiedAt,
+				Currency = getAccountInCurrency.Currency,
 			};
 
 			getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);

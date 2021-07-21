@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Tracking.Finance.Data.Models.Abstractions;
 using Tracking.Finance.Data.Repositories.Extensions;
@@ -64,14 +65,11 @@ namespace Tracking.Finance.Data.Models
 		/// </summary>
 		public List<AccountInCurrency> Currencies { get; init; } = null!;
 
-		internal static Account? Create(OneToMany<Account, AccountInCurrency>? relationship)
+		internal static Account Create(OneToMany<Account, OneToOne<AccountInCurrency, Currency>> relationship)
 		{
-			return relationship is null ? null : Create(relationship.Value);
-		}
-
-		internal static Account Create(OneToMany<Account, AccountInCurrency> relationship)
-		{
-			return relationship.Parent with { Currencies = relationship.Children };
+			var account = relationship.Parent;
+			var inCurrencies = relationship.Children.Select(AccountInCurrency.Create).ToList();
+			return account with { Currencies = inCurrencies };
 		}
 	}
 }

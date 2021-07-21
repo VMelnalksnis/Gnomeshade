@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tracking.Finance.Data.Repositories.Extensions
 {
@@ -33,5 +34,10 @@ namespace Tracking.Finance.Data.Repositories.Extensions
 		/// Gets the child (many) objects.
 		/// </summary>
 		public List<TChild> Children { get; }
+
+		public static OneToMany<TParent, TChild> FromEntryGrouping(IGrouping<TParent, OneToManyEntry<TParent, TChild>> grouping)
+		{
+			return new(grouping.Key, grouping.Select(entry => entry.Child).ToList());
+		}
 	}
 }

@@ -34,16 +34,29 @@ SELECT accounts.id,
        accounts.bic,
        accounts.iban,
        accounts.account_number        AccountNumber,
-       aic.id,
-       aic.created_at                 CreatedAt,
-       aic.owner_id                   OwnerId,
-       aic.created_by_user_id         CreatedByUserId,
-       aic.modified_at                ModifiedAt,
-       aic.modified_by_user_id        ModifiedByUserId,
-       aic.account_id                 AccountId,
-       aic.currency_id                CurrencyId
+       inCurrency.id,
+       inCurrency.created_at          CreatedAt,
+       inCurrency.owner_id            OwnerId,
+       inCurrency.created_by_user_id  CreatedByUserId,
+       inCurrency.modified_at         ModifiedAt,
+       inCurrency.modified_by_user_id ModifiedByUserId,
+       inCurrency.account_id          AccountId,
+       inCurrency.currency_id         CurrencyId,
+       currency.id,
+       currency.created_at            CreatedAt,
+       currency.name,
+       currency.normalized_name       NormalizedName,
+       currency.numeric_code          NumericCode,
+       currency.alphabetic_code       AlphabeticCode,
+       currency.minor_unit            MinorUnit,
+       currency.official,
+       currency.crypto,
+       currency.historical,
+       currency.active_from           ActiveFrom,
+       currency.active_until          ActiveUntil
 FROM accounts
-         LEFT JOIN accounts_in_currency aic ON accounts.id = aic.account_id";
+         LEFT JOIN accounts_in_currency inCurrency ON accounts.id = inCurrency.account_id
+         LEFT JOIN currencies currency ON inCurrency.currency_id = currency.id";
 
 		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id";
 
@@ -77,9 +90,11 @@ FROM accounts
 			const string sql = _selectSql + " WHERE accounts.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
-			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+
+			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
 			var relationship = accountRelationships.SingleOrDefaultStruct();
-			return Account.Create(relationship);
+
+			return relationship is null ? null : Account.Create(relationship.Value);
 		}
 
 		public async Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
@@ -87,9 +102,10 @@ FROM accounts
 			const string sql = _selectSql + " WHERE accounts.normalized_name = @name";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
 
-			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
 			var relationship = accountRelationships.SingleOrDefaultStruct();
-			return Account.Create(relationship);
+
+			return relationship is null ? null : Account.Create(relationship.Value);
 		}
 
 		/// <inheritdoc />
@@ -98,7 +114,7 @@ FROM accounts
 			const string sql = _selectSql + " WHERE accounts.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
-			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
 			var relationship = accountRelationships.Single();
 			return Account.Create(relationship);
 		}
@@ -106,7 +122,7 @@ FROM accounts
 		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var accountRelationships = await GetAccountRelationshipsAsync(command).ConfigureAwait(false);
+			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
 			return accountRelationships.Select(Account.Create).ToList();
 		}
 
@@ -119,10 +135,10 @@ FROM accounts
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
 
-		private Task<IEnumerable<OneToMany<Account, AccountInCurrency>>> GetAccountRelationshipsAsync(
+		private Task<IEnumerable<OneToMany<Account, OneToOne<AccountInCurrency, Currency>>>> GetAccountsAsync(
 			CommandDefinition command)
 		{
-			return _dbConnection.QueryOneToManyAsync<Account, AccountInCurrency>(command);
+			return _dbConnection.QueryOneToManyAsync<Account, AccountInCurrency, Currency>(command);
 		}
 	}
 }

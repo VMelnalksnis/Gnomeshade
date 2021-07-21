@@ -28,21 +28,31 @@ namespace Tracking.Finance.Data.Repositories.Extensions
 			this IDbConnection dbConnection,
 			CommandDefinition command)
 		{
-			var results =
+			var entries =
 				await dbConnection
 					.QueryAsync<TOne, TMany, OneToManyEntry<TOne, TMany>>(command, (one, many) => new(one, many))
 					.ConfigureAwait(false);
 
-			return
-				results
-					.GroupBy(result => result.Parent)
-					.Select(grouping => new OneToMany<TOne, TMany>(grouping.Key, grouping.Select(entry => entry.Child).ToList()));
+			return entries
+				.GroupBy(entry => entry.Parent)
+				.Select(OneToMany<TOne, TMany>.FromEntryGrouping);
 		}
 
-		public static T? SingleOrDefaultStruct<T>(this IEnumerable<T> source)
-			where T : struct
+		public static async Task<IEnumerable<OneToMany<T1, OneToOne<T2, T3>>>> QueryOneToManyAsync<T1, T2, T3>(
+			this IDbConnection dbConnection,
+			CommandDefinition command)
 		{
-			return source.Select(element => (T?)element).SingleOrDefault();
+			var entries =
+				await dbConnection
+					.QueryAsync<T1, T2, T3, OneToManyEntry<T1, OneToOne<T2, T3>>>(
+						command,
+						(one, many, manyOther) => new(one, new(many, manyOther)))
+					.ConfigureAwait(false);
+
+			return
+				entries
+					.GroupBy(entry => entry.Parent)
+					.Select(OneToMany<T1, OneToOne<T2, T3>>.FromEntryGrouping);
 		}
 	}
 }
