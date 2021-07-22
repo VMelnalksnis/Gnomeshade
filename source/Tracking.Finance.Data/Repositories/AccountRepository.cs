@@ -34,6 +34,18 @@ namespace Tracking.Finance.Data.Repositories
 			"a.bic, " +
 			"a.iban, " +
 			"a.account_number AccountNumber, " +
+			"pc.id, " +
+			"pc.created_at CreatedAt, " +
+			"pc.name, " +
+			"pc.normalized_name NormalizedName, " +
+			"pc.numeric_code NumericCode, " +
+			"pc.alphabetic_code AlphabeticCode, " +
+			"pc.minor_unit MinorUnit, " +
+			"pc.official, " +
+			"pc.crypto, " +
+			"pc.historical, " +
+			"pc.active_from ActiveFrom, " +
+			"pc.active_until ActiveUntil, " +
 			"aic.id, " +
 			"aic.created_at CreatedAt, " +
 			"aic.owner_id OwnerId, " +
@@ -55,6 +67,7 @@ namespace Tracking.Finance.Data.Repositories
 			"c.active_from ActiveFrom, " +
 			"c.active_until ActiveUntil " +
 			"FROM accounts a " +
+			"LEFT JOIN currencies pc ON a.preferred_currency_id = pc.id " +
 			"LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id " +
 			"LEFT JOIN currencies c ON aic.currency_id = c.id";
 
@@ -136,10 +149,22 @@ namespace Tracking.Finance.Data.Repositories
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
 
-		private Task<IEnumerable<IGrouping<Account, OneToOne<Account, OneToOne<AccountInCurrency, Currency>>>>>
-			GetAccountsAsync(CommandDefinition command)
+		private async Task<IEnumerable<IGrouping<Account, OneToOne<Account, AccountInCurrency>>>> GetAccountsAsync(
+			CommandDefinition command)
 		{
-			return _dbConnection.QueryOneToManyAsync<Account, AccountInCurrency, Currency>(command);
+			var oneToOnes =
+				await _dbConnection
+					.QueryAsync<Account, Currency, AccountInCurrency, Currency, OneToOne<Account, AccountInCurrency>>(
+						command,
+						(account, preferredCurrency, inCurrency, currency) =>
+						{
+							account.PreferredCurrency = preferredCurrency;
+							inCurrency.Currency = currency;
+							return new(account, inCurrency);
+						})
+					.ConfigureAwait(false);
+
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First);
 		}
 	}
 }

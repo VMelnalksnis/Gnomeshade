@@ -46,6 +46,11 @@ namespace Tracking.Finance.Data.Models
 		public Guid PreferredCurrencyId { get; set; }
 
 		/// <summary>
+		/// Gets or sets the preferred currency.
+		/// </summary>
+		public Currency PreferredCurrency { get; set; } = null!;
+
+		/// <summary>
 		/// Gets or sets the Business Identifier Code (BIC).
 		/// </summary>
 		public string? Bic { get; set; }
@@ -63,16 +68,16 @@ namespace Tracking.Finance.Data.Models
 		/// <summary>
 		/// Gets or sets the currencies used in this account.
 		/// </summary>
-		public List<AccountInCurrency> Currencies { get;  set; } = null!;
+		public List<AccountInCurrency> Currencies { get; set; } = null!;
 
 		/// <summary>
 		/// Initializes an account from a grouping of currencies.
 		/// </summary>
 		/// <param name="grouping">A grouping of currencies by account.</param>
 		/// <returns>An account with initialized <see cref="Currencies"/>.</returns>
-		public static Account FromGrouping(IGrouping<Account, OneToOne<Account, OneToOne<AccountInCurrency, Currency>>> grouping)
+		public static Account FromGrouping(IGrouping<Account, OneToOne<Account, AccountInCurrency>> grouping)
 		{
-			grouping.Key.Currencies = grouping.Select(oneToOne => AccountInCurrency.Create(oneToOne.Second)).ToList();
+			grouping.Key.Currencies = grouping.Select(oneToOne => oneToOne.Second).ToList();
 			return grouping.Key;
 		}
 	}

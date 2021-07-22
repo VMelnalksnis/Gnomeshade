@@ -75,6 +75,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				Id = accountId,
 				CreatedAt = getAccount.CreatedAt,
 				ModifiedAt = getAccount.ModifiedAt,
+				PreferredCurrency = getAccount.PreferredCurrency,
 				Currencies = getAccount.Currencies,
 			};
 

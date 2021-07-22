@@ -5,7 +5,6 @@
 using System;
 
 using Tracking.Finance.Data.Models.Abstractions;
-using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Models
 {
@@ -46,11 +45,5 @@ namespace Tracking.Finance.Data.Models
 		/// Gets or sets the currency this account represents.
 		/// </summary>
 		public Currency Currency { get; set; } = null!;
-
-		internal static AccountInCurrency Create(OneToOne<AccountInCurrency, Currency> relationship)
-		{
-			relationship.First.Currency = relationship.Second;
-			return relationship.First;
-		}
 	}
 }
