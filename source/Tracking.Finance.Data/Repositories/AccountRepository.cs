@@ -19,46 +19,46 @@ namespace Tracking.Finance.Data.Repositories
 	public sealed class AccountRepository : IRepository<Account>, IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id";
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id;";
 
-		private const string _selectSql = @"
-SELECT accounts.id,
-       accounts.created_at            CreatedAt,
-       accounts.owner_id              OwnerId,
-       accounts.created_by_user_id    CreatedByUserId,
-       accounts.modified_at           ModifiedAt,
-       accounts.modified_by_user_id   ModifiedByUserId,
-       accounts.name,
-       accounts.normalized_name       NormalizedName,
-       accounts.preferred_currency_id PreferredCurrencyId,
-       accounts.bic,
-       accounts.iban,
-       accounts.account_number        AccountNumber,
-       inCurrency.id,
-       inCurrency.created_at          CreatedAt,
-       inCurrency.owner_id            OwnerId,
-       inCurrency.created_by_user_id  CreatedByUserId,
-       inCurrency.modified_at         ModifiedAt,
-       inCurrency.modified_by_user_id ModifiedByUserId,
-       inCurrency.account_id          AccountId,
-       inCurrency.currency_id         CurrencyId,
-       currency.id,
-       currency.created_at            CreatedAt,
-       currency.name,
-       currency.normalized_name       NormalizedName,
-       currency.numeric_code          NumericCode,
-       currency.alphabetic_code       AlphabeticCode,
-       currency.minor_unit            MinorUnit,
-       currency.official,
-       currency.crypto,
-       currency.historical,
-       currency.active_from           ActiveFrom,
-       currency.active_until          ActiveUntil
-FROM accounts
-         LEFT JOIN accounts_in_currency inCurrency ON accounts.id = inCurrency.account_id
-         LEFT JOIN currencies currency ON inCurrency.currency_id = currency.id";
+		private const string _selectSql =
+			"SELECT a.id, " +
+			"a.created_at CreatedAt, " +
+			"a.owner_id OwnerId, " +
+			"a.created_by_user_id CreatedByUserId, " +
+			"a.modified_at ModifiedAt, " +
+			"a.modified_by_user_id ModifiedByUserId, " +
+			"a.name, " +
+			"a.normalized_name NormalizedName, " +
+			"a.preferred_currency_id PreferredCurrencyId, " +
+			"a.bic, " +
+			"a.iban, " +
+			"a.account_number AccountNumber, " +
+			"aic.id, " +
+			"aic.created_at CreatedAt, " +
+			"aic.owner_id OwnerId, " +
+			"aic.created_by_user_id CreatedByUserId, " +
+			"aic.modified_at ModifiedAt, " +
+			"aic.modified_by_user_id ModifiedByUserId, " +
+			"aic.account_id AccountId, " +
+			"aic.currency_id CurrencyId, " +
+			"c.id, " +
+			"c.created_at CreatedAt, " +
+			"c.name, " +
+			"c.normalized_name NormalizedName, " +
+			"c.numeric_code NumericCode, " +
+			"c.alphabetic_code AlphabeticCode, " +
+			"c.minor_unit MinorUnit, " +
+			"c.official, " +
+			"c.crypto, " +
+			"c.historical, " +
+			"c.active_from ActiveFrom, " +
+			"c.active_until ActiveUntil " +
+			"FROM accounts a " +
+			"LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id " +
+			"LEFT JOIN currencies c ON aic.currency_id = c.id";
 
-		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id";
+		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id;";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -87,43 +87,44 @@ FROM accounts
 		/// <inheritdoc />
 		public async Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE accounts.id = @id";
+			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
+			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
+			var grouping = accountGroupings.SingleOrDefault();
 
-			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
-			var relationship = accountRelationships.SingleOrDefaultStruct();
-
-			return relationship is null ? null : Account.Create(relationship.Value);
+			return grouping is null ? null : Account.FromGrouping(grouping);
 		}
 
 		public async Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE accounts.normalized_name = @name";
+			const string sql = _selectSql + " WHERE a.normalized_name = @name;";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
 
-			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
-			var relationship = accountRelationships.SingleOrDefaultStruct();
+			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
+			var grouping = accountGroupings.SingleOrDefault();
 
-			return relationship is null ? null : Account.Create(relationship.Value);
+			return grouping is null ? null : Account.FromGrouping(grouping);
 		}
 
 		/// <inheritdoc />
 		public async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE accounts.id = @id";
+			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
-			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
-			var relationship = accountRelationships.Single();
-			return Account.Create(relationship);
+			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
+			var grouping = accountGroupings.Single();
+			return Account.FromGrouping(grouping);
 		}
 
 		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var accountRelationships = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accountRelationships.Select(Account.Create).ToList();
+			const string sql = _selectSql + " ORDER BY a.created_at DESC LIMIT 1000;";
+			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
+
+			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accountGroupings.Select(grouping => Account.FromGrouping(grouping)).ToList();
 		}
 
 		/// <inheritdoc />
@@ -135,8 +136,8 @@ FROM accounts
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
 
-		private Task<IEnumerable<OneToMany<Account, OneToOne<AccountInCurrency, Currency>>>> GetAccountsAsync(
-			CommandDefinition command)
+		private Task<IEnumerable<IGrouping<Account, OneToOne<Account, OneToOne<AccountInCurrency, Currency>>>>>
+			GetAccountsAsync(CommandDefinition command)
 		{
 			return _dbConnection.QueryOneToManyAsync<Account, AccountInCurrency, Currency>(command);
 		}

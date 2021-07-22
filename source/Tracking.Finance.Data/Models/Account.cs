@@ -61,15 +61,19 @@ namespace Tracking.Finance.Data.Models
 		public string? AccountNumber { get; set; }
 
 		/// <summary>
-		/// Gets the currencies used in this account.
+		/// Gets or sets the currencies used in this account.
 		/// </summary>
-		public List<AccountInCurrency> Currencies { get; init; } = null!;
+		public List<AccountInCurrency> Currencies { get;  set; } = null!;
 
-		internal static Account Create(OneToMany<Account, OneToOne<AccountInCurrency, Currency>> relationship)
+		/// <summary>
+		/// Initializes an account from a grouping of currencies.
+		/// </summary>
+		/// <param name="grouping">A grouping of currencies by account.</param>
+		/// <returns>An account with initialized <see cref="Currencies"/>.</returns>
+		public static Account FromGrouping(IGrouping<Account, OneToOne<Account, OneToOne<AccountInCurrency, Currency>>> grouping)
 		{
-			var account = relationship.Parent;
-			var inCurrencies = relationship.Children.Select(AccountInCurrency.Create).ToList();
-			return account with { Currencies = inCurrencies };
+			grouping.Key.Currencies = grouping.Select(oneToOne => AccountInCurrency.Create(oneToOne.Second)).ToList();
+			return grouping.Key;
 		}
 	}
 }

@@ -24,35 +24,40 @@ namespace Tracking.Finance.Data.Repositories.Extensions
 		/// <typeparam name="TOne">The first type in the record set.</typeparam>
 		/// <typeparam name="TMany">The second type in the record set.</typeparam>
 		/// <returns>A collection of <typeparamref name="TOne"/> and the mapped collections of <typeparamref name="TMany"/>.</returns>
-		public static async Task<IEnumerable<OneToMany<TOne, TMany>>> QueryOneToManyAsync<TOne, TMany>(
+		public static async Task<IEnumerable<IGrouping<TOne, OneToOne<TOne, TMany>>>> QueryOneToManyAsync<TOne, TMany>(
 			this IDbConnection dbConnection,
 			CommandDefinition command)
 		{
 			var entries =
 				await dbConnection
-					.QueryAsync<TOne, TMany, OneToManyEntry<TOne, TMany>>(command, (one, many) => new(one, many))
+					.QueryAsync<TOne, TMany, OneToOne<TOne, TMany>>(command, (one, many) => new(one, many))
 					.ConfigureAwait(false);
 
-			return entries
-				.GroupBy(entry => entry.Parent)
-				.Select(OneToMany<TOne, TMany>.FromEntryGrouping);
+			return entries.GroupBy(entry => entry.First);
 		}
 
-		public static async Task<IEnumerable<OneToMany<T1, OneToOne<T2, T3>>>> QueryOneToManyAsync<T1, T2, T3>(
-			this IDbConnection dbConnection,
-			CommandDefinition command)
+		/// <summary>
+		/// Execute a query with a one-to-many mapping, where the many also have a one-to-one mapping, asynchronously using a Task.
+		/// </summary>
+		/// <param name="dbConnection">The connection to query on.</param>
+		/// <param name="command">The command to execute.</param>
+		/// <typeparam name="T1">The first type in the record set.</typeparam>
+		/// <typeparam name="T2">The second type in the record set.</typeparam>
+		/// <typeparam name="T3">The third type in the record set.</typeparam>
+		/// <returns>A collection of <typeparamref name="T1"/> and the mapped collections of <typeparamref name="T2"/> and <typeparamref name="T3"/> pairs.</returns>
+		public static async Task<IEnumerable<IGrouping<T1, OneToOne<T1, OneToOne<T2, T3>>>>>
+			QueryOneToManyAsync<T1, T2, T3>(
+				this IDbConnection dbConnection,
+				CommandDefinition command)
 		{
 			var entries =
 				await dbConnection
-					.QueryAsync<T1, T2, T3, OneToManyEntry<T1, OneToOne<T2, T3>>>(
+					.QueryAsync<T1, T2, T3, OneToOne<T1, OneToOne<T2, T3>>>(
 						command,
 						(one, many, manyOther) => new(one, new(many, manyOther)))
 					.ConfigureAwait(false);
 
-			return
-				entries
-					.GroupBy(entry => entry.Parent)
-					.Select(OneToMany<T1, OneToOne<T2, T3>>.FromEntryGrouping);
+			return entries.GroupBy(entry => entry.First);
 		}
 	}
 }

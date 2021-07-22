@@ -63,25 +63,25 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("find/{name}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellationToken)
+		public async Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellationToken), cancellationToken);
+			return await Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation), cancellation);
 		}
 
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
+			return await Find(() => _repository.FindByIdAsync(id, cancellation), cancellation);
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellation)
 		{
-			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = accounts.Select(account => GetModel(account, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var accounts = await _repository.GetAllAsync(cancellation);
+			var models = accounts.Select(account => GetModel(account, cancellation).GetAwaiter().GetResult()).ToList();
 			return Ok(models);
 		}
 
@@ -137,17 +137,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		}
 
 		/// <inheritdoc />
-		protected override async Task<AccountModel> GetModel(Account entity, CancellationToken cancellationToken)
+		protected override async Task<AccountModel> GetModel(Account entity, CancellationToken cancellation)
 		{
-			var preferredCurrency = await _currencyRepository.GetByIdAsync(entity.PreferredCurrencyId, cancellationToken);
-			var inCurrencies = await _inCurrencyRepository.GetByAccountIdAsync(entity.Id, cancellationToken);
-			var models = inCurrencies.Select(inCurrency => GetModel(inCurrency, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var currency = await _currencyRepository.GetByIdAsync(entity.PreferredCurrencyId, cancellation);
+			var currencyModel = _mapper.Map<CurrencyModel>(currency);
 
-			return _mapper.Map<AccountModel>(entity) with
-			{
-				PreferredCurrency = _mapper.Map<CurrencyModel>(preferredCurrency),
-				Currencies = models,
-			};
+			return _mapper.Map<AccountModel>(entity) with { PreferredCurrency = currencyModel };
 		}
 
 		/// <inheritdoc />
@@ -163,17 +158,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			_inCurrencyRepository.Dispose();
 			_currencyRepository.Dispose();
 			base.Dispose(disposing);
-		}
-
-		private async Task<AccountInCurrencyModel> GetModel(
-			AccountInCurrency accountInCurrency,
-			CancellationToken cancellationToken)
-		{
-			var currency = await _currencyRepository.GetByIdAsync(accountInCurrency.CurrencyId, cancellationToken);
-			return _mapper.Map<AccountInCurrencyModel>(accountInCurrency) with
-			{
-				Currency = _mapper.Map<CurrencyModel>(currency),
-			};
 		}
 	}
 }

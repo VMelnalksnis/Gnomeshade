@@ -38,15 +38,19 @@ namespace Tracking.Finance.Data.Models
 		public Guid AccountId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the <see cref="Currency"/> this account represents.
+		/// Gets or sets the id of the <see cref="Currency"/> this account represents.
 		/// </summary>
 		public Guid CurrencyId { get; set; }
 
-		public Currency Currency { get; init; }
+		/// <summary>
+		/// Gets or sets the currency this account represents.
+		/// </summary>
+		public Currency Currency { get; set; } = null!;
 
 		internal static AccountInCurrency Create(OneToOne<AccountInCurrency, Currency> relationship)
 		{
-			return relationship.First with { Currency = relationship.Second };
+			relationship.First.Currency = relationship.Second;
+			return relationship.First;
 		}
 	}
 }
