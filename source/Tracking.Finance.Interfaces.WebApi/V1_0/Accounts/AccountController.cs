@@ -63,17 +63,17 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("find/{name}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellation)
+		public Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation), cancellation);
+			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation), cancellation);
 		}
 
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellation)
+		public Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellation), cancellation);
+			return Find(() => _repository.FindByIdAsync(id, cancellation), cancellation);
 		}
 
 		[HttpGet]
@@ -137,12 +137,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		}
 
 		/// <inheritdoc />
-		protected override async Task<AccountModel> GetModel(Account entity, CancellationToken cancellation)
+		protected override Task<AccountModel> GetModel(Account entity, CancellationToken cancellation)
 		{
-			var currency = await _currencyRepository.GetByIdAsync(entity.PreferredCurrencyId, cancellation);
-			var currencyModel = _mapper.Map<CurrencyModel>(currency);
-
-			return _mapper.Map<AccountModel>(entity) with { PreferredCurrency = currencyModel };
+			var model = _mapper.Map<AccountModel>(entity);
+			return Task.FromResult(model);
 		}
 
 		/// <inheritdoc />
