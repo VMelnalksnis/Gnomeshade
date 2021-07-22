@@ -3,8 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Tracking.Finance.Data.Models.Abstractions;
+using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Models
 {
@@ -37,5 +40,13 @@ namespace Tracking.Finance.Data.Models
 		public bool Validated { get; set; }
 
 		public bool Completed { get; set; }
+
+		public List<TransactionItem> Items { get; set; } = null!;
+
+		public static Transaction FromGrouping(IGrouping<Transaction, OneToOne<Transaction, TransactionItem>> grouping)
+		{
+			grouping.Key.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();
+			return grouping.Key;
+		}
 	}
 }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Tracking.Finance.Data.Models;
+using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Repositories
 {
@@ -21,7 +22,37 @@ namespace Tracking.Finance.Data.Repositories
 			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed) RETURNING id";
 
 		private const string _selectSql =
-			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, date, description, generated \"Generated\", validated, completed FROM transactions";
+			"SELECT t.id, " +
+			"t.owner_id OwnerId, " +
+			"t.created_at CreatedAt, " +
+			"t.created_by_user_id CreatedByUserId, " +
+			"t.modified_at ModifiedAt, " +
+			"t.modified_by_user_id ModifiedByUserId, " +
+			"t.date, " +
+			"t.description, " +
+			"t.generated, " +
+			"t.validated, " +
+			"t.completed, " +
+			"ti.id, " +
+			"ti.owner_id OwnerId, " +
+			"ti.transaction_id TransactionId, " +
+			"ti.source_amount SourceAmount, " +
+			"ti.source_account_id SourceAccountId, " +
+			"ti.target_amount TargetAmount, " +
+			"ti.target_account_id TargetAccountId, " +
+			"ti.created_at CreatedAt, " +
+			"ti.created_by_user_id CreatedByUserId, " +
+			"ti.modified_at ModifiedAt, " +
+			"ti.modified_by_user_id ModifiedByUserId, " +
+			"ti.product_id ProductId, " +
+			"ti.amount, " +
+			"ti.bank_reference BankReference, " +
+			"ti.external_reference ExternalReference, " +
+			"ti.internal_reference InternalReference, " +
+			"ti.description, " +
+			"ti.delivery_date DeliverDate " +
+			"FROM transactions t " +
+			"LEFT JOIN transaction_items ti ON t.id = ti.transaction_id";
 
 		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id";
 
@@ -66,7 +97,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public async Task<Transaction?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE id = @id";
+			const string sql = _selectSql + " WHERE t.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return await _dbConnection.QuerySingleOrDefaultAsync<Transaction>(command).ConfigureAwait(false);
 		}
@@ -79,7 +110,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The <see cref="Transaction"/> with the specified id.</returns>
 		public async Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE id = @id";
+			const string sql = _selectSql + " WHERE t.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return await _dbConnection.QuerySingleAsync<Transaction>(command).ConfigureAwait(false);
 		}
@@ -91,9 +122,11 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>A collection of all transactions.</returns>
 		public async Task<List<Transaction>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			var commandDefinition = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var transactionItems = await _dbConnection.QueryAsync<Transaction>(commandDefinition).ConfigureAwait(false);
-			return transactionItems.ToList();
+			const string sql = _selectSql + " ORDER BY t.date DESC";
+			var commandDefinition = new CommandDefinition(sql, cancellationToken: cancellationToken);
+
+			var groupedTransactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
+			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
 		}
 
 		/// <inheritdoc />
@@ -104,5 +137,18 @@ namespace Tracking.Finance.Data.Repositories
 
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
+
+		private async Task<IEnumerable<IGrouping<Transaction, OneToOne<Transaction, TransactionItem>>>>
+			GetTransactionsAsync(CommandDefinition command)
+		{
+			var entries =
+				await _dbConnection
+					.QueryAsync<Transaction, TransactionItem, OneToOne<Transaction, TransactionItem>>(
+						command,
+						(transaction, item) => new(transaction, item))
+					.ConfigureAwait(false);
+
+			return entries.GroupBy(oneToOne => oneToOne.First);
+		}
 	}
 }
