@@ -74,29 +74,29 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// Gets a transaction by the specified id.
 		/// </summary>
 		/// <param name="id">The id of the transaction to get.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns><see cref="OkObjectResult"/> if transaction was found, otherwise <see cref="NotFoundResult"/>.</returns>
 		/// <response code="200">Transaction with the specified id exists.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
-		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
+			return await Find(() => _repository.FindByIdAsync(id, cancellation));
 		}
 
 		/// <summary>
 		/// Gets all transactions.
 		/// </summary>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 		/// <response code="200">Successfully got all transactions.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellation)
 		{
-			var transactions = await _repository.GetAllAsync(cancellationToken);
+			var transactions = await _repository.GetAllAsync(cancellation);
 			var transactionModels = transactions.Select(MapToModel).ToList();
 			return Ok(transactionModels);
 		}
@@ -193,16 +193,16 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[HttpGet("{transactionId:guid}/Item")]
 		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(
 			Guid transactionId,
-			CancellationToken cancellationToken)
+			CancellationToken cancellation)
 		{
-			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
+			var items = await _itemRepository.GetAllAsync(transactionId, cancellation);
 			return items.Select(item => Mapper.Map<TransactionItemModel>(item)).ToList();
 		}
 
 		[HttpGet("Item/{id:guid}")]
-		public async Task<ActionResult<TransactionItemModel>> GetItem(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<TransactionItemModel>> GetItem(Guid id, CancellationToken cancellation)
 		{
-			var item = await _itemRepository.FindByIdAsync(id, cancellationToken);
+			var item = await _itemRepository.FindByIdAsync(id, cancellation);
 			if (item is null)
 			{
 				return NotFound();
