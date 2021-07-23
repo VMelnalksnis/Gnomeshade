@@ -62,8 +62,8 @@ namespace Tracking.Finance.Data.Repositories
 			"p.description, " +
 			"p.unit_id UnitId " +
 			"FROM transactions t " +
-			"LEFT JOIN transaction_items ti ON t.id = ti.transaction_id " +
-			"LEFT JOIN products p ON ti.product_id = p.id";
+			"INNER JOIN transaction_items ti ON t.id = ti.transaction_id " +
+			"INNER JOIN products p ON ti.product_id = p.id";
 
 		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id";
 
@@ -164,11 +164,7 @@ namespace Tracking.Finance.Data.Repositories
 						command,
 						(transaction, item, product) =>
 						{
-							if (item is not null)
-							{
-								item.Product = product;
-							}
-
+							item.Product = product;
 							return new(transaction, item);
 						})
 					.ConfigureAwait(false);
