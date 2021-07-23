@@ -33,7 +33,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly UnitRepository _repository;
-		private readonly Mapper _mapper;
 		private readonly ILogger<UnitController> _logger;
 
 		public UnitController(
@@ -41,13 +40,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 			UserRepository userRepository,
 			IDbConnection dbConnection,
 			UnitRepository repository,
-			Mapper mapper,
+			IMapper mapper,
 			ILogger<UnitController> logger)
-			: base(userManager, userRepository)
+			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
-			_mapper = mapper;
 			_logger = logger;
 		}
 
@@ -56,7 +54,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<UnitModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
+			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
 
 		[HttpGet]
@@ -64,7 +62,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		public async Task<ActionResult<List<UnitModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var units = await _repository.GetAllAsync(cancellationToken);
-			var models = units.Select(unit => GetModel(unit, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var models = units.Select(MapToModel).ToList();
 			return Ok(models);
 		}
 
@@ -78,7 +76,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var unit = _mapper.Map<Unit>(creationModel) with
+			var unit = Mapper.Map<Unit>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -88,18 +86,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 
 			var id = await _repository.AddAsync(unit);
 			return CreatedAtAction(nameof(Get), new { id }, id);
-		}
-
-		/// <inheritdoc />
-		protected override Task<UnitModel> GetModel(Unit entity, CancellationToken cancellationToken)
-		{
-			if (cancellationToken.IsCancellationRequested)
-			{
-				return Task.FromCanceled<UnitModel>(cancellationToken);
-			}
-
-			var model = _mapper.Map<UnitModel>(entity);
-			return Task.FromResult(model);
 		}
 	}
 }

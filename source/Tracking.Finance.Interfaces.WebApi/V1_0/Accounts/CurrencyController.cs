@@ -31,17 +31,15 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 	public sealed class CurrencyController : FinanceControllerBase<Currency, CurrencyModel>
 	{
 		private readonly CurrencyRepository _currencyRepository;
-		private readonly Mapper _mapper;
 
 		public CurrencyController(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
 			CurrencyRepository currencyRepository,
-			Mapper mapper)
-			: base(userManager, userRepository)
+			IMapper mapper)
+			: base(userManager, userRepository, mapper)
 		{
 			_currencyRepository = currencyRepository;
-			_mapper = mapper;
 		}
 
 		[HttpGet]
@@ -49,20 +47,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<CurrencyModel>>> GetCurrencies(CancellationToken cancellationToken)
 		{
 			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
-			var models = currencies.Select(currency => GetModel(currency, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var models = currencies.Select(currency => MapToModel(currency)).ToList();
 			return Ok(models);
-		}
-
-		/// <inheritdoc />
-		protected override Task<CurrencyModel> GetModel(Currency entity, CancellationToken cancellationToken)
-		{
-			if (cancellationToken.IsCancellationRequested)
-			{
-				return Task.FromCanceled<CurrencyModel>(cancellationToken);
-			}
-
-			var model = _mapper.Map<CurrencyModel>(entity);
-			return Task.FromResult(model);
 		}
 
 		/// <inheritdoc />

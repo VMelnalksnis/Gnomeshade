@@ -25,8 +25,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 
 		public string Name { get; init; }
 
-		public string NormalizedName { get; init; }
-
 		public string? Description { get; init; }
 	}
 }

@@ -37,7 +37,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly ProductRepository _repository;
-		private readonly Mapper _mapper;
 		private readonly ILogger<ProductController> _logger;
 
 		public ProductController(
@@ -45,13 +44,12 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 			UserRepository userRepository,
 			IDbConnection dbConnection,
 			ProductRepository repository,
-			Mapper mapper,
+			IMapper mapper,
 			ILogger<ProductController> logger)
-			: base(userManager, userRepository)
+			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
-			_mapper = mapper;
 			_logger = logger;
 		}
 
@@ -60,7 +58,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<ProductModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
+			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
 
 		[HttpGet]
@@ -68,7 +66,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 		public async Task<ActionResult<List<ProductModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = accounts.Select(account => GetModel(account, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var models = accounts.Select(account => MapToModel(account)).ToList();
 			return Ok(models);
 		}
 
@@ -82,7 +80,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var product = _mapper.Map<Product>(creationModel) with
+			var product = Mapper.Map<Product>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -92,18 +90,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 
 			var id = await _repository.AddAsync(product);
 			return CreatedAtAction(nameof(Get), new { id }, id);
-		}
-
-		/// <inheritdoc />
-		protected override Task<ProductModel> GetModel(Product entity, CancellationToken cancellationToken)
-		{
-			if (cancellationToken.IsCancellationRequested)
-			{
-				return Task.FromCanceled<ProductModel>(cancellationToken);
-			}
-
-			var model = _mapper.Map<ProductModel>(entity);
-			return Task.FromResult(model);
 		}
 
 		/// <inheritdoc />

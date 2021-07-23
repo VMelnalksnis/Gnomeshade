@@ -42,7 +42,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
-		private readonly Mapper _mapper;
 		private readonly ILogger<TransactionController> _logger;
 
 		/// <summary>
@@ -61,14 +60,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			IDbConnection dbConnection,
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
-			Mapper mapper,
+			IMapper mapper,
 			ILogger<TransactionController> logger)
-			: base(userManager, userRepository)
+			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
-			_mapper = mapper;
 			_logger = logger;
 		}
 
@@ -85,7 +83,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
 		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken), cancellationToken);
+			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
 
 		/// <summary>
@@ -99,7 +97,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellationToken)
 		{
 			var transactions = await _repository.GetAllAsync(cancellationToken);
-			var transactionModels = transactions.Select(transaction => GetModel(transaction, cancellationToken).GetAwaiter().GetResult()).ToList();
+			var transactionModels = transactions.Select(MapToModel).ToList();
 			return Ok(transactionModels);
 		}
 
@@ -121,7 +119,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return Unauthorized();
 			}
 
-			var transaction = _mapper.Map<Transaction>(creationModel) with
+			var transaction = Mapper.Map<Transaction>(creationModel) with
 			{
 				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
@@ -141,7 +139,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				var transactionId = await _repository.AddAsync(transaction, dbTransaction);
 				foreach (var item in creationModel.Items)
 				{
-					var transactionItem = _mapper.Map<TransactionItem>(item) with
+					var transactionItem = Mapper.Map<TransactionItem>(item) with
 					{
 						OwnerId = user.Id,
 						CreatedByUserId = user.Id,
@@ -198,7 +196,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			CancellationToken cancellationToken)
 		{
 			var items = await _itemRepository.GetAllAsync(transactionId, cancellationToken);
-			return items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
+			return items.Select(item => Mapper.Map<TransactionItemModel>(item)).ToList();
 		}
 
 		[HttpGet("Item/{id:guid}")]
@@ -210,7 +208,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return NotFound();
 			}
 
-			return _mapper.Map<TransactionItemModel>(item);
+			return Mapper.Map<TransactionItemModel>(item);
 		}
 
 		[HttpPost("{transactionId:guid}/Item")]
@@ -230,7 +228,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				return new BadRequestResult();
 			}
 
-			var transactionItem = _mapper.Map<TransactionItem>(creationModel) with
+			var transactionItem = Mapper.Map<TransactionItem>(creationModel) with
 			{
 				OwnerId = user.Id, // todo
 				TransactionId = transactionId,
@@ -258,14 +256,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 					transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
-		}
-
-		/// <inheritdoc />
-		protected override async Task<TransactionModel> GetModel(Transaction transaction, CancellationToken cancellationToken)
-		{
-			var items = await _itemRepository.GetAllAsync(transaction.Id, cancellationToken);
-			var itemModels = items.Select(item => _mapper.Map<TransactionItemModel>(item)).ToList();
-			return _mapper.Map<TransactionModel>(transaction) with { Items = itemModels };
 		}
 
 		/// <inheritdoc />

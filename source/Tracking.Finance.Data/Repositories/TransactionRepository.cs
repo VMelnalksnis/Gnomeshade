@@ -50,9 +50,20 @@ namespace Tracking.Finance.Data.Repositories
 			"ti.external_reference ExternalReference, " +
 			"ti.internal_reference InternalReference, " +
 			"ti.description, " +
-			"ti.delivery_date DeliverDate " +
+			"ti.delivery_date DeliverDate, " +
+			"p.id, " +
+			"p.created_at CreatedAt, " +
+			"p.owner_id OwnerId, " +
+			"p.created_by_user_id CreatedByUserId, " +
+			"p.modified_at ModifiedAt, " +
+			"p.modified_by_user_id ModifiedByUserId, " +
+			"p.name, " +
+			"p.normalized_name NormalizedName, " +
+			"p.description, " +
+			"p.unit_id UnitId " +
 			"FROM transactions t " +
-			"LEFT JOIN transaction_items ti ON t.id = ti.transaction_id";
+			"LEFT JOIN transaction_items ti ON t.id = ti.transaction_id " +
+			"LEFT JOIN products p ON ti.product_id = p.id";
 
 		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id";
 
@@ -99,7 +110,10 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE t.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Transaction>(command).ConfigureAwait(false);
+
+			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			var grouping = groupedTransactions.SingleOrDefault();
+			return grouping is null ? null : Transaction.FromGrouping(grouping);
 		}
 
 		/// <summary>
@@ -112,7 +126,10 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE t.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Transaction>(command).ConfigureAwait(false);
+
+			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			var grouping = groupedTransactions.Single();
+			return Transaction.FromGrouping(grouping);
 		}
 
 		/// <summary>
@@ -141,14 +158,22 @@ namespace Tracking.Finance.Data.Repositories
 		private async Task<IEnumerable<IGrouping<Transaction, OneToOne<Transaction, TransactionItem>>>>
 			GetTransactionsAsync(CommandDefinition command)
 		{
-			var entries =
+			var oneToOnes =
 				await _dbConnection
-					.QueryAsync<Transaction, TransactionItem, OneToOne<Transaction, TransactionItem>>(
+					.QueryAsync<Transaction, TransactionItem, Product, OneToOne<Transaction, TransactionItem>>(
 						command,
-						(transaction, item) => new(transaction, item))
+						(transaction, item, product) =>
+						{
+							if (item is not null)
+							{
+								item.Product = product;
+							}
+
+							return new(transaction, item);
+						})
 					.ConfigureAwait(false);
 
-			return entries.GroupBy(oneToOne => oneToOne.First);
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First);
 		}
 	}
 }

@@ -4,8 +4,9 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,17 +28,23 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase, IDisposable
-		where TEntity : IEntity
+		where TEntity : class, IEntity
 		where TModel : class
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly UserRepository _userRepository;
 
-		protected FinanceControllerBase(UserManager<ApplicationUser> userManager, UserRepository userRepository)
+		protected FinanceControllerBase(
+			UserManager<ApplicationUser> userManager,
+			UserRepository userRepository,
+			IMapper mapper)
 		{
 			_userManager = userManager;
 			_userRepository = userRepository;
+			Mapper = mapper;
 		}
+
+		protected IMapper Mapper { get; }
 
 		/// <inheritdoc />
 		public void Dispose()
@@ -72,11 +79,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 		/// Finds a <typeparamref name="TModel"/> by the specified <paramref name="selector"/>.
 		/// </summary>
 		/// <param name="selector">Asynchronous function for finding an instance of <typeparamref name="TEntity"/>.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns><see cref="OkObjectResult"/> if an instance of <typeparamref name="TModel"/> was found, otherwise <see cref="NotFoundResult"/>.</returns>
-		protected async Task<ActionResult<TModel>> Find(
-			Func<Task<TEntity?>> selector,
-			CancellationToken cancellationToken)
+		protected async Task<ActionResult<TModel>> Find(Func<Task<TEntity?>> selector)
 		{
 			var entity = await selector();
 			if (entity is null)
@@ -84,10 +88,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 				return NotFound();
 			}
 
-			var model = await GetModel(entity, cancellationToken);
+			var model = MapToModel(entity);
 			return Ok(model);
 		}
 
-		protected abstract Task<TModel> GetModel(TEntity entity, CancellationToken cancellationToken);
+		protected TModel MapToModel(TEntity entity) => Mapper.Map<TModel>(entity);
 	}
 }

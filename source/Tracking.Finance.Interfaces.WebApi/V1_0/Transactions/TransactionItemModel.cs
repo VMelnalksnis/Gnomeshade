@@ -6,6 +6,9 @@ using System;
 
 using JetBrains.Annotations;
 
+using Tracking.Finance.Data.Models;
+using Tracking.Finance.Interfaces.WebApi.V1_0.Products;
+
 namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 {
 	[PublicAPI]
@@ -33,7 +36,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 		public Guid ModifiedByUserId { get; init; }
 
-		public Guid ProductId { get; init; }
+		public ProductModel Product { get; init; }
 
 		public decimal Amount { get; init; }
 

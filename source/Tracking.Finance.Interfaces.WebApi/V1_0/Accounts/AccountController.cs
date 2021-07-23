@@ -38,7 +38,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		private readonly AccountRepository _repository;
 		private readonly AccountInCurrencyRepository _inCurrencyRepository;
 		private readonly CurrencyRepository _currencyRepository;
-		private readonly Mapper _mapper;
 		private readonly ILogger<AccountController> _logger;
 
 		public AccountController(
@@ -48,15 +47,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			AccountRepository repository,
 			AccountInCurrencyRepository inCurrencyRepository,
 			CurrencyRepository currencyRepository,
-			Mapper mapper,
+			IMapper mapper,
 			ILogger<AccountController> logger)
-			: base(userManager, userRepository)
+			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_inCurrencyRepository = inCurrencyRepository;
 			_currencyRepository = currencyRepository;
-			_mapper = mapper;
 			_logger = logger;
 		}
 
@@ -65,7 +63,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellation)
 		{
-			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation), cancellation);
+			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation));
 		}
 
 		[HttpGet("{id:guid}")]
@@ -73,7 +71,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellation)
 		{
-			return Find(() => _repository.FindByIdAsync(id, cancellation), cancellation);
+			return Find(() => _repository.FindByIdAsync(id, cancellation));
 		}
 
 		[HttpGet]
@@ -81,7 +79,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellation)
 		{
 			var accounts = await _repository.GetAllAsync(cancellation);
-			var models = accounts.Select(account => GetModel(account, cancellation).GetAwaiter().GetResult()).ToList();
+			var models = accounts.Select(MapToModel).ToList();
 			return Ok(models);
 		}
 
@@ -95,7 +93,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 				return Unauthorized();
 			}
 
-			var account = _mapper.Map<Account>(creationModel) with
+			var account = Mapper.Map<Account>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -112,7 +110,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 				var inCurrencies =
 					creationModel
 						.Currencies!
-						.Select(currency => _mapper.Map<AccountInCurrency>(currency) with
+						.Select(currency => Mapper.Map<AccountInCurrency>(currency) with
 						{
 							OwnerId = user.Id,
 							CreatedByUserId = user.Id,
@@ -134,13 +132,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 				dbTransaction.Rollback();
 				throw;
 			}
-		}
-
-		/// <inheritdoc />
-		protected override Task<AccountModel> GetModel(Account entity, CancellationToken cancellation)
-		{
-			var model = _mapper.Map<AccountModel>(entity);
-			return Task.FromResult(model);
 		}
 
 		/// <inheritdoc />

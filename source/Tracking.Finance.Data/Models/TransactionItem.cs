@@ -40,6 +40,8 @@ namespace Tracking.Finance.Data.Models
 
 		public Guid ProductId { get; set; }
 
+		public Product Product { get; set; } = null!;
+
 		public decimal Amount { get; set; }
 
 		public string? BankReference { get; set; }
