@@ -10,7 +10,7 @@ using Tracking.Finance.Data.Models;
 
 namespace Tracking.Finance.Data.TestingHelpers
 {
-	public sealed class UnitFaker : Faker<Unit>
+	public sealed class UnitFaker : ModifiableEntityFaker<Unit>
 	{
 		public UnitFaker(User user)
 			: this(user.Id)
@@ -18,10 +18,8 @@ namespace Tracking.Finance.Data.TestingHelpers
 		}
 
 		public UnitFaker(Guid userId)
+			: base(userId)
 		{
-			RuleFor(unit => unit.OwnerId, userId);
-			RuleFor(unit => unit.CreatedByUserId, userId);
-			RuleFor(unit => unit.ModifiedByUserId, userId);
 			RuleFor(unit => unit.Name, faker => faker.Commerce.ProductMaterial());
 			RuleFor(unit => unit.NormalizedName, (_, unit) => unit.Name.ToUpperInvariant());
 		}

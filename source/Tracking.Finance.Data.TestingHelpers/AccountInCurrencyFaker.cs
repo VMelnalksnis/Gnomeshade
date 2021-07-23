@@ -4,8 +4,6 @@
 
 using System;
 
-using Bogus;
-
 using Tracking.Finance.Data.Models;
 
 namespace Tracking.Finance.Data.TestingHelpers
@@ -13,7 +11,7 @@ namespace Tracking.Finance.Data.TestingHelpers
 	/// <summary>
 	/// Generates fake <see cref="AccountInCurrency"/> objects.
 	/// </summary>
-	public sealed class AccountInCurrencyFaker : Faker<AccountInCurrency>
+	public sealed class AccountInCurrencyFaker : ModifiableEntityFaker<AccountInCurrency>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountInCurrencyFaker"/> class with the specified relationships.
@@ -33,10 +31,8 @@ namespace Tracking.Finance.Data.TestingHelpers
 		/// <param name="accountId">The id of the <see cref="Account"/> to which the currency is added to.</param>
 		/// <param name="currencyId">The id of the <see cref="Currency"/> added to the account.</param>
 		public AccountInCurrencyFaker(Guid userId, Guid accountId, Guid currencyId)
+			: base(userId)
 		{
-			RuleFor(account => account.OwnerId, userId);
-			RuleFor(account => account.CreatedByUserId, userId);
-			RuleFor(account => account.ModifiedByUserId, userId);
 			RuleFor(account => account.AccountId, accountId);
 			RuleFor(account => account.CurrencyId, currencyId);
 		}
