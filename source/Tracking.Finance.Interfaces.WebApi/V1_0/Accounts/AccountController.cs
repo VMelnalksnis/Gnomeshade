@@ -47,7 +47,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			AccountRepository repository,
 			AccountInCurrencyRepository inCurrencyRepository,
 			CurrencyRepository currencyRepository,
-			IMapper mapper,
+			Mapper mapper,
 			ILogger<AccountController> logger)
 			: base(userManager, userRepository, mapper)
 		{

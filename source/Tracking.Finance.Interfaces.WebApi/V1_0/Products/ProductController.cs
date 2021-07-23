@@ -44,7 +44,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Products
 			UserRepository userRepository,
 			IDbConnection dbConnection,
 			ProductRepository repository,
-			IMapper mapper,
+			Mapper mapper,
 			ILogger<ProductController> logger)
 			: base(userManager, userRepository, mapper)
 		{

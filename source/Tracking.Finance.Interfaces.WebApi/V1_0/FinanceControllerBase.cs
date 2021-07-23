@@ -37,14 +37,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0
 		protected FinanceControllerBase(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
-			IMapper mapper)
+			Mapper mapper)
 		{
 			_userManager = userManager;
 			_userRepository = userRepository;
 			Mapper = mapper;
 		}
 
-		protected IMapper Mapper { get; }
+		protected Mapper Mapper { get; }
 
 		/// <inheritdoc />
 		public void Dispose()

@@ -60,7 +60,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			IDbConnection dbConnection,
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
-			IMapper mapper,
+			Mapper mapper,
 			ILogger<TransactionController> logger)
 			: base(userManager, userRepository, mapper)
 		{

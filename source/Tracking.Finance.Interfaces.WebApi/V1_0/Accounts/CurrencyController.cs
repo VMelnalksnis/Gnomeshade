@@ -36,7 +36,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
 			CurrencyRepository currencyRepository,
-			IMapper mapper)
+			Mapper mapper)
 			: base(userManager, userRepository, mapper)
 		{
 			_currencyRepository = currencyRepository;
