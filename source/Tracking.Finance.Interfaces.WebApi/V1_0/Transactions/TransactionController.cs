@@ -89,14 +89,19 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Gets all transactions.
 		/// </summary>
+		/// <param name="timeRange">A time range for filtering transactions.</param>
 		/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 		/// <response code="200">Successfully got all transactions.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(CancellationToken cancellation)
+		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(
+			[FromQuery] OptionalTimeRange timeRange,
+			CancellationToken cancellation)
 		{
-			var transactions = await _repository.GetAllAsync(cancellation);
+			var (fromDate, toDate) = TimeRange.FromOptional(timeRange, DateTimeOffset.Now);
+
+			var transactions = await _repository.GetAllAsync(fromDate, toDate, cancellation);
 			var transactionModels = transactions.Select(MapToModel).ToList();
 			return Ok(transactionModels);
 		}
@@ -104,9 +109,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Creates a new transaction.
 		/// </summary>
-		///
 		/// <param name="creationModel">The transaction that will be created.</param>
-		///
 		/// <returns><see cref="CreatedAtActionResult"/> with the id of transaction.</returns>
 		/// <response code="201">Transaction was successfully created.</response>
 		[HttpPost]

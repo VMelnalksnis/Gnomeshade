@@ -146,6 +146,18 @@ namespace Tracking.Finance.Data.Repositories
 			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
 		}
 
+		public async Task<List<Transaction>> GetAllAsync(
+			DateTimeOffset? from,
+			DateTimeOffset? to,
+			CancellationToken cancellation = default)
+		{
+			const string sql = _selectSql + " WHERE t.date >= @from AND t.date <= @to ORDER BY t.date DESC";
+			var commandDefinition = new CommandDefinition(sql, new { from, to }, cancellationToken: cancellation);
+
+			var groupedTransactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
+			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
+		}
+
 		/// <inheritdoc />
 		public async Task<int> DeleteAsync(Guid id)
 		{
