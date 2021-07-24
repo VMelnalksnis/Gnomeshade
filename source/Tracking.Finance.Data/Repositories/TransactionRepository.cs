@@ -19,7 +19,7 @@ namespace Tracking.Finance.Data.Repositories
 	public sealed class TransactionRepository : IDisposable, IRepository<Transaction>
 	{
 		private const string _insertSql =
-			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed) RETURNING id";
+			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed, import_hash) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed, @ImportHash) RETURNING id";
 
 		private const string _selectSql =
 			"SELECT t.id, " +
@@ -33,6 +33,7 @@ namespace Tracking.Finance.Data.Repositories
 			"t.generated, " +
 			"t.validated, " +
 			"t.completed, " +
+			"t.import_hash ImportHash, " +
 			"ti.id, " +
 			"ti.owner_id OwnerId, " +
 			"ti.transaction_id TransactionId, " +
@@ -110,6 +111,18 @@ namespace Tracking.Finance.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE t.id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+
+			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			var grouping = groupedTransactions.SingleOrDefault();
+			return grouping is null ? null : Transaction.FromGrouping(grouping);
+		}
+
+		public async Task<Transaction?> FindByImportHashAsync(
+			byte[] importHash,
+			CancellationToken cancellationToken = default)
+		{
+			const string sql = _selectSql + " WHERE t.import_hash = @importHash";
+			var command = new CommandDefinition(sql, new { importHash }, cancellationToken: cancellationToken);
 
 			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
 			var grouping = groupedTransactions.SingleOrDefault();

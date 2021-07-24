@@ -98,26 +98,25 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public async Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
-			var grouping = accountGroupings.SingleOrDefault();
-
-			return grouping is null ? null : Account.FromGrouping(grouping);
+			return FindAsync(command);
 		}
 
-		public async Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+		public Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.normalized_name = @name;";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
+			return FindAsync(command);
+		}
 
-			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
-			var grouping = accountGroupings.SingleOrDefault();
-
-			return grouping is null ? null : Account.FromGrouping(grouping);
+		public Task<Account?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
+		{
+			const string sql = _selectSql + " WHERE a.iban = @iban;";
+			var command = new CommandDefinition(sql, new { iban }, cancellationToken: cancellationToken);
+			return FindAsync(command);
 		}
 
 		/// <inheritdoc />
@@ -148,6 +147,13 @@ namespace Tracking.Finance.Data.Repositories
 
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
+
+		private async Task<Account?> FindAsync(CommandDefinition command)
+		{
+			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
+			var grouping = accountGroupings.SingleOrDefault();
+			return grouping is null ? null : Account.FromGrouping(grouping);
+		}
 
 		private async Task<IEnumerable<IGrouping<Account, OneToOne<Account, AccountInCurrency>>>> GetAccountsAsync(
 			CommandDefinition command)

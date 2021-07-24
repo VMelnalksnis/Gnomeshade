@@ -112,6 +112,7 @@ CREATE TABLE "public"."transactions"
     "generated"           boolean                                NOT NULL,
     "validated"           boolean                                NOT NULL,
     "completed"           boolean                                NOT NULL,
+    "import_hash"         bytea,
     CONSTRAINT "transactions_id" PRIMARY KEY ("id"),
     CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,

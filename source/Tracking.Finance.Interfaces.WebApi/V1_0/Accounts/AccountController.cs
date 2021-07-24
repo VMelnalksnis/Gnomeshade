@@ -15,8 +15,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
+using Tracking.Finance.Data;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
@@ -38,7 +38,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 		private readonly AccountRepository _repository;
 		private readonly AccountInCurrencyRepository _inCurrencyRepository;
 		private readonly CurrencyRepository _currencyRepository;
-		private readonly ILogger<AccountController> _logger;
+		private readonly AccountUnitOfWork _accountUnitOfWork;
 
 		public AccountController(
 			UserManager<ApplicationUser> userManager,
@@ -48,14 +48,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 			AccountInCurrencyRepository inCurrencyRepository,
 			CurrencyRepository currencyRepository,
 			Mapper mapper,
-			ILogger<AccountController> logger)
+			AccountUnitOfWork accountUnitOfWork)
 			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_inCurrencyRepository = inCurrencyRepository;
 			_currencyRepository = currencyRepository;
-			_logger = logger;
+			_accountUnitOfWork = accountUnitOfWork;
 		}
 
 		[HttpGet("find/{name}")]
@@ -101,37 +101,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Accounts
 				NormalizedName = creationModel.Name!.ToUpperInvariant(),
 			};
 
-			_dbConnection.Open();
-			using var dbTransaction = _dbConnection.BeginTransaction();
-
-			try
-			{
-				var id = await _repository.AddAsync(account, dbTransaction);
-				var inCurrencies =
-					creationModel
-						.Currencies!
-						.Select(currency => Mapper.Map<AccountInCurrency>(currency) with
-						{
-							OwnerId = user.Id,
-							CreatedByUserId = user.Id,
-							ModifiedByUserId = user.Id,
-							AccountId = id,
-						});
-
-				foreach (var accountInCurrency in inCurrencies)
-				{
-					_ = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
-				}
-
-				dbTransaction.Commit();
-				return CreatedAtAction(nameof(Get), new { id }, id);
-			}
-			catch (Exception exception)
-			{
-				_logger.LogWarning(exception, "Failed to create account");
-				dbTransaction.Rollback();
-				throw;
-			}
+			var id = await _accountUnitOfWork.AddAsync(account);
+			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
 
 		/// <inheritdoc />

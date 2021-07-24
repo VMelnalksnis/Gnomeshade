@@ -55,6 +55,8 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 			var product = await EntityFactory.GetProductAsync();
 
 			var transactionToAdd = new TransactionFaker(TestUser).Generate();
+			var importHash = await transactionToAdd.GetHashAsync();
+			transactionToAdd = transactionToAdd with { ImportHash = importHash };
 			var transactionId = await _repository.AddAsync(transactionToAdd);
 			transactionToAdd = transactionToAdd with { Id = transactionId };
 
@@ -70,10 +72,12 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 
 			var getTransaction = await _repository.GetByIdAsync(transactionId);
 			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id);
+			var findImportTransaction = await _repository.FindByImportHashAsync(importHash);
 			var allTransactions = await _repository.GetAllAsync();
 
 			getTransaction.Items.Should().ContainSingle().Which.Product.Should().NotBeNull();
 			findTransaction.Should().BeEquivalentTo(getTransaction, options => options.ComparingByMembers<Transaction>().ComparingByMembers<TransactionItem>());
+			findImportTransaction.Should().BeEquivalentTo(getTransaction, options => options.ComparingByMembers<Transaction>().ComparingByMembers<TransactionItem>());
 			allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, options => options.ComparingByMembers<Transaction>().ComparingByMembers<TransactionItem>());
 
 			await _itemRepository.DeleteAsync(itemId);
@@ -99,6 +103,16 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 		public async Task FindByIdAsync_ShouldReturnNullIfDoesNotExist()
 		{
 			(await _repository.FindByIdAsync(Guid.NewGuid())).Should().BeNull();
+		}
+
+		[Test]
+		public async Task FindByImportHashAsync_ShouldReturnNullIfDoesNotExist()
+		{
+			var importHash = await new Transaction().GetHashAsync();
+
+			var transaction = await _repository.FindByImportHashAsync(importHash);
+
+			transaction.Should().BeNull();
 		}
 	}
 }

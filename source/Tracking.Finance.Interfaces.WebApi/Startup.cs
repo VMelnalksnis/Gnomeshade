@@ -16,8 +16,10 @@ using Microsoft.Extensions.Hosting;
 using Npgsql;
 using Npgsql.Logging;
 
+using Tracking.Finance.Data;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Repositories;
+using Tracking.Finance.Imports.Fidavista;
 using Tracking.Finance.Interfaces.WebApi.Configuration;
 using Tracking.Finance.Interfaces.WebApi.V1_0;
 using Tracking.Finance.Interfaces.WebApi.V1_0.Authentication;
@@ -58,7 +60,7 @@ namespace Tracking.Finance.Interfaces.WebApi
 		{
 			services.AddOptions<JwtOptions>(Configuration);
 
-			services.AddControllers();
+			services.AddControllers().AddControllersAsServices();
 			services.AddApiVersioning();
 
 			services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
@@ -79,7 +81,9 @@ namespace Tracking.Finance.Interfaces.WebApi
 				.AddTransient<AccountInCurrencyRepository>()
 				.AddTransient<CurrencyRepository>()
 				.AddTransient<ProductRepository>()
-				.AddTransient<UnitRepository>();
+				.AddTransient<UnitRepository>()
+				.AddTransient<AccountUnitOfWork>()
+				.AddTransient<TransactionUnitOfWork>();
 
 			services
 				.AddTransient<Mapper>()
@@ -89,6 +93,8 @@ namespace Tracking.Finance.Interfaces.WebApi
 				}));
 
 			services.AddSwaggerGen(Options.SwaggerGen);
+
+			services.AddTransient<FidavistaReader>();
 		}
 
 		/// <summary>

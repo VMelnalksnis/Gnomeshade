@@ -34,6 +34,10 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[DefaultValue(false)]
 		public bool Completed { get; init; }
 
+		[MinLength(64)]
+		[MaxLength(64)]
+		public byte[]? ImportHash { get; init; }
+
 		public List<TransactionItemCreationModel>? Items { get; init; }
 	}
 }

@@ -43,6 +43,11 @@ namespace Tracking.Finance.Data.Models
 
 		public List<TransactionItem> Items { get; set; } = null!;
 
+		/// <summary>
+		/// Gets or sets a hash value of the import source information.
+		/// </summary>
+		public byte[]? ImportHash { get; set; }
+
 		public static Transaction FromGrouping(IGrouping<Transaction, OneToOne<Transaction, TransactionItem>> grouping)
 		{
 			grouping.Key.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();

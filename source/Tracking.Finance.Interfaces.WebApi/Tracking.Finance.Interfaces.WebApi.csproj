@@ -39,6 +39,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Tracking.Finance.Data.Identity\Tracking.Finance.Data.Identity.csproj" />
 		<ProjectReference Include="..\Tracking.Finance.Data\Tracking.Finance.Data.csproj" />
+		<ProjectReference Include="..\Tracking.Finance\Tracking.Finance.csproj" />
 	</ItemGroup>
 
 </Project>

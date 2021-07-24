@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
+using Tracking.Finance.Data;
 using Tracking.Finance.Data.Identity;
 using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
@@ -38,6 +39,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 		private readonly ILogger<TransactionController> _logger;
+		private readonly TransactionUnitOfWork _transactionUnitOfWork;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionController"/> class.
@@ -56,13 +58,15 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
 			Mapper mapper,
-			ILogger<TransactionController> logger)
+			ILogger<TransactionController> logger,
+			TransactionUnitOfWork transactionUnitOfWork)
 			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
 			_logger = logger;
+			_transactionUnitOfWork = transactionUnitOfWork;
 		}
 
 		/// <summary>
@@ -109,7 +113,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <response code="201">Transaction was successfully created.</response>
 		[HttpPost]
 		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<int>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
+		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -124,39 +128,16 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				ModifiedByUserId = user.Id,
 			};
 
-			if (!(creationModel.Items?.Any() ?? false))
-			{
-				var id = await _repository.AddAsync(transaction);
-				return CreatedAtAction(nameof(Get), new { id }, id);
-			}
-
-			_dbConnection.Open();
-			using var dbTransaction = _dbConnection.BeginTransaction();
-			try
-			{
-				var transactionId = await _repository.AddAsync(transaction, dbTransaction);
-				foreach (var item in creationModel.Items)
+			var items = creationModel.Items?.Select(item => Mapper.Map<TransactionItem>(item) with
 				{
-					var transactionItem = Mapper.Map<TransactionItem>(item) with
-					{
-						OwnerId = user.Id,
-						CreatedByUserId = user.Id,
-						ModifiedByUserId = user.Id,
-						TransactionId = transactionId,
-					};
+					OwnerId = user.Id,
+					CreatedByUserId = user.Id,
+					ModifiedByUserId = user.Id,
+				}).ToList() ??
+				new();
 
-					_ = await _itemRepository.AddAsync(transactionItem, dbTransaction);
-				}
-
-				dbTransaction.Commit();
-				return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
-			}
-			catch (Exception exception)
-			{
-				_logger.LogWarning(exception, "Failed to create transaction");
-				dbTransaction.Rollback();
-				throw;
-			}
+			var transactionId = await _transactionUnitOfWork.AddAsync(transaction, items);
+			return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
 		}
 
 		/// <summary>
@@ -233,6 +214,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			var transactionItem = Mapper.Map<TransactionItem>(creationModel) with
 			{
 				OwnerId = user.Id, // todo
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
 				TransactionId = transactionId,
 			};
 

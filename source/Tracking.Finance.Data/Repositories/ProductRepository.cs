@@ -57,6 +57,13 @@ namespace Tracking.Finance.Data.Repositories
 			return await _dbConnection.QuerySingleOrDefaultAsync<Product>(command).ConfigureAwait(false);
 		}
 
+		public async Task<Product?> FindByNameAsync(string name, CancellationToken cancellation = default)
+		{
+			const string sql = _selectSql + " WHERE normalized_name = @name";
+			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellation);
+			return await _dbConnection.QuerySingleOrDefaultAsync<Product>(command).ConfigureAwait(false);
+		}
+
 		/// <inheritdoc />
 		public async Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{

@@ -31,6 +31,15 @@ namespace Tracking.Finance.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
+		public async Task<Currency?> FindByAlphabeticCodeAsync(
+			string alphabeticCode,
+			CancellationToken cancellation = default)
+		{
+			const string sql = _selectSql + " WHERE alphabetic_code = @alphabeticCode;";
+			var command = new CommandDefinition(sql, new { alphabeticCode }, cancellationToken: cancellation);
+			return await _dbConnection.QuerySingleOrDefaultAsync<Currency>(command).ConfigureAwait(false);
+		}
+
 		/// <summary>
 		/// Gets a currency with the specified id.
 		/// </summary>
