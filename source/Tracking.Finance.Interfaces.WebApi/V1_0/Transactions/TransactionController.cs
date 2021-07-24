@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -29,10 +28,6 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 	/// <summary>
 	/// CRUD operations on transaction entity.
 	/// </summary>
-	[ApiController]
-	[ApiVersion("1.0")]
-	[Authorize]
-	[Route("api/v{version:apiVersion}/[controller]")]
 	[SuppressMessage(
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
@@ -80,7 +75,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <response code="404">Transaction with the specified id does not exist.</response>
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
-		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)] // todo modify schema
+		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellation)
 		{
 			return await Find(() => _repository.FindByIdAsync(id, cancellation));
@@ -110,7 +105,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// Creates a new transaction.
 		/// </summary>
 		/// <param name="creationModel">The transaction that will be created.</param>
-		/// <returns><see cref="CreatedAtActionResult"/> with the id of transaction.</returns>
+		/// <returns><see cref="CreatedAtActionResult"/> with the id of the transaction.</returns>
 		/// <response code="201">Transaction was successfully created.</response>
 		[HttpPost]
 		[ProducesResponseType(Status201Created)]
@@ -167,9 +162,7 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Deletes the specified transaction.
 		/// </summary>
-		///
 		/// <param name="id">The id of the transaction to delete.</param>
-		///
 		/// <returns><see cref="NoContentResult"/> if transaction was deleted successfully, otherwise <see cref="NotFoundResult"/>.</returns>
 		/// <response code="204">Transaction was successfully deleted.</response>
 		/// <response code="404">Transaction with the specified id does not exist.</response>
@@ -193,15 +186,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			}
 		}
 
-		[HttpGet("{transactionId:guid}/Item")]
-		public async Task<ActionResult<List<TransactionItemModel>>> GetItems(
-			Guid transactionId,
-			CancellationToken cancellation)
-		{
-			var items = await _itemRepository.GetAllAsync(transactionId, cancellation);
-			return items.Select(item => Mapper.Map<TransactionItemModel>(item)).ToList();
-		}
-
+		/// <summary>
+		/// Gets a transaction item by the specified id.
+		/// </summary>
+		/// <param name="id">The id of the transaction item to get.</param>
+		/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns><see cref="OkObjectResult"/> if transaction item was found, otherwise <see cref="NotFoundResult"/>.</returns>
+		/// <response code="200">Transaction item with the specified id exists.</response>
+		/// <response code="404">Transaction item with the specified id does not exist.</response>
 		[HttpGet("Item/{id:guid}")]
 		public async Task<ActionResult<TransactionItemModel>> GetItem(Guid id, CancellationToken cancellation)
 		{
@@ -214,6 +206,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			return Mapper.Map<TransactionItemModel>(item);
 		}
 
+		/// <summary>
+		/// Adds a new item to an existing transaction.
+		/// </summary>
+		/// <param name="transactionId">The id of the transaction to which to add a new item.</param>
+		/// <param name="creationModel">The transaction item that will be created.</param>
+		/// <returns><see cref="CreatedAtActionResult"/> with the id of the transaction item.</returns>
+		/// <response code="201">Transaction item was successfully created.</response>
 		[HttpPost("{transactionId:guid}/Item")]
 		public async Task<ActionResult<Guid>> CreateItem(
 			Guid transactionId,
@@ -240,6 +239,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 			return await _itemRepository.AddAsync(transactionItem);
 		}
 
+		/// <summary>
+		/// Deletes the specified transaction item.
+		/// </summary>
+		/// <param name="id">The id of the transaction item to delete.</param>
+		/// <returns><see cref="NoContentResult"/> if transaction item was deleted successfully, otherwise <see cref="NotFoundResult"/>.</returns>
+		/// <response code="204">Transaction item was successfully deleted.</response>
+		/// <response code="404">Transaction item with the specified id does not exist.</response>
 		[HttpDelete("Item/{id:guid}")]
 		public async Task<StatusCodeResult> DeleteItem(Guid id)
 		{
