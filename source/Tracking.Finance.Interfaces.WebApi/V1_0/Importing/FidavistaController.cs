@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -211,10 +212,8 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Importing
 				ModifiedByUserId = user.Id,
 				Date = transaction.BookDate,
 				Description = transaction.PaymentInfo,
-				Generated = true,
-				Validated = false,
-				Completed = true,
 				ImportHash = await transaction.GetHashAsync(),
+				ImportedAt = DateTimeOffset.Now,
 			};
 
 			var credit = transaction.CreditOrDebit == "C";

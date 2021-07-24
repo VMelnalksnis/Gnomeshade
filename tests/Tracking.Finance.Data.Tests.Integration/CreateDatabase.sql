@@ -101,22 +101,23 @@ CREATE TABLE "public"."accounts_in_currency"
 DROP TABLE IF EXISTS "transactions";
 CREATE TABLE "public"."transactions"
 (
-    "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
-    "owner_id"            uuid                                   NOT NULL,
-    "created_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-    "created_by_user_id"  uuid                                   NOT NULL,
-    "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-    "modified_by_user_id" uuid                                   NOT NULL,
-    "date"                timestamptz                            NOT NULL,
-    "description"         text,
-    "generated"           boolean                                NOT NULL,
-    "validated"           boolean                                NOT NULL,
-    "completed"           boolean                                NOT NULL,
-    "import_hash"         bytea,
+    "id"                   uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "owner_id"             uuid                                   NOT NULL,
+    "created_at"           timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "created_by_user_id"   uuid                                   NOT NULL,
+    "modified_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "modified_by_user_id"  uuid                                   NOT NULL,
+    "date"                 timestamptz                            NOT NULL,
+    "description"          text,
+    "imported_at"          timestamptz,
+    "import_hash"          bytea,
+    "validated_at"         timestamptz,
+    "validated_by_user_id" uuid,
     CONSTRAINT "transactions_id" PRIMARY KEY ("id"),
     CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
-    CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
+    CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
+    CONSTRAINT "transactions_validated_by_user_id_fkey" FOREIGN KEY (validated_by_user_id) REFERENCES users(id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 

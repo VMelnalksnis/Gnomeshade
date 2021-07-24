@@ -16,10 +16,10 @@ using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Repositories
 {
-	public sealed class TransactionRepository : IDisposable, IRepository<Transaction>
+	public sealed class TransactionRepository : IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, generated, validated, completed, import_hash) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @Generated, @Validated, @Completed, @ImportHash) RETURNING id";
+			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, import_hash, imported_at, validated_at, validated_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @ImportHash, @ImportedAt, @ValidatedAt, @ValidatedByUserId) RETURNING id";
 
 		private const string _selectSql =
 			"SELECT t.id, " +
@@ -30,10 +30,10 @@ namespace Tracking.Finance.Data.Repositories
 			"t.modified_by_user_id ModifiedByUserId, " +
 			"t.date, " +
 			"t.description, " +
-			"t.generated, " +
-			"t.validated, " +
-			"t.completed, " +
 			"t.import_hash ImportHash, " +
+			"t.imported_at ImportedAt, " +
+			"t.validated_at ValidatedAt, " +
+			"t.validated_by_user_id ValidatedByUserId, " +
 			"ti.id, " +
 			"ti.owner_id OwnerId, " +
 			"ti.transaction_id TransactionId, " +
@@ -66,7 +66,7 @@ namespace Tracking.Finance.Data.Repositories
 			"INNER JOIN transaction_items ti ON t.id = ti.transaction_id " +
 			"INNER JOIN products p ON ti.product_id = p.id";
 
-		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id";
+		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id;";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -77,16 +77,6 @@ namespace Tracking.Finance.Data.Repositories
 		public TransactionRepository(IDbConnection dbConnection)
 		{
 			_dbConnection = dbConnection;
-		}
-
-		/// <summary>
-		/// Adds a new transaction.
-		/// </summary>
-		/// <param name="transaction">The transaction to add.</param>
-		/// <returns>The id of the created transaction.</returns>
-		public async Task<Guid> AddAsync(Transaction transaction)
-		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, transaction).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -107,26 +97,26 @@ namespace Tracking.Finance.Data.Repositories
 		/// <param name="id">The id to search by.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public async Task<Transaction?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<Transaction?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id";
+			const string sql = _selectSql + " WHERE t.id = @id LIMIT 2;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			var grouping = groupedTransactions.SingleOrDefault();
-			return grouping is null ? null : Transaction.FromGrouping(grouping);
+			return FindAsync(command);
 		}
 
-		public async Task<Transaction?> FindByImportHashAsync(
+		/// <summary>
+		/// Searches for a transaction with the specified import hash.
+		/// </summary>
+		/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
+		public Task<Transaction?> FindByImportHashAsync(
 			byte[] importHash,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.import_hash = @importHash";
+			const string sql = _selectSql + " WHERE t.import_hash = @importHash LIMIT 2;";
 			var command = new CommandDefinition(sql, new { importHash }, cancellationToken: cancellationToken);
-
-			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			var grouping = groupedTransactions.SingleOrDefault();
-			return grouping is null ? null : Transaction.FromGrouping(grouping);
+			return FindAsync(command);
 		}
 
 		/// <summary>
@@ -137,7 +127,7 @@ namespace Tracking.Finance.Data.Repositories
 		/// <returns>The <see cref="Transaction"/> with the specified id.</returns>
 		public async Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id";
+			const string sql = _selectSql + " WHERE t.id = @id LIMIT 2;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
 			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
@@ -146,35 +136,28 @@ namespace Tracking.Finance.Data.Repositories
 		}
 
 		/// <summary>
-		/// Gets all transactions.
+		/// Gets all transactions which have their <see cref="Transaction.Date"/> within the specified period.
 		/// </summary>
+		/// <param name="from">The start of the time range.</param>
+		/// <param name="to">The end of the time range.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all transactions.</returns>
-		public async Task<List<Transaction>> GetAllAsync(CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " ORDER BY t.date DESC";
-			var commandDefinition = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-			var groupedTransactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
-			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
-		}
-
 		public async Task<List<Transaction>> GetAllAsync(
-			DateTimeOffset? from,
-			DateTimeOffset? to,
-			CancellationToken cancellation = default)
+			DateTimeOffset from,
+			DateTimeOffset to,
+			CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE t.date >= @from AND t.date <= @to ORDER BY t.date DESC";
-			var commandDefinition = new CommandDefinition(sql, new { from, to }, cancellationToken: cancellation);
+			var commandDefinition = new CommandDefinition(sql, new { from, to }, cancellationToken: cancellationToken);
 
 			var groupedTransactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
 			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
 		}
 
-		/// <inheritdoc />
-		public async Task<int> DeleteAsync(Guid id)
+		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
+			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
+			return _dbConnection.ExecuteAsync(command);
 		}
 
 		/// <inheritdoc />
@@ -195,6 +178,13 @@ namespace Tracking.Finance.Data.Repositories
 					.ConfigureAwait(false);
 
 			return oneToOnes.GroupBy(oneToOne => oneToOne.First);
+		}
+
+		private async Task<Transaction?> FindAsync(CommandDefinition command)
+		{
+			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			var grouping = groupedTransactions.SingleOrDefault();
+			return grouping is null ? null : Transaction.FromGrouping(grouping);
 		}
 	}
 }

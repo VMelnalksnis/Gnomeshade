@@ -42,12 +42,7 @@ namespace Tracking.Finance.Data
 				throw new ArgumentException("Transaction must have at least one item", nameof(items));
 			}
 
-			if (_dbConnection.State != ConnectionState.Open)
-			{
-				_dbConnection.Open();
-			}
-
-			using var dbTransaction = _dbConnection.BeginTransaction();
+			using var dbTransaction = BeginTransaction();
 			try
 			{
 				var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
@@ -68,12 +63,50 @@ namespace Tracking.Finance.Data
 			}
 		}
 
+		/// <summary>
+		/// Deletes the specified transaction and all its items.
+		/// </summary>
+		/// <param name="transaction">The transaction to delete.</param>
+		/// <returns>The count of affected entities.</returns>
+		public async Task<int> DeleteAsync(Transaction transaction)
+		{
+			using var dbTransaction = BeginTransaction();
+			try
+			{
+				var affectedEntities = 0;
+				foreach (var item in transaction.Items)
+				{
+					affectedEntities += await _itemRepository.DeleteAsync(item.Id, dbTransaction).ConfigureAwait(false);
+				}
+
+				affectedEntities += await _repository.DeleteAsync(transaction.Id, dbTransaction).ConfigureAwait(false);
+				dbTransaction.Commit();
+
+				return affectedEntities;
+			}
+			catch (Exception)
+			{
+				dbTransaction.Rollback();
+				throw;
+			}
+		}
+
 		/// <inheritdoc />
 		public void Dispose()
 		{
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_itemRepository.Dispose();
+		}
+
+		private IDbTransaction BeginTransaction()
+		{
+			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
+			{
+				_dbConnection.Open();
+			}
+
+			return _dbConnection.BeginTransaction();
 		}
 	}
 }

@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,12 +10,27 @@ using Tracking.Finance.Data.Models;
 using Tracking.Finance.Data.Repositories;
 using Tracking.Finance.Data.TestingHelpers;
 
+using static Tracking.Finance.Data.Tests.Integration.DatabaseInitialization;
+
 namespace Tracking.Finance.Data.Tests.Integration.Repositories
 {
 	public static class EntityFactory
 	{
+		private static List<Currency>? _currencies;
 		private static Product? _product;
 		private static (Account First, Account Second)? _accounts;
+
+		public static async Task<List<Currency>> GetCurrenciesAsync()
+		{
+			if (_currencies is not null)
+			{
+				return _currencies.ToList();
+			}
+
+			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+			_currencies = await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false);
+			return _currencies;
+		}
 
 		public static async Task<Product> GetProductAsync()
 		{
@@ -24,7 +39,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				return _product;
 			}
 
-			var dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
+			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 			var repository = new ProductRepository(dbConnection);
 			var products = await repository.GetAllAsync().ConfigureAwait(false);
 			if (products.Any())
@@ -33,7 +48,7 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				return _product;
 			}
 
-			var faker = new ProductFaker(DatabaseInitialization.TestUser);
+			var faker = new ProductFaker(TestUser);
 			var product = faker.Generate();
 
 			var productId = await repository.AddAsync(product).ConfigureAwait(false);
@@ -49,32 +64,25 @@ namespace Tracking.Finance.Data.Tests.Integration.Repositories
 				return _accounts.Value;
 			}
 
-			var dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
+			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 			var currency = (await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false)).First();
 
 			var repository = new AccountRepository(dbConnection);
 			var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
+			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository);
 
-			var accountFaker = new AccountFaker(DatabaseInitialization.TestUser, currency);
-			var firstA = accountFaker.Generate();
-			var secondA = accountFaker.GenerateUnique(firstA);
+			var accountFaker = new AccountFaker(TestUser, currency);
 
-			var firstAccountId = await GetAccountAsync(firstA, repository).ConfigureAwait(false);
-			var secondAccountId = await GetAccountAsync(secondA, repository).ConfigureAwait(false);
+			var firstAccount = accountFaker.Generate();
+			var firstAccountId = await accountUnitOfWork.AddAsync(firstAccount, currency).ConfigureAwait(false);
+			firstAccount = await repository.GetByIdAsync(firstAccountId).ConfigureAwait(false);
 
-			var firstInCurrency = new AccountInCurrencyFaker(DatabaseInitialization.TestUser.Id, firstAccountId, currency.Id).Generate();
-			var secondInCurrency = new AccountInCurrencyFaker(DatabaseInitialization.TestUser.Id, secondAccountId, currency.Id).Generate();
+			var secondAccount = accountFaker.GenerateUnique(firstAccount);
+			var secondAccountId = await accountUnitOfWork.AddAsync(secondAccount, currency).ConfigureAwait(false);
+			secondAccount = await repository.GetByIdAsync(secondAccountId).ConfigureAwait(false);
 
-			await inCurrencyRepository.AddAsync(firstInCurrency).ConfigureAwait(false);
-			await inCurrencyRepository.AddAsync(secondInCurrency).ConfigureAwait(false);
-
-			_accounts = (await repository.GetByIdAsync(firstAccountId), await repository.GetByIdAsync(secondAccountId));
+			_accounts = (firstAccount, secondAccount);
 			return _accounts.Value;
-		}
-
-		private static Task<Guid> GetAccountAsync(Account account, AccountRepository repository)
-		{
-			return repository.AddAsync(account);
 		}
 	}
 }

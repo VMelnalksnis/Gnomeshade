@@ -36,10 +36,10 @@ namespace Tracking.Finance.Data.Repositories
 		/// <param name="entity">The values to insert.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created user.</returns>
-		public async Task<Guid> AddWithIdAsync(User entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddWithIdAsync(User entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
 		/// <summary>
@@ -47,10 +47,10 @@ namespace Tracking.Finance.Data.Repositories
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
 		/// <returns>The <see cref="User"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public async Task<User?> FindByIdAsync(Guid id)
+		public Task<User?> FindByIdAsync(Guid id)
 		{
 			var commandDefinition = new CommandDefinition(_selectSql, new { id });
-			return await _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition).ConfigureAwait(false);
+			return _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition)!;
 		}
 
 		/// <inheritdoc/>

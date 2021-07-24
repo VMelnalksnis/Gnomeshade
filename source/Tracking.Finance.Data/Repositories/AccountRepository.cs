@@ -16,7 +16,7 @@ using Tracking.Finance.Data.Repositories.Extensions;
 
 namespace Tracking.Finance.Data.Repositories
 {
-	public sealed class AccountRepository : IRepository<Account>, IDisposable
+	public sealed class AccountRepository : IDisposable
 	{
 		private const string _insertSql =
 			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id;";
@@ -84,20 +84,12 @@ namespace Tracking.Finance.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
-		/// <inheritdoc />
-		public Task<Guid> AddAsync(Account entity)
-		{
-			return _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
-		}
-
-		/// <inheritdoc />
 		public Task<Guid> AddAsync(Account entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		/// <inheritdoc />
 		public Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
@@ -119,7 +111,6 @@ namespace Tracking.Finance.Data.Repositories
 			return FindAsync(command);
 		}
 
-		/// <inheritdoc />
 		public async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
@@ -139,10 +130,10 @@ namespace Tracking.Finance.Data.Repositories
 			return accountGroupings.Select(grouping => Account.FromGrouping(grouping)).ToList();
 		}
 
-		/// <inheritdoc />
-		public Task<int> DeleteAsync(Guid id)
+		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			return _dbConnection.ExecuteAsync(_deleteSql, new { id });
+			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
+			return _dbConnection.ExecuteAsync(command);
 		}
 
 		/// <inheritdoc />

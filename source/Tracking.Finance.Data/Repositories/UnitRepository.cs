@@ -15,7 +15,7 @@ using Tracking.Finance.Data.Models;
 
 namespace Tracking.Finance.Data.Repositories
 {
-	public sealed class UnitRepository : IRepository<Unit>, IDisposable
+	public sealed class UnitRepository : IDisposable
 	{
 		private const string _insertSql =
 			"INSERT INTO units (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, parent_unit_id, multiplier) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @ParentUnitId, @Multiplier) RETURNING id";
@@ -36,33 +36,29 @@ namespace Tracking.Finance.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
-		/// <inheritdoc />
-		public async Task<Guid> AddAsync(Unit entity)
+		public Task<Guid> AddAsync(Unit entity)
 		{
-			return await _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
 		}
 
-		/// <inheritdoc />
-		public async Task<Guid> AddAsync(Unit entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(Unit entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		/// <inheritdoc />
-		public async Task<Unit?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<Unit?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Unit>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleOrDefaultAsync<Unit>(command)!;
 		}
 
-		/// <inheritdoc />
-		public async Task<Unit> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<Unit> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Unit>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Unit>(command);
 		}
 
 		public async Task<List<Unit>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -72,10 +68,9 @@ namespace Tracking.Finance.Data.Repositories
 			return units.ToList();
 		}
 
-		/// <inheritdoc />
-		public async Task<int> DeleteAsync(Guid id)
+		public Task<int> DeleteAsync(Guid id)
 		{
-			return await _dbConnection.ExecuteAsync(_deleteSql, new { id }).ConfigureAwait(false);
+			return _dbConnection.ExecuteAsync(_deleteSql, new { id });
 		}
 
 		/// <inheritdoc />

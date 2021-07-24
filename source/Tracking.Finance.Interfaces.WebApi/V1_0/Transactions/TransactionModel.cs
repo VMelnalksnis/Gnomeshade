@@ -26,11 +26,13 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 
 		public string? Description { get; init; }
 
-		public bool Generated { get; init; }
+		public DateTimeOffset? ImportedAt { get; init; }
 
-		public bool Validated { get; init; }
+		public bool Imported => ImportedAt.HasValue;
 
-		public bool Completed { get; init; }
+		public DateTimeOffset? ValidatedAt { get; init; }
+
+		public bool Validated => ValidatedAt.HasValue;
 
 		public List<TransactionItemModel> Items { get; init; }
 	}

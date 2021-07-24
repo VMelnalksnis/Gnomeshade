@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Tracking.Finance.Data.Models;
@@ -46,34 +48,72 @@ namespace Tracking.Finance.Data
 		/// Adds a new account with a single currency with the specified id.
 		/// </summary>
 		/// <param name="account">The account to create.</param>
-		/// <param name="currencyId">The if of the single currency to add to the account.</param>
+		/// <param name="currencyId">The id of the single currency to add to the account.</param>
 		/// <returns>The id of the created account.</returns>
-		public async Task<Guid> AddAsync(Account account, Guid currencyId)
+		public Task<Guid> AddAsync(Account account, Guid currencyId)
 		{
-			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
-			{
-				_dbConnection.Open();
-			}
+			return AddAsync(account, currencyId, new[] { currencyId });
+		}
 
-			using var dbTransaction = _dbConnection.BeginTransaction();
+		/// <summary>
+		/// Adds a new account with the specified preferred currency and additional currencies.
+		/// </summary>
+		/// <param name="account">The account to create.</param>
+		/// <param name="currencyId">The id of the preferred currency.</param>
+		/// <param name="currencies">The ids of the additional currencies to add.</param>
+		/// <returns>The id of the created account.</returns>
+		public async Task<Guid> AddAsync(Account account, Guid currencyId, IReadOnlyCollection<Guid> currencies)
+		{
+			using var dbTransaction = BeginTransaction();
 			try
 			{
 				account.PreferredCurrencyId = currencyId;
 				var id = await _repository.AddAsync(account, dbTransaction).ConfigureAwait(false);
 
-				var inCurrency = new AccountInCurrency
+				var currenciesToAdd = currencies.Contains(currencyId) ? currencies : currencies.Append(currencyId);
+				foreach (var currency in currenciesToAdd)
 				{
-					OwnerId = account.OwnerId,
-					CreatedByUserId = account.CreatedByUserId,
-					ModifiedByUserId = account.ModifiedByUserId,
-					AccountId = id,
-					CurrencyId = currencyId,
-				};
+					var inCurrency = new AccountInCurrency
+					{
+						OwnerId = account.OwnerId,
+						CreatedByUserId = account.CreatedByUserId,
+						ModifiedByUserId = account.ModifiedByUserId,
+						AccountId = id,
+						CurrencyId = currency,
+					};
 
-				_ = await _inCurrencyRepository.AddAsync(inCurrency, dbTransaction).ConfigureAwait(false);
+					_ = await _inCurrencyRepository.AddAsync(inCurrency, dbTransaction).ConfigureAwait(false);
+				}
+
 				dbTransaction.Commit();
-
 				return id;
+			}
+			catch (Exception)
+			{
+				dbTransaction.Rollback();
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Deletes the specified account and all its currencies.
+		/// </summary>
+		/// <param name="account">The account to delete.</param>
+		/// <returns>The count of affected entities.</returns>
+		public async Task<int> DeleteAsync(Account account)
+		{
+			using var dbTransaction = BeginTransaction();
+			try
+			{
+				var affectedEntities = 0;
+				foreach (var currency in account.Currencies)
+				{
+					affectedEntities += await _inCurrencyRepository.DeleteAsync(currency.Id, dbTransaction).ConfigureAwait(false);
+				}
+
+				affectedEntities += await _repository.DeleteAsync(account.Id, dbTransaction).ConfigureAwait(false);
+				dbTransaction.Commit();
+				return affectedEntities;
 			}
 			catch (Exception)
 			{
@@ -88,6 +128,16 @@ namespace Tracking.Finance.Data
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_inCurrencyRepository.Dispose();
+		}
+
+		private IDbTransaction BeginTransaction()
+		{
+			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
+			{
+				_dbConnection.Open();
+			}
+
+			return _dbConnection.BeginTransaction();
 		}
 	}
 }

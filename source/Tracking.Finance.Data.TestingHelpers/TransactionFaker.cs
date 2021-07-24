@@ -20,9 +20,9 @@ namespace Tracking.Finance.Data.TestingHelpers
 		{
 			RuleFor(transaction => transaction.Date, faker => faker.Date.Recent());
 			RuleFor(transaction => transaction.Description, faker => faker.Lorem.Sentence());
-			RuleFor(transaction => transaction.Generated, true);
-			RuleFor(transaction => transaction.Validated, false);
-			RuleFor(transaction => transaction.Completed, false);
+			RuleFor(transaction => transaction.ImportedAt, faker => faker.Date.Recent());
+			RuleFor(transaction => transaction.ValidatedAt, faker => faker.Date.Recent());
+			RuleFor(transaction => transaction.ValidatedByUserId, userId);
 		}
 	}
 }

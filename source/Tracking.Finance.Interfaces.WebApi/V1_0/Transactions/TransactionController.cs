@@ -126,6 +126,9 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
 				ModifiedByUserId = user.Id,
+				ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.Now,
+				ValidatedAt = creationModel.Validated ? DateTimeOffset.Now : null,
+				ValidatedByUserId = creationModel.Validated ? user.Id : null,
 			};
 
 			var items = creationModel.Items?.Select(item => Mapper.Map<TransactionItem>(item) with
@@ -152,19 +155,14 @@ namespace Tracking.Finance.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<StatusCodeResult> Delete(Guid id)
 		{
-			var deletedCount = await _repository.DeleteAsync(id);
-			return deletedCount switch
+			var transaction = await _repository.FindByIdAsync(id);
+			if (transaction is null)
 			{
-				0 => NotFound(),
-				1 => NoContent(),
-				_ => HandleFailedDelete(deletedCount, id),
-			};
-
-			StatusCodeResult HandleFailedDelete(int count, Guid transactionId)
-			{
-				_logger.LogError("Deleted {DeletedCount} transactions by id {TransactionId}", count, transactionId);
-				return StatusCode(Status500InternalServerError);
+				return NotFound();
 			}
+
+			_ = await _transactionUnitOfWork.DeleteAsync(transaction);
+			return NoContent();
 		}
 
 		/// <summary>
