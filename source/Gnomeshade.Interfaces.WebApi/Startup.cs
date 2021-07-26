@@ -40,8 +40,11 @@ namespace Gnomeshade.Interfaces.WebApi
 		{
 			Configuration = configuration;
 
-			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
-			NpgsqlLogManager.IsParameterLoggingEnabled = true;
+			if (NpgsqlLogManager.Provider is null)
+			{
+				NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
+				NpgsqlLogManager.IsParameterLoggingEnabled = true;
+			}
 
 			using var database = new ApplicationDbContext(Configuration);
 			database.Database.EnsureCreated();

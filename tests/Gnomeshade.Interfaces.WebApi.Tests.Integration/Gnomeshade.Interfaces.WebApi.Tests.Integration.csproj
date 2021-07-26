@@ -36,6 +36,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi\Gnomeshade.Interfaces.WebApi.csproj" />
+		<ProjectReference Include="..\Gnomeshade.Data.Tests.Integration\Gnomeshade.Data.Tests.Integration.csproj" />
 	</ItemGroup>
 
 </Project>

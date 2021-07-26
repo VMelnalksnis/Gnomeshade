@@ -14,6 +14,7 @@ using Bogus;
 
 using FluentAssertions;
 
+using Gnomeshade.Data.Tests.Integration;
 using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
@@ -36,8 +37,9 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		private HttpClient _client = null!;
 
 		[OneTimeSetUp]
-		public void OneTimeSetUp()
+		public async Task OneTimeSetUpAsync()
 		{
+			await DatabaseInitialization.SetupDatabaseAsync().ConfigureAwait(false);
 			_applicationFactory = new();
 
 			var builder = new ConfigurationBuilder()
@@ -45,7 +47,8 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 				.AddEnvironmentVariables();
 
 			var configuration = builder.Build();
-			_userOptions = configuration.GetValid<AuthenticatedUserOptions>();
+
+			// _userOptions = configuration.GetValid<AuthenticatedUserOptions>();
 		}
 
 		[SetUp]
@@ -81,6 +84,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		}
 
 		[Test]
+		[Order(1)]
 		public async Task Register()
 		{
 			var registrationModel = new Faker<RegistrationModel>()
@@ -96,6 +100,8 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 				{ Username = registrationModel.Username, Password = registrationModel.Password };
 			var loginResponse = await _client.PostAsJsonAsync("/api/v1.0/authentication/login", loginModel);
 			loginResponse.EnsureSuccessStatusCode();
+
+			_userOptions = new() { Username = registrationModel.Username, Password = registrationModel.Password };
 		}
 
 		[Test]
