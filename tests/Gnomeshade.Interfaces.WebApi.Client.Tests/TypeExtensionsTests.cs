@@ -1,0 +1,34 @@
+﻿// Copyright 2021 Valters Melnalksnis
+// Licensed under the GNU Affero General Public License v3.0 or later.
+// See LICENSE.txt file in the project root for full license information.
+
+using System;
+
+using FluentAssertions;
+
+using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+
+using NUnit.Framework;
+
+namespace Gnomeshade.Interfaces.WebApi.Client.Tests
+{
+	public class TypeExtensionsTests
+	{
+		[Test]
+		public void GetControllerName_ShouldThrowIfNotController()
+		{
+			FluentActions
+				.Invoking(() => typeof(TypeExtensionsTests).GetControllerName())
+				.Should()
+				.ThrowExactly<ArgumentException>();
+		}
+
+		[TestCase(typeof(AuthenticationController), "Authentication")]
+		[TestCase(typeof(TransactionController), "Transaction")]
+		public void GetControllerName_ShouldReturnExpected(Type type, string expectedName)
+		{
+			type.GetControllerName().Should().Be(expectedName);
+		}
+	}
+}
