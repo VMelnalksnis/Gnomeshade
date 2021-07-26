@@ -1,0 +1,32 @@
+name: build and test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    name: build and test ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: dotnet test --filter FullyQualifiedName!~Integration --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
