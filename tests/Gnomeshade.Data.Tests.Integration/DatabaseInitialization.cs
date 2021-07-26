@@ -26,8 +26,11 @@ namespace Gnomeshade.Data.Tests.Integration
 		private static readonly string _connectionString =
 			new ConfigurationBuilder()
 				.AddUserSecrets<DatabaseInitialization>()
+				.AddEnvironmentVariables()
 				.Build()
 				.GetConnectionString("FinanceDb");
+
+		private static string? _database = new NpgsqlConnectionStringBuilder(_connectionString).Database;
 
 		public static User TestUser { get; private set; } = null!;
 
@@ -43,8 +46,6 @@ namespace Gnomeshade.Data.Tests.Integration
 			var sqlConnection = new NpgsqlConnection(connectionString);
 			sqlConnection.Open();
 
-			await sqlConnection.ChangeDatabaseAsync("finance_tests").ConfigureAwait(false);
-
 			return sqlConnection;
 		}
 
@@ -52,18 +53,23 @@ namespace Gnomeshade.Data.Tests.Integration
 		public static async Task SetupDatabaseAsync()
 		{
 			AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<Account>());
+			if (NpgsqlLogManager.Provider is null)
+			{
+				NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
+				NpgsqlLogManager.IsParameterLoggingEnabled = true;
+			}
 
-			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
-			NpgsqlLogManager.IsParameterLoggingEnabled = true;
+			var connectionString = new NpgsqlConnectionStringBuilder(_connectionString);
+			connectionString.Database = "postgres";
 
-			await using var sqlConnection = new NpgsqlConnection(_connectionString);
+			await using var sqlConnection = new NpgsqlConnection(connectionString.ToString());
 			sqlConnection.Open();
 
 			var createDatabase = sqlConnection.CreateCommand();
-			createDatabase.CommandText = "DROP DATABASE IF EXISTS finance_tests; CREATE DATABASE finance_tests;";
+			createDatabase.CommandText = $"DROP DATABASE IF EXISTS {_database}; CREATE DATABASE {_database};";
 			await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 
-			await sqlConnection.ChangeDatabaseAsync("finance_tests").ConfigureAwait(false);
+			await sqlConnection.ChangeDatabaseAsync(_database).ConfigureAwait(false);
 
 			var cmd = sqlConnection.CreateCommand();
 			cmd.CommandText = "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
@@ -101,8 +107,8 @@ namespace Gnomeshade.Data.Tests.Integration
 
 			var clearConnections = sqlConnection.CreateCommand();
 			clearConnections.CommandText =
-				"REVOKE CONNECT ON DATABASE finance_tests FROM public;" +
-				"SELECT pid, pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'finance_tests' AND pid <> pg_backend_pid();";
+				$"REVOKE CONNECT ON DATABASE {_database} FROM public;" +
+				$"SELECT pid, pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{_database}' AND pid <> pg_backend_pid();";
 			await clearConnections.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 			var createDatabase = sqlConnection.CreateCommand();
