@@ -8,13 +8,8 @@ on:
 
 jobs:
   build-and-test:
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest ]
-
-    name: build and test ${{ matrix.os }}
-
-    runs-on: ${{ matrix.os }}
+    name: Build and test
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -29,4 +24,9 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Run Unit Tests
-        run: dotnet test --filter FullyQualifiedName!~Integration --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
+        run: dotnet test --filter FullyQualifiedName!~Integration -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --configuration Release --no-build --verbosity normal
+
+      - name: Gather Code Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
