@@ -14,8 +14,6 @@ using Bogus;
 
 using FluentAssertions;
 
-using Gnomeshade.Data.Tests.Integration;
-using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
@@ -23,7 +21,6 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 
 using NUnit.Framework;
 
@@ -37,18 +34,9 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		private HttpClient _client = null!;
 
 		[OneTimeSetUp]
-		public async Task OneTimeSetUpAsync()
+		public void OneTimeSetUp()
 		{
-			await DatabaseInitialization.SetupDatabaseAsync().ConfigureAwait(false);
 			_applicationFactory = new();
-
-			var builder = new ConfigurationBuilder()
-				.AddUserSecrets<BasicTests>()
-				.AddEnvironmentVariables();
-
-			var configuration = builder.Build();
-
-			// _userOptions = configuration.GetValid<AuthenticatedUserOptions>();
 		}
 
 		[SetUp]
