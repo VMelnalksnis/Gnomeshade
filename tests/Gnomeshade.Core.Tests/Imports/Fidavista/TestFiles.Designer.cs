@@ -39,7 +39,7 @@ namespace Gnomeshade.Core.Tests.Imports.Fidavista {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VMelnalksnis.Gnomeshade.Core.Tests.Imports.Fidavista.TestFiles", typeof(TestFiles).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Gnomeshade.Core.Tests.Imports.Fidavista.TestFiles", typeof(TestFiles).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
