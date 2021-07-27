@@ -94,6 +94,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
+		public async Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+		{
+			return await GetAsync<List<TransactionModel>>(TransactionUri(from, to)).ConfigureAwait(false);
+		}
+
+		/// <inheritdoc />
 		public async Task<AccountModel> GetAccountAsync(Guid id)
 		{
 			return await GetAsync<AccountModel>(AccountUri(id)).ConfigureAwait(false);

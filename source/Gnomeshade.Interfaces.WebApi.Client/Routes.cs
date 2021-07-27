@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
@@ -11,7 +13,10 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.Client
 {
-	internal static class Routes
+	/// <summary>
+	/// Relative URIs of API endpoints.
+	/// </summary>
+	public static class Routes
 	{
 		internal static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
 		internal static readonly string Account = typeof(AccountController).GetControllerName();
@@ -23,6 +28,29 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
 		internal static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
 
-		internal static string AccountUri(Guid id) => $"{Account}/{id:N}";
+		public static string AccountUri(Guid id) => $"{Account}/{id:N}";
+
+		public static string TransactionUri(DateTimeOffset? from, DateTimeOffset? to)
+		{
+			var keyValues = new Dictionary<DateTimeOffset, string>(2);
+			if (from.HasValue)
+			{
+				keyValues.Add(from.Value, "from");
+			}
+
+			if (to.HasValue)
+			{
+				keyValues.Add(to.Value, "to");
+			}
+
+			if (!keyValues.Any())
+			{
+				return Transaction;
+			}
+
+			var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key:O}");
+			var query = string.Join('&', parameters);
+			return $"{Transaction}?{query}";
+		}
 	}
 }

@@ -52,6 +52,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<List<TransactionModel>> GetTransactionsAsync();
 
 		/// <summary>
+		/// Gets all transactions within the specified time period.
+		/// </summary>
+		/// <param name="from">The time from which to get transactions.</param>
+		/// <param name="to">The time until which to get transactions.</param>
+		/// <returns>All transactions within the specified time period.</returns>
+		Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to);
+
+		/// <summary>
 		/// Finds an account with the specified id.
 		/// </summary>
 		/// <param name="id">The id by which to search for an account.</param>
