@@ -20,25 +20,25 @@ using static Gnomeshade.Interfaces.WebApi.Client.Routes;
 
 namespace Gnomeshade.Interfaces.WebApi.Client
 {
-	/// <inheritdoc cref="IFinanceClient"/>
-	public sealed class FinanceClient : IFinanceClient
+	/// <inheritdoc cref="IGnomeshadeClient"/>
+	public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		private readonly HttpClient _httpClient = new();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FinanceClient"/> class.
+		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
 		/// </summary>
-		public FinanceClient()
+		public GnomeshadeClient()
 			: this(new("https://localhost:5001/api/v1.0/"))
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FinanceClient"/> class with a base uri.
+		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class with a base uri.
 		/// </summary>
 		/// <param name="baseUri">The base uri for all requests.</param>
 		/// <see cref="HttpClient.BaseAddress"/>
-		public FinanceClient(Uri baseUri)
+		public GnomeshadeClient(Uri baseUri)
 		{
 			_httpClient.BaseAddress = baseUri;
 			_httpClient.DefaultRequestHeaders.Accept.Clear();

@@ -17,7 +17,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public sealed class UnitCreationViewModel : ViewModelBase<UnitCreationView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 		private string? _name;
 		private UnitModel? _parentUnit;
 		private decimal? _multiplier;
@@ -26,17 +26,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="UnitCreationViewModel"/> class.
 		/// </summary>
 		public UnitCreationViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="UnitCreationViewModel"/> class.
 		/// </summary>
-		/// <param name="financeClient">Finance API client for getting/saving data.</param>
-		public UnitCreationViewModel(IFinanceClient financeClient)
+		/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
+		public UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 
 			Units = GetUnitsAsync();
 			UnitSelector = (_, item) => ((UnitModel)item).Name;
@@ -101,13 +101,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				Multiplier = Multiplier,
 			};
 
-			var unitId = await _financeClient.CreateUnitAsync(unit).ConfigureAwait(false);
+			var unitId = await _gnomeshadeClient.CreateUnitAsync(unit).ConfigureAwait(false);
 			OnUnitCreated(unitId);
 		}
 
 		private async Task<List<UnitModel>> GetUnitsAsync()
 		{
-			return await _financeClient.GetUnitsAsync().ConfigureAwait(false);
+			return await _gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
 		}
 
 		private void OnUnitCreated(Guid unitId)

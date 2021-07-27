@@ -17,7 +17,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public sealed class AccountCreationViewModel : ViewModelBase<AccountCreationView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		private string? _name;
 		private CurrencyModel? _preferredCurrency;
@@ -26,13 +26,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="AccountCreationViewModel"/> class.
 		/// </summary>
 		public AccountCreationViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
-		public AccountCreationViewModel(IFinanceClient financeClient)
+		public AccountCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 			Currencies = GetCurrenciesAsync();
 		}
 
@@ -86,13 +86,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				Currencies = new() { new() { CurrencyId = PreferredCurrency?.Id } },
 			};
 
-			var id = await _financeClient.CreateAccountAsync(accountCreationModel).ConfigureAwait(true);
+			var id = await _gnomeshadeClient.CreateAccountAsync(accountCreationModel).ConfigureAwait(true);
 			OnAccountCreated(id);
 		}
 
 		private async Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return await _financeClient.GetCurrenciesAsync().ConfigureAwait(false);
+			return await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 		}
 
 		private void OnAccountCreated(Guid id)

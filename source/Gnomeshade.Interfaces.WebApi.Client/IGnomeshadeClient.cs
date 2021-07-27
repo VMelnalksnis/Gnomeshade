@@ -17,7 +17,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 	/// <summary>
 	/// Provides typed interface for using the API provided by the Interfaces.WebApi project.
 	/// </summary>
-	public interface IFinanceClient
+	public interface IGnomeshadeClient
 	{
 		/// <summary>
 		/// Log in using the specified credentials.

@@ -17,23 +17,23 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	/// </summary>
 	public sealed class TransactionViewModel : ViewModelBase<TransactionView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
 		/// </summary>
 		public TransactionViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
 		/// </summary>
-		/// <param name="financeClient">Finance API client for getting finance data.</param>
-		public TransactionViewModel(IFinanceClient financeClient)
+		/// <param name="gnomeshadeClient">Finance API client for getting finance data.</param>
+		public TransactionViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 
 			Transactions = GetTransactionsAsync();
 		}
@@ -45,7 +45,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private async Task<List<TransactionOverview>> GetTransactionsAsync()
 		{
-			var transactions = await _financeClient.GetTransactionsAsync().ConfigureAwait(false);
+			var transactions = await _gnomeshadeClient.GetTransactionsAsync().ConfigureAwait(false);
 			var overviews =
 				await transactions
 					.SelectAsync(async transaction =>
@@ -57,7 +57,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 						}
 
 						// todo don't get all accounts
-						var accounts = await _financeClient.GetAccountsAsync().ConfigureAwait(false);
+						var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
 						var sourceAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.SourceAccountId));
 						var targetAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
 

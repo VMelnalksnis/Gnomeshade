@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public class TransactionCreationViewModel : ViewModelBase<TransactionCreationView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		private string? _description;
 		private DateTimeOffset? _date;
@@ -32,17 +32,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
 		/// </summary>
 		public TransactionCreationViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
 		/// </summary>
-		/// <param name="financeClient">Finance API client for getting/saving data.</param>
-		public TransactionCreationViewModel(IFinanceClient financeClient)
+		/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
+		public TransactionCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 
 			Items = new();
 			Items.CollectionChanged += ItemsOnCollectionChanged;
@@ -160,12 +160,12 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		{
 			if (ItemCreation is null)
 			{
-				ItemCreation = new(_financeClient);
+				ItemCreation = new(_gnomeshadeClient);
 				return;
 			}
 
 			Items.Add(ItemCreation);
-			ItemCreation = new(_financeClient);
+			ItemCreation = new(_gnomeshadeClient);
 		}
 
 		/// <summary>
@@ -211,7 +211,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			try
 			{
 				ErrorMessage = default;
-				var id = await _financeClient.CreateTransactionAsync(transactionCreationModel).ConfigureAwait(false);
+				var id = await _gnomeshadeClient.CreateTransactionAsync(transactionCreationModel).ConfigureAwait(false);
 				OnTransactionCreated(id);
 			}
 			catch (HttpRequestException httpException)

@@ -16,7 +16,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 		private ViewModelBase _activeView = null!;
 
 		/// <summary>
@@ -24,7 +24,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public MainWindowViewModel()
 		{
-			_financeClient = new FinanceClient();
+			_gnomeshadeClient = new GnomeshadeClient();
 			SwitchToLogin();
 		}
 
@@ -50,7 +50,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		public async Task LogOut()
 		{
-			await _financeClient.LogOutAsync().ConfigureAwait(false);
+			await _gnomeshadeClient.LogOutAsync().ConfigureAwait(false);
 			SwitchToLogin();
 		}
 
@@ -61,7 +61,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				return;
 			}
 
-			var accountCreationViewModel = new AccountCreationViewModel(_financeClient);
+			var accountCreationViewModel = new AccountCreationViewModel(_gnomeshadeClient);
 			accountCreationViewModel.AccountCreated += OnAccountCreated;
 
 			ActiveView = accountCreationViewModel;
@@ -74,7 +74,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				return;
 			}
 
-			var transactionCreationViewModel = new TransactionCreationViewModel(_financeClient);
+			var transactionCreationViewModel = new TransactionCreationViewModel(_gnomeshadeClient);
 			transactionCreationViewModel.TransactionCreated += OnTransactionCreated;
 
 			ActiveView = transactionCreationViewModel;
@@ -87,7 +87,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				return;
 			}
 
-			var productCreationViewModel = new ProductCreationViewModel(_financeClient);
+			var productCreationViewModel = new ProductCreationViewModel(_gnomeshadeClient);
 			productCreationViewModel.ProductCreated += OnProductCreated;
 
 			ActiveView = productCreationViewModel;
@@ -100,7 +100,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				return;
 			}
 
-			var unitCreationViewModel = new UnitCreationViewModel(_financeClient);
+			var unitCreationViewModel = new UnitCreationViewModel(_gnomeshadeClient);
 			unitCreationViewModel.UnitCreated += OnUnitCreated;
 
 			ActiveView = unitCreationViewModel;
@@ -108,7 +108,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void SwitchToLogin()
 		{
-			var loginViewModel = new LoginViewModel(_financeClient);
+			var loginViewModel = new LoginViewModel(_gnomeshadeClient);
 			loginViewModel.UserLoggedIn += OnUserLoggedIn;
 
 			ActiveView = loginViewModel;
@@ -116,7 +116,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void SwitchToTransactionOverview()
 		{
-			var transactionViewModel = new TransactionViewModel(_financeClient);
+			var transactionViewModel = new TransactionViewModel(_gnomeshadeClient);
 			ActiveView = transactionViewModel;
 		}
 

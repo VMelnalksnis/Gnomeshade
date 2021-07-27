@@ -16,7 +16,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCreationView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		private AccountModel? _sourceAccount;
 		private decimal? _sourceAmount;
@@ -34,13 +34,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
 		/// </summary>
 		public TransactionItemCreationViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
-		public TransactionItemCreationViewModel(IFinanceClient financeClient)
+		public TransactionItemCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 
 			Accounts = GetAccountsAsync();
 			Currencies = GetCurrenciesAsync();
@@ -200,17 +200,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private async Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return await _financeClient.GetAccountsAsync().ConfigureAwait(false);
+			return await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
 		}
 
 		private async Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return await _financeClient.GetCurrenciesAsync().ConfigureAwait(false);
+			return await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 		}
 
 		private async Task<List<ProductModel>> GetProductsAsync()
 		{
-			return await _financeClient.GetProductsAsync().ConfigureAwait(false);
+			return await _gnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
 		}
 	}
 }

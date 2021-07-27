@@ -16,7 +16,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	public sealed class LoginViewModel : ViewModelBase<LoginView>
 	{
-		private readonly IFinanceClient _financeClient;
+		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		private string? _errorMessage;
 		private string? _username;
@@ -27,13 +27,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
 		public LoginViewModel()
-			: this(new FinanceClient())
+			: this(new GnomeshadeClient())
 		{
 		}
 
-		public LoginViewModel(IFinanceClient financeClient)
+		public LoginViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
-			_financeClient = financeClient;
+			_gnomeshadeClient = gnomeshadeClient;
 		}
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ErrorMessage = string.Empty;
 
 			var loginModel = new LoginModel { Username = Username!, Password = Password! };
-			var loginResult = await _financeClient.LogInAsync(loginModel).ConfigureAwait(false);
+			var loginResult = await _gnomeshadeClient.LogInAsync(loginModel).ConfigureAwait(false);
 
 			switch (loginResult)
 			{
