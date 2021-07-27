@@ -76,75 +76,75 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public async Task<UserModel> InfoAsync()
+		public Task<UserModel> InfoAsync()
 		{
-			return await GetAsync<UserModel>(InfoUri).ConfigureAwait(false);
+			return GetAsync<UserModel>(InfoUri);
 		}
 
 		/// <inheritdoc/>
-		public async Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
+		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
-			return await PostAsync<Guid, TransactionCreationModel>(Transaction, transaction).ConfigureAwait(false);
+			return PostAsync<Guid, TransactionCreationModel>(Transaction, transaction);
 		}
 
 		/// <inheritdoc />
-		public async Task<List<TransactionModel>> GetTransactionsAsync()
+		public Task<List<TransactionModel>> GetTransactionsAsync()
 		{
-			return await GetAsync<List<TransactionModel>>(Transaction).ConfigureAwait(false);
+			return GetAsync<List<TransactionModel>>(Transaction);
 		}
 
 		/// <inheritdoc />
-		public async Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+		public Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
 		{
-			return await GetAsync<List<TransactionModel>>(TransactionUri(from, to)).ConfigureAwait(false);
+			return GetAsync<List<TransactionModel>>(TransactionUri(from, to));
 		}
 
 		/// <inheritdoc />
-		public async Task<AccountModel> GetAccountAsync(Guid id)
+		public Task<AccountModel> GetAccountAsync(Guid id)
 		{
-			return await GetAsync<AccountModel>(AccountUri(id)).ConfigureAwait(false);
+			return GetAsync<AccountModel>(AccountUri(id));
 		}
 
 		/// <inheritdoc />
-		public async Task<List<AccountModel>> GetAccountsAsync()
+		public Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return await GetAsync<List<AccountModel>>(Account).ConfigureAwait(false);
+			return GetAsync<List<AccountModel>>(Account);
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> CreateAccountAsync(AccountCreationModel account)
+		public Task<Guid> CreateAccountAsync(AccountCreationModel account)
 		{
-			return await PostAsync<Guid, AccountCreationModel>(Account, account).ConfigureAwait(false);
+			return PostAsync<Guid, AccountCreationModel>(Account, account);
 		}
 
 		/// <inheritdoc />
-		public async Task<List<CurrencyModel>> GetCurrenciesAsync()
+		public Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return await GetAsync<List<CurrencyModel>>(Currency).ConfigureAwait(false);
+			return GetAsync<List<CurrencyModel>>(Currency);
 		}
 
 		/// <inheritdoc />
-		public async Task<List<ProductModel>> GetProductsAsync()
+		public Task<List<ProductModel>> GetProductsAsync()
 		{
-			return await GetAsync<List<ProductModel>>(Product).ConfigureAwait(false);
+			return GetAsync<List<ProductModel>>(Product);
 		}
 
 		/// <inheritdoc />
-		public async Task<List<UnitModel>> GetUnitsAsync()
+		public Task<List<UnitModel>> GetUnitsAsync()
 		{
-			return await GetAsync<List<UnitModel>>(Unit).ConfigureAwait(false);
+			return GetAsync<List<UnitModel>>(Unit);
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> CreateProductAsync(ProductCreationModel product)
+		public Task<Guid> CreateProductAsync(ProductCreationModel product)
 		{
-			return await PostAsync<Guid, ProductCreationModel>(Product, product).ConfigureAwait(false);
+			return PostAsync<Guid, ProductCreationModel>(Product, product);
 		}
 
 		/// <inheritdoc />
-		public async Task<Guid> CreateUnitAsync(UnitCreationModel unit)
+		public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
 		{
-			return await PostAsync<Guid, UnitCreationModel>(Unit, unit).ConfigureAwait(false);
+			return PostAsync<Guid, UnitCreationModel>(Unit, unit);
 		}
 
 		private async Task<TResult> GetAsync<TResult>(string requestUri)
