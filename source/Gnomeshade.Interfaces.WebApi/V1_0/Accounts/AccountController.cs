@@ -134,6 +134,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 
 			if (account.Currencies.Any(currency => currency.CurrencyId == creationModel.CurrencyId))
 			{
+				// todo return full bad request response, instead of just the error dictionary
 				ModelState.AddModelError(nameof(creationModel.CurrencyId), "The currency already exists.");
 				return BadRequest(ModelState);
 			}
