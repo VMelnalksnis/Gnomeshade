@@ -14,6 +14,7 @@ using Bogus;
 
 using FluentAssertions;
 
+using Gnomeshade.Data.Tests.Integration;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
@@ -34,8 +35,16 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		private HttpClient _client = null!;
 
 		[OneTimeSetUp]
-		public void OneTimeSetUp()
+		public async Task OneTimeSetUpAsync()
 		{
+			await DatabaseInitialization.SetupDatabaseAsync().ConfigureAwait(false);
+			_applicationFactory = new();
+		}
+
+		[OneTimeTearDown]
+		public async Task OneTimeTearDownAsync()
+		{
+			await DatabaseInitialization.DropDatabaseAsync().ConfigureAwait(false);
 			_applicationFactory = new();
 		}
 
