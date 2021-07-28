@@ -80,6 +80,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<Guid> CreateAccountAsync(AccountCreationModel account);
 
 		/// <summary>
+		/// Adds a currency to an existing account.
+		/// </summary>
+		/// <param name="id">The id of the account to which to add the currency.</param>
+		/// <param name="currency">The currency which to add to the account.</param>
+		/// <returns>The id of the account to which the currency was added to.</returns>
+		Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency);
+
+		/// <summary>
 		/// Gets all currencies.
 		/// </summary>
 		/// <returns>A collection with all currencies.</returns>

@@ -118,6 +118,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
+		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency)
+		{
+			return PostAsync<Guid, AccountInCurrencyCreationModel>(AccountUri(id), currency);
+		}
+
+		/// <inheritdoc />
 		public Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
 			return GetAsync<List<CurrencyModel>>(Currency);
