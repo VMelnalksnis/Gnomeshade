@@ -104,6 +104,7 @@ namespace Gnomeshade.Data.Tests.Integration
 
 			await using var sqlConnection = new NpgsqlConnection(_connectionString);
 			await sqlConnection.OpenAsync().ConfigureAwait(false);
+			await sqlConnection.ChangeDatabaseAsync("postgres").ConfigureAwait(false);
 
 			var clearConnections = sqlConnection.CreateCommand();
 			clearConnections.CommandText =
@@ -112,7 +113,7 @@ namespace Gnomeshade.Data.Tests.Integration
 			await clearConnections.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 			var createDatabase = sqlConnection.CreateCommand();
-			createDatabase.CommandText = @"DROP DATABASE IF EXISTS finance_tests;";
+			createDatabase.CommandText = $@"DROP DATABASE IF EXISTS {_database};";
 			await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 		}
 	}
