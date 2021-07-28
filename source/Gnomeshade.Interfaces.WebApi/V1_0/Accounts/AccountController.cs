@@ -105,6 +105,56 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
 
+		/// <summary>
+		/// Add a new currency to an existing account.
+		/// </summary>
+		/// <param name="id">The id of the account to which to add the currency.</param>
+		/// <param name="creationModel">The currency to add to the account.</param>
+		/// <returns>The id of the account to which the currency was added to.</returns>
+		/// <response code="201">Currency was successfully added.</response>
+		/// <response code="404">Account with the specified id does not exist.</response>
+		[HttpPost("{id:guid}")]
+		[ProducesResponseType(Status201Created)]
+		[ProducesResponseType(Status404NotFound)]
+		public async Task<ActionResult<Guid>> AddCurrency(
+			Guid id,
+			[FromBody, BindRequired] AccountInCurrencyCreationModel creationModel)
+		{
+			var user = await GetCurrentUser();
+			if (user is null)
+			{
+				return Unauthorized();
+			}
+
+			var account = await _repository.FindByIdAsync(id);
+			if (account is null)
+			{
+				return NotFound();
+			}
+
+			if (account.Currencies.Any(currency => currency.CurrencyId == creationModel.CurrencyId))
+			{
+				ModelState.AddModelError(nameof(creationModel.CurrencyId), "The currency already exists.");
+				return BadRequest(ModelState);
+			}
+
+			var accountInCurrency = Mapper.Map<AccountInCurrency>(creationModel) with
+			{
+				OwnerId = account.OwnerId,
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
+				AccountId = account.Id,
+			};
+
+			_dbConnection.Open();
+			using var dbTransaction = _dbConnection.BeginTransaction();
+			_ = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
+			dbTransaction.Commit();
+
+			// todo should this point to account or account in currency?
+			return CreatedAtAction(nameof(Get), new { id }, id);
+		}
+
 		/// <inheritdoc />
 		protected override void Dispose(bool disposing)
 		{
