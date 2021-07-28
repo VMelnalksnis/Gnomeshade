@@ -13,35 +13,53 @@
 		<vm:TransactionViewModel />
 	</Design.DataContext>
 
-	<DataGrid
-		Items="{Binding Transactions^, Mode=OneWay}"
-		AutoGenerateColumns="False" IsReadOnly="True"
-		CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-		<DataGrid.Columns>
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				IsReadOnly="True" Header="Date"
-				Binding="{Binding Date, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				Header="Description" IsReadOnly="True"
-				Binding="{Binding Description, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				Header="Source Account" IsReadOnly="True"
-				Binding="{Binding SourceAccount, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				Header="Target Account" IsReadOnly="True"
-				Binding="{Binding TargetAccount, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				Header="Source Amount" IsReadOnly="True"
-				Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-			<DataGridTextColumn
-				x:DataType="m:TransactionOverview"
-				Header="Target Amount" IsReadOnly="True"
-				Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-		</DataGrid.Columns>
-	</DataGrid>
+	<StackPanel Orientation="Vertical">
+		<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto,Auto">
+			<DatePicker
+				Grid.Column="0" Grid.Row="0"
+				SelectedDate="{Binding From, Mode=TwoWay}"
+				Header="From:" />
+			<DatePicker
+				Grid.Column="1" Grid.Row="0"
+				SelectedDate="{Binding To, Mode=TwoWay}"
+				Header="To:" />
+
+			<Button
+				Grid.Column="0" Grid.Row="1"
+				Command="{ReflectionBinding Search}">
+				Search
+			</Button>
+		</Grid>
+		<DataGrid
+			Items="{Binding Transactions^, Mode=OneWay}"
+			AutoGenerateColumns="False" IsReadOnly="True"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					IsReadOnly="True" Header="Date"
+					Binding="{Binding Date, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					Header="Description" IsReadOnly="True"
+					Binding="{Binding Description, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					Header="Source Account" IsReadOnly="True"
+					Binding="{Binding SourceAccount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					Header="Target Account" IsReadOnly="True"
+					Binding="{Binding TargetAccount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					Header="Source Amount" IsReadOnly="True"
+					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionOverview"
+					Header="Target Amount" IsReadOnly="True"
+					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</StackPanel>
 </UserControl>

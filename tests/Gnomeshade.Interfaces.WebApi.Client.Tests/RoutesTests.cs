@@ -23,5 +23,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client.Tests
 		{
 			Routes.TransactionUri(from, to).Should().Be(expectedUri);
 		}
+
+		[Test]
+		public void UrlEncodeDateTimeOffset_ShouldNotContainPlus()
+		{
+			var date = new DateTimeOffset(2021, 05, 30, 19, 54, 00, TimeSpan.FromHours(3));
+			var encoded = Routes.UrlEncodeDateTimeOffset(date);
+			encoded.Should().Be("2021-05-30T19:54:00.0000000%2B03:00");
+		}
 	}
 }

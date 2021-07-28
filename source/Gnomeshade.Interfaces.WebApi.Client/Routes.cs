@@ -48,9 +48,17 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 				return Transaction;
 			}
 
-			var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key:O}");
+			var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
 			var query = string.Join('&', parameters);
 			return $"{Transaction}?{query}";
+		}
+
+		public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
+		{
+			var value = date.ToString("O");
+			return date.Offset <= TimeSpan.Zero
+				? value
+				: value.Replace("+", "%2B");
 		}
 	}
 }

@@ -71,6 +71,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 			response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 		}
 
+		// todo other tests work only if this one succeeds
 		[Test]
 		[Order(1)]
 		public async Task Register()
