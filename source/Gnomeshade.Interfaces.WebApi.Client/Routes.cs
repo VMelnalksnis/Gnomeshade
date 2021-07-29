@@ -30,6 +30,8 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 
 		public static string AccountUri(Guid id) => $"{Account}/{id:N}";
 
+		public static string TransactionUri(Guid id) => $"{Transaction}/{id:N}";
+
 		public static string TransactionUri(DateTimeOffset? from, DateTimeOffset? to)
 		{
 			var keyValues = new Dictionary<DateTimeOffset, string>(2);

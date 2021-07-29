@@ -23,6 +23,8 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 	/// <inheritdoc cref="IGnomeshadeClient"/>
 	public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
+		private static readonly StringContent _emptyContent = new(string.Empty);
+
 		private readonly HttpClient _httpClient = new();
 
 		/// <summary>
@@ -100,6 +102,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
+		public Task DeleteTransactionAsync(Guid id)
+		{
+			return PostAsync(TransactionUri(id));
+		}
+
+		/// <inheritdoc />
 		public Task<AccountModel> GetAccountAsync(Guid id)
 		{
 			return GetAsync<AccountModel>(AccountUri(id));
@@ -170,6 +178,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			response.EnsureSuccessStatusCode();
 
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+		}
+
+		private async Task PostAsync(string requestUri)
+		{
+			using var response = await _httpClient.PostAsync(requestUri, _emptyContent).ConfigureAwait(false);
+			response.EnsureSuccessStatusCode();
 		}
 	}
 }
