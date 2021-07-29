@@ -117,7 +117,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private void SwitchToTransactionOverview()
 		{
 			var transactionViewModel = new TransactionViewModel(_gnomeshadeClient);
+			transactionViewModel.TransactionSelected += OnTransactionSelected;
 			ActiveView = transactionViewModel;
+		}
+
+		private void SwitchToTransactionDetail(Guid id)
+		{
+			var transactionDetailViewModel = new TransactionDetailViewModel(_gnomeshadeClient, id);
+			ActiveView = transactionDetailViewModel;
 		}
 
 		private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
@@ -143,6 +150,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
 		{
 			SwitchToTransactionOverview();
+		}
+
+		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
+		{
+			SwitchToTransactionDetail(e.TransactionId);
 		}
 	}
 }

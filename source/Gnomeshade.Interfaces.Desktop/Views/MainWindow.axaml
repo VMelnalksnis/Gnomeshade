@@ -56,6 +56,9 @@
 					<MenuItem
 						x:Name="CreateUnit" Header="Create _Unit"
 						Command="{ReflectionBinding CreateUnit}" />
+					<MenuItem
+						x:Name="Transactions" Header="Transactions"
+						Command="{ReflectionBinding SwitchToTransactionOverview}"/>
 				</MenuItem>
 			</Menu>
 
