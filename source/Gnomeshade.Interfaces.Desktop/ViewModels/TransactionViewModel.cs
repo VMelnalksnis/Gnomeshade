@@ -3,11 +3,14 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Collections;
+
 using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -19,16 +22,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	public sealed class TransactionViewModel : ViewModelBase<TransactionView>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
+
 		private DateTimeOffset _from;
 		private DateTimeOffset _to;
-		private ObservableItemCollection<TransactionOverview> _transactions;
+		private DataGridCollectionView _dataGridView;
 		private bool _selectAll;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
 		/// </summary>
 		public TransactionViewModel()
-			: this(new GnomeshadeClient())
+			: this(new DesignTimeGnomeshadeClient())
 		{
 		}
 
@@ -42,7 +46,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			To = DateTimeOffset.Now;
 			From = new(To.Year, _to.Month, 01, 0, 0, 0, To.Offset);
-			_transactions = GetTransactionsAsync(From, To).GetAwaiter().GetResult();
+			_dataGridView = CreateDataGridViewAsync(From, To).GetAwaiter().GetResult();
 		}
 
 		/// <summary>
@@ -83,10 +87,44 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets all transactions for the current user.
 		/// </summary>
-		public ObservableItemCollection<TransactionOverview> Transactions
+		/// <remarks>
+		/// Collection item data binding to source only works when using <see cref="DataGridCollectionView"/>.
+		/// Otherwise, it would be nice to use a generic collection and remove <see cref="Transactions"/>.
+		/// </remarks>
+		public DataGridCollectionView DataGridView
 		{
-			get => _transactions;
-			private set => SetAndNotify(ref _transactions, value, nameof(Transactions));
+			get => _dataGridView;
+			private set => SetAndNotify(ref _dataGridView, value, nameof(DataGridView));
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether the selected transaction can be deleted.
+		/// </summary>
+		public bool CanDelete => DataGridView.Cast<TransactionOverview>().Any(transaction => transaction.Selected);
+
+		/// <summary>
+		/// Gets a typed collection of transaction in <see cref="DataGridView"/>.
+		/// </summary>
+		public IEnumerable<TransactionOverview> Transactions => DataGridView.Cast<TransactionOverview>();
+
+		/// <summary>
+		/// Deletes all the selected transactions.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task DeleteSelectedAsync()
+		{
+			var selectedIds =
+				Transactions
+					.Where(transaction => transaction.Selected)
+					.Select(transaction => transaction.Id)
+					.Distinct();
+
+			foreach (var id in selectedIds)
+			{
+				await _gnomeshadeClient.DeleteTransactionAsync(id).ConfigureAwait(false);
+			}
+
+			await SearchAsync().ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -95,11 +133,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		public async Task SearchAsync()
 		{
-			Transactions = await GetTransactionsAsync(From, To).ConfigureAwait(false);
+			DataGridView = await CreateDataGridViewAsync(From, To).ConfigureAwait(false);
 			SelectAll = false; // todo this probably is pretty bad performance wise
 		}
 
-		private async Task<ObservableItemCollection<TransactionOverview>> GetTransactionsAsync(
+		private async Task<DataGridCollectionView> CreateDataGridViewAsync(
 			DateTimeOffset? from,
 			DateTimeOffset? to)
 		{
@@ -119,6 +157,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 						return new TransactionOverview
 						{
+							Id = transaction.Id,
 							Date = transaction.Date.LocalDateTime,
 							Description = transaction.Description,
 							SourceAccount = sourceAccount.Name,
@@ -126,8 +165,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 							SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
 							TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
 						};
-					})
-					.ToList();
+					});
 
 			return new(overviews);
 		}

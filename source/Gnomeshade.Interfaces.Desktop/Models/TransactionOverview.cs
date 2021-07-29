@@ -17,6 +17,16 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		private decimal _sourceAmount;
 		private decimal _targetAmount;
 		private bool _selected;
+		private Guid _id;
+
+		/// <summary>
+		/// Gets or sets the id of the transaction which this overview represents.
+		/// </summary>
+		public Guid Id
+		{
+			get => _id;
+			set => SetAndNotify(ref _id, value, nameof(Id));
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether this transaction is selected.

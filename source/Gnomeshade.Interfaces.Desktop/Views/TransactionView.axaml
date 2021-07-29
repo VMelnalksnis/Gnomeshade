@@ -13,25 +13,32 @@
 		<vm:TransactionViewModel />
 	</Design.DataContext>
 
-	<StackPanel Orientation="Vertical">
-		<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto, Auto,Auto">
+	<StackPanel Orientation="Vertical" Spacing="10">
+		<StackPanel Orientation="Horizontal" Spacing="10">
 			<DatePicker
-				Grid.Column="0" Grid.Row="0"
 				SelectedDate="{Binding From, Mode=TwoWay}"
 				Header="From:" />
 			<DatePicker
-				Grid.Column="1" Grid.Row="0"
 				SelectedDate="{Binding To, Mode=TwoWay}"
 				Header="To:" />
+		</StackPanel>
 
+		<StackPanel Orientation="Horizontal" Spacing="10">
 			<Button
-				Grid.Column="0" Grid.Row="1"
+				MinWidth="100" HorizontalContentAlignment="Center"
 				Command="{ReflectionBinding SearchAsync}">
 				Search
 			</Button>
-		</Grid>
+			<Button
+				MinWidth="100" HorizontalContentAlignment="Center"
+				IsEnabled="{Binding CanDelete}"
+				Command="{ReflectionBinding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
 		<DataGrid
-			Items="{Binding Transactions, Mode=OneWay}"
+			Items="{Binding DataGridView, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
