@@ -16,6 +16,16 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		private string _targetAccount;
 		private decimal _sourceAmount;
 		private decimal _targetAmount;
+		private bool _selected;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this transaction is selected.
+		/// </summary>
+		public bool Selected
+		{
+			get => _selected;
+			set => SetAndNotify(ref _selected, value, nameof(Selected));
+		}
 
 		public DateTime Date
 		{

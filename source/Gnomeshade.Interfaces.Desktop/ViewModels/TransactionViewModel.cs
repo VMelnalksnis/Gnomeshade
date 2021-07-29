@@ -22,6 +22,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private DateTimeOffset _from;
 		private DateTimeOffset _to;
 		private Task<ObservableCollection<TransactionOverview>> _transactions;
+		private bool _selectAll;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
@@ -63,6 +64,23 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
+		/// Gets or sets a value indicating whether all transactions are selected.
+		/// </summary>
+		public bool SelectAll
+		{
+			get => _selectAll;
+			set
+			{
+				foreach (var transactionOverview in Transactions.GetAwaiter().GetResult())
+				{
+					transactionOverview.Selected = value;
+				}
+
+				SetAndNotify(ref _selectAll, value, nameof(SelectAll));
+			}
+		}
+
+		/// <summary>
 		/// Gets all transactions for the current user.
 		/// </summary>
 		public Task<ObservableCollection<TransactionOverview>> Transactions
@@ -77,6 +95,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public void Search()
 		{
 			Transactions = GetTransactionsAsync(From, To);
+			SelectAll = false; // todo this probably is pretty bad performance wise
 		}
 
 		private async Task<ObservableCollection<TransactionOverview>> GetTransactionsAsync(
@@ -92,8 +111,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 					.Select(transaction =>
 					{
 						var firstItem = transaction.Items.First();
-						var sourceAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.SourceAccountId));
-						var targetAccount = accounts.Single(account => account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
+						var sourceAccount = accounts.Single(account =>
+							account.Currencies.Any(currency => currency.Id == firstItem.SourceAccountId));
+						var targetAccount = accounts.Single(account =>
+							account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
 
 						return new TransactionOverview
 						{

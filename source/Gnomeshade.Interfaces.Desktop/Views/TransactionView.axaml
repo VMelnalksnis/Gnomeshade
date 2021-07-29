@@ -32,9 +32,19 @@
 		</Grid>
 		<DataGrid
 			Items="{Binding Transactions^, Mode=OneWay}"
-			AutoGenerateColumns="False" IsReadOnly="True"
+			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
+				<DataGridCheckBoxColumn
+					x:DataType="m:TransactionOverview"
+					IsReadOnly="False"
+					Binding="{Binding Selected, Mode=TwoWay}">
+					<DataGridCheckBoxColumn.Header>
+						<CheckBox
+							x:DataType="vm:TransactionViewModel"
+							IsChecked="{Binding SelectAll}" />
+					</DataGridCheckBoxColumn.Header>
+				</DataGridCheckBoxColumn>
 				<DataGridTextColumn
 					x:DataType="m:TransactionOverview"
 					IsReadOnly="True" Header="Date"

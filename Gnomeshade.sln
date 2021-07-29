@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Core", "source\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Core.Tests", "tests\Gnomeshade.Core.Tests\Gnomeshade.Core.Tests.csproj", "{5BE20134-F0DF-4FBE-926A-6826F6974356}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop.Tests", "tests\Gnomeshade.Interfaces.Desktop.Tests\Gnomeshade.Interfaces.Desktop.Tests.csproj", "{FA5CDB89-94B8-40CF-B918-F2AA27823C47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{5BE20134-F0DF-4FBE-926A-6826F6974356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BE20134-F0DF-4FBE-926A-6826F6974356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BE20134-F0DF-4FBE-926A-6826F6974356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA5CDB89-94B8-40CF-B918-F2AA27823C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA5CDB89-94B8-40CF-B918-F2AA27823C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA5CDB89-94B8-40CF-B918-F2AA27823C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA5CDB89-94B8-40CF-B918-F2AA27823C47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{D2ED2F80-3638-405E-BAA0-2788A47D853D} = {18D7A41E-CBA6-4AF5-A759-31F2BB9819BE}
 		{A75A439B-B1AB-4872-BF00-5049DF6FCAC4} = {B92F9674-8BD0-47C2-B15B-6E3F9CADC215}
 		{0C052464-F71A-4005-A531-C6D6B4FF09A4} = {8D3C5EB1-FEE4-4701-8AF9-49C5674A9AED}
+		{FA5CDB89-94B8-40CF-B918-F2AA27823C47} = {18D7A41E-CBA6-4AF5-A759-31F2BB9819BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}
