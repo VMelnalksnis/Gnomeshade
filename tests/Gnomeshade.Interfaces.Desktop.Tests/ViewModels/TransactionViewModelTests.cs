@@ -58,9 +58,9 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 		}
 
 		[Test]
-		public async Task SelectAll_ShouldAffectAllTransactions()
+		public void SelectAll_ShouldAffectAllTransactions()
 		{
-			var transactions = await _viewModel.Transactions;
+			var transactions = _viewModel.Transactions;
 
 			_viewModel.SelectAll.Should().BeFalse();
 			transactions.Should().NotContain(transaction => transaction.Selected);
@@ -77,12 +77,12 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 		{
 			_viewModel.SelectAll = true;
 
-			_viewModel.Search();
+			await _viewModel.SearchAsync();
 
 			using (new AssertionScope())
 			{
 				_viewModel.SelectAll.Should().BeFalse();
-				(await _viewModel.Transactions).Should().NotContain(transaction => transaction.Selected);
+				_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
 			}
 		}
 	}

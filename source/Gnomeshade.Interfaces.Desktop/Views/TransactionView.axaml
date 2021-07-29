@@ -26,12 +26,12 @@
 
 			<Button
 				Grid.Column="0" Grid.Row="1"
-				Command="{ReflectionBinding Search}">
+				Command="{ReflectionBinding SearchAsync}">
 				Search
 			</Button>
 		</Grid>
 		<DataGrid
-			Items="{Binding Transactions^, Mode=OneWay}"
+			Items="{Binding Transactions, Mode=OneWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>

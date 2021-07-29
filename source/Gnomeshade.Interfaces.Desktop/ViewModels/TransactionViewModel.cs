@@ -3,11 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Desktop.Models;
+using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -21,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private readonly IGnomeshadeClient _gnomeshadeClient;
 		private DateTimeOffset _from;
 		private DateTimeOffset _to;
-		private Task<ObservableCollection<TransactionOverview>> _transactions;
+		private ObservableItemCollection<TransactionOverview> _transactions;
 		private bool _selectAll;
 
 		/// <summary>
@@ -42,7 +42,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			To = DateTimeOffset.Now;
 			From = new(To.Year, _to.Month, 01, 0, 0, 0, To.Offset);
-			_transactions = GetTransactionsAsync(From, To);
+			_transactions = GetTransactionsAsync(From, To).GetAwaiter().GetResult();
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			get => _selectAll;
 			set
 			{
-				foreach (var transactionOverview in Transactions.GetAwaiter().GetResult())
+				foreach (var transactionOverview in Transactions)
 				{
 					transactionOverview.Selected = value;
 				}
@@ -83,7 +83,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets all transactions for the current user.
 		/// </summary>
-		public Task<ObservableCollection<TransactionOverview>> Transactions
+		public ObservableItemCollection<TransactionOverview> Transactions
 		{
 			get => _transactions;
 			private set => SetAndNotify(ref _transactions, value, nameof(Transactions));
@@ -92,13 +92,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Searches for transaction using the specified filters.
 		/// </summary>
-		public void Search()
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task SearchAsync()
 		{
-			Transactions = GetTransactionsAsync(From, To);
+			Transactions = await GetTransactionsAsync(From, To).ConfigureAwait(false);
 			SelectAll = false; // todo this probably is pretty bad performance wise
 		}
 
-		private async Task<ObservableCollection<TransactionOverview>> GetTransactionsAsync(
+		private async Task<ObservableItemCollection<TransactionOverview>> GetTransactionsAsync(
 			DateTimeOffset? from,
 			DateTimeOffset? to)
 		{
@@ -125,7 +126,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 							SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
 							TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
 						};
-					});
+					})
+					.ToList();
 
 			return new(overviews);
 		}
