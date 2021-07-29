@@ -30,7 +30,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<UserModel> InfoAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) => throw new NotImplementedException();
+		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+			throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task<List<TransactionModel>> GetTransactionsAsync()
@@ -60,7 +61,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) => throw new NotImplementedException();
+		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+			throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task<List<CurrencyModel>> GetCurrenciesAsync() => throw new NotImplementedException();
