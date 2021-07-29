@@ -46,10 +46,11 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction);
 
 		/// <summary>
-		/// Gets all transactions.
+		/// Gets the specified transaction.
 		/// </summary>
-		/// <returns>A collection with all transactions.</returns>
-		Task<List<TransactionModel>> GetTransactionsAsync();
+		/// <param name="id">The id of the transaction to get.</param>
+		/// <returns>The transaction with the specified id.</returns>
+		Task<TransactionModel> GetTransactionAsync(Guid id);
 
 		/// <summary>
 		/// Gets all transactions within the specified time period.

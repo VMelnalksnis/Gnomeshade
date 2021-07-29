@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -20,6 +21,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 	/// </summary>
 	public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	{
+		private static readonly List<TransactionModel> _transactions = new()
+		{
+			new() { Id = Guid.Empty },
+		};
+
 		/// <inheritdoc />
 		public Task<LoginResult> LogInAsync(LoginModel login) => throw new NotImplementedException();
 
@@ -34,15 +40,15 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> GetTransactionsAsync()
+		public Task<TransactionModel> GetTransactionAsync(Guid id)
 		{
-			return Task.FromResult(new List<TransactionModel>());
+			return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
 		}
 
 		/// <inheritdoc />
 		public Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
 		{
-			return Task.FromResult(new List<TransactionModel>());
+			return Task.FromResult(_transactions.ToList());
 		}
 
 		/// <inheritdoc />
