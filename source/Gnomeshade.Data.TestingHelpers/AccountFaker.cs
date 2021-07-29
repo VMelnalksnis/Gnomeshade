@@ -11,7 +11,7 @@ namespace Gnomeshade.Data.TestingHelpers
 	/// <summary>
 	/// Generates fake <see cref="Account"/> objects.
 	/// </summary>
-	public sealed class AccountFaker : ModifiableEntityFaker<Account>
+	public sealed class AccountFaker : NamedEntityFaker<Account>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountFaker"/> class with the specified relationships.
@@ -37,27 +37,6 @@ namespace Gnomeshade.Data.TestingHelpers
 			RuleFor(account => account.Bic, faker => faker.Finance.Bic());
 			RuleFor(account => account.Iban, faker => faker.Finance.Iban());
 			RuleFor(account => account.AccountNumber, faker => faker.Finance.Account());
-		}
-
-		/// <summary>
-		/// Generates an account unique from <paramref name="account"/>.
-		/// </summary>
-		/// <param name="account">An account against which to compare for uniqueness.</param>
-		/// <param name="attemptCount">The number of times to try to generate a unique account.</param>
-		/// <returns>A fake <see cref="Account"/> unique from <paramref name="account"/>.</returns>
-		/// <exception cref="InvalidOperationException">Failed to generate a unique account after <paramref name="attemptCount"/> attempts.</exception>
-		public Account GenerateUnique(Account account, int attemptCount = 10)
-		{
-			for (var i = 0; i < attemptCount; i++)
-			{
-				var generatedAccount = Generate();
-				if (account.NormalizedName != generatedAccount.NormalizedName)
-				{
-					return generatedAccount;
-				}
-			}
-
-			throw new InvalidOperationException($"Failed to generate unique account after {attemptCount} attempts");
 		}
 	}
 }

@@ -8,7 +8,7 @@ using Gnomeshade.Data.Models;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
-	public sealed class UnitFaker : ModifiableEntityFaker<Unit>
+	public sealed class UnitFaker : NamedEntityFaker<Unit>
 	{
 		public UnitFaker(User user)
 			: this(user.Id)

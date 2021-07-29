@@ -71,7 +71,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var parentUnit = unitFaker.Generate();
 			var parentUnitId = await _repository.AddAsync(parentUnit, dbTransaction);
 
-			var childUnit = unitFaker.Generate() with { ParentUnitId = parentUnitId, Multiplier = 1 };
+			var childUnit = unitFaker.GenerateUnique(parentUnit) with { ParentUnitId = parentUnitId, Multiplier = 1 };
 			var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
 
 			dbTransaction.Commit();
