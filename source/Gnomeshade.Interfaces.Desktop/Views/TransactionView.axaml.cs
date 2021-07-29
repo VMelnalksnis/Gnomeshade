@@ -7,6 +7,9 @@ using Avalonia.Markup.Xaml;
 
 namespace Gnomeshade.Interfaces.Desktop.Views
 {
+	/// <summary>
+	/// An overview of all transactions.
+	/// </summary>
 	public sealed class TransactionView : UserControl
 	{
 		/// <summary>

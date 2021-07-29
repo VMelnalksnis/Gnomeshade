@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
-using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
@@ -104,9 +103,27 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 		{
 			_viewModel.CanDelete.Should().BeFalse();
 
-			_viewModel.DataGridView.Cast<TransactionOverview>().First().Selected = true;
+			_viewModel.Transactions.First().Selected = true;
 
 			_viewModel.CanDelete.Should().BeTrue();
+		}
+
+		[Test]
+		public void CanDelete_ShouldBeNotifiedOfChange()
+		{
+			var canDeleteChanged = false;
+			_viewModel.PropertyChanged += (_, args) =>
+			{
+				if (args.PropertyName == nameof(TransactionViewModel.CanDelete))
+				{
+					canDeleteChanged = true;
+				}
+			};
+
+			var firstTransaction = _viewModel.Transactions.First();
+			firstTransaction.Selected = !firstTransaction.Selected;
+
+			canDeleteChanged.Should().BeTrue();
 		}
 
 		[Test]
@@ -117,7 +134,7 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 				.Setup(client => client.DeleteTransactionAsync(It.IsAny<Guid>()))
 				.Callback<Guid>(id => deletedIds.Add(id));
 
-			var transactionToDelete = _viewModel.DataGridView.Cast<TransactionOverview>().First();
+			var transactionToDelete = _viewModel.Transactions.First();
 			transactionToDelete.Selected = true;
 			await _viewModel.DeleteSelectedAsync();
 

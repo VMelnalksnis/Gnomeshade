@@ -1,6 +1,8 @@
 ﻿<UserControl
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:i="using:Avalonia.Xaml.Interactivity"
+	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
 	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -38,7 +40,9 @@
 		</StackPanel>
 
 		<DataGrid
+			x:Name="DataGrid"
 			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding SelectedOverview, Mode=TwoWay}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
@@ -77,6 +81,18 @@
 					Header="Target Amount" IsReadOnly="True"
 					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 			</DataGrid.Columns>
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #DataGrid}">
+					<ia:InvokeCommandAction Command="{ReflectionBinding OnDataGridDoubleTapped}" />
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
 		</DataGrid>
 	</StackPanel>
 </UserControl>
