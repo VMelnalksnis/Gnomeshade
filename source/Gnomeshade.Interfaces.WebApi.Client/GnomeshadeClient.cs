@@ -88,6 +88,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
+		public Task<Guid> AddTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
+		{
+			return PostAsync<Guid, TransactionItemCreationModel>($"{TransactionUri(transactionId)}/Item", item);
+		}
+
+		/// <inheritdoc />
 		public Task<TransactionModel> GetTransactionAsync(Guid id)
 		{
 			return GetAsync<TransactionModel>(TransactionUri(id));

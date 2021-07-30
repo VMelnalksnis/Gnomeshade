@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
@@ -34,7 +35,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
 		/// </summary>
 		public TransactionItemCreationViewModel()
-			: this(new GnomeshadeClient())
+			: this(new DesignTimeGnomeshadeClient())
 		{
 		}
 

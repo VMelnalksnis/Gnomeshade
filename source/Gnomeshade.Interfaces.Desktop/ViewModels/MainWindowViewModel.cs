@@ -121,9 +121,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = transactionViewModel;
 		}
 
-		private void SwitchToTransactionDetail(Guid id)
+		private async Task SwitchToTransactionDetailAsync(Guid id)
 		{
-			var transactionDetailViewModel = new TransactionDetailViewModel(_gnomeshadeClient, id);
+			var transactionDetailViewModel =
+				await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
 			ActiveView = transactionDetailViewModel;
 		}
 
@@ -154,7 +155,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
 		{
-			SwitchToTransactionDetail(e.TransactionId);
+			SwitchToTransactionDetailAsync(e.TransactionId).GetAwaiter().GetResult();
 		}
 	}
 }

@@ -46,6 +46,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction);
 
 		/// <summary>
+		/// Adds a new item to an existing transaction.
+		/// </summary>
+		/// <param name="transactionId">The id of the transaction to which to add the item to.</param>
+		/// <param name="item">Information for creating the transaction item.</param>
+		/// <returns>The id of the created transaction item.</returns>
+		Task<Guid> AddTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item);
+
+		/// <summary>
 		/// Gets the specified transaction.
 		/// </summary>
 		/// <param name="id">The id of the transaction to get.</param>

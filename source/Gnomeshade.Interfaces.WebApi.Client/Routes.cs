@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
@@ -33,14 +34,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="id">The id of the account.</param>
 		/// <returns>Relative uri for a specific account.</returns>
-		public static string AccountUri(Guid id) => $"{Account}/{id:N}";
+		public static string AccountUri(Guid id) => $"{Account}/{Format(id)}";
 
 		/// <summary>
 		/// Gets the relative uri for the specified transaction.
 		/// </summary>
 		/// <param name="id">The id of the transaction.</param>
 		/// <returns>Relative uri for a specific transaction.</returns>
-		public static string TransactionUri(Guid id) => $"{Transaction}/{id:N}";
+		public static string TransactionUri(Guid id) => $"{Transaction}/{Format(id)}";
 
 		/// <summary>
 		/// Gets the relative uri for all transactions within the specified period.
@@ -76,7 +77,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="id">The id of the transaction item.</param>
 		/// <returns>Relative uri for a specific transaction item.</returns>
-		public static string TransactionItemUri(Guid id) => $"{Transaction}/item/{id:N}";
+		public static string TransactionItemUri(Guid id) => $"{Transaction}/Item/{Format(id)}";
 
 		/// <summary>
 		/// Converts the specified date to a string and encodes it for using within a url.
@@ -85,10 +86,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <returns>A string representation of the <paramref name="date"/> that can be used in urls.</returns>
 		public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
 		{
-			var value = date.ToString("O");
+			var value = date.ToString("O", CultureInfo.InvariantCulture);
 			return date.Offset <= TimeSpan.Zero
 				? value
 				: value.Replace("+", "%2B");
 		}
+
+		private static string Format(Guid guid) => guid.ToString("N", CultureInfo.InvariantCulture);
 	}
 }

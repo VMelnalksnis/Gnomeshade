@@ -14,24 +14,24 @@
 		<vm:TransactionDetailViewModel />
 	</Design.DataContext>
 
-	<StackPanel Orientation="Vertical" Spacing="10">
+	<StackPanel Orientation="Vertical" Spacing="10" VerticalAlignment="Stretch">
 		<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
 			<TextBlock
 				Grid.Column="0" Grid.Row="0"
 				Margin="0 0 10 0"
-				Text="Date:"/>
+				Text="Date:" />
 			<TextBlock
 				Grid.Column="1" Grid.Row="0"
-				Text="{Binding Date, StringFormat=\{0:G\} }"/>
+				Text="{Binding Date, StringFormat=\{0:G\} }" />
 
 			<TextBlock
 				Grid.Column="0" Grid.Row="1"
 				Margin="0 0 10 0"
-				Text="Description:"/>
+				Text="Description:" />
 			<TextBlock
 				Grid.Column="1" Grid.Row="1"
 				MaxWidth="500" TextWrapping="WrapWithOverflow"
-				Text="{Binding Description}"/>
+				Text="{Binding Description}" />
 		</Grid>
 
 		<StackPanel Orientation="Horizontal">
@@ -44,6 +44,7 @@
 
 		<DataGrid
 			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
 			Items="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding SelectedItem}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
@@ -64,7 +65,7 @@
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
 					Header="Source Currency" IsReadOnly="True"
-					Binding="{Binding SourceCurrency, Mode=OneWay}"/>
+					Binding="{Binding SourceCurrency, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
 					Header="Target Amount" IsReadOnly="True"
@@ -72,7 +73,7 @@
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
 					Header="Target Currency" IsReadOnly="True"
-					Binding="{Binding TargetCurrency, Mode=OneWay}"/>
+					Binding="{Binding TargetCurrency, Mode=OneWay}" />
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>
@@ -81,5 +82,12 @@
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
+
+		<UserControl Content="{Binding ItemCreation}" />
+		<Button
+			IsEnabled="{Binding CanAddItem}"
+			Command="{ReflectionBinding AddItemAsync}">
+			Add new item
+		</Button>
 	</StackPanel>
 </UserControl>
