@@ -108,7 +108,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			private set
 			{
 				Transactions.CollectionChanged -= DataGridViewOnCollectionChanged;
-				SetAndNotify(ref _dataGridView, value, nameof(Transactions));
+				SetAndNotifyWithGuard(ref _dataGridView, value, nameof(Transactions), nameof(DataGridView));
 				Transactions.CollectionChanged += DataGridViewOnCollectionChanged;
 			}
 		}
@@ -205,6 +205,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void DataGridViewOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
+			OnPropertyChanged(nameof(DataGridView));
 			OnPropertyChanged(nameof(CanDelete));
 		}
 	}

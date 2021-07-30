@@ -1,0 +1,85 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
+	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionDetailView"
+	x:CompileBindings="True"
+	x:DataType="vm:TransactionDetailViewModel">
+
+	<Design.DataContext>
+		<vm:TransactionDetailViewModel />
+	</Design.DataContext>
+
+	<StackPanel Orientation="Vertical" Spacing="10">
+		<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
+			<TextBlock
+				Grid.Column="0" Grid.Row="0"
+				Margin="0 0 10 0"
+				Text="Date:"/>
+			<TextBlock
+				Grid.Column="1" Grid.Row="0"
+				Text="{Binding Date, StringFormat=\{0:G\} }"/>
+
+			<TextBlock
+				Grid.Column="0" Grid.Row="1"
+				Margin="0 0 10 0"
+				Text="Description:"/>
+			<TextBlock
+				Grid.Column="1" Grid.Row="1"
+				MaxWidth="500" TextWrapping="WrapWithOverflow"
+				Text="{Binding Description}"/>
+		</Grid>
+
+		<StackPanel Orientation="Horizontal">
+			<Button
+				IsEnabled="{Binding CanDeleteItem}"
+				Command="{ReflectionBinding DeleteItemAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<DataGrid
+			x:Name="DataGrid"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding SelectedItem}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Source Account" IsReadOnly="True"
+					Binding="{Binding SourceAccount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Target Account" IsReadOnly="True"
+					Binding="{Binding TargetAccount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Source Amount" IsReadOnly="True"
+					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Source Currency" IsReadOnly="True"
+					Binding="{Binding SourceCurrency, Mode=OneWay}"/>
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Target Amount" IsReadOnly="True"
+					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="m:TransactionItem"
+					Header="Target Currency" IsReadOnly="True"
+					Binding="{Binding TargetCurrency, Mode=OneWay}"/>
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+	</StackPanel>
+</UserControl>

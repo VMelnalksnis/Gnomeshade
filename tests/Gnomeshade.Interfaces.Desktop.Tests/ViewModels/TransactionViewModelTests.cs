@@ -72,6 +72,14 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 		}
 
 		[Test]
+		public void ShouldNotFailAtDesignTime()
+		{
+			FluentActions
+				.Invoking(() => new TransactionViewModel())
+				.Should().NotThrow();
+		}
+
+		[Test]
 		public void SelectAll_ShouldAffectAllTransactions()
 		{
 			_viewModel.SelectAll.Should().BeFalse();
