@@ -124,13 +124,11 @@ namespace Gnomeshade.Data.Repositories
 			return accounts.Single();
 		}
 
-		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " ORDER BY a.created_at DESC LIMIT 1000;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accounts.ToList();
+			return GetAccountsAsync(command);
 		}
 
 		/// <summary>
@@ -138,13 +136,11 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all active accounts.</returns>
-		public async Task<List<Account>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<Account>> GetAllActiveAsync(CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accounts.ToList();
+			return GetAccountsAsync(command);
 		}
 
 		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
@@ -177,7 +173,7 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First).Select(grouping => Account.FromGrouping(grouping));
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => Account.FromGrouping(grouping));
 		}
 	}
 }

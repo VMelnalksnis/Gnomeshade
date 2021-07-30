@@ -88,6 +88,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<List<AccountModel>> GetAccountsAsync();
 
 		/// <summary>
+		/// Gets all currently active accounts.
+		/// </summary>
+		/// <returns>A collection with all currently active accounts.</returns>
+		Task<List<AccountModel>> GetActiveAccountsAsync();
+
+		/// <summary>
 		/// Creates a new account.
 		/// </summary>
 		/// <param name="account">Information for creating the account.</param>

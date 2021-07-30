@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -74,12 +75,24 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			return Find(() => _repository.FindByIdAsync(id, cancellation));
 		}
 
+		/// <summary>
+		/// Gets all accounts.
+		/// </summary>
+		/// <param name="onlyActive">Whether to get only active accounts.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>A collection of all accounts.</returns>
+		/// <response code="200">Successfully got all accounts.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(CancellationToken cancellation)
+		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(
+			[FromQuery, DefaultValue(true)] bool onlyActive,
+			CancellationToken cancellationToken)
 		{
-			var accounts = await _repository.GetAllAsync(cancellation);
-			var models = accounts.Select(MapToModel).ToList();
+			var accounts = onlyActive
+				? await _repository.GetAllActiveAsync(cancellationToken)
+				: await _repository.GetAllAsync(cancellationToken);
+
+			var models = accounts.Select(account => MapToModel(account)).ToList();
 			return Ok(models);
 		}
 

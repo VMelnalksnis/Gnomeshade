@@ -144,6 +144,12 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
+		public Task<List<AccountModel>> GetActiveAccountsAsync()
+		{
+			return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
+		}
+
+		/// <inheritdoc />
 		public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
 
 		/// <inheritdoc />

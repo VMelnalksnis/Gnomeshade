@@ -120,6 +120,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<List<AccountModel>> GetAccountsAsync()
 		{
+			return GetAsync<List<AccountModel>>($"{Account}?onlyActive=false");
+		}
+
+		/// <inheritdoc />
+		public Task<List<AccountModel>> GetActiveAccountsAsync()
+		{
 			return GetAsync<List<AccountModel>>(Account);
 		}
 

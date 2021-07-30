@@ -198,19 +198,19 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Product is not null &&
 			_amount.HasValue;
 
-		private async Task<List<AccountModel>> GetAccountsAsync()
+		private Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
+			return _gnomeshadeClient.GetActiveAccountsAsync();
 		}
 
-		private async Task<List<CurrencyModel>> GetCurrenciesAsync()
+		private Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+			return _gnomeshadeClient.GetCurrenciesAsync();
 		}
 
-		private async Task<List<ProductModel>> GetProductsAsync()
+		private Task<List<ProductModel>> GetProductsAsync()
 		{
-			return await _gnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
+			return _gnomeshadeClient.GetProductsAsync();
 		}
 	}
 }

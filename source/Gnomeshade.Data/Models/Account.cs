@@ -85,10 +85,11 @@ namespace Gnomeshade.Data.Models
 		/// </summary>
 		/// <param name="grouping">A grouping of currencies by account.</param>
 		/// <returns>An account with initialized <see cref="Currencies"/>.</returns>
-		public static Account FromGrouping(IGrouping<Account, OneToOne<Account, AccountInCurrency>> grouping)
+		public static Account FromGrouping(IGrouping<Guid, OneToOne<Account, AccountInCurrency>> grouping)
 		{
-			grouping.Key.Currencies = grouping.Select(oneToOne => oneToOne.Second).ToList();
-			return grouping.Key;
+			var account = grouping.First().First;
+			account.Currencies = grouping.Select(oneToOne => oneToOne.Second).ToList();
+			return account;
 		}
 	}
 }

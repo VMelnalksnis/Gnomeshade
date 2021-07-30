@@ -8,7 +8,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
+using FluentAssertions.Equivalency;
 
+using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.TestingHelpers;
 
@@ -76,7 +78,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			getAccount.Should().BeEquivalentTo(expectedAccount);
 			findAccount.Should().BeEquivalentTo(expectedAccount);
 			findByNameAccount.Should().BeEquivalentTo(expectedAccount);
-			accounts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedAccount);
+			accounts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedAccount, Options);
 
 			var firstAccountInCurrency = getAccount.Currencies.First();
 			var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id);
@@ -106,6 +108,15 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			await _unitOfWork.DeleteAsync(getAccount);
 			disabledAccount = await _repository.GetByIdAsync(disabledAccountId);
 			await _unitOfWork.DeleteAsync(disabledAccount);
+		}
+
+		private static EquivalencyAssertionOptions<Account> Options(
+			EquivalencyAssertionOptions<Account> options)
+		{
+			return options
+				.ComparingByMembers<Account>()
+				.ComparingByMembers<AccountInCurrency>()
+				.ComparingByMembers<Currency>();
 		}
 	}
 }

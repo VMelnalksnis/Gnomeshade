@@ -28,10 +28,26 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
 		internal static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
 
+		/// <summary>
+		/// Gets the relative uri for the specified account.
+		/// </summary>
+		/// <param name="id">The id of the account.</param>
+		/// <returns>Relative uri for a specific account.</returns>
 		public static string AccountUri(Guid id) => $"{Account}/{id:N}";
 
+		/// <summary>
+		/// Gets the relative uri for the specified transaction.
+		/// </summary>
+		/// <param name="id">The id of the transaction.</param>
+		/// <returns>Relative uri for a specific transaction.</returns>
 		public static string TransactionUri(Guid id) => $"{Transaction}/{id:N}";
 
+		/// <summary>
+		/// Gets the relative uri for all transactions within the specified period.
+		/// </summary>
+		/// <param name="from">The point in time from which to select transactions.</param>
+		/// <param name="to">The point in time to which to select transactions.</param>
+		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
 		public static string TransactionUri(DateTimeOffset? from, DateTimeOffset? to)
 		{
 			var keyValues = new Dictionary<DateTimeOffset, string>(2);
@@ -55,8 +71,18 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return $"{Transaction}?{query}";
 		}
 
+		/// <summary>
+		/// Gets the relative uri for the specified transaction item.
+		/// </summary>
+		/// <param name="id">The id of the transaction item.</param>
+		/// <returns>Relative uri for a specific transaction item.</returns>
 		public static string TransactionItemUri(Guid id) => $"{Transaction}/item/{id:N}";
 
+		/// <summary>
+		/// Converts the specified date to a string and encodes it for using within a url.
+		/// </summary>
+		/// <param name="date">The date to convert.</param>
+		/// <returns>A string representation of the <paramref name="date"/> that can be used in urls.</returns>
 		public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
 		{
 			var value = date.ToString("O");

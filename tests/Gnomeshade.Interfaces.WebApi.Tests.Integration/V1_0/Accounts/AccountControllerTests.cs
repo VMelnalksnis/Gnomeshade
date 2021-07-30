@@ -52,6 +52,8 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts
 			var addCurrencyId = await addCurrencyResponse.Content.ReadFromJsonAsync<Guid>();
 
 			var account = (await _client.GetFromJsonAsync<AccountModel>(accountUri))!;
+			var accounts = (await _client.GetFromJsonAsync<List<AccountModel>>("/api/v1.0/Account"))!;
+			accounts.Should().Contain(a => a.Id == account.Id);
 
 			addCurrencyId.Should().Be(accountId);
 			account.Currencies
