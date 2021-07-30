@@ -55,6 +55,21 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		public CurrencyModel PreferredCurrency { get; init; } = null!;
 
 		/// <summary>
+		/// The point in time when this account was disabled.
+		/// </summary>
+		public DateTimeOffset? DisabledAt { get; init; }
+
+		/// <summary>
+		/// The id of the user which disabled this account.
+		/// </summary>
+		public Guid? DisabledByUserId { get; init; }
+
+		/// <summary>
+		/// Whether or not this account is disabled.
+		/// </summary>
+		public bool Disabled => DisabledAt.HasValue;
+
+		/// <summary>
 		/// The BIC (Business Identifier Code) of the account.
 		/// </summary>
 		public string? Bic { get; init; }

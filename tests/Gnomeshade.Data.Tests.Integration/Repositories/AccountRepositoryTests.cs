@@ -47,7 +47,8 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var currencies = await EntityFactory.GetCurrenciesAsync();
 			var preferredCurrency = currencies.First();
 
-			var account = new AccountFaker(TestUser, preferredCurrency).Generate();
+			var accountFaker = new AccountFaker(TestUser, preferredCurrency);
+			var account = accountFaker.Generate();
 
 			var currencyIds =
 				currencies
@@ -91,7 +92,20 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 			findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 
+			var disabledAccount = accountFaker.GenerateUnique(account) with
+			{
+				DisabledAt = DateTimeOffset.Now,
+				DisabledByUserId = TestUser.Id,
+			};
+
+			var disabledAccountId = await _unitOfWork.AddAsync(disabledAccount);
+
+			var allAccounts = await _repository.GetAllActiveAsync();
+			allAccounts.Should().OnlyContain(enabledAccount => enabledAccount.Id == getAccount.Id);
+
 			await _unitOfWork.DeleteAsync(getAccount);
+			disabledAccount = await _repository.GetByIdAsync(disabledAccountId);
+			await _unitOfWork.DeleteAsync(disabledAccount);
 		}
 	}
 }

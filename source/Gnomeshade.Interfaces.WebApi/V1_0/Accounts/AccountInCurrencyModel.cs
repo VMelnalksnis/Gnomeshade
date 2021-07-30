@@ -9,6 +9,9 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 {
+	/// <summary>
+	/// A single currency for a specific account.
+	/// </summary>
 	[PublicAPI]
 	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record AccountInCurrencyModel
@@ -47,5 +50,20 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		/// The currency of the account in currency.
 		/// </summary>
 		public CurrencyModel Currency { get; init; } = null!;
+
+		/// <summary>
+		/// The point in time when this account in currency was disabled.
+		/// </summary>
+		public DateTimeOffset? DisabledAt { get; init; }
+
+		/// <summary>
+		/// The id of the user which disabled this account in currency.
+		/// </summary>
+		public Guid? DisabledByUserId { get; init; }
+
+		/// <summary>
+		/// Whether or not this account in currency is disabled.
+		/// </summary>
+		public bool Disabled => DisabledAt.HasValue;
 	}
 }

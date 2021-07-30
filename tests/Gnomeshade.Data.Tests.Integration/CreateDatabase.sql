@@ -67,6 +67,8 @@ CREATE TABLE "public"."accounts"
     "name"                  text                                   NOT NULL,
     "normalized_name"       text                                   NOT NULL,
     "preferred_currency_id" uuid                                   NOT NULL,
+    "disabled_at"           timestamptz,
+    "disabled_by_user_id"   uuid,
     "bic"                   text,
     "iban"                  text,
     "account_number"        text,
@@ -74,7 +76,8 @@ CREATE TABLE "public"."accounts"
     CONSTRAINT "accounts_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_preferred_currency_id_fkey" FOREIGN KEY (preferred_currency_id) REFERENCES currencies (id) NOT DEFERRABLE
+    CONSTRAINT "accounts_preferred_currency_id_fkey" FOREIGN KEY (preferred_currency_id) REFERENCES currencies (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_disabled_by_user_id_fkey" FOREIGN KEY (disabled_by_user_id) REFERENCES users (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 
@@ -89,12 +92,15 @@ CREATE TABLE "public"."accounts_in_currency"
     "modified_by_user_id" uuid                                   NOT NULL,
     "account_id"          uuid                                   NOT NULL,
     "currency_id"         uuid                                   NOT NULL,
+    "disabled_at"           timestamptz,
+    "disabled_by_user_id"   uuid,
     CONSTRAINT "accounts_in_currency_pk" PRIMARY KEY ("id"),
-    CONSTRAINT "accounts_in_currency_accounts_id_fk" FOREIGN KEY (account_id) REFERENCES accounts (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_in_currency_currencies_id_fk" FOREIGN KEY (currency_id) REFERENCES currencies (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_in_currency_owners_id_fk" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_in_currency_users_id_fk" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_in_currency_users_id_fk_2" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE
+    CONSTRAINT "accounts_in_currency_account_id_fkey" FOREIGN KEY (account_id) REFERENCES accounts (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_in_currency_currency_id_fkey" FOREIGN KEY (currency_id) REFERENCES currencies (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_in_currency_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_in_currency_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_in_currency_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_in_currency_disabled_by_user_id_fkey" FOREIGN KEY (disabled_by_user_id) REFERENCES users (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 

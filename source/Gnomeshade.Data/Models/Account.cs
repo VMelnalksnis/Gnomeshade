@@ -14,7 +14,11 @@ namespace Gnomeshade.Data.Models
 	/// <summary>
 	/// Represents an account which can hold funds one or more currencies.
 	/// </summary>
-	public sealed record Account : IOwnableEntity, IModifiableEntity, INamedEntity
+	public sealed record Account :
+		IOwnableEntity,
+		IModifiableEntity,
+		INamedEntity,
+		IDisableableEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }
@@ -49,6 +53,12 @@ namespace Gnomeshade.Data.Models
 		/// Gets or sets the preferred currency.
 		/// </summary>
 		public Currency PreferredCurrency { get; set; } = null!;
+
+		/// <inheritdoc />
+		public DateTimeOffset? DisabledAt { get; set; }
+
+		/// <inheritdoc />
+		public Guid? DisabledByUserId { get; set; }
 
 		/// <summary>
 		/// Gets or sets the Business Identifier Code (BIC).

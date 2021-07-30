@@ -19,7 +19,7 @@ namespace Gnomeshade.Data.Repositories
 	public sealed class AccountRepository : IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @Bic, @Iban, @AccountNumber) RETURNING id;";
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
 
 		private const string _selectSql =
 			"SELECT a.id, " +
@@ -31,6 +31,8 @@ namespace Gnomeshade.Data.Repositories
 			"a.name, " +
 			"a.normalized_name NormalizedName, " +
 			"a.preferred_currency_id PreferredCurrencyId, " +
+			"a.disabled_at DisabledAt," +
+			"a.disabled_by_user_id DisabledByUserId," +
 			"a.bic, " +
 			"a.iban, " +
 			"a.account_number AccountNumber, " +
@@ -54,6 +56,8 @@ namespace Gnomeshade.Data.Repositories
 			"aic.modified_by_user_id ModifiedByUserId, " +
 			"aic.account_id AccountId, " +
 			"aic.currency_id CurrencyId, " +
+			"aic.disabled_at DisabledAt," +
+			"aic.disabled_by_user_id DisabledByUserId," +
 			"c.id, " +
 			"c.created_at CreatedAt, " +
 			"c.name, " +
@@ -116,9 +120,8 @@ namespace Gnomeshade.Data.Repositories
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
-			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
-			var grouping = accountGroupings.Single();
-			return Account.FromGrouping(grouping);
+			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accounts.Single();
 		}
 
 		public async Task<List<Account>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -126,8 +129,22 @@ namespace Gnomeshade.Data.Repositories
 			const string sql = _selectSql + " ORDER BY a.created_at DESC LIMIT 1000;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
 
-			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accountGroupings.Select(grouping => Account.FromGrouping(grouping)).ToList();
+			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accounts.ToList();
+		}
+
+		/// <summary>
+		/// Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>A collection of all active accounts.</returns>
+		public async Task<List<Account>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+		{
+			const string sql = _selectSql + " WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
+			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
+
+			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accounts.ToList();
 		}
 
 		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
@@ -141,12 +158,11 @@ namespace Gnomeshade.Data.Repositories
 
 		private async Task<Account?> FindAsync(CommandDefinition command)
 		{
-			var accountGroupings = await GetAccountsAsync(command).ConfigureAwait(false);
-			var grouping = accountGroupings.SingleOrDefault();
-			return grouping is null ? null : Account.FromGrouping(grouping);
+			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accounts.SingleOrDefault();
 		}
 
-		private async Task<IEnumerable<IGrouping<Account, OneToOne<Account, AccountInCurrency>>>> GetAccountsAsync(
+		private async Task<IEnumerable<Account>> GetAccountsAsync(
 			CommandDefinition command)
 		{
 			var oneToOnes =
@@ -161,7 +177,7 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First);
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First).Select(grouping => Account.FromGrouping(grouping));
 		}
 	}
 }

@@ -16,10 +16,10 @@ namespace Gnomeshade.Data.Repositories
 	public sealed class AccountInCurrencyRepository : IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO accounts_in_currency (owner_id, created_by_user_id, modified_by_user_id, account_id, currency_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @AccountId, @CurrencyId) RETURNING id";
+			"INSERT INTO accounts_in_currency (owner_id, created_by_user_id, modified_by_user_id, account_id, currency_id, disabled_at, disabled_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @AccountId, @CurrencyId, @DisabledAt, @DisabledByUserId) RETURNING id";
 
 		private const string _selectSql =
-			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, account_id AccountId, currency_id CurrencyId FROM accounts_in_currency";
+			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, account_id AccountId, currency_id CurrencyId, disabled_at DisabledAt, disabled_by_user_id DisabledByUserId FROM accounts_in_currency";
 
 		private const string _deleteSql = "DELETE FROM accounts_in_currency WHERE id = @id";
 

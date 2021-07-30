@@ -11,7 +11,7 @@ namespace Gnomeshade.Data.Models
 	/// <summary>
 	/// Represents a single currency of an <see cref="Account"/>.
 	/// </summary>
-	public sealed record AccountInCurrency : IOwnableEntity, IModifiableEntity
+	public sealed record AccountInCurrency : IOwnableEntity, IModifiableEntity, IDisableableEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }
@@ -45,5 +45,11 @@ namespace Gnomeshade.Data.Models
 		/// Gets or sets the currency this account represents.
 		/// </summary>
 		public Currency Currency { get; set; } = null!;
+
+		/// <inheritdoc />
+		public DateTimeOffset? DisabledAt { get; set; }
+
+		/// <inheritdoc />
+		public Guid? DisabledByUserId { get; set; }
 	}
 }
