@@ -21,10 +21,75 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 	/// </summary>
 	public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	{
-		private static readonly List<TransactionModel> _transactions = new()
+		private static readonly List<CurrencyModel> _currencies;
+		private static readonly List<AccountModel> _accounts;
+		private static readonly List<UnitModel> _units;
+		private static readonly List<ProductModel> _products;
+		private static readonly List<TransactionModel> _transactions;
+
+		static DesignTimeGnomeshadeClient()
 		{
-			new() { Id = Guid.Empty },
-		};
+			var euro = new CurrencyModel { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
+			var usd = new CurrencyModel { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
+			_currencies = new() { euro, usd };
+
+			var cash = new AccountModel
+			{
+				Id = Guid.NewGuid(),
+				Name = "Cash",
+				PreferredCurrency = euro,
+				Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
+			};
+			var spending = new AccountModel
+			{
+				Id = Guid.NewGuid(),
+				Name = "Spending",
+				PreferredCurrency = euro,
+				Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
+			};
+			_accounts = new() { cash, spending };
+
+			var kilogram = new UnitModel { Id = Guid.NewGuid(), Name = "Kilogram" };
+			_units = new() { kilogram };
+
+			var bread = new ProductModel { Id = Guid.NewGuid(), Name = "Bread" };
+			var milk = new ProductModel { Id = Guid.NewGuid(), Name = "Milk" };
+			_products = new() { bread, milk };
+
+			var transaction = new TransactionModel
+			{
+				Id = Guid.Empty,
+				Date = DateTimeOffset.Now,
+				Description = "Some transaction description",
+				Items = new()
+				{
+					new()
+					{
+						Id = Guid.NewGuid(),
+						TransactionId = Guid.Empty,
+						SourceAmount = 125.35m,
+						TargetAmount = 125.35m,
+						SourceAccountId = spending.Currencies.Single().Id,
+						TargetAccountId = cash.Currencies.Single().Id,
+						Product = bread,
+						Amount = 1,
+					},
+					new()
+					{
+						Id = Guid.NewGuid(),
+						TransactionId = Guid.Empty,
+						SourceAmount = 1.95m,
+						TargetAmount = 1.95m,
+						SourceAccountId = spending.Currencies.Single().Id,
+						TargetAccountId = cash.Currencies.Single().Id,
+						Product = milk,
+						Amount = 2,
+					},
+				},
+			};
+
+			_transactions = new() { transaction };
+		}
 
 		/// <inheritdoc />
 		public Task<LoginResult> LogInAsync(LoginModel login) => throw new NotImplementedException();
@@ -52,15 +117,30 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task DeleteTransactionAsync(Guid id) => throw new NotImplementedException();
+		public Task DeleteTransactionAsync(Guid id)
+		{
+			_transactions.Remove(_transactions.Single(transaction => transaction.Id == id));
+			return Task.CompletedTask;
+		}
 
 		/// <inheritdoc />
-		public Task<AccountModel> GetAccountAsync(Guid id) => throw new NotImplementedException();
+		public Task DeleteTransactionItemAsync(Guid id)
+		{
+			var transactionWithItem = _transactions.Single(t => t.Items.Select(item => item.Id).Contains(id));
+			transactionWithItem.Items.Remove(transactionWithItem.Items.Single(item => item.Id == id));
+			return Task.CompletedTask;
+		}
+
+		/// <inheritdoc />
+		public Task<AccountModel> GetAccountAsync(Guid id)
+		{
+			return Task.FromResult(_accounts.Single(account => account.Id == id));
+		}
 
 		/// <inheritdoc />
 		public Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return Task.FromResult(new List<AccountModel>());
+			return Task.FromResult(_accounts.ToList());
 		}
 
 		/// <inheritdoc />
@@ -71,13 +151,22 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<List<CurrencyModel>> GetCurrenciesAsync() => throw new NotImplementedException();
+		public Task<List<CurrencyModel>> GetCurrenciesAsync()
+		{
+			return Task.FromResult(_currencies.ToList());
+		}
 
 		/// <inheritdoc />
-		public Task<List<ProductModel>> GetProductsAsync() => throw new NotImplementedException();
+		public Task<List<ProductModel>> GetProductsAsync()
+		{
+			return Task.FromResult(_products.ToList());
+		}
 
 		/// <inheritdoc />
-		public Task<List<UnitModel>> GetUnitsAsync() => throw new NotImplementedException();
+		public Task<List<UnitModel>> GetUnitsAsync()
+		{
+			return Task.FromResult(_units.ToList());
+		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateProductAsync(ProductCreationModel product) => throw new NotImplementedException();

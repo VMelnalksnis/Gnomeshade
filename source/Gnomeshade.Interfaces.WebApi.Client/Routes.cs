@@ -55,6 +55,8 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return $"{Transaction}?{query}";
 		}
 
+		public static string TransactionItemUri(Guid id) => $"{Transaction}/item/{id:N}";
+
 		public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
 		{
 			var value = date.ToString("O");

@@ -68,6 +68,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task DeleteTransactionAsync(Guid id);
 
 		/// <summary>
+		/// Deletes the specified transaction item.
+		/// </summary>
+		/// <param name="id">The id of the transaction item to delete.</param>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		Task DeleteTransactionItemAsync(Guid id);
+
+		/// <summary>
 		/// Finds an account with the specified id.
 		/// </summary>
 		/// <param name="id">The id by which to search for an account.</param>
