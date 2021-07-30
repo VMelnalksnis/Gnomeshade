@@ -74,10 +74,11 @@ namespace Gnomeshade.Data.Models
 		/// </summary>
 		/// <param name="grouping">A grouping of transaction items by transaction.</param>
 		/// <returns>A transaction with initialized <see cref="Items"/>.</returns>
-		public static Transaction FromGrouping(IGrouping<Transaction, OneToOne<Transaction, TransactionItem>> grouping)
+		public static Transaction FromGrouping(IGrouping<Guid, OneToOne<Transaction, TransactionItem>> grouping)
 		{
-			grouping.Key.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();
-			return grouping.Key;
+			var transaction = grouping.First().First;
+			transaction.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();
+			return transaction;
 		}
 	}
 }

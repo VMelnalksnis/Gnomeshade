@@ -181,7 +181,7 @@ CREATE TABLE "public"."transaction_items"
     "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
     "modified_by_user_id" uuid                                   NOT NULL,
     "product_id"          uuid                                   NOT NULL,
-    "amount"              integer                                NOT NULL,
+    "amount"              numeric                                NOT NULL,
     "bank_reference"      text,
     "external_reference"  text,
     "internal_reference"  text,

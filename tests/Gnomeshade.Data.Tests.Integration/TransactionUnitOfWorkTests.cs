@@ -7,6 +7,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Bogus.Extensions;
+
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 
@@ -57,22 +59,23 @@ namespace Gnomeshade.Data.Tests.Integration
 			var importHash = await transactionToAdd.GetHashAsync();
 			transactionToAdd = transactionToAdd with { ImportHash = importHash };
 
-			var transactionItemToAdd = new TransactionItemFaker(
-					TestUser,
-					transactionToAdd,
-					first.Currencies.Single(),
-					second.Currencies.Single(),
-					product)
-				.Generate();
+			var itemFaker = new TransactionItemFaker(
+				TestUser,
+				transactionToAdd,
+				first.Currencies.Single(),
+				second.Currencies.Single(),
+				product);
 
-			var transactionId = await _unitOfWork.AddAsync(transactionToAdd, new[] { transactionItemToAdd });
+			var transactionItemsToAdd = itemFaker.GenerateBetween(2, 2);
+
+			var transactionId = await _unitOfWork.AddAsync(transactionToAdd, transactionItemsToAdd);
 
 			var getTransaction = await _repository.GetByIdAsync(transactionId);
 			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id);
 			var findImportTransaction = await _repository.FindByImportHashAsync(importHash);
 			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.Now.AddMonths(-1), DateTimeOffset.Now);
 
-			getTransaction.Items.Should().ContainSingle().Which.Product.Should().BeEquivalentTo(product);
+			getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);
 			findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 			findImportTransaction.Should().BeEquivalentTo(getTransaction, Options);
 			allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);
@@ -84,6 +87,23 @@ namespace Gnomeshade.Data.Tests.Integration
 			EquivalencyAssertionOptions<Transaction> options)
 		{
 			return options.ComparingByMembers<Transaction>().ComparingByMembers<TransactionItem>();
+		}
+
+		private static EquivalencyAssertionOptions<TransactionItem> ItemOptions(
+			EquivalencyAssertionOptions<TransactionItem> options)
+		{
+			return
+				options
+					.ComparingByMembers<TransactionItem>()
+					.Excluding(item => item.Id)
+					.Excluding(item => item.CreatedAt)
+					.Excluding(item => item.ModifiedAt)
+					.Using<DateTimeOffset>(context =>
+						context.Subject
+							.Should()
+							.BeCloseTo(context.Expectation, TimeSpan.FromMilliseconds(0.001)))
+					.WhenTypeIs<DateTimeOffset>()
+					.ComparingByMembers<Product>();
 		}
 	}
 }

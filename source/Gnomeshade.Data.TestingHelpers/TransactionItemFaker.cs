@@ -18,6 +18,7 @@ namespace Gnomeshade.Data.TestingHelpers
 			Product product)
 			: this(user.Id, transaction.Id, source.Id, target.Id, product.Id)
 		{
+			RuleFor(item => item.Product, product);
 		}
 
 		public TransactionItemFaker(

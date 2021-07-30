@@ -52,7 +52,7 @@ namespace Gnomeshade.Data.Repositories
 			"ti.external_reference ExternalReference, " +
 			"ti.internal_reference InternalReference, " +
 			"ti.description, " +
-			"ti.delivery_date DeliverDate, " +
+			"ti.delivery_date DeliveryDate, " +
 			"p.id, " +
 			"p.created_at CreatedAt, " +
 			"p.owner_id OwnerId, " +
@@ -100,7 +100,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<Transaction?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id LIMIT 2;";
+			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
@@ -115,7 +115,7 @@ namespace Gnomeshade.Data.Repositories
 			byte[] importHash,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.import_hash = @importHash LIMIT 2;";
+			const string sql = _selectSql + " WHERE t.import_hash = @importHash;";
 			var command = new CommandDefinition(sql, new { importHash }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
@@ -128,12 +128,11 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The <see cref="Transaction"/> with the specified id.</returns>
 		public async Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id LIMIT 2;";
+			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 
-			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			var grouping = groupedTransactions.Single();
-			return Transaction.FromGrouping(grouping);
+			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			return transactions.Single();
 		}
 
 		/// <summary>
@@ -151,8 +150,8 @@ namespace Gnomeshade.Data.Repositories
 			const string sql = _selectSql + " WHERE t.date >= @from AND t.date <= @to ORDER BY t.date DESC";
 			var commandDefinition = new CommandDefinition(sql, new { from, to }, cancellationToken: cancellationToken);
 
-			var groupedTransactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
-			return groupedTransactions.Select(grouping => Transaction.FromGrouping(grouping)).ToList();
+			var transactions = await GetTransactionsAsync(commandDefinition).ConfigureAwait(false);
+			return transactions.ToList();
 		}
 
 		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
@@ -164,7 +163,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
 
-		private async Task<IEnumerable<IGrouping<Transaction, OneToOne<Transaction, TransactionItem>>>>
+		private async Task<IEnumerable<Transaction>>
 			GetTransactionsAsync(CommandDefinition command)
 		{
 			var oneToOnes =
@@ -178,14 +177,13 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First);
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => Transaction.FromGrouping(grouping));
 		}
 
 		private async Task<Transaction?> FindAsync(CommandDefinition command)
 		{
-			var groupedTransactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			var grouping = groupedTransactions.SingleOrDefault();
-			return grouping is null ? null : Transaction.FromGrouping(grouping);
+			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			return transactions.SingleOrDefault();
 		}
 	}
 }
