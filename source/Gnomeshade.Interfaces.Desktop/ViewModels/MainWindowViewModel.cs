@@ -106,6 +106,21 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = unitCreationViewModel;
 		}
 
+		/// <summary>
+		/// Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task SwitchToAccountOverviewAsync()
+		{
+			if (ActiveView is AccountViewModel)
+			{
+				return;
+			}
+
+			var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+			ActiveView = accountViewModel;
+		}
+
 		private void SwitchToLogin()
 		{
 			var loginViewModel = new LoginViewModel(_gnomeshadeClient);

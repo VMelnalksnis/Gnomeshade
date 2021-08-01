@@ -7,7 +7,7 @@
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.MainWindow"
 	Icon="/Assets/avalonia-logo.ico"
-	Title="Tracking.Finance.Interfaces.Desktop"
+	Title="Gnomeshade"
 
 	WindowStartupLocation="CenterScreen"
 	TransparencyLevelHint="AcrylicBlur"
@@ -57,8 +57,11 @@
 						x:Name="CreateUnit" Header="Create _Unit"
 						Command="{ReflectionBinding CreateUnit}" />
 					<MenuItem
+						x:Name="Accounts" Header="Accounts"
+						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
+					<MenuItem
 						x:Name="Transactions" Header="Transactions"
-						Command="{ReflectionBinding SwitchToTransactionOverview}"/>
+						Command="{ReflectionBinding SwitchToTransactionOverview}" />
 				</MenuItem>
 			</Menu>
 
