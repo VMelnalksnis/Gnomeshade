@@ -164,7 +164,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 
 			var counterpartyAccount = counterparty is null
 				? await _accountRepository.FindByNameAsync("CITADELE")
-				: await _accountRepository.FindByIbanAsync(counterparty.AccountNumber);
+				: string.IsNullOrWhiteSpace(counterparty.AccountNumber)
+					? await _accountRepository.FindByNameAsync(counterparty.AccountHolder?.Name?.ToUpperInvariant())
+					: await _accountRepository.FindByIbanAsync(counterparty.AccountNumber);
 
 			if (counterpartyAccount is null && counterparty is not null)
 			{

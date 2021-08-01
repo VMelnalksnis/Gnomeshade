@@ -65,7 +65,10 @@
 				</MenuItem>
 			</Menu>
 
-			<UserControl Content="{Binding ActiveView}" />
+			<UserControl
+				Content="{Binding ActiveView}"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
 		</DockPanel>
 	</Panel>
 

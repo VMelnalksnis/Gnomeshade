@@ -14,8 +14,10 @@
 		<vm:AccountViewModel />
 	</Design.DataContext>
 
-	<StackPanel Orientation="Vertical" Spacing="10">
+	<Grid ColumnDefinitions="*" RowDefinitions="*">
 		<DataGrid
+			Grid.Column="0" Grid.Row="0"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			Items="{Binding DataGridView, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
@@ -37,5 +39,5 @@
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
-	</StackPanel>
+	</Grid>
 </UserControl>

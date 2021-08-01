@@ -15,8 +15,10 @@
 		<vm:TransactionViewModel />
 	</Design.DataContext>
 
-	<StackPanel Orientation="Vertical" Spacing="10">
-		<StackPanel Orientation="Horizontal" Spacing="10">
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,*">
+		<StackPanel
+			Grid.Row="0"
+			Orientation="Horizontal" Spacing="10">
 			<DatePicker
 				SelectedDate="{Binding From, Mode=TwoWay}"
 				Header="From:" />
@@ -25,7 +27,9 @@
 				Header="To:" />
 		</StackPanel>
 
-		<StackPanel Orientation="Horizontal" Spacing="10">
+		<StackPanel
+			Grid.Row="1"
+			Orientation="Horizontal" Spacing="10">
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
 				Command="{ReflectionBinding SearchAsync}">
@@ -40,7 +44,10 @@
 		</StackPanel>
 
 		<DataGrid
+			Grid.Row="2"
 			x:Name="DataGrid"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible"
 			Items="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding SelectedOverview, Mode=TwoWay}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
@@ -94,5 +101,5 @@
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
-	</StackPanel>
+	</Grid>
 </UserControl>
