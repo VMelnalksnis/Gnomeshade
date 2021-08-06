@@ -33,6 +33,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 			var creationModel = new AccountCreationModel
 			{
 				Name = "Spending",
+				CounterpartyId = Guid.NewGuid(),
 				PreferredCurrencyId = Guid.NewGuid(),
 				Bic = "AAAA-BB-CC-123",
 				Iban = "LV97HABA0012345678910",

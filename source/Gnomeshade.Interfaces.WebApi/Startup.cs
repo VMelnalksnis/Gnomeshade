@@ -85,8 +85,10 @@ namespace Gnomeshade.Interfaces.WebApi
 				.AddTransient<CurrencyRepository>()
 				.AddTransient<ProductRepository>()
 				.AddTransient<UnitRepository>()
+				.AddTransient<CounterpartyRepository>()
 				.AddTransient<AccountUnitOfWork>()
-				.AddTransient<TransactionUnitOfWork>();
+				.AddTransient<TransactionUnitOfWork>()
+				.AddTransient<UserUnitOfWork>();
 
 			services
 				.AddTransient<Mapper>()

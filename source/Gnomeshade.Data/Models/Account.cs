@@ -45,6 +45,11 @@ namespace Gnomeshade.Data.Models
 		public string NormalizedName { get; set; } = null!;
 
 		/// <summary>
+		/// Gets or sets the id of the <see cref="Counterparty"/> to which this account belongs to.
+		/// </summary>
+		public Guid CounterpartyId { get; set; }
+
+		/// <summary>
 		/// Gets or sets the id of the preferred <see cref="AccountInCurrency"/>.
 		/// </summary>
 		public Guid PreferredCurrencyId { get; set; }

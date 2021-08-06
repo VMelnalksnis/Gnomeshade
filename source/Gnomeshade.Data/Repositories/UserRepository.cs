@@ -15,9 +15,9 @@ namespace Gnomeshade.Data.Repositories
 	public sealed class UserRepository : IDisposable
 	{
 		private const string _insertSql =
-			"INSERT INTO users (id, counterparty_id) VALUES (@Id, @CounterpartyId) RETURNING id";
+			"INSERT INTO users (id, counterparty_id) VALUES (@Id, @CounterpartyId) RETURNING id;";
 
-		private const string _selectSql = "SELECT id, created_at, counterparty_id FROM users WHERE id = @id";
+		private const string _selectSql = "SELECT id, created_at CreatedAt, counterparty_id CounterpartyId FROM users WHERE id = @id";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -51,6 +51,20 @@ namespace Gnomeshade.Data.Repositories
 		{
 			var commandDefinition = new CommandDefinition(_selectSql, new { id });
 			return _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition)!;
+		}
+
+		/// <summary>
+		/// Adds a counterparty to the specified user.
+		/// </summary>
+		/// <param name="id">The id of the user to which to add the counterparty.</param>
+		/// <param name="counterpartyId">The id of the counterparty which to add to the user.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The number of affected rows.</returns>
+		public Task<int> AddCounterparty(Guid id, Guid counterpartyId, IDbTransaction dbTransaction)
+		{
+			const string sql = "UPDATE users SET counterparty_id = @counterpartyId WHERE id = @id;";
+			var command = new CommandDefinition(sql, new { id, counterpartyId }, dbTransaction);
+			return _dbConnection.ExecuteAsync(command);
 		}
 
 		/// <inheritdoc/>

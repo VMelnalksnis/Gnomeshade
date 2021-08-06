@@ -3,7 +3,7 @@ CREATE TABLE "public"."users"
 (
     "id"              uuid        DEFAULT uuid_generate_v4() NOT NULL,
     "created_at"      timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
-    "counterparty_id" uuid,
+    "counterparty_id" uuid                                   NOT NULL,
     CONSTRAINT "users_id" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
@@ -55,6 +55,28 @@ VALUES (uuid_generate_v4(), CURRENT_TIMESTAMP, 'Euro', 'EURO', 978, 'EUR', 2, TR
        (uuid_generate_v4(), CURRENT_TIMESTAMP, 'United States dollar', 'UNITED STATES DOLLAR', 840, 'USD', 2, TRUE,
         FALSE, FALSE, '1792-04-02 00:00:00+00', NULL);
 
+DROP TABLE IF EXISTS "counterparties";
+CREATE TABLE "public"."counterparties"
+(
+    "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "created_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "owner_id"            uuid                                   NOT NULL,
+    "created_by_user_id"  uuid                                   NOT NULL,
+    "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "modified_by_user_id" uuid                                   NOT NULL,
+    "name"                text                                   NOT NULL,
+    "normalized_name"     text                                   NOT NULL,
+    CONSTRAINT "counterparties_id" PRIMARY KEY ("id"),
+    CONSTRAINT "counterparties_normalized_name" UNIQUE ("normalized_name"),
+    CONSTRAINT "counterparties_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "counterparties_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "counterparties_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
+) WITH (oids = FALSE);
+
+ALTER TABLE "public"."users"
+    ADD CONSTRAINT "users_counterparty_id_fkey" FOREIGN KEY (counterparty_id) REFERENCES counterparties (id)
+        DEFERRABLE INITIALLY DEFERRED;
+
 DROP TABLE IF EXISTS "accounts";
 CREATE TABLE "public"."accounts"
 (
@@ -66,19 +88,22 @@ CREATE TABLE "public"."accounts"
     "modified_by_user_id"   uuid                                   NOT NULL,
     "name"                  text                                   NOT NULL,
     "normalized_name"       text                                   NOT NULL,
+    "counterparty_id"       uuid                                   NOT NULL,
     "preferred_currency_id" uuid                                   NOT NULL,
-    "disabled_at"           timestamptz,
-    "disabled_by_user_id"   uuid,
     "bic"                   text,
     "iban"                  text,
     "account_number"        text,
+    "disabled_at"           timestamptz,
+    "disabled_by_user_id"   uuid,
+    CONSTRAINT "accounts_normalized_name" UNIQUE ("normalized_name"),
     CONSTRAINT "accounts_pk" PRIMARY KEY ("id"),
+    CONSTRAINT "accounts_counterparty_id_fkey" FOREIGN KEY (counterparty_id) REFERENCES counterparties (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "accounts_disabled_by_user_id_fkey" FOREIGN KEY (disabled_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_preferred_currency_id_fkey" FOREIGN KEY (preferred_currency_id) REFERENCES currencies (id) NOT DEFERRABLE,
-    CONSTRAINT "accounts_disabled_by_user_id_fkey" FOREIGN KEY (disabled_by_user_id) REFERENCES users (id) NOT DEFERRABLE
-) WITH (OIDS = FALSE);
+    CONSTRAINT "accounts_preferred_currency_id_fkey" FOREIGN KEY (preferred_currency_id) REFERENCES currencies (id) NOT DEFERRABLE
+) WITH (oids = FALSE);
 
 
 DROP TABLE IF EXISTS "accounts_in_currency";
@@ -92,8 +117,8 @@ CREATE TABLE "public"."accounts_in_currency"
     "modified_by_user_id" uuid                                   NOT NULL,
     "account_id"          uuid                                   NOT NULL,
     "currency_id"         uuid                                   NOT NULL,
-    "disabled_at"           timestamptz,
-    "disabled_by_user_id"   uuid,
+    "disabled_at"         timestamptz,
+    "disabled_by_user_id" uuid,
     CONSTRAINT "accounts_in_currency_pk" PRIMARY KEY ("id"),
     CONSTRAINT "accounts_in_currency_account_id_fkey" FOREIGN KEY (account_id) REFERENCES accounts (id) NOT DEFERRABLE,
     CONSTRAINT "accounts_in_currency_currency_id_fkey" FOREIGN KEY (currency_id) REFERENCES currencies (id) NOT DEFERRABLE,
@@ -123,7 +148,7 @@ CREATE TABLE "public"."transactions"
     CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "transactions_validated_by_user_id_fkey" FOREIGN KEY (validated_by_user_id) REFERENCES users(id) NOT DEFERRABLE
+    CONSTRAINT "transactions_validated_by_user_id_fkey" FOREIGN KEY (validated_by_user_id) REFERENCES users (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 

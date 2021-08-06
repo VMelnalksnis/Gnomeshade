@@ -3,23 +3,21 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts
 {
-	public class AccountControllerTests : IDisposable
+	public class AccountControllerTests
 	{
-		private HttpClient _client = null!;
+		private IGnomeshadeClient _client = null!;
 
 		[SetUp]
 		public async Task SetUpAsync()
@@ -30,29 +28,26 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts
 		[Test]
 		public async Task AddCurrency()
 		{
-			var currencies = (await _client.GetFromJsonAsync<List<CurrencyModel>>("/api/v1.0/currency"))!;
+			var currencies = await _client.GetCurrenciesAsync();
 			var existingCurrency = currencies.First();
 			var newCurrency = currencies.Skip(1).First();
 
+			var counterparty = await _client.GetMyCounterpartyAsync();
 			var accountCreationModel = new AccountCreationModel
 			{
 				Name = Guid.NewGuid().ToString("N"),
+				CounterpartyId = counterparty.Id,
 				PreferredCurrencyId = existingCurrency.Id,
 				Currencies = new() { new() { CurrencyId = existingCurrency.Id } },
 			};
 
-			var accountCreationResponse = await _client.PostAsJsonAsync("/api/v1.0/account", accountCreationModel);
-			accountCreationResponse.EnsureSuccessStatusCode();
-			var accountId = await accountCreationResponse.Content.ReadFromJsonAsync<Guid>();
-			var accountUri = $"/api/v1.0/Account/{accountId:N}";
+			var accountId = await _client.CreateAccountAsync(accountCreationModel);
 
 			var newAccountInCurrency = new AccountInCurrencyCreationModel { CurrencyId = newCurrency.Id };
-			var addCurrencyResponse = await _client.PostAsJsonAsync(accountUri, newAccountInCurrency);
-			addCurrencyResponse.EnsureSuccessStatusCode();
-			var addCurrencyId = await addCurrencyResponse.Content.ReadFromJsonAsync<Guid>();
+			var addCurrencyId = await _client.AddCurrencyToAccountAsync(accountId, newAccountInCurrency);
 
-			var account = (await _client.GetFromJsonAsync<AccountModel>(accountUri))!;
-			var accounts = (await _client.GetFromJsonAsync<List<AccountModel>>("/api/v1.0/Account"))!;
+			var account = await _client.GetAccountAsync(accountId);
+			var accounts = await _client.GetAccountsAsync();
 			accounts.Should().Contain(a => a.Id == account.Id);
 
 			addCurrencyId.Should().Be(accountId);
@@ -61,12 +56,6 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts
 				.SatisfyRespectively(
 					inCurrency => inCurrency.Currency.Id.Should().Be(existingCurrency.Id),
 					inCurrency => inCurrency.Currency.Id.Should().Be(newCurrency.Id));
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			_client.Dispose();
 		}
 	}
 }

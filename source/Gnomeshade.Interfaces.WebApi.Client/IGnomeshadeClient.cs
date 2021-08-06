@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Models;
 using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
@@ -37,6 +38,8 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <returns>Information about the currently logged in user.</returns>
 		Task<UserModel> InfoAsync();
+
+		Task<CounterpartyModel> GetMyCounterpartyAsync();
 
 		/// <summary>
 		/// Creates a new transaction.
@@ -88,6 +91,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <param name="id">The id by which to search for an account.</param>
 		/// <returns>The account with the specified id if it exists; otherwise <see langword="null"/>.</returns>
 		Task<AccountModel> GetAccountAsync(Guid id);
+
+		/// <summary>
+		/// Finds an account with the specified normalized name.
+		/// </summary>
+		/// <param name="name">The normalized by which to search for an account.</param>
+		/// <returns>The account with the specified name if it exists; otherwise <see langword="null"/>.</returns>
+		Task<AccountModel?> FindAccountAsync(string name);
 
 		/// <summary>
 		/// Gets all accounts.

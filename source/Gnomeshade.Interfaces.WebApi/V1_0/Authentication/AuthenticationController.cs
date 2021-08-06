@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -13,16 +12,14 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
-using Gnomeshade.Data.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -40,38 +37,26 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 	public sealed class AuthenticationController : ControllerBase
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly IDbConnection _dbConnection;
-		private readonly UserRepository _userRepository;
-		private readonly OwnerRepository _ownerRepository;
-		private readonly OwnershipRepository _ownershipRepository;
+		private readonly UserUnitOfWork _userUnitOfWork;
 		private readonly Mapper _mapper;
 		private readonly JwtOptions _jwtOptions;
 		private readonly JwtSecurityTokenHandler _securityTokenHandler;
 		private readonly ProblemDetailsFactory _problemDetailFactory;
-		private readonly ILogger<AuthenticationController> _logger;
 
 		public AuthenticationController(
 			UserManager<ApplicationUser> userManager,
-			IDbConnection dbConnection,
-			UserRepository userRepository,
-			OwnerRepository ownerRepository,
-			OwnershipRepository ownershipRepository,
+			UserUnitOfWork userUnitOfWork,
 			Mapper mapper,
 			IOptions<JwtOptions> jwtOptions,
 			JwtSecurityTokenHandler securityTokenHandler,
-			ProblemDetailsFactory problemDetailsFactory,
-			ILogger<AuthenticationController> logger)
+			ProblemDetailsFactory problemDetailsFactory)
 		{
 			_userManager = userManager;
-			_dbConnection = dbConnection;
-			_userRepository = userRepository;
-			_ownerRepository = ownerRepository;
-			_ownershipRepository = ownershipRepository;
+			_userUnitOfWork = userUnitOfWork;
 			_mapper = mapper;
 			_jwtOptions = jwtOptions.Value;
 			_securityTokenHandler = securityTokenHandler;
 			_problemDetailFactory = problemDetailsFactory;
-			_logger = logger;
 		}
 
 		[HttpPost]
@@ -125,23 +110,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 
 			var identityUser = await _userManager.FindByNameAsync(registration.Username);
 			var identityUserId = new Guid(identityUser.Id);
-			var applicationUser = new User { Id = identityUserId };
-			_dbConnection.Open();
-			using var dbTransaction = _dbConnection.BeginTransaction();
-
-			try
-			{
-				_ = await _userRepository.AddWithIdAsync(applicationUser, dbTransaction);
-				_ = await _ownerRepository.AddAsync(identityUserId, dbTransaction);
-				_ = await _ownershipRepository.AddDefaultAsync(identityUserId, dbTransaction);
-				dbTransaction.Commit();
-			}
-			catch (Exception exception)
-			{
-				_logger.LogError(exception, "Failed creating user");
-				dbTransaction.Rollback();
-				throw;
-			}
+			await _userUnitOfWork.CreateUser(identityUserId, user.FullName);
 
 			return Ok();
 		}

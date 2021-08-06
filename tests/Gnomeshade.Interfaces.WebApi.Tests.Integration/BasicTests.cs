@@ -3,17 +3,15 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Bogus;
 
 using FluentAssertions;
 
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
@@ -24,30 +22,12 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 {
 	public class BasicTests
 	{
-		private HttpClient _authenticatedClient = null!;
+		private IGnomeshadeClient _authenticatedClient = null!;
 
 		[SetUp]
 		public async Task SetUpAsync()
 		{
 			_authenticatedClient = await WebserverSetup.CreateAuthorizedClientAsync();
-		}
-
-		[TestCase("v1.0")]
-		public async Task Get_SwaggerEndpoint(string version)
-		{
-			var response = await _authenticatedClient.GetAsync($"/swagger/{version}/swagger.json");
-
-			response.EnsureSuccessStatusCode();
-			_ = await response.Content.ReadAsStringAsync();
-		}
-
-		[TestCase("/swagger")]
-		public async Task Get_ReturnsSuccess(string requestUrl)
-		{
-			var response = await _authenticatedClient.GetAsync(requestUrl);
-
-			response.EnsureSuccessStatusCode();
-			_ = await response.Content.ReadAsStringAsync();
 		}
 
 		[Test]
@@ -61,20 +41,10 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		}
 
 		[Test]
-		public async Task Login()
-		{
-			var authorizedResponse = await _authenticatedClient.GetAsync("/api/v1.0/transaction");
-			authorizedResponse.EnsureSuccessStatusCode();
-		}
-
-		[Test]
 		public async Task Create_ShouldCreateItems()
 		{
-			var currency = (await _authenticatedClient.GetFromJsonAsync<List<CurrencyModel>>("/api/v1.0/currency"))!
-				.First();
-			var productId = (await _authenticatedClient.GetFromJsonAsync<List<ProductModel>>("/api/v1.0/product"))!
-				.FirstOrDefault()
-				?.Id;
+			var currency = (await _authenticatedClient.GetCurrenciesAsync()).First();
+			var productId = (await _authenticatedClient.GetProductsAsync()).FirstOrDefault()?.Id;
 			if (productId is null)
 			{
 				var productCreationModel = new Faker<ProductCreationModel>()
@@ -82,42 +52,28 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 					.RuleFor(model => model.Description, faker => faker.Lorem.Sentence())
 					.Generate();
 
-				var productCreationResponse =
-					await _authenticatedClient.PostAsJsonAsync("/api/v1.0/product", productCreationModel);
-				productCreationResponse.EnsureSuccessStatusCode();
-				productId = await productCreationResponse.Content.ReadFromJsonAsync<Guid>();
+				productId = await _authenticatedClient.CreateProductAsync(productCreationModel);
 			}
 
+			var counterparty = await _authenticatedClient.GetMyCounterpartyAsync();
 			var accountCreationModel =
 				new Faker<AccountCreationModel>()
 					.RuleFor(model => model.Name, faker => faker.Finance.AccountName())
 					.RuleFor(model => model.Bic, faker => faker.Finance.Bic())
 					.RuleFor(model => model.Iban, faker => faker.Finance.Iban())
-					.RuleFor(model => model.PreferredCurrencyId, () => currency.Id)
+					.RuleFor(model => model.CounterpartyId, counterparty.Id)
+					.RuleFor(model => model.PreferredCurrencyId, currency.Id)
 					.RuleFor(model => model.Currencies, () => new() { new() { CurrencyId = currency.Id } })
 					.Generate();
 
-			var findAccountResponse =
-				await _authenticatedClient.GetAsync($"/api/v1.0/account/find/{accountCreationModel.Name}");
-
-			var account =
-				findAccountResponse.IsSuccessStatusCode
-					? await findAccountResponse.Content.ReadFromJsonAsync<AccountModel>()
-					: null;
-
+			var account = await _authenticatedClient.FindAccountAsync(accountCreationModel.Name!);
 			if (account is null)
 			{
-				var accountCreationResponse =
-					await _authenticatedClient.PostAsJsonAsync("/api/v1.0/account", accountCreationModel);
-				accountCreationResponse.EnsureSuccessStatusCode();
-				var accountId = await accountCreationResponse.Content.ReadFromJsonAsync<Guid>();
-				account =
-					(await _authenticatedClient.GetFromJsonAsync<AccountModel>($"/api/v1.0/account/{accountId:N}"))!;
+				var accountId = await _authenticatedClient.CreateAccountAsync(accountCreationModel);
+				account = await _authenticatedClient.GetAccountAsync(accountId);
 			}
 
-			var transactionsResponse = await _authenticatedClient.GetAsync("/api/v1.0/transaction");
-			transactionsResponse.EnsureSuccessStatusCode();
-			await transactionsResponse.Content.ReadFromJsonAsync<List<TransactionModel>>();
+			await _authenticatedClient.GetTransactionsAsync(null, null);
 
 			var transaction = new TransactionCreationModel
 			{
@@ -137,8 +93,8 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 				},
 			};
 
-			var createResponse = await _authenticatedClient.PostAsJsonAsync("/api/v1.0/transaction", transaction);
-			createResponse.EnsureSuccessStatusCode();
+			var transactionId = await _authenticatedClient.CreateTransactionAsync(transaction);
+			await _authenticatedClient.GetTransactionAsync(transactionId);
 		}
 	}
 }

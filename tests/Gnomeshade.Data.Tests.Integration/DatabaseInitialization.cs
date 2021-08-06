@@ -23,14 +23,14 @@ namespace Gnomeshade.Data.Tests.Integration
 	[SetUpFixture]
 	public class DatabaseInitialization
 	{
-		private static readonly string _connectionString =
+		public static readonly string ConnectionString =
 			new ConfigurationBuilder()
 				.AddUserSecrets<DatabaseInitialization>()
 				.AddEnvironmentVariables()
 				.Build()
 				.GetConnectionString("FinanceDb");
 
-		private static string? _database = new NpgsqlConnectionStringBuilder(_connectionString).Database;
+		private static readonly string? _database = new NpgsqlConnectionStringBuilder(ConnectionString).Database;
 
 		public static User TestUser { get; private set; } = null!;
 
@@ -59,8 +59,11 @@ namespace Gnomeshade.Data.Tests.Integration
 				NpgsqlLogManager.IsParameterLoggingEnabled = true;
 			}
 
-			var connectionString = new NpgsqlConnectionStringBuilder(_connectionString);
-			connectionString.Database = "postgres";
+			var connectionString = new NpgsqlConnectionStringBuilder(ConnectionString)
+			{
+				Database = "postgres",
+				IncludeErrorDetails = true,
+			};
 
 			await using var sqlConnection = new NpgsqlConnection(connectionString.ToString());
 			sqlConnection.Open();
@@ -94,6 +97,18 @@ namespace Gnomeshade.Data.Tests.Integration
 			await ownerRepository.AddAsync(TestUser.Id, transaction).ConfigureAwait(false);
 			await ownershipRepository.AddDefaultAsync(TestUser.Id, transaction).ConfigureAwait(false);
 
+			var counterparty = new Counterparty
+			{
+				OwnerId = userId,
+				CreatedByUserId = userId,
+				ModifiedByUserId = userId,
+				Name = "Test counterparty",
+				NormalizedName = "TEST COUNTERPARTY",
+			};
+
+			var counterpartyId = await new CounterpartyRepository(sqlConnection).AddAsync(counterparty, transaction);
+			await userRepository.AddCounterparty(userId, counterpartyId, transaction);
+
 			await transaction.CommitAsync().ConfigureAwait(false);
 		}
 
@@ -102,7 +117,7 @@ namespace Gnomeshade.Data.Tests.Integration
 		{
 			NpgsqlConnection.ClearAllPools();
 
-			await using var sqlConnection = new NpgsqlConnection(_connectionString);
+			await using var sqlConnection = new NpgsqlConnection(ConnectionString);
 			await sqlConnection.OpenAsync().ConfigureAwait(false);
 			await sqlConnection.ChangeDatabaseAsync("postgres").ConfigureAwait(false);
 

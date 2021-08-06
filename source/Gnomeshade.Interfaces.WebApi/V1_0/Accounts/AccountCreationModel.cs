@@ -25,6 +25,12 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		public string? Name { get; init; }
 
 		/// <summary>
+		/// The id of the counterparty to which this account belongs to. Required.
+		/// </summary>
+		[Required]
+		public Guid? CounterpartyId { get; init; }
+
+		/// <summary>
 		/// The id of the preferred currency of the account to create. Required.
 		/// </summary>
 		[Required]

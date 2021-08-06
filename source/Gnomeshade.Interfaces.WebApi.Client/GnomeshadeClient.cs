@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
 		/// </summary>
 		public GnomeshadeClient()
-			: this(new("https://localhost:5001/api/v1.0/"))
+			: this(new Uri("https://localhost:5001/api/v1.0/"))
 		{
 		}
 
@@ -41,6 +42,24 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		public GnomeshadeClient(Uri baseUri)
 		{
 			_httpClient.BaseAddress = baseUri;
+			_httpClient.DefaultRequestHeaders.Accept.Clear();
+			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
+		/// </summary>
+		/// <param name="httpClient">The HTTP client to use for requests.</param>
+		public GnomeshadeClient(HttpClient httpClient)
+		{
+			_httpClient = httpClient;
+			if (httpClient.BaseAddress?.AbsolutePath == "/")
+			{
+				var uriBuilder = new UriBuilder(httpClient.BaseAddress);
+				uriBuilder.Path += "api/v1.0/";
+				_httpClient.BaseAddress = uriBuilder.Uri;
+			}
+
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 		}
@@ -81,10 +100,16 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return GetAsync<UserModel>(InfoUri);
 		}
 
+		/// <inheritdoc />
+		public Task<CounterpartyModel> GetMyCounterpartyAsync()
+		{
+			return GetAsync<CounterpartyModel>("Counterparty/Me");
+		}
+
 		/// <inheritdoc/>
 		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
-			return PostAsync<Guid, TransactionCreationModel>(Transaction, transaction);
+			return PostAsync<Guid, TransactionCreationModel>(Routes.Transaction, transaction);
 		}
 
 		/// <inheritdoc />
@@ -124,21 +149,34 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
+		public async Task<AccountModel?> FindAccountAsync(string name)
+		{
+			using var response = await _httpClient.GetAsync($"Account/Find/{name}").ConfigureAwait(false);
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			response.EnsureSuccessStatusCode();
+			return (await response.Content.ReadFromJsonAsync<AccountModel>().ConfigureAwait(false))!;
+		}
+
+		/// <inheritdoc />
 		public Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>($"{Account}?onlyActive=false");
+			return GetAsync<List<AccountModel>>($"{Routes.Account}?onlyActive=false");
 		}
 
 		/// <inheritdoc />
 		public Task<List<AccountModel>> GetActiveAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>(Account);
+			return GetAsync<List<AccountModel>>(Routes.Account);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateAccountAsync(AccountCreationModel account)
 		{
-			return PostAsync<Guid, AccountCreationModel>(Account, account);
+			return PostAsync<Guid, AccountCreationModel>(Routes.Account, account);
 		}
 
 		/// <inheritdoc />
@@ -150,31 +188,31 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return GetAsync<List<CurrencyModel>>(Currency);
+			return GetAsync<List<CurrencyModel>>(Routes.Currency);
 		}
 
 		/// <inheritdoc />
 		public Task<List<ProductModel>> GetProductsAsync()
 		{
-			return GetAsync<List<ProductModel>>(Product);
+			return GetAsync<List<ProductModel>>(Routes.Product);
 		}
 
 		/// <inheritdoc />
 		public Task<List<UnitModel>> GetUnitsAsync()
 		{
-			return GetAsync<List<UnitModel>>(Unit);
+			return GetAsync<List<UnitModel>>(Routes.Unit);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateProductAsync(ProductCreationModel product)
 		{
-			return PostAsync<Guid, ProductCreationModel>(Product, product);
+			return PostAsync<Guid, ProductCreationModel>(Routes.Product, product);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
 		{
-			return PostAsync<Guid, UnitCreationModel>(Unit, unit);
+			return PostAsync<Guid, UnitCreationModel>(Routes.Unit, unit);
 		}
 
 		private async Task<TResult> GetAsync<TResult>(string requestUri)

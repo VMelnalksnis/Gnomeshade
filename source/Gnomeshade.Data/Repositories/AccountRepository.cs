@@ -16,10 +16,10 @@ using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class AccountRepository : IDisposable
+	public sealed class AccountRepository : NamedRepository<Account>
 	{
 		private const string _insertSql =
-			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name,counterparty_id, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @CounterpartyId, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
 
 		private const string _selectSql =
 			"SELECT a.id, " +
@@ -30,6 +30,7 @@ namespace Gnomeshade.Data.Repositories
 			"a.modified_by_user_id ModifiedByUserId, " +
 			"a.name, " +
 			"a.normalized_name NormalizedName, " +
+			"a.counterparty_id CounterpartyId, " +
 			"a.preferred_currency_id PreferredCurrencyId, " +
 			"a.disabled_at DisabledAt," +
 			"a.disabled_by_user_id DisabledByUserId," +
@@ -77,37 +78,46 @@ namespace Gnomeshade.Data.Repositories
 
 		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id;";
 
-		private readonly IDbConnection _dbConnection;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public AccountRepository(IDbConnection dbConnection)
+			: base(dbConnection)
 		{
-			_dbConnection = dbConnection;
 		}
 
-		public Task<Guid> AddAsync(Account entity, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return _dbConnection.QuerySingleAsync<Guid>(command);
-		}
+		/// <inheritdoc />
+		protected override string DeleteSql => _deleteSql;
 
-		public Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		protected override string InsertSql => _insertSql;
+
+		/// <inheritdoc />
+		protected override string SelectSql => _selectSql;
+
+		/// <inheritdoc />
+		public override Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
-		public Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		public override Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.normalized_name = @name;";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
+		/// <summary>
+		/// Finds an account with the specified IBAN.
+		/// </summary>
+		/// <param name="iban">The IBAN for which to search for.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<Account?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.iban = @iban;";
@@ -115,7 +125,8 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
-		public async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		public override async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -124,9 +135,10 @@ namespace Gnomeshade.Data.Repositories
 			return accounts.Single();
 		}
 
-		public Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		public override Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " ORDER BY a.created_at DESC LIMIT 1000;";
+			const string sql = _selectSql + " ORDER BY a.created_at DESC, aic.created_at DESC LIMIT 1000;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
 			return GetAccountsAsync(command);
 		}
@@ -143,15 +155,6 @@ namespace Gnomeshade.Data.Repositories
 			return GetAccountsAsync(command);
 		}
 
-		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
-			return _dbConnection.ExecuteAsync(command);
-		}
-
-		/// <inheritdoc />
-		public void Dispose() => _dbConnection.Dispose();
-
 		private async Task<Account?> FindAsync(CommandDefinition command)
 		{
 			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
@@ -162,7 +165,7 @@ namespace Gnomeshade.Data.Repositories
 			CommandDefinition command)
 		{
 			var oneToOnes =
-				await _dbConnection
+				await DbConnection
 					.QueryAsync<Account, Currency, AccountInCurrency, Currency, OneToOne<Account, AccountInCurrency>>(
 						command,
 						(account, preferredCurrency, inCurrency, currency) =>

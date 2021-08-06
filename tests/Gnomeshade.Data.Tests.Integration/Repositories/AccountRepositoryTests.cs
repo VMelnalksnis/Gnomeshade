@@ -23,6 +23,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 	public class AccountRepositoryTests : IDisposable
 	{
 		private IDbConnection _dbConnection = null!;
+		private CounterpartyRepository _counterpartyRepository = null!;
 		private AccountRepository _repository = null!;
 		private AccountInCurrencyRepository _inCurrencyRepository = null!;
 		private AccountUnitOfWork _unitOfWork = null!;
@@ -31,6 +32,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		public async Task SetUpAsync()
 		{
 			_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+			_counterpartyRepository = new(_dbConnection);
 			_repository = new(_dbConnection);
 			_inCurrencyRepository = new(_dbConnection);
 			_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository);
@@ -40,7 +42,10 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		public void Dispose()
 		{
 			_dbConnection.Dispose();
+			_counterpartyRepository.Dispose();
 			_repository.Dispose();
+			_inCurrencyRepository.Dispose();
+			_unitOfWork.Dispose();
 		}
 
 		[Test]
@@ -49,7 +54,11 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var currencies = await EntityFactory.GetCurrenciesAsync();
 			var preferredCurrency = currencies.First();
 
-			var accountFaker = new AccountFaker(TestUser, preferredCurrency);
+			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
+			var counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
+			counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId);
+
+			var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
 			var account = accountFaker.Generate();
 
 			var currencyIds =

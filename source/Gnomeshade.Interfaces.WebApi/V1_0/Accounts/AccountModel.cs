@@ -50,6 +50,11 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		public string Name { get; init; } = null!;
 
 		/// <summary>
+		/// The id of the counterparty to which this account belongs to.
+		/// </summary>
+		public Guid CounterpartyId { get; init; }
+
+		/// <summary>
 		/// The preferred currency of the account.
 		/// </summary>
 		public CurrencyModel PreferredCurrency { get; init; } = null!;

@@ -2,16 +2,16 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Bogus;
 
 using Gnomeshade.Data.Tests.Integration;
+using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Testing;
 
 using NUnit.Framework;
@@ -25,14 +25,21 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 
 		private static LoginModel LoginModel { get; set; } = null!;
 
-		public static async Task<HttpClient> CreateAuthorizedClientAsync()
+		public static IGnomeshadeClient CreateClient()
 		{
-			var client = WebApplicationFactory.CreateClient();
-			var loginResponse = await client.PostAsJsonAsync("/api/v1.0/authentication/login", LoginModel);
-			loginResponse.EnsureSuccessStatusCode();
-			var responseContent = (await loginResponse.Content.ReadFromJsonAsync<LoginResponse>())!;
+			var httpClient = WebApplicationFactory.CreateClient();
+			return new GnomeshadeClient(httpClient);
+		}
 
-			client.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, responseContent.Token);
+		public static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+		{
+			var client = CreateClient();
+			var loginResult = await client.LogInAsync(LoginModel);
+			if (loginResult is not SuccessfulLogin)
+			{
+				throw new(loginResult.ToString());
+			}
+
 			return client;
 		}
 
@@ -40,12 +47,16 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		public async Task OneTimeSetUpAsync()
 		{
 			await DatabaseInitialization.SetupDatabaseAsync();
-			WebApplicationFactory = new();
+			WebApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(builder =>
+			{
+				builder.UseSetting("ConnectionStrings:FinanceDb", DatabaseInitialization.ConnectionString);
+			});
 
 			var registrationModel = new Faker<RegistrationModel>()
 				.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
 				.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
 				.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
+				.RuleFor(registration => registration.FullName, faker => faker.Person.FullName)
 				.Generate();
 
 			var client = WebApplicationFactory.CreateClient();

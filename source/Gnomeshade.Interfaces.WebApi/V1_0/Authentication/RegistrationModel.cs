@@ -12,13 +12,16 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 	public sealed record RegistrationModel
 	{
 		[Required(AllowEmptyStrings = false)]
-		public string Username { get; init; }
+		public string Username { get; init; } = null!;
 
 		[EmailAddress]
 		[Required(AllowEmptyStrings = false)]
-		public string Email { get; init; }
+		public string Email { get; init; } = null!;
 
 		[Required(AllowEmptyStrings = false)]
-		public string Password { get; init; }
+		public string Password { get; init; } = null!;
+
+		[Required(AllowEmptyStrings = false)]
+		public string FullName { get; init; } = null!;
 	}
 }

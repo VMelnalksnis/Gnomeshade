@@ -101,6 +101,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<UserModel> InfoAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />
+		public Task<CounterpartyModel> GetMyCounterpartyAsync() => throw new NotImplementedException();
+
+		/// <inheritdoc />
 		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
 			throw new NotImplementedException();
 
@@ -152,6 +155,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<AccountModel> GetAccountAsync(Guid id)
 		{
 			return Task.FromResult(_accounts.Single(account => account.Id == id));
+		}
+
+		/// <inheritdoc />
+		public Task<AccountModel?> FindAccountAsync(string name)
+		{
+			var foundAccount = _accounts.SingleOrDefault(account => account.Name.ToUpperInvariant() == name);
+			return Task.FromResult(foundAccount);
 		}
 
 		/// <inheritdoc />

@@ -22,6 +22,9 @@ namespace Gnomeshade.Data.Models
 		/// <inheritdoc/>
 		public Guid ModifiedByUserId { get; set; }
 
-		public Guid? CounterpartyId { get; set; }
+		/// <summary>
+		/// Gets or sets the id of the <see cref="Counterparty"/> which represents this user in transactions.
+		/// </summary>
+		public Guid CounterpartyId { get; set; }
 	}
 }

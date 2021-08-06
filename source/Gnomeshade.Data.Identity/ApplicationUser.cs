@@ -8,5 +8,9 @@ namespace Gnomeshade.Data.Identity
 {
 	public sealed class ApplicationUser : IdentityUser
 	{
+		/// <summary>
+		/// Gets or sets the full name for this user.
+		/// </summary>
+		public string FullName { get; set; } = null!;
 	}
 }
