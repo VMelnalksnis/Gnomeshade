@@ -42,7 +42,7 @@ namespace Gnomeshade.Data
 				throw new ArgumentException("Transaction must have at least one item", nameof(items));
 			}
 
-			using var dbTransaction = BeginTransaction();
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
 				var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
@@ -70,7 +70,7 @@ namespace Gnomeshade.Data
 		/// <returns>The count of affected entities.</returns>
 		public async Task<int> DeleteAsync(Transaction transaction)
 		{
-			using var dbTransaction = BeginTransaction();
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
 				var affectedEntities = 0;
@@ -97,16 +97,6 @@ namespace Gnomeshade.Data
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_itemRepository.Dispose();
-		}
-
-		private IDbTransaction BeginTransaction()
-		{
-			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
-			{
-				_dbConnection.Open();
-			}
-
-			return _dbConnection.BeginTransaction();
 		}
 	}
 }

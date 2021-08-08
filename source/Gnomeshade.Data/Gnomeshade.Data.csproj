@@ -1,27 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<Copyright>Valters Melnalksnis</Copyright>
-		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Copyright>Valters Melnalksnis</Copyright>
+        <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Dapper" Version="2.0.90" />
-		<PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.90"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.1.0"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Gnomeshade.Core\Gnomeshade.Core.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Gnomeshade.Core\Gnomeshade.Core.csproj"/>
+        <ProjectReference Include="..\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj"/>
+    </ItemGroup>
 
 </Project>

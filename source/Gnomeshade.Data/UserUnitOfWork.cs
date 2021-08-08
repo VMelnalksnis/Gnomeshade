@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 
@@ -19,40 +20,48 @@ namespace Gnomeshade.Data
 		private readonly UserRepository _userRepository;
 		private readonly CounterpartyRepository _counterpartyRepository;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="UserUnitOfWork"/> class.
+		/// </summary>
+		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public UserUnitOfWork(IDbConnection dbConnection)
 		{
 			_dbConnection = dbConnection;
+
 			_ownerRepository = new(dbConnection);
 			_ownershipRepository = new(dbConnection);
 			_userRepository = new(dbConnection);
 			_counterpartyRepository = new(dbConnection);
 		}
 
-		public async Task CreateUser(Guid identityId, string fullName)
+		/// <summary>
+		/// Creates a new application user for the specified identity user.
+		/// </summary>
+		/// <param name="applicationUser">The identity user for which to create a new application user.</param>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task CreateUserAsync(ApplicationUser applicationUser)
 		{
-			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
-			{
-				_dbConnection.Open();
-			}
+			var userId = Guid.Parse(applicationUser.Id); // todo convert to parse exact
+			var fullName = applicationUser.FullName;
+			var user = new User { Id = userId, ModifiedByUserId = userId };
 
-			var applicationUser = new User { Id = identityId, ModifiedByUserId = identityId };
-			using var dbTransaction = _dbConnection.BeginTransaction();
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
 			try
 			{
-				_ = await _userRepository.AddWithIdAsync(applicationUser, dbTransaction);
-				_ = await _ownerRepository.AddAsync(identityId, dbTransaction);
-				_ = await _ownershipRepository.AddDefaultAsync(identityId, dbTransaction);
+				_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
+				_ = await _ownerRepository.AddAsync(userId, dbTransaction);
+				_ = await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
 				var counterparty = new Counterparty
 				{
-					OwnerId = identityId,
-					CreatedByUserId = identityId,
-					ModifiedByUserId = identityId,
+					OwnerId = userId,
+					CreatedByUserId = userId,
+					ModifiedByUserId = userId,
 					Name = fullName,
 					NormalizedName = fullName.ToUpperInvariant(),
 				};
 				var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
-				_ = await _userRepository.AddCounterparty(identityId, counterpartyId, dbTransaction);
+				_ = await _userRepository.AddCounterparty(userId, counterpartyId, dbTransaction);
 
 				dbTransaction.Commit();
 			}

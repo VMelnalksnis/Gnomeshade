@@ -100,7 +100,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			var user = _mapper.Map<ApplicationUser>(registration);
 			user.SecurityStamp = Guid.NewGuid().ToString();
 
-			// todo rollback if failed to create
 			var creationResult = await _userManager.CreateAsync(user, registration.Password);
 			if (!creationResult.Succeeded)
 			{
@@ -109,8 +108,15 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			}
 
 			var identityUser = await _userManager.FindByNameAsync(registration.Username);
-			var identityUserId = new Guid(identityUser.Id);
-			await _userUnitOfWork.CreateUser(identityUserId, user.FullName);
+
+			try
+			{
+				await _userUnitOfWork.CreateUserAsync(identityUser);
+			}
+			catch (Exception)
+			{
+				await _userManager.DeleteAsync(identityUser);
+			}
 
 			return Ok();
 		}

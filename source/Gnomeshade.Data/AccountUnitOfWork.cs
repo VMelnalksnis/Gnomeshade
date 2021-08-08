@@ -64,7 +64,7 @@ namespace Gnomeshade.Data
 		/// <returns>The id of the created account.</returns>
 		public async Task<Guid> AddAsync(Account account, Guid currencyId, IReadOnlyCollection<Guid> currencies)
 		{
-			using var dbTransaction = BeginTransaction();
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
 				account.PreferredCurrencyId = currencyId;
@@ -102,7 +102,7 @@ namespace Gnomeshade.Data
 		/// <returns>The count of affected entities.</returns>
 		public async Task<int> DeleteAsync(Account account)
 		{
-			using var dbTransaction = BeginTransaction();
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
 				var affectedEntities = 0;
@@ -128,16 +128,6 @@ namespace Gnomeshade.Data
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_inCurrencyRepository.Dispose();
-		}
-
-		private IDbTransaction BeginTransaction()
-		{
-			if (!_dbConnection.State.HasFlag(ConnectionState.Open))
-			{
-				_dbConnection.Open();
-			}
-
-			return _dbConnection.BeginTransaction();
 		}
 	}
 }
