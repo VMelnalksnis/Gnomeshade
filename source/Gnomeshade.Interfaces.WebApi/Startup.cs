@@ -23,7 +23,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Npgsql;
-using Npgsql.Logging;
+
+using Serilog;
 
 namespace Gnomeshade.Interfaces.WebApi
 {
@@ -40,12 +41,6 @@ namespace Gnomeshade.Interfaces.WebApi
 		{
 			Configuration = configuration;
 
-			if (NpgsqlLogManager.Provider is null)
-			{
-				NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true);
-				NpgsqlLogManager.IsParameterLoggingEnabled = true;
-			}
-
 			using var database = new ApplicationDbContext(Configuration);
 			database.Database.EnsureCreated();
 		}
@@ -61,6 +56,8 @@ namespace Gnomeshade.Interfaces.WebApi
 		/// <param name="services">Service collection to which to add services to.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddLogging(builder => builder.AddSerilog(dispose: true));
+
 			services.AddOptions<JwtOptions>(Configuration);
 
 			services.AddControllers().AddControllersAsServices();
@@ -113,6 +110,8 @@ namespace Gnomeshade.Interfaces.WebApi
 			{
 				application.UseDeveloperExceptionPage();
 			}
+
+			application.UseSerilogRequestLogging();
 
 			application.UseRouting();
 
