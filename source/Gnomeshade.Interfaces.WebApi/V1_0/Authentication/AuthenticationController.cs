@@ -116,6 +116,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			catch (Exception)
 			{
 				await _userManager.DeleteAsync(identityUser);
+				throw;
 			}
 
 			return Ok();
