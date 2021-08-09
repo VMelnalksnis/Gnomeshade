@@ -30,7 +30,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 
 		public void AddAccount(Account account, bool created)
 		{
-			if (ReportResult.AccountReferences.Any(reference => reference.Account.Id == account.Id))
+			if (ReportResult.AccountReferences.Any(reference => reference.Account.Name == account.Name))
 			{
 				return;
 			}
@@ -41,7 +41,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 
 		public void AddProduct(Product product, bool created)
 		{
-			if (ReportResult.ProductReferences.Any(reference => reference.Product.Id == product.Id))
+			if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
 			{
 				return;
 			}

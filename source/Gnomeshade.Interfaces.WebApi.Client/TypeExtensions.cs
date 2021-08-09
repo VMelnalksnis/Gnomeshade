@@ -22,7 +22,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 				throw new ArgumentException("The specified type must be a controller", nameof(controllerType));
 			}
 
-			return controllerType.Name[..controllerType.Name.LastIndexOf("Controller", StringComparison.Ordinal)];
+			var name = controllerType.Name[..controllerType.Name.LastIndexOf("Controller", StringComparison.Ordinal)];
+			if (!char.IsDigit(name.Last()))
+			{
+				return name;
+			}
+
+			var chars = name.TakeWhile(@char => !char.IsDigit(@char)).ToArray();
+			return new(chars);
 		}
 	}
 }

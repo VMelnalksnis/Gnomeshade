@@ -118,27 +118,15 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 
 			using var dbTransaction = _dbConnection.BeginTransaction();
 
-			var (reportAccount, createdAccount) = await FindAccount(accountReport.Account, user, dbTransaction);
+			var (reportAccount, currency, createdAccount) =
+				await FindAccount(accountReport.Account, user, dbTransaction);
 			_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
 
 			var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
 
-			var bankName = accountReport.Account.Servicer?.FinancialInstitutionIdentification.Name?.ToUpperInvariant();
-			if (string.IsNullOrWhiteSpace(bankName))
-			{
-				_logger.LogTrace("Cannot identify bank by {Servicer}", accountReport.Account.Servicer);
-				return BadRequest();
-			}
-
-			_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
-			var bankAccount = await _accountRepository.FindByNameAsync(bankName);
-			_logger.LogDebug("Matched bank account to {AccountName}", bankAccount?.Name);
-			if (bankAccount is null)
-			{
-				throw new KeyNotFoundException($"Could not find account by name {bankAccount}");
-			}
-
-			resultBuilder.AddAccount(bankAccount, false);
+			var (bankAccount, bankCreated) =
+				await FindBankAccount(accountReport.Account.Servicer, user, currency, dbTransaction);
+			resultBuilder.AddAccount(bankAccount, bankCreated);
 
 			var creditEntriesSummary = accountReport.TransactionsSummary?.TotalCreditEntries;
 			if (creditEntriesSummary is not null)
@@ -201,6 +189,17 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			}
 		}
 
+		private async Task<User?> GetCurrentUser()
+		{
+			var identityUser = await _userManager.GetUserAsync(User);
+			if (identityUser is null)
+			{
+				return null;
+			}
+
+			return await _userRepository.FindByIdAsync(new(identityUser.Id));
+		}
+
 		private async Task<AccountReport11> ReadReport(IFormFile formFile)
 		{
 			_logger.LogDebug(
@@ -217,6 +216,114 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return bankToCustomerAccountReport.Reports.First();
 		}
 
+		private async Task<(Account Account, Currency Currency, bool Created)> FindAccount(
+			CashAccount20 cashAccount,
+			User user,
+			IDbTransaction dbTransaction)
+		{
+			var iban = cashAccount.Identification.Iban;
+			if (iban is null)
+			{
+				throw new NotSupportedException(
+					$"Unsupported account identification scheme {cashAccount.Identification}");
+			}
+
+			var currencyCode = cashAccount.Currency;
+			if (string.IsNullOrWhiteSpace(currencyCode))
+			{
+				throw new NotSupportedException($"Cannot create a new account without a currency");
+			}
+
+			var currency = await _currencyRepository.FindByAlphabeticCodeAsync(currencyCode);
+			if (currency is null)
+			{
+				throw new KeyNotFoundException($"Could not find currency by alphabetic code {currencyCode}");
+			}
+
+			var account = await _accountRepository.FindByIbanAsync(iban);
+			if (account is not null)
+			{
+				return (account, currency, false);
+			}
+
+			account = new()
+			{
+				OwnerId = user.Id,
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
+				Name = iban,
+				NormalizedName = iban.ToUpperInvariant(),
+				CounterpartyId = user.CounterpartyId,
+				PreferredCurrencyId = currency.Id,
+				Iban = iban,
+				AccountNumber = iban,
+				Currencies = new() { new() { CurrencyId = currency.Id } },
+			};
+
+			var id = await _accountUnitOfWork.AddAsync(account, dbTransaction);
+			account = await _accountRepository.GetByIdAsync(id);
+			return (account, currency, true);
+		}
+
+		private async Task<(Account Account, bool Created)> FindBankAccount(
+			BranchAndFinancialInstitutionIdentification4? identification,
+			User user,
+			Currency currency,
+			IDbTransaction dbTransaction)
+		{
+			if (identification is null)
+			{
+				throw new();
+			}
+
+			Account? bankAccount = null!;
+
+			var institutionIdentification = identification.FinancialInstitutionIdentification;
+			var bankName = institutionIdentification.Name?.ToUpperInvariant();
+			if (!string.IsNullOrWhiteSpace(bankName))
+			{
+				_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
+				bankAccount = await _accountRepository.FindByNameAsync(bankName);
+				if (bankAccount is not null)
+				{
+					_logger.LogDebug("Matched bank account to {AccountName}", bankAccount.Name);
+					return (bankAccount, false);
+				}
+
+				// todo create new account based on name
+			}
+
+			var bic = institutionIdentification.Bic?.ToUpperInvariant();
+			if (!string.IsNullOrWhiteSpace(bic))
+			{
+				_logger.LogTrace("Searching for bank account by BIC {Bic}", bic);
+				bankAccount = await _accountRepository.FindByBicAsync(bic);
+				if (bankAccount is not null)
+				{
+					_logger.LogDebug("Matched bank account to {Bic}", bic);
+					return (bankAccount, false);
+				}
+
+				var account = new Account
+				{
+					OwnerId = user.Id,
+					CreatedByUserId = user.Id,
+					ModifiedByUserId = user.Id,
+					PreferredCurrencyId = currency.Id,
+					Name = bic,
+					NormalizedName = bic,
+					Bic = bic,
+					Currencies = new() { new() { CurrencyId = currency.Id } },
+				};
+
+				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
+				account = await _accountRepository.GetByIdAsync(id, dbTransaction);
+				return (account, true);
+			}
+
+			throw new KeyNotFoundException($"Could not find account by name {bankAccount}");
+		}
+
 		private async Task<Transaction> Translate(
 			IDbTransaction dbTransaction,
 			AccountReportResultBuilder resultBuilder,
@@ -228,14 +335,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
 			var importHash = await reportEntry.GetHashAsync();
-			_logger.LogTrace("Searching for existing transaction by import hash {ImportHash}", importHash.ToString());
-			var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, dbTransaction);
-			if (existingTransaction is not null)
-			{
-				_logger.LogDebug("Found existing transaction by import hash {ImportHash}", importHash.ToString());
-				return existingTransaction;
-			}
-
 			var amount = reportEntry.Amount.Value;
 			_logger.LogTrace("Report entry amount {Amount}", amount);
 
@@ -329,16 +428,13 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 					NormalizedName = name.ToUpperInvariant(),
 					Iban = iban,
 					AccountNumber = iban,
+					Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
 				};
 
-				var id = await _accountUnitOfWork.AddAsync(otherAccount, dbTransaction);
+				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(otherAccount, dbTransaction);
 
 				otherAccount = await _accountRepository.GetByIdAsync(id);
 				resultBuilder.AddAccount(otherAccount, true);
-			}
-			else if (otherAccount is not null)
-			{
-				resultBuilder.AddAccount(otherAccount, false);
 			}
 
 			if (otherAccount is null)
@@ -346,6 +442,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				_logger.LogTrace("Failed to find other account.");
 				throw new();
 			}
+
+			resultBuilder.AddAccount(otherAccount, false);
 
 			var otherAccountCurrency = otherAccount.Currencies.Single(aic => aic.CurrencyId == otherCurrency.Id);
 
@@ -388,64 +486,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			};
 
 			return transaction;
-		}
-
-		private async Task<User?> GetCurrentUser()
-		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			if (identityUser is null)
-			{
-				return null;
-			}
-
-			return await _userRepository.FindByIdAsync(new(identityUser.Id));
-		}
-
-		private async Task<(Account Account, bool Created)> FindAccount(
-			CashAccount20 cashAccount,
-			User user,
-			IDbTransaction dbTransaction)
-		{
-			var iban = cashAccount.Identification.Iban;
-			if (iban is null)
-			{
-				throw new NotSupportedException(
-					$"Unsupported account identification scheme {cashAccount.Identification}");
-			}
-
-			var account = await _accountRepository.FindByIbanAsync(iban);
-			if (account is not null)
-			{
-				return (account, false);
-			}
-
-			var currencyCode = cashAccount.Currency;
-			if (string.IsNullOrWhiteSpace(currencyCode))
-			{
-				throw new NotSupportedException($"Cannot create a new account without a currency");
-			}
-
-			var currency = await _currencyRepository.FindByAlphabeticCodeAsync(currencyCode);
-			if (currency is null)
-			{
-				throw new KeyNotFoundException($"Could not find currency by alphabetic code {currencyCode}");
-			}
-
-			account = new()
-			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				Name = iban,
-				NormalizedName = iban.ToUpperInvariant(),
-				PreferredCurrencyId = currency.Id,
-				Iban = iban,
-				AccountNumber = iban,
-			};
-
-			var id = await _accountUnitOfWork.AddAsync(account, dbTransaction);
-			account = await _accountRepository.GetByIdAsync(id);
-			return (account, true);
 		}
 
 		private async Task<Account?> FindOtherAccount(TransactionParty2? relatedParty)

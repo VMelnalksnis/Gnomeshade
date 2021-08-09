@@ -9,6 +9,7 @@ using System.Linq;
 
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
@@ -22,6 +23,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		internal static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
 		internal static readonly string Account = typeof(AccountController).GetControllerName();
 		internal static readonly string Currency = typeof(CurrencyController).GetControllerName();
+		internal static readonly string Iso20022 = typeof(Iso20022Controller).GetControllerName();
 		internal static readonly string Product = typeof(ProductController).GetControllerName();
 		internal static readonly string Transaction = typeof(TransactionController).GetControllerName();
 		internal static readonly string Unit = typeof(UnitController).GetControllerName();

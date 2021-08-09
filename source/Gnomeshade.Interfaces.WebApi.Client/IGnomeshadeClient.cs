@@ -4,12 +4,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data.Models;
 using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
@@ -152,5 +153,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<Guid> CreateProductAsync(ProductCreationModel product);
 
 		Task<Guid> CreateUnitAsync(UnitCreationModel unit);
+
+		Task<AccountReportResult> Import(Stream content, string name);
 	}
 }

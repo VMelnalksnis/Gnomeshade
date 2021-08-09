@@ -38,4 +38,10 @@
         <ProjectReference Include="..\Gnomeshade.Data.Tests.Integration\Gnomeshade.Data.Tests.Integration.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="V1_0\Importing\BankToCustomerAccountReportV02.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 </Project>

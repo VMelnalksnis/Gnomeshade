@@ -70,7 +70,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var repository = new AccountRepository(dbConnection);
 			var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
 			var counterpartyRepository = new CounterpartyRepository(dbConnection);
-			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository);
+			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository, counterpartyRepository);
 
 			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
 			var counterPartyId = await counterpartyRepository.AddAsync(counterParty);

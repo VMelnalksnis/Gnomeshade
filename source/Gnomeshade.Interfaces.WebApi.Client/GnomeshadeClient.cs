@@ -4,14 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
@@ -109,7 +112,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc/>
 		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
-			return PostAsync<Guid, TransactionCreationModel>(Routes.Transaction, transaction);
+			return PostAsync<Guid, TransactionCreationModel>(Transaction, transaction);
 		}
 
 		/// <inheritdoc />
@@ -164,19 +167,19 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<List<AccountModel>> GetAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>($"{Routes.Account}?onlyActive=false");
+			return GetAsync<List<AccountModel>>($"{Account}?onlyActive=false");
 		}
 
 		/// <inheritdoc />
 		public Task<List<AccountModel>> GetActiveAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>(Routes.Account);
+			return GetAsync<List<AccountModel>>(Account);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateAccountAsync(AccountCreationModel account)
 		{
-			return PostAsync<Guid, AccountCreationModel>(Routes.Account, account);
+			return PostAsync<Guid, AccountCreationModel>(Account, account);
 		}
 
 		/// <inheritdoc />
@@ -188,31 +191,45 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<List<CurrencyModel>> GetCurrenciesAsync()
 		{
-			return GetAsync<List<CurrencyModel>>(Routes.Currency);
+			return GetAsync<List<CurrencyModel>>(Currency);
 		}
 
 		/// <inheritdoc />
 		public Task<List<ProductModel>> GetProductsAsync()
 		{
-			return GetAsync<List<ProductModel>>(Routes.Product);
+			return GetAsync<List<ProductModel>>(Product);
 		}
 
 		/// <inheritdoc />
 		public Task<List<UnitModel>> GetUnitsAsync()
 		{
-			return GetAsync<List<UnitModel>>(Routes.Unit);
+			return GetAsync<List<UnitModel>>(Unit);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateProductAsync(ProductCreationModel product)
 		{
-			return PostAsync<Guid, ProductCreationModel>(Routes.Product, product);
+			return PostAsync<Guid, ProductCreationModel>(Product, product);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
 		{
-			return PostAsync<Guid, UnitCreationModel>(Routes.Unit, unit);
+			return PostAsync<Guid, UnitCreationModel>(Unit, unit);
+		}
+
+		/// <inheritdoc />
+		public async Task<AccountReportResult> Import(Stream content, string name)
+		{
+			var streamContent = new StreamContent(content);
+			streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
+			var multipartContent = new MultipartFormDataContent();
+			multipartContent.Add(streamContent, "formFile", name);
+
+			using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
+			importResponse.EnsureSuccessStatusCode();
+
+			return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
 		}
 
 		private async Task<TResult> GetAsync<TResult>(string requestUri)

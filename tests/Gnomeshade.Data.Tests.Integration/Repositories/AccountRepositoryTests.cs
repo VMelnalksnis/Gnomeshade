@@ -35,7 +35,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			_counterpartyRepository = new(_dbConnection);
 			_repository = new(_dbConnection);
 			_inCurrencyRepository = new(_dbConnection);
-			_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository);
+			_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository, new(_dbConnection));
 		}
 
 		[TearDown]

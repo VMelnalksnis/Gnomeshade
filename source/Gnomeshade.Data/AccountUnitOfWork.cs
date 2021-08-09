@@ -20,6 +20,7 @@ namespace Gnomeshade.Data
 		private readonly IDbConnection _dbConnection;
 		private readonly AccountRepository _repository;
 		private readonly AccountInCurrencyRepository _inCurrencyRepository;
+		private readonly CounterpartyRepository _counterpartyRepository;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountUnitOfWork"/> class.
@@ -27,14 +28,17 @@ namespace Gnomeshade.Data
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		/// <param name="repository">The repository for managing accounts.</param>
 		/// <param name="inCurrencyRepository">The repository for managing accounts in currencies.</param>
+		/// <param name="counterpartyRepository">The repository for managing counterparties.</param>
 		public AccountUnitOfWork(
 			IDbConnection dbConnection,
 			AccountRepository repository,
-			AccountInCurrencyRepository inCurrencyRepository)
+			AccountInCurrencyRepository inCurrencyRepository,
+			CounterpartyRepository counterpartyRepository)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_inCurrencyRepository = inCurrencyRepository;
+			_counterpartyRepository = counterpartyRepository;
 		}
 
 		/// <summary>
@@ -84,6 +88,29 @@ namespace Gnomeshade.Data
 			}
 
 			return id;
+		}
+
+		/// <summary>
+		/// Creates a new account with the currencies in <see cref="Account.Currencies"/> and a counterparty.
+		/// </summary>
+		/// <param name="account">The account to create.</param>
+		/// <param name="dbTransaction">The database transaction to use for queries.</param>
+		/// <returns>The id of the created account.</returns>
+		public async Task<Guid> AddWithCounterpartyAsync(Account account, IDbTransaction dbTransaction)
+		{
+			var counterparty = new Counterparty
+			{
+				OwnerId = account.OwnerId,
+				CreatedByUserId = account.CreatedByUserId,
+				ModifiedByUserId = account.ModifiedByUserId,
+				Name = account.Name,
+				NormalizedName = account.NormalizedName,
+			};
+
+			var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
+			account.CounterpartyId = counterpartyId;
+
+			return await AddAsync(account, dbTransaction);
 		}
 
 		/// <summary>

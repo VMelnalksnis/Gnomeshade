@@ -125,11 +125,27 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
+		public Task<Account?> FindByBicAsync(string bic, CancellationToken cancellationToken = default)
+		{
+			const string sql = _selectSql + " WHERE a.bic = @bic;";
+			var command = new CommandDefinition(sql, new { bic }, cancellationToken: cancellationToken);
+			return FindAsync(command);
+		}
+
 		/// <inheritdoc />
 		public override async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+
+			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
+			return accounts.Single();
+		}
+
+		public async Task<Account> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		{
+			const string sql = _selectSql + " WHERE a.id = @id;";
+			var command = new CommandDefinition(sql, new { id }, dbTransaction);
 
 			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
 			return accounts.Single();

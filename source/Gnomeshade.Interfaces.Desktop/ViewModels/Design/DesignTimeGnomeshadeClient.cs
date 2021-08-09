@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
@@ -206,5 +208,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 
 		/// <inheritdoc />
 		public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();
+
+		/// <inheritdoc />
+		public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 	}
 }
