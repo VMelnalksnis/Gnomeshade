@@ -35,7 +35,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			_counterpartyRepository = new(_dbConnection);
 			_repository = new(_dbConnection);
 			_inCurrencyRepository = new(_dbConnection);
-			_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository);
+			_unitOfWork = new(_dbConnection);
 		}
 
 		[TearDown]
@@ -60,13 +60,12 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
 			var account = accountFaker.Generate();
+			foreach (var currency in currencies.Where(c => c.Id != preferredCurrency.Id))
+			{
+				account.Currencies.Add(new() { CurrencyId = currency.Id });
+			}
 
-			var currencyIds =
-				currencies
-					.Select(currency => currency.Id)
-					.ToList();
-
-			var accountId = await _unitOfWork.AddAsync(account, account.PreferredCurrencyId, currencyIds);
+			var accountId = await _unitOfWork.AddAsync(account);
 
 			var getAccount = await _repository.GetByIdAsync(accountId);
 			var findAccount = await _repository.FindByIdAsync(getAccount.Id);

@@ -41,7 +41,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 			var repository = new ProductRepository(dbConnection);
-			var products = await repository.GetAllAsync().ConfigureAwait(false);
+			var products = (await repository.GetAllAsync()).ToList();
 			if (products.Any())
 			{
 				_product = products.First();
@@ -68,9 +68,8 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var currency = (await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false)).First();
 
 			var repository = new AccountRepository(dbConnection);
-			var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
 			var counterpartyRepository = new CounterpartyRepository(dbConnection);
-			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository);
+			var accountUnitOfWork = new AccountUnitOfWork(dbConnection);
 
 			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
 			var counterPartyId = await counterpartyRepository.AddAsync(counterParty);
@@ -79,11 +78,11 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var accountFaker = new AccountFaker(TestUser, counterParty, currency);
 
 			var firstAccount = accountFaker.Generate();
-			var firstAccountId = await accountUnitOfWork.AddAsync(firstAccount, currency).ConfigureAwait(false);
+			var firstAccountId = await accountUnitOfWork.AddAsync(firstAccount).ConfigureAwait(false);
 			firstAccount = await repository.GetByIdAsync(firstAccountId).ConfigureAwait(false);
 
 			var secondAccount = accountFaker.GenerateUnique(firstAccount);
-			var secondAccountId = await accountUnitOfWork.AddAsync(secondAccount, currency).ConfigureAwait(false);
+			var secondAccountId = await accountUnitOfWork.AddAsync(secondAccount).ConfigureAwait(false);
 			secondAccount = await repository.GetByIdAsync(secondAccountId).ConfigureAwait(false);
 
 			_accounts = (firstAccount, secondAccount);
