@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
-using Gnomeshade.Core.Imports.Fidavista;
+using JetBrains.Annotations;
 
 using NUnit.Framework;
 
@@ -18,7 +18,7 @@ namespace Gnomeshade.Core.Tests
 		[Test]
 		public void GetHash_ShouldBeEqualForEquivalent()
 		{
-			var firstHolder = new AccountHolder { Name = "Foobar", LegalId = "12345678987" };
+			var firstHolder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
 			var secondHolder = firstHolder with { };
 
 			ReferenceEquals(firstHolder, secondHolder).Should().BeFalse();
@@ -28,8 +28,8 @@ namespace Gnomeshade.Core.Tests
 		[Test]
 		public void GetHash_ShouldBeDifferentForDifferentValues()
 		{
-			var firstValue = new AccountHolder { Name = "Foo", LegalId = "12345678987" }.GetHash();
-			var secondValue = new AccountHolder { Name = "Bar", LegalId = "98765432123" }.GetHash();
+			var firstValue = new AccountHolder { Name = "Foo", LegalId = 12345678987 }.GetHash();
+			var secondValue = new AccountHolder { Name = "Bar", LegalId = 98765432123 }.GetHash();
 
 			using (new AssertionScope())
 			{
@@ -41,7 +41,7 @@ namespace Gnomeshade.Core.Tests
 		[Test]
 		public async Task GetHashAsync_ShouldBeSameAsSync()
 		{
-			var holder = new AccountHolder { Name = "Foobar", LegalId = "12345678987" };
+			var holder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
 
 			// ReSharper disable once MethodHasAsyncOverload
 			var syncHash = holder.GetHash();
@@ -52,6 +52,14 @@ namespace Gnomeshade.Core.Tests
 				asyncHash.Should().BeEquivalentTo(syncHash);
 				(asyncHash == syncHash).Should().BeTrue();
 			}
+		}
+
+		[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
+		public sealed record AccountHolder
+		{
+			public string Name { get; init; } = string.Empty;
+
+			public long LegalId { get; init; }
 		}
 	}
 }

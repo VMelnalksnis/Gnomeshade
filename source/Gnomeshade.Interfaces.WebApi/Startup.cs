@@ -7,7 +7,6 @@ using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
-using Gnomeshade.Core.Imports.Fidavista;
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
@@ -95,8 +94,6 @@ namespace Gnomeshade.Interfaces.WebApi
 				}));
 
 			services.AddSwaggerGen(Options.SwaggerGen);
-
-			services.AddTransient<FidavistaReader>();
 		}
 
 		/// <summary>
