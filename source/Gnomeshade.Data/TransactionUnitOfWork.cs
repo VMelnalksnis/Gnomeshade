@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,12 +12,21 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data
 {
+	/// <summary>
+	/// Transaction related actions spanning multiple entities.
+	/// </summary>
 	public sealed class TransactionUnitOfWork : IDisposable
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TransactionUnitOfWork"/> class.
+		/// </summary>
+		/// <param name="dbConnection">The database connection for executing queries.</param>
+		/// <param name="repository">The repository for managing transactions.</param>
+		/// <param name="itemRepository">The repository for managing transaction items.</param>
 		public TransactionUnitOfWork(
 			IDbConnection dbConnection,
 			TransactionRepository repository,
@@ -33,28 +41,69 @@ namespace Gnomeshade.Data
 		/// Adds a new transaction with the specified items.
 		/// </summary>
 		/// <param name="transaction">The transaction to create.</param>
-		/// <param name="items">The items to add to the created transaction.</param>
 		/// <returns>The id of the created transaction.</returns>
-		public async Task<Guid> AddAsync(Transaction transaction, IReadOnlyCollection<TransactionItem> items)
+		public async Task<Guid> AddAsync(Transaction transaction)
 		{
-			if (!items.Any())
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+
+			try
 			{
-				throw new ArgumentException("Transaction must have at least one item", nameof(items));
+				var transactionId = await AddAsync(transaction, dbTransaction);
+				dbTransaction.Commit();
+				return transactionId;
+			}
+			catch (Exception)
+			{
+				dbTransaction.Rollback();
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Adds a new transaction with the specified items.
+		/// </summary>
+		/// <param name="transaction">The transaction to create.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The id of the created transaction.</returns>
+		/// <exception cref="ArgumentException"><paramref name="transaction"/> does not have any items.</exception>
+		public async Task<Guid> AddAsync(Transaction transaction, IDbTransaction dbTransaction)
+		{
+			if (!transaction.Items.Any())
+			{
+				throw new ArgumentException("Transaction must have at least one item", nameof(transaction));
 			}
 
+			var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
+
+			foreach (var transactionItem in transaction.Items)
+			{
+				var item = transactionItem with
+				{
+					OwnerId = transaction.OwnerId,
+					CreatedByUserId = transaction.CreatedByUserId,
+					ModifiedByUserId = transaction.ModifiedByUserId,
+					TransactionId = transactionId,
+				};
+
+				_ = await _itemRepository.AddAsync(item, dbTransaction).ConfigureAwait(false);
+			}
+
+			return transactionId;
+		}
+
+		/// <summary>
+		/// Deletes the specified transaction and all its items.
+		/// </summary>
+		/// <param name="transaction">The transaction to delete.</param>
+		/// <returns>The number of affected rows.</returns>
+		public async Task<int> DeleteAsync(Transaction transaction)
+		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
-				var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
-
-				foreach (var transactionItem in items)
-				{
-					transactionItem.TransactionId = transactionId;
-					_ = await _itemRepository.AddAsync(transactionItem, dbTransaction).ConfigureAwait(false);
-				}
-
+				var rows = await DeleteAsync(transaction, dbTransaction);
 				dbTransaction.Commit();
-				return transactionId;
+				return rows;
 			}
 			catch (Exception)
 			{
@@ -67,28 +116,18 @@ namespace Gnomeshade.Data
 		/// Deletes the specified transaction and all its items.
 		/// </summary>
 		/// <param name="transaction">The transaction to delete.</param>
-		/// <returns>The count of affected entities.</returns>
-		public async Task<int> DeleteAsync(Transaction transaction)
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The number of affected rows.</returns>
+		public async Task<int> DeleteAsync(Transaction transaction, IDbTransaction dbTransaction)
 		{
-			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
-			try
+			var rows = 0;
+			foreach (var item in transaction.Items)
 			{
-				var affectedEntities = 0;
-				foreach (var item in transaction.Items)
-				{
-					affectedEntities += await _itemRepository.DeleteAsync(item.Id, dbTransaction).ConfigureAwait(false);
-				}
-
-				affectedEntities += await _repository.DeleteAsync(transaction.Id, dbTransaction).ConfigureAwait(false);
-				dbTransaction.Commit();
-
-				return affectedEntities;
+				rows += await _itemRepository.DeleteAsync(item.Id, dbTransaction).ConfigureAwait(false);
 			}
-			catch (Exception)
-			{
-				dbTransaction.Rollback();
-				throw;
-			}
+
+			rows += await _repository.DeleteAsync(transaction.Id, dbTransaction).ConfigureAwait(false);
+			return rows;
 		}
 
 		/// <inheritdoc />

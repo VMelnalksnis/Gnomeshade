@@ -120,6 +120,15 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
+		public Task<Transaction?> FindByImportHashAsync(
+			byte[] importHash,
+			IDbTransaction dbTransaction)
+		{
+			const string sql = _selectSql + " WHERE t.import_hash = @importHash;";
+			var command = new CommandDefinition(sql, new { importHash }, dbTransaction);
+			return FindAsync(command);
+		}
+
 		/// <summary>
 		/// Gets a transaction with the specified id.
 		/// </summary>
@@ -130,6 +139,15 @@ namespace Gnomeshade.Data.Repositories
 		{
 			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+
+			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			return transactions.Single();
+		}
+
+		public async Task<Transaction> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		{
+			const string sql = _selectSql + " WHERE t.id = @id;";
+			var command = new CommandDefinition(sql, new { id }, dbTransaction);
 
 			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
 			return transactions.Single();

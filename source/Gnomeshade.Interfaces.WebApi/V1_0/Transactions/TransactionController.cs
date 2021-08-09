@@ -39,7 +39,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 		private readonly ILogger<TransactionController> _logger;
-		private readonly TransactionUnitOfWork _transactionUnitOfWork;
+		private readonly TransactionUnitOfWork _unitOfWork;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionController"/> class.
@@ -51,6 +51,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItem"/>.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
+		/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
 		public TransactionController(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
@@ -59,14 +60,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			TransactionItemRepository itemRepository,
 			Mapper mapper,
 			ILogger<TransactionController> logger,
-			TransactionUnitOfWork transactionUnitOfWork)
+			TransactionUnitOfWork unitOfWork)
 			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
 			_logger = logger;
-			_transactionUnitOfWork = transactionUnitOfWork;
+			_unitOfWork = unitOfWork;
 		}
 
 		/// <summary>
@@ -131,15 +132,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				ValidatedByUserId = creationModel.Validated ? user.Id : null,
 			};
 
-			var items = creationModel.Items?.Select(item => Mapper.Map<TransactionItem>(item) with
-				{
-					OwnerId = user.Id,
-					CreatedByUserId = user.Id,
-					ModifiedByUserId = user.Id,
-				}).ToList() ??
-				new();
-
-			var transactionId = await _transactionUnitOfWork.AddAsync(transaction, items);
+			var transactionId = await _unitOfWork.AddAsync(transaction);
 			return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
 		}
 
@@ -161,7 +154,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				return NotFound();
 			}
 
-			_ = await _transactionUnitOfWork.DeleteAsync(transaction);
+			_ = await _unitOfWork.DeleteAsync(transaction);
 			return NoContent();
 		}
 
@@ -192,7 +185,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <param name="creationModel">The transaction item that will be created.</param>
 		/// <returns><see cref="CreatedAtActionResult"/> with the id of the transaction item.</returns>
 		/// <response code="201">Transaction item was successfully created.</response>
+		/// <response code="404">Transaction was not found.</response>
 		[HttpPost("{transactionId:guid}/Item")]
+		[ProducesResponseType(typeof(Guid), Status201Created)]
+		[ProducesResponseType(Status404NotFound)]
 		public async Task<ActionResult<Guid>> CreateItem(
 			Guid transactionId,
 			[FromBody, BindRequired] TransactionItemCreationModel creationModel)
@@ -205,8 +201,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 
 			if (await _repository.FindByIdAsync(transactionId) is null)
 			{
-				// todo validation
-				return new BadRequestResult();
+				return NotFound();
 			}
 
 			var transactionItem = Mapper.Map<TransactionItem>(creationModel) with
@@ -217,7 +212,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				TransactionId = transactionId,
 			};
 
-			return await _itemRepository.AddAsync(transactionItem);
+			var id = await _itemRepository.AddAsync(transactionItem);
+			return CreatedAtAction(nameof(GetItem), new { id }, id);
 		}
 
 		/// <summary>

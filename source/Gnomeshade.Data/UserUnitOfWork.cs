@@ -12,6 +12,9 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data
 {
+	/// <summary>
+	/// User related actions spanning multiple entities.
+	/// </summary>
 	public sealed class UserUnitOfWork : IDisposable
 	{
 		private readonly IDbConnection _dbConnection;
@@ -24,14 +27,22 @@ namespace Gnomeshade.Data
 		/// Initializes a new instance of the <see cref="UserUnitOfWork"/> class.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
-		public UserUnitOfWork(IDbConnection dbConnection)
+		/// <param name="ownerRepository">The repository for managing owners.</param>
+		/// <param name="ownershipRepository">The repository for managing ownerships.</param>
+		/// <param name="userRepository">The repository for managing users.</param>
+		/// <param name="counterpartyRepository">The repository for managing counterparties.</param>
+		public UserUnitOfWork(
+			IDbConnection dbConnection,
+			OwnerRepository ownerRepository,
+			OwnershipRepository ownershipRepository,
+			UserRepository userRepository,
+			CounterpartyRepository counterpartyRepository)
 		{
 			_dbConnection = dbConnection;
-
-			_ownerRepository = new(dbConnection);
-			_ownershipRepository = new(dbConnection);
-			_userRepository = new(dbConnection);
-			_counterpartyRepository = new(dbConnection);
+			_ownerRepository = ownerRepository;
+			_ownershipRepository = ownershipRepository;
+			_userRepository = userRepository;
+			_counterpartyRepository = counterpartyRepository;
 		}
 
 		/// <summary>
@@ -41,7 +52,7 @@ namespace Gnomeshade.Data
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		public async Task CreateUserAsync(ApplicationUser applicationUser)
 		{
-			var userId = Guid.Parse(applicationUser.Id); // todo convert to parse exact
+			var userId = Guid.ParseExact(applicationUser.Id, "D");
 			var fullName = applicationUser.FullName;
 			var user = new User { Id = userId, ModifiedByUserId = userId };
 

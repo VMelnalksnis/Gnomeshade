@@ -74,10 +74,6 @@ namespace Gnomeshade.Data.Tests.Integration
 
 			await sqlConnection.ChangeDatabaseAsync(_database).ConfigureAwait(false);
 
-			var cmd = sqlConnection.CreateCommand();
-			cmd.CommandText = "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";";
-			await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
-
 			var sqlPath = Path.Combine(Directory.GetCurrentDirectory(), "CreateDatabase.sql");
 			var sql = await File.ReadAllTextAsync(sqlPath).ConfigureAwait(false);
 			var createTables = sqlConnection.CreateCommand();

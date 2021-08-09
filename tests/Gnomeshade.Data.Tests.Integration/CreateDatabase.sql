@@ -1,4 +1,6 @@
-﻿DROP TABLE IF EXISTS "users";
+﻿CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+DROP TABLE IF EXISTS "users";
 CREATE TABLE "public"."users"
 (
     "id"              uuid        DEFAULT uuid_generate_v4() NOT NULL,

@@ -13,6 +13,7 @@ using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.OpenApi;
 
 using Microsoft.AspNetCore.Builder;
@@ -70,21 +71,22 @@ namespace Gnomeshade.Interfaces.WebApi
 				.AddJwtBearer(options => Options.JwtBearer(options, Configuration));
 
 			services
-				.AddTransient<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
-				.AddTransient<OwnerRepository>()
-				.AddTransient<OwnershipRepository>()
-				.AddTransient<TransactionRepository>()
-				.AddTransient<TransactionItemRepository>()
-				.AddTransient<UserRepository>()
-				.AddTransient<AccountRepository>()
-				.AddTransient<AccountInCurrencyRepository>()
-				.AddTransient<CurrencyRepository>()
-				.AddTransient<ProductRepository>()
-				.AddTransient<UnitRepository>()
-				.AddTransient<CounterpartyRepository>()
-				.AddTransient<AccountUnitOfWork>()
-				.AddTransient<TransactionUnitOfWork>()
-				.AddTransient<UserUnitOfWork>();
+				.AddScoped<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
+				.AddScoped<OwnerRepository>()
+				.AddScoped<OwnershipRepository>()
+				.AddScoped<TransactionRepository>()
+				.AddScoped<TransactionItemRepository>()
+				.AddScoped<UserRepository>()
+				.AddScoped<AccountRepository>()
+				.AddScoped<AccountInCurrencyRepository>()
+				.AddScoped<CurrencyRepository>()
+				.AddScoped<ProductRepository>()
+				.AddScoped<UnitRepository>()
+				.AddScoped<CounterpartyRepository>()
+				.AddScoped<AccountUnitOfWork>()
+				.AddScoped<TransactionUnitOfWork>()
+				.AddScoped<UserUnitOfWork>()
+				.AddTransient<Iso20022AccountReportReader>();
 
 			services
 				.AddTransient<Mapper>()

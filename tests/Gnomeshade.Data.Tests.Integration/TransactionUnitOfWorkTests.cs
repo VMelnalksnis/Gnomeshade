@@ -67,8 +67,9 @@ namespace Gnomeshade.Data.Tests.Integration
 				product);
 
 			var transactionItemsToAdd = itemFaker.GenerateBetween(2, 2);
+			transactionToAdd = transactionToAdd with { Items = transactionItemsToAdd };
 
-			var transactionId = await _unitOfWork.AddAsync(transactionToAdd, transactionItemsToAdd);
+			var transactionId = await _unitOfWork.AddAsync(transactionToAdd);
 
 			var getTransaction = await _repository.GetByIdAsync(transactionId);
 			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id);
@@ -98,6 +99,7 @@ namespace Gnomeshade.Data.Tests.Integration
 					.Excluding(item => item.Id)
 					.Excluding(item => item.CreatedAt)
 					.Excluding(item => item.ModifiedAt)
+					.Excluding(item => item.TransactionId)
 					.Using<DateTimeOffset>(context =>
 						context.Subject
 							.Should()

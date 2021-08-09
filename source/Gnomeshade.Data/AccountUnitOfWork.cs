@@ -25,12 +25,16 @@ namespace Gnomeshade.Data
 		/// Initializes a new instance of the <see cref="AccountUnitOfWork"/> class.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
-		public AccountUnitOfWork(IDbConnection dbConnection)
+		/// <param name="repository">The repository for managing accounts.</param>
+		/// <param name="inCurrencyRepository">The repository for managing accounts in currencies.</param>
+		public AccountUnitOfWork(
+			IDbConnection dbConnection,
+			AccountRepository repository,
+			AccountInCurrencyRepository inCurrencyRepository)
 		{
 			_dbConnection = dbConnection;
-
-			_repository = new(_dbConnection);
-			_inCurrencyRepository = new(_dbConnection);
+			_repository = repository;
+			_inCurrencyRepository = inCurrencyRepository;
 		}
 
 		/// <summary>

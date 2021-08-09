@@ -68,8 +68,9 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var currency = (await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false)).First();
 
 			var repository = new AccountRepository(dbConnection);
+			var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
 			var counterpartyRepository = new CounterpartyRepository(dbConnection);
-			var accountUnitOfWork = new AccountUnitOfWork(dbConnection);
+			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository);
 
 			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
 			var counterPartyId = await counterpartyRepository.AddAsync(counterParty);
