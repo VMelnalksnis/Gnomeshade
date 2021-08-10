@@ -1,36 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<Copyright>Valters Melnalksnis</Copyright>
-		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Copyright>Valters Melnalksnis</Copyright>
+        <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
 
-		<IsPackable>false</IsPackable>
-	</PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="coverlet.msbuild" Version="3.1.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
-		<PackageReference Include="NUnit" Version="3.13.2" />
-		<PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
-		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="coverlet.msbuild" Version="3.1.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions" Version="5.10.3"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0"/>
+        <PackageReference Include="NUnit" Version="3.13.2"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
+    </ItemGroup>
 
 </Project>

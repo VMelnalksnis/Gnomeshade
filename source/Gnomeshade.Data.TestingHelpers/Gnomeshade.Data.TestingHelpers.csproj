@@ -12,15 +12,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bogus" Version="33.0.2" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
+        <PackageReference Include="Bogus" Version="33.0.2"/>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj" />
+        <ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
     </ItemGroup>
 
 </Project>
