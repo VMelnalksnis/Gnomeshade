@@ -62,6 +62,9 @@
 					<MenuItem
 						x:Name="Transactions" Header="Transactions"
 						Command="{ReflectionBinding SwitchToTransactionOverview}" />
+					<MenuItem
+						x:Name="Import" Header="_Import"
+						Command="{ReflectionBinding SwitchToImport}"/>
 				</MenuItem>
 			</Menu>
 

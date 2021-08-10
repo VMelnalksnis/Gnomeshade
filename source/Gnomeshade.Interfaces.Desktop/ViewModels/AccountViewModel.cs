@@ -67,17 +67,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private async Task GetAccountsAsync()
 		{
 			var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
-			var rows =
-				accounts
-					.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
-					.Select(tuple => new AccountOverviewRow
-					{
-						Name = tuple.account.Name,
-						Currency = tuple.inCurrency.Currency.AlphabeticCode,
-						Disabled = tuple.inCurrency.Disabled,
-					}).ToList();
-
-			Accounts = new(rows);
+			var accountOverviewRows = accounts.Translate().ToList();
+			Accounts = new(accountOverviewRows);
 			var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Name);
 			DataGridView.GroupDescriptions.Add(group);
 		}

@@ -5,6 +5,7 @@
 using System;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.Models
 {
@@ -18,6 +19,9 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		private decimal _targetAmount;
 		private bool _selected;
 		private Guid _id;
+
+		// todo see if there's a better way of retaining the item models for the transaction
+		public TransactionModel TransactionModel { get; set; }
 
 		/// <summary>
 		/// Gets or sets the id of the transaction which this overview represents.

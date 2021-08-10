@@ -121,6 +121,20 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = accountViewModel;
 		}
 
+		/// <summary>
+		/// Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.
+		/// </summary>
+		public void SwitchToImport()
+		{
+			if (ActiveView is ImportViewModel)
+			{
+				return;
+			}
+
+			var importViewModel = new ImportViewModel(_gnomeshadeClient);
+			ActiveView = importViewModel;
+		}
+
 		private void SwitchToLogin()
 		{
 			var loginViewModel = new LoginViewModel(_gnomeshadeClient);

@@ -1,0 +1,184 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
+	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.ImportView"
+	x:CompileBindings="True"
+	x:DataType="vm:ImportViewModel">
+
+	<Design.DataContext>
+		<vm:ImportViewModel />
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,*,*">
+		<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+			<TextBlock
+				MinWidth="100" HorizontalAlignment="Left"
+				Text="Filepath:" />
+			<TextBlock
+				x:Name="Path"
+				Text="{Binding FilePath, Mode=TwoWay}" />
+		</StackPanel>
+
+		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
+			<Button
+				x:Name="SelectFileButton"
+				MinWidth="100" HorizontalContentAlignment="Center"
+				Click="SelectFile_OnClick">
+				Select File
+			</Button>
+			<Button
+				MinWidth="100" HorizontalContentAlignment="Center"
+				IsEnabled="{Binding CanImport}"
+				Command="{ReflectionBinding ImportAsync}">
+				Import File
+			</Button>
+		</StackPanel>
+
+		<Expander Grid.Column="0" Grid.Row="2" IsExpanded="True" Header="Accounts">
+			<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,*">
+				<TextBlock Grid.Column="0" Grid.Row="0" Text="Account:" />
+				<TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding UserAccount}" />
+
+				<DataGrid
+					Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+					VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+					Items="{Binding AccountGridView, Mode=TwoWay}"
+					AutoGenerateColumns="False" IsReadOnly="False"
+					CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+					<DataGrid.Columns>
+						<DataGridTextColumn
+							x:DataType="m:AccountOverviewRow"
+							Header="Name" IsReadOnly="True"
+							Binding="{Binding Name, Mode=OneWay}" />
+						<DataGridTextColumn
+							x:DataType="m:AccountOverviewRow"
+							Header="Currency" IsReadOnly="True"
+							Binding="{Binding Currency, Mode=OneWay}" />
+						<DataGridTextColumn
+							x:DataType="m:AccountOverviewRow"
+							Header="Disabled" IsReadOnly="True"
+							Binding="{Binding Disabled, Mode=OneWay}" />
+					</DataGrid.Columns>
+
+					<DataGrid.Styles>
+						<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+							<Setter Property="Fill" Value="#05769d" />
+						</Style>
+					</DataGrid.Styles>
+				</DataGrid>
+			</Grid>
+		</Expander>
+
+		<Expander Grid.Column="1" Grid.Row="2" IsExpanded="True" Header="Product">
+			<DataGrid
+				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+				Items="{Binding ProductGridView, Mode=TwoWay}"
+				AutoGenerateColumns="False" IsReadOnly="False"
+				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+				<DataGrid.Columns>
+					<DataGridTextColumn
+						x:DataType="m:ProductOverviewRow"
+						Header="Name" IsReadOnly="True"
+						Binding="{Binding Name, Mode=OneWay}" />
+				</DataGrid.Columns>
+
+				<DataGrid.Styles>
+					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+						<Setter Property="Fill" Value="#05769d" />
+					</Style>
+				</DataGrid.Styles>
+			</DataGrid>
+		</Expander>
+
+		<Expander Grid.Column="0" Grid.Row="3" IsExpanded="True" Header="Transactions">
+			<DataGrid
+				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+				Items="{Binding TransactionGridView, Mode=TwoWay}"
+				SelectedItem="{Binding SelectedTransaction}" SelectionMode="Single"
+				AutoGenerateColumns="False" IsReadOnly="False"
+				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+				<DataGrid.Columns>
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						IsReadOnly="True" Header="Date"
+						Binding="{Binding Date, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						Header="Description" IsReadOnly="True"
+						Binding="{Binding Description, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						Header="Source Account" IsReadOnly="True"
+						Binding="{Binding SourceAccount, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						Header="Target Account" IsReadOnly="True"
+						Binding="{Binding TargetAccount, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
+						Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionOverview"
+						Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
+						Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				</DataGrid.Columns>
+
+				<DataGrid.Styles>
+					<Style Selector="DataGridCell.amount">
+						<Setter Property="HorizontalContentAlignment" Value="Right" />
+					</Style>
+					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+						<Setter Property="Fill" Value="#05769d" />
+					</Style>
+				</DataGrid.Styles>
+			</DataGrid>
+		</Expander>
+
+		<Expander Grid.Column="1" Grid.Row="3" IsExpanded="True" Header="Items">
+			<DataGrid
+				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+				Items="{Binding ItemGridView, Mode=TwoWay}"
+				AutoGenerateColumns="False" IsReadOnly="False"
+				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+				<DataGrid.Columns>
+					<DataGridTextColumn
+						x:DataType="m:TransactionItemOverviewRow"
+						Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
+						Binding="{Binding SourceAmount, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionItemOverviewRow"
+						Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
+						Binding="{Binding TargetAmount, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionItemOverviewRow"
+						Header="Product" IsReadOnly="True"
+						Binding="{Binding Product, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionItemOverviewRow"
+						Header="Amount" IsReadOnly="True"
+						Binding="{Binding Amount, Mode=OneWay}" />
+					<DataGridTextColumn
+						x:DataType="m:TransactionItemOverviewRow"
+						Header="Description" IsReadOnly="True"
+						Binding="{Binding Description, Mode=OneWay}" />
+				</DataGrid.Columns>
+
+				<DataGrid.Styles>
+					<Style Selector="DataGridCell.amount">
+						<Setter Property="HorizontalContentAlignment" Value="Right" />
+					</Style>
+					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+						<Setter Property="Fill" Value="#05769d" />
+					</Style>
+				</DataGrid.Styles>
+			</DataGrid>
+		</Expander>
+	</Grid>
+
+</UserControl>

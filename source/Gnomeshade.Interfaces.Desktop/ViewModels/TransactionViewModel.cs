@@ -178,29 +178,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
 			var transactions = await _gnomeshadeClient.GetTransactionsAsync(from, to).ConfigureAwait(false);
 
-			var overviews =
-				transactions
-					.Select(transaction =>
-					{
-						var firstItem = transaction.Items.First();
-						var sourceAccount = accounts.Single(account =>
-							account.Currencies.Any(currency => currency.Id == firstItem.SourceAccountId));
-						var targetAccount = accounts.Single(account =>
-							account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
-
-						return new TransactionOverview
-						{
-							Id = transaction.Id,
-							Date = transaction.Date.LocalDateTime,
-							Description = transaction.Description,
-							SourceAccount = sourceAccount.Name,
-							TargetAccount = targetAccount.Name,
-							SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
-							TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
-						};
-					});
-
-			return new(overviews);
+			var transactionOverviews = transactions.Translate(accounts).ToList();
+			return new(transactionOverviews);
 		}
 
 		private void DataGridViewOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

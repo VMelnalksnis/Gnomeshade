@@ -11,6 +11,10 @@ namespace Gnomeshade.Interfaces.Desktop.Views
 	/// </summary>
 	public abstract class FocusOnInitUserControl : UserControl
 	{
+		/// <summary>
+		/// Focuses the control with the specified name once it is attached to the visual tree.
+		/// </summary>
+		/// <param name="focusControlName">The name of the control to focus on.</param>
 		protected void Focus(string focusControlName)
 		{
 			var focusControl = this.FindControl<Control>(focusControlName);
