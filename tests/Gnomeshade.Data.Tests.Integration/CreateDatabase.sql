@@ -148,6 +148,7 @@ CREATE TABLE "public"."transactions"
     "validated_by_user_id" uuid,
     CONSTRAINT "transactions_id" PRIMARY KEY ("id"),
     CONSTRAINT "transactions_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transactions_import_hash" UNIQUE ("import_hash"),
     CONSTRAINT "transactions_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
     CONSTRAINT "transactions_validated_by_user_id_fkey" FOREIGN KEY (validated_by_user_id) REFERENCES users (id) NOT DEFERRABLE

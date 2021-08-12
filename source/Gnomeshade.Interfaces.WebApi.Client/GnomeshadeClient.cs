@@ -160,7 +160,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 				return null;
 			}
 
-			response.EnsureSuccessStatusCode();
+			await ThrowIfNotSuccessCode(response);
 			return (await response.Content.ReadFromJsonAsync<AccountModel>().ConfigureAwait(false))!;
 		}
 
@@ -227,7 +227,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			multipartContent.Add(streamContent, "formFile", name);
 
 			using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
-			importResponse.EnsureSuccessStatusCode();
+			await ThrowIfNotSuccessCode(importResponse);
 
 			return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
 		}
@@ -236,7 +236,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			where TResult : notnull
 		{
 			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
-			response.EnsureSuccessStatusCode();
+			await ThrowIfNotSuccessCode(response);
 
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 		}
@@ -246,7 +246,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			where TRequest : notnull
 		{
 			using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
-			response.EnsureSuccessStatusCode();
+			await ThrowIfNotSuccessCode(response);
 
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 		}
@@ -254,7 +254,23 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		private async Task DeleteAsync(string requestUri)
 		{
 			var deleteResponse = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
-			deleteResponse.EnsureSuccessStatusCode();
+			await ThrowIfNotSuccessCode(deleteResponse);
+		}
+
+		private async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
+		{
+			try
+			{
+				responseMessage.EnsureSuccessStatusCode();
+			}
+			catch (HttpRequestException requestException)
+			{
+				var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+				throw new HttpRequestException(
+					$"Failed with message: {message}",
+					requestException,
+					responseMessage.StatusCode);
+			}
 		}
 	}
 }

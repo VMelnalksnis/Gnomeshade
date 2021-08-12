@@ -55,6 +55,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 		private readonly Iso20022AccountReportReader _reportReader;
 		private readonly CurrencyRepository _currencyRepository;
 		private readonly AccountRepository _accountRepository;
+		private readonly AccountInCurrencyRepository _inCurrencyRepository;
 		private readonly TransactionRepository _transactionRepository;
 		private readonly ProductRepository _productRepository;
 		private readonly TransactionUnitOfWork _transactionUnitOfWork;
@@ -69,6 +70,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			Iso20022AccountReportReader reportReader,
 			CurrencyRepository currencyRepository,
 			AccountRepository accountRepository,
+			AccountInCurrencyRepository inCurrencyRepository,
 			TransactionRepository transactionRepository,
 			ProductRepository productRepository,
 			TransactionUnitOfWork transactionUnitOfWork,
@@ -82,6 +84,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			_reportReader = reportReader;
 			_currencyRepository = currencyRepository;
 			_accountRepository = accountRepository;
+			_inCurrencyRepository = inCurrencyRepository;
 			_transactionRepository = transactionRepository;
 			_productRepository = productRepository;
 			_transactionUnitOfWork = transactionUnitOfWork;
@@ -335,6 +338,35 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
 			var importHash = await reportEntry.GetHashAsync();
+			var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, dbTransaction);
+			if (existingTransaction is not null)
+			{
+				resultBuilder.AddTransaction(existingTransaction, false);
+				var items = existingTransaction.Items;
+				var inCurrencyIds = items
+					.Select(item => item.SourceAccountId)
+					.Concat(items.Select(item => item.TargetAccountId))
+					.Distinct();
+
+				var accounts = inCurrencyIds
+					.Select(async id => await _inCurrencyRepository.GetByIdAsync(id))
+					.Select(task => task.Result.AccountId)
+					.Select(async id => await _accountRepository.GetByIdAsync(id))
+					.Select(task => task.Result);
+
+				foreach (var account in accounts)
+				{
+					resultBuilder.AddAccount(account, false);
+				}
+
+				foreach (var itemProduct in items.Select(item => item.Product))
+				{
+					resultBuilder.AddProduct(itemProduct, false);
+				}
+
+				return existingTransaction;
+			}
+
 			var amount = reportEntry.Amount.Value;
 			_logger.LogTrace("Report entry amount {Amount}", amount);
 

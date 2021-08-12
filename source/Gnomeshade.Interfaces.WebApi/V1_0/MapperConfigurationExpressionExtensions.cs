@@ -24,6 +24,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 		/// <param name="options">The options to which to add the maps.</param>
 		public static void CreateMapsForV1_0(this IMapperConfigurationExpression options)
 		{
+			options.AllowNullCollections = true;
+
 			options.CreateMap<RegistrationModel, ApplicationUser>();
 			options.CreateMap<ApplicationUser, UserModel>();
 

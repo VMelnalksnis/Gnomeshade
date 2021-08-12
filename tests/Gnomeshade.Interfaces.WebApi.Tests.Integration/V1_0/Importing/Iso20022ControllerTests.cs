@@ -3,9 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
+using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -37,11 +39,18 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Importing
 			await using var contentStream = _inputFile.OpenRead();
 			var reportResult = await _client.Import(contentStream, _inputFile.Name);
 
-			reportResult.Should().NotBeNull();
+			using (new AssertionScope())
+			{
+				reportResult.Should().NotBeNull();
+				reportResult.AccountReferences.Should().HaveCount(3);
+				reportResult.ProductReferences.Should().HaveCount(2);
+				reportResult.TransactionReferences.Should().HaveCount(2);
+				reportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(true);
+			}
 
-			reportResult.AccountReferences.Should().HaveCount(3);
-			reportResult.ProductReferences.Should().HaveCount(2);
-			reportResult.TransactionReferences.Should().HaveCount(2);
+			var secondReportResult = await _client.Import(contentStream, _inputFile.Name);
+
+			secondReportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(false);
 		}
 	}
 }

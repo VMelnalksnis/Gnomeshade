@@ -90,10 +90,12 @@ namespace Gnomeshade.Interfaces.WebApi
 
 			services
 				.AddTransient<Mapper>()
-				.AddSingleton<AutoMapper.IConfigurationProvider>(_ => new MapperConfiguration(options =>
+				.AddSingleton<AutoMapper.IConfigurationProvider>(_ =>
 				{
-					options.CreateMapsForV1_0();
-				}));
+					var config = new MapperConfiguration(options => options.CreateMapsForV1_0());
+					config.CompileMappings();
+					return config;
+				});
 
 			services.AddSwaggerGen(Options.SwaggerGen);
 		}
