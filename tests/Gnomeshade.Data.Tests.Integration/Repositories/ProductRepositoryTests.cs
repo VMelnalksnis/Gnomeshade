@@ -7,6 +7,7 @@ using System.Data;
 using System.Threading.Tasks;
 
 using FluentAssertions;
+using FluentAssertions.Execution;
 
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.TestingHelpers;
@@ -56,6 +57,19 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			getProduct.Should().BeEquivalentTo(expectedProduct);
 			findProduct.Should().BeEquivalentTo(expectedProduct);
 			allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
+
+			var productToUpdate = getProduct with { Description = "Foo" };
+			var updatedId = await _repository.UpdateAsync(productToUpdate);
+			var updatedProduct = await _repository.GetByIdAsync(updatedId);
+
+			using (new AssertionScope())
+			{
+				updatedProduct.Id.Should().Be(getProduct.Id);
+				updatedProduct.CreatedAt.Should().Be(getProduct.CreatedAt);
+				updatedProduct.ModifiedAt.Should().BeAfter(getProduct.ModifiedAt);
+				updatedProduct.Name.Should().Be(getProduct.Name);
+				updatedProduct.Description.Should().NotBe(getProduct.Description);
+			}
 
 			await _repository.DeleteAsync(id);
 

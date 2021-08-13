@@ -52,7 +52,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 					.RuleFor(model => model.Description, faker => faker.Lorem.Sentence())
 					.Generate();
 
-				productId = await _authenticatedClient.CreateProductAsync(productCreationModel);
+				productId = await _authenticatedClient.PutProductAsync(productCreationModel);
 			}
 
 			var counterparty = await _authenticatedClient.GetMyCounterpartyAsync();

@@ -207,9 +207,9 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<Guid> CreateProductAsync(ProductCreationModel product)
+		public Task<Guid> PutProductAsync(ProductCreationModel product)
 		{
-			return PostAsync<Guid, ProductCreationModel>(Product, product);
+			return PutAsync<Guid, ProductCreationModel>(Product, product);
 		}
 
 		/// <inheritdoc />
@@ -232,6 +232,22 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
 		}
 
+		private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
+		{
+			try
+			{
+				responseMessage.EnsureSuccessStatusCode();
+			}
+			catch (HttpRequestException requestException)
+			{
+				var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+				throw new HttpRequestException(
+					$"Failed with message: {message}",
+					requestException,
+					responseMessage.StatusCode);
+			}
+		}
+
 		private async Task<TResult> GetAsync<TResult>(string requestUri)
 			where TResult : notnull
 		{
@@ -251,26 +267,20 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 		}
 
+		private async Task<TResult> PutAsync<TResult, TRequest>(string requestUri, TRequest request)
+			where TResult : notnull
+			where TRequest : notnull
+		{
+			using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
+			await ThrowIfNotSuccessCode(response);
+
+			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+		}
+
 		private async Task DeleteAsync(string requestUri)
 		{
 			var deleteResponse = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
 			await ThrowIfNotSuccessCode(deleteResponse);
-		}
-
-		private async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
-		{
-			try
-			{
-				responseMessage.EnsureSuccessStatusCode();
-			}
-			catch (HttpRequestException requestException)
-			{
-				var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				throw new HttpRequestException(
-					$"Failed with message: {message}",
-					requestException,
-					responseMessage.StatusCode);
-			}
 		}
 	}
 }

@@ -204,7 +204,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<Guid> CreateProductAsync(ProductCreationModel product) => throw new NotImplementedException();
+		public Task<Guid> PutProductAsync(ProductCreationModel product) => throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();

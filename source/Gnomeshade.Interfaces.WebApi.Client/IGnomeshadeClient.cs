@@ -146,11 +146,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<List<UnitModel>> GetUnitsAsync();
 
 		/// <summary>
-		/// Creates a new product.
+		/// Creates a new product or replaces an existing one if one exists with the specified id.
 		/// </summary>
-		/// <param name="product">Information for creating the product.</param>
-		/// <returns>The id of the created product.</returns>
-		Task<Guid> CreateProductAsync(ProductCreationModel product);
+		/// <param name="product">The product to create or replace.</param>
+		/// <returns>The id of the created or replaced product.</returns>
+		/// <seealso cref="ProductController.Put"/>
+		Task<Guid> PutProductAsync(ProductCreationModel product);
 
 		Task<Guid> CreateUnitAsync(UnitCreationModel unit);
 

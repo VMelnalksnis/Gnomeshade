@@ -99,7 +99,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				UnitId = SelectedUnit?.Id,
 			};
 
-			var productId = await _gnomeshadeClient.CreateProductAsync(creationModel).ConfigureAwait(false);
+			var productId = await _gnomeshadeClient.PutProductAsync(creationModel).ConfigureAwait(false);
 			OnProductCreated(productId);
 		}
 

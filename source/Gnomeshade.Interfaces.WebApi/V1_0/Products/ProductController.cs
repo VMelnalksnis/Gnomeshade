@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,10 +27,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 	/// <summary>
 	/// CRUD operations on account entity.
 	/// </summary>
-	[SuppressMessage(
-		"ReSharper",
-		"AsyncConverter.ConfigureAwaitHighlighting",
-		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class ProductController : FinanceControllerBase<Product, ProductModel>
 	{
 		private readonly IDbConnection _dbConnection;
@@ -69,9 +64,17 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			return Ok(models);
 		}
 
-		[HttpPost]
+		/// <summary>
+		/// Creates a new product, or replaces and existing one if one exists with the specified id.
+		/// </summary>
+		/// <param name="model">The product to create or replace.</param>
+		/// <returns>The id of the created or replaced product.</returns>
+		/// <response code="200">An existing product was replaced.</response>
+		/// <response code="201">A new product was created.</response>
+		[HttpPut]
+		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] ProductCreationModel creationModel)
+		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] ProductCreationModel model)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -79,16 +82,24 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var product = Mapper.Map<Product>(creationModel) with
-			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				NormalizedName = creationModel.Name!.ToUpperInvariant(),
-			};
+			var normalizedName = model.Name!.ToUpperInvariant();
+			var existingByName = await _repository.FindByNameAsync(normalizedName);
 
-			var id = await _repository.AddAsync(product);
-			return CreatedAtAction(nameof(Get), new { id }, id);
+			if ((model.Id is not null || (model.Id is null && existingByName is not null)) &&
+				existingByName is not null &&
+				existingByName.Id != model.Id)
+			{
+				// todo use standard error model
+				return BadRequest($"Product with name {model.Name} already exists");
+			}
+
+			var existingById = model.Id is not null
+				? await _repository.FindByIdAsync(model.Id.Value)
+				: default;
+
+			return existingById is null
+				? await CreateNewProductAsync(model, user)
+				: await UpdateExistingProductAsync(model, user);
 		}
 
 		/// <inheritdoc />
@@ -102,6 +113,30 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			base.Dispose(disposing);
+		}
+
+		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, User user)
+		{
+			var product = Mapper.Map<Product>(creationModel) with
+			{
+				OwnerId = user.Id,
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
+				NormalizedName = creationModel.Name!.ToUpperInvariant(),
+			};
+
+			var id = await _repository.AddAsync(product);
+			return CreatedAtAction(nameof(Get), new { id }, id);
+		}
+
+		private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, User user)
+		{
+			var product = Mapper.Map<Product>(creationModel);
+			product.NormalizedName = product.Name.ToUpperInvariant();
+			product.ModifiedByUserId = user.Id;
+
+			var id = await _repository.UpdateAsync(product);
+			return Ok(id);
 		}
 	}
 }
