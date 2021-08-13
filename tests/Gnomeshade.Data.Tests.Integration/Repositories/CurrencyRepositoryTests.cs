@@ -39,7 +39,10 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		public async Task GetAllAsync_ShouldReturnExpected()
 		{
 			var currencies = await _repository.GetAllAsync();
-			var expectedCurrencies = new List<string> { "EUR", "USD" };
+			var expectedCurrencies = new List<string>
+			{
+				"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD",
+			};
 			currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
 
 			var firstCurrency = currencies.First();
