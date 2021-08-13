@@ -165,7 +165,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
 			};
 
-			_ = await _gnomeshadeClient.AddTransactionItemAsync(_initialId, creationModel).ConfigureAwait(false);
+			_ = await _gnomeshadeClient.PutTransactionItemAsync(_initialId, creationModel).ConfigureAwait(false);
 			ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
 			ItemCreation = new(_gnomeshadeClient);
 			await GetTransactionAsync(_initialId).ConfigureAwait(false);

@@ -102,14 +102,14 @@ namespace Gnomeshade.Data.Repositories
 
 		public virtual Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			var sql = $"{SelectSql} WHERE id = @id";
+			var sql = $"{SelectSql} WHERE id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return DbConnection.QuerySingleAsync<TEntity>(command);
 		}
 
 		public virtual Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			var sql = $"{SelectSql} WHERE id = @id";
+			var sql = $"{SelectSql} WHERE id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return DbConnection.QuerySingleOrDefaultAsync<TEntity?>(command);
 		}
