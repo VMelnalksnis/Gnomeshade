@@ -195,9 +195,9 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<List<ProductModel>> GetProductsAsync()
+		public Task<List<Product>> GetProductsAsync()
 		{
-			return GetAsync<List<ProductModel>>(Product);
+			return GetAsync<List<Product>>(Routes.Product);
 		}
 
 		/// <inheritdoc />
@@ -209,7 +209,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<Guid> PutProductAsync(ProductCreationModel product)
 		{
-			return PutAsync<Guid, ProductCreationModel>(Product, product);
+			return PutAsync<Guid, ProductCreationModel>(Routes.Product, product);
 		}
 
 		/// <inheritdoc />

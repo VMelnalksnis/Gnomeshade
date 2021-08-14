@@ -26,7 +26,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		private static readonly List<Currency> _currencies;
 		private static readonly List<Account> _accounts;
 		private static readonly List<UnitModel> _units;
-		private static readonly List<ProductModel> _products;
+		private static readonly List<Product> _products;
 		private static readonly List<TransactionModel> _transactions;
 
 		static DesignTimeGnomeshadeClient()
@@ -54,8 +54,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			var kilogram = new UnitModel { Id = Guid.NewGuid(), Name = "Kilogram" };
 			_units = new() { kilogram };
 
-			var bread = new ProductModel { Id = Guid.NewGuid(), Name = "Bread" };
-			var milk = new ProductModel { Id = Guid.NewGuid(), Name = "Milk" };
+			var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
+			var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
 			_products = new() { bread, milk };
 
 			var transaction = new TransactionModel
@@ -201,7 +201,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<List<ProductModel>> GetProductsAsync()
+		public Task<List<Product>> GetProductsAsync()
 		{
 			return Task.FromResult(_products.ToList());
 		}

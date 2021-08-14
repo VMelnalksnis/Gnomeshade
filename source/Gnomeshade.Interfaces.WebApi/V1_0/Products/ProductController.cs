@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
@@ -28,7 +27,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 	/// <summary>
 	/// CRUD operations on account entity.
 	/// </summary>
-	public sealed class ProductController : FinanceControllerBase<Product, ProductModel>
+	public sealed class ProductController : FinanceControllerBase<Data.Models.Product, Product>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly ProductRepository _repository;
@@ -51,14 +50,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<ProductModel>> Get(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellationToken)
 		{
 			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<List<ProductModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<List<Product>>> GetAll(CancellationToken cancellationToken)
 		{
 			var accounts = await _repository.GetAllAsync(cancellationToken);
 			var models = accounts.Select(account => MapToModel(account)).ToList();
@@ -116,9 +115,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			base.Dispose(disposing);
 		}
 
-		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, User user)
+		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, Data.Models.User user)
 		{
-			var product = Mapper.Map<Product>(creationModel) with
+			var product = Mapper.Map<Data.Models.Product>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -130,9 +129,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
 
-		private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, User user)
+		private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, Data.Models.User user)
 		{
-			var product = Mapper.Map<Product>(creationModel);
+			var product = Mapper.Map<Data.Models.Product>(creationModel);
 			product.NormalizedName = product.Name.ToUpperInvariant();
 			product.ModifiedByUserId = user.Id;
 

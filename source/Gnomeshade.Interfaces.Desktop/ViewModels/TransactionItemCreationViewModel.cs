@@ -25,7 +25,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private Account? _targetAccount;
 		private decimal? _targetAmount;
 		private Currency? _targetCurrency;
-		private ProductModel? _product;
+		private Product? _product;
 		private decimal? _amount;
 		private string? _bankReference;
 		private string? _externalReference;
@@ -49,7 +49,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			AccountSelector = (_, item) => ((Account)item).Name;
 			CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
-			ProductSelector = (_, item) => ((ProductModel)item).Name;
+			ProductSelector = (_, item) => ((Product)item).Name;
 		}
 
 		/// <summary>
@@ -66,7 +66,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		public AutoCompleteSelector<object> CurrencySelector { get; }
 
-		public Task<List<ProductModel>> Products { get; }
+		public Task<List<Product>> Products { get; }
 
 		public AutoCompleteSelector<object> ProductSelector { get; }
 
@@ -153,7 +153,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			set => SetAndNotifyWithGuard(ref _targetCurrency, value, nameof(TargetCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
 		}
 
-		public ProductModel? Product
+		public Product? Product
 		{
 			get => _product;
 			set => SetAndNotifyWithGuard(ref _product, value, nameof(Product), nameof(CanCreate));
@@ -209,7 +209,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			return _gnomeshadeClient.GetCurrenciesAsync();
 		}
 
-		private Task<List<ProductModel>> GetProductsAsync()
+		private Task<List<Product>> GetProductsAsync()
 		{
 			return _gnomeshadeClient.GetProductsAsync();
 		}

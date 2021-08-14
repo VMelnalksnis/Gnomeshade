@@ -23,6 +23,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 		/// <summary>
 		/// The referenced product.
 		/// </summary>
-		public ProductModel Product { get; init; } = null!;
+		public Product Product { get; init; } = null!;
 	}
 }

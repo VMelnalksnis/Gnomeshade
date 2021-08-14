@@ -111,7 +111,7 @@
 			ItemSelector="{Binding ProductSelector}"
 			SelectedItem="{Binding Product, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="mp:ProductModel">
+				<DataTemplate x:DataType="mp:Product">
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>

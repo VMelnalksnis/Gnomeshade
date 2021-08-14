@@ -35,7 +35,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 
 		public Guid ModifiedByUserId { get; init; }
 
-		public ProductModel Product { get; init; }
+		public Product Product { get; init; }
 
 		public decimal Amount { get; init; }
 

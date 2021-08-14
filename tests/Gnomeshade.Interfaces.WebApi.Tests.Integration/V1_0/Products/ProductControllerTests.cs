@@ -76,19 +76,19 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products
 			return new() { Name = Guid.NewGuid().ToString("N") };
 		}
 
-		private static EquivalencyAssertionOptions<ProductModel> WithoutModifiedAt(
-			EquivalencyAssertionOptions<ProductModel> options)
+		private static EquivalencyAssertionOptions<Product> WithoutModifiedAt(
+			EquivalencyAssertionOptions<Product> options)
 		{
-			return options.ComparingByMembers<ProductModel>().Excluding(model => model.ModifiedAt);
+			return options.ComparingByMembers<Product>().Excluding(model => model.ModifiedAt);
 		}
 
-		private static EquivalencyAssertionOptions<ProductModel> WithoutModifiedAtAndDescription(
-			EquivalencyAssertionOptions<ProductModel> options)
+		private static EquivalencyAssertionOptions<Product> WithoutModifiedAtAndDescription(
+			EquivalencyAssertionOptions<Product> options)
 		{
 			return WithoutModifiedAt(options).Excluding(model => model.Description);
 		}
 
-		private async Task<ProductModel> PutAndGet(ProductCreationModel creationModel)
+		private async Task<Product> PutAndGet(ProductCreationModel creationModel)
 		{
 			var productId = await _client.PutProductAsync(creationModel);
 			return (await _client.GetProductsAsync()).Single(model => model.Id == productId);

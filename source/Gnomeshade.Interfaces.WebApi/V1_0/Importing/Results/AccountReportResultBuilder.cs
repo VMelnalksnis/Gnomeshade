@@ -46,7 +46,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 				return;
 			}
 
-			var model = _mapper.Map<ProductModel>(product);
+			var model = _mapper.Map<Product>(product);
 			ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
 		}
 

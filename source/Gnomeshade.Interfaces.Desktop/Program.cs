@@ -27,7 +27,7 @@ namespace Gnomeshade.Interfaces.Desktop
 		public static AppBuilder BuildAvaloniaApp()
 		{
 			// Force assembly to be loaded
-			typeof(ProductModel).GetTypeInfo();
+			typeof(Product).GetTypeInfo();
 
 			return
 				AppBuilder

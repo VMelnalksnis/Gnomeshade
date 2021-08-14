@@ -138,7 +138,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// Gets all products.
 		/// </summary>
 		/// <returns>A collection with all products.</returns>
-		Task<List<ProductModel>> GetProductsAsync();
+		Task<List<Product>> GetProductsAsync();
 
 		/// <summary>
 		/// Gets all units.

@@ -79,7 +79,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 
 		[LinqTunnel]
 		[Pure]
-		public static IEnumerable<ProductOverviewRow> Translate(this IEnumerable<ProductModel> products)
+		public static IEnumerable<ProductOverviewRow> Translate(this IEnumerable<Product> products)
 		{
 			return products
 				.Select(product => new ProductOverviewRow

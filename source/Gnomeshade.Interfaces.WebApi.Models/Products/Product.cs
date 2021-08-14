@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.Interfaces.WebApi.Models.Products
 {
 	[PublicAPI]
-	public sealed record ProductModel
+	public sealed record Product
 	{
 		public Guid Id { get; init; }
 
