@@ -4,17 +4,16 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Products
 {
 	/// <summary>
 	/// The information needed to create or update a product.
 	/// </summary>
 	[PublicAPI]
-	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record ProductCreationModel
 	{
 		/// <summary>

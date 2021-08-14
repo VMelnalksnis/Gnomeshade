@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	[PublicAPI]

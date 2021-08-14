@@ -3,17 +3,16 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	/// <summary>
 	/// A single currency for a specific account.
 	/// </summary>
 	[PublicAPI]
-	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record AccountInCurrencyModel
 	{
 		/// <summary>

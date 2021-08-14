@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	/// <summary>
@@ -18,7 +19,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 	public sealed record TransactionCreationModel
 	{
 		/// <summary>
-		/// Gets the date on which the transaction was completed on.
+		/// The date on which the transaction was completed on.
 		/// </summary>
 		[Required]
 		public DateTimeOffset? Date { get; init; }

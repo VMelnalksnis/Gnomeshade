@@ -4,14 +4,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	[PublicAPI]
-	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record AccountModel
 	{
 		/// <summary>

@@ -5,17 +5,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	/// <summary>
 	/// The information needed in order to create a new account.
 	/// </summary>
 	[PublicAPI]
-	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
 	public sealed record AccountCreationModel
 	{
 		/// <summary>
