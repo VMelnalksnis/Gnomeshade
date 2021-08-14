@@ -15,13 +15,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client.Tests
 		[Test]
 		public void AccountUri_ShouldFormatGuidWithoutSeparators()
 		{
-			Routes.AccountUri(Guid.Empty).Should().Be("Account/00000000000000000000000000000000");
+			Routes.AccountIdUri(Guid.Empty).Should().Be("Account/00000000000000000000000000000000");
 		}
 
 		[TestCaseSource(typeof(TransactionUriTestCaseSource))]
 		public void TransactionUri_ShouldReturnExpected(DateTimeOffset? from, DateTimeOffset? to, string expectedUri)
 		{
-			Routes.TransactionUri(from, to).Should().Be(expectedUri);
+			Routes.TransactionDateRangeUri(from, to).Should().Be(expectedUri);
 		}
 
 		[Test]

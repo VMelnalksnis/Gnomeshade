@@ -14,30 +14,44 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 	/// </summary>
 	public static class Routes
 	{
-		internal static readonly string Authentication = nameof(Authentication);
-		internal static readonly string Account = nameof(Account);
-		internal static readonly string Currency = nameof(Currency);
-		internal static readonly string Iso20022 = "Iso";
-		internal static readonly string Product = nameof(Product);
-		internal static readonly string Transaction = nameof(Transaction);
-		internal static readonly string Unit = nameof(Unit);
+		internal const string AuthenticationUri = "Authentication";
+		internal const string AccountUri = "Account";
+		internal const string CurrencyUri = "Currency";
+		internal const string Iso20022 = "Iso";
+		internal const string ProductUri = "Product";
+		internal const string TransactionUri = "Transaction";
+		internal const string UnitUri = "Unit";
 
-		internal static readonly string LoginUri = $"{Authentication}/Login";
-		internal static readonly string InfoUri = $"{Authentication}/Info";
+		internal static readonly string AllAccountUri = $"{AccountUri}?onlyActive=false";
+		internal static readonly string LoginUri = $"{AuthenticationUri}/Login";
 
 		/// <summary>
 		/// Gets the relative uri for the specified account.
 		/// </summary>
 		/// <param name="id">The id of the account.</param>
 		/// <returns>Relative uri for a specific account.</returns>
-		public static string AccountUri(Guid id) => $"{Account}/{Format(id)}";
+		public static string AccountIdUri(Guid id) => $"{AccountUri}/{Format(id)}";
+
+		/// <summary>
+		/// Gets the relative uri for finding account by its name.
+		/// </summary>
+		/// <param name="name">The name of the account to find.</param>
+		/// <returns>Relative uri for finding an account by its name.</returns>
+		public static string AccountNameUri(string name) => $"{AccountUri}/Find/{name}";
+
+		/// <summary>
+		/// Gets the relative uri for the specified product.
+		/// </summary>
+		/// <param name="id">The id of the product.</param>
+		/// <returns>Relative uri for a specific account.</returns>
+		public static string ProductIdUri(Guid id) => $"{ProductUri}/{Format(id)}";
 
 		/// <summary>
 		/// Gets the relative uri for the specified transaction.
 		/// </summary>
 		/// <param name="id">The id of the transaction.</param>
 		/// <returns>Relative uri for a specific transaction.</returns>
-		public static string TransactionUri(Guid id) => $"{Transaction}/{Format(id)}";
+		public static string TransactionIdUri(Guid id) => $"{TransactionUri}/{Format(id)}";
 
 		/// <summary>
 		/// Gets the relative uri for all transactions within the specified period.
@@ -45,7 +59,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <param name="from">The point in time from which to select transactions.</param>
 		/// <param name="to">The point in time to which to select transactions.</param>
 		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
-		public static string TransactionUri(DateTimeOffset? from, DateTimeOffset? to)
+		public static string TransactionDateRangeUri(DateTimeOffset? from, DateTimeOffset? to)
 		{
 			var keyValues = new Dictionary<DateTimeOffset, string>(2);
 			if (from.HasValue)
@@ -60,20 +74,27 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 
 			if (!keyValues.Any())
 			{
-				return Transaction;
+				return TransactionUri;
 			}
 
 			var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
 			var query = string.Join('&', parameters);
-			return $"{Transaction}?{query}";
+			return $"{TransactionUri}?{query}";
 		}
+
+		/// <summary>
+		/// Gets the relative uri for the items of the specified transaction.
+		/// </summary>
+		/// <param name="id">The id of the transaction.</param>
+		/// <returns>Relative uri for items of a transaction.</returns>
+		public static string TransactionItemUri(Guid id) => $"{TransactionIdUri(id)}/Item";
 
 		/// <summary>
 		/// Gets the relative uri for the specified transaction item.
 		/// </summary>
 		/// <param name="id">The id of the transaction item.</param>
 		/// <returns>Relative uri for a specific transaction item.</returns>
-		public static string TransactionItemUri(Guid id) => $"{Transaction}/Item/{Format(id)}";
+		public static string TransactionItemIdUri(Guid id) => $"{TransactionUri}/Item/{Format(id)}";
 
 		/// <summary>
 		/// Converts the specified date to a string and encodes it for using within a url.

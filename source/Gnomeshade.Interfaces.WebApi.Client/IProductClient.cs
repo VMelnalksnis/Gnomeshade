@@ -22,6 +22,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<List<Product>> GetProductsAsync();
 
 		/// <summary>
+		/// Gets the specified product.
+		/// </summary>
+		/// <param name="id">The id of the product to get.</param>
+		/// <returns>The product with the specified id.</returns>
+		Task<Product> GetProductAsync(Guid id);
+
+		/// <summary>
 		/// Gets all units.
 		/// </summary>
 		/// <returns>A collection with all units.</returns>

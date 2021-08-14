@@ -203,6 +203,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
+		public Task<Product> GetProductAsync(Guid id) => throw new NotImplementedException();
+
+		/// <inheritdoc />
 		public Task<List<Unit>> GetUnitsAsync()
 		{
 			return Task.FromResult(_units.ToList());

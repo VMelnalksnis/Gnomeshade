@@ -97,119 +97,80 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<Counterparty> GetMyCounterpartyAsync()
-		{
-			return GetAsync<Counterparty>("Counterparty/Me");
-		}
+		public Task<Counterparty> GetMyCounterpartyAsync() =>
+			GetAsync<Counterparty>("Counterparty/Me");
 
 		/// <inheritdoc/>
-		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
-		{
-			return PostAsync<Guid, TransactionCreationModel>(Routes.Transaction, transaction);
-		}
+		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+			PostAsync(TransactionUri, transaction);
 
 		/// <inheritdoc />
-		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
-		{
-			return PutAsync<Guid, TransactionItemCreationModel>($"{TransactionUri(transactionId)}/Item", item);
-		}
+		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item) =>
+			PutAsync(TransactionItemUri(transactionId), item);
 
 		/// <inheritdoc />
-		public Task<Transaction> GetTransactionAsync(Guid id)
-		{
-			return GetAsync<Transaction>(TransactionUri(id));
-		}
+		public Task<Transaction> GetTransactionAsync(Guid id) =>
+			GetAsync<Transaction>(TransactionIdUri(id));
 
 		/// <inheritdoc />
-		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
-		{
-			return GetAsync<List<Transaction>>(TransactionUri(from, to));
-		}
+		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
+			GetAsync<List<Transaction>>(TransactionDateRangeUri(@from, to));
 
 		/// <inheritdoc />
-		public Task DeleteTransactionAsync(Guid id)
-		{
-			return DeleteAsync(TransactionUri(id));
-		}
+		public Task DeleteTransactionAsync(Guid id) =>
+			DeleteAsync(TransactionIdUri(id));
 
 		/// <inheritdoc />
-		public Task DeleteTransactionItemAsync(Guid id)
-		{
-			return DeleteAsync(TransactionItemUri(id));
-		}
+		public Task DeleteTransactionItemAsync(Guid id) =>
+			DeleteAsync(TransactionItemIdUri(id));
 
 		/// <inheritdoc />
-		public Task<Account> GetAccountAsync(Guid id)
-		{
-			return GetAsync<Account>(AccountUri(id));
-		}
+		public Task<Account> GetAccountAsync(Guid id) =>
+			GetAsync<Account>(AccountIdUri(id));
 
 		/// <inheritdoc />
-		public async Task<Account?> FindAccountAsync(string name)
-		{
-			using var response = await _httpClient.GetAsync($"Account/Find/{name}").ConfigureAwait(false);
-			if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
-
-			await ThrowIfNotSuccessCode(response);
-			return (await response.Content.ReadFromJsonAsync<Account>().ConfigureAwait(false))!;
-		}
+		public Task<Account?> FindAccountAsync(string name) =>
+			FindAsync<Account>(AccountNameUri(name));
 
 		/// <inheritdoc />
-		public Task<List<Account>> GetAccountsAsync()
-		{
-			return GetAsync<List<Account>>($"{Routes.Account}?onlyActive=false");
-		}
+		public Task<List<Account>> GetAccountsAsync() =>
+			GetAsync<List<Account>>(AllAccountUri);
 
 		/// <inheritdoc />
-		public Task<List<Account>> GetActiveAccountsAsync()
-		{
-			return GetAsync<List<Account>>(Routes.Account);
-		}
+		public Task<List<Account>> GetActiveAccountsAsync() =>
+			GetAsync<List<Account>>(AccountUri);
 
 		/// <inheritdoc />
-		public Task<Guid> CreateAccountAsync(AccountCreationModel account)
-		{
-			return PostAsync<Guid, AccountCreationModel>(Routes.Account, account);
-		}
+		public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
+			PostAsync(AccountUri, account);
 
 		/// <inheritdoc />
-		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency)
-		{
-			return PostAsync<Guid, AccountInCurrencyCreationModel>(AccountUri(id), currency);
-		}
+		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+			PostAsync(AccountIdUri(id), currency);
 
 		/// <inheritdoc />
-		public Task<List<Currency>> GetCurrenciesAsync()
-		{
-			return GetAsync<List<Currency>>(Routes.Currency);
-		}
+		public Task<List<Currency>> GetCurrenciesAsync() =>
+			GetAsync<List<Currency>>(CurrencyUri);
 
 		/// <inheritdoc />
-		public Task<List<Product>> GetProductsAsync()
-		{
-			return GetAsync<List<Product>>(Routes.Product);
-		}
+		public Task<List<Product>> GetProductsAsync() =>
+			GetAsync<List<Product>>(ProductUri);
 
 		/// <inheritdoc />
-		public Task<List<Unit>> GetUnitsAsync()
-		{
-			return GetAsync<List<Unit>>(Routes.Unit);
-		}
+		public Task<Product> GetProductAsync(Guid id) =>
+			GetAsync<Product>(ProductIdUri(id));
 
 		/// <inheritdoc />
-		public Task<Guid> PutProductAsync(ProductCreationModel product)
-		{
-			return PutAsync<Guid, ProductCreationModel>(Routes.Product, product);
-		}
+		public Task<List<Unit>> GetUnitsAsync() =>
+			GetAsync<List<Unit>>(UnitUri);
 
 		/// <inheritdoc />
-		public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
-		{
-			return PostAsync<Guid, UnitCreationModel>(Routes.Unit, unit);
-		}
+		public Task<Guid> PutProductAsync(ProductCreationModel product) =>
+			PutAsync(ProductUri, product);
+
+		/// <inheritdoc />
+		public Task<Guid> CreateUnitAsync(UnitCreationModel unit) =>
+			PostAsync(UnitUri, unit);
 
 		/// <inheritdoc />
 		public async Task<AccountReportResult> Import(Stream content, string name)
@@ -250,24 +211,35 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 		}
 
-		private async Task<TResult> PostAsync<TResult, TRequest>(string requestUri, TRequest request)
-			where TResult : notnull
+		private async Task<TResult?> FindAsync<TResult>(string requestUri)
+			where TResult : class
+		{
+			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				return null;
+			}
+
+			await ThrowIfNotSuccessCode(response);
+			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+		}
+
+		private async Task<Guid> PostAsync<TRequest>(string requestUri, TRequest request)
 			where TRequest : notnull
 		{
 			using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
 			await ThrowIfNotSuccessCode(response);
 
-			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+			return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
 		}
 
-		private async Task<TResult> PutAsync<TResult, TRequest>(string requestUri, TRequest request)
-			where TResult : notnull
+		private async Task<Guid> PutAsync<TRequest>(string requestUri, TRequest request)
 			where TRequest : notnull
 		{
 			using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
 			await ThrowIfNotSuccessCode(response);
 
-			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+			return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
 		}
 
 		private async Task DeleteAsync(string requestUri)
