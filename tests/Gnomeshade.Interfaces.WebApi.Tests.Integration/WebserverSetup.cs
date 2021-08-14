@@ -9,7 +9,6 @@ using Bogus;
 
 using Gnomeshade.Data.Tests.Integration;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -23,7 +22,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 	{
 		public static WebApplicationFactory<Startup> WebApplicationFactory { get; private set; } = null!;
 
-		private static LoginModel LoginModel { get; set; } = null!;
+		private static Login Login { get; set; } = null!;
 
 		public static IGnomeshadeClient CreateClient()
 		{
@@ -34,7 +33,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		public static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
 		{
 			var client = CreateClient();
-			var loginResult = await client.LogInAsync(LoginModel);
+			var loginResult = await client.LogInAsync(Login);
 			if (loginResult is not SuccessfulLogin)
 			{
 				throw new(loginResult.ToString());
@@ -63,7 +62,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 			var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
 			response.EnsureSuccessStatusCode();
 
-			LoginModel = new() { Username = registrationModel.Username, Password = registrationModel.Password };
+			Login = new() { Username = registrationModel.Username, Password = registrationModel.Password };
 		}
 
 		[OneTimeTearDown]

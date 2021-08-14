@@ -9,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
@@ -94,13 +93,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<LoginResult> LogInAsync(LoginModel login) => throw new NotImplementedException();
+		public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task LogOutAsync() => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<UserModel> InfoAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();

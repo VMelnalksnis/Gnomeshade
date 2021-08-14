@@ -63,7 +63,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 		[HttpPost]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(Status401Unauthorized)]
-		public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] LoginModel login)
+		public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] Login login)
 		{
 			var user = await _userManager.FindByNameAsync(login.Username);
 			if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))

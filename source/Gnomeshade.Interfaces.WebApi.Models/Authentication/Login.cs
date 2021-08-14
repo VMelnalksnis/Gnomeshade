@@ -13,7 +13,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
 	/// The information needed to log in.
 	/// </summary>
 	[PublicAPI]
-	public sealed record LoginModel
+	public sealed record Login
 	{
 		/// <summary>
 		/// The username to log in with. Required.

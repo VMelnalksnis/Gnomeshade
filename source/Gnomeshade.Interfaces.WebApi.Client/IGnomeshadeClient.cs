@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
@@ -26,19 +25,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="login">The credentials to use to log in.</param>
 		/// <returns>Object indicating whether the login was successful or not.</returns>
-		Task<LoginResult> LogInAsync(LoginModel login);
+		Task<LoginResult> LogInAsync(Login login);
 
 		/// <summary>
 		/// Log out.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		Task LogOutAsync();
-
-		/// <summary>
-		/// Gets information about the currently logged in user.
-		/// </summary>
-		/// <returns>Information about the currently logged in user.</returns>
-		Task<UserModel> InfoAsync();
 
 		Task<Counterparty> GetMyCounterpartyAsync();
 
@@ -55,7 +48,6 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <param name="transactionId">The id of the transaction to which to add a new item.</param>
 		/// <param name="item">The transaction item to create or replace.</param>
 		/// <returns>The id of the created or replaced transaction item.</returns>
-		/// <seealso cref="TransactionController.PutItem"/>
 		Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item);
 
 		/// <summary>
@@ -151,7 +143,6 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="product">The product to create or replace.</param>
 		/// <returns>The id of the created or replaced product.</returns>
-		/// <seealso cref="ProductController.Put"/>
 		Task<Guid> PutProductAsync(ProductCreationModel product);
 
 		Task<Guid> CreateUnitAsync(UnitCreationModel unit);

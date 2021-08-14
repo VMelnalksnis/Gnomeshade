@@ -4,7 +4,7 @@
 
 using System.Net;
 
-namespace Gnomeshade.Interfaces.WebApi.Client.Login
+namespace Gnomeshade.Interfaces.WebApi.Client
 {
 	/// <summary>
 	/// Indicates a failed login.

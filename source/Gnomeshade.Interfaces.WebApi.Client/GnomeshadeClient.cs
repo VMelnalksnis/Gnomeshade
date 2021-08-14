@@ -11,7 +11,6 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
@@ -68,7 +67,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc/>
-		public async Task<LoginResult> LogInAsync(LoginModel login)
+		public async Task<LoginResult> LogInAsync(Login login)
 		{
 			try
 			{
@@ -95,12 +94,6 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		{
 			_httpClient.DefaultRequestHeaders.Authorization = null;
 			return Task.CompletedTask;
-		}
-
-		/// <inheritdoc/>
-		public Task<UserModel> InfoAsync()
-		{
-			return GetAsync<UserModel>(InfoUri);
 		}
 
 		/// <inheritdoc />

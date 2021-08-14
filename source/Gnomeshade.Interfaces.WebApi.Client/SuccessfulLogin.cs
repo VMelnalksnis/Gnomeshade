@@ -4,7 +4,7 @@
 
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
-namespace Gnomeshade.Interfaces.WebApi.Client.Login
+namespace Gnomeshade.Interfaces.WebApi.Client
 {
 	/// <summary>
 	/// Indicates a successful login.

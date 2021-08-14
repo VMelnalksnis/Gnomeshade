@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Client.Login;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using JetBrains.Annotations;
@@ -87,7 +86,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		{
 			ErrorMessage = string.Empty;
 
-			var loginModel = new LoginModel { Username = Username!, Password = Password! };
+			var loginModel = new Login { Username = Username!, Password = Password! };
 			var loginResult = await _gnomeshadeClient.LogInAsync(loginModel).ConfigureAwait(false);
 
 			switch (loginResult)
