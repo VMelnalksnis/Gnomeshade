@@ -4,7 +4,7 @@
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
+namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
 {
 	[PublicAPI]
 	public sealed record UserModel

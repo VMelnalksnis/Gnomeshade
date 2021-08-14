@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
+namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	/// <summary>
 	/// The information needed in order to create a new account.

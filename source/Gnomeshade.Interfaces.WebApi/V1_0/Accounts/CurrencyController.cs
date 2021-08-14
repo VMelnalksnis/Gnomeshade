@@ -13,6 +13,7 @@ using AutoMapper;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

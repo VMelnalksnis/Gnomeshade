@@ -12,8 +12,8 @@ using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using Moq;
 

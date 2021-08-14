@@ -10,8 +10,8 @@ using AutoMapper;
 using FluentAssertions;
 
 using Gnomeshade.Data.Models;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 using NUnit.Framework;
 

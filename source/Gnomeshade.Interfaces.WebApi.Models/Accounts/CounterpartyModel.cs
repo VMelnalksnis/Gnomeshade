@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
+namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	[PublicAPI]
 	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]

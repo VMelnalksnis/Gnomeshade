@@ -10,8 +10,8 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 
 using Gnomeshade.Data.Models;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using JetBrains.Annotations;
 

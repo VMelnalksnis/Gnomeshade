@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Client.Login;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using JetBrains.Annotations;
 

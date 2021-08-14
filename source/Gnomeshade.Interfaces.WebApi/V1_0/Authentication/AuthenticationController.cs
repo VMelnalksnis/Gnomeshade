@@ -14,6 +14,7 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

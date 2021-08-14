@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 using NUnit.Framework;
 

@@ -4,11 +4,11 @@
 
 using System;
 
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	[PublicAPI]
 	public sealed record TransactionItemModel

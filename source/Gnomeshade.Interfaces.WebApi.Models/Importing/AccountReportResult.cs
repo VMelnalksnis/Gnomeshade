@@ -4,12 +4,12 @@
 
 using System.Collections.Generic;
 
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
+namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 {
 	/// <summary>
 	/// Summary of the report import.

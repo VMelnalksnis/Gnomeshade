@@ -11,7 +11,7 @@ using FluentAssertions;
 using FluentAssertions.Equivalency;
 
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using NUnit.Framework;
 

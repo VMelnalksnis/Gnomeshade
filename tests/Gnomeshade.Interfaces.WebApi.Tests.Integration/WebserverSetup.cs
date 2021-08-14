@@ -10,7 +10,7 @@ using Bogus;
 using Gnomeshade.Data.Tests.Integration;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Client.Login;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	[PublicAPI]
 	public sealed record TransactionModel

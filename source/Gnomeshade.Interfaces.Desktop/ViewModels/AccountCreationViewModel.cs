@@ -11,7 +11,7 @@ using Avalonia.Controls;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {

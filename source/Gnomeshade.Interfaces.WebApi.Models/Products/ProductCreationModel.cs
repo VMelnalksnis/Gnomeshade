@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
+namespace Gnomeshade.Interfaces.WebApi.Models.Products
 {
 	/// <summary>
 	/// The information needed to create or update a product.

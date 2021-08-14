@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	/// <summary>
 	/// Represents information needed in order to create a transaction.

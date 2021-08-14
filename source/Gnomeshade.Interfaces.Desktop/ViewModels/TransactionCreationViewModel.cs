@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {

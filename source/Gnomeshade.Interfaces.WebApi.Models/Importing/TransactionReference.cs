@@ -2,12 +2,12 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
+namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 {
 	/// <summary>
 	/// A reference to an transaction that was used during import.

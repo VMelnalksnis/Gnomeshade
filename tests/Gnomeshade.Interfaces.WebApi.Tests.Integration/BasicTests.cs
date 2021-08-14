@@ -12,9 +12,9 @@ using Bogus;
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using NUnit.Framework;
 

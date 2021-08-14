@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
+namespace Gnomeshade.Interfaces.WebApi.Models.Products
 {
 	[PublicAPI]
 	public sealed record UnitCreationModel

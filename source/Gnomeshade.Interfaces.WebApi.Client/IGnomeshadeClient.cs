@@ -8,11 +8,11 @@ using System.IO;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client.Login;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
-using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Authentication;
+using Gnomeshade.Interfaces.WebApi.Models.Importing;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.Client
 {

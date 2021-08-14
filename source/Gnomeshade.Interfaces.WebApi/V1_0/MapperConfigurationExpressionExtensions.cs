@@ -6,10 +6,10 @@ using AutoMapper;
 
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Models;
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Authentication;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0
 {

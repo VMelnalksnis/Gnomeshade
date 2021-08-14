@@ -18,6 +18,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes;
 

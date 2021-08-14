@@ -16,6 +16,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

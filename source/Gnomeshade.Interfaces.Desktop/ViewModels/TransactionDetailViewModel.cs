@@ -15,7 +15,7 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
