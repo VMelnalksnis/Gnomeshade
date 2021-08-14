@@ -4,8 +4,8 @@
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
-	xmlns:products="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:ma="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionItemCreationView"
 	x:CompileBindings="True"
@@ -32,7 +32,7 @@
 			ItemSelector="{Binding AccountSelector}"
 			SelectedItem="{Binding SourceAccount, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:AccountModel">
+				<DataTemplate x:DataType="ma:Account">
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -50,7 +50,7 @@
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:CurrencyModel">
+				<DataTemplate x:DataType="ma:CurrencyModel">
 					<TextBlock Text="{Binding AlphabeticCode}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -71,7 +71,7 @@
 			ItemSelector="{Binding AccountSelector}"
 			SelectedItem="{Binding TargetAccount, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:AccountModel">
+				<DataTemplate x:DataType="ma:Account">
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -90,7 +90,7 @@
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:CurrencyModel">
+				<DataTemplate x:DataType="ma:CurrencyModel">
 					<TextBlock Text="{Binding AlphabeticCode}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -111,7 +111,7 @@
 			ItemSelector="{Binding ProductSelector}"
 			SelectedItem="{Binding Product, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="products:ProductModel">
+				<DataTemplate x:DataType="mp:ProductModel">
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>

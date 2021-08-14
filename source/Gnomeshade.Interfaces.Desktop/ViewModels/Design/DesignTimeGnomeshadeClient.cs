@@ -24,7 +24,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 	public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	{
 		private static readonly List<CurrencyModel> _currencies;
-		private static readonly List<AccountModel> _accounts;
+		private static readonly List<Account> _accounts;
 		private static readonly List<UnitModel> _units;
 		private static readonly List<ProductModel> _products;
 		private static readonly List<TransactionModel> _transactions;
@@ -35,14 +35,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			var usd = new CurrencyModel { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
 			_currencies = new() { euro, usd };
 
-			var cash = new AccountModel
+			var cash = new Account
 			{
 				Id = Guid.NewGuid(),
 				Name = "Cash",
 				PreferredCurrency = euro,
 				Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
 			};
-			var spending = new AccountModel
+			var spending = new Account
 			{
 				Id = Guid.NewGuid(),
 				Name = "Spending",
@@ -163,26 +163,26 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<AccountModel> GetAccountAsync(Guid id)
+		public Task<Account> GetAccountAsync(Guid id)
 		{
 			return Task.FromResult(_accounts.Single(account => account.Id == id));
 		}
 
 		/// <inheritdoc />
-		public Task<AccountModel?> FindAccountAsync(string name)
+		public Task<Account?> FindAccountAsync(string name)
 		{
 			var foundAccount = _accounts.SingleOrDefault(account => account.Name.ToUpperInvariant() == name);
 			return Task.FromResult(foundAccount);
 		}
 
 		/// <inheritdoc />
-		public Task<List<AccountModel>> GetAccountsAsync()
+		public Task<List<Account>> GetAccountsAsync()
 		{
 			return Task.FromResult(_accounts.ToList());
 		}
 
 		/// <inheritdoc />
-		public Task<List<AccountModel>> GetActiveAccountsAsync()
+		public Task<List<Account>> GetActiveAccountsAsync()
 		{
 			return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
 		}

@@ -20,7 +20,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 		/// <summary>
 		/// The user account of the imported report.
 		/// </summary>
-		public AccountModel UserAccount { get; init; } = null!;
+		public Account UserAccount { get; init; } = null!;
 
 		/// <summary>
 		/// The accounts created or referenced during the import.

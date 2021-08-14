@@ -92,26 +92,26 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="id">The id by which to search for an account.</param>
 		/// <returns>The account with the specified id if it exists; otherwise <see langword="null"/>.</returns>
-		Task<AccountModel> GetAccountAsync(Guid id);
+		Task<Account> GetAccountAsync(Guid id);
 
 		/// <summary>
 		/// Finds an account with the specified normalized name.
 		/// </summary>
 		/// <param name="name">The normalized by which to search for an account.</param>
 		/// <returns>The account with the specified name if it exists; otherwise <see langword="null"/>.</returns>
-		Task<AccountModel?> FindAccountAsync(string name);
+		Task<Account?> FindAccountAsync(string name);
 
 		/// <summary>
 		/// Gets all accounts.
 		/// </summary>
 		/// <returns>A collection with all accounts.</returns>
-		Task<List<AccountModel>> GetAccountsAsync();
+		Task<List<Account>> GetAccountsAsync();
 
 		/// <summary>
 		/// Gets all currently active accounts.
 		/// </summary>
 		/// <returns>A collection with all currently active accounts.</returns>
-		Task<List<AccountModel>> GetActiveAccountsAsync();
+		Task<List<Account>> GetActiveAccountsAsync();
 
 		/// <summary>
 		/// Creates a new account.

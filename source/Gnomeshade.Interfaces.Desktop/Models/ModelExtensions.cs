@@ -20,7 +20,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 	{
 		[LinqTunnel]
 		[Pure]
-		public static IEnumerable<AccountOverviewRow> Translate(this IEnumerable<AccountModel> accounts)
+		public static IEnumerable<AccountOverviewRow> Translate(this IEnumerable<Account> accounts)
 		{
 			return accounts
 				.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
@@ -36,7 +36,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		[Pure]
 		public static IEnumerable<TransactionOverview> Translate(
 			this IEnumerable<TransactionModel> transactions,
-			IReadOnlyCollection<AccountModel> accounts)
+			IReadOnlyCollection<Account> accounts)
 		{
 			return transactions
 				.Select(transaction =>

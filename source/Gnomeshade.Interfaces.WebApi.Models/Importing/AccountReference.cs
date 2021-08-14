@@ -23,6 +23,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 		/// <summary>
 		/// The referenced account.
 		/// </summary>
-		public AccountModel Account { get; init; } = null!;
+		public Account Account { get; init; } = null!;
 	}
 }

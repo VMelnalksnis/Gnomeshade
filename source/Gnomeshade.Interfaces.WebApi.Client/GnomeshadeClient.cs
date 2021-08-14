@@ -146,13 +146,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<AccountModel> GetAccountAsync(Guid id)
+		public Task<Account> GetAccountAsync(Guid id)
 		{
-			return GetAsync<AccountModel>(AccountUri(id));
+			return GetAsync<Account>(AccountUri(id));
 		}
 
 		/// <inheritdoc />
-		public async Task<AccountModel?> FindAccountAsync(string name)
+		public async Task<Account?> FindAccountAsync(string name)
 		{
 			using var response = await _httpClient.GetAsync($"Account/Find/{name}").ConfigureAwait(false);
 			if (response.StatusCode == HttpStatusCode.NotFound)
@@ -161,25 +161,25 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			}
 
 			await ThrowIfNotSuccessCode(response);
-			return (await response.Content.ReadFromJsonAsync<AccountModel>().ConfigureAwait(false))!;
+			return (await response.Content.ReadFromJsonAsync<Account>().ConfigureAwait(false))!;
 		}
 
 		/// <inheritdoc />
-		public Task<List<AccountModel>> GetAccountsAsync()
+		public Task<List<Account>> GetAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>($"{Account}?onlyActive=false");
+			return GetAsync<List<Account>>($"{Routes.Account}?onlyActive=false");
 		}
 
 		/// <inheritdoc />
-		public Task<List<AccountModel>> GetActiveAccountsAsync()
+		public Task<List<Account>> GetActiveAccountsAsync()
 		{
-			return GetAsync<List<AccountModel>>(Account);
+			return GetAsync<List<Account>>(Routes.Account);
 		}
 
 		/// <inheritdoc />
 		public Task<Guid> CreateAccountAsync(AccountCreationModel account)
 		{
-			return PostAsync<Guid, AccountCreationModel>(Account, account);
+			return PostAsync<Guid, AccountCreationModel>(Routes.Account, account);
 		}
 
 		/// <inheritdoc />

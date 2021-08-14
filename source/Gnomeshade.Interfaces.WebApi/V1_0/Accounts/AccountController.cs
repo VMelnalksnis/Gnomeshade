@@ -15,7 +15,6 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -34,7 +33,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class AccountController : FinanceControllerBase<Account, AccountModel>
+	public sealed class AccountController : FinanceControllerBase<Data.Models.Account, Account>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly AccountRepository _repository;
@@ -63,7 +62,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("find/{name}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public Task<ActionResult<AccountModel>> Find(string name, CancellationToken cancellation)
+		public Task<ActionResult<Account>> Find(string name, CancellationToken cancellation)
 		{
 			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation));
 		}
@@ -71,7 +70,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public Task<ActionResult<AccountModel>> Get(Guid id, CancellationToken cancellation)
+		public Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellation)
 		{
 			return Find(() => _repository.FindByIdAsync(id, cancellation));
 		}
@@ -85,7 +84,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		/// <response code="200">Successfully got all accounts.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<AccountModel>>> GetAll(
+		public async Task<ActionResult<IEnumerable<Account>>> GetAll(
 			[FromQuery, DefaultValue(true)] bool onlyActive,
 			CancellationToken cancellationToken)
 		{
@@ -107,7 +106,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return Unauthorized();
 			}
 
-			var account = Mapper.Map<Account>(creationModel) with
+			var account = Mapper.Map<Data.Models.Account>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -153,7 +152,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return BadRequest(ModelState);
 			}
 
-			var accountInCurrency = Mapper.Map<AccountInCurrency>(creationModel) with
+			var accountInCurrency = Mapper.Map<Data.Models.AccountInCurrency>(creationModel) with
 			{
 				OwnerId = account.OwnerId,
 				CreatedByUserId = user.Id,

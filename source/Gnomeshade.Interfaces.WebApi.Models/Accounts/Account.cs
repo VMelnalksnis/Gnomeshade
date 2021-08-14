@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	[PublicAPI]
-	public sealed record AccountModel
+	public sealed record Account
 	{
 		/// <summary>
 		/// The id of the account.

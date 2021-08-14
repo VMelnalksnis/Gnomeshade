@@ -19,10 +19,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
 
-		private AccountModel? _sourceAccount;
+		private Account? _sourceAccount;
 		private decimal? _sourceAmount;
 		private CurrencyModel? _sourceCurrency;
-		private AccountModel? _targetAccount;
+		private Account? _targetAccount;
 		private decimal? _targetAmount;
 		private CurrencyModel? _targetCurrency;
 		private ProductModel? _product;
@@ -47,7 +47,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Currencies = GetCurrenciesAsync();
 			Products = GetProductsAsync();
 
-			AccountSelector = (_, item) => ((AccountModel)item).Name;
+			AccountSelector = (_, item) => ((Account)item).Name;
 			CurrencySelector = (_, item) => ((CurrencyModel)item).AlphabeticCode;
 			ProductSelector = (_, item) => ((ProductModel)item).Name;
 		}
@@ -55,7 +55,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all accounts.
 		/// </summary>
-		public Task<List<AccountModel>> Accounts { get; }
+		public Task<List<Account>> Accounts { get; }
 
 		public AutoCompleteSelector<object> AccountSelector { get; }
 
@@ -73,7 +73,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the source account of the transaction item.
 		/// </summary>
-		public AccountModel? SourceAccount
+		public Account? SourceAccount
 		{
 			get => _sourceAccount;
 			set
@@ -114,7 +114,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the target account of the transaction item.
 		/// </summary>
-		public AccountModel? TargetAccount
+		public Account? TargetAccount
 		{
 			get => _targetAccount;
 			set
@@ -199,7 +199,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Product is not null &&
 			_amount.HasValue;
 
-		private Task<List<AccountModel>> GetAccountsAsync()
+		private Task<List<Account>> GetAccountsAsync()
 		{
 			return _gnomeshadeClient.GetActiveAccountsAsync();
 		}

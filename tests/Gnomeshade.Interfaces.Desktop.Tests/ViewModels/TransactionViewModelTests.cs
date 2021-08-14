@@ -55,7 +55,7 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 
 			mockClient
 				.Setup(client => client.GetAccountsAsync())
-				.ReturnsAsync(new List<AccountModel>
+				.ReturnsAsync(new List<Account>
 				{
 					new() { Currencies = new() { new() { Id = accountId1 } } },
 					new() { Currencies = new() { new() { Id = accountId2 } } },

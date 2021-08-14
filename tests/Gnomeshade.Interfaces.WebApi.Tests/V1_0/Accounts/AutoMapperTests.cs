@@ -9,7 +9,6 @@ using AutoMapper;
 
 using FluentAssertions;
 
-using Gnomeshade.Data.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
@@ -40,13 +39,13 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				AccountNumber = "123456789",
 			};
 
-			var account = _mapper.Map<Account>(creationModel);
+			var account = _mapper.Map<Data.Models.Account>(creationModel);
 
 			account
 				.Should()
 				.BeEquivalentTo(
 					creationModel,
-					options => options.ByMembersExcluding<AccountCreationModel, Account>(model => model.Currencies));
+					options => options.ByMembersExcluding<AccountCreationModel, Data.Models.Account>(model => model.Currencies));
 		}
 
 		[Test]
@@ -57,19 +56,19 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				CurrencyId = Guid.NewGuid(),
 			};
 
-			var accountInCurrency = _mapper.Map<AccountInCurrency>(creationModel);
+			var accountInCurrency = _mapper.Map<Data.Models.AccountInCurrency>(creationModel);
 
 			accountInCurrency
 				.Should()
 				.BeEquivalentTo(
 					creationModel,
-					options => options.ByMembers<AccountInCurrencyCreationModel, AccountInCurrency>());
+					options => options.ByMembers<AccountInCurrencyCreationModel, Data.Models.AccountInCurrency>());
 		}
 
 		[Test]
 		public void AccountInCurrency()
 		{
-			var accountInCurrency = new AccountInCurrency
+			var accountInCurrency = new Data.Models.AccountInCurrency
 			{
 				Id = Guid.NewGuid(),
 				CreatedAt = DateTimeOffset.Now,
@@ -86,7 +85,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				.BeEquivalentTo(
 					accountInCurrency,
 					options => options
-						.ByMembersExcluding<AccountInCurrency, AccountInCurrencyModel>(
+						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrencyModel>(
 							inCurrency => inCurrency.CurrencyId,
 							inCurrency => inCurrency.AccountId));
 		}
@@ -94,7 +93,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 		[Test]
 		public void AccountModel()
 		{
-			var account = new Account
+			var account = new Data.Models.Account
 			{
 				Id = Guid.NewGuid(),
 				CreatedAt = DateTimeOffset.Now,
@@ -122,14 +121,14 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				},
 			};
 
-			var accountModel = _mapper.Map<AccountModel>(account);
+			var accountModel = _mapper.Map<Account>(account);
 
 			accountModel
 				.Should()
 				.BeEquivalentTo(
 					account,
 					options => options
-						.ByMembersExcluding<Account, AccountModel>(
+						.ByMembersExcluding<Data.Models.Account, Account>(
 							a => a.NormalizedName,
 							a => a.PreferredCurrencyId,
 							a => a.Currencies));
@@ -143,7 +142,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				.BeEquivalentTo(
 					account.Currencies.Single(),
 					options => options
-						.ByMembersExcluding<AccountInCurrency, AccountInCurrencyModel>(
+						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrencyModel>(
 							inCurrency => inCurrency.CurrencyId,
 							inCurrency => inCurrency.AccountId));
 		}
@@ -151,7 +150,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 		[Test]
 		public void CurrencyModel()
 		{
-			var currency = new Currency
+			var currency = new Data.Models.Currency
 			{
 				Id = Guid.NewGuid(),
 				CreatedAt = DateTimeOffset.Now,
@@ -173,7 +172,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				.Should()
 				.BeEquivalentTo(
 					currency,
-					options => options.ByMembersExcluding<Currency, CurrencyModel>(c => c.NormalizedName));
+					options => options.ByMembersExcluding<Data.Models.Currency, CurrencyModel>(c => c.NormalizedName));
 		}
 	}
 }
