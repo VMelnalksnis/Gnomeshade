@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class ProductRepository : NamedRepository<Product>
+	public sealed class ProductRepository : NamedRepository<ProductEntity>
 	{
 		private const string _updateSql =
 			"UPDATE products SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, name = @Name, normalized_name = @NormalizedName, description = @Description, unit_id = @UnitId WHERE id = @Id RETURNING id;";
@@ -37,7 +37,7 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql =>
 			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, description, unit_id UnitId FROM products";
 
-		public async Task<Guid> UpdateAsync(Product product)
+		public async Task<Guid> UpdateAsync(ProductEntity product)
 		{
 			var command = new CommandDefinition(_updateSql, product);
 			return await DbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);

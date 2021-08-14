@@ -4,20 +4,20 @@
 
 using System;
 
-namespace Gnomeshade.Data.Models.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions
 {
 	/// <summary>
-	/// Represents an entity that is owned by a <see cref="Owner"/>.
+	/// Represents an entity that is owned by a <see cref="OwnerEntity"/>.
 	/// </summary>
 	public interface IOwnableEntity : IEntity
 	{
 		/// <summary>
-		/// Gets or sets the id of the <see cref="Owner"/> of this entity.
+		/// Gets or sets the id of the <see cref="OwnerEntity"/> of this entity.
 		/// </summary>
 		public Guid OwnerId { get; set; }
 
 		/// <summary>
-		/// Gets the id of the <see cref="User"/> which created this entity.
+		/// Gets the id of the <see cref="UserEntity"/> which created this entity.
 		/// </summary>
 		public Guid CreatedByUserId { get; init; }
 	}

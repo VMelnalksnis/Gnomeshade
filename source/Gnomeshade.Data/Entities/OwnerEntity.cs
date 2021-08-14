@@ -4,16 +4,16 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// Represents a collection of other entities (users, roles, groups, etc.) that can own other entities.
 	/// </summary>
-	/// <seealso cref="Ownership"/>
-	/// <seealso cref="User"/>
-	public sealed record Owner : IEntity
+	/// <seealso cref="OwnershipEntity"/>
+	/// <seealso cref="UserEntity"/>
+	public sealed record OwnerEntity : IEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }

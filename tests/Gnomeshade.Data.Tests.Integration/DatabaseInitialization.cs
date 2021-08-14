@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
 using Microsoft.Extensions.Configuration;
@@ -32,7 +32,7 @@ namespace Gnomeshade.Data.Tests.Integration
 
 		private static readonly string? _database = new NpgsqlConnectionStringBuilder(ConnectionString).Database;
 
-		public static User TestUser { get; private set; } = null!;
+		public static UserEntity TestUser { get; private set; } = null!;
 
 		public static async Task<NpgsqlConnection> CreateConnectionAsync()
 		{
@@ -52,7 +52,7 @@ namespace Gnomeshade.Data.Tests.Integration
 		[OneTimeSetUp]
 		public static async Task SetupDatabaseAsync()
 		{
-			AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<Account>());
+			AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<AccountEntity>());
 			if (NpgsqlLogManager.Provider is null)
 			{
 				NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
@@ -93,7 +93,7 @@ namespace Gnomeshade.Data.Tests.Integration
 			await ownerRepository.AddAsync(TestUser.Id, transaction).ConfigureAwait(false);
 			await ownershipRepository.AddDefaultAsync(TestUser.Id, transaction).ConfigureAwait(false);
 
-			var counterparty = new Counterparty
+			var counterparty = new CounterpartyEntity
 			{
 				OwnerId = userId,
 				CreatedByUserId = userId,

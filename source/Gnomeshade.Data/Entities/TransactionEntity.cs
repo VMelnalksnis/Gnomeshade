@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories.Extensions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// A single financial transaction.
 	/// </summary>
-	public sealed record Transaction : IOwnableEntity, IModifiableEntity
+	public sealed record TransactionEntity : IOwnableEntity, IModifiableEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }
@@ -67,14 +67,14 @@ namespace Gnomeshade.Data.Models
 		/// <summary>
 		/// Gets or sets the transaction items of this transaction.
 		/// </summary>
-		public List<TransactionItem> Items { get; set; } = null!;
+		public List<TransactionItemEntity> Items { get; set; } = null!;
 
 		/// <summary>
 		/// Initializes a transaction from a grouping of transaction items.
 		/// </summary>
 		/// <param name="grouping">A grouping of transaction items by transaction.</param>
 		/// <returns>A transaction with initialized <see cref="Items"/>.</returns>
-		public static Transaction FromGrouping(IGrouping<Guid, OneToOne<Transaction, TransactionItem>> grouping)
+		public static TransactionEntity FromGrouping(IGrouping<Guid, OneToOne<TransactionEntity, TransactionItemEntity>> grouping)
 		{
 			var transaction = grouping.First().First;
 			transaction.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();

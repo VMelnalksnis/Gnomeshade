@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// A party to a financial transaction.
 	/// </summary>
-	public sealed record Counterparty : IOwnableEntity, IModifiableEntity, INamedEntity
+	public sealed record CounterpartyEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }

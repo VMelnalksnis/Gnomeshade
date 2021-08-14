@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -29,8 +29,8 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <summary>
-		/// Adds the default <see cref="Ownership"/>, where the <see cref="Ownership.Id"/>,
-		/// <see cref="Ownership.OwnerId"/> and <see cref="Ownership.UserId"/> is the id of the user.
+		/// Adds the default <see cref="OwnershipEntity"/>, where the <see cref="OwnershipEntity.Id"/>,
+		/// <see cref="OwnershipEntity.OwnerId"/> and <see cref="OwnershipEntity.UserId"/> is the id of the user.
 		/// </summary>
 		/// <param name="id">Id of the user.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>

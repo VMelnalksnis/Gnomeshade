@@ -4,6 +4,7 @@
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
@@ -28,28 +29,28 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 			options.CreateMap<RegistrationModel, ApplicationUser>();
 			options.CreateMap<ApplicationUser, UserModel>();
 
-			options.CreateMap<TransactionCreationModel, Data.Models.Transaction>();
-			options.CreateMap<Data.Models.Transaction, Transaction>();
+			options.CreateMap<TransactionCreationModel, TransactionEntity>();
+			options.CreateMap<TransactionEntity, Transaction>();
 
-			options.CreateMap<TransactionItemCreationModel, Data.Models.TransactionItem>();
-			options.CreateMap<Data.Models.TransactionItem, TransactionItem>();
+			options.CreateMap<TransactionItemCreationModel, TransactionItemEntity>();
+			options.CreateMap<TransactionItemEntity, TransactionItem>();
 
-			options.CreateMap<Data.Models.Account, Account>();
-			options.CreateMap<AccountCreationModel, Data.Models.Account>();
+			options.CreateMap<AccountEntity, Account>();
+			options.CreateMap<AccountCreationModel, AccountEntity>();
 
-			options.CreateMap<Data.Models.AccountInCurrency, AccountInCurrency>();
-			options.CreateMap<AccountInCurrencyCreationModel, Data.Models.AccountInCurrency>();
+			options.CreateMap<AccountInCurrencyEntity, AccountInCurrency>();
+			options.CreateMap<AccountInCurrencyCreationModel, AccountInCurrencyEntity>();
 
-			options.CreateMap<Data.Models.Counterparty, Counterparty>();
-			options.CreateMap<CounterpartyCreationModel, Data.Models.Counterparty>();
+			options.CreateMap<CounterpartyEntity, Counterparty>();
+			options.CreateMap<CounterpartyCreationModel, CounterpartyEntity>();
 
-			options.CreateMap<Data.Models.Currency, Currency>();
+			options.CreateMap<CurrencyEntity, Currency>();
 
-			options.CreateMap<Data.Models.Product, Product>();
-			options.CreateMap<ProductCreationModel, Data.Models.Product>();
+			options.CreateMap<ProductEntity, Product>();
+			options.CreateMap<ProductCreationModel, ProductEntity>();
 
-			options.CreateMap<Data.Models.Unit, Unit>();
-			options.CreateMap<UnitCreationModel, Data.Models.Unit>();
+			options.CreateMap<UnitEntity, Unit>();
+			options.CreateMap<UnitCreationModel, UnitEntity>();
 		}
 	}
 }

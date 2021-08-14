@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class AccountRepository : NamedRepository<Account>
+	public sealed class AccountRepository : NamedRepository<AccountEntity>
 	{
 		private const string _insertSql =
 			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name,counterparty_id, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @CounterpartyId, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
@@ -97,7 +97,7 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql => _selectSql;
 
 		/// <inheritdoc />
-		public override Task<Account?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public override Task<AccountEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -105,7 +105,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public override Task<Account?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+		public override Task<AccountEntity?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.normalized_name = @name;";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
@@ -118,14 +118,14 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="iban">The IBAN for which to search for.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<Account?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
+		public Task<AccountEntity?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.iban = @iban;";
 			var command = new CommandDefinition(sql, new { iban }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
-		public Task<Account?> FindByBicAsync(string bic, CancellationToken cancellationToken = default)
+		public Task<AccountEntity?> FindByBicAsync(string bic, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.bic = @bic;";
 			var command = new CommandDefinition(sql, new { bic }, cancellationToken: cancellationToken);
@@ -133,7 +133,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public override async Task<Account> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public override async Task<AccountEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -142,7 +142,7 @@ namespace Gnomeshade.Data.Repositories
 			return accounts.Single();
 		}
 
-		public async Task<Account> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		public async Task<AccountEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, dbTransaction);
@@ -152,7 +152,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		public override Task<IEnumerable<Account>> GetAllAsync(CancellationToken cancellationToken = default)
+		public override Task<IEnumerable<AccountEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " ORDER BY a.created_at DESC, aic.created_at DESC LIMIT 1000;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
@@ -164,25 +164,25 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all active accounts.</returns>
-		public Task<IEnumerable<Account>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
 			return GetAccountsAsync(command);
 		}
 
-		private async Task<Account?> FindAsync(CommandDefinition command)
+		private async Task<AccountEntity?> FindAsync(CommandDefinition command)
 		{
 			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
 			return accounts.SingleOrDefault();
 		}
 
-		private async Task<IEnumerable<Account>> GetAccountsAsync(
+		private async Task<IEnumerable<AccountEntity>> GetAccountsAsync(
 			CommandDefinition command)
 		{
 			var oneToOnes =
 				await DbConnection
-					.QueryAsync<Account, Currency, AccountInCurrency, Currency, OneToOne<Account, AccountInCurrency>>(
+					.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, CurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
 						command,
 						(account, preferredCurrency, inCurrency, currency) =>
 						{
@@ -192,7 +192,7 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => Account.FromGrouping(grouping));
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => AccountEntity.FromGrouping(grouping));
 		}
 	}
 }

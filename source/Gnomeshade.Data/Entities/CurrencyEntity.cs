@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// Represents an ISO 4217 currency.
 	/// </summary>
-	public sealed record Currency : INamedEntity
+	public sealed record CurrencyEntity : INamedEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }

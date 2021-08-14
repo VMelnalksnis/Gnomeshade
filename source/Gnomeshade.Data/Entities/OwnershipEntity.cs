@@ -4,15 +4,15 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
-	/// Link between <see cref="Owner"/> and the entities which represent the user,
-	/// for example <see cref="User"/>.
+	/// Link between <see cref="OwnerEntity"/> and the entities which represent the user,
+	/// for example <see cref="UserEntity"/>.
 	/// </summary>
-	public sealed class Ownership : IEntity
+	public sealed class OwnershipEntity : IEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }
@@ -21,12 +21,12 @@ namespace Gnomeshade.Data.Models
 		public DateTimeOffset CreatedAt { get; init; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="Owner"/> to which the other entities are linked.
+		/// Gets or sets the id of the <see cref="OwnerEntity"/> to which the other entities are linked.
 		/// </summary>
 		public Guid OwnerId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="User"/> which is linked to the <see cref="Owner"/> with id <see cref="OwnerId"/>.
+		/// Gets or sets the id of the <see cref="UserEntity"/> which is linked to the <see cref="OwnerEntity"/> with id <see cref="OwnerId"/>.
 		/// </summary>
 		public Guid UserId { get; set; }
 	}

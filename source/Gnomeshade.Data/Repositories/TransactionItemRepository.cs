@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class TransactionItemRepository : Repository<TransactionItem>
+	public sealed class TransactionItemRepository : Repository<TransactionItemEntity>
 	{
 		private const string _updateSql =
 			"UPDATE transaction_items SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, transaction_id = @TransactionId, source_amount = @SourceAmount, source_account_id = @SourceAccountId, target_amount = @TargetAmount, target_account_id = @TargetAccountId, product_id = @ProductId, amount = @Amount, bank_reference = @BankReference, external_reference = @ExternalReference, internal_reference = @InternalReference, delivery_date = @DeliveryDate, description = @Description WHERE id = @Id RETURNING id;";
@@ -37,7 +37,7 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql =>
 			"SELECT id, owner_id OwnerId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, target_amount TargetAmount, target_account_id TargetAccountId, created_by_user_id CreatedByUserId, modified_by_user_id ModifiedByUserId, product_id ProductId, amount, bank_reference BankReference, external_reference ExternalReference, internal_reference InternalReference, description, delivery_date DeliveryDate FROM transaction_items";
 
-		public Task<Guid> UpdateAsync(TransactionItem transactionItem)
+		public Task<Guid> UpdateAsync(TransactionItemEntity transactionItem)
 		{
 			var command = new CommandDefinition(_updateSql, transactionItem);
 			return DbConnection.QuerySingleAsync<Guid>(command);

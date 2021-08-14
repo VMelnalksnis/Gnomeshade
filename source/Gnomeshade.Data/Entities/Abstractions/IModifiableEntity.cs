@@ -4,12 +4,12 @@
 
 using System;
 
-namespace Gnomeshade.Data.Models.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions
 {
 	/// <summary>
 	/// Represents an entity that can be modified.
 	/// </summary>
-	/// <seealso cref="User"/>
+	/// <seealso cref="UserEntity"/>
 	public interface IModifiableEntity : IEntity
 	{
 		/// <summary>
@@ -18,7 +18,7 @@ namespace Gnomeshade.Data.Models.Abstractions
 		DateTimeOffset ModifiedAt { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="User"/> which last modified this entity.
+		/// Gets or sets the id of the <see cref="UserEntity"/> which last modified this entity.
 		/// </summary>
 		public Guid ModifiedByUserId { get; set; }
 	}

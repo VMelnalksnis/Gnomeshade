@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
-	/// Represents a single currency of an <see cref="Account"/>.
+	/// Represents a single currency of an <see cref="AccountEntity"/>.
 	/// </summary>
-	public sealed record AccountInCurrency : IOwnableEntity, IModifiableEntity, IDisableableEntity
+	public sealed record AccountInCurrencyEntity : IOwnableEntity, IModifiableEntity, IDisableableEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }
@@ -32,7 +32,7 @@ namespace Gnomeshade.Data.Models
 		public Guid ModifiedByUserId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="Account"/> which holds this currency.
+		/// Gets or sets the id of the <see cref="AccountEntity"/> which holds this currency.
 		/// </summary>
 		public Guid AccountId { get; set; }
 
@@ -44,7 +44,7 @@ namespace Gnomeshade.Data.Models
 		/// <summary>
 		/// Gets or sets the currency this account represents.
 		/// </summary>
-		public Currency Currency { get; set; } = null!;
+		public CurrencyEntity Currency { get; set; } = null!;
 
 		/// <inheritdoc />
 		public DateTimeOffset? DisabledAt { get; set; }

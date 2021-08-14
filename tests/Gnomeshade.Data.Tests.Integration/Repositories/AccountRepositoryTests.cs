@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.TestingHelpers;
 
@@ -118,13 +118,13 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			await _unitOfWork.DeleteAsync(disabledAccount);
 		}
 
-		private static EquivalencyAssertionOptions<Account> Options(
-			EquivalencyAssertionOptions<Account> options)
+		private static EquivalencyAssertionOptions<AccountEntity> Options(
+			EquivalencyAssertionOptions<AccountEntity> options)
 		{
 			return options
-				.ComparingByMembers<Account>()
-				.ComparingByMembers<AccountInCurrency>()
-				.ComparingByMembers<Currency>();
+				.ComparingByMembers<AccountEntity>()
+				.ComparingByMembers<AccountInCurrencyEntity>()
+				.ComparingByMembers<CurrencyEntity>();
 		}
 	}
 }

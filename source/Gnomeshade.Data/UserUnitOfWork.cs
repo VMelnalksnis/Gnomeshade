@@ -6,8 +6,8 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data
@@ -54,7 +54,7 @@ namespace Gnomeshade.Data
 		{
 			var userId = Guid.ParseExact(applicationUser.Id, "D");
 			var fullName = applicationUser.FullName;
-			var user = new User { Id = userId, ModifiedByUserId = userId };
+			var user = new UserEntity { Id = userId, ModifiedByUserId = userId };
 
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
@@ -63,7 +63,7 @@ namespace Gnomeshade.Data
 				_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
 				_ = await _ownerRepository.AddAsync(userId, dbTransaction);
 				_ = await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
-				var counterparty = new Counterparty
+				var counterparty = new CounterpartyEntity
 				{
 					OwnerId = userId,
 					CreatedByUserId = userId,

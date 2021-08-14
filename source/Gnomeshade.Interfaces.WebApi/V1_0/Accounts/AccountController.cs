@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -33,7 +34,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class AccountController : FinanceControllerBase<Data.Models.Account, Account>
+	public sealed class AccountController : FinanceControllerBase<AccountEntity, Account>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly AccountRepository _repository;
@@ -106,7 +107,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return Unauthorized();
 			}
 
-			var account = Mapper.Map<Data.Models.Account>(creationModel) with
+			var account = Mapper.Map<AccountEntity>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -152,7 +153,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return BadRequest(ModelState);
 			}
 
-			var accountInCurrency = Mapper.Map<Data.Models.AccountInCurrency>(creationModel) with
+			var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(creationModel) with
 			{
 				OwnerId = account.OwnerId,
 				CreatedByUserId = user.Id,

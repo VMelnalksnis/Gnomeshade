@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Core;
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories
@@ -86,7 +86,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="transaction">The transaction to add.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created transaction.</returns>
-		public async Task<Guid> AddAsync(Transaction transaction, IDbTransaction dbTransaction)
+		public async Task<Guid> AddAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, transaction, dbTransaction);
 			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
@@ -97,8 +97,8 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<Transaction?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
+		public Task<TransactionEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -110,8 +110,8 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="Transaction"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<Transaction?> FindByImportHashAsync(
+		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
+		public Task<TransactionEntity?> FindByImportHashAsync(
 			byte[] importHash,
 			CancellationToken cancellationToken = default)
 		{
@@ -120,7 +120,7 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
-		public Task<Transaction?> FindByImportHashAsync(
+		public Task<TransactionEntity?> FindByImportHashAsync(
 			byte[] importHash,
 			IDbTransaction dbTransaction)
 		{
@@ -134,8 +134,8 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="Transaction"/> with the specified id.</returns>
-		public async Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <returns>The <see cref="TransactionEntity"/> with the specified id.</returns>
+		public async Task<TransactionEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
@@ -144,7 +144,7 @@ namespace Gnomeshade.Data.Repositories
 			return transactions.Single();
 		}
 
-		public async Task<Transaction> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		public async Task<TransactionEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
 		{
 			const string sql = _selectSql + " WHERE t.id = @id;";
 			var command = new CommandDefinition(sql, new { id }, dbTransaction);
@@ -154,13 +154,13 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <summary>
-		/// Gets all transactions which have their <see cref="Transaction.Date"/> within the specified period.
+		/// Gets all transactions which have their <see cref="TransactionEntity.Date"/> within the specified period.
 		/// </summary>
 		/// <param name="from">The start of the time range.</param>
 		/// <param name="to">The end of the time range.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all transactions.</returns>
-		public async Task<List<Transaction>> GetAllAsync(
+		public async Task<List<TransactionEntity>> GetAllAsync(
 			DateTimeOffset from,
 			DateTimeOffset to,
 			CancellationToken cancellationToken = default)
@@ -181,12 +181,12 @@ namespace Gnomeshade.Data.Repositories
 		/// <inheritdoc />
 		public void Dispose() => _dbConnection.Dispose();
 
-		private async Task<IEnumerable<Transaction>>
+		private async Task<IEnumerable<TransactionEntity>>
 			GetTransactionsAsync(CommandDefinition command)
 		{
 			var oneToOnes =
 				await _dbConnection
-					.QueryAsync<Transaction, TransactionItem, Product, OneToOne<Transaction, TransactionItem>>(
+					.QueryAsync<TransactionEntity, TransactionItemEntity, ProductEntity, OneToOne<TransactionEntity, TransactionItemEntity>>(
 						command,
 						(transaction, item, product) =>
 						{
@@ -195,10 +195,10 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => Transaction.FromGrouping(grouping));
+			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => TransactionEntity.FromGrouping(grouping));
 		}
 
-		private async Task<Transaction?> FindAsync(CommandDefinition command)
+		private async Task<TransactionEntity?> FindAsync(CommandDefinition command)
 		{
 			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
 			return transactions.SingleOrDefault();

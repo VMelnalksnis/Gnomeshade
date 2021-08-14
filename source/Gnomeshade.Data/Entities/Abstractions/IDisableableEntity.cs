@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Data.Models.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions
 {
 	/// <summary>
 	/// An entity that can only be disabled instead of deleted because it is referenced by other entities.
@@ -17,7 +17,7 @@ namespace Gnomeshade.Data.Models.Abstractions
 		DateTimeOffset? DisabledAt { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="User"/> which disabled the entity.
+		/// Gets or sets the id of the <see cref="UserEntity"/> which disabled the entity.
 		/// </summary>
 		Guid? DisabledByUserId { get; set; }
 	}

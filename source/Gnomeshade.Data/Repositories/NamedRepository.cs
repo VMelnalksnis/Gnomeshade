@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Repositories
 {

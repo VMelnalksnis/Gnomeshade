@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -36,7 +36,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="entity">The values to insert.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created user.</returns>
-		public Task<Guid> AddWithIdAsync(User entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddWithIdAsync(UserEntity entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
@@ -46,11 +46,11 @@ namespace Gnomeshade.Data.Repositories
 		/// Searches for a user with the specified id.
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
-		/// <returns>The <see cref="User"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<User?> FindByIdAsync(Guid id)
+		/// <returns>The <see cref="UserEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
+		public Task<UserEntity?> FindByIdAsync(Guid id)
 		{
 			var commandDefinition = new CommandDefinition(_selectSql, new { id });
-			return _dbConnection.QuerySingleOrDefaultAsync<User>(commandDefinition)!;
+			return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 		}
 
 		/// <summary>

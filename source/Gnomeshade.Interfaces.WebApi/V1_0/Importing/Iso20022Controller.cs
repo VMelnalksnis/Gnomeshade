@@ -15,8 +15,8 @@ using AutoMapper;
 
 using Gnomeshade.Core;
 using Gnomeshade.Data;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
@@ -193,7 +193,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			}
 		}
 
-		private async Task<User?> GetCurrentUser()
+		private async Task<UserEntity?> GetCurrentUser()
 		{
 			var identityUser = await _userManager.GetUserAsync(User);
 			if (identityUser is null)
@@ -220,9 +220,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return bankToCustomerAccountReport.Reports.First();
 		}
 
-		private async Task<(Account Account, Currency Currency, bool Created)> FindAccount(
+		private async Task<(AccountEntity Account, CurrencyEntity Currency, bool Created)> FindAccount(
 			CashAccount20 cashAccount,
-			User user,
+			UserEntity user,
 			IDbTransaction dbTransaction)
 		{
 			var iban = cashAccount.Identification.Iban;
@@ -269,10 +269,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return (account, currency, true);
 		}
 
-		private async Task<(Account Account, bool Created)> FindBankAccount(
+		private async Task<(AccountEntity Account, bool Created)> FindBankAccount(
 			BranchAndFinancialInstitutionIdentification4? identification,
-			User user,
-			Currency currency,
+			UserEntity user,
+			CurrencyEntity currency,
 			IDbTransaction dbTransaction)
 		{
 			if (identification is null)
@@ -280,7 +280,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				throw new();
 			}
 
-			Account? bankAccount = null!;
+			AccountEntity? bankAccount = null!;
 
 			var institutionIdentification = identification.FinancialInstitutionIdentification;
 			var bankName = institutionIdentification.Name?.ToUpperInvariant();
@@ -308,7 +308,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 					return (bankAccount, false);
 				}
 
-				var account = new Account
+				var account = new AccountEntity
 				{
 					OwnerId = user.Id,
 					CreatedByUserId = user.Id,
@@ -328,13 +328,13 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			throw new KeyNotFoundException($"Could not find account by name {bankAccount}");
 		}
 
-		private async Task<Transaction> Translate(
+		private async Task<TransactionEntity> Translate(
 			IDbTransaction dbTransaction,
 			AccountReportResultBuilder resultBuilder,
 			ReportEntry2 reportEntry,
-			Account reportAccount,
-			Account bankAccount,
-			User user)
+			AccountEntity reportAccount,
+			AccountEntity bankAccount,
+			UserEntity user)
 		{
 			_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
@@ -480,7 +480,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 
 			var otherAccountCurrency = otherAccount.Currencies.Single(aic => aic.CurrencyId == otherCurrency.Id);
 
-			var transactionItem = new TransactionItem
+			var transactionItem = new TransactionItemEntity
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -506,7 +506,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 					TargetAccountId = otherAccountCurrency.Id,
 				};
 
-			var transaction = new Transaction
+			var transaction = new TransactionEntity
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -521,14 +521,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return transaction;
 		}
 
-		private async Task<Account?> FindOtherAccount(TransactionParty2? relatedParty)
+		private async Task<AccountEntity?> FindOtherAccount(TransactionParty2? relatedParty)
 		{
 			if (relatedParty is null)
 			{
 				return null;
 			}
 
-			Account? otherAccount = null;
+			AccountEntity? otherAccount = null;
 
 			var name =
 				relatedParty.Creditor?.Name ??
@@ -553,9 +553,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return otherAccount;
 		}
 
-		private Account? FindOtherAccount(
+		private AccountEntity? FindOtherAccount(
 			BankTransactionCodeStructure4 transactionCode,
-			Account bankAccount)
+			AccountEntity bankAccount)
 		{
 			if (transactionCode.Domain is null)
 			{
@@ -605,10 +605,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return $"{domain.Name} - Family {family.Name}; Subfamily {subFamily.Name}";
 		}
 
-		private async Task<(Currency Currency, decimal Amount)> GetOtherAmount(
+		private async Task<(CurrencyEntity Currency, decimal Amount)> GetOtherAmount(
 			EntryTransaction2 transaction,
 			decimal amount,
-			Currency currency)
+			CurrencyEntity currency)
 		{
 			var amountDetails = transaction.AmountDetails;
 			if (amountDetails is null)

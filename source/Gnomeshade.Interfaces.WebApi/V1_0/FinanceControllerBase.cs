@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
-using Gnomeshade.Data.Models.Abstractions;
 using Gnomeshade.Data.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
@@ -64,7 +64,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 			_userRepository.Dispose();
 		}
 
-		protected async Task<User?> GetCurrentUser()
+		protected async Task<UserEntity?> GetCurrentUser()
 		{
 			var identityUser = await _userManager.GetUserAsync(User);
 			if (identityUser is null)

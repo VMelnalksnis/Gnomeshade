@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -30,7 +31,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class CounterpartyController : FinanceControllerBase<Data.Models.Counterparty, Counterparty>
+	public sealed class CounterpartyController : FinanceControllerBase<CounterpartyEntity, Counterparty>
 	{
 		private readonly CounterpartyRepository _repository;
 
@@ -105,7 +106,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return Unauthorized();
 			}
 
-			var counterparty = Mapper.Map<Data.Models.Counterparty>(creationModel) with
+			var counterparty = Mapper.Map<CounterpartyEntity>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,

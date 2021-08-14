@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -34,24 +34,24 @@ namespace Gnomeshade.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
-		public Task<Guid> AddAsync(AccountInCurrency entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(AccountInCurrencyEntity entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		public Task<AccountInCurrency?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<AccountInCurrencyEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleOrDefaultAsync<AccountInCurrency>(command)!;
+			return _dbConnection.QuerySingleOrDefaultAsync<AccountInCurrencyEntity>(command)!;
 		}
 
-		public Task<AccountInCurrency> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<AccountInCurrencyEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleAsync<AccountInCurrency>(command);
+			return _dbConnection.QuerySingleAsync<AccountInCurrencyEntity>(command);
 		}
 
 		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)

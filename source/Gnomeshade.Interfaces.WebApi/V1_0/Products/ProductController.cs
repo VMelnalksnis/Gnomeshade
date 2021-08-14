@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -27,7 +28,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 	/// <summary>
 	/// CRUD operations on account entity.
 	/// </summary>
-	public sealed class ProductController : FinanceControllerBase<Data.Models.Product, Product>
+	public sealed class ProductController : FinanceControllerBase<ProductEntity, Product>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly ProductRepository _repository;
@@ -115,9 +116,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			base.Dispose(disposing);
 		}
 
-		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, Data.Models.User user)
+		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, UserEntity user)
 		{
-			var product = Mapper.Map<Data.Models.Product>(creationModel) with
+			var product = Mapper.Map<ProductEntity>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
@@ -129,9 +130,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			return CreatedAtAction(nameof(Get), new { id }, id);
 		}
 
-		private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, Data.Models.User user)
+		private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, UserEntity user)
 		{
-			var product = Mapper.Map<Data.Models.Product>(creationModel);
+			var product = Mapper.Map<ProductEntity>(creationModel);
 			product.NormalizedName = product.Name.ToUpperInvariant();
 			product.ModifiedByUserId = user.Id;
 

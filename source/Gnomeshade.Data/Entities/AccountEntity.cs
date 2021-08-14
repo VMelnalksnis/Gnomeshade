@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories.Extensions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// Represents an account which can hold funds one or more currencies.
 	/// </summary>
-	public sealed record Account :
+	public sealed record AccountEntity :
 		IOwnableEntity,
 		IModifiableEntity,
 		INamedEntity,
@@ -45,19 +45,19 @@ namespace Gnomeshade.Data.Models
 		public string NormalizedName { get; set; } = null!;
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="Counterparty"/> to which this account belongs to.
+		/// Gets or sets the id of the <see cref="CounterpartyEntity"/> to which this account belongs to.
 		/// </summary>
 		public Guid CounterpartyId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the preferred <see cref="AccountInCurrency"/>.
+		/// Gets or sets the id of the preferred <see cref="AccountInCurrencyEntity"/>.
 		/// </summary>
 		public Guid PreferredCurrencyId { get; set; }
 
 		/// <summary>
 		/// Gets or sets the preferred currency.
 		/// </summary>
-		public Currency PreferredCurrency { get; set; } = null!;
+		public CurrencyEntity PreferredCurrency { get; set; } = null!;
 
 		/// <inheritdoc />
 		public DateTimeOffset? DisabledAt { get; set; }
@@ -83,14 +83,14 @@ namespace Gnomeshade.Data.Models
 		/// <summary>
 		/// Gets or sets the currencies used in this account.
 		/// </summary>
-		public List<AccountInCurrency> Currencies { get; set; } = null!;
+		public List<AccountInCurrencyEntity> Currencies { get; set; } = null!;
 
 		/// <summary>
 		/// Initializes an account from a grouping of currencies.
 		/// </summary>
 		/// <param name="grouping">A grouping of currencies by account.</param>
 		/// <returns>An account with initialized <see cref="Currencies"/>.</returns>
-		public static Account FromGrouping(IGrouping<Guid, OneToOne<Account, AccountInCurrency>> grouping)
+		public static AccountEntity FromGrouping(IGrouping<Guid, OneToOne<AccountEntity, AccountInCurrencyEntity>> grouping)
 		{
 			var account = grouping.First().First;
 			account.Currencies = grouping.Select(oneToOne => oneToOne.Second).ToList();

@@ -4,11 +4,11 @@
 
 using System;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
-	public sealed class CounterpartyFaker : NamedEntityFaker<Counterparty>
+	public sealed class CounterpartyFaker : NamedEntityFaker<CounterpartyEntity>
 	{
 		public CounterpartyFaker(Guid userId)
 			: base(userId)

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -29,7 +30,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class UnitController : FinanceControllerBase<Data.Models.Unit, Unit>
+	public sealed class UnitController : FinanceControllerBase<UnitEntity, Unit>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly UnitRepository _repository;
@@ -76,7 +77,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var unit = Mapper.Map<Data.Models.Unit>(creationModel) with
+			var unit = Mapper.Map<UnitEntity>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,

@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
-	/// Represents a unit for <see cref="Product"/> amount.
+	/// Represents a unit for <see cref="ProductEntity"/> amount.
 	/// </summary>
-	public sealed record Unit : IOwnableEntity, IModifiableEntity, INamedEntity
+	public sealed record UnitEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }
@@ -38,7 +38,7 @@ namespace Gnomeshade.Data.Models
 		public string NormalizedName { get; set; } = null!;
 
 		/// <summary>
-		/// Gets or sets the id of the parent <see cref="Unit"/>.
+		/// Gets or sets the id of the parent <see cref="UnitEntity"/>.
 		/// </summary>
 		public Guid? ParentUnitId { get; set; }
 

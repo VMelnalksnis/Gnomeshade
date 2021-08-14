@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -36,35 +36,35 @@ namespace Gnomeshade.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
-		public Task<Guid> AddAsync(Unit entity)
+		public Task<Guid> AddAsync(UnitEntity entity)
 		{
 			return _dbConnection.QuerySingleAsync<Guid>(_insertSql, entity);
 		}
 
-		public Task<Guid> AddAsync(Unit entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(UnitEntity entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
-		public Task<Unit?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<UnitEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleOrDefaultAsync<Unit>(command)!;
+			return _dbConnection.QuerySingleOrDefaultAsync<UnitEntity>(command)!;
 		}
 
-		public Task<Unit> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<UnitEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleAsync<Unit>(command);
+			return _dbConnection.QuerySingleAsync<UnitEntity>(command);
 		}
 
-		public async Task<List<Unit>> GetAllAsync(CancellationToken cancellationToken = default)
+		public async Task<List<UnitEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var units = await _dbConnection.QueryAsync<Unit>(command).ConfigureAwait(false);
+			var units = await _dbConnection.QueryAsync<UnitEntity>(command).ConfigureAwait(false);
 			return units.ToList();
 		}
 

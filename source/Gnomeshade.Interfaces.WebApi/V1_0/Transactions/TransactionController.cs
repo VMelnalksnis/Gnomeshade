@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
@@ -33,7 +34,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class TransactionController : FinanceControllerBase<Data.Models.Transaction, Transaction>
+	public sealed class TransactionController : FinanceControllerBase<TransactionEntity, Transaction>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
@@ -47,8 +48,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <param name="userManager">Identity user manager.</param>
 		/// <param name="userRepository">Finance user repository.</param>
 		/// <param name="dbConnection">Database connection for creating <see cref="IDbTransaction"/> for creating entities.</param>
-		/// <param name="repository">The repository for performing CRUD operations on <see cref="Data.Models.Transaction"/>.</param>
-		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="Data.Models.TransactionItem"/>.</param>
+		/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
+		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItemEntity"/>.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
 		/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
@@ -122,7 +123,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				return Unauthorized();
 			}
 
-			var transaction = Mapper.Map<Data.Models.Transaction>(creationModel) with
+			var transaction = Mapper.Map<TransactionEntity>(creationModel) with
 			{
 				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
@@ -262,9 +263,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		private async Task<ActionResult<Guid>> CreateNewItemAsync(
 			Guid transactionId,
 			TransactionItemCreationModel creationModel,
-			Data.Models.User user)
+			UserEntity user)
 		{
-			var transactionItem = Mapper.Map<Data.Models.TransactionItem>(creationModel) with
+			var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
 			{
 				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
@@ -279,9 +280,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		private async Task<ActionResult<Guid>> UpdateExistingItemAsync(
 			Guid transactionId,
 			TransactionItemCreationModel creationModel,
-			Data.Models.User user)
+			UserEntity user)
 		{
-			var transactionItem = Mapper.Map<Data.Models.TransactionItem>(creationModel);
+			var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel);
 			transactionItem.ModifiedByUserId = user.Id;
 			transactionItem.TransactionId = transactionId;
 

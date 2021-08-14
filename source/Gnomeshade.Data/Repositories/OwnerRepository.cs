@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -41,7 +41,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <summary>
-		/// Adds a new owner with the specified <see cref="Owner.Id"/>.
+		/// Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.
 		/// </summary>
 		/// <param name="id">The id with which to create the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
@@ -56,9 +56,9 @@ namespace Gnomeshade.Data.Repositories
 		/// Gets all owners.
 		/// </summary>
 		/// <returns>A collection of all owners.</returns>
-		public async Task<List<Owner>> GetAllAsync()
+		public async Task<List<OwnerEntity>> GetAllAsync()
 		{
-			var entities = await _dbConnection.QueryAsync<Owner>(_selectSql).ConfigureAwait(false);
+			var entities = await _dbConnection.QueryAsync<OwnerEntity>(_selectSql).ConfigureAwait(false);
 			return entities.ToList();
 		}
 

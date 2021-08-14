@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
 	/// <summary>
 	/// Represents a product that is exchanged during a transaction.
 	/// </summary>
-	public sealed record Product : IOwnableEntity, IModifiableEntity, INamedEntity
+	public sealed record ProductEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 	{
 		/// <inheritdoc />
 		public Guid Id { get; init; }

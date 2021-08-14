@@ -7,7 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data
@@ -42,7 +42,7 @@ namespace Gnomeshade.Data
 		/// </summary>
 		/// <param name="transaction">The transaction to create.</param>
 		/// <returns>The id of the created transaction.</returns>
-		public async Task<Guid> AddAsync(Transaction transaction)
+		public async Task<Guid> AddAsync(TransactionEntity transaction)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
@@ -66,7 +66,7 @@ namespace Gnomeshade.Data
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created transaction.</returns>
 		/// <exception cref="ArgumentException"><paramref name="transaction"/> does not have any items.</exception>
-		public async Task<Guid> AddAsync(Transaction transaction, IDbTransaction dbTransaction)
+		public async Task<Guid> AddAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
 		{
 			if (!transaction.Items.Any())
 			{
@@ -96,7 +96,7 @@ namespace Gnomeshade.Data
 		/// </summary>
 		/// <param name="transaction">The transaction to delete.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(Transaction transaction)
+		public async Task<int> DeleteAsync(TransactionEntity transaction)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
@@ -118,7 +118,7 @@ namespace Gnomeshade.Data
 		/// <param name="transaction">The transaction to delete.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(Transaction transaction, IDbTransaction dbTransaction)
+		public async Task<int> DeleteAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
 		{
 			var rows = 0;
 			foreach (var item in transaction.Items)

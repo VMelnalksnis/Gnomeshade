@@ -6,6 +6,7 @@ using System.Linq;
 
 using AutoMapper;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -17,7 +18,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 	{
 		private readonly Mapper _mapper;
 
-		public AccountReportResultBuilder(Mapper mapper, Data.Models.Account userAccount, bool created)
+		public AccountReportResultBuilder(Mapper mapper, AccountEntity userAccount, bool created)
 		{
 			_mapper = mapper;
 
@@ -28,7 +29,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 
 		private AccountReportResult ReportResult { get; set; }
 
-		public void AddAccount(Data.Models.Account account, bool created)
+		public void AddAccount(AccountEntity account, bool created)
 		{
 			if (ReportResult.AccountReferences.Any(reference => reference.Account.Name == account.Name))
 			{
@@ -39,7 +40,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 			ReportResult.AccountReferences.Add(new() { Account = model, Created = created });
 		}
 
-		public void AddProduct(Data.Models.Product product, bool created)
+		public void AddProduct(ProductEntity product, bool created)
 		{
 			if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
 			{
@@ -50,7 +51,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 			ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
 		}
 
-		public void AddTransaction(Data.Models.Transaction transaction, bool created)
+		public void AddTransaction(TransactionEntity transaction, bool created)
 		{
 			if (ReportResult.TransactionReferences.Any(reference => reference.Transaction.Id == transaction.Id))
 			{

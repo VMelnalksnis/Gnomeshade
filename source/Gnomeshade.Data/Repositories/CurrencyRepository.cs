@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
@@ -31,13 +31,13 @@ namespace Gnomeshade.Data.Repositories
 			_dbConnection = dbConnection;
 		}
 
-		public async Task<Currency?> FindByAlphabeticCodeAsync(
+		public async Task<CurrencyEntity?> FindByAlphabeticCodeAsync(
 			string alphabeticCode,
 			CancellationToken cancellation = default)
 		{
 			const string sql = _selectSql + " WHERE alphabetic_code = @alphabeticCode;";
 			var command = new CommandDefinition(sql, new { alphabeticCode }, cancellationToken: cancellation);
-			return await _dbConnection.QuerySingleOrDefaultAsync<Currency>(command).ConfigureAwait(false);
+			return await _dbConnection.QuerySingleOrDefaultAsync<CurrencyEntity>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -45,12 +45,12 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="id">The id to search by.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="Currency"/> with the specified id.</returns>
-		public async Task<Currency> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <returns>The <see cref="CurrencyEntity"/> with the specified id.</returns>
+		public async Task<CurrencyEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE id = @Id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return await _dbConnection.QuerySingleAsync<Currency>(command).ConfigureAwait(false);
+			return await _dbConnection.QuerySingleAsync<CurrencyEntity>(command).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -58,10 +58,10 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all currencies.</returns>
-		public async Task<List<Currency>> GetAllAsync(CancellationToken cancellationToken = default)
+		public async Task<List<CurrencyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(_selectSql, cancellationToken: cancellationToken);
-			var currencies = await _dbConnection.QueryAsync<Currency>(command).ConfigureAwait(false);
+			var currencies = await _dbConnection.QueryAsync<CurrencyEntity>(command).ConfigureAwait(false);
 			return currencies.ToList();
 		}
 

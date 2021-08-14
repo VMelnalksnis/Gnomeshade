@@ -13,7 +13,7 @@ using FluentAssertions;
 using FluentAssertions.Equivalency;
 
 using Gnomeshade.Core;
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.TestingHelpers;
 using Gnomeshade.Data.Tests.Integration.Repositories;
@@ -84,18 +84,18 @@ namespace Gnomeshade.Data.Tests.Integration
 			await _unitOfWork.DeleteAsync(getTransaction);
 		}
 
-		private static EquivalencyAssertionOptions<Transaction> Options(
-			EquivalencyAssertionOptions<Transaction> options)
+		private static EquivalencyAssertionOptions<TransactionEntity> Options(
+			EquivalencyAssertionOptions<TransactionEntity> options)
 		{
-			return options.ComparingByMembers<Transaction>().ComparingByMembers<TransactionItem>();
+			return options.ComparingByMembers<TransactionEntity>().ComparingByMembers<TransactionItemEntity>();
 		}
 
-		private static EquivalencyAssertionOptions<TransactionItem> ItemOptions(
-			EquivalencyAssertionOptions<TransactionItem> options)
+		private static EquivalencyAssertionOptions<TransactionItemEntity> ItemOptions(
+			EquivalencyAssertionOptions<TransactionItemEntity> options)
 		{
 			return
 				options
-					.ComparingByMembers<TransactionItem>()
+					.ComparingByMembers<TransactionItemEntity>()
 					.Excluding(item => item.Id)
 					.Excluding(item => item.CreatedAt)
 					.Excluding(item => item.ModifiedAt)
@@ -105,7 +105,7 @@ namespace Gnomeshade.Data.Tests.Integration
 							.Should()
 							.BeCloseTo(context.Expectation, TimeSpan.FromMilliseconds(0.001)))
 					.WhenTypeIs<DateTimeOffset>()
-					.ComparingByMembers<Product>();
+					.ComparingByMembers<ProductEntity>();
 		}
 	}
 }

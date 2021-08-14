@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Data.Models.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions
 {
 	/// <summary>
 	/// Represents an entity.

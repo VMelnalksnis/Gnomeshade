@@ -4,14 +4,14 @@
 
 using System;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
 	/// <summary>
-	/// Generates fake <see cref="AccountInCurrency"/> objects.
+	/// Generates fake <see cref="AccountInCurrencyEntity"/> objects.
 	/// </summary>
-	public sealed class AccountInCurrencyFaker : ModifiableEntityFaker<AccountInCurrency>
+	public sealed class AccountInCurrencyFaker : ModifiableEntityFaker<AccountInCurrencyEntity>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountInCurrencyFaker"/> class with the specified relationships.
@@ -19,7 +19,7 @@ namespace Gnomeshade.Data.TestingHelpers
 		/// <param name="user">The user which created this account.</param>
 		/// <param name="account">The account to which the currency is added to.</param>
 		/// <param name="currency">The currency added to the account.</param>
-		public AccountInCurrencyFaker(User user, Account account, Currency currency)
+		public AccountInCurrencyFaker(UserEntity user, AccountEntity account, CurrencyEntity currency)
 			: this(user.Id, account.Id, currency.Id)
 		{
 		}
@@ -27,9 +27,9 @@ namespace Gnomeshade.Data.TestingHelpers
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountInCurrencyFaker"/> class with the specified relationship ids.
 		/// </summary>
-		/// <param name="userId">The id of the <see cref="User"/> which created this account.</param>
-		/// <param name="accountId">The id of the <see cref="Account"/> to which the currency is added to.</param>
-		/// <param name="currencyId">The id of the <see cref="Currency"/> added to the account.</param>
+		/// <param name="userId">The id of the <see cref="UserEntity"/> which created this account.</param>
+		/// <param name="accountId">The id of the <see cref="AccountEntity"/> to which the currency is added to.</param>
+		/// <param name="currencyId">The id of the <see cref="CurrencyEntity"/> added to the account.</param>
 		public AccountInCurrencyFaker(Guid userId, Guid accountId, Guid currencyId)
 			: base(userId)
 		{

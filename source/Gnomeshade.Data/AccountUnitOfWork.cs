@@ -7,7 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data
@@ -42,11 +42,11 @@ namespace Gnomeshade.Data
 		}
 
 		/// <summary>
-		/// Creates a new account with the currencies in <see cref="Account.Currencies"/>.
+		/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.
 		/// </summary>
 		/// <param name="account">The account to create.</param>
 		/// <returns>The id of the created account.</returns>
-		public async Task<Guid> AddAsync(Account account)
+		public async Task<Guid> AddAsync(AccountEntity account)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
@@ -64,18 +64,18 @@ namespace Gnomeshade.Data
 		}
 
 		/// <summary>
-		/// Creates a new account with the currencies in <see cref="Account.Currencies"/>.
+		/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.
 		/// </summary>
 		/// <param name="account">The account to create.</param>
 		/// <param name="dbTransaction">The database transaction to use for queries.</param>
 		/// <returns>The id of the created account.</returns>
-		public async Task<Guid> AddAsync(Account account, IDbTransaction dbTransaction)
+		public async Task<Guid> AddAsync(AccountEntity account, IDbTransaction dbTransaction)
 		{
 			var id = await _repository.AddAsync(account, dbTransaction).ConfigureAwait(false);
 
 			foreach (var currencyId in account.Currencies.Select(inCurrency => inCurrency.CurrencyId))
 			{
-				var inCurrency = new AccountInCurrency
+				var inCurrency = new AccountInCurrencyEntity
 				{
 					OwnerId = account.OwnerId,
 					CreatedByUserId = account.CreatedByUserId,
@@ -91,14 +91,14 @@ namespace Gnomeshade.Data
 		}
 
 		/// <summary>
-		/// Creates a new account with the currencies in <see cref="Account.Currencies"/> and a counterparty.
+		/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/> and a counterparty.
 		/// </summary>
 		/// <param name="account">The account to create.</param>
 		/// <param name="dbTransaction">The database transaction to use for queries.</param>
 		/// <returns>The id of the created account.</returns>
-		public async Task<Guid> AddWithCounterpartyAsync(Account account, IDbTransaction dbTransaction)
+		public async Task<Guid> AddWithCounterpartyAsync(AccountEntity account, IDbTransaction dbTransaction)
 		{
-			var counterparty = new Counterparty
+			var counterparty = new CounterpartyEntity
 			{
 				OwnerId = account.OwnerId,
 				CreatedByUserId = account.CreatedByUserId,
@@ -118,7 +118,7 @@ namespace Gnomeshade.Data
 		/// </summary>
 		/// <param name="account">The account to delete.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(Account account)
+		public async Task<int> DeleteAsync(AccountEntity account)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
@@ -141,7 +141,7 @@ namespace Gnomeshade.Data
 		/// <param name="account">The account to delete.</param>
 		/// <param name="dbTransaction">The database transaction to use for the queries.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(Account account, IDbTransaction dbTransaction)
+		public async Task<int> DeleteAsync(AccountEntity account, IDbTransaction dbTransaction)
 		{
 			var rows = 0;
 			foreach (var currency in account.Currencies)

@@ -4,11 +4,11 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
-	public sealed record User : IModifiableEntity
+	public sealed record UserEntity : IModifiableEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }
@@ -23,7 +23,7 @@ namespace Gnomeshade.Data.Models
 		public Guid ModifiedByUserId { get; set; }
 
 		/// <summary>
-		/// Gets or sets the id of the <see cref="Counterparty"/> which represents this user in transactions.
+		/// Gets or sets the id of the <see cref="CounterpartyEntity"/> which represents this user in transactions.
 		/// </summary>
 		public Guid CounterpartyId { get; set; }
 	}

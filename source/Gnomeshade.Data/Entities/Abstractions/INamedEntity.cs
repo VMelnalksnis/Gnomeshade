@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-namespace Gnomeshade.Data.Models.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions
 {
 	/// <summary>
 	/// Represents an entity that can be named by the user.

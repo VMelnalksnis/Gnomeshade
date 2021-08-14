@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Core;
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
 using NUnit.Framework;
@@ -51,7 +51,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		[Test]
 		public async Task FindByImportHashAsync_ShouldReturnNullIfDoesNotExist()
 		{
-			var importHash = await new Transaction().GetHashAsync();
+			var importHash = await new TransactionEntity().GetHashAsync();
 			var transaction = await _repository.FindByImportHashAsync(importHash);
 			transaction.Should().BeNull();
 		}

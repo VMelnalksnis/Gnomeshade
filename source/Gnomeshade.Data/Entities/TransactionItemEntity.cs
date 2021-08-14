@@ -4,11 +4,11 @@
 
 using System;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Models
+namespace Gnomeshade.Data.Entities
 {
-	public sealed record TransactionItem : IOwnableEntity, IModifiableEntity
+	public sealed record TransactionItemEntity : IOwnableEntity, IModifiableEntity
 	{
 		/// <inheritdoc/>
 		public Guid Id { get; init; }
@@ -40,7 +40,7 @@ namespace Gnomeshade.Data.Models
 
 		public Guid ProductId { get; set; }
 
-		public Product Product { get; set; } = null!;
+		public ProductEntity Product { get; set; } = null!;
 
 		public decimal Amount { get; set; }
 

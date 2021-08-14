@@ -9,6 +9,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
@@ -34,7 +35,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions
 		{
 			var creationModel = new TransactionCreationModel();
 
-			var transaction = _mapper.Map<Data.Models.Transaction>(creationModel);
+			var transaction = _mapper.Map<TransactionEntity>(creationModel);
 
 			transaction.ImportHash.Should().BeNull();
 		}

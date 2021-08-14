@@ -4,18 +4,18 @@
 
 using System;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
-	public sealed class TransactionItemFaker : ModifiableEntityFaker<TransactionItem>
+	public sealed class TransactionItemFaker : ModifiableEntityFaker<TransactionItemEntity>
 	{
 		public TransactionItemFaker(
-			User user,
-			Transaction transaction,
-			AccountInCurrency source,
-			AccountInCurrency target,
-			Product product)
+			UserEntity user,
+			TransactionEntity transaction,
+			AccountInCurrencyEntity source,
+			AccountInCurrencyEntity target,
+			ProductEntity product)
 			: this(user.Id, transaction.Id, source.Id, target.Id, product.Id)
 		{
 			RuleFor(item => item.Product, product);

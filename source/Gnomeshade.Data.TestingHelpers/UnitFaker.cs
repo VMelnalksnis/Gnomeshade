@@ -4,13 +4,13 @@
 
 using System;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
-	public sealed class UnitFaker : NamedEntityFaker<Unit>
+	public sealed class UnitFaker : NamedEntityFaker<UnitEntity>
 	{
-		public UnitFaker(User user)
+		public UnitFaker(UserEntity user)
 			: this(user.Id)
 		{
 		}

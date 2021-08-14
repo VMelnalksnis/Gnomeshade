@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data.Models;
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.TestingHelpers;
 
@@ -16,11 +16,11 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 {
 	public static class EntityFactory
 	{
-		private static List<Currency>? _currencies;
-		private static Product? _product;
-		private static (Account First, Account Second)? _accounts;
+		private static List<CurrencyEntity>? _currencies;
+		private static ProductEntity? _product;
+		private static (AccountEntity First, AccountEntity Second)? _accounts;
 
-		public static async Task<List<Currency>> GetCurrenciesAsync()
+		public static async Task<List<CurrencyEntity>> GetCurrenciesAsync()
 		{
 			if (_currencies is not null)
 			{
@@ -32,7 +32,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			return _currencies;
 		}
 
-		public static async Task<Product> GetProductAsync()
+		public static async Task<ProductEntity> GetProductAsync()
 		{
 			if (_product is not null)
 			{
@@ -57,7 +57,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			return _product;
 		}
 
-		public static async Task<(Account First, Account Second)> GetAccountsAsync()
+		public static async Task<(AccountEntity First, AccountEntity Second)> GetAccountsAsync()
 		{
 			if (_accounts is not null)
 			{

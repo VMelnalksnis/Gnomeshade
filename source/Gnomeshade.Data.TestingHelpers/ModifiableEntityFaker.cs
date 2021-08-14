@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 using Bogus;
 
-using Gnomeshade.Data.Models.Abstractions;
+using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.TestingHelpers
 {
