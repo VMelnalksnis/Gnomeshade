@@ -15,6 +15,9 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
+	/// <summary>
+	/// Form for creating a single new unit.
+	/// </summary>
 	public sealed class UnitCreationViewModel : ViewModelBase<UnitCreationView>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -22,23 +25,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private Unit? _parentUnit;
 		private decimal? _multiplier;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UnitCreationViewModel"/> class.
-		/// </summary>
-		public UnitCreationViewModel()
-			: this(new GnomeshadeClient())
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UnitCreationViewModel"/> class.
-		/// </summary>
-		/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
-		public UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient)
+		private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
 		{
 			_gnomeshadeClient = gnomeshadeClient;
+			Units = units;
 
-			Units = GetUnitsAsync();
 			UnitSelector = (_, item) => ((Unit)item).Name;
 		}
 
@@ -68,7 +59,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all available units.
 		/// </summary>
-		public Task<List<Unit>> Units { get; }
+		public List<Unit> Units { get; }
 
 		public AutoCompleteSelector<object> UnitSelector { get; }
 
@@ -89,10 +80,21 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			((ParentUnit is null && Multiplier is null) || (ParentUnit is not null && Multiplier is not null));
 
 		/// <summary>
+		/// Asynchronously creates a new instance of the <see cref="UnitCreationViewModel"/> class.
+		/// </summary>
+		/// <param name="gnomeshadeClient">API client for getting finance data.</param>
+		/// <returns>A new instance of the <see cref="UnitCreationViewModel"/> class.</returns>
+		public static async Task<UnitCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+		{
+			var units = await gnomeshadeClient.GetUnitsAsync();
+			return new(gnomeshadeClient, units);
+		}
+
+		/// <summary>
 		/// Creates a new unit form the specified values.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateAsync()
+		public async Task CreateUnitAsync()
 		{
 			var unit = new UnitCreationModel
 			{
@@ -103,11 +105,6 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			var unitId = await _gnomeshadeClient.CreateUnitAsync(unit).ConfigureAwait(false);
 			OnUnitCreated(unitId);
-		}
-
-		private async Task<List<Unit>> GetUnitsAsync()
-		{
-			return await _gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
 		}
 
 		private void OnUnitCreated(Guid unitId)

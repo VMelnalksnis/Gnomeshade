@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -15,10 +14,11 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
+	/// <summary>
+	/// Form for creating a single new transaction item.
+	/// </summary>
 	public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCreationView>
 	{
-		private readonly IGnomeshadeClient _gnomeshadeClient;
-
 		private Account? _sourceAccount;
 		private decimal? _sourceAmount;
 		private Currency? _sourceCurrency;
@@ -31,21 +31,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private string? _externalReference;
 		private string? _internalReference;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
-		/// </summary>
-		public TransactionItemCreationViewModel()
-			: this(new DesignTimeGnomeshadeClient())
+		private TransactionItemCreationViewModel(
+			List<Account> accounts,
+			List<Currency> currencies,
+			List<Product> products)
 		{
-		}
-
-		public TransactionItemCreationViewModel(IGnomeshadeClient gnomeshadeClient)
-		{
-			_gnomeshadeClient = gnomeshadeClient;
-
-			Accounts = GetAccountsAsync();
-			Currencies = GetCurrenciesAsync();
-			Products = GetProductsAsync();
+			Accounts = accounts;
+			Currencies = currencies;
+			Products = products;
 
 			AccountSelector = (_, item) => ((Account)item).Name;
 			CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
@@ -53,20 +46,23 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
-		/// Gets a collection of all accounts.
+		/// Gets a collection of all active accounts.
 		/// </summary>
-		public Task<List<Account>> Accounts { get; }
+		public List<Account> Accounts { get; }
 
 		public AutoCompleteSelector<object> AccountSelector { get; }
 
 		/// <summary>
 		/// Gets a collection of all currencies.
 		/// </summary>
-		public Task<List<Currency>> Currencies { get; }
+		public List<Currency> Currencies { get; }
 
 		public AutoCompleteSelector<object> CurrencySelector { get; }
 
-		public Task<List<Product>> Products { get; }
+		/// <summary>
+		/// Gets a collection of all products.
+		/// </summary>
+		public List<Product> Products { get; }
 
 		public AutoCompleteSelector<object> ProductSelector { get; }
 
@@ -108,7 +104,12 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public Currency? SourceCurrency
 		{
 			get => _sourceCurrency;
-			set => SetAndNotifyWithGuard(ref _sourceCurrency, value, nameof(SourceCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
+			set => SetAndNotifyWithGuard(
+				ref _sourceCurrency,
+				value,
+				nameof(SourceCurrency),
+				nameof(CanCreate),
+				nameof(IsTargetAmountReadOnly));
 		}
 
 		/// <summary>
@@ -142,6 +143,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			set => SetAndNotifyWithGuard(ref _targetAmount, value, nameof(TargetAmount), nameof(CanCreate));
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.
+		/// </summary>
 		public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;
 
 		/// <summary>
@@ -150,9 +154,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public Currency? TargetCurrency
 		{
 			get => _targetCurrency;
-			set => SetAndNotifyWithGuard(ref _targetCurrency, value, nameof(TargetCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
+			set => SetAndNotifyWithGuard(
+				ref _targetCurrency,
+				value,
+				nameof(TargetCurrency),
+				nameof(CanCreate),
+				nameof(IsTargetAmountReadOnly));
 		}
 
+		/// <summary>
+		/// Gets or sets the product of the transaction item.
+		/// </summary>
 		public Product? Product
 		{
 			get => _product;
@@ -168,18 +180,27 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			set => SetAndNotifyWithGuard(ref _amount, value, nameof(Amount), nameof(CanCreate));
 		}
 
+		/// <summary>
+		/// Gets or sets the bank reference of the transaction item.
+		/// </summary>
 		public string? BankReference
 		{
 			get => _bankReference;
 			set => SetAndNotify(ref _bankReference, value, nameof(BankReference));
 		}
 
+		/// <summary>
+		/// Gets or sets the external reference of the transaction item.
+		/// </summary>
 		public string? ExternalReference
 		{
 			get => _externalReference;
 			set => SetAndNotify(ref _externalReference, value, nameof(ExternalReference));
 		}
 
+		/// <summary>
+		/// Gets or sets the internal reference of the transaction item.
+		/// </summary>
 		public string? InternalReference
 		{
 			get => _internalReference;
@@ -199,19 +220,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Product is not null &&
 			_amount.HasValue;
 
-		private Task<List<Account>> GetAccountsAsync()
+		/// <summary>
+		/// Asynchronously creates a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
+		/// </summary>
+		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+		/// <returns>A new instance of the <see cref="TransactionItemCreationViewModel"/> class.</returns>
+		public static async Task<TransactionItemCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 		{
-			return _gnomeshadeClient.GetActiveAccountsAsync();
-		}
-
-		private Task<List<Currency>> GetCurrenciesAsync()
-		{
-			return _gnomeshadeClient.GetCurrenciesAsync();
-		}
-
-		private Task<List<Product>> GetProductsAsync()
-		{
-			return _gnomeshadeClient.GetProductsAsync();
+			var accounts = await gnomeshadeClient.GetActiveAccountsAsync();
+			var currencies = await gnomeshadeClient.GetCurrenciesAsync();
+			var products = await gnomeshadeClient.GetProductsAsync();
+			return new(accounts, currencies, products);
 		}
 	}
 }

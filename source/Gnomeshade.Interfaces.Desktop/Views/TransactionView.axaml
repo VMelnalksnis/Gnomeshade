@@ -6,14 +6,13 @@
 	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dd="using:Gnomeshade.Interfaces.Desktop.ViewModels.Design"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionView"
 	x:CompileBindings="True"
 	x:DataType="vm:TransactionViewModel">
-	<Design.DataContext>
-		<vm:TransactionViewModel />
-	</Design.DataContext>
 
 	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,*">
 		<StackPanel

@@ -31,14 +31,6 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
 		/// </summary>
-		public TransactionCreationViewModel()
-			: this(new GnomeshadeClient())
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
-		/// </summary>
 		/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
 		public TransactionCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
@@ -156,16 +148,18 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Adds a transaction item with information from <see cref="ItemCreation"/> to <see cref="Items"/>.
 		/// </summary>
-		public void AddItem()
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task AddItemAsync()
 		{
+			var itemCreationModelTask = TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
 			if (ItemCreation is null)
 			{
-				ItemCreation = new(_gnomeshadeClient);
+				ItemCreation = await itemCreationModelTask;
 				return;
 			}
 
 			Items.Add(ItemCreation);
-			ItemCreation = new(_gnomeshadeClient);
+			ItemCreation = await itemCreationModelTask;
 		}
 
 		/// <summary>

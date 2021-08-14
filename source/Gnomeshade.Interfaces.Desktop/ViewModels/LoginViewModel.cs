@@ -9,10 +9,11 @@ using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
-using JetBrains.Annotations;
-
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
+	/// <summary>
+	/// Form for authenticating the current user.
+	/// </summary>
 	public sealed class LoginViewModel : ViewModelBase<LoginView>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -24,12 +25,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
 		/// </summary>
-		[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
-		public LoginViewModel()
-			: this(new GnomeshadeClient())
-		{
-		}
-
+		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 		public LoginViewModel(IGnomeshadeClient gnomeshadeClient)
 		{
 			_gnomeshadeClient = gnomeshadeClient;

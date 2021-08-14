@@ -12,7 +12,6 @@ using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -32,14 +31,6 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private DataGridItemCollectionView<TransactionOverview>? _transactions;
 		private TransactionOverview? _selectedTransaction;
 		private DataGridItemCollectionView<TransactionItemOverviewRow>? _items;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ImportViewModel"/> class.
-		/// </summary>
-		public ImportViewModel()
-			: this(new DesignTimeGnomeshadeClient())
-		{
-		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImportViewModel"/> class.

@@ -16,15 +16,6 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 	public class AccountViewModelTests
 	{
 		[Test]
-		public void ShouldNotFailAtDesignTime()
-		{
-			FluentActions
-				.Invoking(() => new AccountViewModel())
-				.Should()
-				.NotThrow();
-		}
-
-		[Test]
 		public async Task DataGridView_ShouldBeGrouped()
 		{
 			var viewModel = await AccountViewModel.CreateAsync(new DesignTimeGnomeshadeClient());

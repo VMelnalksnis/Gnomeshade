@@ -54,14 +54,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			SwitchToLogin();
 		}
 
-		public void CreateAccount()
+		public async Task CreateAccountAsync()
 		{
 			if (ActiveView is AccountCreationViewModel)
 			{
 				return;
 			}
 
-			var accountCreationViewModel = new AccountCreationViewModel(_gnomeshadeClient);
+			var accountCreationViewModel = await AccountCreationViewModel.CreateAsync(_gnomeshadeClient);
 			accountCreationViewModel.AccountCreated += OnAccountCreated;
 
 			ActiveView = accountCreationViewModel;
@@ -80,27 +80,27 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = transactionCreationViewModel;
 		}
 
-		public void CreateProduct()
+		public async Task CreateProductAsync()
 		{
 			if (ActiveView is ProductCreationViewModel)
 			{
 				return;
 			}
 
-			var productCreationViewModel = new ProductCreationViewModel(_gnomeshadeClient);
+			var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient);
 			productCreationViewModel.ProductCreated += OnProductCreated;
 
 			ActiveView = productCreationViewModel;
 		}
 
-		public void CreateUnit()
+		public async Task CreateUnitAsync()
 		{
 			if (ActiveView is UnitCreationViewModel)
 			{
 				return;
 			}
 
-			var unitCreationViewModel = new UnitCreationViewModel(_gnomeshadeClient);
+			var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
 			unitCreationViewModel.UnitCreated += OnUnitCreated;
 
 			ActiveView = unitCreationViewModel;
@@ -143,9 +143,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = loginViewModel;
 		}
 
-		private void SwitchToTransactionOverview()
+		private async Task SwitchToTransactionOverviewAsync()
 		{
-			var transactionViewModel = new TransactionViewModel(_gnomeshadeClient);
+			var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
 			transactionViewModel.TransactionSelected += OnTransactionSelected;
 			ActiveView = transactionViewModel;
 		}
@@ -159,32 +159,32 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
 		{
-			SwitchToTransactionOverview();
+			SwitchToTransactionOverviewAsync().Wait();
 		}
 
 		private void OnUserLoggedIn(object? sender, EventArgs e)
 		{
-			SwitchToTransactionOverview();
+			SwitchToTransactionOverviewAsync().Wait();
 		}
 
 		private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
 		{
-			SwitchToTransactionOverview();
+			SwitchToTransactionOverviewAsync().Wait();
 		}
 
 		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
 		{
-			SwitchToTransactionOverview();
+			SwitchToTransactionOverviewAsync().Wait();
 		}
 
 		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
 		{
-			SwitchToTransactionOverview();
+			SwitchToTransactionOverviewAsync().Wait();
 		}
 
 		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
 		{
-			SwitchToTransactionDetailAsync(e.TransactionId).GetAwaiter().GetResult();
+			SwitchToTransactionDetailAsync(e.TransactionId).Wait();
 		}
 	}
 }

@@ -15,6 +15,9 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
+	/// <summary>
+	/// Form for creating a single new account.
+	/// </summary>
 	public sealed class AccountCreationViewModel : ViewModelBase<AccountCreationView>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -22,18 +25,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private string? _name;
 		private Currency? _preferredCurrency;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountCreationViewModel"/> class.
-		/// </summary>
-		public AccountCreationViewModel()
-			: this(new GnomeshadeClient())
-		{
-		}
-
-		public AccountCreationViewModel(IGnomeshadeClient gnomeshadeClient)
+		private AccountCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Currency> currencies)
 		{
 			_gnomeshadeClient = gnomeshadeClient;
-			Currencies = GetCurrenciesAsync();
+			Currencies = currencies;
 		}
 
 		/// <summary>
@@ -46,7 +41,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of available currencies.
 		/// </summary>
-		public Task<List<Currency>> Currencies { get; }
+		public List<Currency> Currencies { get; }
 
 		/// <summary>
 		/// Gets or sets the name of the account.
@@ -74,10 +69,21 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			PreferredCurrency is not null;
 
 		/// <summary>
+		/// Asynchronously creates a new instance of the <see cref="AccountCreationViewModel"/> class.
+		/// </summary>
+		/// <param name="gnomeshadeClient">API client for getting finance data.</param>
+		/// <returns>A new instance of the <see cref="AccountCreationViewModel"/> class.</returns>
+		public static async Task<AccountCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+		{
+			var currencies = await gnomeshadeClient.GetCurrenciesAsync();
+			return new(gnomeshadeClient, currencies);
+		}
+
+		/// <summary>
 		/// Creates a new account with the given values.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateAsync()
+		public async Task CreateAccountAsync()
 		{
 			var accountCreationModel = new AccountCreationModel
 			{
@@ -88,11 +94,6 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			var id = await _gnomeshadeClient.CreateAccountAsync(accountCreationModel).ConfigureAwait(true);
 			OnAccountCreated(id);
-		}
-
-		private async Task<List<Currency>> GetCurrenciesAsync()
-		{
-			return await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 		}
 
 		private void OnAccountCreated(Guid id)

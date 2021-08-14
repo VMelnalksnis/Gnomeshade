@@ -13,7 +13,6 @@ using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -33,25 +32,16 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private bool _selectAll;
 		private TransactionOverview? _selectedOverview;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
-		/// </summary>
-		public TransactionViewModel()
-			: this(new DesignTimeGnomeshadeClient())
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionViewModel"/> class.
-		/// </summary>
-		/// <param name="gnomeshadeClient">API client for getting finance data.</param>
-		public TransactionViewModel(IGnomeshadeClient gnomeshadeClient)
+		private TransactionViewModel(
+			IGnomeshadeClient gnomeshadeClient,
+			DateTimeOffset from,
+			DateTimeOffset to,
+			DataGridItemCollectionView<TransactionOverview> dataGridView)
 		{
 			_gnomeshadeClient = gnomeshadeClient;
-
-			To = DateTimeOffset.Now;
-			From = new(To.Year, _to.Month, 01, 0, 0, 0, To.Offset);
-			SearchAsync().GetAwaiter().GetResult();
+			From = from;
+			To = to;
+			Transactions = dataGridView;
 		}
 
 		/// <summary>
@@ -128,6 +118,20 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public bool CanDelete => Transactions.Any(transaction => transaction.Selected);
 
 		/// <summary>
+		/// Asynchronously creates a new instance of the <see cref="TransactionViewModel"/> class.
+		/// </summary>
+		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+		/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
+		public static async Task<TransactionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+		{
+			var to = DateTimeOffset.Now;
+			var from = new DateTimeOffset(to.Year, to.Month, 01, 0, 0, 0, to.Offset);
+
+			var transactions = await CreateDataGridViewAsync(gnomeshadeClient, from, to);
+			return new(gnomeshadeClient, from, to, transactions);
+		}
+
+		/// <summary>
 		/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="DataGridView"/>.
 		/// </summary>
 		public void OnDataGridDoubleTapped()
@@ -166,17 +170,18 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		public async Task SearchAsync()
 		{
-			Transactions = await CreateDataGridViewAsync(From, To).ConfigureAwait(false);
+			Transactions = await CreateDataGridViewAsync(_gnomeshadeClient, From, To).ConfigureAwait(false);
 			SelectAll = false; // todo this probably is pretty bad performance wise
 		}
 
-		private async Task<DataGridItemCollectionView<TransactionOverview>> CreateDataGridViewAsync(
+		private static async Task<DataGridItemCollectionView<TransactionOverview>> CreateDataGridViewAsync(
+			IGnomeshadeClient gnomeshadeClient,
 			DateTimeOffset? from,
 			DateTimeOffset? to)
 		{
 			// todo don't get all accounts
-			var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
-			var transactions = await _gnomeshadeClient.GetTransactionsAsync(from, to).ConfigureAwait(false);
+			var accounts = await gnomeshadeClient.GetAccountsAsync();
+			var transactions = await gnomeshadeClient.GetTransactionsAsync(from, to);
 
 			var transactionOverviews = transactions.Translate(accounts).ToList();
 			return new(transactionOverviews);

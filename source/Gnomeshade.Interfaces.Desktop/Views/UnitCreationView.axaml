@@ -3,15 +3,14 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dd="using:Gnomeshade.Interfaces.Desktop.ViewModels.Design"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.UnitCreationViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.UnitCreationView"
 	x:CompileBindings="True"
 	x:DataType="vm:UnitCreationViewModel">
-	<Design.DataContext>
-		<vm:UnitCreationViewModel />
-	</Design.DataContext>
 
 	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
@@ -37,7 +36,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding UnitSelector}"
-			Items="{Binding Units^}"
+			Items="{Binding Units}"
 			SelectedItem="{Binding ParentUnit, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="mp:Unit">
@@ -62,7 +61,7 @@
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanCreate}"
-			Command="{ReflectionBinding CreateAsync}">
+			Command="{ReflectionBinding CreateUnitAsync}">
 			Create
 		</Button>
 	</Grid>

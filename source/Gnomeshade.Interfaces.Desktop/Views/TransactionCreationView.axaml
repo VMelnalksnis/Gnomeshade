@@ -3,15 +3,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dd="using:Gnomeshade.Interfaces.Desktop.ViewModels.Design"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionCreationViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionCreationView"
 	x:CompileBindings="True"
 	x:DataType="vm:TransactionCreationViewModel">
-
-	<Design.DataContext>
-		<vm:TransactionCreationViewModel />
-	</Design.DataContext>
 
 	<Grid ColumnDefinitions="Auto,Auto,Auto,*"
 	      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
@@ -96,7 +94,7 @@
 			Grid.Column="0" Grid.Row="5"
 			Margin="5"
 			IsEnabled="{Binding CanAddItem}"
-			Command="{ReflectionBinding AddItem}">
+			Command="{ReflectionBinding AddItemAsync}">
 			Add item
 		</Button>
 		<Button

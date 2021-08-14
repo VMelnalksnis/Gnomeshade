@@ -46,22 +46,22 @@
 				<MenuItem Header="_Edit" IsVisible="{Binding CanLogOut}">
 					<MenuItem
 						x:Name="CreateAccount" Header="Create _Account"
-						Command="{ReflectionBinding CreateAccount}" />
+						Command="{ReflectionBinding CreateAccountAsync}" />
 					<MenuItem
 						x:Name="CreateTransaction" Header="Create _Transaction"
 						Command="{ReflectionBinding CreateTransaction}" />
 					<MenuItem
 						x:Name="CreateProduct" Header="Create _Product"
-						Command="{ReflectionBinding CreateProduct}" />
+						Command="{ReflectionBinding CreateProductAsync}" />
 					<MenuItem
 						x:Name="CreateUnit" Header="Create _Unit"
-						Command="{ReflectionBinding CreateUnit}" />
+						Command="{ReflectionBinding CreateUnitAsync}" />
 					<MenuItem
 						x:Name="Accounts" Header="Accounts"
 						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
 					<MenuItem
 						x:Name="Transactions" Header="Transactions"
-						Command="{ReflectionBinding SwitchToTransactionOverview}" />
+						Command="{ReflectionBinding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
 						x:Name="Import" Header="_Import"
 						Command="{ReflectionBinding SwitchToImport}"/>

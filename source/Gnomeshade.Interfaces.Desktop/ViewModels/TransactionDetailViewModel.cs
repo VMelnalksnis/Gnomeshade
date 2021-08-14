@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
@@ -32,16 +31,6 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private TransactionItem? _selectedItem;
 		private DataGridItemCollectionView<TransactionItem> _items = null!;
 		private TransactionItemCreationViewModel _itemCreation = null!;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionDetailViewModel"/> class.
-		/// Should only be used during design time.
-		/// </summary>
-		public TransactionDetailViewModel()
-			: this(new DesignTimeGnomeshadeClient(), Guid.Empty, new(new DesignTimeGnomeshadeClient()))
-		{
-			GetTransactionAsync(Guid.Empty).GetAwaiter().GetResult();
-		}
 
 		private TransactionDetailViewModel(
 			IGnomeshadeClient gnomeshadeClient,
@@ -135,7 +124,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			IGnomeshadeClient gnomeshadeClient,
 			Guid initialId)
 		{
-			var viewModel = new TransactionDetailViewModel(gnomeshadeClient, initialId, new(gnomeshadeClient));
+			var itemViewModel = await TransactionItemCreationViewModel.CreateAsync(gnomeshadeClient);
+			var viewModel = new TransactionDetailViewModel(gnomeshadeClient, initialId, itemViewModel);
 			await viewModel.GetTransactionAsync(initialId).ConfigureAwait(false);
 			return viewModel;
 		}
@@ -168,7 +158,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			_ = await _gnomeshadeClient.PutTransactionItemAsync(_initialId, creationModel).ConfigureAwait(false);
 			ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
-			ItemCreation = new(_gnomeshadeClient);
+			ItemCreation = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
 			await GetTransactionAsync(_initialId).ConfigureAwait(false);
 		}
 
@@ -243,15 +233,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				var firstItem = Items.First();
 				if (items.All(item => item.SourceAccount == firstItem.SourceAccount))
 				{
-					ItemCreation.SourceAccount =
-						(await ItemCreation.Accounts.ConfigureAwait(false))
+					ItemCreation.SourceAccount = ItemCreation.Accounts
 						.FirstOrDefault(account => account.Name == firstItem.SourceAccount);
 				}
 
 				if (items.All(item => item.TargetAccount == firstItem.TargetAccount))
 				{
-					ItemCreation.TargetAccount =
-						(await ItemCreation.Accounts.ConfigureAwait(false))
+					ItemCreation.TargetAccount = ItemCreation.Accounts
 						.FirstOrDefault(account => account.Name == firstItem.TargetAccount);
 				}
 			}

@@ -66,17 +66,9 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 		}
 
 		[SetUp]
-		public void SetUp()
+		public async Task SetUpAsync()
 		{
-			_viewModel = new(_gnomeshadeClient);
-		}
-
-		[Test]
-		public void ShouldNotFailAtDesignTime()
-		{
-			FluentActions
-				.Invoking(() => new TransactionViewModel())
-				.Should().NotThrow();
+			_viewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
 		}
 
 		[Test]
