@@ -40,7 +40,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <returns>Information about the currently logged in user.</returns>
 		Task<UserModel> InfoAsync();
 
-		Task<CounterpartyModel> GetMyCounterpartyAsync();
+		Task<Counterparty> GetMyCounterpartyAsync();
 
 		/// <summary>
 		/// Creates a new transaction.

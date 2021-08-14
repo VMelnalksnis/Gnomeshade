@@ -103,7 +103,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<UserModel> InfoAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<CounterpartyModel> GetMyCounterpartyAsync() => throw new NotImplementedException();
+		public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />
 		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>

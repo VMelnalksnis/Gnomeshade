@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -31,7 +30,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class CounterpartyController : FinanceControllerBase<Counterparty, CounterpartyModel>
+	public sealed class CounterpartyController : FinanceControllerBase<Data.Models.Counterparty, Counterparty>
 	{
 		private readonly CounterpartyRepository _repository;
 
@@ -56,7 +55,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public Task<ActionResult<CounterpartyModel>> Get(Guid id, CancellationToken cancellationToken)
+		public Task<ActionResult<Counterparty>> Get(Guid id, CancellationToken cancellationToken)
 		{
 			return Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
@@ -64,7 +63,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[HttpGet("me")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<CounterpartyModel>> GetMe(CancellationToken cancellationToken)
+		public async Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -83,10 +82,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		/// <response code="200">Successfully got all counterparties.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<CounterpartyModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<IEnumerable<Counterparty>>> GetAll(CancellationToken cancellationToken)
 		{
 			var counterparties = await _repository.GetAllAsync(cancellationToken);
-			var models = counterparties.Select(party => Mapper.Map<CounterpartyModel>(party)).ToList();
+			var models = counterparties.Select(party => Mapper.Map<Counterparty>(party)).ToList();
 			return Ok(models);
 		}
 
@@ -106,7 +105,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 				return Unauthorized();
 			}
 
-			var counterparty = Mapper.Map<Counterparty>(creationModel) with
+			var counterparty = Mapper.Map<Data.Models.Counterparty>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,

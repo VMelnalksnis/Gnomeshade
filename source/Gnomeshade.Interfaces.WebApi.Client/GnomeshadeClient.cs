@@ -104,9 +104,9 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<CounterpartyModel> GetMyCounterpartyAsync()
+		public Task<Counterparty> GetMyCounterpartyAsync()
 		{
-			return GetAsync<CounterpartyModel>("Counterparty/Me");
+			return GetAsync<Counterparty>("Counterparty/Me");
 		}
 
 		/// <inheritdoc/>
