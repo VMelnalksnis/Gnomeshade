@@ -112,7 +112,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc/>
 		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction)
 		{
-			return PostAsync<Guid, TransactionCreationModel>(Transaction, transaction);
+			return PostAsync<Guid, TransactionCreationModel>(Routes.Transaction, transaction);
 		}
 
 		/// <inheritdoc />
@@ -122,15 +122,15 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<TransactionModel> GetTransactionAsync(Guid id)
+		public Task<Transaction> GetTransactionAsync(Guid id)
 		{
-			return GetAsync<TransactionModel>(TransactionUri(id));
+			return GetAsync<Transaction>(TransactionUri(id));
 		}
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
 		{
-			return GetAsync<List<TransactionModel>>(TransactionUri(from, to));
+			return GetAsync<List<Transaction>>(TransactionUri(from, to));
 		}
 
 		/// <inheritdoc />

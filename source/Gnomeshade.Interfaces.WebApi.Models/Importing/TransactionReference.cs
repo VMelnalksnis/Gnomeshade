@@ -23,6 +23,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Importing
 		/// <summary>
 		/// The referenced transaction.
 		/// </summary>
-		public TransactionModel Transaction { get; init; } = null!;
+		public Transaction Transaction { get; init; } = null!;
 	}
 }

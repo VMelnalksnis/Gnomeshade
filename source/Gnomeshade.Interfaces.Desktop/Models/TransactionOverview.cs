@@ -21,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		private Guid _id;
 
 		// todo see if there's a better way of retaining the item models for the transaction
-		public TransactionModel TransactionModel { get; set; }
+		public Transaction Transaction { get; set; }
 
 		/// <summary>
 		/// Gets or sets the id of the transaction which this overview represents.

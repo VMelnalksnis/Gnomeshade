@@ -63,7 +63,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// </summary>
 		/// <param name="id">The id of the transaction to get.</param>
 		/// <returns>The transaction with the specified id.</returns>
-		Task<TransactionModel> GetTransactionAsync(Guid id);
+		Task<Transaction> GetTransactionAsync(Guid id);
 
 		/// <summary>
 		/// Gets all transactions within the specified time period.
@@ -71,7 +71,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <param name="from">The time from which to get transactions.</param>
 		/// <param name="to">The time until which to get transactions.</param>
 		/// <returns>All transactions within the specified time period.</returns>
-		Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to);
+		Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to);
 
 		/// <summary>
 		/// Deletes the specified transaction.

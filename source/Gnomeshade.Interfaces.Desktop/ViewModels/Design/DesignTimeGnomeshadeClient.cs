@@ -27,7 +27,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		private static readonly List<Account> _accounts;
 		private static readonly List<Unit> _units;
 		private static readonly List<Product> _products;
-		private static readonly List<TransactionModel> _transactions;
+		private static readonly List<Transaction> _transactions;
 
 		static DesignTimeGnomeshadeClient()
 		{
@@ -58,7 +58,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
 			_products = new() { bread, milk };
 
-			var transaction = new TransactionModel
+			var transaction = new Transaction
 			{
 				Id = Guid.Empty,
 				Date = DateTimeOffset.Now,
@@ -136,13 +136,13 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<TransactionModel> GetTransactionAsync(Guid id)
+		public Task<Transaction> GetTransactionAsync(Guid id)
 		{
 			return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
 		}
 
 		/// <inheritdoc />
-		public Task<List<TransactionModel>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
 		{
 			return Task.FromResult(_transactions.ToList());
 		}

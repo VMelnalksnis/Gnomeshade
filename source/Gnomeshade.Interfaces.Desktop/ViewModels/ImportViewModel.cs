@@ -194,7 +194,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 				return;
 			}
 
-			var items = SelectedTransaction.TransactionModel.Items.Translate().ToList();
+			var items = SelectedTransaction.Transaction.Items.Translate().ToList();
 			Items = new(items);
 		}
 	}

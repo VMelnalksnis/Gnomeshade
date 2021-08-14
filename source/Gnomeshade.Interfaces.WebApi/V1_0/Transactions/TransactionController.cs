@@ -33,7 +33,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class TransactionController : FinanceControllerBase<Data.Models.Transaction, TransactionModel>
+	public sealed class TransactionController : FinanceControllerBase<Data.Models.Transaction, Transaction>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
@@ -81,7 +81,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<TransactionModel>> Get(Guid id, CancellationToken cancellation)
+		public async Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellation)
 		{
 			return await Find(() => _repository.FindByIdAsync(id, cancellation));
 		}
@@ -95,7 +95,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <response code="200">Successfully got all transactions.</response>
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<TransactionModel>>> GetAll(
+		public async Task<ActionResult<IEnumerable<Transaction>>> GetAll(
 			[FromQuery] OptionalTimeRange timeRange,
 			CancellationToken cancellation)
 		{

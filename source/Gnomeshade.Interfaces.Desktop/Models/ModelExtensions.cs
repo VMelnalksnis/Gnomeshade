@@ -35,7 +35,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 		[LinqTunnel]
 		[Pure]
 		public static IEnumerable<TransactionOverview> Translate(
-			this IEnumerable<TransactionModel> transactions,
+			this IEnumerable<Transaction> transactions,
 			IReadOnlyCollection<Account> accounts)
 		{
 			return transactions
@@ -49,7 +49,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 
 					return new TransactionOverview
 					{
-						TransactionModel = transaction,
+						Transaction = transaction,
 						Id = transaction.Id,
 						Date = transaction.Date.LocalDateTime,
 						Description = transaction.Description,

@@ -39,7 +39,7 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
 			var mockClient = new Mock<IGnomeshadeClient>();
 			mockClient
 				.Setup(client => client.GetTransactionsAsync(It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
-				.ReturnsAsync(new List<TransactionModel>
+				.ReturnsAsync(new List<Transaction>
 				{
 					new()
 					{

@@ -57,7 +57,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
 				return;
 			}
 
-			var model = _mapper.Map<TransactionModel>(transaction);
+			var model = _mapper.Map<Transaction>(transaction);
 			ReportResult.TransactionReferences.Add(new() { Transaction = model, Created = created });
 		}
 
