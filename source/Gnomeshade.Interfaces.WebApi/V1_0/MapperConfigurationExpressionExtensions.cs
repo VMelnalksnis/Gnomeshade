@@ -37,7 +37,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 			options.CreateMap<Data.Models.Account, Account>();
 			options.CreateMap<AccountCreationModel, Data.Models.Account>();
 
-			options.CreateMap<Data.Models.AccountInCurrency, AccountInCurrencyModel>();
+			options.CreateMap<Data.Models.AccountInCurrency, AccountInCurrency>();
 			options.CreateMap<AccountInCurrencyCreationModel, Data.Models.AccountInCurrency>();
 
 			options.CreateMap<Data.Models.Counterparty, CounterpartyModel>();

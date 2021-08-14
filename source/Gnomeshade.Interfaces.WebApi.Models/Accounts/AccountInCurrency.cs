@@ -13,7 +13,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 	/// A single currency for a specific account.
 	/// </summary>
 	[PublicAPI]
-	public sealed record AccountInCurrencyModel
+	public sealed record AccountInCurrency
 	{
 		/// <summary>
 		/// The id of the account in currency.

@@ -91,6 +91,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 		/// <summary>
 		/// A collection of currencies available for the account.
 		/// </summary>
-		public List<AccountInCurrencyModel> Currencies { get; init; } = null!;
+		public List<AccountInCurrency> Currencies { get; init; } = null!;
 	}
 }

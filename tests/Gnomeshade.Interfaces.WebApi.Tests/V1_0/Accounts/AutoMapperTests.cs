@@ -78,14 +78,14 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				ModifiedByUserId = Guid.NewGuid(),
 			};
 
-			var accountInCurrencyModel = _mapper.Map<AccountInCurrencyModel>(accountInCurrency);
+			var accountInCurrencyModel = _mapper.Map<AccountInCurrency>(accountInCurrency);
 
 			accountInCurrencyModel
 				.Should()
 				.BeEquivalentTo(
 					accountInCurrency,
 					options => options
-						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrencyModel>(
+						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrency>(
 							inCurrency => inCurrency.CurrencyId,
 							inCurrency => inCurrency.AccountId));
 		}
@@ -142,7 +142,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				.BeEquivalentTo(
 					account.Currencies.Single(),
 					options => options
-						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrencyModel>(
+						.ByMembersExcluding<Data.Models.AccountInCurrency, AccountInCurrency>(
 							inCurrency => inCurrency.CurrencyId,
 							inCurrency => inCurrency.AccountId));
 		}
