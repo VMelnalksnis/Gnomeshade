@@ -56,7 +56,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 		/// <summary>
 		/// The preferred currency of the account.
 		/// </summary>
-		public CurrencyModel PreferredCurrency { get; init; } = null!;
+		public Currency PreferredCurrency { get; init; } = null!;
 
 		/// <summary>
 		/// The point in time when this account was disabled.

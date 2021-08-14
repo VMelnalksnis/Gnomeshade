@@ -166,13 +166,13 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts
 				ActiveUntil = null,
 			};
 
-			var currencyModel = _mapper.Map<CurrencyModel>(currency);
+			var currencyModel = _mapper.Map<Currency>(currency);
 
 			currencyModel
 				.Should()
 				.BeEquivalentTo(
 					currency,
-					options => options.ByMembersExcluding<Data.Models.Currency, CurrencyModel>(c => c.NormalizedName));
+					options => options.ByMembersExcluding<Data.Models.Currency, Currency>(c => c.NormalizedName));
 		}
 	}
 }

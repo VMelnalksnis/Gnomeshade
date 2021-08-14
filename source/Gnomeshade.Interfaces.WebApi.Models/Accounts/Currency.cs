@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	[PublicAPI]
-	public sealed record CurrencyModel
+	public sealed record Currency
 	{
 		/// <summary>
 		/// The id of the currency.

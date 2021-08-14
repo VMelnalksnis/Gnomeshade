@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -29,7 +28,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class CurrencyController : FinanceControllerBase<Currency, CurrencyModel>
+	public sealed class CurrencyController : FinanceControllerBase<Data.Models.Currency, Currency>
 	{
 		private readonly CurrencyRepository _currencyRepository;
 
@@ -45,7 +44,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<CurrencyModel>>> GetCurrencies(CancellationToken cancellationToken)
+		public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies(CancellationToken cancellationToken)
 		{
 			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
 			var models = currencies.Select(currency => MapToModel(currency)).ToList();

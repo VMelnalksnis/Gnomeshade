@@ -132,7 +132,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// Gets all currencies.
 		/// </summary>
 		/// <returns>A collection with all currencies.</returns>
-		Task<List<CurrencyModel>> GetCurrenciesAsync();
+		Task<List<Currency>> GetCurrenciesAsync();
 
 		/// <summary>
 		/// Gets all products.

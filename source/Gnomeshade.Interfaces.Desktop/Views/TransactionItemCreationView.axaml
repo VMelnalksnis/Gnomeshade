@@ -50,7 +50,7 @@
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="ma:CurrencyModel">
+				<DataTemplate x:DataType="ma:Currency">
 					<TextBlock Text="{Binding AlphabeticCode}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -90,7 +90,7 @@
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="ma:CurrencyModel">
+				<DataTemplate x:DataType="ma:Currency">
 					<TextBlock Text="{Binding AlphabeticCode}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>

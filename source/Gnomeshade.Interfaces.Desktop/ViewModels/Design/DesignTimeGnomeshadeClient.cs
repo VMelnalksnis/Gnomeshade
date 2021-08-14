@@ -23,7 +23,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 	/// </summary>
 	public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	{
-		private static readonly List<CurrencyModel> _currencies;
+		private static readonly List<Currency> _currencies;
 		private static readonly List<Account> _accounts;
 		private static readonly List<UnitModel> _units;
 		private static readonly List<ProductModel> _products;
@@ -31,8 +31,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 
 		static DesignTimeGnomeshadeClient()
 		{
-			var euro = new CurrencyModel { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
-			var usd = new CurrencyModel { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
+			var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
+			var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
 			_currencies = new() { euro, usd };
 
 			var cash = new Account
@@ -195,7 +195,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public Task<List<CurrencyModel>> GetCurrenciesAsync()
+		public Task<List<Currency>> GetCurrenciesAsync()
 		{
 			return Task.FromResult(_currencies.ToList());
 		}

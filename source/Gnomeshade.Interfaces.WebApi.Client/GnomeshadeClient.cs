@@ -189,9 +189,9 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<List<CurrencyModel>> GetCurrenciesAsync()
+		public Task<List<Currency>> GetCurrenciesAsync()
 		{
-			return GetAsync<List<CurrencyModel>>(Currency);
+			return GetAsync<List<Currency>>(Routes.Currency);
 		}
 
 		/// <inheritdoc />

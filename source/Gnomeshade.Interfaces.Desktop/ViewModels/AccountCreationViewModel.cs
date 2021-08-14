@@ -20,7 +20,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private readonly IGnomeshadeClient _gnomeshadeClient;
 
 		private string? _name;
-		private CurrencyModel? _preferredCurrency;
+		private Currency? _preferredCurrency;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountCreationViewModel"/> class.
@@ -41,12 +41,12 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public event EventHandler<AccountCreatedEventArgs>? AccountCreated;
 
-		public AutoCompleteSelector<object> CurrencySelector { get; } = (_, item) => ((CurrencyModel)item).Name;
+		public AutoCompleteSelector<object> CurrencySelector { get; } = (_, item) => ((Currency)item).Name;
 
 		/// <summary>
 		/// Gets a collection of available currencies.
 		/// </summary>
-		public Task<List<CurrencyModel>> Currencies { get; }
+		public Task<List<Currency>> Currencies { get; }
 
 		/// <summary>
 		/// Gets or sets the name of the account.
@@ -60,7 +60,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the preferred current of the account.
 		/// </summary>
-		public CurrencyModel? PreferredCurrency
+		public Currency? PreferredCurrency
 		{
 			get => _preferredCurrency;
 			set => SetAndNotifyWithGuard(ref _preferredCurrency, value, nameof(PreferredCurrency), nameof(CanCreate));
@@ -90,7 +90,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			OnAccountCreated(id);
 		}
 
-		private async Task<List<CurrencyModel>> GetCurrenciesAsync()
+		private async Task<List<Currency>> GetCurrenciesAsync()
 		{
 			return await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 		}

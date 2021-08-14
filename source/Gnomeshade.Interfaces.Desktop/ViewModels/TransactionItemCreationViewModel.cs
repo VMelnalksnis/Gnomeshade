@@ -21,10 +21,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private Account? _sourceAccount;
 		private decimal? _sourceAmount;
-		private CurrencyModel? _sourceCurrency;
+		private Currency? _sourceCurrency;
 		private Account? _targetAccount;
 		private decimal? _targetAmount;
-		private CurrencyModel? _targetCurrency;
+		private Currency? _targetCurrency;
 		private ProductModel? _product;
 		private decimal? _amount;
 		private string? _bankReference;
@@ -48,7 +48,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Products = GetProductsAsync();
 
 			AccountSelector = (_, item) => ((Account)item).Name;
-			CurrencySelector = (_, item) => ((CurrencyModel)item).AlphabeticCode;
+			CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
 			ProductSelector = (_, item) => ((ProductModel)item).Name;
 		}
 
@@ -62,7 +62,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all currencies.
 		/// </summary>
-		public Task<List<CurrencyModel>> Currencies { get; }
+		public Task<List<Currency>> Currencies { get; }
 
 		public AutoCompleteSelector<object> CurrencySelector { get; }
 
@@ -105,7 +105,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the currency of <see cref="SourceAmount"/>.
 		/// </summary>
-		public CurrencyModel? SourceCurrency
+		public Currency? SourceCurrency
 		{
 			get => _sourceCurrency;
 			set => SetAndNotifyWithGuard(ref _sourceCurrency, value, nameof(SourceCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
@@ -147,7 +147,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the currency of <see cref="TargetAmount"/>.
 		/// </summary>
-		public CurrencyModel? TargetCurrency
+		public Currency? TargetCurrency
 		{
 			get => _targetCurrency;
 			set => SetAndNotifyWithGuard(ref _targetCurrency, value, nameof(TargetCurrency), nameof(CanCreate), nameof(IsTargetAmountReadOnly));
@@ -204,7 +204,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			return _gnomeshadeClient.GetActiveAccountsAsync();
 		}
 
-		private Task<List<CurrencyModel>> GetCurrenciesAsync()
+		private Task<List<Currency>> GetCurrenciesAsync()
 		{
 			return _gnomeshadeClient.GetCurrenciesAsync();
 		}

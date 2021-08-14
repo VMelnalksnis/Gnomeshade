@@ -84,7 +84,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
 				.Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
 		}
 
-		private async Task<Account> CreateAccountAsync(CurrencyModel currency, Counterparty counterparty)
+		private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
 		{
 			var creationModel = new AccountCreationModel
 			{

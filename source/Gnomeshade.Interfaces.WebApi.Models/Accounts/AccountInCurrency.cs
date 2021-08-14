@@ -48,7 +48,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 		/// <summary>
 		/// The currency of the account in currency.
 		/// </summary>
-		public CurrencyModel Currency { get; init; } = null!;
+		public Currency Currency { get; init; } = null!;
 
 		/// <summary>
 		/// The point in time when this account in currency was disabled.
