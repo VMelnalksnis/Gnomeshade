@@ -201,9 +201,9 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task<List<UnitModel>> GetUnitsAsync()
+		public Task<List<Unit>> GetUnitsAsync()
 		{
-			return GetAsync<List<UnitModel>>(Unit);
+			return GetAsync<List<Unit>>(Routes.Unit);
 		}
 
 		/// <inheritdoc />
@@ -215,7 +215,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// <inheritdoc />
 		public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
 		{
-			return PostAsync<Guid, UnitCreationModel>(Unit, unit);
+			return PostAsync<Guid, UnitCreationModel>(Routes.Unit, unit);
 		}
 
 		/// <inheritdoc />

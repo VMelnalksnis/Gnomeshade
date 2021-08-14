@@ -48,7 +48,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 			options.CreateMap<Data.Models.Product, Product>();
 			options.CreateMap<ProductCreationModel, Data.Models.Product>();
 
-			options.CreateMap<Data.Models.Unit, UnitModel>();
+			options.CreateMap<Data.Models.Unit, Unit>();
 			options.CreateMap<UnitCreationModel, Data.Models.Unit>();
 		}
 	}

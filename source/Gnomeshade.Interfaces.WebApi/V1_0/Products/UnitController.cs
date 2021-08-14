@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Models;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
@@ -30,7 +29,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class UnitController : FinanceControllerBase<Unit, UnitModel>
+	public sealed class UnitController : FinanceControllerBase<Data.Models.Unit, Unit>
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly UnitRepository _repository;
@@ -53,14 +52,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[HttpGet("{id:guid}")]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<UnitModel>> Get(Guid id, CancellationToken cancellationToken)
+		public async Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken)
 		{
 			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<List<UnitModel>>> GetAll(CancellationToken cancellationToken)
+		public async Task<ActionResult<List<Unit>>> GetAll(CancellationToken cancellationToken)
 		{
 			var units = await _repository.GetAllAsync(cancellationToken);
 			var models = units.Select(MapToModel).ToList();
@@ -77,7 +76,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 				return Unauthorized();
 			}
 
-			var unit = Mapper.Map<Unit>(creationModel) with
+			var unit = Mapper.Map<Data.Models.Unit>(creationModel) with
 			{
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,

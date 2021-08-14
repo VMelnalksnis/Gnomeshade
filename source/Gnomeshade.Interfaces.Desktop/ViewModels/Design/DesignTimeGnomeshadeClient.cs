@@ -25,7 +25,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 	{
 		private static readonly List<Currency> _currencies;
 		private static readonly List<Account> _accounts;
-		private static readonly List<UnitModel> _units;
+		private static readonly List<Unit> _units;
 		private static readonly List<Product> _products;
 		private static readonly List<TransactionModel> _transactions;
 
@@ -51,7 +51,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			};
 			_accounts = new() { cash, spending };
 
-			var kilogram = new UnitModel { Id = Guid.NewGuid(), Name = "Kilogram" };
+			var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
 			_units = new() { kilogram };
 
 			var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
@@ -207,7 +207,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
-		public Task<List<UnitModel>> GetUnitsAsync()
+		public Task<List<Unit>> GetUnitsAsync()
 		{
 			return Task.FromResult(_units.ToList());
 		}

@@ -144,7 +144,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		/// Gets all units.
 		/// </summary>
 		/// <returns>A collection with all units.</returns>
-		Task<List<UnitModel>> GetUnitsAsync();
+		Task<List<Unit>> GetUnitsAsync();
 
 		/// <summary>
 		/// Creates a new product or replaces an existing one if one exists with the specified id.

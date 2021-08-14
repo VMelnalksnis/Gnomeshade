@@ -4,7 +4,7 @@
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:products="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.ProductCreationView"
 	x:CompileBindings="True"
@@ -51,7 +51,7 @@
 			Items="{Binding Units^}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="products:UnitModel">
+				<DataTemplate x:DataType="mp:Unit">
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>

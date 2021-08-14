@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
 		private string? _name;
-		private UnitModel? _selectedUnit;
+		private Unit? _selectedUnit;
 		private string? _description;
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			_gnomeshadeClient = gnomeshadeClient;
 
 			Units = GetUnitsAsync();
-			UnitSelector = (_, item) => ((UnitModel)item).Name;
+			UnitSelector = (_, item) => ((Unit)item).Name;
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the unit in which an amount of this product is measured in.
 		/// </summary>
-		public UnitModel? SelectedUnit
+		public Unit? SelectedUnit
 		{
 			get => _selectedUnit;
 			set => SetAndNotify(ref _selectedUnit, value, nameof(SelectedUnit));
@@ -77,7 +77,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all available units.
 		/// </summary>
-		public Task<List<UnitModel>> Units { get; }
+		public Task<List<Unit>> Units { get; }
 
 		public AutoCompleteSelector<object> UnitSelector { get; }
 
@@ -103,7 +103,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			OnProductCreated(productId);
 		}
 
-		private async Task<List<UnitModel>> GetUnitsAsync()
+		private async Task<List<Unit>> GetUnitsAsync()
 		{
 			return await _gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
 		}

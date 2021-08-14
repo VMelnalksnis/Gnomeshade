@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
 		private string? _name;
-		private UnitModel? _parentUnit;
+		private Unit? _parentUnit;
 		private decimal? _multiplier;
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			_gnomeshadeClient = gnomeshadeClient;
 
 			Units = GetUnitsAsync();
-			UnitSelector = (_, item) => ((UnitModel)item).Name;
+			UnitSelector = (_, item) => ((Unit)item).Name;
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets or sets the unit on which this unit is based on.
 		/// </summary>
-		public UnitModel? ParentUnit
+		public Unit? ParentUnit
 		{
 			get => _parentUnit;
 			set => SetAndNotifyWithGuard(ref _parentUnit, value, nameof(ParentUnit), nameof(CanCreate));
@@ -68,7 +68,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all available units.
 		/// </summary>
-		public Task<List<UnitModel>> Units { get; }
+		public Task<List<Unit>> Units { get; }
 
 		public AutoCompleteSelector<object> UnitSelector { get; }
 
@@ -105,7 +105,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			OnUnitCreated(unitId);
 		}
 
-		private async Task<List<UnitModel>> GetUnitsAsync()
+		private async Task<List<Unit>> GetUnitsAsync()
 		{
 			return await _gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
 		}
