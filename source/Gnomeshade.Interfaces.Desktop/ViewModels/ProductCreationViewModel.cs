@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
@@ -20,17 +21,31 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	/// </summary>
 	public sealed class ProductCreationViewModel : ViewModelBase<ProductCreationView>
 	{
-		private readonly IGnomeshadeClient _gnomeshadeClient;
+		private readonly IProductClient _productClient;
+		private readonly Product? _exisingProduct;
+
 		private string? _name;
 		private Unit? _selectedUnit;
 		private string? _description;
 
-		private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+		private ProductCreationViewModel(IProductClient productClient, List<Unit> units)
 		{
-			_gnomeshadeClient = gnomeshadeClient;
+			_productClient = productClient;
 			Units = units;
 
 			UnitSelector = (_, item) => ((Unit)item).Name;
+		}
+
+		private ProductCreationViewModel(IProductClient productClient, List<Unit> units, Product product)
+			: this(productClient, units)
+		{
+			_exisingProduct = product;
+
+			Name = _exisingProduct.Name;
+			Description = _exisingProduct.Description;
+			SelectedUnit = _exisingProduct.UnitId is null
+				? null
+				: Units.Single(unit => unit.Id == _exisingProduct.UnitId.Value);
 		}
 
 		/// <summary>
@@ -44,7 +59,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public string? Name
 		{
 			get => _name;
-			set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanCreate));
+			set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
 		}
 
 		/// <summary>
@@ -70,38 +85,51 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public List<Unit> Units { get; }
 
+		/// <summary>
+		/// Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.
+		/// </summary>
 		public AutoCompleteSelector<object> UnitSelector { get; }
 
 		/// <summary>
 		/// Gets a value indicating whether a product can be created from currently provided values.
 		/// </summary>
-		public bool CanCreate => !string.IsNullOrWhiteSpace(Name);
+		public bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProductCreationViewModel"/> class.
 		/// </summary>
-		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+		/// <param name="productClient">Gnomeshade API client.</param>
+		/// <param name="productId">The id of the product to edit.</param>
 		/// <returns>A new instance of the <see cref="ProductCreationViewModel"/> class.</returns>
-		public static async Task<ProductCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+		public static async Task<ProductCreationViewModel> CreateAsync(
+			IProductClient productClient,
+			Guid? productId = null)
 		{
-			var units = await gnomeshadeClient.GetUnitsAsync();
-			return new(gnomeshadeClient, units);
+			var units = await productClient.GetUnitsAsync();
+			if (productId is null)
+			{
+				return new(productClient, units);
+			}
+
+			var product = await productClient.GetProductAsync(productId.Value);
+			return new(productClient, units, product);
 		}
 
 		/// <summary>
 		/// Creates a new product from the provided values.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateProductAsync()
+		public async Task SaveAsync()
 		{
 			var creationModel = new ProductCreationModel
 			{
+				Id = _exisingProduct?.Id,
 				Name = Name,
 				Description = Description,
 				UnitId = SelectedUnit?.Id,
 			};
 
-			var productId = await _gnomeshadeClient.PutProductAsync(creationModel).ConfigureAwait(false);
+			var productId = await _productClient.PutProductAsync(creationModel).ConfigureAwait(false);
 			OnProductCreated(productId);
 		}
 

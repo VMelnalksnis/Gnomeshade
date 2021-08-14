@@ -80,14 +80,14 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ActiveView = transactionCreationViewModel;
 		}
 
-		public async Task CreateProductAsync()
+		public async Task CreateProductAsync(Guid? productId = null)
 		{
 			if (ActiveView is ProductCreationViewModel)
 			{
 				return;
 			}
 
-			var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient);
+			var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, productId);
 			productCreationViewModel.ProductCreated += OnProductCreated;
 
 			ActiveView = productCreationViewModel;
@@ -132,6 +132,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			}
 
 			var importViewModel = new ImportViewModel(_gnomeshadeClient);
+			importViewModel.ProductSelected += OnProductSelected;
 			ActiveView = importViewModel;
 		}
 
@@ -185,6 +186,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
 		{
 			SwitchToTransactionDetailAsync(e.TransactionId).Wait();
+		}
+
+		private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
+		{
+			CreateProductAsync(e.ProductId).Wait();
 		}
 	}
 }

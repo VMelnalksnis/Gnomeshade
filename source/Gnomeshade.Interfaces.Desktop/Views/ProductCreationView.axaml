@@ -60,9 +60,9 @@
 			Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-			IsEnabled="{Binding CanCreate}"
-			Command="{ReflectionBinding CreateProductAsync}">
-			Create
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save
 		</Button>
 	</Grid>
 </UserControl>

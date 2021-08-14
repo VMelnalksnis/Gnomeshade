@@ -12,6 +12,7 @@ using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -42,6 +43,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			PropertyChanged += OnPropertyChanged;
 		}
+
+		/// <summary>
+		/// Raised when a product is selected for editing.
+		/// </summary>
+		public event EventHandler<ProductSelectedEventArgs>? ProductSelected;
 
 		/// <summary>
 		/// Gets or sets the local path of the report file to import.

@@ -26,5 +26,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Products
 		public string Name { get; init; }
 
 		public string? Description { get; init; }
+
+		public Guid? UnitId { get; init; }
 	}
 }
