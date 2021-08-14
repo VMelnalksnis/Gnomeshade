@@ -63,7 +63,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 
 		[LinqTunnel]
 		[Pure]
-		public static IEnumerable<TransactionItemOverviewRow> Translate(this IEnumerable<TransactionItemModel> items)
+		public static IEnumerable<TransactionItemOverviewRow> Translate(this IEnumerable<WebApi.Models.Transactions.TransactionItem> items)
 		{
 			return items
 				.Select(item => new TransactionItemOverviewRow

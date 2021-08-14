@@ -34,6 +34,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 
 		public bool Validated => ValidatedAt.HasValue;
 
-		public List<TransactionItemModel> Items { get; init; }
+		public List<TransactionItem> Items { get; init; }
 	}
 }

@@ -32,7 +32,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 			options.CreateMap<Data.Models.Transaction, TransactionModel>();
 
 			options.CreateMap<TransactionItemCreationModel, Data.Models.TransactionItem>();
-			options.CreateMap<Data.Models.TransactionItem, TransactionItemModel>();
+			options.CreateMap<Data.Models.TransactionItem, TransactionItem>();
 
 			options.CreateMap<Data.Models.Account, Account>();
 			options.CreateMap<AccountCreationModel, Data.Models.Account>();

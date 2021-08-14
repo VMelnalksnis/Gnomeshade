@@ -70,7 +70,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
 			var unchangedTransaction = await _client.GetTransactionAsync(transactionId);
 			var unchangedItem = unchangedTransaction.Items.Should().ContainSingle().Subject;
 
-			unchangedItem.Should().BeEquivalentTo(createdItem, options => options.ComparingByMembers<TransactionItemModel>().Excluding(item => item.ModifiedAt));
+			unchangedItem.Should().BeEquivalentTo(createdItem, options => options.ComparingByMembers<TransactionItem>().Excluding(item => item.ModifiedAt));
 			unchangedItem.ModifiedAt.Should().BeAfter(createdItem.ModifiedAt);
 
 			_ = await _client.PutTransactionItemAsync(transactionId, itemCreationModel);

@@ -122,7 +122,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 				}
 			}
 
-			var itemModel = new TransactionItemModel
+			var itemModel = new TransactionItem
 			{
 				Id = Guid.NewGuid(),
 				TransactionId = transactionWithItem.Id,

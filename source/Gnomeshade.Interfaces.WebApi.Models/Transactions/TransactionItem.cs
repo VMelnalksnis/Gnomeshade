@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 {
 	[PublicAPI]
-	public sealed record TransactionItemModel
+	public sealed record TransactionItem
 	{
 		public Guid Id { get; init; }
 
