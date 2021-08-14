@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
 	/// <summary>
-	/// The information needed in order to create a new account.
+	/// The information needed to create a new account.
 	/// </summary>
 	[PublicAPI]
 	public sealed record AccountCreationModel

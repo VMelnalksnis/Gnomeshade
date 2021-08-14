@@ -9,6 +9,10 @@ using JetBrains.Annotations;
 #pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
+	/// <summary>
+	/// A currency used in transactions.
+	/// </summary>
+	/// <seealso href="https://en.wikipedia.org/wiki/ISO_4217"/>
 	[PublicAPI]
 	public sealed record Currency
 	{

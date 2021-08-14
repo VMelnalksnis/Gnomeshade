@@ -17,7 +17,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 	public sealed record AccountInCurrencyCreationModel
 	{
 		/// <summary>
-		/// The currency to add to an account.
+		/// The id of the currency to add to an account.
 		/// </summary>
 		[Required]
 		public Guid? CurrencyId { get; init; }

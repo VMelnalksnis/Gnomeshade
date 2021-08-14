@@ -63,9 +63,10 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 			options.OperationFilter<InternalServerErrorOperationFilter>();
 			options.OperationFilter<UnauthorizedOperationFilter>();
 
-			var xmlDocumentationFilepath =
-				Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.xml");
+			var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.xml");
 			options.IncludeXmlComments(xmlDocumentationFilepath, true);
+			var modelDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.Models.xml");
+			options.IncludeXmlComments(modelDocumentationFilepath, true);
 			options.EnableAnnotations();
 
 			const string jwtSecurityDefinition = "JWT";

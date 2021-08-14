@@ -8,6 +8,9 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
 {
+	/// <summary>
+	/// The information needed to register a new user.
+	/// </summary>
 	[PublicAPI]
 	public sealed record RegistrationModel
 	{

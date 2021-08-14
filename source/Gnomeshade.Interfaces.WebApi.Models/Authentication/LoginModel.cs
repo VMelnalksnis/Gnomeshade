@@ -6,15 +6,25 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
 {
+	/// <summary>
+	/// The information needed to log in.
+	/// </summary>
 	[PublicAPI]
 	public sealed record LoginModel
 	{
+		/// <summary>
+		/// The username to log in with. Required.
+		/// </summary>
 		[Required(AllowEmptyStrings = false)]
-		public string Username { get; init; }
+		public string? Username { get; init; }
 
+		/// <summary>
+		/// The password to log in with. Required.
+		/// </summary>
 		[Required(AllowEmptyStrings = false)]
-		public string Password { get; init; }
+		public string? Password { get; init; }
 	}
 }

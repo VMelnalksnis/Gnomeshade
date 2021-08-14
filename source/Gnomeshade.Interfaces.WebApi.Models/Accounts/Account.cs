@@ -10,6 +10,9 @@ using JetBrains.Annotations;
 #pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
 {
+	/// <summary>
+	/// An account in one or multiple currencies, which belongs to a counterparty.
+	/// </summary>
 	[PublicAPI]
 	public sealed record Account
 	{
