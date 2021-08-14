@@ -7,12 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
-using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
-using Gnomeshade.Interfaces.WebApi.V1_0.Products;
-using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
-
 namespace Gnomeshade.Interfaces.WebApi.Client
 {
 	/// <summary>
@@ -20,16 +14,16 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 	/// </summary>
 	public static class Routes
 	{
-		internal static readonly string Authentication = typeof(AuthenticationController).GetControllerName();
-		internal static readonly string Account = typeof(AccountController).GetControllerName();
-		internal static readonly string Currency = typeof(CurrencyController).GetControllerName();
-		internal static readonly string Iso20022 = typeof(Iso20022Controller).GetControllerName();
-		internal static readonly string Product = typeof(ProductController).GetControllerName();
-		internal static readonly string Transaction = typeof(TransactionController).GetControllerName();
-		internal static readonly string Unit = typeof(UnitController).GetControllerName();
+		internal static readonly string Authentication = nameof(Authentication);
+		internal static readonly string Account = nameof(Account);
+		internal static readonly string Currency = nameof(Currency);
+		internal static readonly string Iso20022 = "Iso";
+		internal static readonly string Product = nameof(Product);
+		internal static readonly string Transaction = nameof(Transaction);
+		internal static readonly string Unit = nameof(Unit);
 
-		internal static readonly string LoginUri = $"{Authentication}/{nameof(AuthenticationController.Login)}";
-		internal static readonly string InfoUri = $"{Authentication}/{nameof(AuthenticationController.Info)}";
+		internal static readonly string LoginUri = $"{Authentication}/Login";
+		internal static readonly string InfoUri = $"{Authentication}/Info";
 
 		/// <summary>
 		/// Gets the relative uri for the specified account.

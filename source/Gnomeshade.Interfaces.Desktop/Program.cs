@@ -7,6 +7,7 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Logging;
 
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 using JetBrains.Annotations;
