@@ -170,17 +170,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
 		{
-			SwitchToTransactionOverviewAsync().Wait();
+			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
 
 		private void OnUserLoggedIn(object? sender, EventArgs e)
 		{
-			SwitchToTransactionOverviewAsync().Wait();
+			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
 
 		private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
 		{
-			SwitchToTransactionOverviewAsync().Wait();
+			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
 
 		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
@@ -192,23 +192,23 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			}
 			else
 			{
-				SwitchToTransactionOverviewAsync().Wait();
+				Task.Run(SwitchToTransactionOverviewAsync).Wait();
 			}
 		}
 
 		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
 		{
-			SwitchToTransactionOverviewAsync().Wait();
+			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
 
 		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
 		{
-			SwitchToTransactionDetailAsync(e.TransactionId).Wait();
+			Task.Run(() => SwitchToTransactionDetailAsync(e.TransactionId)).Wait();
 		}
 
 		private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
 		{
-			CreateProductAsync(e.ProductId).Wait();
+			Task.Run(() => CreateProductAsync(e.ProductId)).Wait();
 		}
 	}
 }
