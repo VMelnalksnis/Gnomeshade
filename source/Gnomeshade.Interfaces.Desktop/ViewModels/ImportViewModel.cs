@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
+using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
@@ -29,6 +30,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private string? _userAccount;
 		private DataGridItemCollectionView<AccountOverviewRow>? _accounts;
 		private DataGridItemCollectionView<ProductOverviewRow>? _products;
+		private ProductOverviewRow? _selectedProduct;
 		private DataGridItemCollectionView<TransactionOverview>? _transactions;
 		private TransactionOverview? _selectedTransaction;
 		private DataGridItemCollectionView<TransactionItemOverviewRow>? _items;
@@ -101,6 +103,15 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
+		/// Gets or sets the selected product from <see cref="Products"/>.
+		/// </summary>
+		public ProductOverviewRow? SelectedProduct
+		{
+			get => _selectedProduct;
+			set => SetAndNotify(ref _selectedProduct, value, nameof(SelectedProduct));
+		}
+
+		/// <summary>
 		/// Gets a grid view of all transaction in the imported report.
 		/// </summary>
 		public DataGridCollectionView? TransactionGridView => Transactions ?? default(DataGridCollectionView);
@@ -167,6 +178,19 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			var products = result.ProductReferences.Select(reference => reference.Product);
 			var productsRows = products.Translate().ToList();
 			Products = new(productsRows);
+		}
+
+		/// <summary>
+		/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ProductGridView"/>.
+		/// </summary>
+		public void OnProductDataGridDoubleTapped()
+		{
+			if (SelectedProduct is null || ProductSelected is null)
+			{
+				return;
+			}
+
+			ProductSelected(this, new(SelectedProduct.Id));
 		}
 
 		private void OnPropertyChanged(object? sender, PropertyChangedEventArgs args)

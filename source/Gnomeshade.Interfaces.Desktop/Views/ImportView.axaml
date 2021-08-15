@@ -1,6 +1,8 @@
 ﻿<UserControl
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:i="using:Avalonia.Xaml.Interactivity"
+	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
 	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
 	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -74,8 +76,10 @@
 
 		<Expander Grid.Column="1" Grid.Row="2" IsExpanded="True" Header="Product">
 			<DataGrid
+				x:Name="ProductDataGrid"
 				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 				Items="{Binding ProductGridView, Mode=TwoWay}"
+				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
 				AutoGenerateColumns="False" IsReadOnly="False"
 				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
@@ -84,6 +88,12 @@
 						Header="Name" IsReadOnly="True"
 						Binding="{Binding Name, Mode=OneWay}" />
 				</DataGrid.Columns>
+
+				<i:Interaction.Behaviors>
+					<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #ProductDataGrid}">
+						<ia:InvokeCommandAction Command="{ReflectionBinding OnProductDataGridDoubleTapped}" />
+					</ia:EventTriggerBehavior>
+				</i:Interaction.Behaviors>
 
 				<DataGrid.Styles>
 					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">

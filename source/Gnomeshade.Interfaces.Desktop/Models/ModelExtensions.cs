@@ -84,6 +84,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 			return products
 				.Select(product => new ProductOverviewRow
 				{
+					Id = product.Id,
 					Name = product.Name,
 				});
 		}

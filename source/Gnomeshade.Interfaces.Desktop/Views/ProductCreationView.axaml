@@ -40,7 +40,7 @@
 			Grid.Column="0" Grid.Row="2"
 			Padding="10 0"
 			VerticalAlignment="Center"
-			Text="Preferred Currency: " />
+			Text="Unit: " />
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="2"
 			MinWidth="300" Margin="5"
@@ -49,6 +49,7 @@
 			ItemSelector="{Binding UnitSelector}"
 			Items="{Binding Units}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
+
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="mp:Unit">
 					<TextBlock Text="{Binding Name}" />

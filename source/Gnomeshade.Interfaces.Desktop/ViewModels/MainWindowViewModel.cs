@@ -36,8 +36,18 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public ViewModelBase ActiveView
 		{
 			get => _activeView;
-			set => SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
+			set
+			{
+				if (ActiveView is not LoginViewModel)
+				{
+					PreviousView = ActiveView;
+				}
+
+				SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
+			}
 		}
+
+		private ViewModelBase? PreviousView { get; set; }
 
 		/// <summary>
 		/// Safely stops the application.
@@ -175,7 +185,15 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
 		{
-			SwitchToTransactionOverviewAsync().Wait();
+			if (PreviousView is ImportViewModel importViewModel)
+			{
+				// todo update modified/add created product
+				ActiveView = importViewModel;
+			}
+			else
+			{
+				SwitchToTransactionOverviewAsync().Wait();
+			}
 		}
 
 		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
