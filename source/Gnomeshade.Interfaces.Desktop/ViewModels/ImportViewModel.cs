@@ -181,6 +181,41 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
+		/// Gets the latest version of referenced accounts, products and transactions.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task RefreshAsync()
+		{
+			// todo do not get all accounts
+			var accounts = await _gnomeshadeClient.GetAccountsAsync();
+			if (Accounts is not null)
+			{
+				var usedAccounts = accounts.Where(account => Accounts.Any(row => row.Name == account.Name));
+				var accountRows = usedAccounts.Translate().ToList();
+				Accounts = new(accountRows);
+			}
+
+			if (Transactions is not null)
+			{
+				// todo do not get all transactions
+				var transactions = await _gnomeshadeClient.GetTransactionsAsync(null, null);
+				var usedTransactions = transactions
+					.Where(transaction => Transactions.Any(row => row.Transaction.Id == transaction.Id));
+				var transactionRows = usedTransactions.Translate(accounts).ToList();
+				Transactions = new(transactionRows);
+			}
+
+			if (Products is not null)
+			{
+				// todo do not get all products
+				var products = await _gnomeshadeClient.GetProductsAsync();
+				var usedProducts = products.Where(product => Products.Any(row => row.Id == product.Id));
+				var productRows = usedProducts.Translate().ToList();
+				Products = new(productRows);
+			}
+		}
+
+		/// <summary>
 		/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ProductGridView"/>.
 		/// </summary>
 		public void OnProductDataGridDoubleTapped()

@@ -187,7 +187,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		{
 			if (PreviousView is ImportViewModel importViewModel)
 			{
-				// todo update modified/add created product
+				Task.Run(() => importViewModel.RefreshAsync()).Wait();
 				ActiveView = importViewModel;
 			}
 			else
