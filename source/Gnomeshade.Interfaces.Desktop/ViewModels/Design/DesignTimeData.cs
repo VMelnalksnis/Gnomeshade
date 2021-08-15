@@ -3,6 +3,12 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Reflection;
+
+using Avalonia.Xaml.Interactions.Core;
+using Avalonia.Xaml.Interactivity;
+
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 {
@@ -72,5 +78,18 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		/// </summary>
 		public static UnitCreationViewModel UnitCreationViewModel { get; } =
 			UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+
+		/// <summary>
+		/// Forces the loading of assemblies that are needed during design time, but are not automatically included.
+		/// </summary>
+		/// <remarks>
+		/// Assemblies that are not directly referenced are not loaded at design time, but are at compile time.
+		/// </remarks>
+		public static void ForceAssembliesToLoad()
+		{
+			typeof(Product).GetTypeInfo();
+			typeof(Interaction).GetTypeInfo();
+			typeof(EventTriggerBehavior).GetTypeInfo();
+		}
 	}
 }

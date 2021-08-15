@@ -2,12 +2,10 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Reflection;
-
 using Avalonia;
 using Avalonia.Logging;
 
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 
 using JetBrains.Annotations;
 
@@ -26,8 +24,7 @@ namespace Gnomeshade.Interfaces.Desktop
 		[UsedImplicitly]
 		public static AppBuilder BuildAvaloniaApp()
 		{
-			// Force assembly to be loaded
-			typeof(Product).GetTypeInfo();
+			DesignTimeData.ForceAssembliesToLoad();
 
 			return
 				AppBuilder
