@@ -42,6 +42,9 @@ namespace Gnomeshade.Data.Entities
 		/// </summary>
 		public string? Description { get; set; }
 
+		/// <summary>
+		/// Gets or sets the id of the <see cref="UnitEntity"/> for amounts of this product.
+		/// </summary>
 		public Guid? UnitId { get; set; }
 	}
 }

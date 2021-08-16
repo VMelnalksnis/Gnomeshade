@@ -103,7 +103,8 @@ namespace Gnomeshade.Data.Tests.Integration
 			};
 
 			var counterpartyId = await new CounterpartyRepository(sqlConnection).AddAsync(counterparty, transaction);
-			await userRepository.AddCounterparty(userId, counterpartyId, transaction);
+			TestUser.CounterpartyId = counterpartyId;
+			await userRepository.UpdateAsync(TestUser, transaction);
 
 			await transaction.CommitAsync().ConfigureAwait(false);
 		}

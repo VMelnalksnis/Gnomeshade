@@ -72,7 +72,8 @@ namespace Gnomeshade.Data
 					NormalizedName = fullName.ToUpperInvariant(),
 				};
 				var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
-				_ = await _userRepository.AddCounterparty(userId, counterpartyId, dbTransaction);
+				user.CounterpartyId = counterpartyId;
+				_ = await _userRepository.UpdateAsync(user, dbTransaction);
 
 				dbTransaction.Commit();
 			}

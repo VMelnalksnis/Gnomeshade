@@ -8,6 +8,9 @@ using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Entities
 {
+	/// <summary>
+	/// A user within the context of this application.
+	/// </summary>
 	public sealed record UserEntity : IModifiableEntity
 	{
 		/// <inheritdoc/>

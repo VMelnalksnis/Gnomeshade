@@ -26,45 +26,45 @@ namespace Gnomeshade.Data.Entities
 		public string NormalizedName { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the ISO 4217 three-digit numeric code.
+		/// Gets the ISO 4217 three-digit numeric code.
 		/// </summary>
-		public short NumericCode { get; set; }
+		public short NumericCode { get; init; }
 
 		/// <summary>
-		/// Gets or sets the ISO 4217 three-character alphabetic code.
+		/// Gets the ISO 4217 three-character alphabetic code.
 		/// </summary>
-		public string AlphabeticCode { get; set; } = string.Empty;
+		public string AlphabeticCode { get; init; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the base 10 ratio of the minor unit to the currency.
+		/// Gets the base 10 ratio of the minor unit to the currency.
 		/// <c>0</c> means there is no minor unit and <c>2</c> means 100 minor units equal 1 unit of the currency,
 		/// for example cents in USD and EUR.
 		/// </summary>
-		public byte MinorUnit { get; set; }
+		public byte MinorUnit { get; init; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether or not the currency is officially recognized in ISO 4217.
+		/// Gets a value indicating whether or not the currency is officially recognized in ISO 4217.
 		/// </summary>
-		public bool Official { get; set; }
+		public bool Official { get; init; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether or not the currency is a cryptocurrency.
+		/// Gets a value indicating whether or not the currency is a cryptocurrency.
 		/// </summary>
-		public bool Crypto { get; set; }
+		public bool Crypto { get; init; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether or not the currency is no longer active.
+		/// Gets a value indicating whether or not the currency is no longer active.
 		/// </summary>
-		public bool Historical { get; set; }
+		public bool Historical { get; init; }
 
 		/// <summary>
-		/// Gets or sets the date from which the currency has been active.
+		/// Gets the date from which the currency has been active.
 		/// </summary>
-		public DateTimeOffset? ActiveFrom { get; set; }
+		public DateTimeOffset? ActiveFrom { get; init; }
 
 		/// <summary>
-		/// Gets or sets the date until which the currency has been/will be active.
+		/// Gets the date until which the currency has been/will be active.
 		/// </summary>
-		public DateTimeOffset? ActiveUntil { get; set; }
+		public DateTimeOffset? ActiveUntil { get; init; }
 	}
 }
