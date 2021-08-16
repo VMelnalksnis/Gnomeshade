@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Data.Repositories;
-using Gnomeshade.Data.TestingHelpers;
+using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using NUnit.Framework;
 

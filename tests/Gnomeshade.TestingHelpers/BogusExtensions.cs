@@ -7,7 +7,7 @@ using System.Text;
 
 using Bogus.DataSets;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
+namespace Gnomeshade.TestingHelpers
 {
 	public static class BogusExtensions
 	{

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
-using Gnomeshade.Data.TestingHelpers;
+using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 

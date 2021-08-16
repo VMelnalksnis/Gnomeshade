@@ -15,8 +15,8 @@ using FluentAssertions.Equivalency;
 using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
-using Gnomeshade.Data.TestingHelpers;
 using Gnomeshade.Data.Tests.Integration.Repositories;
+using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using NUnit.Framework;
 

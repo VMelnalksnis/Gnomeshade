@@ -11,6 +11,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Configuration;
+using Gnomeshade.Interfaces.WebApi.Logging;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
@@ -23,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Npgsql;
+using Npgsql.Logging;
 
 using Serilog;
 
@@ -40,6 +42,9 @@ namespace Gnomeshade.Interfaces.WebApi
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+
+			NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
+			NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
 			using var database = new ApplicationDbContext(Configuration);
 			database.Database.EnsureCreated();

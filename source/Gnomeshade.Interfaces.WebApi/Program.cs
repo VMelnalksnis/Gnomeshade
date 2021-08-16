@@ -4,14 +4,10 @@
 
 using System;
 
-using Gnomeshade.Interfaces.WebApi.Logging;
-
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-
-using Npgsql.Logging;
 
 using Serilog;
 
@@ -29,10 +25,6 @@ namespace Gnomeshade.Interfaces.WebApi
 			try
 			{
 				Log.Information("Starting web host");
-
-				// todo should this really be here? Doesn't work if it's in Startup constructor though
-				NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
-				NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
 				var webHost = CreateWebHostBuilder(args).Build();
 				Log.Debug("Created web host");

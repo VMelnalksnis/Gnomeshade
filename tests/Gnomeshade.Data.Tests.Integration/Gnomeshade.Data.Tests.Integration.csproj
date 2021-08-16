@@ -36,8 +36,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\source\Gnomeshade.Data.TestingHelpers\Gnomeshade.Data.TestingHelpers.csproj"/>
         <ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+        <ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

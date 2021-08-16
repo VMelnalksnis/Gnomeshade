@@ -6,7 +6,7 @@ using System;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.Data.TestingHelpers
+namespace Gnomeshade.TestingHelpers.Data.Fakers
 {
 	public sealed class TransactionFaker : ModifiableEntityFaker<TransactionEntity>
 	{

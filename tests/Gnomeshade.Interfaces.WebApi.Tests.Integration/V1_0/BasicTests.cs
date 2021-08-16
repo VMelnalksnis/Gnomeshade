@@ -18,7 +18,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0
 {
 	public class BasicTests
 	{
@@ -33,7 +33,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		[Test]
 		public async Task Get_ShouldReturnUnauthorized()
 		{
-			var client = WebserverSetup.WebApplicationFactory.CreateClient();
+			var client = WebserverSetup.CreateHttpClient();
 
 			var response = await client.GetAsync("/api/v1.0/transaction");
 

@@ -11,6 +11,8 @@
         <RepositoryType>git</RepositoryType>
 
         <IsPackable>false</IsPackable>
+
+        <UserSecretsId>a8ee8b2c-5151-45b6-ad24-3a3768fb80a5</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -35,7 +37,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
         <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi\Gnomeshade.Interfaces.WebApi.csproj"/>
-        <ProjectReference Include="..\Gnomeshade.Data.Tests.Integration\Gnomeshade.Data.Tests.Integration.csproj"/>
+        <ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
