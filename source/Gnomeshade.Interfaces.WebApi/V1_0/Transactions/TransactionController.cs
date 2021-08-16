@@ -16,6 +16,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using Microsoft.AspNetCore.Identity;
@@ -39,6 +40,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
+		private readonly ProductRepository _productRepository;
 		private readonly ILogger<TransactionController> _logger;
 		private readonly TransactionUnitOfWork _unitOfWork;
 
@@ -50,6 +52,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <param name="dbConnection">Database connection for creating <see cref="IDbTransaction"/> for creating entities.</param>
 		/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
 		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItemEntity"/>.</param>
+		/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
 		/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
@@ -59,6 +62,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			IDbConnection dbConnection,
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
+			ProductRepository productRepository,
 			Mapper mapper,
 			ILogger<TransactionController> logger,
 			TransactionUnitOfWork unitOfWork)
@@ -67,6 +71,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
+			_productRepository = productRepository;
 			_logger = logger;
 			_unitOfWork = unitOfWork;
 		}
@@ -170,13 +175,18 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[HttpGet("Item/{id:guid}")]
 		public async Task<ActionResult<TransactionItem>> GetItem(Guid id, CancellationToken cancellation)
 		{
-			var item = await _itemRepository.FindByIdAsync(id, cancellation);
-			if (item is null)
+			var itemEntity = await _itemRepository.FindByIdAsync(id, cancellation);
+			if (itemEntity is null)
 			{
 				return NotFound();
 			}
 
-			return Mapper.Map<TransactionItem>(item);
+			// todo this is already done with one query when getting transaction with all items
+			var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, cancellation);
+			var product = Mapper.Map<Product>(productEntity);
+			var item = Mapper.Map<TransactionItem>(itemEntity) with { Product = product };
+
+			return Ok(item);
 		}
 
 		/// <summary>

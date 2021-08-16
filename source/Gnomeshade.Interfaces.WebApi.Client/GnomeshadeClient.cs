@@ -113,8 +113,12 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			GetAsync<Transaction>(TransactionIdUri(id));
 
 		/// <inheritdoc />
+		public Task<TransactionItem> GetTransactionItemAsync(Guid id) =>
+			GetAsync<TransactionItem>(TransactionItemIdUri(id));
+
+		/// <inheritdoc />
 		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
-			GetAsync<List<Transaction>>(TransactionDateRangeUri(@from, to));
+			GetAsync<List<Transaction>>(TransactionDateRangeUri(from, to));
 
 		/// <inheritdoc />
 		public Task DeleteTransactionAsync(Guid id) =>

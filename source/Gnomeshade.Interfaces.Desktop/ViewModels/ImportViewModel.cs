@@ -34,6 +34,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private DataGridItemCollectionView<TransactionOverview>? _transactions;
 		private TransactionOverview? _selectedTransaction;
 		private DataGridItemCollectionView<TransactionItemOverviewRow>? _items;
+		private TransactionItemOverviewRow? _selectedItem;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImportViewModel"/> class.
@@ -50,6 +51,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Raised when a product is selected for editing.
 		/// </summary>
 		public event EventHandler<ProductSelectedEventArgs>? ProductSelected;
+
+		/// <summary>
+		/// Raised when a transaction item is selected for editing.
+		/// </summary>
+		public event EventHandler<TransactionItemSelectedEventArgs>? TransactionItemSelected;
 
 		/// <summary>
 		/// Gets or sets the local path of the report file to import.
@@ -149,6 +155,15 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
+		/// Gets or sets the selected transaction item from <see cref="Items"/>.
+		/// </summary>
+		public TransactionItemOverviewRow? SelectedItem
+		{
+			get => _selectedItem;
+			set => SetAndNotify(ref _selectedItem, value, nameof(SelectedItem));
+		}
+
+		/// <summary>
 		/// Imports the located at <see cref="FilePath"/>.
 		/// </summary>
 		/// <exception cref="InvalidOperationException"><see cref="FilePath"/> is null or whitespace.</exception>
@@ -198,7 +213,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			if (Transactions is not null)
 			{
 				// todo do not get all transactions
-				var transactions = await _gnomeshadeClient.GetTransactionsAsync(null, null);
+				var transactions = await _gnomeshadeClient.GetTransactionsAsync(DateTimeOffset.UnixEpoch, DateTimeOffset.Now);
 				var usedTransactions = transactions
 					.Where(transaction => Transactions.Any(row => row.Transaction.Id == transaction.Id));
 				var transactionRows = usedTransactions.Translate(accounts).ToList();
@@ -226,6 +241,19 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			}
 
 			ProductSelected(this, new(SelectedProduct.Id));
+		}
+
+		/// <summary>
+		/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ItemGridView"/>.
+		/// </summary>
+		public void OnItemDataGridDoubleTapped()
+		{
+			if (SelectedItem is null || TransactionItemSelected is null)
+			{
+				return;
+			}
+
+			TransactionItemSelected(this, new(SelectedItem.Id));
 		}
 
 		private void OnPropertyChanged(object? sender, PropertyChangedEventArgs args)

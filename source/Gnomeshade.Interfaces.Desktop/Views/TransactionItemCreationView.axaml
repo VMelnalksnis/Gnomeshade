@@ -13,7 +13,7 @@
 	x:CompileBindings="True"
 	x:DataType="vm:TransactionItemCreationViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<!--Source-->
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
@@ -151,5 +151,12 @@
 			Grid.Column="1" Grid.Row="5"
 			MinWidth="300"
 			Text="{Binding InternalReference}" />
+
+		<Button
+			Grid.Column="0" Grid.Row="6"
+			IsVisible="{Binding CanUpdate}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
 	</Grid>
 </UserControl>

@@ -24,12 +24,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client.Tests
 			Routes.TransactionDateRangeUri(from, to).Should().Be(expectedUri);
 		}
 
-		[Test]
-		public void UrlEncodeDateTimeOffset_ShouldNotContainPlus()
+		[TestCase(3, TestName = "Positive offset contains '+'")]
+		[TestCase(0, TestName = "Zero offset contains '+'")]
+		public void UrlEncodeDateTimeOffset_ShouldNotContainPlus(int offsetHours)
 		{
-			var date = new DateTimeOffset(2021, 05, 30, 19, 54, 00, TimeSpan.FromHours(3));
+			var date = new DateTimeOffset(2021, 05, 30, 19, 54, 00, TimeSpan.FromHours(offsetHours));
 			var encoded = Routes.UrlEncodeDateTimeOffset(date);
-			encoded.Should().Be("2021-05-30T19:54:00.0000000%2B03:00");
+			encoded.Should().Be($"2021-05-30T19:54:00.0000000%2B{offsetHours:00}:00");
 		}
 	}
 }

@@ -104,7 +104,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
 		{
 			var value = date.ToString("O", CultureInfo.InvariantCulture);
-			return date.Offset <= TimeSpan.Zero
+			return date.Offset < TimeSpan.Zero
 				? value
 				: value.Replace("+", "%2B");
 		}

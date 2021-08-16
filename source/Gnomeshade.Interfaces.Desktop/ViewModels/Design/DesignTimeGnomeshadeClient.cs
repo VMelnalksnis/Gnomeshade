@@ -138,6 +138,16 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		}
 
 		/// <inheritdoc />
+		public Task<TransactionItem> GetTransactionItemAsync(Guid id)
+		{
+			var selectedItem = _transactions
+				.SelectMany(transaction => transaction.Items)
+				.Single(item => item.Id == id);
+
+			return Task.FromResult(selectedItem);
+		}
+
+		/// <inheritdoc />
 		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
 		{
 			return Task.FromResult(_transactions.ToList());

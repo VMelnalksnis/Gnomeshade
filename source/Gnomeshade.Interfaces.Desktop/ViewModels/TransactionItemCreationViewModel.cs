@@ -2,15 +2,19 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
@@ -19,6 +23,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	/// </summary>
 	public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCreationView>
 	{
+		private readonly ITransactionClient _transactionClient;
+		private readonly TransactionItem? _existingItem;
+
 		private Account? _sourceAccount;
 		private decimal? _sourceAmount;
 		private Currency? _sourceCurrency;
@@ -32,10 +39,12 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private string? _internalReference;
 
 		private TransactionItemCreationViewModel(
+			ITransactionClient transactionClient,
 			List<Account> accounts,
 			List<Currency> currencies,
 			List<Product> products)
 		{
+			_transactionClient = transactionClient;
 			Accounts = accounts;
 			Currencies = currencies;
 			Products = products;
@@ -45,11 +54,42 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			ProductSelector = (_, item) => ((Product)item).Name;
 		}
 
+		private TransactionItemCreationViewModel(
+			ITransactionClient transactionClient,
+			List<Account> accounts,
+			List<Currency> currencies,
+			List<Product> products,
+			TransactionItem item)
+			: this(transactionClient, accounts, currencies, products)
+		{
+			_existingItem = item;
+
+			SourceAccount = Accounts
+				.Single(account => account.Currencies.Any(inCurrency => inCurrency.Id == item.SourceAccountId));
+			SourceAmount = item.SourceAmount;
+			TargetAccount = Accounts
+				.Single(account => account.Currencies.Any(inCurrency => inCurrency.Id == item.TargetAccountId));
+			TargetAmount = item.TargetAmount;
+			Product = Products.Single(product => product.Id == item.Product.Id);
+			Amount = item.Amount;
+			BankReference = item.BankReference;
+			ExternalReference = item.ExternalReference;
+			InternalReference = item.InternalReference;
+		}
+
+		/// <summary>
+		/// Raised when a new transaction item has been successfully created.
+		/// </summary>
+		public event EventHandler<TransactionItemCreatedEventArgs>? TransactionItemCreated;
+
 		/// <summary>
 		/// Gets a collection of all active accounts.
 		/// </summary>
 		public List<Account> Accounts { get; }
 
+		/// <summary>
+		/// Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.
+		/// </summary>
 		public AutoCompleteSelector<object> AccountSelector { get; }
 
 		/// <summary>
@@ -57,6 +97,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public List<Currency> Currencies { get; }
 
+		/// <summary>
+		/// Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.
+		/// </summary>
 		public AutoCompleteSelector<object> CurrencySelector { get; }
 
 		/// <summary>
@@ -64,6 +107,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public List<Product> Products { get; }
 
+		/// <summary>
+		/// Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.
+		/// </summary>
 		public AutoCompleteSelector<object> ProductSelector { get; }
 
 		/// <summary>
@@ -221,16 +267,68 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			_amount.HasValue;
 
 		/// <summary>
+		/// Gets a value indicating whether Update/Save button should be visible.
+		/// </summary>
+		public bool CanUpdate => _existingItem is not null;
+
+		/// <summary>
 		/// Asynchronously creates a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
 		/// </summary>
 		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+		/// <param name="itemId">The id of the transaction item to edit.</param>
 		/// <returns>A new instance of the <see cref="TransactionItemCreationViewModel"/> class.</returns>
-		public static async Task<TransactionItemCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+		public static async Task<TransactionItemCreationViewModel> CreateAsync(
+			IGnomeshadeClient gnomeshadeClient,
+			Guid? itemId = null)
 		{
 			var accounts = await gnomeshadeClient.GetActiveAccountsAsync();
 			var currencies = await gnomeshadeClient.GetCurrenciesAsync();
 			var products = await gnomeshadeClient.GetProductsAsync();
-			return new(accounts, currencies, products);
+
+			if (itemId is null)
+			{
+				return new(gnomeshadeClient, accounts, currencies, products);
+			}
+
+			var existingItem = await gnomeshadeClient.GetTransactionItemAsync(itemId.Value);
+			return new(gnomeshadeClient, accounts, currencies, products, existingItem);
+		}
+
+		/// <summary>
+		/// Updates an existing transaction item with the provided values.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		/// <exception cref="InvalidOperationException">One of the required values is not set.</exception>
+		public async Task SaveAsync()
+		{
+			if (_existingItem is null ||
+				SourceAccount is null || SourceCurrency is null ||
+				TargetAccount is null || TargetCurrency is null ||
+				Product is null)
+			{
+				throw new InvalidOperationException();
+			}
+
+			var creationModel = new TransactionItemCreationModel
+			{
+				Id = _existingItem.Id,
+				SourceAmount = SourceAmount,
+				SourceAccountId = SourceAccount.Currencies
+					.Single(inCurrency => inCurrency.Currency.Id == SourceCurrency.Id).Id,
+				TargetAmount = TargetAmount,
+				TargetAccountId = TargetAccount.Currencies
+					.Single(inCurrency => inCurrency.Currency.Id == TargetCurrency.Id).Id,
+				ProductId = Product.Id,
+				Amount = Amount,
+				BankReference = BankReference,
+				ExternalReference = ExternalReference,
+				InternalReference = InternalReference,
+				DeliveryDate = null,
+				Description = null,
+			};
+
+			var id = await _transactionClient.PutTransactionItemAsync(_existingItem.TransactionId, creationModel);
+			TransactionItemCreated?.Invoke(this, new(id));
 		}
 	}
 }

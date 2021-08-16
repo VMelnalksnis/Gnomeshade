@@ -68,6 +68,7 @@ namespace Gnomeshade.Interfaces.Desktop.Models
 			return items
 				.Select(item => new TransactionItemOverviewRow
 				{
+					Id = item.Id,
 					SourceAmount = item.SourceAmount,
 					TargetAmount = item.TargetAmount,
 					Product = item.Product.Name,

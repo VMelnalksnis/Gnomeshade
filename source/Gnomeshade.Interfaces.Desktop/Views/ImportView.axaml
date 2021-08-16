@@ -150,8 +150,10 @@
 
 		<Expander Grid.Column="1" Grid.Row="3" IsExpanded="True" Header="Items">
 			<DataGrid
+				x:Name="ItemDataGrid"
 				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 				Items="{Binding ItemGridView, Mode=TwoWay}"
+				SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
 				AutoGenerateColumns="False" IsReadOnly="False"
 				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
@@ -176,6 +178,12 @@
 						Header="Description" IsReadOnly="True"
 						Binding="{Binding Description, Mode=OneWay}" />
 				</DataGrid.Columns>
+
+				<i:Interaction.Behaviors>
+					<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #ItemDataGrid}">
+						<ia:InvokeCommandAction Command="{ReflectionBinding OnItemDataGridDoubleTapped}" />
+					</ia:EventTriggerBehavior>
+				</i:Interaction.Behaviors>
 
 				<DataGrid.Styles>
 					<Style Selector="DataGridCell.amount">

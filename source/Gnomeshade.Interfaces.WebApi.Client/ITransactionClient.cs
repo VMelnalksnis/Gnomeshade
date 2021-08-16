@@ -38,6 +38,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<Transaction> GetTransactionAsync(Guid id);
 
 		/// <summary>
+		/// Gets the specified transaction item.
+		/// </summary>
+		/// <param name="id">The id of the transaction item to get.</param>
+		/// <returns>The transaction item with the specified id.</returns>
+		Task<TransactionItem> GetTransactionItemAsync(Guid id);
+
+		/// <summary>
 		/// Gets all transactions within the specified time period.
 		/// </summary>
 		/// <param name="from">The time from which to get transactions.</param>
