@@ -2,11 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Data;
-using System.Threading.Tasks;
-
-using Dapper;
 
 using Gnomeshade.Data.Entities;
 
@@ -14,9 +10,6 @@ namespace Gnomeshade.Data.Repositories
 {
 	public sealed class ProductRepository : NamedRepository<ProductEntity>
 	{
-		private const string _updateSql =
-			"UPDATE products SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, name = @Name, normalized_name = @NormalizedName, description = @Description, unit_id = @UnitId WHERE id = @Id RETURNING id;";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProductRepository"/> class with a database connection.
 		/// </summary>
@@ -37,10 +30,8 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql =>
 			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, description, unit_id UnitId FROM products";
 
-		public async Task<Guid> UpdateAsync(ProductEntity product)
-		{
-			var command = new CommandDefinition(_updateSql, product);
-			return await DbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
-		}
+		/// <inheritdoc />
+		protected override string UpdateSql =>
+			"UPDATE products SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, name = @Name, normalized_name = @NormalizedName, description = @Description, unit_id = @UnitId WHERE id = @Id RETURNING id;";
 	}
 }

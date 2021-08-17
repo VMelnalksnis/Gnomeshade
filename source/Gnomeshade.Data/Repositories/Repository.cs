@@ -51,6 +51,11 @@ namespace Gnomeshade.Data.Repositories
 		protected abstract string SelectSql { get; }
 
 		/// <summary>
+		/// Gets the SQL query for updating entities.
+		/// </summary>
+		protected abstract string UpdateSql { get; }
+
+		/// <summary>
 		/// Adds a new entity.
 		/// </summary>
 		/// <param name="entity">The entity to add.</param>
@@ -112,6 +117,27 @@ namespace Gnomeshade.Data.Repositories
 			var sql = $"{SelectSql} WHERE id = @id;";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return DbConnection.QuerySingleOrDefaultAsync<TEntity?>(command);
+		}
+
+		/// <summary>
+		/// Updates an existing entity with the specified id.
+		/// </summary>
+		/// <param name="entity">The entity to update.</param>
+		/// <returns>The number of affected rows.</returns>
+		public Task<int> UpdateAsync(TEntity entity)
+		{
+			return DbConnection.ExecuteAsync(UpdateSql, entity);
+		}
+
+		/// <summary>
+		/// Updates an existing entity with the specified id using the specified database transaction.
+		/// </summary>
+		/// <param name="entity">The entity to update.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The number of affected rows.</returns>
+		public Task<int> UpdateAsync(TEntity entity, IDbTransaction dbTransaction)
+		{
+			return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
 		}
 
 		/// <inheritdoc />

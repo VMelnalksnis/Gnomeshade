@@ -19,6 +19,11 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
 	public sealed record TransactionCreationModel
 	{
 		/// <summary>
+		/// The id of the transaction to update.
+		/// </summary>
+		public Guid? Id { get; init; }
+
+		/// <summary>
 		/// The date on which the transaction was completed on.
 		/// </summary>
 		[Required]

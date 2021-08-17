@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Data;
 
 using Gnomeshade.Data.Entities;
@@ -10,9 +11,6 @@ namespace Gnomeshade.Data.Repositories
 {
 	public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 	{
-		private const string _selectSql =
-			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName from counterparties";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.
 		/// </summary>
@@ -30,6 +28,10 @@ namespace Gnomeshade.Data.Repositories
 			"INSERT INTO counterparties (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName) RETURNING id;";
 
 		/// <inheritdoc />
-		protected override string SelectSql => _selectSql;
+		protected override string SelectSql =>
+			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName from counterparties";
+
+		/// <inheritdoc />
+		protected override string UpdateSql => throw new NotImplementedException();
 	}
 }

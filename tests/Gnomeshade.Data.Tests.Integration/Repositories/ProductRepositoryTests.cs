@@ -59,8 +59,8 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
 			var productToUpdate = getProduct with { Description = "Foo" };
-			var updatedId = await _repository.UpdateAsync(productToUpdate);
-			var updatedProduct = await _repository.GetByIdAsync(updatedId);
+			_ = await _repository.UpdateAsync(productToUpdate);
+			var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id);
 
 			using (new AssertionScope())
 			{

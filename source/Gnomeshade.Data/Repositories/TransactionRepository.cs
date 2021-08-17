@@ -68,6 +68,8 @@ namespace Gnomeshade.Data.Repositories
 			"INNER JOIN products p ON ti.product_id = p.id";
 
 		private const string _deleteSql = "DELETE FROM transactions WHERE id = @Id;";
+		private const string _updateSql =
+			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId RETURNING id";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -176,6 +178,11 @@ namespace Gnomeshade.Data.Repositories
 		{
 			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
 			return _dbConnection.ExecuteAsync(command);
+		}
+
+		public Task<int> UpdateAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
+		{
+			return _dbConnection.ExecuteAsync(_updateSql, transaction, dbTransaction);
 		}
 
 		/// <inheritdoc />

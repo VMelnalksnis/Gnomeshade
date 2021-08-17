@@ -26,7 +26,7 @@ namespace Gnomeshade.TestingHelpers.Data
 		private readonly string _database;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PostgresInitializer"/> class
+		/// Initializes a new instance of the <see cref="PostgresInitializer"/> class.
 		/// </summary>
 		/// <param name="configuration">Configuration containing the connection string for the test database.</param>
 		/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
@@ -52,7 +52,7 @@ namespace Gnomeshade.TestingHelpers.Data
 		/// <summary>
 		/// Creates a new open connection to the integration test database.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>An open database connection.</returns>
 		public async Task<NpgsqlConnection> CreateConnectionAsync()
 		{
 			var sqlConnection = new NpgsqlConnection(ConnectionString);
@@ -76,7 +76,7 @@ namespace Gnomeshade.TestingHelpers.Data
 			await sqlConnection.OpenAsync().ConfigureAwait(false);
 
 			var createDatabase = sqlConnection.CreateCommand();
-			createDatabase.CommandText = $"DROP DATABASE IF EXISTS {_database}; CREATE DATABASE {_database};";
+			createDatabase.CommandText = $"DROP DATABASE IF EXISTS \"{_database}\"; CREATE DATABASE \"{_database}\";";
 			await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 			await sqlConnection.ChangeDatabaseAsync(_database).ConfigureAwait(false);
@@ -120,6 +120,7 @@ namespace Gnomeshade.TestingHelpers.Data
 		/// <summary>
 		/// Drops the integration test database.
 		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 		public async Task DropDatabaseAsync()
 		{
 			NpgsqlConnection.ClearAllPools();
@@ -130,12 +131,12 @@ namespace Gnomeshade.TestingHelpers.Data
 
 			var clearConnections = sqlConnection.CreateCommand();
 			clearConnections.CommandText =
-				$"REVOKE CONNECT ON DATABASE {_database} FROM public;" +
+				$"REVOKE CONNECT ON DATABASE \"{_database}\" FROM public;" +
 				$"SELECT pid, pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{_database}' AND pid <> pg_backend_pid();";
 			await clearConnections.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 			var createDatabase = sqlConnection.CreateCommand();
-			createDatabase.CommandText = $@"DROP DATABASE IF EXISTS {_database};";
+			createDatabase.CommandText = $"DROP DATABASE IF EXISTS \"{_database}\";";
 			await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 		}
 

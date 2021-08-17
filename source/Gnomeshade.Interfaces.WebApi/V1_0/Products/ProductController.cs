@@ -19,7 +19,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -32,20 +31,17 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 	{
 		private readonly IDbConnection _dbConnection;
 		private readonly ProductRepository _repository;
-		private readonly ILogger<ProductController> _logger;
 
 		public ProductController(
 			UserManager<ApplicationUser> userManager,
 			UserRepository userRepository,
 			IDbConnection dbConnection,
 			ProductRepository repository,
-			Mapper mapper,
-			ILogger<ProductController> logger)
+			Mapper mapper)
 			: base(userManager, userRepository, mapper)
 		{
 			_dbConnection = dbConnection;
 			_repository = repository;
-			_logger = logger;
 		}
 
 		[HttpGet("{id:guid}")]
@@ -136,8 +132,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			product.NormalizedName = product.Name.ToUpperInvariant();
 			product.ModifiedByUserId = user.Id;
 
-			var id = await _repository.UpdateAsync(product);
-			return Ok(id);
+			_ = await _repository.UpdateAsync(product);
+			return Ok(creationModel.Id);
 		}
 	}
 }

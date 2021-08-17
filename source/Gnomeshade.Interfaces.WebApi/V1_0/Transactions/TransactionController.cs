@@ -115,12 +115,12 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Creates a new transaction.
 		/// </summary>
-		/// <param name="creationModel">The transaction that will be created.</param>
+		/// <param name="model">The transaction that will be created.</param>
 		/// <returns><see cref="CreatedAtActionResult"/> with the id of the transaction.</returns>
 		/// <response code="201">Transaction was successfully created.</response>
 		[HttpPost]
 		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] TransactionCreationModel creationModel)
+		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] TransactionCreationModel model)
 		{
 			var user = await GetCurrentUser();
 			if (user is null)
@@ -128,18 +128,38 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				return Unauthorized();
 			}
 
-			var transaction = Mapper.Map<TransactionEntity>(creationModel) with
-			{
-				OwnerId = user.Id, // todo
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.Now,
-				ValidatedAt = creationModel.Validated ? DateTimeOffset.Now : null,
-				ValidatedByUserId = creationModel.Validated ? user.Id : null,
-			};
+			return await CreateNewTransactionAsync(model, user);
+		}
 
-			var transactionId = await _unitOfWork.AddAsync(transaction);
-			return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
+		/// <summary>
+		/// Creates a new transaction with items, or updates items for an existing transaction.
+		/// </summary>
+		/// <param name="model">The transaction to create or replace.</param>
+		/// <returns>The id of the created or replaced transaction.</returns>
+		[HttpPut]
+		[ProducesResponseType(Status200OK)]
+		[ProducesResponseType(Status201Created)]
+		[ProducesResponseType(Status404NotFound)]
+		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] TransactionCreationModel model)
+		{
+			var user = await GetCurrentUser();
+			if (user is null)
+			{
+				return Unauthorized();
+			}
+
+			var existingTransaction = model.Id is not null
+				? await _repository.FindByIdAsync(model.Id.Value)
+				: null;
+
+			if (model.Id is not null && existingTransaction is null)
+			{
+				return NotFound();
+			}
+
+			return existingTransaction is null
+				? await CreateNewTransactionAsync(model, user)
+				: await UpdateExistingTransactionAsync(model, user, existingTransaction);
 		}
 
 		/// <summary>
@@ -270,6 +290,45 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			base.Dispose(disposing);
 		}
 
+		private async Task<ActionResult<Guid>> CreateNewTransactionAsync(
+			TransactionCreationModel creationModel,
+			UserEntity user)
+		{
+			var transaction = Mapper.Map<TransactionEntity>(creationModel) with
+			{
+				OwnerId = user.Id, // todo
+				CreatedByUserId = user.Id,
+				ModifiedByUserId = user.Id,
+				ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.Now,
+				ValidatedAt = creationModel.Validated ? DateTimeOffset.Now : null,
+				ValidatedByUserId = creationModel.Validated ? user.Id : null,
+			};
+
+			var transactionId = await _unitOfWork.AddAsync(transaction);
+			return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
+		}
+
+		private async Task<ActionResult<Guid>> UpdateExistingTransactionAsync(
+			TransactionCreationModel creationModel,
+			UserEntity user,
+			TransactionEntity existingTransaction)
+		{
+			if (creationModel.Items!.Any(item => item.Id is null))
+			{
+				return NotFound();
+			}
+
+			if (creationModel.Items!.Any(item =>
+				existingTransaction.Items.All(entity => entity.Id != item.Id!.Value)))
+			{
+				return NotFound("Existing item with not found by id");
+			}
+
+			var transaction = Mapper.Map<TransactionEntity>(creationModel);
+			_ = await _unitOfWork.UpdateAsync(transaction, user);
+			return Ok(creationModel.Id);
+		}
+
 		private async Task<ActionResult<Guid>> CreateNewItemAsync(
 			Guid transactionId,
 			TransactionItemCreationModel creationModel,
@@ -296,8 +355,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			transactionItem.ModifiedByUserId = user.Id;
 			transactionItem.TransactionId = transactionId;
 
-			var id = await _itemRepository.UpdateAsync(transactionItem);
-			return Ok(id);
+			await _itemRepository.UpdateAsync(transactionItem);
+			return Ok(creationModel.Id);
 		}
 	}
 }

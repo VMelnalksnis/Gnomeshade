@@ -106,6 +106,10 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 			throw new NotImplementedException();
 
 		/// <inheritdoc />
+		public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
+			throw new NotImplementedException();
+
+		/// <inheritdoc />
 		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
 		{
 			var transactionWithItem = _transactions.Single(t => t.Id == transactionId);

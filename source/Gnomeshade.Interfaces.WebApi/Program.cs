@@ -26,7 +26,7 @@ namespace Gnomeshade.Interfaces.WebApi
 			{
 				Log.Information("Starting web host");
 
-				var webHost = CreateWebHostBuilder(args).Build();
+				var webHost = CreateWebHostBuilder(args).UseSerilog().Build();
 				Log.Debug("Created web host");
 
 				webHost.Run();

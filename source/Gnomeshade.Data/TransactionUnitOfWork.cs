@@ -130,6 +130,56 @@ namespace Gnomeshade.Data
 			return rows;
 		}
 
+		/// <summary>
+		/// Updates the specified transaction and all its items.
+		/// </summary>
+		/// <param name="transaction">The transaction to update.</param>
+		/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
+		/// <returns>The number of affected rows.</returns>
+		public async Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
+		{
+			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+
+			try
+			{
+				var rows = await UpdateAsync(transaction, modifiedBy, dbTransaction);
+				dbTransaction.Commit();
+				return rows;
+			}
+			catch (Exception)
+			{
+				dbTransaction.Rollback();
+				throw;
+			}
+		}
+
+		/// <summary>
+		/// Updates the specified transaction and all its items.
+		/// </summary>
+		/// <param name="transaction">The transaction to update.</param>
+		/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The number of affected rows.</returns>
+		public async Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, IDbTransaction dbTransaction)
+		{
+			if (!transaction.Items.Any())
+			{
+				throw new ArgumentException("Transaction must have at least one item", nameof(transaction));
+			}
+
+			transaction.ModifiedByUserId = modifiedBy.Id;
+			var rows = await _repository.UpdateAsync(transaction, dbTransaction).ConfigureAwait(false);
+
+			foreach (var transactionItem in transaction.Items)
+			{
+				transactionItem.ModifiedByUserId = modifiedBy.Id;
+				transactionItem.TransactionId = transaction.Id;
+				rows += await _itemRepository.UpdateAsync(transactionItem, dbTransaction).ConfigureAwait(false);
+			}
+
+			return rows;
+		}
+
 		/// <inheritdoc />
 		public void Dispose()
 		{

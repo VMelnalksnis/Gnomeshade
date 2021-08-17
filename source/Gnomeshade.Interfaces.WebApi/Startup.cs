@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 using Npgsql;
 using Npgsql.Logging;
@@ -62,7 +61,7 @@ namespace Gnomeshade.Interfaces.WebApi
 		/// <param name="services">Service collection to which to add services to.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddLogging(builder => builder.ClearProviders().AddSerilog());
+			services.AddLogging(builder => builder.AddSerilog());
 
 			services.AddOptions<JwtOptions>(Configuration);
 

@@ -105,6 +105,10 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 			PostAsync(TransactionUri, transaction);
 
 		/// <inheritdoc />
+		public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
+			PutAsync(TransactionUri, transaction);
+
+		/// <inheritdoc />
 		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item) =>
 			PutAsync(TransactionItemUri(transactionId), item);
 

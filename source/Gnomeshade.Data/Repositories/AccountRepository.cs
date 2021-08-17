@@ -97,6 +97,9 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql => _selectSql;
 
 		/// <inheritdoc />
+		protected override string UpdateSql => throw new NotImplementedException();
+
+		/// <inheritdoc />
 		public override Task<AccountEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			const string sql = _selectSql + " WHERE a.id = @id;";
