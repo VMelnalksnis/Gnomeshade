@@ -51,7 +51,7 @@ namespace Gnomeshade.Interfaces.WebApi
 		[PublicAPI]
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args)
 		{
-			return WebHost.CreateDefaultBuilder<Startup>(args).UseSerilog();
+			return WebHost.CreateDefaultBuilder<Startup>(args);
 		}
 	}
 }

@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -59,16 +58,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		[OneTimeSetUp]
 		public async Task OneTimeSetUpAsync()
 		{
-			_webApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(builder =>
-			{
-				builder.ConfigureAppConfiguration((_, configurationBuilder) =>
-				{
-					configurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
-					{
-						{ "ConnectionStrings:FinanceDb", _initializer.ConnectionString },
-					});
-				});
-			});
+			_webApplicationFactory = new GnomeshadeWebApplicationFactory(_initializer.ConnectionString);
 			var client = _webApplicationFactory.CreateClient();
 
 			// database needs to be setup after web app, so that the web app can configure static Npg logger
@@ -91,6 +81,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		public async Task OneTimeTearDownAsync()
 		{
 			await _initializer.DropDatabaseAsync();
+			_webApplicationFactory.Dispose();
 		}
 	}
 }
