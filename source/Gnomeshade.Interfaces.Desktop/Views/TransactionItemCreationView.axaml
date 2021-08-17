@@ -13,7 +13,7 @@
 	x:CompileBindings="True"
 	x:DataType="vm:TransactionItemCreationViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<!--Source-->
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
@@ -118,6 +118,12 @@
 			Grid.Column="2" Grid.Row="2"
 			MinWidth="150"
 			Text="{Binding Amount}" />
+		<Button
+			Grid.Column="3" Grid.Row="2"
+			IsEnabled="{Binding CanCreateProduct}"
+			Command="{ReflectionBinding CreateProductAsync}">
+			New Product
+		</Button>
 
 		<!--Bank Reference-->
 		<TextBlock
@@ -158,5 +164,9 @@
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
+
+		<UserControl
+			Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2"
+			Content="{Binding ProductCreation}"/>
 	</Grid>
 </UserControl>

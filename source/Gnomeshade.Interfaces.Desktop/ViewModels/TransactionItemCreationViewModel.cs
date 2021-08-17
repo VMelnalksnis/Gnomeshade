@@ -23,7 +23,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	/// </summary>
 	public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCreationView>
 	{
-		private readonly ITransactionClient _transactionClient;
+		private readonly IGnomeshadeClient _transactionClient;
 		private readonly TransactionItem? _existingItem;
 
 		private Account? _sourceAccount;
@@ -37,9 +37,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		private string? _bankReference;
 		private string? _externalReference;
 		private string? _internalReference;
+		private ProductCreationViewModel? _productCreation;
+		private List<Product> _products;
 
 		private TransactionItemCreationViewModel(
-			ITransactionClient transactionClient,
+			IGnomeshadeClient transactionClient,
 			List<Account> accounts,
 			List<Currency> currencies,
 			List<Product> products)
@@ -47,7 +49,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			_transactionClient = transactionClient;
 			Accounts = accounts;
 			Currencies = currencies;
-			Products = products;
+			_products = products;
 
 			AccountSelector = (_, item) => ((Account)item).Name;
 			CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
@@ -55,7 +57,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		private TransactionItemCreationViewModel(
-			ITransactionClient transactionClient,
+			IGnomeshadeClient transactionClient,
 			List<Account> accounts,
 			List<Currency> currencies,
 			List<Product> products,
@@ -105,7 +107,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// <summary>
 		/// Gets a collection of all products.
 		/// </summary>
-		public List<Product> Products { get; }
+		public List<Product> Products
+		{
+			get => _products;
+			private set => SetAndNotify(ref _products, value, nameof(Products));
+		}
 
 		/// <summary>
 		/// Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.
@@ -254,6 +260,15 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		}
 
 		/// <summary>
+		/// Gets a view model for creating a new product.
+		/// </summary>
+		public ProductCreationViewModel? ProductCreation
+		{
+			get => _productCreation;
+			private set => SetAndNotifyWithGuard(ref _productCreation, value, nameof(ProductCreation), nameof(CanCreateProduct));
+		}
+
+		/// <summary>
 		/// Gets a value indicating whether the transaction item can be created.
 		/// </summary>
 		public bool CanCreate =>
@@ -270,6 +285,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Gets a value indicating whether Update/Save button should be visible.
 		/// </summary>
 		public bool CanUpdate => _existingItem is not null;
+
+		public bool CanCreateProduct => ProductCreation is null;
 
 		/// <summary>
 		/// Asynchronously creates a new instance of the <see cref="TransactionItemCreationViewModel"/> class.
@@ -329,6 +346,24 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 			var id = await _transactionClient.PutTransactionItemAsync(_existingItem.TransactionId, creationModel);
 			TransactionItemCreated?.Invoke(this, new(id));
+		}
+
+		/// <summary>
+		/// Initializes <see cref="ProductCreation"/> so that a new product can be created.
+		/// </summary>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task CreateProductAsync()
+		{
+			var creationViewModel = await ProductCreationViewModel.CreateAsync(_transactionClient);
+			creationViewModel.ProductCreated += OnProductCreated;
+			ProductCreation = creationViewModel;
+		}
+
+		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+		{
+			Products = Task.Run(() => _transactionClient.GetProductsAsync()).Result;
+			ProductCreation!.ProductCreated -= OnProductCreated;
+			ProductCreation = null;
 		}
 	}
 }
