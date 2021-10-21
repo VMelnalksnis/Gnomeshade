@@ -221,7 +221,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 			Date = transaction.Date;
 			Description = transaction.Description;
 
-			if (Items is not null!)
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse
+			if (Items is not null)
 			{
 				Items.CollectionChanged -= ItemsOnCollectionChanged;
 			}
