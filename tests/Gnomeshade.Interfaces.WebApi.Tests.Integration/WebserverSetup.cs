@@ -32,7 +32,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		{
 			IConfiguration configuration =
 				new ConfigurationBuilder()
-					.AddUserSecrets<WebserverSetup>()
+					.AddUserSecrets<WebserverSetup>(true, true)
 					.AddEnvironmentVariables()
 					.Build();
 

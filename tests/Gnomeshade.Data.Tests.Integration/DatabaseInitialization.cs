@@ -23,7 +23,7 @@ namespace Gnomeshade.Data.Tests.Integration
 	{
 		private static readonly IConfiguration _configuration =
 			new ConfigurationBuilder()
-				.AddUserSecrets<DatabaseInitialization>()
+				.AddUserSecrets<DatabaseInitialization>(true, true)
 				.AddEnvironmentVariables()
 				.Build();
 

@@ -36,6 +36,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 			builder.UseSerilog();
 			builder.ConfigureAppConfiguration((_, configurationBuilder) =>
 			{
+				configurationBuilder.AddUserSecrets<GnomeshadeWebApplicationFactory>(true, true);
 				configurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
 				{
 					{ "ConnectionStrings:FinanceDb", _connectionString },
