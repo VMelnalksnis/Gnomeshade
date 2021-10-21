@@ -76,7 +76,7 @@ namespace Gnomeshade.Data.Repositories
 			"LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id " +
 			"LEFT JOIN currencies c ON aic.currency_id = c.id";
 
-		private const string _deleteSql = "DELETE FROM accounts WHERE id = @Id;";
+		private const string _deleteSql = "DELETE FROM accounts WHERE id = @id;";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.

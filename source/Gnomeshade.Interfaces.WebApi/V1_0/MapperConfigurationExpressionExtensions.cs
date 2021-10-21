@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
@@ -51,6 +53,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 
 			options.CreateMap<UnitEntity, Unit>();
 			options.CreateMap<UnitCreationModel, UnitEntity>();
+
+			options.CreateMap<DateTimeOffset, DateTimeOffset>().ConvertUsing<DateTimeOffsetUtcConverter>();
 		}
 	}
 }

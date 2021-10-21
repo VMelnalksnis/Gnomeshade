@@ -48,7 +48,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The <see cref="CurrencyEntity"/> with the specified id.</returns>
 		public async Task<CurrencyEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE id = @Id";
+			const string sql = _selectSql + " WHERE id = @id";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return await _dbConnection.QuerySingleAsync<CurrencyEntity>(command).ConfigureAwait(false);
 		}

@@ -74,7 +74,7 @@ namespace Gnomeshade.Data.Tests.Integration
 			var getTransaction = await _repository.GetByIdAsync(transactionId);
 			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id);
 			var findImportTransaction = await _repository.FindByImportHashAsync(importHash);
-			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.Now.AddMonths(-1), DateTimeOffset.Now);
+			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow);
 
 			getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);
 			findTransaction.Should().BeEquivalentTo(getTransaction, Options);

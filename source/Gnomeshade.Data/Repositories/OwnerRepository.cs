@@ -17,7 +17,7 @@ namespace Gnomeshade.Data.Repositories
 	public sealed class OwnerRepository : IDisposable
 	{
 		private const string _insertSql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";
-		private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@Id) RETURNING id";
+		private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@id) RETURNING id;";
 		private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
 
 		private readonly IDbConnection _dbConnection;
@@ -46,10 +46,10 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="id">The id with which to create the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the new entity.</returns>
-		public async Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertWithIdSql, new { id }, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
 		/// <summary>

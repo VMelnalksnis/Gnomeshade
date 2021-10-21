@@ -24,7 +24,7 @@ namespace Gnomeshade.Data.Repositories
 			"SELECT id, created_at CreatedAt, counterparty_id CounterpartyId FROM users WHERE id = @id";
 
 		private const string _updateSql =
-			"UPDATE users SET modified_at = DEFAULT, counterparty_id = @CounterpartyId WHERE id = @id;";
+			"UPDATE users SET modified_at = DEFAULT, counterparty_id = @CounterpartyId WHERE id = @Id;";
 
 		private readonly IDbConnection _dbConnection;
 

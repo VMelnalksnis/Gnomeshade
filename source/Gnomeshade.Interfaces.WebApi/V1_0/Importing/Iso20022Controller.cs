@@ -511,9 +511,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
 				ModifiedByUserId = user.Id,
-				Date = bookingDate,
+				Date = bookingDate.ToUniversalTime(),
 				ImportHash = importHash,
-				ImportedAt = DateTimeOffset.Now, // todo at db transaction level
+				ImportedAt = DateTimeOffset.UtcNow, // todo at db transaction level
 				Description = reportEntry.AccountServicerReference,
 				Items = new() { transactionItem },
 			};

@@ -105,7 +105,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			[FromQuery] OptionalTimeRange timeRange,
 			CancellationToken cancellation)
 		{
-			var (fromDate, toDate) = TimeRange.FromOptional(timeRange, DateTimeOffset.Now);
+			var (fromDate, toDate) = TimeRange.FromOptional(timeRange, DateTimeOffset.UtcNow);
 
 			var transactions = await _repository.GetAllAsync(fromDate, toDate, cancellation);
 			var transactionModels = transactions.Select(MapToModel).ToList();
@@ -299,8 +299,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				OwnerId = user.Id, // todo
 				CreatedByUserId = user.Id,
 				ModifiedByUserId = user.Id,
-				ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.Now,
-				ValidatedAt = creationModel.Validated ? DateTimeOffset.Now : null,
+				ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.UtcNow,
+				ValidatedAt = creationModel.Validated ? DateTimeOffset.UtcNow : null,
 				ValidatedByUserId = creationModel.Validated ? user.Id : null,
 			};
 

@@ -15,7 +15,7 @@ namespace Gnomeshade.Data.Repositories
 	public sealed class OwnershipRepository
 	{
 		private const string _insertSql =
-			"INSERT INTO ownerships (id, owner_id, user_id) VALUES (@Id, @Id, @Id) RETURNING id";
+			"INSERT INTO ownerships (id, owner_id, user_id) VALUES (@id, @id, @id) RETURNING id";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -35,10 +35,10 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="id">Id of the user.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created ownership.</returns>
-		public async Task<Guid> AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<Guid> AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(_insertSql, new { id }, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
+			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 	}
 }

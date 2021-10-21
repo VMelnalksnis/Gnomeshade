@@ -104,7 +104,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var disabledAccount = accountFaker.GenerateUnique(account) with
 			{
-				DisabledAt = DateTimeOffset.Now,
+				DisabledAt = DateTimeOffset.UtcNow,
 				DisabledByUserId = TestUser.Id,
 			};
 

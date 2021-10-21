@@ -69,7 +69,7 @@ namespace Gnomeshade.TestingHelpers.Data
 			var connectionString = new NpgsqlConnectionStringBuilder(ConnectionString)
 			{
 				Database = "postgres",
-				IncludeErrorDetails = true,
+				IncludeErrorDetail = true,
 			};
 
 			await using var sqlConnection = new NpgsqlConnection(connectionString.ToString());

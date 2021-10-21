@@ -38,7 +38,7 @@ namespace Gnomeshade.TestingHelpers.Data.Fakers
 			RuleFor(item => item.Amount, faker => faker.Random.Decimal(0, 10));
 			RuleFor(item => item.ExternalReference, faker => faker.Finance.Account());
 			RuleFor(item => item.InternalReference, faker => faker.Finance.Account());
-			RuleFor(item => item.DeliveryDate, faker => faker.Date.Recent());
+			RuleFor(item => item.DeliveryDate, faker => faker.Date.RecentUtc());
 			RuleFor(item => item.Description, faker => faker.Lorem.Sentence());
 		}
 	}

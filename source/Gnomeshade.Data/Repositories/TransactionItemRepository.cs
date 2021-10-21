@@ -20,7 +20,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM transaction_items WHERE id = @Id";
+		protected override string DeleteSql => "DELETE FROM transaction_items WHERE id = @id";
 
 		/// <inheritdoc />
 		protected override string InsertSql =>

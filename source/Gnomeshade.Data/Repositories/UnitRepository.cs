@@ -23,7 +23,7 @@ namespace Gnomeshade.Data.Repositories
 		private const string _selectSql =
 			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, parent_unit_id ParentUnitId, multiplier FROM units";
 
-		private const string _deleteSql = "DELETE FROM units WHERE id = @Id";
+		private const string _deleteSql = "DELETE FROM units WHERE id = @id";
 
 		private readonly IDbConnection _dbConnection;
 

@@ -21,7 +21,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM counterparties WHERE id = @Id;";
+		protected override string DeleteSql => "DELETE FROM counterparties WHERE id = @id;";
 
 		/// <inheritdoc />
 		protected override string InsertSql =>

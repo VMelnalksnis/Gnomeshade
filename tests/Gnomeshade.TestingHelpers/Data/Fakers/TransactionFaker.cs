@@ -18,10 +18,10 @@ namespace Gnomeshade.TestingHelpers.Data.Fakers
 		public TransactionFaker(Guid userId)
 			: base(userId)
 		{
-			RuleFor(transaction => transaction.Date, faker => faker.Date.Recent());
+			RuleFor(transaction => transaction.Date, faker => faker.Date.RecentUtc());
 			RuleFor(transaction => transaction.Description, faker => faker.Lorem.Sentence());
-			RuleFor(transaction => transaction.ImportedAt, faker => faker.Date.Recent());
-			RuleFor(transaction => transaction.ValidatedAt, faker => faker.Date.Recent());
+			RuleFor(transaction => transaction.ImportedAt, faker => faker.Date.RecentUtc());
+			RuleFor(transaction => transaction.ValidatedAt, faker => faker.Date.RecentUtc());
 			RuleFor(transaction => transaction.ValidatedByUserId, userId);
 		}
 	}
