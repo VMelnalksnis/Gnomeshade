@@ -4,6 +4,7 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -14,8 +15,6 @@ using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using NUnit.Framework;
-
-using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products
 {
@@ -38,11 +37,12 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products
 			product.Name.Should().Be(creationModel.Name);
 			product.Description.Should().Be(creationModel.Description);
 
-			FluentActions
-				.Awaiting(() => _client.PutProductAsync(creationModel))
-				.Should()
-				.ThrowExactly<HttpRequestException>("name must be unique, and if was not specified for update")
-				.Which.StatusCode.Should().Be(Status400BadRequest);
+			var exception =
+				await FluentActions
+					.Awaiting(() => _client.PutProductAsync(creationModel))
+					.Should()
+					.ThrowExactlyAsync<HttpRequestException>("name must be unique, and if was not specified for update");
+			exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
 			var creationModelWithId = creationModel with { Id = product.Id };
 			var productWithoutChanges = await PutAndGet(creationModelWithId);
@@ -64,11 +64,12 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products
 				Name = product.Name,
 			};
 
-			FluentActions
-				.Awaiting(() => _client.PutProductAsync(creationModelWithDuplicateName))
-				.Should()
-				.Throw<HttpRequestException>("name must be unique")
-				.Which.StatusCode.Should().Be(Status400BadRequest);
+			exception =
+				await FluentActions
+					.Awaiting(() => _client.PutProductAsync(creationModelWithDuplicateName))
+					.Should()
+					.ThrowAsync<HttpRequestException>("name must be unique");
+			exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 		}
 
 		private static ProductCreationModel CreateUniqueProduct()

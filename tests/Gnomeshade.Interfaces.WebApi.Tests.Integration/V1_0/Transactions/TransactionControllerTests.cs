@@ -4,6 +4,7 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -16,8 +17,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.TestingHelpers.Models;
-
-using Microsoft.AspNetCore.Http;
 
 using NUnit.Framework;
 
@@ -81,11 +80,12 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
 			var transactionWithAdditionalItem = await _client.GetTransactionAsync(transactionId);
 			transactionWithAdditionalItem.Items.Should().HaveCount(2);
 
-			FluentActions
-				.Awaiting(() => _client.PutTransactionItemAsync(Guid.NewGuid(), itemCreationModel))
-				.Should()
-				.ThrowExactly<HttpRequestException>()
-				.Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
+			var exception =
+				await FluentActions
+					.Awaiting(() => _client.PutTransactionItemAsync(Guid.NewGuid(), itemCreationModel))
+					.Should()
+					.ThrowExactlyAsync<HttpRequestException>();
+			exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
 		}
 
 		[Test]
@@ -123,7 +123,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
 				.ComparingByMembers<Transaction>()
 				.ComparingByMembers<TransactionItem>()
 				.ComparingByMembers<Product>()
-				.Excluding(info => info.SelectedMemberInfo.Name == nameof(IModifiableEntity.ModifiedAt));
+				.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
 		}
 
 		private static EquivalencyAssertionOptions<TransactionItem> WithoutModifiedAt(
@@ -131,7 +131,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
 		{
 			return options
 				.ComparingByMembers<TransactionItem>()
-				.Excluding(info => info.SelectedMemberInfo.Name == nameof(IModifiableEntity.ModifiedAt));
+				.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
 		}
 
 		private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)

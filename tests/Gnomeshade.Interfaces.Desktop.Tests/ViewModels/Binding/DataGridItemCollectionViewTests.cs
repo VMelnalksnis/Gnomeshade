@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 using Avalonia.Collections;
 
@@ -42,7 +43,8 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels.Binding
 			dataGridCollectionView.Remove(item);
 			(sender, args) = events.Should().ContainSingle().Subject;
 			sender.Should().BeEquivalentTo(dataGridCollectionView);
-			args.OldItems.Should().Contain(item).And.HaveCount(1);
+			args.OldItems.Should().NotBeNull();
+			args.OldItems!.Cast<Item>().Should().ContainSingle().Which.Should().Be(item);
 			events.Clear();
 
 			item.Name = "Foo 3";
@@ -51,7 +53,8 @@ namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels.Binding
 			var newItem = dataGridCollectionView.AddNew() as Item;
 			(sender, args) = events.Should().ContainSingle().Subject;
 			sender.Should().BeEquivalentTo(dataGridCollectionView);
-			args.NewItems.Should().Contain(newItem).And.HaveCount(1);
+			args.NewItems.Should().NotBeNull();
+			args.NewItems!.Cast<Item>().Should().ContainSingle().Which.Should().Be(newItem);
 		}
 
 		private sealed class Item : PropertyChangedBase
