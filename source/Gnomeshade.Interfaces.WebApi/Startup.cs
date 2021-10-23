@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
+using Elastic.Apm.NetCoreAll;
+
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
@@ -112,6 +114,8 @@ namespace Gnomeshade.Interfaces.WebApi
 		/// <param name="environment">The current application environment.</param>
 		public void Configure(IApplicationBuilder application, IWebHostEnvironment environment)
 		{
+			application.UseAllElasticApm(Configuration);
+
 			if (environment.IsDevelopment())
 			{
 				application.UseDeveloperExceptionPage();

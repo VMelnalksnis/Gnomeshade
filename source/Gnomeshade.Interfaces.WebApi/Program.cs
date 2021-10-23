@@ -4,6 +4,8 @@
 
 using System;
 
+using Elastic.Apm.SerilogEnricher;
+
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore;
@@ -19,6 +21,7 @@ namespace Gnomeshade.Interfaces.WebApi
 		{
 			Log.Logger = new LoggerConfiguration()
 				.Enrich.FromLogContext()
+				.Enrich.WithElasticApmCorrelationInfo()
 				.WriteTo.Console()
 				.CreateLogger();
 
