@@ -50,7 +50,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			var defaultFromDate = new DateTimeOffset(toDate.Year, toDate.Month, 01, 00, 00, 00, toDate.Offset);
 			var fromDate = optional.From.GetValueOrDefault(defaultFromDate);
 
-			return new(fromDate, toDate);
+			return new(fromDate.ToUniversalTime(), toDate.ToUniversalTime());
 		}
 
 		/// <summary>
