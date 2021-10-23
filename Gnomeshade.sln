@@ -40,6 +40,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.WebApi.Models", "source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj", "{B85DA2DF-B5A6-46D9-991C-2701EB866A88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}"
+ProjectSection(SolutionItems) = preProject
+	tests\.editorconfig = tests\.editorconfig
+	tests\Directory.Build.props = tests\Directory.Build.props
+EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.TestingHelpers", "tests\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj", "{CFFBE37B-AD26-4D48-AC8F-655D735732A4}"
 EndProject
