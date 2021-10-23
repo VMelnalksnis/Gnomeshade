@@ -4,63 +4,37 @@
 
 using System;
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Dapper;
 
 using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class AccountInCurrencyRepository : IDisposable
+	/// <summary>
+	/// Database backed <see cref="AccountInCurrencyRepository"/> repository.
+	/// </summary>
+	public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEntity>
 	{
-		private const string _insertSql =
-			"INSERT INTO accounts_in_currency (owner_id, created_by_user_id, modified_by_user_id, account_id, currency_id, disabled_at, disabled_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @AccountId, @CurrencyId, @DisabledAt, @DisabledByUserId) RETURNING id";
-
-		private const string _selectSql =
-			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, account_id AccountId, currency_id CurrencyId, disabled_at DisabledAt, disabled_by_user_id DisabledByUserId FROM accounts_in_currency";
-
-		private const string _deleteSql = "DELETE FROM accounts_in_currency WHERE id = @id";
-
-		private readonly IDbConnection _dbConnection;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountInCurrencyRepository"/> class with a database connection.
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public AccountInCurrencyRepository(IDbConnection dbConnection)
+			: base(dbConnection)
 		{
-			_dbConnection = dbConnection;
-		}
-
-		public Task<Guid> AddAsync(AccountInCurrencyEntity entity, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
-			return _dbConnection.QuerySingleAsync<Guid>(command);
-		}
-
-		public Task<AccountInCurrencyEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " WHERE id = @id";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleOrDefaultAsync<AccountInCurrencyEntity>(command)!;
-		}
-
-		public Task<AccountInCurrencyEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " WHERE id = @id";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return _dbConnection.QuerySingleAsync<AccountInCurrencyEntity>(command);
-		}
-
-		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
-			return _dbConnection.ExecuteAsync(command);
 		}
 
 		/// <inheritdoc />
-		public void Dispose() => _dbConnection.Dispose();
+		protected override string DeleteSql => "DELETE FROM accounts_in_currency WHERE id = @id";
+
+		/// <inheritdoc />
+		protected override string InsertSql =>
+			"INSERT INTO accounts_in_currency (owner_id, created_by_user_id, modified_by_user_id, account_id, currency_id, disabled_at, disabled_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @AccountId, @CurrencyId, @DisabledAt, @DisabledByUserId) RETURNING id";
+
+		/// <inheritdoc />
+		protected override string SelectSql =>
+			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, account_id AccountId, currency_id CurrencyId, disabled_at DisabledAt, disabled_by_user_id DisabledByUserId FROM accounts_in_currency";
+
+		/// <inheritdoc />
+		protected override string UpdateSql => throw new NotImplementedException();
 	}
 }
