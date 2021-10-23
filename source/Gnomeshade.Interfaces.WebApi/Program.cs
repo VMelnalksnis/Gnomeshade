@@ -3,8 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 
-using Elastic.Apm.SerilogEnricher;
+using Gnomeshade.Interfaces.WebApi.Configuration;
 
 using JetBrains.Annotations;
 
@@ -17,22 +18,21 @@ namespace Gnomeshade.Interfaces.WebApi
 {
 	public static class Program
 	{
+		/// <summary>
+		/// The application entry point.
+		/// </summary>
+		/// <param name="args">The command-line arguments of the application.</param>
 		public static void Main(string[] args)
 		{
-			Log.Logger = new LoggerConfiguration()
-				.Enrich.FromLogContext()
-				.Enrich.WithElasticApmCorrelationInfo()
-				.WriteTo.Console()
-				.CreateLogger();
+			Serilog.Debugging.SelfLog.Enable(output => Debug.WriteLine(output));
+			Log.Logger = SerilogWebHostConfiguration.CreateBoostrapLogger();
 
 			try
 			{
-				Log.Information("Starting web host");
-
-				var webHost = CreateWebHostBuilder(args).UseSerilog().Build();
-				Log.Debug("Created web host");
-
-				webHost.Run();
+				CreateWebHostBuilder(args)
+					.UseSerilog(SerilogWebHostConfiguration.Configure)
+					.Build()
+					.Run();
 			}
 			catch (Exception exception)
 			{
@@ -51,6 +51,7 @@ namespace Gnomeshade.Interfaces.WebApi
 		/// </summary>
 		/// <param name="args">The command line arguments from which to parse configuration.</param>
 		/// <returns>A configured web host builder.</returns>
+		/// <seealso href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host#set-up-a-host"/>
 		[PublicAPI]
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args)
 		{
