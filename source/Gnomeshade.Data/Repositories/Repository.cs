@@ -51,6 +51,11 @@ namespace Gnomeshade.Data.Repositories
 		protected abstract string SelectSql { get; }
 
 		/// <summary>
+		/// Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.
+		/// </summary>
+		protected virtual string FindSql => "WHERE id = @id;";
+
+		/// <summary>
 		/// Gets the SQL query for updating entities.
 		/// </summary>
 		protected abstract string UpdateSql { get; }
@@ -60,10 +65,7 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="entity">The entity to add.</param>
 		/// <returns>The id of the created entity.</returns>
-		public virtual Task<Guid> AddAsync(TEntity entity)
-		{
-			return DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
-		}
+		public Task<Guid> AddAsync(TEntity entity) => DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
 
 		/// <summary>
 		/// Adds a new entity using the specified database transaction.
@@ -71,7 +73,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="entity">The entity to add.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The id of the created entity.</returns>
-		public virtual Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction)
+		public Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(InsertSql, entity, dbTransaction);
 			return DbConnection.QuerySingleAsync<Guid>(command);
@@ -82,10 +84,7 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="id">The id of the entity to delete.</param>
 		/// <returns>The number of affected rows.</returns>
-		public virtual Task<int> DeleteAsync(Guid id)
-		{
-			return DbConnection.ExecuteAsync(DeleteSql, new { id });
-		}
+		public Task<int> DeleteAsync(Guid id) => DbConnection.ExecuteAsync(DeleteSql, new { id });
 
 		/// <summary>
 		/// Deletes the entity with the specified id using the specified database transaction.
@@ -93,28 +92,45 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="id">The id of the entity to delete.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The number of affected rows.</returns>
-		public virtual Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
 		{
 			var command = new CommandDefinition(DeleteSql, new { id }, dbTransaction);
 			return DbConnection.ExecuteAsync(command);
 		}
 
+		/// <summary>
+		/// Gets all entities.
+		/// </summary>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>A collection of all entities.</returns>
 		public virtual Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(SelectSql, cancellationToken: cancellationToken);
 			return DbConnection.QueryAsync<TEntity>(command);
 		}
 
+		/// <summary>
+		/// Gets an entity with the specified id.
+		/// </summary>
+		/// <param name="id">The id of the entity to get.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>The entity with the specified id.</returns>
 		public virtual Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			var sql = $"{SelectSql} WHERE id = @id;";
+			var sql = $"{SelectSql} {FindSql}";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return DbConnection.QuerySingleAsync<TEntity>(command);
 		}
 
+		/// <summary>
+		/// Searches for an entity with the specified id.
+		/// </summary>
+		/// <param name="id">The id to to search by.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 		public virtual Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			var sql = $"{SelectSql} WHERE id = @id;";
+			var sql = $"{SelectSql} {FindSql}";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 			return DbConnection.QuerySingleOrDefaultAsync<TEntity?>(command);
 		}
@@ -124,10 +140,7 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="entity">The entity to update.</param>
 		/// <returns>The number of affected rows.</returns>
-		public Task<int> UpdateAsync(TEntity entity)
-		{
-			return DbConnection.ExecuteAsync(UpdateSql, entity);
-		}
+		public Task<int> UpdateAsync(TEntity entity) => DbConnection.ExecuteAsync(UpdateSql, entity);
 
 		/// <summary>
 		/// Updates an existing entity with the specified id using the specified database transaction.
@@ -147,7 +160,7 @@ namespace Gnomeshade.Data.Repositories
 			GC.SuppressFinalize(this);
 		}
 
-		protected virtual void Dispose(bool disposing)
+		private void Dispose(bool disposing)
 		{
 			if (disposing)
 			{

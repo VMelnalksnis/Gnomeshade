@@ -17,11 +17,11 @@ using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories
 {
-	public sealed class TransactionRepository : IDisposable
+	/// <summary>
+	/// Database backed <see cref="TransactionEntity"/> repository.
+	/// </summary>
+	public sealed class TransactionRepository : Repository<TransactionEntity>
 	{
-		private const string _insertSql =
-			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, import_hash, imported_at, validated_at, validated_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @ImportHash, @ImportedAt, @ValidatedAt, @ValidatedByUserId) RETURNING id";
-
 		private const string _selectSql =
 			"SELECT t.id, " +
 			"t.owner_id OwnerId, " +
@@ -67,9 +67,8 @@ namespace Gnomeshade.Data.Repositories
 			"INNER JOIN transaction_items ti ON t.id = ti.transaction_id " +
 			"INNER JOIN products p ON ti.product_id = p.id";
 
-		private const string _deleteSql = "DELETE FROM transactions WHERE id = @id;";
-		private const string _updateSql =
-			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId RETURNING id";
+		private const string _findSuffix = "WHERE t.id = @id;";
+		private const string _findSingleSql = $"{_selectSql} {_findSuffix}";
 
 		private readonly IDbConnection _dbConnection;
 
@@ -78,32 +77,32 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="dbConnection">The database connection for executing queries.</param>
 		public TransactionRepository(IDbConnection dbConnection)
+			: base(dbConnection)
 		{
 			_dbConnection = dbConnection;
 		}
 
-		/// <summary>
-		/// Adds a new transaction item.
-		/// </summary>
-		/// <param name="transaction">The transaction to add.</param>
-		/// <param name="dbTransaction">The database transaction to use for the query.</param>
-		/// <returns>The id of the created transaction.</returns>
-		public async Task<Guid> AddAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_insertSql, transaction, dbTransaction);
-			return await _dbConnection.QuerySingleAsync<Guid>(command).ConfigureAwait(false);
-		}
+		/// <inheritdoc />
+		protected override string DeleteSql => "DELETE FROM transactions WHERE id = @id;";
 
-		/// <summary>
-		/// Searches for a transaction with the specified id.
-		/// </summary>
-		/// <param name="id">The id to search by.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<TransactionEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		protected override string InsertSql =>
+			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, import_hash, imported_at, validated_at, validated_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @ImportHash, @ImportedAt, @ValidatedAt, @ValidatedByUserId) RETURNING id";
+
+		/// <inheritdoc />
+		protected override string SelectSql => _selectSql;
+
+		/// <inheritdoc />
+		protected override string UpdateSql =>
+			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId RETURNING id";
+
+		/// <inheritdoc />
+		protected override string FindSql => _findSuffix;
+
+		/// <inheritdoc />
+		public override Task<TransactionEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+			var command = new CommandDefinition(_findSingleSql, new { id }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
@@ -122,6 +121,12 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
+		/// <summary>
+		/// Searches for a transaction with the specified import hash using the specified database transaction.
+		/// </summary>
+		/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<TransactionEntity?> FindByImportHashAsync(
 			byte[] importHash,
 			IDbTransaction dbTransaction)
@@ -131,28 +136,25 @@ namespace Gnomeshade.Data.Repositories
 			return FindAsync(command);
 		}
 
-		/// <summary>
-		/// Gets a transaction with the specified id.
-		/// </summary>
-		/// <param name="id">The id to search by.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The <see cref="TransactionEntity"/> with the specified id.</returns>
-		public async Task<TransactionEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		/// <inheritdoc />
+		public override Task<TransactionEntity> GetByIdAsync(
+			Guid id,
+			CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			return transactions.Single();
+			var command = new CommandDefinition(_findSingleSql, new { id }, cancellationToken: cancellationToken);
+			return GetAsync(command);
 		}
 
-		public async Task<TransactionEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		/// <summary>
+		/// Gets a transaction with the specified id using the specified database transaction.
+		/// </summary>
+		/// <param name="id">The id of the transaction to get.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The transaction with the specified id.</returns>
+		public Task<TransactionEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
 		{
-			const string sql = _selectSql + " WHERE t.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
-
-			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
-			return transactions.Single();
+			var command = new CommandDefinition(_findSingleSql, new { id }, dbTransaction);
+			return GetAsync(command);
 		}
 
 		/// <summary>
@@ -174,22 +176,7 @@ namespace Gnomeshade.Data.Repositories
 			return transactions.ToList();
 		}
 
-		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
-		{
-			var command = new CommandDefinition(_deleteSql, new { id }, dbTransaction);
-			return _dbConnection.ExecuteAsync(command);
-		}
-
-		public Task<int> UpdateAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
-		{
-			return _dbConnection.ExecuteAsync(_updateSql, transaction, dbTransaction);
-		}
-
-		/// <inheritdoc />
-		public void Dispose() => _dbConnection.Dispose();
-
-		private async Task<IEnumerable<TransactionEntity>>
-			GetTransactionsAsync(CommandDefinition command)
+		private async Task<IEnumerable<TransactionEntity>> GetTransactionsAsync(CommandDefinition command)
 		{
 			var oneToOnes =
 				await _dbConnection
@@ -202,6 +189,7 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
+			// ReSharper disable once ConvertClosureToMethodGroup
 			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => TransactionEntity.FromGrouping(grouping));
 		}
 
@@ -209,6 +197,12 @@ namespace Gnomeshade.Data.Repositories
 		{
 			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
 			return transactions.SingleOrDefault();
+		}
+
+		private async Task<TransactionEntity> GetAsync(CommandDefinition command)
+		{
+			var transactions = await GetTransactionsAsync(command).ConfigureAwait(false);
+			return transactions.Single();
 		}
 	}
 }
