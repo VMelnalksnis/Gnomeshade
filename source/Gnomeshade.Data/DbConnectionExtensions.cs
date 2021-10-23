@@ -10,12 +10,17 @@ namespace Gnomeshade.Data
 	{
 		internal static IDbTransaction OpenAndBeginTransaction(this IDbConnection dbConnection)
 		{
-			if (!dbConnection.State.HasFlag(ConnectionState.Open))
+			if (dbConnection.State.IsNotOpen())
 			{
 				dbConnection.Open();
 			}
 
 			return dbConnection.BeginTransaction();
+		}
+
+		private static bool IsNotOpen(this ConnectionState connectionState)
+		{
+			return (connectionState & ConnectionState.Open) != ConnectionState.Open;
 		}
 	}
 }

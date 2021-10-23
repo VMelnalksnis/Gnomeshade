@@ -89,6 +89,7 @@ namespace Gnomeshade.Data
 		{
 			_dbConnection.Dispose();
 			_ownerRepository.Dispose();
+			_ownershipRepository.Dispose();
 			_userRepository.Dispose();
 			_counterpartyRepository.Dispose();
 		}

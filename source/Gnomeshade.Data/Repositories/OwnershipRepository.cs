@@ -15,7 +15,7 @@ namespace Gnomeshade.Data.Repositories
 	/// <summary>
 	/// Database backed <see cref="OwnershipEntity"/> repository.
 	/// </summary>
-	public sealed class OwnershipRepository
+	public sealed class OwnershipRepository : IDisposable
 	{
 		private const string _insertSql =
 			"INSERT INTO ownerships (id, owner_id, user_id) VALUES (@id, @id, @id) RETURNING id";
@@ -43,5 +43,8 @@ namespace Gnomeshade.Data.Repositories
 			var command = new CommandDefinition(_insertSql, new { id }, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
+
+		/// <inheritdoc />
+		public void Dispose() => _dbConnection.Dispose();
 	}
 }

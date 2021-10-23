@@ -159,6 +159,7 @@ namespace Gnomeshade.Data
 			_dbConnection.Dispose();
 			_repository.Dispose();
 			_inCurrencyRepository.Dispose();
+			_counterpartyRepository.Dispose();
 		}
 	}
 }
