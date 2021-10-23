@@ -13,7 +13,7 @@ using Gnomeshade.Data.Entities;
 namespace Gnomeshade.Data.Repositories
 {
 	/// <summary>
-	/// Database backed user entity repository.
+	/// Database backed <see cref="UserEntity"/> repository.
 	/// </summary>
 	public sealed class UserRepository : IDisposable
 	{

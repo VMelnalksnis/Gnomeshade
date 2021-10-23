@@ -15,6 +15,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="UnitEntity"/> repository.
+	/// </summary>
 	public sealed class UnitRepository : IDisposable
 	{
 		private const string _insertSql =

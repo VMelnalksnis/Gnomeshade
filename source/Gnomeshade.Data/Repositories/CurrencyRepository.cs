@@ -15,6 +15,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="CurrencyRepository"/> repository.
+	/// </summary>
 	public sealed class CurrencyRepository : IDisposable
 	{
 		private const string _selectSql =

@@ -14,6 +14,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="OwnerEntity"/> repository.
+	/// </summary>
 	public sealed class OwnerRepository : IDisposable
 	{
 		private const string _insertSql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";

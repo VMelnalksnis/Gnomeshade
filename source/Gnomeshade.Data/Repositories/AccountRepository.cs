@@ -16,11 +16,11 @@ using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="AccountEntity"/> repository.
+	/// </summary>
 	public sealed class AccountRepository : NamedRepository<AccountEntity>
 	{
-		private const string _insertSql =
-			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name,counterparty_id, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @CounterpartyId, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
-
 		private const string _selectSql =
 			"SELECT a.id, " +
 			"a.created_at CreatedAt, " +
@@ -76,8 +76,6 @@ namespace Gnomeshade.Data.Repositories
 			"LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id " +
 			"LEFT JOIN currencies c ON aic.currency_id = c.id";
 
-		private const string _deleteSql = "DELETE FROM accounts WHERE id = @id;";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
 		/// </summary>
@@ -88,32 +86,23 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => _deleteSql;
+		protected override string DeleteSql => "DELETE FROM accounts WHERE id = @id;";
 
 		/// <inheritdoc />
-		protected override string InsertSql => _insertSql;
+		protected override string InsertSql =>
+			"INSERT INTO accounts (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name,counterparty_id, preferred_currency_id, disabled_at, disabled_by_user_id, bic, iban, account_number) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @CounterpartyId, @PreferredCurrencyId, @DisabledAt, @DisabledByUserId, @Bic, @Iban, @AccountNumber) RETURNING id;";
 
 		/// <inheritdoc />
 		protected override string SelectSql => _selectSql;
 
 		/// <inheritdoc />
+		protected override string FindSql => "WHERE a.id = @id;";
+
+		/// <inheritdoc />
 		protected override string UpdateSql => throw new NotImplementedException();
 
 		/// <inheritdoc />
-		public override Task<AccountEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " WHERE a.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return FindAsync(command);
-		}
-
-		/// <inheritdoc />
-		public override Task<AccountEntity?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " WHERE a.normalized_name = @name;";
-			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
-			return FindAsync(command);
-		}
+		protected override string NameSql => "WHERE a.normalized_name = @name;";
 
 		/// <summary>
 		/// Finds an account with the specified IBAN.
@@ -123,43 +112,22 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<AccountEntity?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE a.iban = @iban;";
+			const string sql = $"{_selectSql} WHERE a.iban = @iban;";
 			var command = new CommandDefinition(sql, new { iban }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
+		/// <summary>
+		/// Finds an account with the specified BIC.
+		/// </summary>
+		/// <param name="bic">The BIC for which to search for.</param>
+		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+		/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<AccountEntity?> FindByBicAsync(string bic, CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE a.bic = @bic;";
+			const string sql = $"{_selectSql} WHERE a.bic = @bic;";
 			var command = new CommandDefinition(sql, new { bic }, cancellationToken: cancellationToken);
 			return FindAsync(command);
-		}
-
-		/// <inheritdoc />
-		public override async Task<AccountEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " WHERE a.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-
-			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accounts.Single();
-		}
-
-		public async Task<AccountEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
-		{
-			const string sql = _selectSql + " WHERE a.id = @id;";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
-
-			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accounts.Single();
-		}
-
-		/// <inheritdoc />
-		public override Task<IEnumerable<AccountEntity>> GetAllAsync(CancellationToken cancellationToken = default)
-		{
-			const string sql = _selectSql + " ORDER BY a.created_at DESC, aic.created_at DESC LIMIT 1000;";
-			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
-			return GetAccountsAsync(command);
 		}
 
 		/// <summary>
@@ -169,19 +137,13 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>A collection of all active accounts.</returns>
 		public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(CancellationToken cancellationToken = default)
 		{
-			const string sql = _selectSql + " WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
+			const string sql = $"{_selectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
 			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
-			return GetAccountsAsync(command);
+			return GetEntitiesAsync(command);
 		}
 
-		private async Task<AccountEntity?> FindAsync(CommandDefinition command)
-		{
-			var accounts = await GetAccountsAsync(command).ConfigureAwait(false);
-			return accounts.SingleOrDefault();
-		}
-
-		private async Task<IEnumerable<AccountEntity>> GetAccountsAsync(
-			CommandDefinition command)
+		/// <inheritdoc />
+		protected override async Task<IEnumerable<AccountEntity>> GetEntitiesAsync(CommandDefinition command)
 		{
 			var oneToOnes =
 				await DbConnection
@@ -195,6 +157,7 @@ namespace Gnomeshade.Data.Repositories
 						})
 					.ConfigureAwait(false);
 
+			// ReSharper disable once ConvertClosureToMethodGroup
 			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => AccountEntity.FromGrouping(grouping));
 		}
 	}

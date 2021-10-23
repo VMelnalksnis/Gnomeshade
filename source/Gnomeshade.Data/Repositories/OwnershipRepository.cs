@@ -12,6 +12,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="OwnershipEntity"/> repository.
+	/// </summary>
 	public sealed class OwnershipRepository
 	{
 		private const string _insertSql =

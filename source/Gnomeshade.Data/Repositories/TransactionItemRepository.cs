@@ -8,6 +8,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="TransactionItemEntity"/> repository.
+	/// </summary>
 	public sealed class TransactionItemRepository : Repository<TransactionItemEntity>
 	{
 		/// <summary>

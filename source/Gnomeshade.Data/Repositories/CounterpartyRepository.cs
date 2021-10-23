@@ -9,6 +9,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="CounterpartyEntity"/> repository.
+	/// </summary>
 	public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 	{
 		/// <summary>

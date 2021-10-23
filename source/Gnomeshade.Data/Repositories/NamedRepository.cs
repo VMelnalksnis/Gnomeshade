@@ -29,16 +29,21 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <summary>
+		/// Gets the SQL query to append to <see cref="Repository{TEntity}.SelectSql"/> to filter for a single entity by name.
+		/// </summary>
+		protected virtual string NameSql => "WHERE normalized_name = @name;";
+
+		/// <summary>
 		/// Finds an entity by its normalized name.
 		/// </summary>
 		/// <param name="name">The normalized name of the entity to find.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-		public virtual Task<TNamedEntity?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+		public Task<TNamedEntity?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
 		{
-			var sql = $"{SelectSql} WHERE normalized_name = @name;";
+			var sql = $"{SelectSql} {NameSql}";
 			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
-			return DbConnection.QuerySingleOrDefaultAsync<TNamedEntity?>(command);
+			return FindAsync(command);
 		}
 	}
 }

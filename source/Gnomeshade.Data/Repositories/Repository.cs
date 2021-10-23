@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -103,10 +104,10 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all entities.</returns>
-		public virtual Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 		{
 			var command = new CommandDefinition(SelectSql, cancellationToken: cancellationToken);
-			return DbConnection.QueryAsync<TEntity>(command);
+			return GetEntitiesAsync(command);
 		}
 
 		/// <summary>
@@ -115,11 +116,24 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="id">The id of the entity to get.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity with the specified id.</returns>
-		public virtual Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			var sql = $"{SelectSql} {FindSql}";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return DbConnection.QuerySingleAsync<TEntity>(command);
+			return GetAsync(command);
+		}
+
+		/// <summary>
+		/// Gets an entity with the specified id using the specified database transaction.
+		/// </summary>
+		/// <param name="id">The id of the entity to get.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The entity with the specified id.</returns>
+		public Task<TEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		{
+			var sql = $"{SelectSql} {FindSql}";
+			var command = new CommandDefinition(sql, new { id }, dbTransaction);
+			return GetAsync(command);
 		}
 
 		/// <summary>
@@ -128,11 +142,24 @@ namespace Gnomeshade.Data.Repositories
 		/// <param name="id">The id to to search by.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-		public virtual Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 		{
 			var sql = $"{SelectSql} {FindSql}";
 			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-			return DbConnection.QuerySingleOrDefaultAsync<TEntity?>(command);
+			return FindAsync(command);
+		}
+
+		/// <summary>
+		/// Searches for an entity with the specified id using the specified database transaction.
+		/// </summary>
+		/// <param name="id">The id to to search by.</param>
+		/// <param name="dbTransaction">The database transaction to use for the query.</param>
+		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
+		public Task<TEntity?> FindByIdAsync(Guid id, IDbTransaction dbTransaction)
+		{
+			var sql = $"{SelectSql} {FindSql}";
+			var command = new CommandDefinition(sql, new { id }, dbTransaction);
+			return FindAsync(command);
 		}
 
 		/// <summary>
@@ -158,6 +185,40 @@ namespace Gnomeshade.Data.Repositories
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.
+		/// </summary>
+		/// <param name="command">The command to execute.</param>
+		/// <returns>The entities returned by the query.</returns>
+		protected virtual Task<IEnumerable<TEntity>> GetEntitiesAsync(CommandDefinition command)
+		{
+			return DbConnection.QueryAsync<TEntity>(command);
+		}
+
+		/// <summary>
+		/// Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.
+		/// </summary>
+		/// <param name="command">The command to execute.</param>
+		/// <returns>The single entity if one was returned by the query, otherwise <see langword="null"/>.</returns>
+		/// <exception cref="InvalidOperationException">The query returned multiple results.</exception>
+		protected async Task<TEntity?> FindAsync(CommandDefinition command)
+		{
+			var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
+			return entities.SingleOrDefault();
+		}
+
+		/// <summary>
+		/// Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.
+		/// </summary>
+		/// <param name="command">The command to execute.</param>
+		/// <returns>The single entity returned by the query.</returns>
+		/// <exception cref="InvalidOperationException">The query returned multiple or no results.</exception>
+		protected async Task<TEntity> GetAsync(CommandDefinition command)
+		{
+			var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
+			return entities.Single();
 		}
 
 		private void Dispose(bool disposing)

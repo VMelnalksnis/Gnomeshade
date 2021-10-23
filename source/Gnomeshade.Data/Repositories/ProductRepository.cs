@@ -8,6 +8,9 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories
 {
+	/// <summary>
+	/// Database backed <see cref="ProductEntity"/> repository.
+	/// </summary>
 	public sealed class ProductRepository : NamedRepository<ProductEntity>
 	{
 		/// <summary>
