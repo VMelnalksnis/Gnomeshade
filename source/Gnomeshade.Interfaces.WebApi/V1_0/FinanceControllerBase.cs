@@ -10,11 +10,9 @@ using AutoMapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
-using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0
@@ -22,58 +20,30 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0
 	[ApiController]
 	[ApiVersion("1.0")]
 	[Authorize]
+	[AuthorizeApplicationUser]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SuppressMessage(
 		"ReSharper",
 		"AsyncConverter.ConfigureAwaitHighlighting",
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase, IDisposable
+	public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 		where TEntity : class, IEntity
 		where TModel : class
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly UserRepository _userRepository;
+		private readonly ApplicationUserContext _applicationUserContext;
 
-		protected FinanceControllerBase(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			Mapper mapper)
+		protected FinanceControllerBase(ApplicationUserContext applicationUserContext, Mapper mapper)
 		{
-			_userManager = userManager;
-			_userRepository = userRepository;
+			_applicationUserContext = applicationUserContext;
 			Mapper = mapper;
 		}
 
 		protected Mapper Mapper { get; }
 
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_userManager.Dispose();
-			_userRepository.Dispose();
-		}
-
-		protected async Task<UserEntity?> GetCurrentUser()
-		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			if (identityUser is null)
-			{
-				return null;
-			}
-
-			return await _userRepository.FindByIdAsync(new(identityUser.Id));
-		}
+		/// <summary>
+		/// Gets the <see cref="UserEntity"/> associated with the executing action.
+		/// </summary>
+		protected UserEntity ApplicationUser => _applicationUserContext.User;
 
 		/// <summary>
 		/// Finds a <typeparamref name="TModel"/> by the specified <paramref name="selector"/>.

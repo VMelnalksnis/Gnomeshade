@@ -12,11 +12,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -36,11 +35,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		private readonly CounterpartyRepository _repository;
 
 		public CounterpartyController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			Mapper mapper,
-			CounterpartyRepository repository)
-			: base(userManager, userRepository, mapper)
+			CounterpartyRepository repository,
+			ApplicationUserContext applicationUserContext,
+			Mapper mapper)
+			: base(applicationUserContext, mapper)
 		{
 			_repository = repository;
 		}
@@ -66,13 +64,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
-			return await Find(() => _repository.FindByIdAsync(user.CounterpartyId, cancellationToken));
+			return await Find(() => _repository.FindByIdAsync(ApplicationUser.CounterpartyId, cancellationToken));
 		}
 
 		/// <summary>
@@ -100,17 +92,11 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] CounterpartyCreationModel creationModel)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var counterparty = Mapper.Map<CounterpartyEntity>(creationModel) with
 			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
+				OwnerId = ApplicationUser.Id,
+				CreatedByUserId = ApplicationUser.Id,
+				ModifiedByUserId = ApplicationUser.Id,
 				NormalizedName = creationModel.Name!.ToUpperInvariant(),
 			};
 

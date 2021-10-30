@@ -16,9 +16,11 @@ using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.Logging;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.OpenApi;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -73,6 +75,11 @@ namespace Gnomeshade.Interfaces.WebApi
 			services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
 
 			services
+				.AddAuthorization(options => options.AddPolicy(
+					AuthorizeApplicationUserAttribute.PolicyName,
+					policyBuilder => policyBuilder.Requirements.Add(new ApplicationUserRequirement())))
+				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
+				.AddScoped<ApplicationUserContext>()
 				.AddTransient<JwtSecurityTokenHandler>()
 				.AddAuthentication(Options.Authentication)
 				.AddJwtBearer(options => Options.JwtBearer(options, Configuration));

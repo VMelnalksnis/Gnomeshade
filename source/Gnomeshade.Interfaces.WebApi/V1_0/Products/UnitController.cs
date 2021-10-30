@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -13,14 +12,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -32,22 +29,15 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class UnitController : FinanceControllerBase<UnitEntity, Unit>
 	{
-		private readonly IDbConnection _dbConnection;
 		private readonly UnitRepository _repository;
-		private readonly ILogger<UnitController> _logger;
 
 		public UnitController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			IDbConnection dbConnection,
 			UnitRepository repository,
-			Mapper mapper,
-			ILogger<UnitController> logger)
-			: base(userManager, userRepository, mapper)
+			ApplicationUserContext applicationUserContext,
+			Mapper mapper)
+			: base(applicationUserContext, mapper)
 		{
-			_dbConnection = dbConnection;
 			_repository = repository;
-			_logger = logger;
 		}
 
 		[HttpGet("{id:guid}")]
@@ -71,17 +61,11 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] UnitCreationModel creationModel)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var unit = Mapper.Map<UnitEntity>(creationModel) with
 			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
+				OwnerId = ApplicationUser.Id,
+				CreatedByUserId = ApplicationUser.Id,
+				ModifiedByUserId = ApplicationUser.Id,
 				NormalizedName = creationModel.Name!.ToUpperInvariant(),
 			};
 

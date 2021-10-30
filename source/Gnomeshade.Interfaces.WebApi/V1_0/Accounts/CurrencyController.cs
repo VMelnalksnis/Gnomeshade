@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
@@ -34,11 +33,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		private readonly CurrencyRepository _currencyRepository;
 
 		public CurrencyController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
 			CurrencyRepository currencyRepository,
+			ApplicationUserContext applicationUserContext,
 			Mapper mapper)
-			: base(userManager, userRepository, mapper)
+			: base(applicationUserContext, mapper)
 		{
 			_currencyRepository = currencyRepository;
 		}
@@ -50,18 +48,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
 			var models = currencies.Select(currency => MapToModel(currency)).ToList();
 			return Ok(models);
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_currencyRepository.Dispose();
-			base.Dispose(disposing);
 		}
 	}
 }

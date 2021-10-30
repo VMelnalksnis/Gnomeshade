@@ -16,15 +16,14 @@ using AutoMapper;
 using Gnomeshade.Core;
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -43,6 +42,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 	[ApiController]
 	[ApiVersion("1.0")]
 	[Authorize]
+	[AuthorizeApplicationUser]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	[SuppressMessage(
 		"ReSharper",
@@ -50,9 +50,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class Iso20022Controller : ControllerBase
 	{
+		private readonly ApplicationUserContext _applicationUserContext;
 		private readonly ILogger<Iso20022Controller> _logger;
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly UserRepository _userRepository;
 		private readonly Iso20022AccountReportReader _reportReader;
 		private readonly CurrencyRepository _currencyRepository;
 		private readonly AccountRepository _accountRepository;
@@ -65,9 +64,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 		private readonly Mapper _mapper;
 
 		public Iso20022Controller(
+			ApplicationUserContext applicationUserContext,
 			ILogger<Iso20022Controller> logger,
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
 			Iso20022AccountReportReader reportReader,
 			CurrencyRepository currencyRepository,
 			AccountRepository accountRepository,
@@ -79,9 +77,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			IDbConnection dbConnection,
 			Mapper mapper)
 		{
+			_applicationUserContext = applicationUserContext;
 			_logger = logger;
-			_userManager = userManager;
-			_userRepository = userRepository;
 			_reportReader = reportReader;
 			_currencyRepository = currencyRepository;
 			_accountRepository = accountRepository;
@@ -104,12 +101,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<AccountReportResult>> Import(IFormFile formFile)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
+			var user = _applicationUserContext.User;
 			_logger.LogDebug("Resolved user {UserId}", user.Id);
 
 			var accountReport = await ReadReport(formFile);
@@ -191,17 +183,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				dbTransaction.Rollback();
 				throw;
 			}
-		}
-
-		private async Task<UserEntity?> GetCurrentUser()
-		{
-			var identityUser = await _userManager.GetUserAsync(User);
-			if (identityUser is null)
-			{
-				return null;
-			}
-
-			return await _userRepository.FindByIdAsync(new(identityUser.Id));
 		}
 
 		private async Task<AccountReport11> ReadReport(IFormFile formFile)
@@ -472,7 +453,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 
 			if (otherAccount is null)
 			{
-				_logger.LogTrace("Failed to find other account.");
+				_logger.LogTrace("Failed to find other account");
 				throw new();
 			}
 

@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -15,11 +14,10 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -36,27 +34,20 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class AccountController : FinanceControllerBase<AccountEntity, Account>
 	{
-		private readonly IDbConnection _dbConnection;
 		private readonly AccountRepository _repository;
 		private readonly AccountInCurrencyRepository _inCurrencyRepository;
-		private readonly CurrencyRepository _currencyRepository;
 		private readonly AccountUnitOfWork _accountUnitOfWork;
 
 		public AccountController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			IDbConnection dbConnection,
 			AccountRepository repository,
 			AccountInCurrencyRepository inCurrencyRepository,
-			CurrencyRepository currencyRepository,
+			ApplicationUserContext applicationUserContext,
 			Mapper mapper,
 			AccountUnitOfWork accountUnitOfWork)
-			: base(userManager, userRepository, mapper)
+			: base(applicationUserContext, mapper)
 		{
-			_dbConnection = dbConnection;
 			_repository = repository;
 			_inCurrencyRepository = inCurrencyRepository;
-			_currencyRepository = currencyRepository;
 			_accountUnitOfWork = accountUnitOfWork;
 		}
 
@@ -101,17 +92,11 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] AccountCreationModel creationModel)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var account = Mapper.Map<AccountEntity>(creationModel) with
 			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
+				OwnerId = ApplicationUser.Id,
+				CreatedByUserId = ApplicationUser.Id,
+				ModifiedByUserId = ApplicationUser.Id,
 				NormalizedName = creationModel.Name!.ToUpperInvariant(),
 			};
 
@@ -134,12 +119,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			Guid id,
 			[FromBody, BindRequired] AccountInCurrencyCreationModel creationModel)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var account = await _repository.FindByIdAsync(id);
 			if (account is null)
 			{
@@ -156,33 +135,15 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(creationModel) with
 			{
 				OwnerId = account.OwnerId,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
+				CreatedByUserId = ApplicationUser.Id,
+				ModifiedByUserId = ApplicationUser.Id,
 				AccountId = account.Id,
 			};
 
-			_dbConnection.Open();
-			using var dbTransaction = _dbConnection.BeginTransaction();
-			_ = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
-			dbTransaction.Commit();
+			_ = await _inCurrencyRepository.AddAsync(accountInCurrency);
 
 			// todo should this point to account or account in currency?
 			return CreatedAtAction(nameof(Get), new { id }, id);
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_dbConnection.Dispose();
-			_repository.Dispose();
-			_inCurrencyRepository.Dispose();
-			_currencyRepository.Dispose();
-			base.Dispose(disposing);
 		}
 	}
 }

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -14,12 +13,11 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
@@ -37,7 +35,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 	public sealed class TransactionController : FinanceControllerBase<TransactionEntity, Transaction>
 	{
-		private readonly IDbConnection _dbConnection;
 		private readonly TransactionRepository _repository;
 		private readonly TransactionItemRepository _itemRepository;
 		private readonly ProductRepository _productRepository;
@@ -47,28 +44,23 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TransactionController"/> class.
 		/// </summary>
-		/// <param name="userManager">Identity user manager.</param>
-		/// <param name="userRepository">Finance user repository.</param>
-		/// <param name="dbConnection">Database connection for creating <see cref="IDbTransaction"/> for creating entities.</param>
 		/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
 		/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItemEntity"/>.</param>
 		/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
-		/// <param name="mapper">Repository entity and API model mapper.</param>
 		/// <param name="logger">Logger for logging in the specified category.</param>
 		/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
+		/// <param name="applicationUserContext">Context for getting the current application user.</param>
+		/// <param name="mapper">Repository entity and API model mapper.</param>
 		public TransactionController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			IDbConnection dbConnection,
 			TransactionRepository repository,
 			TransactionItemRepository itemRepository,
 			ProductRepository productRepository,
-			Mapper mapper,
 			ILogger<TransactionController> logger,
-			TransactionUnitOfWork unitOfWork)
-			: base(userManager, userRepository, mapper)
+			TransactionUnitOfWork unitOfWork,
+			ApplicationUserContext applicationUserContext,
+			Mapper mapper)
+			: base(applicationUserContext, mapper)
 		{
-			_dbConnection = dbConnection;
 			_repository = repository;
 			_itemRepository = itemRepository;
 			_productRepository = productRepository;
@@ -122,13 +114,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] TransactionCreationModel model)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
-			return await CreateNewTransactionAsync(model, user);
+			return await CreateNewTransactionAsync(model, ApplicationUser);
 		}
 
 		/// <summary>
@@ -142,12 +128,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(Status404NotFound)]
 		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] TransactionCreationModel model)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var existingTransaction = model.Id is not null
 				? await _repository.FindByIdAsync(model.Id.Value)
 				: null;
@@ -158,8 +138,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			}
 
 			return existingTransaction is null
-				? await CreateNewTransactionAsync(model, user)
-				: await UpdateExistingTransactionAsync(model, user, existingTransaction);
+				? await CreateNewTransactionAsync(model, ApplicationUser)
+				: await UpdateExistingTransactionAsync(model, ApplicationUser, existingTransaction);
 		}
 
 		/// <summary>
@@ -226,12 +206,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			Guid transactionId,
 			[FromBody, BindRequired] TransactionItemCreationModel model)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			if (await _repository.FindByIdAsync(transactionId) is null)
 			{
 				return NotFound();
@@ -239,13 +213,13 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 
 			if (model.Id is null)
 			{
-				return await CreateNewItemAsync(transactionId, model, user);
+				return await CreateNewItemAsync(transactionId, model, ApplicationUser);
 			}
 
 			var existingItem = await _itemRepository.FindByIdAsync(model.Id.Value);
 			return existingItem is null
-				? await CreateNewItemAsync(transactionId, model, user)
-				: await UpdateExistingItemAsync(transactionId, model, user);
+				? await CreateNewItemAsync(transactionId, model, ApplicationUser)
+				: await UpdateExistingItemAsync(transactionId, model, ApplicationUser);
 		}
 
 		/// <summary>
@@ -274,20 +248,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 					transactionItemId);
 				return StatusCode(Status500InternalServerError);
 			}
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_dbConnection.Dispose();
-			_repository.Dispose();
-			_itemRepository.Dispose();
-			base.Dispose(disposing);
 		}
 
 		private async Task<ActionResult<Guid>> CreateNewTransactionAsync(

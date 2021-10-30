@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,11 +11,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -29,18 +27,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 	/// </summary>
 	public sealed class ProductController : FinanceControllerBase<ProductEntity, Product>
 	{
-		private readonly IDbConnection _dbConnection;
 		private readonly ProductRepository _repository;
 
 		public ProductController(
-			UserManager<ApplicationUser> userManager,
-			UserRepository userRepository,
-			IDbConnection dbConnection,
 			ProductRepository repository,
+			ApplicationUserContext applicationUserContext,
 			Mapper mapper)
-			: base(userManager, userRepository, mapper)
+			: base(applicationUserContext, mapper)
 		{
-			_dbConnection = dbConnection;
 			_repository = repository;
 		}
 
@@ -73,12 +67,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(Status201Created)]
 		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] ProductCreationModel model)
 		{
-			var user = await GetCurrentUser();
-			if (user is null)
-			{
-				return Unauthorized();
-			}
-
 			var normalizedName = model.Name!.ToUpperInvariant();
 			var existingByName = await _repository.FindByNameAsync(normalizedName);
 
@@ -95,21 +83,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 				: default;
 
 			return existingById is null
-				? await CreateNewProductAsync(model, user)
-				: await UpdateExistingProductAsync(model, user);
-		}
-
-		/// <inheritdoc />
-		protected override void Dispose(bool disposing)
-		{
-			if (!disposing)
-			{
-				return;
-			}
-
-			_dbConnection.Dispose();
-			_repository.Dispose();
-			base.Dispose(disposing);
+				? await CreateNewProductAsync(model, ApplicationUser)
+				: await UpdateExistingProductAsync(model, ApplicationUser);
 		}
 
 		private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, UserEntity user)
