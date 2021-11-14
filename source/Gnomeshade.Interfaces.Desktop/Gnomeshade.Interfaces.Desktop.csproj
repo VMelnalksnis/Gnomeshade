@@ -12,7 +12,7 @@
         <PackageReference Include="Avalonia.Desktop" Version="0.10.8"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="0.10.8"/>
         <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.8"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0"/>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
