@@ -47,6 +47,8 @@ EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.TestingHelpers", "tests\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj", "{CFFBE37B-AD26-4D48-AC8F-655D735732A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMelnalksnis.OAuth2", "source\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj", "{C2900675-9D28-4E15-B654-16F3F46CE32F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{CFFBE37B-AD26-4D48-AC8F-655D735732A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFFBE37B-AD26-4D48-AC8F-655D735732A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFFBE37B-AD26-4D48-AC8F-655D735732A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2900675-9D28-4E15-B654-16F3F46CE32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2900675-9D28-4E15-B654-16F3F46CE32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2900675-9D28-4E15-B654-16F3F46CE32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2900675-9D28-4E15-B654-16F3F46CE32F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
