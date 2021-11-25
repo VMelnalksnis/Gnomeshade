@@ -56,7 +56,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
 			var counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
-			counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId);
+			counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
 
 			var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
 			var account = accountFaker.Generate();
@@ -67,10 +67,10 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var accountId = await _unitOfWork.AddAsync(account);
 
-			var getAccount = await _repository.GetByIdAsync(accountId);
-			var findAccount = await _repository.FindByIdAsync(getAccount.Id);
-			var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName);
-			var accounts = await _repository.GetAllAsync();
+			var getAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
+			var findAccount = await _repository.FindByIdAsync(getAccount.Id, TestUser.Id);
+			var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName, TestUser.Id);
+			var accounts = await _repository.GetAllAsync(TestUser.Id);
 
 			var expectedAccount = account with
 			{
@@ -89,8 +89,8 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			accounts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedAccount, Options);
 
 			var firstAccountInCurrency = getAccount.Currencies.First();
-			var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id);
-			var findAccountInCurrency = await _inCurrencyRepository.FindByIdAsync(getAccountInCurrency.Id);
+			var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
+			var findAccountInCurrency = await _inCurrencyRepository.FindByIdAsync(getAccountInCurrency.Id, TestUser.Id);
 
 			var expectedAccountInCurrency = firstAccountInCurrency with
 			{
@@ -110,12 +110,12 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var disabledAccountId = await _unitOfWork.AddAsync(disabledAccount);
 
-			var allAccounts = await _repository.GetAllActiveAsync();
+			var allAccounts = await _repository.GetAllActiveAsync(TestUser.Id);
 			allAccounts.Should().OnlyContain(enabledAccount => enabledAccount.Id == getAccount.Id);
 
-			await _unitOfWork.DeleteAsync(getAccount);
-			disabledAccount = await _repository.GetByIdAsync(disabledAccountId);
-			await _unitOfWork.DeleteAsync(disabledAccount);
+			await _unitOfWork.DeleteAsync(getAccount, TestUser.Id);
+			disabledAccount = await _repository.GetByIdAsync(disabledAccountId, TestUser.Id);
+			await _unitOfWork.DeleteAsync(disabledAccount, TestUser.Id);
 		}
 
 		private static EquivalencyAssertionOptions<AccountEntity> Options(

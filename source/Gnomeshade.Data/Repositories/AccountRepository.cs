@@ -74,7 +74,7 @@ namespace Gnomeshade.Data.Repositories
 			"FROM accounts a " +
 			"LEFT JOIN currencies pc ON a.preferred_currency_id = pc.id " +
 			"LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id " +
-			"LEFT JOIN currencies c ON aic.currency_id = c.id";
+			"LEFT JOIN currencies c ON aic.currency_id = c.id ";
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
@@ -86,7 +86,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM accounts WHERE id = @id;";
+		protected override string DeleteSql => "DELETE FROM accounts WHERE id = @id AND owner_id = @ownerId;";
 
 		/// <inheritdoc />
 		protected override string InsertSql =>
@@ -96,24 +96,25 @@ namespace Gnomeshade.Data.Repositories
 		protected override string SelectSql => _selectSql;
 
 		/// <inheritdoc />
-		protected override string FindSql => "WHERE a.id = @id;";
+		protected override string FindSql => "WHERE a.id = @id AND a.owner_id = @ownerId;";
 
 		/// <inheritdoc />
 		protected override string UpdateSql => throw new NotImplementedException();
 
 		/// <inheritdoc />
-		protected override string NameSql => "WHERE a.normalized_name = @name;";
+		protected override string NameSql => "WHERE a.normalized_name = @name AND a.owner_id = @ownerId;";
 
 		/// <summary>
 		/// Finds an account with the specified IBAN.
 		/// </summary>
 		/// <param name="iban">The IBAN for which to search for.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<AccountEntity?> FindByIbanAsync(string iban, CancellationToken cancellationToken = default)
+		public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE a.iban = @iban;";
-			var command = new CommandDefinition(sql, new { iban }, cancellationToken: cancellationToken);
+			const string sql = $"{_selectSql} WHERE a.iban = @iban AND a.owner_id = @ownerId;";
+			var command = new CommandDefinition(sql, new { iban, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
@@ -121,24 +122,26 @@ namespace Gnomeshade.Data.Repositories
 		/// Finds an account with the specified BIC.
 		/// </summary>
 		/// <param name="bic">The BIC for which to search for.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<AccountEntity?> FindByBicAsync(string bic, CancellationToken cancellationToken = default)
+		public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE a.bic = @bic;";
-			var command = new CommandDefinition(sql, new { bic }, cancellationToken: cancellationToken);
+			const string sql = $"{_selectSql} WHERE a.bic = @bic AND a.owner_id = @ownerId;";
+			var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
 		/// <summary>
 		/// Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.
 		/// </summary>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all active accounts.</returns>
-		public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL ORDER BY a.created_at;";
-			var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
+			const string sql = $"{_selectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND a.owner_id = @ownerId ORDER BY a.created_at;";
+			var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 			return GetEntitiesAsync(command);
 		}
 

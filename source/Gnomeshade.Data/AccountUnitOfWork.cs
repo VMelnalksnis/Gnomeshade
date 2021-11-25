@@ -117,14 +117,15 @@ namespace Gnomeshade.Data
 		/// Deletes the specified account and all its currencies.
 		/// </summary>
 		/// <param name="account">The account to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(AccountEntity account)
+		public async Task<int> DeleteAsync(AccountEntity account, Guid ownerId)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
 			try
 			{
-				var rows = await DeleteAsync(account, dbTransaction).ConfigureAwait(false);
+				var rows = await DeleteAsync(account, ownerId, dbTransaction).ConfigureAwait(false);
 				dbTransaction.Commit();
 				return rows;
 			}
@@ -139,17 +140,18 @@ namespace Gnomeshade.Data
 		/// Deletes the specified account and all its currencies using the specified transaction.
 		/// </summary>
 		/// <param name="account">The account to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the queries.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(AccountEntity account, IDbTransaction dbTransaction)
+		public async Task<int> DeleteAsync(AccountEntity account, Guid ownerId, IDbTransaction dbTransaction)
 		{
 			var rows = 0;
 			foreach (var currency in account.Currencies)
 			{
-				rows += await _inCurrencyRepository.DeleteAsync(currency.Id, dbTransaction).ConfigureAwait(false);
+				rows += await _inCurrencyRepository.DeleteAsync(currency.Id, ownerId, dbTransaction).ConfigureAwait(false);
 			}
 
-			rows += await _repository.DeleteAsync(account.Id, dbTransaction).ConfigureAwait(false);
+			rows += await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
 			return rows;
 		}
 

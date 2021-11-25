@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,18 +32,19 @@ namespace Gnomeshade.Data.Repositories
 		/// <summary>
 		/// Gets the SQL query to append to <see cref="Repository{TEntity}.SelectSql"/> to filter for a single entity by name.
 		/// </summary>
-		protected virtual string NameSql => "WHERE normalized_name = @name;";
+		protected virtual string NameSql => "WHERE normalized_name = @name AND owner_id = @ownerId;";
 
 		/// <summary>
 		/// Finds an entity by its normalized name.
 		/// </summary>
 		/// <param name="name">The normalized name of the entity to find.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<TNamedEntity?> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+		public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
 		{
 			var sql = $"{SelectSql} {NameSql}";
-			var command = new CommandDefinition(sql, new { name }, cancellationToken: cancellationToken);
+			var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 	}

@@ -95,13 +95,14 @@ namespace Gnomeshade.Data
 		/// Deletes the specified transaction and all its items.
 		/// </summary>
 		/// <param name="transaction">The transaction to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(TransactionEntity transaction)
+		public async Task<int> DeleteAsync(TransactionEntity transaction, Guid ownerId)
 		{
 			using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 			try
 			{
-				var rows = await DeleteAsync(transaction, dbTransaction);
+				var rows = await DeleteAsync(transaction, ownerId, dbTransaction);
 				dbTransaction.Commit();
 				return rows;
 			}
@@ -116,17 +117,18 @@ namespace Gnomeshade.Data
 		/// Deletes the specified transaction and all its items.
 		/// </summary>
 		/// <param name="transaction">The transaction to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The number of affected rows.</returns>
-		public async Task<int> DeleteAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
+		public async Task<int> DeleteAsync(TransactionEntity transaction, Guid ownerId, IDbTransaction dbTransaction)
 		{
 			var rows = 0;
 			foreach (var item in transaction.Items)
 			{
-				rows += await _itemRepository.DeleteAsync(item.Id, dbTransaction).ConfigureAwait(false);
+				rows += await _itemRepository.DeleteAsync(item.Id, ownerId, dbTransaction).ConfigureAwait(false);
 			}
 
-			rows += await _repository.DeleteAsync(transaction.Id, dbTransaction).ConfigureAwait(false);
+			rows += await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
 			return rows;
 		}
 

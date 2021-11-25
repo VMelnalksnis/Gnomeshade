@@ -91,23 +91,25 @@ namespace Gnomeshade.Data.Repositories
 
 		/// <inheritdoc />
 		protected override string UpdateSql =>
-			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId RETURNING id";
+			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId WHERE id = @Id RETURNING id";
 
 		/// <inheritdoc />
-		protected override string FindSql => "WHERE t.id = @id;";
+		protected override string FindSql => "WHERE t.id = @id AND t.owner_id = @ownerId;";
 
 		/// <summary>
 		/// Searches for a transaction with the specified import hash.
 		/// </summary>
 		/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<TransactionEntity?> FindByImportHashAsync(
 			byte[] importHash,
+			Guid ownerId,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash;";
-			var command = new CommandDefinition(sql, new { importHash }, cancellationToken: cancellationToken);
+			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash AND t.owner_id = @ownerId;";
+			var command = new CommandDefinition(sql, new { importHash, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
@@ -115,14 +117,16 @@ namespace Gnomeshade.Data.Repositories
 		/// Searches for a transaction with the specified import hash using the specified database transaction.
 		/// </summary>
 		/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<TransactionEntity?> FindByImportHashAsync(
 			byte[] importHash,
+			Guid ownerId,
 			IDbTransaction dbTransaction)
 		{
-			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash;";
-			var command = new CommandDefinition(sql, new { importHash }, dbTransaction);
+			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash AND t.owner_id = @ownerId;";
+			var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
 			return FindAsync(command);
 		}
 
@@ -131,15 +135,17 @@ namespace Gnomeshade.Data.Repositories
 		/// </summary>
 		/// <param name="from">The start of the time range.</param>
 		/// <param name="to">The end of the time range.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all transactions.</returns>
 		public async Task<List<TransactionEntity>> GetAllAsync(
 			DateTimeOffset from,
 			DateTimeOffset to,
+			Guid ownerId,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE t.date >= @from AND t.date <= @to ORDER BY t.date DESC";
-			var command = new CommandDefinition(sql, new { from, to }, cancellationToken: cancellationToken);
+			const string sql = $"{_selectSql} WHERE t.date >= @from AND t.date <= @to AND t.owner_id = @ownerId ORDER BY t.date DESC";
+			var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 			var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);
 			return transactions.ToList();

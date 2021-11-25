@@ -81,7 +81,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellation)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellation));
+			return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
 		}
 
 		/// <summary>
@@ -99,7 +99,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		{
 			var (fromDate, toDate) = TimeRange.FromOptional(timeRange, DateTimeOffset.UtcNow);
 
-			var transactions = await _repository.GetAllAsync(fromDate, toDate, cancellation);
+			var transactions = await _repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
 			var transactionModels = transactions.Select(MapToModel).ToList();
 			return Ok(transactionModels);
 		}
@@ -129,7 +129,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] TransactionCreationModel model)
 		{
 			var existingTransaction = model.Id is not null
-				? await _repository.FindByIdAsync(model.Id.Value)
+				? await _repository.FindByIdAsync(model.Id.Value, ApplicationUser.Id)
 				: null;
 
 			if (model.Id is not null && existingTransaction is null)
@@ -154,13 +154,13 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<StatusCodeResult> Delete(Guid id)
 		{
-			var transaction = await _repository.FindByIdAsync(id);
+			var transaction = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 			if (transaction is null)
 			{
 				return NotFound();
 			}
 
-			_ = await _unitOfWork.DeleteAsync(transaction);
+			_ = await _unitOfWork.DeleteAsync(transaction, ApplicationUser.Id);
 			return NoContent();
 		}
 
@@ -175,14 +175,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[HttpGet("Item/{id:guid}")]
 		public async Task<ActionResult<TransactionItem>> GetItem(Guid id, CancellationToken cancellation)
 		{
-			var itemEntity = await _itemRepository.FindByIdAsync(id, cancellation);
+			var itemEntity = await _itemRepository.FindByIdAsync(id, ApplicationUser.Id, cancellation);
 			if (itemEntity is null)
 			{
 				return NotFound();
 			}
 
 			// todo this is already done with one query when getting transaction with all items
-			var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, cancellation);
+			var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
 			var product = Mapper.Map<Product>(productEntity);
 			var item = Mapper.Map<TransactionItem>(itemEntity) with { Product = product };
 
@@ -206,7 +206,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 			Guid transactionId,
 			[FromBody, BindRequired] TransactionItemCreationModel model)
 		{
-			if (await _repository.FindByIdAsync(transactionId) is null)
+			if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
 			{
 				return NotFound();
 			}
@@ -216,7 +216,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 				return await CreateNewItemAsync(transactionId, model, ApplicationUser);
 			}
 
-			var existingItem = await _itemRepository.FindByIdAsync(model.Id.Value);
+			var existingItem = await _itemRepository.FindByIdAsync(model.Id.Value, ApplicationUser.Id);
 			return existingItem is null
 				? await CreateNewItemAsync(transactionId, model, ApplicationUser)
 				: await UpdateExistingItemAsync(transactionId, model, ApplicationUser);
@@ -232,7 +232,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
 		[HttpDelete("Item/{id:guid}")]
 		public async Task<StatusCodeResult> DeleteItem(Guid id)
 		{
-			var deletedCount = await _itemRepository.DeleteAsync(id);
+			var deletedCount = await _itemRepository.DeleteAsync(id, ApplicationUser.Id);
 			return deletedCount switch
 			{
 				0 => NotFound(),

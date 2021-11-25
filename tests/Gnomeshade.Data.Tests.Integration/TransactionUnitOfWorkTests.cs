@@ -71,17 +71,17 @@ namespace Gnomeshade.Data.Tests.Integration
 
 			var transactionId = await _unitOfWork.AddAsync(transactionToAdd);
 
-			var getTransaction = await _repository.GetByIdAsync(transactionId);
-			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id);
-			var findImportTransaction = await _repository.FindByImportHashAsync(importHash);
-			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow);
+			var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
+			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
+			var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
+			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow, TestUser.Id);
 
 			getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);
 			findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 			findImportTransaction.Should().BeEquivalentTo(getTransaction, Options);
 			allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);
 
-			await _unitOfWork.DeleteAsync(getTransaction);
+			await _unitOfWork.DeleteAsync(getTransaction, TestUser.Id);
 		}
 
 		private static EquivalencyAssertionOptions<TransactionEntity> Options(

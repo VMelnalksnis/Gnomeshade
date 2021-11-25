@@ -163,7 +163,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 							}
 
 							var id = await _transactionUnitOfWork.AddAsync(transaction, dbTransaction);
-							transaction = await _transactionRepository.GetByIdAsync(id, dbTransaction);
+							transaction = await _transactionRepository.GetByIdAsync(id, user.Id, dbTransaction);
 							return (transaction, true);
 						})
 						.Select(task => task.Result)
@@ -225,7 +225,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				throw new KeyNotFoundException($"Could not find currency by alphabetic code {currencyCode}");
 			}
 
-			var account = await _accountRepository.FindByIbanAsync(iban);
+			var account = await _accountRepository.FindByIbanAsync(iban, user.Id);
 			if (account is not null)
 			{
 				return (account, currency, false);
@@ -246,7 +246,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			};
 
 			var id = await _accountUnitOfWork.AddAsync(account, dbTransaction);
-			account = await _accountRepository.GetByIdAsync(id);
+			account = await _accountRepository.GetByIdAsync(id, user.Id);
 			return (account, currency, true);
 		}
 
@@ -268,7 +268,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			if (!string.IsNullOrWhiteSpace(bankName))
 			{
 				_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
-				bankAccount = await _accountRepository.FindByNameAsync(bankName);
+				bankAccount = await _accountRepository.FindByNameAsync(bankName, user.Id);
 				if (bankAccount is not null)
 				{
 					_logger.LogDebug("Matched bank account to {AccountName}", bankAccount.Name);
@@ -282,7 +282,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			if (!string.IsNullOrWhiteSpace(bic))
 			{
 				_logger.LogTrace("Searching for bank account by BIC {Bic}", bic);
-				bankAccount = await _accountRepository.FindByBicAsync(bic);
+				bankAccount = await _accountRepository.FindByBicAsync(bic, user.Id);
 				if (bankAccount is not null)
 				{
 					_logger.LogDebug("Matched bank account to {Bic}", bic);
@@ -302,7 +302,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				};
 
 				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
-				account = await _accountRepository.GetByIdAsync(id, dbTransaction);
+				account = await _accountRepository.GetByIdAsync(id, user.Id, dbTransaction);
 				return (account, true);
 			}
 
@@ -320,7 +320,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
 			var importHash = await reportEntry.GetHashAsync();
-			var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, dbTransaction);
+			var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, user.Id, dbTransaction);
 			if (existingTransaction is not null)
 			{
 				resultBuilder.AddTransaction(existingTransaction, false);
@@ -331,9 +331,9 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 					.Distinct();
 
 				var accounts = inCurrencyIds
-					.Select(async id => await _inCurrencyRepository.GetByIdAsync(id))
+					.Select(async id => await _inCurrencyRepository.GetByIdAsync(id, user.Id))
 					.Select(task => task.Result.AccountId)
-					.Select(async id => await _accountRepository.GetByIdAsync(id))
+					.Select(async id => await _accountRepository.GetByIdAsync(id, user.Id))
 					.Select(task => task.Result);
 
 				foreach (var account in accounts)
@@ -386,7 +386,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			_logger.LogTrace("Mapping {Code} to product", reportEntry.BankTransactionCode);
 
 			var productName = GetProductName(reportEntry.BankTransactionCode);
-			var product = await _productRepository.FindByNameAsync(productName.ToUpperInvariant());
+			var product = await _productRepository.FindByNameAsync(productName.ToUpperInvariant(), user.Id);
 			if (product is null)
 			{
 				product = new()
@@ -399,7 +399,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				};
 
 				var id = await _productRepository.AddAsync(product, dbTransaction);
-				product = await _productRepository.GetByIdAsync(id);
+				product = await _productRepository.GetByIdAsync(id, user.Id);
 				resultBuilder.AddProduct(product, true);
 			}
 			else
@@ -412,7 +412,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			var (otherCurrency, otherAmount) = await GetOtherAmount(transactionDetails, amount, currency);
 
 			_logger.LogTrace("Searching for other account by {RelatedParties}", transactionDetails.RelatedParties);
-			var otherAccount = await FindOtherAccount(transactionDetails.RelatedParties);
+			var otherAccount = await FindOtherAccount(transactionDetails.RelatedParties, user);
 			_logger.LogTrace("Found other account {OtherAccount}", otherAccount?.Name);
 			if (otherAccount is null)
 			{
@@ -447,7 +447,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 
 				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(otherAccount, dbTransaction);
 
-				otherAccount = await _accountRepository.GetByIdAsync(id);
+				otherAccount = await _accountRepository.GetByIdAsync(id, user.Id);
 				resultBuilder.AddAccount(otherAccount, true);
 			}
 
@@ -502,7 +502,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 			return transaction;
 		}
 
-		private async Task<AccountEntity?> FindOtherAccount(TransactionParty2? relatedParty)
+		private async Task<AccountEntity?> FindOtherAccount(TransactionParty2? relatedParty, UserEntity user)
 		{
 			if (relatedParty is null)
 			{
@@ -516,7 +516,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				relatedParty.Debtor?.Name;
 			if (!string.IsNullOrWhiteSpace(name))
 			{
-				otherAccount = await _accountRepository.FindByNameAsync(name.ToUpperInvariant());
+				otherAccount = await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id);
 				if (otherAccount is not null)
 				{
 					return otherAccount;
@@ -528,7 +528,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
 				relatedParty.DebtorAccount?.Identification.Iban;
 			if (!string.IsNullOrWhiteSpace(iban))
 			{
-				otherAccount = await _accountRepository.FindByIbanAsync(iban);
+				otherAccount = await _accountRepository.FindByIbanAsync(iban, user.Id);
 			}
 
 			return otherAccount;

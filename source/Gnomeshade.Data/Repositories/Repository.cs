@@ -54,7 +54,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <summary>
 		/// Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.
 		/// </summary>
-		protected virtual string FindSql => "WHERE id = @id;";
+		protected virtual string FindSql => "WHERE id = @id AND owner_id = @ownerId;";
 
 		/// <summary>
 		/// Gets the SQL query for updating entities.
@@ -84,29 +84,35 @@ namespace Gnomeshade.Data.Repositories
 		/// Deletes the entity with the specified id.
 		/// </summary>
 		/// <param name="id">The id of the entity to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <returns>The number of affected rows.</returns>
-		public Task<int> DeleteAsync(Guid id) => DbConnection.ExecuteAsync(DeleteSql, new { id });
+		public Task<int> DeleteAsync(Guid id, Guid ownerId)
+		{
+			return DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId });
+		}
 
 		/// <summary>
 		/// Deletes the entity with the specified id using the specified database transaction.
 		/// </summary>
 		/// <param name="id">The id of the entity to delete.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The number of affected rows.</returns>
-		public Task<int> DeleteAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<int> DeleteAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 		{
-			var command = new CommandDefinition(DeleteSql, new { id }, dbTransaction);
+			var command = new CommandDefinition(DeleteSql, new { id, ownerId }, dbTransaction);
 			return DbConnection.ExecuteAsync(command);
 		}
 
 		/// <summary>
 		/// Gets all entities.
 		/// </summary>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>A collection of all entities.</returns>
-		public Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+		public Task<IEnumerable<TEntity>> GetAllAsync(Guid ownerId, CancellationToken cancellationToken = default)
 		{
-			var command = new CommandDefinition(SelectSql, cancellationToken: cancellationToken);
+			var command = new CommandDefinition(SelectSql, new { ownerId }, cancellationToken: cancellationToken);
 			return GetEntitiesAsync(command);
 		}
 
@@ -114,12 +120,13 @@ namespace Gnomeshade.Data.Repositories
 		/// Gets an entity with the specified id.
 		/// </summary>
 		/// <param name="id">The id of the entity to get.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity with the specified id.</returns>
-		public Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 		{
 			var sql = $"{SelectSql} {FindSql}";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+			var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 			return GetAsync(command);
 		}
 
@@ -127,12 +134,13 @@ namespace Gnomeshade.Data.Repositories
 		/// Gets an entity with the specified id using the specified database transaction.
 		/// </summary>
 		/// <param name="id">The id of the entity to get.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The entity with the specified id.</returns>
-		public Task<TEntity> GetByIdAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 		{
 			var sql = $"{SelectSql} {FindSql}";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
+			var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 			return GetAsync(command);
 		}
 
@@ -140,12 +148,13 @@ namespace Gnomeshade.Data.Repositories
 		/// Searches for an entity with the specified id.
 		/// </summary>
 		/// <param name="id">The id to to search by.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+		public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 		{
 			var sql = $"{SelectSql} {FindSql}";
-			var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+			var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
 
@@ -153,12 +162,13 @@ namespace Gnomeshade.Data.Repositories
 		/// Searches for an entity with the specified id using the specified database transaction.
 		/// </summary>
 		/// <param name="id">The id to to search by.</param>
+		/// <param name="ownerId">The id of the owner of the entity.</param>
 		/// <param name="dbTransaction">The database transaction to use for the query.</param>
 		/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<TEntity?> FindByIdAsync(Guid id, IDbTransaction dbTransaction)
+		public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 		{
 			var sql = $"{SelectSql} {FindSql}";
-			var command = new CommandDefinition(sql, new { id }, dbTransaction);
+			var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 			return FindAsync(command);
 		}
 

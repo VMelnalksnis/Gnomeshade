@@ -44,7 +44,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		public async Task FindByIdAsync_ShouldReturnNullIfDoesNotExist()
 		{
 			var id = Guid.NewGuid();
-			var transaction = await _repository.FindByIdAsync(id);
+			var transaction = await _repository.FindByIdAsync(id, TestUser.Id);
 			transaction.Should().BeNull();
 		}
 
@@ -52,7 +52,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 		public async Task FindByImportHashAsync_ShouldReturnNullIfDoesNotExist()
 		{
 			var importHash = await new TransactionEntity().GetHashAsync();
-			var transaction = await _repository.FindByImportHashAsync(importHash);
+			var transaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
 			transaction.Should().BeNull();
 		}
 	}

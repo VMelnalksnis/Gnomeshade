@@ -43,16 +43,16 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
+			return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<List<Product>>> GetAll(CancellationToken cancellationToken)
 		{
-			var accounts = await _repository.GetAllAsync(cancellationToken);
-			var models = accounts.Select(account => MapToModel(account)).ToList();
-			return Ok(models);
+			var products = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+			var productModels = products.Select(account => MapToModel(account)).ToList();
+			return Ok(productModels);
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] ProductCreationModel model)
 		{
 			var normalizedName = model.Name!.ToUpperInvariant();
-			var existingByName = await _repository.FindByNameAsync(normalizedName);
+			var existingByName = await _repository.FindByNameAsync(normalizedName, ApplicationUser.Id);
 
 			if ((model.Id is not null || (model.Id is null && existingByName is not null)) &&
 				existingByName is not null &&
@@ -79,7 +79,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 			}
 
 			var existingById = model.Id is not null
-				? await _repository.FindByIdAsync(model.Id.Value)
+				? await _repository.FindByIdAsync(model.Id.Value, ApplicationUser.Id)
 				: default;
 
 			return existingById is null

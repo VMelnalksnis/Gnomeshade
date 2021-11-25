@@ -43,9 +43,9 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var productToAdd = new ProductFaker(TestUser).Generate();
 
 			var id = await _repository.AddAsync(productToAdd);
-			var getProduct = await _repository.GetByIdAsync(id);
-			var findProduct = await _repository.FindByIdAsync(getProduct.Id);
-			var allProducts = await _repository.GetAllAsync();
+			var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
+			var findProduct = await _repository.FindByIdAsync(getProduct.Id, TestUser.Id);
+			var allProducts = await _repository.GetAllAsync(TestUser.Id);
 
 			var expectedProduct = productToAdd with
 			{
@@ -60,7 +60,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			var productToUpdate = getProduct with { Description = "Foo" };
 			_ = await _repository.UpdateAsync(productToUpdate);
-			var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id);
+			var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
 
 			using (new AssertionScope())
 			{
@@ -71,9 +71,9 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 				updatedProduct.Description.Should().NotBe(getProduct.Description);
 			}
 
-			await _repository.DeleteAsync(id);
+			await _repository.DeleteAsync(id, TestUser.Id);
 
-			var afterDelete = await _repository.FindByIdAsync(id);
+			var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 			afterDelete.Should().BeNull();
 		}
 
@@ -86,7 +86,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var id = await _repository.AddAsync(productToAdd, dbTransaction);
 			dbTransaction.Commit();
 
-			var getProduct = await _repository.GetByIdAsync(id);
+			var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
 			var expectedProduct = productToAdd with
 			{
 				Id = id,
@@ -95,7 +95,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			};
 
 			getProduct.Should().BeEquivalentTo(expectedProduct);
-			await _repository.DeleteAsync(id);
+			await _repository.DeleteAsync(id, TestUser.Id);
 		}
 	}
 }

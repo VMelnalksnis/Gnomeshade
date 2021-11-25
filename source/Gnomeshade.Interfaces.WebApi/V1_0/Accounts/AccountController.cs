@@ -56,7 +56,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public Task<ActionResult<Account>> Find(string name, CancellationToken cancellation)
 		{
-			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), cancellation));
+			return Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), ApplicationUser.Id, cancellation));
 		}
 
 		[HttpGet("{id:guid}")]
@@ -64,7 +64,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellation)
 		{
-			return Find(() => _repository.FindByIdAsync(id, cancellation));
+			return Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
 		}
 
 		/// <summary>
@@ -81,8 +81,8 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			CancellationToken cancellationToken)
 		{
 			var accounts = onlyActive
-				? await _repository.GetAllActiveAsync(cancellationToken)
-				: await _repository.GetAllAsync(cancellationToken);
+				? await _repository.GetAllActiveAsync(ApplicationUser.Id, cancellationToken)
+				: await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
 
 			var models = accounts.Select(account => MapToModel(account)).ToList();
 			return Ok(models);
@@ -119,7 +119,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 			Guid id,
 			[FromBody, BindRequired] AccountInCurrencyCreationModel creationModel)
 		{
-			var account = await _repository.FindByIdAsync(id);
+			var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 			if (account is null)
 			{
 				return NotFound();

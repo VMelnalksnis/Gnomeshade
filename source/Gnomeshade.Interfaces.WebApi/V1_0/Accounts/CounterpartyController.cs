@@ -56,7 +56,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public Task<ActionResult<Counterparty>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return Find(() => _repository.FindByIdAsync(id, cancellationToken));
+			return Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
 		}
 
 		[HttpGet("me")]
@@ -64,7 +64,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(ApplicationUser.CounterpartyId, cancellationToken));
+			return await Find(() => _repository.FindByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken));
 		}
 
 		/// <summary>
@@ -77,7 +77,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<IEnumerable<Counterparty>>> GetAll(CancellationToken cancellationToken)
 		{
-			var counterparties = await _repository.GetAllAsync(cancellationToken);
+			var counterparties = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
 			var models = counterparties.Select(party => Mapper.Map<Counterparty>(party)).ToList();
 			return Ok(models);
 		}

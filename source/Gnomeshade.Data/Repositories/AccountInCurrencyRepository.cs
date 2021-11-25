@@ -24,7 +24,7 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM accounts_in_currency WHERE id = @id";
+		protected override string DeleteSql => "DELETE FROM accounts_in_currency WHERE id = @id AND owner_id = @ownerId;";
 
 		/// <inheritdoc />
 		protected override string InsertSql =>
