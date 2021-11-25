@@ -2,9 +2,9 @@
     <PropertyGroup>
         <TargetFramework>net6.0-windows</TargetFramework>
         <OutputType>WinExe</OutputType>
+        <UserSecretsId>d04b4465-36e6-48eb-86c4-a1b1ccb1b023</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
     <ItemGroup>
@@ -16,5 +16,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
+        <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
     </ItemGroup>
 </Project>

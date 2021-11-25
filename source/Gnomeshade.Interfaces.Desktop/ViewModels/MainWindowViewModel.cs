@@ -12,6 +12,13 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+using VMelnalksnis.OAuth2;
+using VMelnalksnis.OAuth2.Keycloak;
+
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
 	/// <summary>
@@ -20,6 +27,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
+		private readonly IOAuth2Client _keycloakClient;
+
 		private ViewModelBase _activeView = null!;
 
 		/// <summary>
@@ -27,7 +36,31 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// </summary>
 		public MainWindowViewModel()
 		{
-			_gnomeshadeClient = new GnomeshadeClient();
+			var configuration = new ConfigurationBuilder()
+				.AddUserSecrets<MainWindowViewModel>()
+				.Build();
+
+			var serviceCollection = new ServiceCollection();
+			serviceCollection
+				.AddOptions<KeycloakOAuth2ClientOptions>()
+				.Bind(configuration.GetSection("Oidc:Keycloak"))
+				.ValidateDataAnnotations()
+				.ValidateOnStart();
+
+			serviceCollection
+				.AddHttpClient<KeycloakOAuth2Client>()
+				.AddTypedClient<GnomeshadeClient>();
+			serviceCollection.AddLogging(builder => builder.AddConsole());
+
+			serviceCollection
+				.AddSingleton<GnomeshadeClient>()
+				.AddSingleton<KeycloakOAuth2Client>();
+
+			var serviceProvider = serviceCollection.BuildServiceProvider();
+
+			_gnomeshadeClient = serviceProvider.GetRequiredService<GnomeshadeClient>();
+			_keycloakClient = serviceProvider.GetRequiredService<KeycloakOAuth2Client>();
+
 			SwitchToLogin();
 		}
 
@@ -193,7 +226,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 
 		private void SwitchToLogin()
 		{
-			var loginViewModel = new LoginViewModel(_gnomeshadeClient);
+			var loginViewModel = new LoginViewModel(_gnomeshadeClient, _keycloakClient);
 			loginViewModel.UserLoggedIn += OnUserLoggedIn;
 
 			ActiveView = loginViewModel;

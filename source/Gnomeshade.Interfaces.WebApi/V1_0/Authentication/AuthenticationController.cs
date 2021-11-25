@@ -60,6 +60,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			_problemDetailFactory = problemDetailsFactory;
 		}
 
+		[AllowAnonymous]
 		[HttpPost]
 		[ProducesResponseType(Status200OK)]
 		[ProducesResponseType(Status401Unauthorized)]
@@ -94,6 +95,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
 		}
 
+		[AllowAnonymous]
 		[HttpPost]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult> Register([FromBody, BindRequired] RegistrationModel registration)
@@ -123,7 +125,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			return Ok();
 		}
 
-		[Authorize]
 		[HttpPost]
 		public async Task<ActionResult> SocialRegister()
 		{
@@ -173,7 +174,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			return StatusCode(Status201Created);
 		}
 
-		[Authorize]
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<UserModel>> Info()
@@ -184,7 +184,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			return Ok(_mapper.Map<UserModel>(identityUser));
 		}
 
-		[Authorize]
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
 		public ActionResult Logout() => SignOut();

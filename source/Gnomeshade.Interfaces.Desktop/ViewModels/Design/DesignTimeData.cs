@@ -23,6 +23,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
 
 		/// <summary>
+		/// Gets an OAuth2 API client for use during design time.
+		/// </summary>
+		public static DesignTimeOAuth2Client OAuth2Client { get; } = new();
+
+		/// <summary>
 		/// Gets an instance of <see cref="AccountCreationViewModel"/> for use during design time.
 		/// </summary>
 		public static AccountCreationViewModel AccountCreationViewModel { get; } =
@@ -42,7 +47,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		/// <summary>
 		/// Gets an instance of <see cref="LoginViewModel"/> for use during design time.
 		/// </summary>
-		public static LoginViewModel LoginViewModel { get; } = new(GnomeshadeClient);
+		public static LoginViewModel LoginViewModel { get; } = new(GnomeshadeClient, OAuth2Client);
 
 		/// <summary>
 		/// Gets an instance of <see cref="ProductCreationViewModel"/> for use during design time.

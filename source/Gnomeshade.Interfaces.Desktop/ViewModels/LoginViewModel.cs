@@ -3,11 +3,15 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
+
+using VMelnalksnis.OAuth2;
+using VMelnalksnis.OAuth2.Responses;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels
 {
@@ -17,6 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 	public sealed class LoginViewModel : ViewModelBase<LoginView>
 	{
 		private readonly IGnomeshadeClient _gnomeshadeClient;
+		private readonly IOAuth2Client _oAuth2Client;
 
 		private string? _errorMessage;
 		private string? _username;
@@ -26,9 +31,11 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
 		/// </summary>
 		/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-		public LoginViewModel(IGnomeshadeClient gnomeshadeClient)
+		/// <param name="oAuth2Client">OAuth2 provider API client.</param>
+		public LoginViewModel(IGnomeshadeClient gnomeshadeClient, IOAuth2Client oAuth2Client)
 		{
 			_gnomeshadeClient = gnomeshadeClient;
+			_oAuth2Client = oAuth2Client;
 		}
 
 		/// <summary>
@@ -74,16 +81,30 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 		public bool CanLogIn => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
 		/// <summary>
-		/// Attempts to log in using the specified credentials.
+		/// Authenticate using an external identity provider.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		public async Task AuthenticateExternallyAsync()
+		{
+			var deviceAuthorizationResponse = await _oAuth2Client.StartDeviceFlowAsync();
+			var processInfo = deviceAuthorizationResponse.GetProcessStartInfoForUserApproval();
+			Process.Start(processInfo);
+
+			var tokenResponse = await _oAuth2Client.GetDeviceFlowResultAsync(deviceAuthorizationResponse);
+			await _gnomeshadeClient.SocialRegister(tokenResponse.AccessToken);
+			OnUserLoggedIn();
+		}
+
+		/// <summary>
+		/// Attempts to log in using the specified credentials.
+		/// </summary>
 		/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
-		public async Task LogInAsync()
+		public void LogInAsync()
 		{
 			ErrorMessage = string.Empty;
 
 			var loginModel = new Login { Username = Username!, Password = Password! };
-			var loginResult = await _gnomeshadeClient.LogInAsync(loginModel).ConfigureAwait(false);
+			var loginResult = _gnomeshadeClient.LogInAsync(loginModel).Result;
 
 			switch (loginResult)
 			{
@@ -96,7 +117,8 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels
 					break;
 
 				default:
-					throw new ArgumentOutOfRangeException(nameof(loginResult));
+					ErrorMessage = $"Unexpected login result: {loginResult}";
+					break;
 			}
 		}
 

@@ -49,11 +49,18 @@
 			Text="{Binding Password}" />
 
 		<Button
-			Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+			Grid.Row="4" Grid.Column="1"
 			HorizontalAlignment="Center" Padding="20 5"
 			Command="{ReflectionBinding LogInAsync}"
 			IsEnabled="{Binding CanLogIn, FallbackValue=false}">
 			Log In
+		</Button>
+
+		<Button
+			Grid.Row="4" Grid.Column="2"
+			HorizontalAlignment="Center" Padding="20 5"
+			Command="{ReflectionBinding AuthenticateExternallyAsync}">
+			Keycloak
 		</Button>
 	</Grid>
 </UserControl>
