@@ -11,19 +11,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 {
 	public sealed record JwtOptions
 	{
-		/// <summary>
-		/// The name of the configuration section.
-		/// </summary>
-		public const string SectionName = "JWT";
+		[Required]
+		public string ValidAudience { get; init; } = null!;
 
-		[Required(AllowEmptyStrings = false)]
-		public string ValidAudience { get; init; }
+		[Required]
+		public string ValidIssuer { get; init; } = null!;
 
-		[Required(AllowEmptyStrings = false)]
-		public string ValidIssuer { get; init; }
-
-		[Required(AllowEmptyStrings = false)]
-		public string Secret { get; init; }
+		[Required]
+		public string Secret { get; init; } = null!;
 
 		public SymmetricSecurityKey SecurityKey => new(Encoding.UTF8.GetBytes(Secret));
 	}

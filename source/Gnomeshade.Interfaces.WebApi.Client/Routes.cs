@@ -21,9 +21,10 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		internal const string ProductUri = "Product";
 		internal const string TransactionUri = "Transaction";
 		internal const string UnitUri = "Unit";
-
-		internal static readonly string AllAccountUri = $"{AccountUri}?onlyActive=false";
-		internal static readonly string LoginUri = $"{AuthenticationUri}/Login";
+		internal const string AllAccountUri = $"{AccountUri}?onlyActive=false";
+		internal const string LoginUri = $"{AuthenticationUri}/Login";
+		internal const string LogOutUri = $"{AuthenticationUri}/Logout";
+		internal const string SocialRegisterUri = $"{AuthenticationUri}/SocialRegister";
 
 		/// <summary>
 		/// Gets the relative uri for the specified account.

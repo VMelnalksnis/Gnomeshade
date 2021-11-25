@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Identity;
@@ -44,6 +45,12 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization
 			ApplicationUserRequirement requirement)
 		{
 			var identityUser = await _userManager.GetUserAsync(context.User);
+			var providerKeyClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
+			if (identityUser is null && providerKeyClaim is not null)
+			{
+				identityUser = await _userManager.FindByLoginAsync(providerKeyClaim?.OriginalIssuer, providerKeyClaim?.Value);
+			}
+
 			if (identityUser is null)
 			{
 				context.Fail(new(this, "Failed to find identity user"));

@@ -21,6 +21,13 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		Task<LoginResult> LogInAsync(Login login);
 
 		/// <summary>
+		/// Register using an OIDC provider token.
+		/// </summary>
+		/// <param name="accessToken">An access token from an OIDC provider.</param>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+		Task SocialRegister(string accessToken);
+
+		/// <summary>
 		/// Log out.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

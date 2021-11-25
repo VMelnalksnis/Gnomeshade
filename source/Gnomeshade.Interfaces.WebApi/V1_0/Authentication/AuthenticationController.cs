@@ -124,6 +124,56 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 		}
 
 		[Authorize]
+		[HttpPost]
+		public async Task<ActionResult> SocialRegister()
+		{
+			var providerKeyClaim = User.FindAll(ClaimTypes.NameIdentifier).Single();
+			var existingUser =
+				await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+			if (existingUser is not null)
+			{
+				return Ok();
+			}
+
+			var applicationUser = new ApplicationUser
+			{
+				Email = User.FindFirstValue(ClaimTypes.Email),
+				FullName = User.FindFirstValue(ClaimTypes.Name),
+				UserName = User.FindFirstValue("preferred_username"),
+			};
+
+			var userCreationResult = await _userManager.CreateAsync(applicationUser);
+			if (!userCreationResult.Succeeded)
+			{
+				var problemDetails = userCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
+				return BadRequest(problemDetails);
+			}
+
+			var userLoginInfo = new UserLoginInfo(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value, "Keycloak");
+			var loginCreationResult = await _userManager.AddLoginAsync(applicationUser, userLoginInfo);
+			if (!loginCreationResult.Succeeded)
+			{
+				var problemDetails = loginCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
+				return BadRequest(problemDetails);
+			}
+
+			var identityUser =
+				await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+
+			try
+			{
+				await _userUnitOfWork.CreateUserAsync(identityUser);
+			}
+			catch (Exception)
+			{
+				await _userManager.DeleteAsync(identityUser);
+				throw;
+			}
+
+			return StatusCode(Status201Created);
+		}
+
+		[Authorize]
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<UserModel>> Info()
@@ -133,5 +183,10 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
 			// var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
 			return Ok(_mapper.Map<UserModel>(identityUser));
 		}
+
+		[Authorize]
+		[HttpGet]
+		[ProducesResponseType(Status200OK)]
+		public ActionResult Logout() => SignOut();
 	}
 }

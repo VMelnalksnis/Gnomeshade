@@ -26,27 +26,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 	/// <inheritdoc cref="IGnomeshadeClient"/>
 	public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
-		private readonly HttpClient _httpClient = new();
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
-		/// </summary>
-		public GnomeshadeClient()
-			: this(new Uri("https://localhost:5001/api/v1.0/"))
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class with a base uri.
-		/// </summary>
-		/// <param name="baseUri">The base uri for all requests.</param>
-		/// <see cref="HttpClient.BaseAddress"/>
-		public GnomeshadeClient(Uri baseUri)
-		{
-			_httpClient.BaseAddress = baseUri;
-			_httpClient.DefaultRequestHeaders.Accept.Clear();
-			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
-		}
+		private readonly HttpClient _httpClient;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
@@ -55,13 +35,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		public GnomeshadeClient(HttpClient httpClient)
 		{
 			_httpClient = httpClient;
-			if (httpClient.BaseAddress?.AbsolutePath == "/")
-			{
-				var uriBuilder = new UriBuilder(httpClient.BaseAddress);
-				uriBuilder.Path += "api/v1.0/";
-				_httpClient.BaseAddress = uriBuilder.Uri;
-			}
-
+			_httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 		}
@@ -90,10 +64,28 @@ namespace Gnomeshade.Interfaces.WebApi.Client
 		}
 
 		/// <inheritdoc />
-		public Task LogOutAsync()
+		public async Task SocialRegister(string accessToken)
+		{
+			_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+			try
+			{
+				using var response = await _httpClient.PostAsync(SocialRegisterUri, new StringContent(string.Empty));
+				response.EnsureSuccessStatusCode();
+			}
+			catch (Exception)
+			{
+				_httpClient.DefaultRequestHeaders.Authorization = null;
+				throw;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task LogOutAsync()
 		{
 			_httpClient.DefaultRequestHeaders.Authorization = null;
-			return Task.CompletedTask;
+			using var response = await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+			await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
 		}
 
 		/// <inheritdoc />

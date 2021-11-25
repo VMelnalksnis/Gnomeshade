@@ -67,7 +67,9 @@ namespace Gnomeshade.Interfaces.WebApi
 		{
 			services.AddLogging(builder => builder.AddSerilog());
 
-			services.AddOptions<JwtOptions>(Configuration);
+			services
+				.AddValidatedOptions<JwtOptions>(Configuration)
+				.AddValidatedOptions<KeycloakOptions>(Configuration);
 
 			services.AddControllers().AddControllersAsServices();
 			services.AddApiVersioning();
@@ -75,14 +77,12 @@ namespace Gnomeshade.Interfaces.WebApi
 			services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
 
 			services
-				.AddAuthorization(options => options.AddPolicy(
-					AuthorizeApplicationUserAttribute.PolicyName,
-					policyBuilder => policyBuilder.Requirements.Add(new ApplicationUserRequirement())))
+				.AddAuthorization(options => options.ConfigurePolicies())
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()
 				.AddTransient<JwtSecurityTokenHandler>()
-				.AddAuthentication(Options.Authentication)
-				.AddJwtBearer(options => Options.JwtBearer(options, Configuration));
+				.AddAuthentication(options => options.SetSchemes())
+				.AddJwtBearerAuthentication(Configuration);
 
 			services
 				.AddScoped<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
@@ -135,7 +135,7 @@ namespace Gnomeshade.Interfaces.WebApi
 			application.UseAuthentication();
 			application.UseAuthorization();
 
-			application.UseEndpoints(endpoints => endpoints.MapControllers());
+			application.UseEndpoints(builder => builder.MapControllers().RequireAuthorization());
 
 			application.UseSwagger();
 			application.UseSwaggerUI(options => options.SwaggerEndpointV1_0());

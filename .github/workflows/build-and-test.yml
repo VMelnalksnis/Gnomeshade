@@ -43,10 +43,12 @@ jobs:
       - name: Run Integration Tests
         run: dotnet test --filter FullyQualifiedName~Integration -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover -p:BuildInParallel=false -m:1 --configuration Release --no-build --verbosity normal
         env:
-          ConnectionStrings:FinanceDb: "Server = localhost; Database = finance_tests; Port = 5432; User Id = postgres; Password = postgres;"
-          ConnectionStrings:IdentityDb: "Server = localhost; Database = finance_identity; Port = 5432; User Id = postgres; Password = postgres;"
-          AuthenticatedUser:Username: "Foo"
-          AuthenticatedUser:Password: "Bar"
+          ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
+          ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
+          Keycloak:ServerRealm: "http://keycloak:8080/auth/realms/testrealm"
+          Keycloak:Metadata: "http://keycloak:8080/auth/realms/testrealm/.well-known/openid-configuration"
+          Keycloak:ClientId: "gnomeshade"
+          Keycloak:ClientSecret: "12345"
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1

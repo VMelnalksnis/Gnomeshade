@@ -81,7 +81,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
 		public async Task OneTimeTearDownAsync()
 		{
 			await _initializer.DropDatabaseAsync();
-			_webApplicationFactory.Dispose();
+			await _webApplicationFactory.DisposeAsync();
 		}
 	}
 }

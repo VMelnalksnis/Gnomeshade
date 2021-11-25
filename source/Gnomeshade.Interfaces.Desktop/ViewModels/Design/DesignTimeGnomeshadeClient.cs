@@ -96,6 +96,9 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
 		public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
 
 		/// <inheritdoc />
+		public Task SocialRegister(string accessToken) => throw new NotImplementedException();
+
+		/// <inheritdoc />
 		public Task LogOutAsync() => throw new NotImplementedException();
 
 		/// <inheritdoc />

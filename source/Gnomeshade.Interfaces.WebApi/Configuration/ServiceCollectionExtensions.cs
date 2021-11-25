@@ -15,13 +15,12 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 		/// <summary>
 		/// Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotation validation.
 		/// </summary>
-		///
 		/// <typeparam name="TOptions">The options type to add.</typeparam>
 		/// <param name="services">The service collection to which to add the options.</param>
 		/// <param name="configuration">The configuration to which to bind the options.</param>
-		///
+		/// <returns><paramref name="services"/> for chaining calls.</returns>
 		/// <seealso cref="ConfigurationExtensions.GetSectionName(System.Type)"/>
-		public static void AddOptions<TOptions>(
+		public static IServiceCollection AddValidatedOptions<TOptions>(
 			this IServiceCollection services,
 			IConfiguration configuration)
 			where TOptions : class
@@ -31,6 +30,8 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 				.AddOptions<TOptions>()
 				.Bind(configuration.GetSection(sectionName))
 				.ValidateDataAnnotations();
+
+			return services;
 		}
 
 		public static TOptions AddAndGetOptions<TOptions>(
@@ -38,7 +39,7 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 			IConfiguration configuration)
 			where TOptions : class
 		{
-			services.AddOptions<TOptions>(configuration);
+			services.AddValidatedOptions<TOptions>(configuration);
 			return configuration.GetValid<TOptions>();
 		}
 	}
