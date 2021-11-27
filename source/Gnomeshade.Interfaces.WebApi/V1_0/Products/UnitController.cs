@@ -45,14 +45,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
 		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
 		public async Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken)
 		{
-			return await Find(() => _repository.FindByIdAsync(id, cancellationToken));
+			return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
 		}
 
 		[HttpGet]
 		[ProducesResponseType(Status200OK)]
 		public async Task<ActionResult<List<Unit>>> GetAll(CancellationToken cancellationToken)
 		{
-			var units = await _repository.GetAllAsync(cancellationToken);
+			var units = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
 			var models = units.Select(MapToModel).ToList();
 			return Ok(models);
 		}

@@ -17,15 +17,6 @@ namespace Gnomeshade.Data.Repositories
 	/// </summary>
 	public sealed class UserRepository : IDisposable
 	{
-		private const string _insertSql =
-			"INSERT INTO users (id, modified_by_user_id, counterparty_id) VALUES (@Id, @ModifiedByUserId, @CounterpartyId) RETURNING id;";
-
-		private const string _selectSql =
-			"SELECT id, created_at CreatedAt, counterparty_id CounterpartyId FROM users WHERE id = @id";
-
-		private const string _updateSql =
-			"UPDATE users SET modified_at = DEFAULT, counterparty_id = @CounterpartyId WHERE id = @Id;";
-
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -45,7 +36,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The id of the created user.</returns>
 		public Task<Guid> AddWithIdAsync(UserEntity entity, IDbTransaction dbTransaction)
 		{
-			var command = new CommandDefinition(_insertSql, entity, dbTransaction);
+			var command = new CommandDefinition(Queries.User.Insert, entity, dbTransaction);
 			return _dbConnection.QuerySingleAsync<Guid>(command);
 		}
 
@@ -56,7 +47,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The <see cref="UserEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
 		public Task<UserEntity?> FindByIdAsync(Guid id)
 		{
-			var commandDefinition = new CommandDefinition(_selectSql, new { id });
+			var commandDefinition = new CommandDefinition(Queries.User.Select, new { id });
 			return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 		}
 
@@ -68,7 +59,7 @@ namespace Gnomeshade.Data.Repositories
 		/// <returns>The number of affected rows.</returns>
 		public Task<int> UpdateAsync(UserEntity user, IDbTransaction dbTransaction)
 		{
-			var command = new CommandDefinition(_updateSql, user, dbTransaction);
+			var command = new CommandDefinition(Queries.User.Update, user, dbTransaction);
 			return _dbConnection.ExecuteAsync(command);
 		}
 

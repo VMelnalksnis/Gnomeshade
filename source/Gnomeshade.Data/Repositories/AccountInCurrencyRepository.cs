@@ -24,17 +24,18 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM accounts_in_currency WHERE id = @id AND owner_id = @ownerId;";
+		protected override string DeleteSql => Queries.AccountInCurrency.Delete;
 
 		/// <inheritdoc />
-		protected override string InsertSql =>
-			"INSERT INTO accounts_in_currency (owner_id, created_by_user_id, modified_by_user_id, account_id, currency_id, disabled_at, disabled_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @AccountId, @CurrencyId, @DisabledAt, @DisabledByUserId) RETURNING id";
+		protected override string InsertSql => Queries.AccountInCurrency.Insert;
 
 		/// <inheritdoc />
-		protected override string SelectSql =>
-			"SELECT id, owner_id OwnerId, created_at CreatedAt, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, account_id AccountId, currency_id CurrencyId, disabled_at DisabledAt, disabled_by_user_id DisabledByUserId FROM accounts_in_currency";
+		protected override string SelectSql => Queries.AccountInCurrency.Select;
 
 		/// <inheritdoc />
 		protected override string UpdateSql => throw new NotImplementedException();
+
+		/// <inheritdoc />
+		protected override string FindSql => "WHERE a.id = @id AND ownerships.user_id = @ownerId;";
 	}
 }

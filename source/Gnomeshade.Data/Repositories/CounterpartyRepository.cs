@@ -24,17 +24,18 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM counterparties WHERE id = @id AND a.owner_id = @ownerId;";
+		protected override string DeleteSql => Queries.Counterparty.Delete;
 
 		/// <inheritdoc />
-		protected override string InsertSql =>
-			"INSERT INTO counterparties (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName) RETURNING id;";
+		protected override string InsertSql => Queries.Counterparty.Insert;
 
 		/// <inheritdoc />
-		protected override string SelectSql =>
-			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName from counterparties";
+		protected override string SelectSql => Queries.Counterparty.Select;
 
 		/// <inheritdoc />
 		protected override string UpdateSql => throw new NotImplementedException();
+
+		/// <inheritdoc />
+		protected override string FindSql => "WHERE c.id = @id AND ownerships.user_id = @ownerId";
 	}
 }

@@ -41,9 +41,9 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			var unitToAdd = new UnitFaker(TestUser).Generate();
 
 			var id = await _repository.AddAsync(unitToAdd);
-			var getUnit = await _repository.GetByIdAsync(id);
-			var findUnit = await _repository.FindByIdAsync(getUnit.Id);
-			var allUnits = await _repository.GetAllAsync();
+			var getUnit = await _repository.GetByIdAsync(id, TestUser.Id);
+			var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id);
+			var allUnits = await _repository.GetAllAsync(TestUser.Id);
 
 			var expectedUnit = unitToAdd with
 			{
@@ -56,9 +56,9 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 			findUnit.Should().BeEquivalentTo(expectedUnit);
 			allUnits.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedUnit);
 
-			await _repository.DeleteAsync(id);
+			await _repository.DeleteAsync(id, TestUser.Id);
 
-			var afterDelete = await _repository.FindByIdAsync(id);
+			var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 			afterDelete.Should().BeNull();
 		}
 
@@ -76,7 +76,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			dbTransaction.Commit();
 
-			var getUnit = await _repository.GetByIdAsync(childUnitId);
+			var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id);
 			var expectedUnit = childUnit with
 			{
 				Id = childUnitId,
@@ -87,8 +87,8 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories
 
 			getUnit.Should().BeEquivalentTo(expectedUnit);
 
-			await _repository.DeleteAsync(childUnitId);
-			await _repository.DeleteAsync(parentUnitId);
+			await _repository.DeleteAsync(childUnitId, TestUser.Id);
+			await _repository.DeleteAsync(parentUnitId, TestUser.Id);
 		}
 	}
 }

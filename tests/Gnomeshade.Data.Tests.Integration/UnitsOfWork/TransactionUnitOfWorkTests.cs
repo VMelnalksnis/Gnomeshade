@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
-namespace Gnomeshade.Data.Tests.Integration
+namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork
 {
 	public sealed class TransactionUnitOfWorkTests : IDisposable
 	{

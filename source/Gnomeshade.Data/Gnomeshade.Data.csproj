@@ -14,4 +14,36 @@
         <ProjectReference Include="..\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Product\Update.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\Update.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Unit\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
+    </ItemGroup>
+
 </Project>

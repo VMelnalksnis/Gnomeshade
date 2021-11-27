@@ -23,18 +23,21 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM products WHERE id = @id AND owner_id = @ownerId;";
+		protected override string DeleteSql => Queries.Product.Delete;
 
 		/// <inheritdoc />
-		protected override string InsertSql =>
-			"INSERT INTO products (owner_id, created_by_user_id, modified_by_user_id, name, normalized_name, description, unit_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Name, @NormalizedName, @Description, @UnitId) RETURNING id;";
+		protected override string InsertSql => Queries.Product.Insert;
 
 		/// <inheritdoc />
-		protected override string SelectSql =>
-			"SELECT id, created_at CreatedAt, owner_id OwnerId, created_by_user_id CreatedByUserId, modified_at ModifiedAt, modified_by_user_id ModifiedByUserId, name, normalized_name NormalizedName, description, unit_id UnitId FROM products";
+		protected override string SelectSql => Queries.Product.Select;
 
 		/// <inheritdoc />
-		protected override string UpdateSql =>
-			"UPDATE products SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, name = @Name, normalized_name = @NormalizedName, description = @Description, unit_id = @UnitId WHERE id = @Id RETURNING id;";
+		protected override string UpdateSql => Queries.Product.Update;
+
+		/// <inheritdoc />
+		protected override string FindSql => "WHERE p.id = @id AND ownerships.user_id = @ownerId";
+
+		/// <inheritdoc />
+		protected override string NameSql => "WHERE p.normalized_name = @name AND ownerships.user_id = @ownerId;";
 	}
 }

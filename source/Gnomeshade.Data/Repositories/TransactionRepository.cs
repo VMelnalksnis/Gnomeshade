@@ -22,51 +22,6 @@ namespace Gnomeshade.Data.Repositories
 	/// </summary>
 	public sealed class TransactionRepository : Repository<TransactionEntity>
 	{
-		private const string _selectSql =
-			"SELECT t.id, " +
-			"t.owner_id OwnerId, " +
-			"t.created_at CreatedAt, " +
-			"t.created_by_user_id CreatedByUserId, " +
-			"t.modified_at ModifiedAt, " +
-			"t.modified_by_user_id ModifiedByUserId, " +
-			"t.date, " +
-			"t.description, " +
-			"t.import_hash ImportHash, " +
-			"t.imported_at ImportedAt, " +
-			"t.validated_at ValidatedAt, " +
-			"t.validated_by_user_id ValidatedByUserId, " +
-			"ti.id, " +
-			"ti.owner_id OwnerId, " +
-			"ti.transaction_id TransactionId, " +
-			"ti.source_amount SourceAmount, " +
-			"ti.source_account_id SourceAccountId, " +
-			"ti.target_amount TargetAmount, " +
-			"ti.target_account_id TargetAccountId, " +
-			"ti.created_at CreatedAt, " +
-			"ti.created_by_user_id CreatedByUserId, " +
-			"ti.modified_at ModifiedAt, " +
-			"ti.modified_by_user_id ModifiedByUserId, " +
-			"ti.product_id ProductId, " +
-			"ti.amount, " +
-			"ti.bank_reference BankReference, " +
-			"ti.external_reference ExternalReference, " +
-			"ti.internal_reference InternalReference, " +
-			"ti.description, " +
-			"ti.delivery_date DeliveryDate, " +
-			"p.id, " +
-			"p.created_at CreatedAt, " +
-			"p.owner_id OwnerId, " +
-			"p.created_by_user_id CreatedByUserId, " +
-			"p.modified_at ModifiedAt, " +
-			"p.modified_by_user_id ModifiedByUserId, " +
-			"p.name, " +
-			"p.normalized_name NormalizedName, " +
-			"p.description, " +
-			"p.unit_id UnitId " +
-			"FROM transactions t " +
-			"INNER JOIN transaction_items ti ON t.id = ti.transaction_id " +
-			"INNER JOIN products p ON ti.product_id = p.id";
-
 		private readonly IDbConnection _dbConnection;
 
 		/// <summary>
@@ -80,21 +35,19 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM transactions WHERE id = @id;";
+		protected override string DeleteSql => Queries.Transaction.Delete;
 
 		/// <inheritdoc />
-		protected override string InsertSql =>
-			"INSERT INTO transactions (owner_id, created_by_user_id, modified_by_user_id, date, description, import_hash, imported_at, validated_at, validated_by_user_id) VALUES (@OwnerId, @CreatedByUserId, @ModifiedByUserId, @Date, @Description, @ImportHash, @ImportedAt, @ValidatedAt, @ValidatedByUserId) RETURNING id";
+		protected override string InsertSql => Queries.Transaction.Insert;
 
 		/// <inheritdoc />
-		protected override string SelectSql => _selectSql;
+		protected override string SelectSql => Queries.Transaction.Select;
 
 		/// <inheritdoc />
-		protected override string UpdateSql =>
-			"UPDATE transactions SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, date = @Date, description = @Description, import_hash = @ImportHash, imported_at = @ImportedAt, validated_at = @ValidatedAt, validated_by_user_id = @ValidatedByUserId WHERE id = @Id RETURNING id";
+		protected override string UpdateSql => Queries.Transaction.Update;
 
 		/// <inheritdoc />
-		protected override string FindSql => "WHERE t.id = @id AND t.owner_id = @ownerId;";
+		protected override string FindSql => "WHERE t.id = @id AND ownerships.user_id = @ownerId;";
 
 		/// <summary>
 		/// Searches for a transaction with the specified import hash.
@@ -108,7 +61,7 @@ namespace Gnomeshade.Data.Repositories
 			Guid ownerId,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash AND t.owner_id = @ownerId;";
+			var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND ownerships.user_id = @ownerId;";
 			var command = new CommandDefinition(sql, new { importHash, ownerId }, cancellationToken: cancellationToken);
 			return FindAsync(command);
 		}
@@ -125,7 +78,7 @@ namespace Gnomeshade.Data.Repositories
 			Guid ownerId,
 			IDbTransaction dbTransaction)
 		{
-			const string sql = $"{_selectSql} WHERE t.import_hash = @importHash AND t.owner_id = @ownerId;";
+			var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND ownerships.user_id = @ownerId;";
 			var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
 			return FindAsync(command);
 		}
@@ -144,7 +97,7 @@ namespace Gnomeshade.Data.Repositories
 			Guid ownerId,
 			CancellationToken cancellationToken = default)
 		{
-			const string sql = $"{_selectSql} WHERE t.date >= @from AND t.date <= @to AND t.owner_id = @ownerId ORDER BY t.date DESC";
+			var sql = $"{SelectSql} WHERE t.date >= @from AND t.date <= @to AND ownerships.user_id = @ownerId ORDER BY t.date DESC";
 			var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 			var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);

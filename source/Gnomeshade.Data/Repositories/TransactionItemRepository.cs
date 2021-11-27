@@ -23,18 +23,18 @@ namespace Gnomeshade.Data.Repositories
 		}
 
 		/// <inheritdoc />
-		protected override string DeleteSql => "DELETE FROM transaction_items WHERE id = @id";
+		protected override string DeleteSql => Queries.TransactionItem.Delete;
 
 		/// <inheritdoc />
-		protected override string InsertSql =>
-			"INSERT INTO transaction_items (owner_id, transaction_id, source_amount, source_account_id, target_amount, target_account_id, created_by_user_id, modified_by_user_id, product_id, amount, bank_reference, external_reference, internal_reference, description, delivery_date) VALUES (@OwnerId, @TransactionId, @SourceAmount, @SourceAccountId, @TargetAmount, @TargetAccountId, @CreatedByUserId, @ModifiedByUserId, @ProductId, @Amount, @BankReference, @ExternalReference, @InternalReference, @Description, @DeliveryDate) RETURNING id";
+		protected override string InsertSql => Queries.TransactionItem.Insert;
 
 		/// <inheritdoc />
-		protected override string SelectSql =>
-			"SELECT id, owner_id OwnerId, transaction_id TransactionId, source_amount SourceAmount, source_account_id SourceAccountId, target_amount TargetAmount, target_account_id TargetAccountId, created_by_user_id CreatedByUserId, modified_by_user_id ModifiedByUserId, product_id ProductId, amount, bank_reference BankReference, external_reference ExternalReference, internal_reference InternalReference, description, delivery_date DeliveryDate FROM transaction_items";
+		protected override string SelectSql => Queries.TransactionItem.Select;
 
 		/// <inheritdoc />
-		protected override string UpdateSql =>
-			"UPDATE transaction_items SET modified_at = DEFAULT, modified_by_user_id = @ModifiedByUserId, transaction_id = @TransactionId, source_amount = @SourceAmount, source_account_id = @SourceAccountId, target_amount = @TargetAmount, target_account_id = @TargetAccountId, product_id = @ProductId, amount = @Amount, bank_reference = @BankReference, external_reference = @ExternalReference, internal_reference = @InternalReference, delivery_date = @DeliveryDate, description = @Description WHERE id = @Id;";
+		protected override string UpdateSql => Queries.TransactionItem.Update;
+
+		/// <inheritdoc />
+		protected override string FindSql => "WHERE ti.id = @id AND ownerships.user_id = @ownerId";
 	}
 }

@@ -1,0 +1,33 @@
+﻿INSERT INTO transaction_items
+    (owner_id,
+     transaction_id,
+     source_amount,
+     source_account_id,
+     target_amount,
+     target_account_id,
+     created_by_user_id,
+     modified_by_user_id,
+     product_id,
+     amount,
+     bank_reference,
+     external_reference,
+     internal_reference,
+     description,
+     delivery_date)
+VALUES
+    (@OwnerId,
+     @TransactionId,
+     @SourceAmount,
+     @SourceAccountId,
+     @TargetAmount,
+     @TargetAccountId,
+     @CreatedByUserId,
+     @ModifiedByUserId,
+     @ProductId,
+     @Amount,
+     @BankReference,
+     @ExternalReference,
+     @InternalReference,
+     @Description,
+     @DeliveryDate)
+RETURNING id;
