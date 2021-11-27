@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
@@ -24,11 +25,28 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 {
 	public static class Options
 	{
-		public static void ConfigurePolicies(this AuthorizationOptions authorizationOptions)
+		private const string _oAuth2Providers = "OAuth2Providers";
+
+		public static void ConfigurePolicies(
+			this AuthorizationOptions authorizationOptions,
+			IConfiguration configuration)
 		{
+			var authenticationSchemes = new List<string>();
+			if (configuration.GetChildren().Any(section => section.Key == typeof(JwtOptions).GetSectionName()))
+			{
+				authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+			}
+
+			var oauthProviderNames =
+				configuration
+					.GetSection(_oAuth2Providers)
+					.GetChildren()
+					.Select(section => section.Key);
+			authenticationSchemes.AddRange(oauthProviderNames);
+
 			authorizationOptions.DefaultPolicy = new AuthorizationPolicyBuilder()
 				.RequireAuthenticatedUser()
-				.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme, "keycloak")
+				.AddAuthenticationSchemes(authenticationSchemes.ToArray())
 				.Build();
 
 			authorizationOptions.AddPolicy(
@@ -54,49 +72,57 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 			this AuthenticationBuilder authenticationBuilder,
 			IConfiguration configuration)
 		{
-			return
-				authenticationBuilder
-					.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+			if (configuration.GetChildren().Any(section => section.Key == typeof(JwtOptions).GetSectionName()))
+			{
+				authenticationBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+				{
+					var jwtOptions = configuration.GetValid<JwtOptions>();
+
+					options.ClaimsIssuer = jwtOptions.ValidIssuer;
+					options.Audience = jwtOptions.ValidAudience;
+					options.SaveToken = true;
+					options.RequireHttpsMetadata = true;
+					options.TokenValidationParameters = new()
 					{
-						var jwtOptions = configuration.GetValid<JwtOptions>();
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidAudience = jwtOptions.ValidAudience,
+						ValidIssuer = jwtOptions.ValidIssuer,
+						IssuerSigningKey = jwtOptions.SecurityKey,
+						ClockSkew = TimeSpan.Zero,
+					};
+				});
+			}
 
-						options.ClaimsIssuer = jwtOptions.ValidIssuer;
-						options.Audience = jwtOptions.ValidAudience;
-						options.SaveToken = true;
-						options.RequireHttpsMetadata = true;
-						options.TokenValidationParameters = new()
-						{
-							ValidateIssuer = true,
-							ValidateAudience = true,
-							ValidateLifetime = true,
-							ValidateIssuerSigningKey = true,
-							ValidAudience = jwtOptions.ValidAudience,
-							ValidIssuer = jwtOptions.ValidIssuer,
-							IssuerSigningKey = jwtOptions.SecurityKey,
-							ClockSkew = TimeSpan.Zero,
-						};
-					})
-					.AddJwtBearer("keycloak", options =>
+			var providerSection = configuration.GetSection(_oAuth2Providers);
+			var providerSectionNames = providerSection.GetChildren().Select(section => section.Key);
+			foreach (var providerName in providerSectionNames)
+			{
+				var keycloakOptions = providerSection.GetValid<KeycloakOptions>();
+				authenticationBuilder.AddJwtBearer(providerName, options =>
+				{
+					options.Authority = keycloakOptions.ServerRealm.AbsoluteUri;
+					options.MetadataAddress = keycloakOptions.Metadata.AbsoluteUri;
+					options.Audience = keycloakOptions.ClientId;
+					options.RequireHttpsMetadata = false;
+					options.SaveToken = true;
+
+					options.TokenValidationParameters = new()
 					{
-						var keycloakOptions = configuration.GetValid<KeycloakOptions>();
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidAudience = keycloakOptions.ClientId,
+						ClockSkew = TimeSpan.Zero,
+						AuthenticationType = providerName,
+					};
+				});
+			}
 
-						options.Authority = keycloakOptions.ServerRealm.AbsoluteUri;
-						options.MetadataAddress = keycloakOptions.Metadata.AbsoluteUri;
-						options.Audience = keycloakOptions.ClientId;
-						options.RequireHttpsMetadata = false;
-						options.SaveToken = true;
-
-						options.TokenValidationParameters = new()
-						{
-							ValidateIssuer = true,
-							ValidateAudience = true,
-							ValidateLifetime = true,
-							ValidateIssuerSigningKey = true,
-							ValidAudience = keycloakOptions.ClientId,
-							ClockSkew = TimeSpan.Zero,
-							AuthenticationType = "keycloak",
-						};
-					});
+			return authenticationBuilder;
 		}
 
 		public static void SwaggerGen(SwaggerGenOptions options)
@@ -115,8 +141,7 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration
 
 			var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.xml");
 			options.IncludeXmlComments(xmlDocumentationFilepath, true);
-			var modelDocumentationFilepath =
-				Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.Models.xml");
+			var modelDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.Models.xml");
 			options.IncludeXmlComments(modelDocumentationFilepath, true);
 			options.EnableAnnotations();
 

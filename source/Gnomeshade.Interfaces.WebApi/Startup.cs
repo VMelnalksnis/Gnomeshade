@@ -67,9 +67,7 @@ namespace Gnomeshade.Interfaces.WebApi
 		{
 			services.AddLogging(builder => builder.AddSerilog());
 
-			services
-				.AddValidatedOptions<JwtOptions>(Configuration)
-				.AddValidatedOptions<KeycloakOptions>(Configuration);
+			services.AddValidatedOptions<JwtOptions>(Configuration);
 
 			services.AddControllers().AddControllersAsServices();
 			services.AddApiVersioning();
@@ -77,7 +75,7 @@ namespace Gnomeshade.Interfaces.WebApi
 			services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
 
 			services
-				.AddAuthorization(options => options.ConfigurePolicies())
+				.AddAuthorization(options => options.ConfigurePolicies(Configuration))
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()
 				.AddTransient<JwtSecurityTokenHandler>()

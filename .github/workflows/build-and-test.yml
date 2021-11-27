@@ -45,10 +45,6 @@ jobs:
         env:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
-          Keycloak:ServerRealm: "http://keycloak:8080/auth/realms/testrealm"
-          Keycloak:Metadata: "http://keycloak:8080/auth/realms/testrealm/.well-known/openid-configuration"
-          Keycloak:ClientId: "gnomeshade"
-          Keycloak:ClientSecret: "12345"
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1
