@@ -6,20 +6,19 @@ using System;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers
-{
-	public sealed class UnitFaker : NamedEntityFaker<UnitEntity>
-	{
-		public UnitFaker(UserEntity user)
-			: this(user.Id)
-		{
-		}
+namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-		public UnitFaker(Guid userId)
-			: base(userId)
-		{
-			RuleFor(unit => unit.Name, faker => faker.Commerce.ProductMaterial());
-			RuleFor(unit => unit.NormalizedName, (_, unit) => unit.Name.ToUpperInvariant());
-		}
+public sealed class UnitFaker : NamedEntityFaker<UnitEntity>
+{
+	public UnitFaker(UserEntity user)
+		: this(user.Id)
+	{
+	}
+
+	public UnitFaker(Guid userId)
+		: base(userId)
+	{
+		RuleFor(unit => unit.Name, faker => faker.Commerce.ProductMaterial());
+		RuleFor(unit => unit.NormalizedName, (_, unit) => unit.Name.ToUpperInvariant());
 	}
 }

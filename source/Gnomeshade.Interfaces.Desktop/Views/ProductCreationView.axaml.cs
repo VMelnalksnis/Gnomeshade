@@ -4,17 +4,16 @@
 
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+public sealed class ProductCreationView : FocusOnInitUserControl
 {
-	public sealed class ProductCreationView : FocusOnInitUserControl
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ProductCreationView"/> class.
+	/// </summary>
+	public ProductCreationView()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ProductCreationView"/> class.
-		/// </summary>
-		public ProductCreationView()
-		{
-			AvaloniaXamlLoader.Load(this);
-			Focus("ProductName");
-		}
+		AvaloniaXamlLoader.Load(this);
+		Focus("ProductName");
 	}
 }

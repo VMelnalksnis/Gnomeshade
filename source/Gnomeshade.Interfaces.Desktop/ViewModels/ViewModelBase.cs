@@ -8,15 +8,14 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels
-{
-	public abstract class ViewModelBase : PropertyChangedBase
-	{
-	}
+namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
-	public abstract class ViewModelBase<[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)] TView>
-		: ViewModelBase
-		where TView : Control
-	{
-	}
+public abstract class ViewModelBase : PropertyChangedBase
+{
+}
+
+public abstract class ViewModelBase<[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)] TView>
+	: ViewModelBase
+	where TView : Control
+{
 }

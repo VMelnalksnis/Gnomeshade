@@ -6,45 +6,44 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Entities
+namespace Gnomeshade.Data.Entities;
+
+/// <summary>
+/// Represents a unit for <see cref="ProductEntity"/> amount.
+/// </summary>
+public sealed record UnitEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 {
+	/// <inheritdoc />
+	public Guid Id { get; init; }
+
+	/// <inheritdoc />
+	public DateTimeOffset CreatedAt { get; init; }
+
+	/// <inheritdoc />
+	public Guid OwnerId { get; set; }
+
+	/// <inheritdoc />
+	public Guid CreatedByUserId { get; init; }
+
+	/// <inheritdoc />
+	public DateTimeOffset ModifiedAt { get; set; }
+
+	/// <inheritdoc />
+	public Guid ModifiedByUserId { get; set; }
+
+	/// <inheritdoc />
+	public string Name { get; set; } = null!;
+
+	/// <inheritdoc />
+	public string NormalizedName { get; set; } = null!;
+
 	/// <summary>
-	/// Represents a unit for <see cref="ProductEntity"/> amount.
+	/// Gets or sets the id of the parent <see cref="UnitEntity"/>.
 	/// </summary>
-	public sealed record UnitEntity : IOwnableEntity, IModifiableEntity, INamedEntity
-	{
-		/// <inheritdoc />
-		public Guid Id { get; init; }
+	public Guid? ParentUnitId { get; set; }
 
-		/// <inheritdoc />
-		public DateTimeOffset CreatedAt { get; init; }
-
-		/// <inheritdoc />
-		public Guid OwnerId { get; set; }
-
-		/// <inheritdoc />
-		public Guid CreatedByUserId { get; init; }
-
-		/// <inheritdoc />
-		public DateTimeOffset ModifiedAt { get; set; }
-
-		/// <inheritdoc />
-		public Guid ModifiedByUserId { get; set; }
-
-		/// <inheritdoc />
-		public string Name { get; set; } = null!;
-
-		/// <inheritdoc />
-		public string NormalizedName { get; set; } = null!;
-
-		/// <summary>
-		/// Gets or sets the id of the parent <see cref="UnitEntity"/>.
-		/// </summary>
-		public Guid? ParentUnitId { get; set; }
-
-		/// <summary>
-		/// Gets or sets the multiplier to convert a value in this unit to the parent unit.
-		/// </summary>
-		public decimal? Multiplier { get; set; }
-	}
+	/// <summary>
+	/// Gets or sets the multiplier to convert a value in this unit to the parent unit.
+	/// </summary>
+	public decimal? Multiplier { get; set; }
 }

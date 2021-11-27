@@ -7,23 +7,22 @@ using System.Text;
 
 using Bogus.DataSets;
 
-namespace Gnomeshade.TestingHelpers
-{
-	public static class BogusExtensions
-	{
-		public static string Password(this Internet internet, int minLength, int maxLength)
-		{
-			var randomizer = internet.Random;
-			var stringBuilder = new StringBuilder(maxLength)
-				.Append(randomizer.Char('a', 'z'))
-				.Append(randomizer.Char('A', 'Z'))
-				.Append(randomizer.Char('0', '9'))
-				.Append(randomizer.Char('!', '/'))
-				.Append(randomizer.String2(minLength - 4))
-				.Append(randomizer.String2(randomizer.Number(0, maxLength - minLength)));
+namespace Gnomeshade.TestingHelpers;
 
-			var shuffledCharacters = randomizer.Shuffle(stringBuilder.ToString()).ToArray();
-			return new(shuffledCharacters);
-		}
+public static class BogusExtensions
+{
+	public static string Password(this Internet internet, int minLength, int maxLength)
+	{
+		var randomizer = internet.Random;
+		var stringBuilder = new StringBuilder(maxLength)
+			.Append(randomizer.Char('a', 'z'))
+			.Append(randomizer.Char('A', 'Z'))
+			.Append(randomizer.Char('0', '9'))
+			.Append(randomizer.Char('!', '/'))
+			.Append(randomizer.String2(minLength - 4))
+			.Append(randomizer.String2(randomizer.Number(0, maxLength - minLength)));
+
+		var shuffledCharacters = randomizer.Shuffle(stringBuilder.ToString()).ToArray();
+		return new(shuffledCharacters);
 	}
 }

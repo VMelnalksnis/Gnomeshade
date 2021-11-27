@@ -8,101 +8,100 @@ using System.Runtime.CompilerServices;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Binding
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+
+public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyPropertyChanged
 {
-	public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyPropertyChanged
+	/// <inheritdoc />
+	public event PropertyChangingEventHandler? PropertyChanging;
+
+	/// <inheritdoc />
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	/// <summary>
+	/// Sets the backing field of a property, raises <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/>,
+	/// if <paramref name="newValue"/> does not equal <paramref name="backingField"/>.
+	/// </summary>
+	/// <param name="backingField">A reference to the backing field of a property.</param>
+	/// <param name="newValue">The new value to set.</param>
+	/// <param name="propertyName">The name of the property being modified.</param>
+	/// <typeparam name="T">The type of the property.</typeparam>
+	[NotifyPropertyChangedInvocator]
+	protected void SetAndNotify<T>(ref T backingField, T newValue, [CallerMemberName] string propertyName = "")
 	{
-		/// <inheritdoc />
-		public event PropertyChangingEventHandler? PropertyChanging;
-
-		/// <inheritdoc />
-		public event PropertyChangedEventHandler? PropertyChanged;
-
-		/// <summary>
-		/// Sets the backing field of a property, raises <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/>,
-		/// if <paramref name="newValue"/> does not equal <paramref name="backingField"/>.
-		/// </summary>
-		/// <param name="backingField">A reference to the backing field of a property.</param>
-		/// <param name="newValue">The new value to set.</param>
-		/// <param name="propertyName">The name of the property being modified.</param>
-		/// <typeparam name="T">The type of the property.</typeparam>
-		[NotifyPropertyChangedInvocator]
-		protected void SetAndNotify<T>(ref T backingField, T newValue, [CallerMemberName] string propertyName = "")
+		if (EqualityComparer<T>.Default.Equals(backingField, newValue))
 		{
-			if (EqualityComparer<T>.Default.Equals(backingField, newValue))
-			{
-				return;
-			}
-
-			OnPropertyChanging(propertyName);
-			backingField = newValue;
-			OnPropertyChanged(propertyName);
+			return;
 		}
 
-		/// <summary>
-		/// Sets the backing field of a property, raises <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/>
-		/// for the property and the specified computed guard property,
-		/// if <paramref name="newValue"/> does not equal <paramref name="backingField"/>.
-		/// </summary>
-		/// <param name="backingField">A reference to the backing field of a property.</param>
-		/// <param name="newValue">The new value to set.</param>
-		/// <param name="propertyName">The name of the property being modified.</param>
-		/// <param name="guardPropertyNames">The names of the computed guard properties.</param>
-		/// <typeparam name="T">The type of the property.</typeparam>
-		[NotifyPropertyChangedInvocator]
-		protected void SetAndNotifyWithGuard<T>(
-			ref T backingField,
-			T newValue,
-			[CallerMemberName] string propertyName = "",
-			params string[] guardPropertyNames)
-		{
-			if (EqualityComparer<T>.Default.Equals(backingField, newValue))
-			{
-				return;
-			}
+		OnPropertyChanging(propertyName);
+		backingField = newValue;
+		OnPropertyChanged(propertyName);
+	}
 
-			OnPropertiesChanging(propertyName, guardPropertyNames);
-			backingField = newValue;
-			OnPropertiesChanged(propertyName, guardPropertyNames);
+	/// <summary>
+	/// Sets the backing field of a property, raises <see cref="PropertyChanging"/> and <see cref="PropertyChanged"/>
+	/// for the property and the specified computed guard property,
+	/// if <paramref name="newValue"/> does not equal <paramref name="backingField"/>.
+	/// </summary>
+	/// <param name="backingField">A reference to the backing field of a property.</param>
+	/// <param name="newValue">The new value to set.</param>
+	/// <param name="propertyName">The name of the property being modified.</param>
+	/// <param name="guardPropertyNames">The names of the computed guard properties.</param>
+	/// <typeparam name="T">The type of the property.</typeparam>
+	[NotifyPropertyChangedInvocator]
+	protected void SetAndNotifyWithGuard<T>(
+		ref T backingField,
+		T newValue,
+		[CallerMemberName] string propertyName = "",
+		params string[] guardPropertyNames)
+	{
+		if (EqualityComparer<T>.Default.Equals(backingField, newValue))
+		{
+			return;
 		}
 
-		private void OnPropertyChanging([CallerMemberName] string propertyName = "")
+		OnPropertiesChanging(propertyName, guardPropertyNames);
+		backingField = newValue;
+		OnPropertiesChanged(propertyName, guardPropertyNames);
+	}
+
+	private void OnPropertyChanging([CallerMemberName] string propertyName = "")
+	{
+		PropertyChanging?.Invoke(this, new(propertyName));
+	}
+
+	private void OnPropertiesChanging(string property, params string[] propertyNames)
+	{
+		if (PropertyChanging is null)
 		{
-			PropertyChanging?.Invoke(this, new(propertyName));
+			return;
 		}
 
-		private void OnPropertiesChanging(string property, params string[] propertyNames)
+		PropertyChanging(this, new(property));
+		foreach (var propertyName in propertyNames)
 		{
-			if (PropertyChanging is null)
-			{
-				return;
-			}
+			PropertyChanging(this, new(propertyName));
+		}
+	}
 
-			PropertyChanging(this, new(property));
-			foreach (var propertyName in propertyNames)
-			{
-				PropertyChanging(this, new(propertyName));
-			}
+	[NotifyPropertyChangedInvocator]
+	protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
+	private void OnPropertiesChanged(string property, params string[] propertyNames)
+	{
+		if (PropertyChanged is null)
+		{
+			return;
 		}
 
-		[NotifyPropertyChangedInvocator]
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+		PropertyChanged(this, new(property));
+		foreach (var propertyName in propertyNames)
 		{
-			PropertyChanged?.Invoke(this, new(propertyName));
-		}
-
-		private void OnPropertiesChanged(string property, params string[] propertyNames)
-		{
-			if (PropertyChanged is null)
-			{
-				return;
-			}
-
-			PropertyChanged(this, new(property));
-			foreach (var propertyName in propertyNames)
-			{
-				PropertyChanged(this, new(propertyName));
-			}
+			PropertyChanged(this, new(propertyName));
 		}
 	}
 }

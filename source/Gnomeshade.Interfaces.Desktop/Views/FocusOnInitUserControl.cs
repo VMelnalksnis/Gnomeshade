@@ -4,21 +4,20 @@
 
 using Avalonia.Controls;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+/// <summary>
+/// User control which focuses on an element on creation.
+/// </summary>
+public abstract class FocusOnInitUserControl : UserControl
 {
 	/// <summary>
-	/// User control which focuses on an element on creation.
+	/// Focuses the control with the specified name once it is attached to the visual tree.
 	/// </summary>
-	public abstract class FocusOnInitUserControl : UserControl
+	/// <param name="focusControlName">The name of the control to focus on.</param>
+	protected void Focus(string focusControlName)
 	{
-		/// <summary>
-		/// Focuses the control with the specified name once it is attached to the visual tree.
-		/// </summary>
-		/// <param name="focusControlName">The name of the control to focus on.</param>
-		protected void Focus(string focusControlName)
-		{
-			var focusControl = this.FindControl<Control>(focusControlName);
-			focusControl.AttachedToVisualTree += (_, _) => focusControl.Focus();
-		}
+		var focusControl = this.FindControl<Control>(focusControlName);
+		focusControl.AttachedToVisualTree += (_, _) => focusControl.Focus();
 	}
 }

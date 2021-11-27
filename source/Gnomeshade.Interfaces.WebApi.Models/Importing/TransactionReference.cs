@@ -7,22 +7,21 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.Models.Importing
+namespace Gnomeshade.Interfaces.WebApi.Models.Importing;
+
+/// <summary>
+/// A reference to an transaction that was used during import.
+/// </summary>
+[PublicAPI]
+public sealed record TransactionReference
 {
 	/// <summary>
-	/// A reference to an transaction that was used during import.
+	/// Whether or not the transaction was created during import.
 	/// </summary>
-	[PublicAPI]
-	public sealed record TransactionReference
-	{
-		/// <summary>
-		/// Whether or not the transaction was created during import.
-		/// </summary>
-		public bool Created { get; init; }
+	public bool Created { get; init; }
 
-		/// <summary>
-		/// The referenced transaction.
-		/// </summary>
-		public Transaction Transaction { get; init; } = null!;
-	}
+	/// <summary>
+	/// The referenced transaction.
+	/// </summary>
+	public Transaction Transaction { get; init; } = null!;
 }

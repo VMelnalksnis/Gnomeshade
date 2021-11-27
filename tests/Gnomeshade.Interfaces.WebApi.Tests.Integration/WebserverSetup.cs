@@ -19,75 +19,74 @@ using Microsoft.Extensions.Configuration;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
+
+[SetUpFixture]
+public sealed class WebserverSetup
 {
-	[SetUpFixture]
-	public sealed class WebserverSetup
+	private static readonly PostgresInitializer _initializer;
+
+	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
+	private static Login _login = null!;
+
+	static WebserverSetup()
 	{
-		private static readonly PostgresInitializer _initializer;
+		IConfiguration configuration =
+			new ConfigurationBuilder()
+				.AddUserSecrets<WebserverSetup>(true, true)
+				.AddEnvironmentVariables()
+				.Build();
 
-		private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
-		private static Login _login = null!;
+		_initializer = new(configuration);
+	}
 
-		static WebserverSetup()
+	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateClient();
+
+	public static GnomeshadeClient CreateUnauthorizedClient() => new(CreateHttpClient());
+
+	public static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+	{
+		var client = CreateUnauthorizedClient();
+		var loginResult = await client.LogInAsync(_login);
+		if (loginResult is not SuccessfulLogin)
 		{
-			IConfiguration configuration =
-				new ConfigurationBuilder()
-					.AddUserSecrets<WebserverSetup>(true, true)
-					.AddEnvironmentVariables()
-					.Build();
-
-			_initializer = new(configuration);
+			throw new(loginResult.ToString());
 		}
 
-		public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateClient();
+		return client;
+	}
 
-		public static GnomeshadeClient CreateUnauthorizedClient() => new(CreateHttpClient());
+	[OneTimeSetUp]
+	public async Task OneTimeSetUpAsync()
+	{
+		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_initializer.ConnectionString);
+		var client = _webApplicationFactory.CreateClient();
 
-		public static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+		// database needs to be setup after web app, so that the web app can configure static Npg logger
+		await _initializer.SetupDatabaseAsync();
+
+		var registrationModel = new Faker<RegistrationModel>()
+			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
+			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
+			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
+			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName)
+			.Generate();
+
+		var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
+		if (response.StatusCode == HttpStatusCode.InternalServerError)
 		{
-			var client = CreateUnauthorizedClient();
-			var loginResult = await client.LogInAsync(_login);
-			if (loginResult is not SuccessfulLogin)
-			{
-				throw new(loginResult.ToString());
-			}
-
-			return client;
+			throw new(await response.Content.ReadAsStringAsync());
 		}
 
-		[OneTimeSetUp]
-		public async Task OneTimeSetUpAsync()
-		{
-			_webApplicationFactory = new GnomeshadeWebApplicationFactory(_initializer.ConnectionString);
-			var client = _webApplicationFactory.CreateClient();
+		response.EnsureSuccessStatusCode();
 
-			// database needs to be setup after web app, so that the web app can configure static Npg logger
-			await _initializer.SetupDatabaseAsync();
+		_login = new() { Username = registrationModel.Username, Password = registrationModel.Password };
+	}
 
-			var registrationModel = new Faker<RegistrationModel>()
-				.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
-				.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
-				.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
-				.RuleFor(registration => registration.FullName, faker => faker.Person.FullName)
-				.Generate();
-
-			var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
-			if (response.StatusCode == HttpStatusCode.InternalServerError)
-			{
-				throw new(await response.Content.ReadAsStringAsync());
-			}
-
-			response.EnsureSuccessStatusCode();
-
-			_login = new() { Username = registrationModel.Username, Password = registrationModel.Password };
-		}
-
-		[OneTimeTearDown]
-		public async Task OneTimeTearDownAsync()
-		{
-			await _initializer.DropDatabaseAsync();
-			await _webApplicationFactory.DisposeAsync();
-		}
+	[OneTimeTearDown]
+	public async Task OneTimeTearDownAsync()
+	{
+		await _initializer.DropDatabaseAsync();
+		await _webApplicationFactory.DisposeAsync();
 	}
 }

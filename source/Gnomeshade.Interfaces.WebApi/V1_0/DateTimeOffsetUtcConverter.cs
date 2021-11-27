@@ -8,18 +8,17 @@ using AutoMapper;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0
+namespace Gnomeshade.Interfaces.WebApi.V1_0;
+
+/// <summary>
+/// Converts all <see cref="DateTimeOffset"/> to UTC.
+/// </summary>
+[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
+public class DateTimeOffsetUtcConverter : ITypeConverter<DateTimeOffset, DateTimeOffset>
 {
-	/// <summary>
-	/// Converts all <see cref="DateTimeOffset"/> to UTC.
-	/// </summary>
-	[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
-	public class DateTimeOffsetUtcConverter : ITypeConverter<DateTimeOffset, DateTimeOffset>
+	/// <inheritdoc />
+	public DateTimeOffset Convert(DateTimeOffset source, DateTimeOffset destination, ResolutionContext context)
 	{
-		/// <inheritdoc />
-		public DateTimeOffset Convert(DateTimeOffset source, DateTimeOffset destination, ResolutionContext context)
-		{
-			return source.ToUniversalTime();
-		}
+		return source.ToUniversalTime();
 	}
 }

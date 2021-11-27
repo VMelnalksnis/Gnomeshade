@@ -9,36 +9,35 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
+
+public sealed class FromOptionalTestCaseSource : IEnumerable
 {
-	public sealed class FromOptionalTestCaseSource : IEnumerable
+	public IEnumerator GetEnumerator()
 	{
-		public IEnumerator GetEnumerator()
-		{
-			var now = DateTimeOffset.Now;
+		var now = DateTimeOffset.Now;
 
-			yield return
-				new TestCaseData(
-						new OptionalTimeRange(),
-						now,
-						new TimeRange(new(now.Year, now.Month, 01, 00, 00, 00, now.Offset), now))
-					.SetName("Defaults from start of current month to now");
+		yield return
+			new TestCaseData(
+					new OptionalTimeRange(),
+					now,
+					new TimeRange(new(now.Year, now.Month, 01, 00, 00, 00, now.Offset), now))
+				.SetName("Defaults from start of current month to now");
 
-			var from = now.AddMonths(-1);
-			yield return
-				new TestCaseData(
-						new OptionalTimeRange { From = from },
-						now,
-						new TimeRange(from, now))
-					.SetName("'from' defaults to the start of the 'to' date");
+		var from = now.AddMonths(-1);
+		yield return
+			new TestCaseData(
+					new OptionalTimeRange { From = from },
+					now,
+					new TimeRange(from, now))
+				.SetName("'from' defaults to the start of the 'to' date");
 
-			from = now.AddDays(-1);
-			yield return
-				new TestCaseData(
-						new OptionalTimeRange { From = from, To = now },
-						now,
-						new TimeRange(from, now))
-					.SetName("Returns same values if both given");
-		}
+		from = now.AddDays(-1);
+		yield return
+			new TestCaseData(
+					new OptionalTimeRange { From = from, To = now },
+					now,
+					new TimeRange(from, now))
+				.SetName("Returns same values if both given");
 	}
 }

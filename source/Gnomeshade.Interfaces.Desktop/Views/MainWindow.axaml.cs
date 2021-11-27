@@ -6,19 +6,18 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+public sealed class MainWindow : Window
 {
-	public sealed class MainWindow : Window
+	/// <summary>
+	/// Initializes a new instance of the <see cref="MainWindow"/> class.
+	/// </summary>
+	public MainWindow()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MainWindow"/> class.
-		/// </summary>
-		public MainWindow()
-		{
-			AvaloniaXamlLoader.Load(this);
+		AvaloniaXamlLoader.Load(this);
 #if DEBUG
-			this.AttachDevTools();
+		this.AttachDevTools();
 #endif
-		}
 	}
 }

@@ -26,166 +26,165 @@ using Microsoft.IdentityModel.Tokens;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]/[action]")]
+[SuppressMessage(
+	"ReSharper",
+	"AsyncConverter.ConfigureAwaitHighlighting",
+	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
+public sealed class AuthenticationController : ControllerBase
 {
-	[ApiController]
-	[ApiVersion("1.0")]
-	[Route("api/v{version:apiVersion}/[controller]/[action]")]
-	[SuppressMessage(
-		"ReSharper",
-		"AsyncConverter.ConfigureAwaitHighlighting",
-		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class AuthenticationController : ControllerBase
+	private readonly UserManager<ApplicationUser> _userManager;
+	private readonly UserUnitOfWork _userUnitOfWork;
+	private readonly Mapper _mapper;
+	private readonly JwtOptions _jwtOptions;
+	private readonly JwtSecurityTokenHandler _securityTokenHandler;
+	private readonly ProblemDetailsFactory _problemDetailFactory;
+
+	public AuthenticationController(
+		UserManager<ApplicationUser> userManager,
+		UserUnitOfWork userUnitOfWork,
+		Mapper mapper,
+		IOptions<JwtOptions> jwtOptions,
+		JwtSecurityTokenHandler securityTokenHandler,
+		ProblemDetailsFactory problemDetailsFactory)
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly UserUnitOfWork _userUnitOfWork;
-		private readonly Mapper _mapper;
-		private readonly JwtOptions _jwtOptions;
-		private readonly JwtSecurityTokenHandler _securityTokenHandler;
-		private readonly ProblemDetailsFactory _problemDetailFactory;
+		_userManager = userManager;
+		_userUnitOfWork = userUnitOfWork;
+		_mapper = mapper;
+		_jwtOptions = jwtOptions.Value;
+		_securityTokenHandler = securityTokenHandler;
+		_problemDetailFactory = problemDetailsFactory;
+	}
 
-		public AuthenticationController(
-			UserManager<ApplicationUser> userManager,
-			UserUnitOfWork userUnitOfWork,
-			Mapper mapper,
-			IOptions<JwtOptions> jwtOptions,
-			JwtSecurityTokenHandler securityTokenHandler,
-			ProblemDetailsFactory problemDetailsFactory)
+	[AllowAnonymous]
+	[HttpPost]
+	[ProducesResponseType(Status200OK)]
+	[ProducesResponseType(Status401Unauthorized)]
+	public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] Login login)
+	{
+		var user = await _userManager.FindByNameAsync(login.Username);
+		if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))
 		{
-			_userManager = userManager;
-			_userUnitOfWork = userUnitOfWork;
-			_mapper = mapper;
-			_jwtOptions = jwtOptions.Value;
-			_securityTokenHandler = securityTokenHandler;
-			_problemDetailFactory = problemDetailsFactory;
+			return Unauthorized();
 		}
 
-		[AllowAnonymous]
-		[HttpPost]
-		[ProducesResponseType(Status200OK)]
-		[ProducesResponseType(Status401Unauthorized)]
-		public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] Login login)
+		var claims = new List<Claim>
 		{
-			var user = await _userManager.FindByNameAsync(login.Username);
-			if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))
-			{
-				return Unauthorized();
-			}
+			new(ClaimTypes.NameIdentifier, user.Id),
+			new(ClaimTypes.Name, user.UserName),
+			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+		};
 
-			var claims = new List<Claim>
-			{
-				new(ClaimTypes.NameIdentifier, user.Id),
-				new(ClaimTypes.Name, user.UserName),
-				new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-			};
+		var roles = await _userManager.GetRolesAsync(user);
+		var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
+		claims.AddRange(roleClaims);
 
-			var roles = await _userManager.GetRolesAsync(user);
-			var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
-			claims.AddRange(roleClaims);
+		var authSigningKey = _jwtOptions.SecurityKey;
+		var token = new JwtSecurityToken(
+			_jwtOptions.ValidIssuer,
+			_jwtOptions.ValidAudience,
+			claims,
+			DateTime.Now,
+			DateTime.Now.AddHours(3),
+			new(authSigningKey, SecurityAlgorithms.HmacSha256));
 
-			var authSigningKey = _jwtOptions.SecurityKey;
-			var token = new JwtSecurityToken(
-				_jwtOptions.ValidIssuer,
-				_jwtOptions.ValidAudience,
-				claims,
-				DateTime.Now,
-				DateTime.Now.AddHours(3),
-				new(authSigningKey, SecurityAlgorithms.HmacSha256));
+		return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
+	}
 
-			return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
+	[AllowAnonymous]
+	[HttpPost]
+	[ProducesResponseType(Status200OK)]
+	public async Task<ActionResult> Register([FromBody, BindRequired] RegistrationModel registration)
+	{
+		var user = _mapper.Map<ApplicationUser>(registration);
+		user.SecurityStamp = Guid.NewGuid().ToString();
+
+		var creationResult = await _userManager.CreateAsync(user, registration.Password);
+		if (!creationResult.Succeeded)
+		{
+			var problemDetails = creationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
+			return BadRequest(problemDetails);
 		}
 
-		[AllowAnonymous]
-		[HttpPost]
-		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult> Register([FromBody, BindRequired] RegistrationModel registration)
+		var identityUser = await _userManager.FindByNameAsync(registration.Username);
+
+		try
 		{
-			var user = _mapper.Map<ApplicationUser>(registration);
-			user.SecurityStamp = Guid.NewGuid().ToString();
+			await _userUnitOfWork.CreateUserAsync(identityUser);
+		}
+		catch (Exception)
+		{
+			await _userManager.DeleteAsync(identityUser);
+			throw;
+		}
 
-			var creationResult = await _userManager.CreateAsync(user, registration.Password);
-			if (!creationResult.Succeeded)
-			{
-				var problemDetails = creationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-				return BadRequest(problemDetails);
-			}
+		return Ok();
+	}
 
-			var identityUser = await _userManager.FindByNameAsync(registration.Username);
-
-			try
-			{
-				await _userUnitOfWork.CreateUserAsync(identityUser);
-			}
-			catch (Exception)
-			{
-				await _userManager.DeleteAsync(identityUser);
-				throw;
-			}
-
+	[HttpPost]
+	public async Task<ActionResult> SocialRegister()
+	{
+		var providerKeyClaim = User.FindAll(ClaimTypes.NameIdentifier).Single();
+		var existingUser =
+			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+		if (existingUser is not null)
+		{
 			return Ok();
 		}
 
-		[HttpPost]
-		public async Task<ActionResult> SocialRegister()
+		var applicationUser = new ApplicationUser
 		{
-			var providerKeyClaim = User.FindAll(ClaimTypes.NameIdentifier).Single();
-			var existingUser =
-				await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-			if (existingUser is not null)
-			{
-				return Ok();
-			}
+			Email = User.FindFirstValue(ClaimTypes.Email),
+			FullName = User.FindFirstValue(ClaimTypes.Name),
+			UserName = User.FindFirstValue("preferred_username"),
+		};
 
-			var applicationUser = new ApplicationUser
-			{
-				Email = User.FindFirstValue(ClaimTypes.Email),
-				FullName = User.FindFirstValue(ClaimTypes.Name),
-				UserName = User.FindFirstValue("preferred_username"),
-			};
-
-			var userCreationResult = await _userManager.CreateAsync(applicationUser);
-			if (!userCreationResult.Succeeded)
-			{
-				var problemDetails = userCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-				return BadRequest(problemDetails);
-			}
-
-			var userLoginInfo = new UserLoginInfo(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value, "Keycloak");
-			var loginCreationResult = await _userManager.AddLoginAsync(applicationUser, userLoginInfo);
-			if (!loginCreationResult.Succeeded)
-			{
-				var problemDetails = loginCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-				return BadRequest(problemDetails);
-			}
-
-			var identityUser =
-				await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-
-			try
-			{
-				await _userUnitOfWork.CreateUserAsync(identityUser);
-			}
-			catch (Exception)
-			{
-				await _userManager.DeleteAsync(identityUser);
-				throw;
-			}
-
-			return StatusCode(Status201Created);
+		var userCreationResult = await _userManager.CreateAsync(applicationUser);
+		if (!userCreationResult.Succeeded)
+		{
+			var problemDetails = userCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
+			return BadRequest(problemDetails);
 		}
 
-		[HttpGet]
-		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<UserModel>> Info()
+		var userLoginInfo = new UserLoginInfo(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value, "Keycloak");
+		var loginCreationResult = await _userManager.AddLoginAsync(applicationUser, userLoginInfo);
+		if (!loginCreationResult.Succeeded)
 		{
-			var identityUser = await _userManager.GetUserAsync(User);
-
-			// var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
-			return Ok(_mapper.Map<UserModel>(identityUser));
+			var problemDetails = loginCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
+			return BadRequest(problemDetails);
 		}
 
-		[HttpGet]
-		[ProducesResponseType(Status200OK)]
-		public ActionResult Logout() => SignOut();
+		var identityUser =
+			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+
+		try
+		{
+			await _userUnitOfWork.CreateUserAsync(identityUser);
+		}
+		catch (Exception)
+		{
+			await _userManager.DeleteAsync(identityUser);
+			throw;
+		}
+
+		return StatusCode(Status201Created);
 	}
+
+	[HttpGet]
+	[ProducesResponseType(Status200OK)]
+	public async Task<ActionResult<UserModel>> Info()
+	{
+		var identityUser = await _userManager.GetUserAsync(User);
+
+		// var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
+		return Ok(_mapper.Map<UserModel>(identityUser));
+	}
+
+	[HttpGet]
+	[ProducesResponseType(Status200OK)]
+	public ActionResult Logout() => SignOut();
 }

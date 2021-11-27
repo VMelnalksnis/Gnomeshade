@@ -6,23 +6,22 @@ using System;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers
-{
-	public sealed class TransactionFaker : ModifiableEntityFaker<TransactionEntity>
-	{
-		public TransactionFaker(UserEntity user)
-			: this(user.Id)
-		{
-		}
+namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-		public TransactionFaker(Guid userId)
-			: base(userId)
-		{
-			RuleFor(transaction => transaction.Date, faker => faker.Date.RecentUtc());
-			RuleFor(transaction => transaction.Description, faker => faker.Lorem.Sentence());
-			RuleFor(transaction => transaction.ImportedAt, faker => faker.Date.RecentUtc());
-			RuleFor(transaction => transaction.ValidatedAt, faker => faker.Date.RecentUtc());
-			RuleFor(transaction => transaction.ValidatedByUserId, userId);
-		}
+public sealed class TransactionFaker : ModifiableEntityFaker<TransactionEntity>
+{
+	public TransactionFaker(UserEntity user)
+		: this(user.Id)
+	{
+	}
+
+	public TransactionFaker(Guid userId)
+		: base(userId)
+	{
+		RuleFor(transaction => transaction.Date, faker => faker.Date.RecentUtc());
+		RuleFor(transaction => transaction.Description, faker => faker.Lorem.Sentence());
+		RuleFor(transaction => transaction.ImportedAt, faker => faker.Date.RecentUtc());
+		RuleFor(transaction => transaction.ValidatedAt, faker => faker.Date.RecentUtc());
+		RuleFor(transaction => transaction.ValidatedByUserId, userId);
 	}
 }

@@ -4,9 +4,8 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
+
+public sealed class ApplicationUserRequirement : IAuthorizationRequirement
 {
-	public sealed class ApplicationUserRequirement : IAuthorizationRequirement
-	{
-	}
 }

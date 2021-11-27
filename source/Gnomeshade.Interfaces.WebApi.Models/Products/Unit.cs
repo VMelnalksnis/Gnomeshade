@@ -6,27 +6,26 @@ using System;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Products
+namespace Gnomeshade.Interfaces.WebApi.Models.Products;
+
+[PublicAPI]
+public sealed record Unit
 {
-	[PublicAPI]
-	public sealed record Unit
-	{
-		public Guid Id { get; init; }
+	public Guid Id { get; init; }
 
-		public DateTimeOffset CreatedAt { get; init; }
+	public DateTimeOffset CreatedAt { get; init; }
 
-		public Guid OwnerId { get; init; }
+	public Guid OwnerId { get; init; }
 
-		public Guid CreatedByUserId { get; init; }
+	public Guid CreatedByUserId { get; init; }
 
-		public DateTimeOffset ModifiedAt { get; init; }
+	public DateTimeOffset ModifiedAt { get; init; }
 
-		public Guid ModifiedByUserId { get; init; }
+	public Guid ModifiedByUserId { get; init; }
 
-		public string Name { get; init; } = null!;
+	public string Name { get; init; } = null!;
 
-		public Guid? ParentUnitId { get; init; }
+	public Guid? ParentUnitId { get; init; }
 
-		public decimal? Multiplier { get; init; }
-	}
+	public decimal? Multiplier { get; init; }
 }

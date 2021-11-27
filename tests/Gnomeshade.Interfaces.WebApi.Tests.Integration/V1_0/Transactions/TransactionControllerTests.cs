@@ -20,131 +20,130 @@ using Gnomeshade.TestingHelpers.Models;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions;
+
+public class TransactionControllerTests
 {
-	public class TransactionControllerTests
+	private IGnomeshadeClient _client = null!;
+
+	private Counterparty _counterparty = null!;
+	private Account _account1 = null!;
+	private Account _account2 = null!;
+	private Guid _productId;
+	private TransactionItemCreationFaker _itemCreationFaker = null!;
+
+	[SetUp]
+	public async Task SetUpAsync()
 	{
-		private IGnomeshadeClient _client = null!;
+		_client = await WebserverSetup.CreateAuthorizedClientAsync();
 
-		private Counterparty _counterparty = null!;
-		private Account _account1 = null!;
-		private Account _account2 = null!;
-		private Guid _productId;
-		private TransactionItemCreationFaker _itemCreationFaker = null!;
+		_counterparty = await _client.GetMyCounterpartyAsync();
+		var currencies = await _client.GetCurrenciesAsync();
+		var currency1 = currencies.First();
+		var currency2 = currencies.Skip(1).First();
 
-		[SetUp]
-		public async Task SetUpAsync()
+		_account1 = await CreateAccountAsync(currency1, _counterparty);
+		_account2 = await CreateAccountAsync(currency2, _counterparty);
+
+		var productCreation = new ProductCreationModel { Name = Guid.NewGuid().ToString("N") };
+		_productId = await _client.PutProductAsync(productCreation);
+
+		var sourceAccountId = _account1.Currencies.Single().Id;
+		var targetAccountId = _account2.Currencies.Single().Id;
+		_itemCreationFaker = new(sourceAccountId, targetAccountId, _productId);
+	}
+
+	[Test]
+	public async Task PutItem()
+	{
+		var itemCreationModel = _itemCreationFaker.Generate();
+
+		var transactionCreationModel = new TransactionCreationModel
 		{
-			_client = await WebserverSetup.CreateAuthorizedClientAsync();
+			Date = DateTimeOffset.Now,
+			Items = new() { itemCreationModel },
+		};
 
-			_counterparty = await _client.GetMyCounterpartyAsync();
-			var currencies = await _client.GetCurrenciesAsync();
-			var currency1 = currencies.First();
-			var currency2 = currencies.Skip(1).First();
+		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var transaction = await _client.GetTransactionAsync(transactionId);
+		var createdItem = transaction.Items.Should().ContainSingle().Subject;
 
-			_account1 = await CreateAccountAsync(currency1, _counterparty);
-			_account2 = await CreateAccountAsync(currency2, _counterparty);
+		var unchangedItemCreationModel = itemCreationModel with { Id = createdItem.Id };
+		_ = await _client.PutTransactionItemAsync(transactionId, unchangedItemCreationModel);
+		var unchangedTransaction = await _client.GetTransactionAsync(transactionId);
+		var unchangedItem = unchangedTransaction.Items.Should().ContainSingle().Subject;
 
-			var productCreation = new ProductCreationModel { Name = Guid.NewGuid().ToString("N") };
-			_productId = await _client.PutProductAsync(productCreation);
+		unchangedItem.Should().BeEquivalentTo(createdItem, WithoutModifiedAt);
+		unchangedItem.ModifiedAt.Should().BeAfter(createdItem.ModifiedAt);
 
-			var sourceAccountId = _account1.Currencies.Single().Id;
-			var targetAccountId = _account2.Currencies.Single().Id;
-			_itemCreationFaker = new(sourceAccountId, targetAccountId, _productId);
-		}
+		_ = await _client.PutTransactionItemAsync(transactionId, itemCreationModel);
+		var transactionWithAdditionalItem = await _client.GetTransactionAsync(transactionId);
+		transactionWithAdditionalItem.Items.Should().HaveCount(2);
 
-		[Test]
-		public async Task PutItem()
+		var exception =
+			await FluentActions
+				.Awaiting(() => _client.PutTransactionItemAsync(Guid.NewGuid(), itemCreationModel))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>();
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task PutTransaction()
+	{
+		var items = _itemCreationFaker.Generate(2);
+		var transactionCreationModel = new TransactionCreationModel
 		{
-			var itemCreationModel = _itemCreationFaker.Generate();
+			Date = DateTimeOffset.Now,
+			Items = items,
+		};
 
-			var transactionCreationModel = new TransactionCreationModel
-			{
-				Date = DateTimeOffset.Now,
-				Items = new() { itemCreationModel },
-			};
+		var transactionId = await _client.PutTransactionAsync(transactionCreationModel);
+		var transaction = await _client.GetTransactionAsync(transactionId);
 
-			var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
-			var transaction = await _client.GetTransactionAsync(transactionId);
-			var createdItem = transaction.Items.Should().ContainSingle().Subject;
-
-			var unchangedItemCreationModel = itemCreationModel with { Id = createdItem.Id };
-			_ = await _client.PutTransactionItemAsync(transactionId, unchangedItemCreationModel);
-			var unchangedTransaction = await _client.GetTransactionAsync(transactionId);
-			var unchangedItem = unchangedTransaction.Items.Should().ContainSingle().Subject;
-
-			unchangedItem.Should().BeEquivalentTo(createdItem, WithoutModifiedAt);
-			unchangedItem.ModifiedAt.Should().BeAfter(createdItem.ModifiedAt);
-
-			_ = await _client.PutTransactionItemAsync(transactionId, itemCreationModel);
-			var transactionWithAdditionalItem = await _client.GetTransactionAsync(transactionId);
-			transactionWithAdditionalItem.Items.Should().HaveCount(2);
-
-			var exception =
-				await FluentActions
-					.Awaiting(() => _client.PutTransactionItemAsync(Guid.NewGuid(), itemCreationModel))
-					.Should()
-					.ThrowExactlyAsync<HttpRequestException>();
-			exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
-		}
-
-		[Test]
-		public async Task PutTransaction()
+		transactionCreationModel = transactionCreationModel with
 		{
-			var items = _itemCreationFaker.Generate(2);
-			var transactionCreationModel = new TransactionCreationModel
-			{
-				Date = DateTimeOffset.Now,
-				Items = items,
-			};
+			Id = transaction.Id,
+			Items = transactionCreationModel.Items
+				.Zip(transaction.Items)
+				.Select(tuple => tuple.First with { Id = tuple.Second.Id })
+				.ToList(),
+		};
 
-			var transactionId = await _client.PutTransactionAsync(transactionCreationModel);
-			var transaction = await _client.GetTransactionAsync(transactionId);
+		var identicalId = await _client.PutTransactionAsync(transactionCreationModel);
+		var identicalTransaction = await _client.GetTransactionAsync(identicalId);
 
-			transactionCreationModel = transactionCreationModel with
-			{
-				Id = transaction.Id,
-				Items = transactionCreationModel.Items
-					.Zip(transaction.Items)
-					.Select(tuple => tuple.First with { Id = tuple.Second.Id })
-					.ToList(),
-			};
+		transaction.Should().BeEquivalentTo(identicalTransaction, WithoutModifiedAt);
+	}
 
-			var identicalId = await _client.PutTransactionAsync(transactionCreationModel);
-			var identicalTransaction = await _client.GetTransactionAsync(identicalId);
+	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(
+		EquivalencyAssertionOptions<Transaction> options)
+	{
+		return options
+			.ComparingByMembers<Transaction>()
+			.ComparingByMembers<TransactionItem>()
+			.ComparingByMembers<Product>()
+			.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
+	}
 
-			transaction.Should().BeEquivalentTo(identicalTransaction, WithoutModifiedAt);
-		}
+	private static EquivalencyAssertionOptions<TransactionItem> WithoutModifiedAt(
+		EquivalencyAssertionOptions<TransactionItem> options)
+	{
+		return options
+			.ComparingByMembers<TransactionItem>()
+			.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
+	}
 
-		private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(
-			EquivalencyAssertionOptions<Transaction> options)
+	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
+	{
+		var creationModel = new AccountCreationModel
 		{
-			return options
-				.ComparingByMembers<Transaction>()
-				.ComparingByMembers<TransactionItem>()
-				.ComparingByMembers<Product>()
-				.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
-		}
-
-		private static EquivalencyAssertionOptions<TransactionItem> WithoutModifiedAt(
-			EquivalencyAssertionOptions<TransactionItem> options)
-		{
-			return options
-				.ComparingByMembers<TransactionItem>()
-				.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
-		}
-
-		private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
-		{
-			var creationModel = new AccountCreationModel
-			{
-				Name = Guid.NewGuid().ToString("N"),
-				CounterpartyId = counterparty.Id,
-				PreferredCurrencyId = currency.Id,
-				Currencies = new() { new() { CurrencyId = currency.Id } },
-			};
-			var accountId = await _client.CreateAccountAsync(creationModel);
-			return await _client.GetAccountAsync(accountId);
-		}
+			Name = Guid.NewGuid().ToString("N"),
+			CounterpartyId = counterparty.Id,
+			PreferredCurrencyId = currency.Id,
+			Currencies = new() { new() { CurrencyId = currency.Id } },
+		};
+		var accountId = await _client.CreateAccountAsync(creationModel);
+		return await _client.GetAccountAsync(accountId);
 	}
 }

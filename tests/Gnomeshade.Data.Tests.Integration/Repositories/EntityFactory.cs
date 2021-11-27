@@ -12,82 +12,81 @@ using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
-namespace Gnomeshade.Data.Tests.Integration.Repositories
+namespace Gnomeshade.Data.Tests.Integration.Repositories;
+
+public static class EntityFactory
 {
-	public static class EntityFactory
+	private static List<CurrencyEntity>? _currencies;
+	private static ProductEntity? _product;
+	private static (AccountEntity First, AccountEntity Second)? _accounts;
+
+	public static async Task<List<CurrencyEntity>> GetCurrenciesAsync()
 	{
-		private static List<CurrencyEntity>? _currencies;
-		private static ProductEntity? _product;
-		private static (AccountEntity First, AccountEntity Second)? _accounts;
-
-		public static async Task<List<CurrencyEntity>> GetCurrenciesAsync()
+		if (_currencies is not null)
 		{
-			if (_currencies is not null)
-			{
-				return _currencies.ToList();
-			}
-
-			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-			_currencies = await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false);
-			return _currencies;
+			return _currencies.ToList();
 		}
 
-		public static async Task<ProductEntity> GetProductAsync()
+		var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		_currencies = await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false);
+		return _currencies;
+	}
+
+	public static async Task<ProductEntity> GetProductAsync()
+	{
+		if (_product is not null)
 		{
-			if (_product is not null)
-			{
-				return _product;
-			}
-
-			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-			var repository = new ProductRepository(dbConnection);
-			var products = (await repository.GetAllAsync(TestUser.Id)).ToList();
-			if (products.Any())
-			{
-				_product = products.First();
-				return _product;
-			}
-
-			var faker = new ProductFaker(TestUser);
-			var product = faker.Generate();
-
-			var productId = await repository.AddAsync(product).ConfigureAwait(false);
-			_product = await repository.GetByIdAsync(productId, TestUser.Id).ConfigureAwait(false);
-
 			return _product;
 		}
 
-		public static async Task<(AccountEntity First, AccountEntity Second)> GetAccountsAsync()
+		var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		var repository = new ProductRepository(dbConnection);
+		var products = (await repository.GetAllAsync(TestUser.Id)).ToList();
+		if (products.Any())
 		{
-			if (_accounts is not null)
-			{
-				return _accounts.Value;
-			}
+			_product = products.First();
+			return _product;
+		}
 
-			var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-			var currency = (await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false)).First();
+		var faker = new ProductFaker(TestUser);
+		var product = faker.Generate();
 
-			var repository = new AccountRepository(dbConnection);
-			var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
-			var counterpartyRepository = new CounterpartyRepository(dbConnection);
-			var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository, counterpartyRepository);
+		var productId = await repository.AddAsync(product).ConfigureAwait(false);
+		_product = await repository.GetByIdAsync(productId, TestUser.Id).ConfigureAwait(false);
 
-			var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
-			var counterPartyId = await counterpartyRepository.AddAsync(counterParty);
-			counterParty = await counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
+		return _product;
+	}
 
-			var accountFaker = new AccountFaker(TestUser, counterParty, currency);
-
-			var firstAccount = accountFaker.Generate();
-			var firstAccountId = await accountUnitOfWork.AddAsync(firstAccount).ConfigureAwait(false);
-			firstAccount = await repository.GetByIdAsync(firstAccountId, TestUser.Id).ConfigureAwait(false);
-
-			var secondAccount = accountFaker.GenerateUnique(firstAccount);
-			var secondAccountId = await accountUnitOfWork.AddAsync(secondAccount).ConfigureAwait(false);
-			secondAccount = await repository.GetByIdAsync(secondAccountId, TestUser.Id).ConfigureAwait(false);
-
-			_accounts = (firstAccount, secondAccount);
+	public static async Task<(AccountEntity First, AccountEntity Second)> GetAccountsAsync()
+	{
+		if (_accounts is not null)
+		{
 			return _accounts.Value;
 		}
+
+		var dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		var currency = (await new CurrencyRepository(dbConnection).GetAllAsync().ConfigureAwait(false)).First();
+
+		var repository = new AccountRepository(dbConnection);
+		var inCurrencyRepository = new AccountInCurrencyRepository(dbConnection);
+		var counterpartyRepository = new CounterpartyRepository(dbConnection);
+		var accountUnitOfWork = new AccountUnitOfWork(dbConnection, repository, inCurrencyRepository, counterpartyRepository);
+
+		var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
+		var counterPartyId = await counterpartyRepository.AddAsync(counterParty);
+		counterParty = await counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
+
+		var accountFaker = new AccountFaker(TestUser, counterParty, currency);
+
+		var firstAccount = accountFaker.Generate();
+		var firstAccountId = await accountUnitOfWork.AddAsync(firstAccount).ConfigureAwait(false);
+		firstAccount = await repository.GetByIdAsync(firstAccountId, TestUser.Id).ConfigureAwait(false);
+
+		var secondAccount = accountFaker.GenerateUnique(firstAccount);
+		var secondAccountId = await accountUnitOfWork.AddAsync(secondAccount).ConfigureAwait(false);
+		secondAccount = await repository.GetByIdAsync(secondAccountId, TestUser.Id).ConfigureAwait(false);
+
+		_accounts = (firstAccount, secondAccount);
+		return _accounts.Value;
 	}
 }

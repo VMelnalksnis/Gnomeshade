@@ -8,25 +8,24 @@ using System.Xml.Serialization;
 
 using VMelnalksnis.ISO20022DotNet.MessageSets.BankToCustomerCashManagement.V2.AccountReport;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing
-{
-	/// <summary>
-	/// <see cref="BankToCustomerAccountReportV02"/> XML reader.
-	/// </summary>
-	public sealed class Iso20022AccountReportReader
-	{
-		private readonly XmlSerializer _xmlSerializer = new(typeof(Document));
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 
-		/// <summary>
-		/// Reads the <see cref="BankToCustomerAccountReportV02"/> message from the XML stream.
-		/// </summary>
-		/// <param name="inputStream">Stream of containing the message.</param>
-		/// <returns>The account report message from the stream.</returns>
-		public BankToCustomerAccountReportV02 ReadReport(Stream inputStream)
-		{
-			var streamReader = new StreamReader(inputStream, Encoding.UTF8, true);
-			var document = (Document)_xmlSerializer.Deserialize(streamReader)!;
-			return document.BankToCustomerAccountReport;
-		}
+/// <summary>
+/// <see cref="BankToCustomerAccountReportV02"/> XML reader.
+/// </summary>
+public sealed class Iso20022AccountReportReader
+{
+	private readonly XmlSerializer _xmlSerializer = new(typeof(Document));
+
+	/// <summary>
+	/// Reads the <see cref="BankToCustomerAccountReportV02"/> message from the XML stream.
+	/// </summary>
+	/// <param name="inputStream">Stream of containing the message.</param>
+	/// <returns>The account report message from the stream.</returns>
+	public BankToCustomerAccountReportV02 ReadReport(Stream inputStream)
+	{
+		var streamReader = new StreamReader(inputStream, Encoding.UTF8, true);
+		var document = (Document)_xmlSerializer.Deserialize(streamReader)!;
+		return document.BankToCustomerAccountReport;
 	}
 }

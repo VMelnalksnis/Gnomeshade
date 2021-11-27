@@ -11,16 +11,15 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
-{
-	public class AccountViewModelTests
-	{
-		[Test]
-		public async Task DataGridView_ShouldBeGrouped()
-		{
-			var viewModel = await AccountViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels;
 
-			viewModel.DataGridView.Groups.Should().HaveCount(2);
-		}
+public class AccountViewModelTests
+{
+	[Test]
+	public async Task DataGridView_ShouldBeGrouped()
+	{
+		var viewModel = await AccountViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+
+		viewModel.DataGridView.Groups.Should().HaveCount(2);
 	}
 }

@@ -4,25 +4,24 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+
+/// <summary>
+/// Event arguments for <see cref="ImportViewModel.ProductSelected"/> event.
+/// </summary>
+public sealed class ProductSelectedEventArgs : EventArgs
 {
 	/// <summary>
-	/// Event arguments for <see cref="ImportViewModel.ProductSelected"/> event.
+	/// Initializes a new instance of the <see cref="ProductSelectedEventArgs"/> class.
 	/// </summary>
-	public sealed class ProductSelectedEventArgs : EventArgs
+	/// <param name="productId">The id of the selected product.</param>
+	public ProductSelectedEventArgs(Guid productId)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ProductSelectedEventArgs"/> class.
-		/// </summary>
-		/// <param name="productId">The id of the selected product.</param>
-		public ProductSelectedEventArgs(Guid productId)
-		{
-			ProductId = productId;
-		}
-
-		/// <summary>
-		/// Gets the id of the selected product.
-		/// </summary>
-		public Guid ProductId { get; }
+		ProductId = productId;
 	}
+
+	/// <summary>
+	/// Gets the id of the selected product.
+	/// </summary>
+	public Guid ProductId { get; }
 }

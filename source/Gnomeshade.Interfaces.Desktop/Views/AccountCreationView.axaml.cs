@@ -4,17 +4,16 @@
 
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+public sealed class AccountCreationView : FocusOnInitUserControl
 {
-	public sealed class AccountCreationView : FocusOnInitUserControl
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AccountCreationView"/> class.
+	/// </summary>
+	public AccountCreationView()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountCreationView"/> class.
-		/// </summary>
-		public AccountCreationView()
-		{
-			AvaloniaXamlLoader.Load(this);
-			Focus("AccountName");
-		}
+		AvaloniaXamlLoader.Load(this);
+		Focus("AccountName");
 	}
 }

@@ -19,337 +19,336 @@ using Microsoft.Extensions.Logging;
 using VMelnalksnis.OAuth2;
 using VMelnalksnis.OAuth2.Keycloak;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels
+namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+
+/// <summary>
+/// A container view which manages navigation and the currently active view.
+/// </summary>
+public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 {
+	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IOAuth2Client _keycloakClient;
+
+	private ViewModelBase _activeView = null!;
+
 	/// <summary>
-	/// A container view which manages navigation and the currently active view.
+	/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
 	/// </summary>
-	public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
+	public MainWindowViewModel()
 	{
-		private readonly IGnomeshadeClient _gnomeshadeClient;
-		private readonly IOAuth2Client _keycloakClient;
+		var configuration = new ConfigurationBuilder()
+			.AddUserSecrets<MainWindowViewModel>()
+			.Build();
 
-		private ViewModelBase _activeView = null!;
+		var serviceCollection = new ServiceCollection();
+		serviceCollection
+			.AddOptions<KeycloakOAuth2ClientOptions>()
+			.Bind(configuration.GetSection("Oidc:Keycloak"))
+			.ValidateDataAnnotations()
+			.ValidateOnStart();
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
-		/// </summary>
-		public MainWindowViewModel()
+		serviceCollection
+			.AddHttpClient<KeycloakOAuth2Client>()
+			.AddTypedClient<GnomeshadeClient>();
+		serviceCollection.AddLogging(builder => builder.AddConsole());
+
+		serviceCollection
+			.AddSingleton<GnomeshadeClient>()
+			.AddSingleton<KeycloakOAuth2Client>();
+
+		var serviceProvider = serviceCollection.BuildServiceProvider();
+
+		_gnomeshadeClient = serviceProvider.GetRequiredService<GnomeshadeClient>();
+		_keycloakClient = serviceProvider.GetRequiredService<KeycloakOAuth2Client>();
+
+		SwitchToLogin();
+	}
+
+	/// <summary>
+	/// Gets a value indicating whether it's possible to log out.
+	/// </summary>
+	public bool CanLogOut => ActiveView is not LoginViewModel;
+
+	/// <summary>
+	/// Gets or sets the currently active view.
+	/// </summary>
+	public ViewModelBase ActiveView
+	{
+		get => _activeView;
+		set
 		{
-			var configuration = new ConfigurationBuilder()
-				.AddUserSecrets<MainWindowViewModel>()
-				.Build();
-
-			var serviceCollection = new ServiceCollection();
-			serviceCollection
-				.AddOptions<KeycloakOAuth2ClientOptions>()
-				.Bind(configuration.GetSection("Oidc:Keycloak"))
-				.ValidateDataAnnotations()
-				.ValidateOnStart();
-
-			serviceCollection
-				.AddHttpClient<KeycloakOAuth2Client>()
-				.AddTypedClient<GnomeshadeClient>();
-			serviceCollection.AddLogging(builder => builder.AddConsole());
-
-			serviceCollection
-				.AddSingleton<GnomeshadeClient>()
-				.AddSingleton<KeycloakOAuth2Client>();
-
-			var serviceProvider = serviceCollection.BuildServiceProvider();
-
-			_gnomeshadeClient = serviceProvider.GetRequiredService<GnomeshadeClient>();
-			_keycloakClient = serviceProvider.GetRequiredService<KeycloakOAuth2Client>();
-
-			SwitchToLogin();
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether it's possible to log out.
-		/// </summary>
-		public bool CanLogOut => ActiveView is not LoginViewModel;
-
-		/// <summary>
-		/// Gets or sets the currently active view.
-		/// </summary>
-		public ViewModelBase ActiveView
-		{
-			get => _activeView;
-			set
+			Unsubscribe(ActiveView);
+			if (ActiveView is not LoginViewModel)
 			{
-				Unsubscribe(ActiveView);
-				if (ActiveView is not LoginViewModel)
-				{
-					PreviousView = ActiveView;
-				}
-
-				SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
-			}
-		}
-
-		private ViewModelBase? PreviousView { get; set; }
-
-		/// <summary>
-		/// Safely stops the application.
-		/// </summary>
-		public static void Exit()
-		{
-			var desktopLifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
-			desktopLifetime.Shutdown();
-		}
-
-		/// <summary>
-		/// Logs out the current user.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task LogOut()
-		{
-			await _gnomeshadeClient.LogOutAsync().ConfigureAwait(false);
-			SwitchToLogin();
-		}
-
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="AccountCreationViewModel"/>.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateAccountAsync()
-		{
-			if (ActiveView is AccountCreationViewModel)
-			{
-				return;
+				PreviousView = ActiveView;
 			}
 
-			var accountCreationViewModel = await AccountCreationViewModel.CreateAsync(_gnomeshadeClient);
-			accountCreationViewModel.AccountCreated += OnAccountCreated;
+			SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
+		}
+	}
 
-			ActiveView = accountCreationViewModel;
+	private ViewModelBase? PreviousView { get; set; }
+
+	/// <summary>
+	/// Safely stops the application.
+	/// </summary>
+	public static void Exit()
+	{
+		var desktopLifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
+		desktopLifetime.Shutdown();
+	}
+
+	/// <summary>
+	/// Logs out the current user.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task LogOut()
+	{
+		await _gnomeshadeClient.LogOutAsync().ConfigureAwait(false);
+		SwitchToLogin();
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="AccountCreationViewModel"/>.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task CreateAccountAsync()
+	{
+		if (ActiveView is AccountCreationViewModel)
+		{
+			return;
 		}
 
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="TransactionCreationViewModel"/>.
-		/// </summary>
-		public void CreateTransaction()
+		var accountCreationViewModel = await AccountCreationViewModel.CreateAsync(_gnomeshadeClient);
+		accountCreationViewModel.AccountCreated += OnAccountCreated;
+
+		ActiveView = accountCreationViewModel;
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="TransactionCreationViewModel"/>.
+	/// </summary>
+	public void CreateTransaction()
+	{
+		if (ActiveView is TransactionCreationViewModel)
 		{
-			if (ActiveView is TransactionCreationViewModel)
-			{
-				return;
-			}
-
-			var transactionCreationViewModel = new TransactionCreationViewModel(_gnomeshadeClient);
-			transactionCreationViewModel.TransactionCreated += OnTransactionCreated;
-
-			ActiveView = transactionCreationViewModel;
+			return;
 		}
 
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="ProductCreationViewModel"/>.
-		/// </summary>
-		/// <param name="productId">The id of the product to edit.</param>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateProductAsync(Guid? productId = null)
+		var transactionCreationViewModel = new TransactionCreationViewModel(_gnomeshadeClient);
+		transactionCreationViewModel.TransactionCreated += OnTransactionCreated;
+
+		ActiveView = transactionCreationViewModel;
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="ProductCreationViewModel"/>.
+	/// </summary>
+	/// <param name="productId">The id of the product to edit.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task CreateProductAsync(Guid? productId = null)
+	{
+		if (ActiveView is ProductCreationViewModel)
 		{
-			if (ActiveView is ProductCreationViewModel)
-			{
-				return;
-			}
-
-			var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, productId);
-			productCreationViewModel.ProductCreated += OnProductCreated;
-
-			ActiveView = productCreationViewModel;
+			return;
 		}
 
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="UnitCreationView"/>.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateUnitAsync()
+		var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, productId);
+		productCreationViewModel.ProductCreated += OnProductCreated;
+
+		ActiveView = productCreationViewModel;
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="UnitCreationView"/>.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task CreateUnitAsync()
+	{
+		if (ActiveView is UnitCreationViewModel)
 		{
-			if (ActiveView is UnitCreationViewModel)
-			{
-				return;
-			}
-
-			var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
-			unitCreationViewModel.UnitCreated += OnUnitCreated;
-
-			ActiveView = unitCreationViewModel;
+			return;
 		}
 
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task SwitchToAccountOverviewAsync()
-		{
-			if (ActiveView is AccountViewModel)
-			{
-				return;
-			}
+		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
+		unitCreationViewModel.UnitCreated += OnUnitCreated;
 
-			var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
-			ActiveView = accountViewModel;
+		ActiveView = unitCreationViewModel;
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToAccountOverviewAsync()
+	{
+		if (ActiveView is AccountViewModel)
+		{
+			return;
 		}
 
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.
-		/// </summary>
-		public void SwitchToImport()
-		{
-			if (ActiveView is ImportViewModel)
-			{
-				return;
-			}
+		var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		ActiveView = accountViewModel;
+	}
 
-			var importViewModel = new ImportViewModel(_gnomeshadeClient);
-			importViewModel.ProductSelected += OnProductSelected;
-			importViewModel.TransactionItemSelected += OnTransactionItemSelected;
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.
+	/// </summary>
+	public void SwitchToImport()
+	{
+		if (ActiveView is ImportViewModel)
+		{
+			return;
+		}
+
+		var importViewModel = new ImportViewModel(_gnomeshadeClient);
+		importViewModel.ProductSelected += OnProductSelected;
+		importViewModel.TransactionItemSelected += OnTransactionItemSelected;
+		ActiveView = importViewModel;
+	}
+
+	/// <summary>
+	/// Switches <see cref="ActiveView"/> to <see cref="TransactionItemCreationViewModel"/>.
+	/// </summary>
+	/// <param name="itemId">The id of the transaction item to edit.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task CreateTransactionItem(Guid itemId)
+	{
+		if (ActiveView is TransactionItemCreationViewModel)
+		{
+			return;
+		}
+
+		var itemCreationViewModel = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient, itemId);
+		itemCreationViewModel.TransactionItemCreated += OnTransactionItemCreated;
+		ActiveView = itemCreationViewModel;
+	}
+
+	private void SwitchToLogin()
+	{
+		var loginViewModel = new LoginViewModel(_gnomeshadeClient, _keycloakClient);
+		loginViewModel.UserLoggedIn += OnUserLoggedIn;
+
+		ActiveView = loginViewModel;
+	}
+
+	private async Task SwitchToTransactionOverviewAsync()
+	{
+		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
+		transactionViewModel.TransactionSelected += OnTransactionSelected;
+		ActiveView = transactionViewModel;
+	}
+
+	private async Task SwitchToTransactionDetailAsync(Guid id)
+	{
+		var transactionDetailViewModel =
+			await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
+		ActiveView = transactionDetailViewModel;
+	}
+
+	private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
+	{
+		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+	}
+
+	private void OnUserLoggedIn(object? sender, EventArgs e)
+	{
+		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+	}
+
+	private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
+	{
+		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+	}
+
+	private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+	{
+		if (PreviousView is ImportViewModel importViewModel)
+		{
+			Task.Run(() => importViewModel.RefreshAsync()).Wait();
 			ActiveView = importViewModel;
 		}
-
-		/// <summary>
-		/// Switches <see cref="ActiveView"/> to <see cref="TransactionItemCreationViewModel"/>.
-		/// </summary>
-		/// <param name="itemId">The id of the transaction item to edit.</param>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateTransactionItem(Guid itemId)
-		{
-			if (ActiveView is TransactionItemCreationViewModel)
-			{
-				return;
-			}
-
-			var itemCreationViewModel = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient, itemId);
-			itemCreationViewModel.TransactionItemCreated += OnTransactionItemCreated;
-			ActiveView = itemCreationViewModel;
-		}
-
-		private void SwitchToLogin()
-		{
-			var loginViewModel = new LoginViewModel(_gnomeshadeClient, _keycloakClient);
-			loginViewModel.UserLoggedIn += OnUserLoggedIn;
-
-			ActiveView = loginViewModel;
-		}
-
-		private async Task SwitchToTransactionOverviewAsync()
-		{
-			var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
-			transactionViewModel.TransactionSelected += OnTransactionSelected;
-			ActiveView = transactionViewModel;
-		}
-
-		private async Task SwitchToTransactionDetailAsync(Guid id)
-		{
-			var transactionDetailViewModel =
-				await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
-			ActiveView = transactionDetailViewModel;
-		}
-
-		private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
+		else
 		{
 			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
+	}
 
-		private void OnUserLoggedIn(object? sender, EventArgs e)
+	private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
+	{
+		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+	}
+
+	private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
+	{
+		Task.Run(() => SwitchToTransactionDetailAsync(e.TransactionId)).Wait();
+	}
+
+	private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
+	{
+		Task.Run(() => CreateProductAsync(e.ProductId)).Wait();
+	}
+
+	private void OnTransactionItemSelected(object? sender, TransactionItemSelectedEventArgs args)
+	{
+		Task.Run(() => CreateTransactionItem(args.ItemId)).Wait();
+	}
+
+	private void OnTransactionItemCreated(object? sender, TransactionItemCreatedEventArgs args)
+	{
+		if (PreviousView is ImportViewModel importViewModel)
+		{
+			Task.Run(() => importViewModel.RefreshAsync()).Wait();
+			ActiveView = importViewModel;
+		}
+		else
 		{
 			Task.Run(SwitchToTransactionOverviewAsync).Wait();
 		}
+	}
 
-		private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
+	private void Unsubscribe(ViewModelBase viewModel)
+	{
+		switch (viewModel)
 		{
-			Task.Run(SwitchToTransactionOverviewAsync).Wait();
-		}
+			case AccountCreationViewModel accountCreationViewModel:
+				accountCreationViewModel.AccountCreated -= OnAccountCreated;
+				break;
 
-		private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
-		{
-			if (PreviousView is ImportViewModel importViewModel)
-			{
-				Task.Run(() => importViewModel.RefreshAsync()).Wait();
-				ActiveView = importViewModel;
-			}
-			else
-			{
-				Task.Run(SwitchToTransactionOverviewAsync).Wait();
-			}
-		}
+			case AccountViewModel:
+				break;
 
-		private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
-		{
-			Task.Run(SwitchToTransactionOverviewAsync).Wait();
-		}
+			case ImportViewModel importViewModel:
+				importViewModel.ProductSelected -= OnProductSelected;
+				importViewModel.TransactionItemSelected -= OnTransactionItemSelected;
+				break;
 
-		private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
-		{
-			Task.Run(() => SwitchToTransactionDetailAsync(e.TransactionId)).Wait();
-		}
+			case LoginViewModel loginViewModel:
+				loginViewModel.UserLoggedIn -= OnUserLoggedIn;
+				break;
 
-		private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
-		{
-			Task.Run(() => CreateProductAsync(e.ProductId)).Wait();
-		}
+			case ProductCreationViewModel productCreationViewModel:
+				productCreationViewModel.ProductCreated -= OnProductCreated;
+				break;
 
-		private void OnTransactionItemSelected(object? sender, TransactionItemSelectedEventArgs args)
-		{
-			Task.Run(() => CreateTransactionItem(args.ItemId)).Wait();
-		}
+			case TransactionCreationViewModel transactionCreationViewModel:
+				transactionCreationViewModel.TransactionCreated -= OnTransactionCreated;
+				break;
 
-		private void OnTransactionItemCreated(object? sender, TransactionItemCreatedEventArgs args)
-		{
-			if (PreviousView is ImportViewModel importViewModel)
-			{
-				Task.Run(() => importViewModel.RefreshAsync()).Wait();
-				ActiveView = importViewModel;
-			}
-			else
-			{
-				Task.Run(SwitchToTransactionOverviewAsync).Wait();
-			}
-		}
+			case TransactionDetailViewModel:
+				break;
 
-		private void Unsubscribe(ViewModelBase viewModel)
-		{
-			switch (viewModel)
-			{
-				case AccountCreationViewModel accountCreationViewModel:
-					accountCreationViewModel.AccountCreated -= OnAccountCreated;
-					break;
+			case TransactionItemCreationViewModel transactionItemCreationViewModel:
+				transactionItemCreationViewModel.TransactionItemCreated -= OnTransactionItemCreated;
+				break;
 
-				case AccountViewModel:
-					break;
+			case TransactionViewModel transactionViewModel:
+				transactionViewModel.TransactionSelected -= OnTransactionSelected;
+				break;
 
-				case ImportViewModel importViewModel:
-					importViewModel.ProductSelected -= OnProductSelected;
-					importViewModel.TransactionItemSelected -= OnTransactionItemSelected;
-					break;
-
-				case LoginViewModel loginViewModel:
-					loginViewModel.UserLoggedIn -= OnUserLoggedIn;
-					break;
-
-				case ProductCreationViewModel productCreationViewModel:
-					productCreationViewModel.ProductCreated -= OnProductCreated;
-					break;
-
-				case TransactionCreationViewModel transactionCreationViewModel:
-					transactionCreationViewModel.TransactionCreated -= OnTransactionCreated;
-					break;
-
-				case TransactionDetailViewModel:
-					break;
-
-				case TransactionItemCreationViewModel transactionItemCreationViewModel:
-					transactionItemCreationViewModel.TransactionItemCreated -= OnTransactionItemCreated;
-					break;
-
-				case TransactionViewModel transactionViewModel:
-					transactionViewModel.TransactionSelected -= OnTransactionSelected;
-					break;
-
-				case UnitCreationViewModel unitCreationViewModel:
-					unitCreationViewModel.UnitCreated -= OnUnitCreated;
-					break;
-			}
+			case UnitCreationViewModel unitCreationViewModel:
+				unitCreationViewModel.UnitCreated -= OnUnitCreated;
+				break;
 		}
 	}
 }

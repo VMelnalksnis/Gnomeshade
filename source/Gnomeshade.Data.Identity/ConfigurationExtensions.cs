@@ -9,26 +9,25 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gnomeshade.Data.Identity
-{
-	public static class ConfigurationExtensions
-	{
-		public static IdentityBuilder AddIdentityContext(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
-		{
-			return
-				services
-					.AddDbContext<ApplicationDbContext>(optionsAction)
-					.AddIdentity<ApplicationUser, IdentityRole>()
-					.AddEntityFrameworkStores<ApplicationDbContext>()
-					.AddDefaultTokenProviders();
-		}
+namespace Gnomeshade.Data.Identity;
 
-		public static void ConfigureIdentityContext(this DbContextOptionsBuilder options, IConfiguration configuration)
-		{
-			options
-				.LogTo(Console.WriteLine)
-				.EnableSensitiveDataLogging()
-				.UseNpgsql(configuration.GetConnectionString("IdentityDb")); // todo remove dependency on Npgsql
-		}
+public static class ConfigurationExtensions
+{
+	public static IdentityBuilder AddIdentityContext(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
+	{
+		return
+			services
+				.AddDbContext<ApplicationDbContext>(optionsAction)
+				.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+				.AddDefaultTokenProviders();
+	}
+
+	public static void ConfigureIdentityContext(this DbContextOptionsBuilder options, IConfiguration configuration)
+	{
+		options
+			.LogTo(Console.WriteLine)
+			.EnableSensitiveDataLogging()
+			.UseNpgsql(configuration.GetConnectionString("IdentityDb")); // todo remove dependency on Npgsql
 	}
 }

@@ -4,21 +4,20 @@
 
 using System;
 
-namespace Gnomeshade.Data.Entities.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions;
+
+/// <summary>
+/// Represents an entity.
+/// </summary>
+public interface IEntity
 {
 	/// <summary>
-	/// Represents an entity.
+	/// Gets the unique id of the entity.
 	/// </summary>
-	public interface IEntity
-	{
-		/// <summary>
-		/// Gets the unique id of the entity.
-		/// </summary>
-		public Guid Id { get; init; }
+	public Guid Id { get; init; }
 
-		/// <summary>
-		/// Gets the timestamp of the creation of this entity.
-		/// </summary>
-		public DateTimeOffset CreatedAt { get; init; }
-	}
+	/// <summary>
+	/// Gets the timestamp of the creation of this entity.
+	/// </summary>
+	public DateTimeOffset CreatedAt { get; init; }
 }

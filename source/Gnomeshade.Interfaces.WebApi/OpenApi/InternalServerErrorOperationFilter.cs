@@ -7,25 +7,24 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
+
+/// <summary>
+/// Adds <see cref="StatusCodes.Status500InternalServerError"/> response to all operations.
+/// </summary>
+public sealed class InternalServerErrorOperationFilter : IOperationFilter
 {
-	/// <summary>
-	/// Adds <see cref="StatusCodes.Status500InternalServerError"/> response to all operations.
-	/// </summary>
-	public sealed class InternalServerErrorOperationFilter : IOperationFilter
+	/// <inheritdoc/>
+	public void Apply(OpenApiOperation operation, OperationFilterContext context)
 	{
-		/// <inheritdoc/>
-		public void Apply(OpenApiOperation operation, OperationFilterContext context)
+		if (!operation.Responses.ContainsKey("500"))
 		{
-			if (!operation.Responses.ContainsKey("500"))
-			{
-				operation.Responses.Add(
-					"500",
-					new()
-					{
-						Description = "Internal Server Error",
-					});
-			}
+			operation.Responses.Add(
+				"500",
+				new()
+				{
+					Description = "Internal Server Error",
+				});
 		}
 	}
 }

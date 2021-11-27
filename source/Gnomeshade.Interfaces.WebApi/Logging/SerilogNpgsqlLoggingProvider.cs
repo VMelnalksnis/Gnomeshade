@@ -6,18 +6,17 @@ using Npgsql.Logging;
 
 using Serilog.Core;
 
-namespace Gnomeshade.Interfaces.WebApi.Logging
+namespace Gnomeshade.Interfaces.WebApi.Logging;
+
+/// <summary>
+/// Provides <see cref="SerilogNpgsqlLogger"/> for Npgsql.
+/// </summary>
+public sealed class SerilogNpgsqlLoggingProvider : INpgsqlLoggingProvider
 {
-	/// <summary>
-	/// Provides <see cref="SerilogNpgsqlLogger"/> for Npgsql.
-	/// </summary>
-	public sealed class SerilogNpgsqlLoggingProvider : INpgsqlLoggingProvider
+	/// <inheritdoc />
+	public NpgsqlLogger CreateLogger(string name)
 	{
-		/// <inheritdoc />
-		public NpgsqlLogger CreateLogger(string name)
-		{
-			var logger = Serilog.Log.ForContext(Constants.SourceContextPropertyName, name);
-			return new SerilogNpgsqlLogger(logger);
-		}
+		var logger = Serilog.Log.ForContext(Constants.SourceContextPropertyName, name);
+		return new SerilogNpgsqlLogger(logger);
 	}
 }

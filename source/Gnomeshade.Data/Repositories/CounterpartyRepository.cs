@@ -7,35 +7,34 @@ using System.Data;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.Data.Repositories
+namespace Gnomeshade.Data.Repositories;
+
+/// <summary>
+/// Database backed <see cref="CounterpartyEntity"/> repository.
+/// </summary>
+public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 {
 	/// <summary>
-	/// Database backed <see cref="CounterpartyEntity"/> repository.
+	/// Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.
 	/// </summary>
-	public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
+	/// <param name="dbConnection">The database connection for executing queries.</param>
+	public CounterpartyRepository(IDbConnection dbConnection)
+		: base(dbConnection)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.
-		/// </summary>
-		/// <param name="dbConnection">The database connection for executing queries.</param>
-		public CounterpartyRepository(IDbConnection dbConnection)
-			: base(dbConnection)
-		{
-		}
-
-		/// <inheritdoc />
-		protected override string DeleteSql => Queries.Counterparty.Delete;
-
-		/// <inheritdoc />
-		protected override string InsertSql => Queries.Counterparty.Insert;
-
-		/// <inheritdoc />
-		protected override string SelectSql => Queries.Counterparty.Select;
-
-		/// <inheritdoc />
-		protected override string UpdateSql => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		protected override string FindSql => "WHERE c.id = @id AND ownerships.user_id = @ownerId";
 	}
+
+	/// <inheritdoc />
+	protected override string DeleteSql => Queries.Counterparty.Delete;
+
+	/// <inheritdoc />
+	protected override string InsertSql => Queries.Counterparty.Insert;
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Counterparty.Select;
+
+	/// <inheritdoc />
+	protected override string UpdateSql => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	protected override string FindSql => "WHERE c.id = @id AND ownerships.user_id = @ownerId";
 }

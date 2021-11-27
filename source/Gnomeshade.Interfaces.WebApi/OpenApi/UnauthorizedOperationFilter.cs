@@ -11,31 +11,30 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
+
+/// <summary>
+/// Adds <see cref="StatusCodes.Status401Unauthorized"/> to all operations that require authorization.
+/// </summary>
+public sealed class UnauthorizedOperationFilter : IOperationFilter
 {
-	/// <summary>
-	/// Adds <see cref="StatusCodes.Status401Unauthorized"/> to all operations that require authorization.
-	/// </summary>
-	public sealed class UnauthorizedOperationFilter : IOperationFilter
+	private static readonly string _unauthorizedCode = StatusCodes.Status401Unauthorized.ToString();
+
+	/// <inheritdoc/>
+	public void Apply(OpenApiOperation operation, OperationFilterContext context)
 	{
-		private static readonly string _unauthorizedCode = StatusCodes.Status401Unauthorized.ToString();
-
-		/// <inheritdoc/>
-		public void Apply(OpenApiOperation operation, OperationFilterContext context)
+		if ((!HasAuthorizationAttribute(context.MethodInfo) &&
+			!HasAuthorizationAttribute(context.MethodInfo?.DeclaringType)) ||
+			operation.Responses.ContainsKey(_unauthorizedCode))
 		{
-			if ((!HasAuthorizationAttribute(context.MethodInfo) &&
-				!HasAuthorizationAttribute(context.MethodInfo?.DeclaringType)) ||
-				operation.Responses.ContainsKey(_unauthorizedCode))
-			{
-				return;
-			}
-
-			operation.Responses.Add(_unauthorizedCode, new() { Description = "Unauthorized" });
+			return;
 		}
 
-		private static bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)
-		{
-			return customAttributeProvider?.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() ?? false;
-		}
+		operation.Responses.Add(_unauthorizedCode, new() { Description = "Unauthorized" });
+	}
+
+	private static bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)
+	{
+		return customAttributeProvider?.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() ?? false;
 	}
 }

@@ -8,45 +8,44 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
+
+[PublicAPI]
+public sealed record TransactionItem
 {
-	[PublicAPI]
-	public sealed record TransactionItem
-	{
-		public Guid Id { get; init; }
+	public Guid Id { get; init; }
 
-		public Guid UserId { get; init; }
+	public Guid UserId { get; init; }
 
-		public Guid TransactionId { get; init; }
+	public Guid TransactionId { get; init; }
 
-		public decimal SourceAmount { get; init; }
+	public decimal SourceAmount { get; init; }
 
-		public Guid SourceAccountId { get; init; }
+	public Guid SourceAccountId { get; init; }
 
-		public decimal TargetAmount { get; init; }
+	public decimal TargetAmount { get; init; }
 
-		public Guid TargetAccountId { get; init; }
+	public Guid TargetAccountId { get; init; }
 
-		public DateTimeOffset CreatedAt { get; init; }
+	public DateTimeOffset CreatedAt { get; init; }
 
-		public Guid CreatedByUserId { get; init; }
+	public Guid CreatedByUserId { get; init; }
 
-		public DateTimeOffset ModifiedAt { get; init; }
+	public DateTimeOffset ModifiedAt { get; init; }
 
-		public Guid ModifiedByUserId { get; init; }
+	public Guid ModifiedByUserId { get; init; }
 
-		public Product Product { get; init; }
+	public Product Product { get; init; }
 
-		public decimal Amount { get; init; }
+	public decimal Amount { get; init; }
 
-		public string? BankReference { get; init; }
+	public string? BankReference { get; init; }
 
-		public string? ExternalReference { get; init; }
+	public string? ExternalReference { get; init; }
 
-		public string? InternalReference { get; init; }
+	public string? InternalReference { get; init; }
 
-		public DateTimeOffset? DeliveryDate { get; init; }
+	public DateTimeOffset? DeliveryDate { get; init; }
 
-		public string? Description { get; init; }
-	}
+	public string? Description { get; init; }
 }

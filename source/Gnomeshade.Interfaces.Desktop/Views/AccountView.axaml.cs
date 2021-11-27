@@ -5,19 +5,18 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+/// <summary>
+/// An overview of of all accounts.
+/// </summary>
+public sealed class AccountView : UserControl
 {
 	/// <summary>
-	/// An overview of of all accounts.
+	/// Initializes a new instance of the <see cref="AccountView"/> class.
 	/// </summary>
-	public sealed class AccountView : UserControl
+	public AccountView()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountView"/> class.
-		/// </summary>
-		public AccountView()
-		{
-			AvaloniaXamlLoader.Load(this);
-		}
+		AvaloniaXamlLoader.Load(this);
 	}
 }

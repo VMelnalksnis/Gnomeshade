@@ -4,16 +4,15 @@
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
+
+/// <summary>
+/// Contains information about the current application user.
+/// </summary>
+public sealed class ApplicationUserContext
 {
 	/// <summary>
-	/// Contains information about the current application user.
+	/// Gets or sets the <see cref="UserEntity"/> associated with the executing action.
 	/// </summary>
-	public sealed class ApplicationUserContext
-	{
-		/// <summary>
-		/// Gets or sets the <see cref="UserEntity"/> associated with the executing action.
-		/// </summary>
-		public UserEntity User { get; set; } = null!;
-	}
+	public UserEntity User { get; set; } = null!;
 }

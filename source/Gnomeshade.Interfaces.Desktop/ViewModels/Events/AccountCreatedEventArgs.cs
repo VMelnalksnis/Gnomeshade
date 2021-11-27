@@ -4,25 +4,24 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+
+/// <summary>
+/// Event arguments for <see cref="AccountCreationViewModel.AccountCreated"/> event.
+/// </summary>
+public sealed class AccountCreatedEventArgs : EventArgs
 {
 	/// <summary>
-	/// Event arguments for <see cref="AccountCreationViewModel.AccountCreated"/> event.
+	/// Initializes a new instance of the <see cref="AccountCreatedEventArgs"/> class.
 	/// </summary>
-	public sealed class AccountCreatedEventArgs : EventArgs
+	/// <param name="accountId">The id of the created account.</param>
+	public AccountCreatedEventArgs(Guid accountId)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountCreatedEventArgs"/> class.
-		/// </summary>
-		/// <param name="accountId">The id of the created account.</param>
-		public AccountCreatedEventArgs(Guid accountId)
-		{
-			AccountId = accountId;
-		}
-
-		/// <summary>
-		/// Gets the id of the created account.
-		/// </summary>
-		public Guid AccountId { get; }
+		AccountId = accountId;
 	}
+
+	/// <summary>
+	/// Gets the id of the created account.
+	/// </summary>
+	public Guid AccountId { get; }
 }

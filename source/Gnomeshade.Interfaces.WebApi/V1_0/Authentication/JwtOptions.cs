@@ -7,19 +7,18 @@ using System.Text;
 
 using Microsoft.IdentityModel.Tokens;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+
+public sealed record JwtOptions
 {
-	public sealed record JwtOptions
-	{
-		[Required]
-		public string ValidAudience { get; init; } = null!;
+	[Required]
+	public string ValidAudience { get; init; } = null!;
 
-		[Required]
-		public string ValidIssuer { get; init; } = null!;
+	[Required]
+	public string ValidIssuer { get; init; } = null!;
 
-		[Required]
-		public string Secret { get; init; } = null!;
+	[Required]
+	public string Secret { get; init; } = null!;
 
-		public SymmetricSecurityKey SecurityKey => new(Encoding.UTF8.GetBytes(Secret));
-	}
+	public SymmetricSecurityKey SecurityKey => new(Encoding.UTF8.GetBytes(Secret));
 }

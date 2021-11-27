@@ -9,27 +9,26 @@ using Avalonia.Controls.Templates;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 
-namespace Gnomeshade.Interfaces.Desktop
+namespace Gnomeshade.Interfaces.Desktop;
+
+public sealed class ViewLocator : IDataTemplate
 {
-	public sealed class ViewLocator : IDataTemplate
+	public bool SupportsRecycling => false;
+
+	/// <inheritdoc />
+	public IControl Build(object data)
 	{
-		public bool SupportsRecycling => false;
+		var name = data.GetType().FullName!.Replace("ViewModel", "View");
+		var type = Type.GetType(name);
 
-		/// <inheritdoc />
-		public IControl Build(object data)
+		if (type != null)
 		{
-			var name = data.GetType().FullName!.Replace("ViewModel", "View");
-			var type = Type.GetType(name);
-
-			if (type != null)
-			{
-				return (Control)Activator.CreateInstance(type)!;
-			}
-
-			return new TextBlock { Text = $"Not Found: {name}" };
+			return (Control)Activator.CreateInstance(type)!;
 		}
 
-		/// <inheritdoc />
-		public bool Match(object data) => data is ViewModelBase;
+		return new TextBlock { Text = $"Not Found: {name}" };
 	}
+
+	/// <inheritdoc />
+	public bool Match(object data) => data is ViewModelBase;
 }

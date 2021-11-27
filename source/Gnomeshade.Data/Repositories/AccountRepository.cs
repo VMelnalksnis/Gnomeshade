@@ -14,98 +14,97 @@ using Dapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories.Extensions;
 
-namespace Gnomeshade.Data.Repositories
+namespace Gnomeshade.Data.Repositories;
+
+/// <summary>
+/// Database backed <see cref="AccountEntity"/> repository.
+/// </summary>
+public sealed class AccountRepository : NamedRepository<AccountEntity>
 {
 	/// <summary>
-	/// Database backed <see cref="AccountEntity"/> repository.
+	/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
 	/// </summary>
-	public sealed class AccountRepository : NamedRepository<AccountEntity>
+	/// <param name="dbConnection">The database connection for executing queries.</param>
+	public AccountRepository(IDbConnection dbConnection)
+		: base(dbConnection)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
-		/// </summary>
-		/// <param name="dbConnection">The database connection for executing queries.</param>
-		public AccountRepository(IDbConnection dbConnection)
-			: base(dbConnection)
-		{
-		}
+	}
 
-		/// <inheritdoc />
-		protected override string DeleteSql => Queries.Account.Delete;
+	/// <inheritdoc />
+	protected override string DeleteSql => Queries.Account.Delete;
 
-		/// <inheritdoc />
-		protected override string InsertSql => Queries.Account.Insert;
+	/// <inheritdoc />
+	protected override string InsertSql => Queries.Account.Insert;
 
-		/// <inheritdoc />
-		protected override string SelectSql => Queries.Account.Select;
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Account.Select;
 
-		/// <inheritdoc />
-		protected override string FindSql => "WHERE a.id = @id AND ownerships.user_id = @ownerId;";
+	/// <inheritdoc />
+	protected override string FindSql => "WHERE a.id = @id AND ownerships.user_id = @ownerId;";
 
-		/// <inheritdoc />
-		protected override string UpdateSql => throw new NotImplementedException();
+	/// <inheritdoc />
+	protected override string UpdateSql => throw new NotImplementedException();
 
-		/// <inheritdoc />
-		protected override string NameSql => "WHERE a.normalized_name = @name AND ownerships.user_id = @ownerId;";
+	/// <inheritdoc />
+	protected override string NameSql => "WHERE a.normalized_name = @name AND ownerships.user_id = @ownerId;";
 
-		/// <summary>
-		/// Finds an account with the specified IBAN.
-		/// </summary>
-		/// <param name="iban">The IBAN for which to search for.</param>
-		/// <param name="ownerId">The id of the owner of the entity.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, CancellationToken cancellationToken = default)
-		{
-			var sql = $"{SelectSql} WHERE a.iban = @iban AND ownerships.user_id = @ownerId;";
-			var command = new CommandDefinition(sql, new { iban, ownerId }, cancellationToken: cancellationToken);
-			return FindAsync(command);
-		}
+	/// <summary>
+	/// Finds an account with the specified IBAN.
+	/// </summary>
+	/// <param name="iban">The IBAN for which to search for.</param>
+	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
+	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} WHERE a.iban = @iban AND ownerships.user_id = @ownerId;";
+		var command = new CommandDefinition(sql, new { iban, ownerId }, cancellationToken: cancellationToken);
+		return FindAsync(command);
+	}
 
-		/// <summary>
-		/// Finds an account with the specified BIC.
-		/// </summary>
-		/// <param name="bic">The BIC for which to search for.</param>
-		/// <param name="ownerId">The id of the owner of the entity.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
-		public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
-		{
-			var sql = $"{SelectSql} WHERE a.bic = @bic AND ownerships.user_id = @ownerId;";
-			var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
-			return FindAsync(command);
-		}
+	/// <summary>
+	/// Finds an account with the specified BIC.
+	/// </summary>
+	/// <param name="bic">The BIC for which to search for.</param>
+	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
+	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} WHERE a.bic = @bic AND ownerships.user_id = @ownerId;";
+		var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
+		return FindAsync(command);
+	}
 
-		/// <summary>
-		/// Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.
-		/// </summary>
-		/// <param name="ownerId">The id of the owner of the entity.</param>
-		/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-		/// <returns>A collection of all active accounts.</returns>
-		public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
-		{
-			var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND ownerships.user_id = @ownerId ORDER BY a.created_at;";
-			var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
-			return GetEntitiesAsync(command);
-		}
+	/// <summary>
+	/// Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.
+	/// </summary>
+	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all active accounts.</returns>
+	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND ownerships.user_id = @ownerId ORDER BY a.created_at;";
+		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
+		return GetEntitiesAsync(command);
+	}
 
-		/// <inheritdoc />
-		protected override async Task<IEnumerable<AccountEntity>> GetEntitiesAsync(CommandDefinition command)
-		{
-			var oneToOnes =
-				await DbConnection
-					.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, CurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
-						command,
-						(account, preferredCurrency, inCurrency, currency) =>
-						{
-							account.PreferredCurrency = preferredCurrency;
-							inCurrency.Currency = currency;
-							return new(account, inCurrency);
-						})
-					.ConfigureAwait(false);
+	/// <inheritdoc />
+	protected override async Task<IEnumerable<AccountEntity>> GetEntitiesAsync(CommandDefinition command)
+	{
+		var oneToOnes =
+			await DbConnection
+				.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, CurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
+					command,
+					(account, preferredCurrency, inCurrency, currency) =>
+					{
+						account.PreferredCurrency = preferredCurrency;
+						inCurrency.Currency = currency;
+						return new(account, inCurrency);
+					})
+				.ConfigureAwait(false);
 
-			// ReSharper disable once ConvertClosureToMethodGroup
-			return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => AccountEntity.FromGrouping(grouping));
-		}
+		// ReSharper disable once ConvertClosureToMethodGroup
+		return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => AccountEntity.FromGrouping(grouping));
 	}
 }

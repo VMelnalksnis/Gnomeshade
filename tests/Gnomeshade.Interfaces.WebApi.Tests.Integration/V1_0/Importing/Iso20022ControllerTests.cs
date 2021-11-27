@@ -13,44 +13,43 @@ using Gnomeshade.Interfaces.WebApi.Client;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Importing
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Importing;
+
+public class Iso20022ControllerTests
 {
-	public class Iso20022ControllerTests
+	private IGnomeshadeClient _client = null!;
+	private FileInfo _inputFile = null!;
+
+	[OneTimeSetUp]
+	public async Task OneTimeSetUpAsync()
 	{
-		private IGnomeshadeClient _client = null!;
-		private FileInfo _inputFile = null!;
+		_client = await WebserverSetup.CreateAuthorizedClientAsync();
 
-		[OneTimeSetUp]
-		public async Task OneTimeSetUpAsync()
+		var filePath = Path.Combine(
+			TestContext.CurrentContext.TestDirectory,
+			"V1_0/Importing/",
+			"BankToCustomerAccountReportV02.xml");
+
+		_inputFile = new(filePath);
+	}
+
+	[Test]
+	public async Task Import_ShouldReturnExpected()
+	{
+		await using var contentStream = _inputFile.OpenRead();
+		var reportResult = await _client.Import(contentStream, _inputFile.Name);
+
+		using (new AssertionScope())
 		{
-			_client = await WebserverSetup.CreateAuthorizedClientAsync();
-
-			var filePath = Path.Combine(
-				TestContext.CurrentContext.TestDirectory,
-				"V1_0/Importing/",
-				"BankToCustomerAccountReportV02.xml");
-
-			_inputFile = new(filePath);
+			reportResult.Should().NotBeNull();
+			reportResult.AccountReferences.Should().HaveCount(3);
+			reportResult.ProductReferences.Should().HaveCount(2);
+			reportResult.TransactionReferences.Should().HaveCount(2);
+			reportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(true);
 		}
 
-		[Test]
-		public async Task Import_ShouldReturnExpected()
-		{
-			await using var contentStream = _inputFile.OpenRead();
-			var reportResult = await _client.Import(contentStream, _inputFile.Name);
+		var secondReportResult = await _client.Import(contentStream, _inputFile.Name);
 
-			using (new AssertionScope())
-			{
-				reportResult.Should().NotBeNull();
-				reportResult.AccountReferences.Should().HaveCount(3);
-				reportResult.ProductReferences.Should().HaveCount(2);
-				reportResult.TransactionReferences.Should().HaveCount(2);
-				reportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(true);
-			}
-
-			var secondReportResult = await _client.Import(contentStream, _inputFile.Name);
-
-			secondReportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(false);
-		}
+		secondReportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(false);
 	}
 }

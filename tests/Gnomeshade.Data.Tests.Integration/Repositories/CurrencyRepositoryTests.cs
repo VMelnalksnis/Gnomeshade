@@ -14,40 +14,39 @@ using Gnomeshade.Data.Repositories;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Data.Tests.Integration.Repositories
+namespace Gnomeshade.Data.Tests.Integration.Repositories;
+
+public class CurrencyRepositoryTests : IDisposable
 {
-	public class CurrencyRepositoryTests : IDisposable
+	private IDbConnection _dbConnection = null!;
+	private CurrencyRepository _repository = null!;
+
+	[SetUp]
+	public async Task SetUpAsync()
 	{
-		private IDbConnection _dbConnection = null!;
-		private CurrencyRepository _repository = null!;
+		_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
+		_repository = new(_dbConnection);
+	}
 
-		[SetUp]
-		public async Task SetUpAsync()
+	[TearDown]
+	public void Dispose()
+	{
+		_dbConnection.Dispose();
+		_repository.Dispose();
+	}
+
+	[Test]
+	public async Task GetAllAsync_ShouldReturnExpected()
+	{
+		var currencies = await _repository.GetAllAsync();
+		var expectedCurrencies = new List<string>
 		{
-			_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
-			_repository = new(_dbConnection);
-		}
+			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD",
+		};
+		currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
 
-		[TearDown]
-		public void Dispose()
-		{
-			_dbConnection.Dispose();
-			_repository.Dispose();
-		}
-
-		[Test]
-		public async Task GetAllAsync_ShouldReturnExpected()
-		{
-			var currencies = await _repository.GetAllAsync();
-			var expectedCurrencies = new List<string>
-			{
-				"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD",
-			};
-			currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
-
-			var firstCurrency = currencies.First();
-			var currencyById = await _repository.GetByIdAsync(firstCurrency.Id);
-			currencyById.Should().BeEquivalentTo(firstCurrency);
-		}
+		var firstCurrency = currencies.First();
+		var currencyById = await _repository.GetByIdAsync(firstCurrency.Id);
+		currencyById.Should().BeEquivalentTo(firstCurrency);
 	}
 }

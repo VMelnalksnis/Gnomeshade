@@ -6,31 +6,30 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
-namespace Gnomeshade.Interfaces.WebApi.Client
+namespace Gnomeshade.Interfaces.WebApi.Client;
+
+/// <summary>
+/// Provides typed interface for using the API provided by the Interfaces.WebApi project.
+/// </summary>
+public interface IGnomeshadeClient : IAccountClient, IProductClient, ITransactionClient, IImportClient
 {
 	/// <summary>
-	/// Provides typed interface for using the API provided by the Interfaces.WebApi project.
+	/// Log in using the specified credentials.
 	/// </summary>
-	public interface IGnomeshadeClient : IAccountClient, IProductClient, ITransactionClient, IImportClient
-	{
-		/// <summary>
-		/// Log in using the specified credentials.
-		/// </summary>
-		/// <param name="login">The credentials to use to log in.</param>
-		/// <returns>Object indicating whether the login was successful or not.</returns>
-		Task<LoginResult> LogInAsync(Login login);
+	/// <param name="login">The credentials to use to log in.</param>
+	/// <returns>Object indicating whether the login was successful or not.</returns>
+	Task<LoginResult> LogInAsync(Login login);
 
-		/// <summary>
-		/// Register using an OIDC provider token.
-		/// </summary>
-		/// <param name="accessToken">An access token from an OIDC provider.</param>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		Task SocialRegister(string accessToken);
+	/// <summary>
+	/// Register using an OIDC provider token.
+	/// </summary>
+	/// <param name="accessToken">An access token from an OIDC provider.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task SocialRegister(string accessToken);
 
-		/// <summary>
-		/// Log out.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		Task LogOutAsync();
-	}
+	/// <summary>
+	/// Log out.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task LogOutAsync();
 }

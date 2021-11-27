@@ -19,35 +19,34 @@ using Microsoft.AspNetCore.Mvc;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
+
+/// <summary>
+/// CRUD operations on currency entity.
+/// </summary>
+[SuppressMessage(
+	"ReSharper",
+	"AsyncConverter.ConfigureAwaitHighlighting",
+	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
+public sealed class CurrencyController : FinanceControllerBase<CurrencyEntity, Currency>
 {
-	/// <summary>
-	/// CRUD operations on currency entity.
-	/// </summary>
-	[SuppressMessage(
-		"ReSharper",
-		"AsyncConverter.ConfigureAwaitHighlighting",
-		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class CurrencyController : FinanceControllerBase<CurrencyEntity, Currency>
+	private readonly CurrencyRepository _currencyRepository;
+
+	public CurrencyController(
+		CurrencyRepository currencyRepository,
+		ApplicationUserContext applicationUserContext,
+		Mapper mapper)
+		: base(applicationUserContext, mapper)
 	{
-		private readonly CurrencyRepository _currencyRepository;
+		_currencyRepository = currencyRepository;
+	}
 
-		public CurrencyController(
-			CurrencyRepository currencyRepository,
-			ApplicationUserContext applicationUserContext,
-			Mapper mapper)
-			: base(applicationUserContext, mapper)
-		{
-			_currencyRepository = currencyRepository;
-		}
-
-		[HttpGet]
-		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies(CancellationToken cancellationToken)
-		{
-			var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
-			var models = currencies.Select(currency => MapToModel(currency)).ToList();
-			return Ok(models);
-		}
+	[HttpGet]
+	[ProducesResponseType(Status200OK)]
+	public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies(CancellationToken cancellationToken)
+	{
+		var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
+		var models = currencies.Select(currency => MapToModel(currency)).ToList();
+		return Ok(models);
 	}
 }

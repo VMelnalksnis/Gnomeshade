@@ -7,18 +7,17 @@ using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.Models.Accounts
+namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
+
+/// <summary>
+/// The information needed to create a new counterparty.
+/// </summary>
+[PublicAPI]
+public sealed record CounterpartyCreationModel
 {
 	/// <summary>
-	/// The information needed to create a new counterparty.
+	/// The name of the counterparty to create. Required.
 	/// </summary>
-	[PublicAPI]
-	public sealed record CounterpartyCreationModel
-	{
-		/// <summary>
-		/// The name of the counterparty to create. Required.
-		/// </summary>
-		[Required]
-		public string? Name { get; init; }
-	}
+	[Required]
+	public string? Name { get; init; }
 }

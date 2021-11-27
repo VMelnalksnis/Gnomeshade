@@ -8,35 +8,34 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
+
+/// <summary>
+/// Swagger filter that removes version parameter from operations and inserts the correct version in paths.
+/// </summary>
+public class ApiVersioningFilter : IOperationFilter, IDocumentFilter
 {
-	/// <summary>
-	/// Swagger filter that removes version parameter from operations and inserts the correct version in paths.
-	/// </summary>
-	public class ApiVersioningFilter : IOperationFilter, IDocumentFilter
+	/// <inheritdoc/>
+	void IDocumentFilter.Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
 	{
-		/// <inheritdoc/>
-		void IDocumentFilter.Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+		var paths = new OpenApiPaths();
+		foreach (var (key, pathItem) in swaggerDoc.Paths)
 		{
-			var paths = new OpenApiPaths();
-			foreach (var (key, pathItem) in swaggerDoc.Paths)
-			{
-				paths.Add(key.Replace("v{version}", swaggerDoc.Info.Version), pathItem);
-			}
-
-			swaggerDoc.Paths = paths;
+			paths.Add(key.Replace("v{version}", swaggerDoc.Info.Version), pathItem);
 		}
 
-		/// <inheritdoc/>
-		void IOperationFilter.Apply(OpenApiOperation operation, OperationFilterContext context)
-		{
-			var versionParameter = operation.Parameters.SingleOrDefault(parameter => parameter.Name == "version");
-			if (versionParameter is null)
-			{
-				return;
-			}
+		swaggerDoc.Paths = paths;
+	}
 
-			operation.Parameters.Remove(versionParameter);
+	/// <inheritdoc/>
+	void IOperationFilter.Apply(OpenApiOperation operation, OperationFilterContext context)
+	{
+		var versionParameter = operation.Parameters.SingleOrDefault(parameter => parameter.Name == "version");
+		if (versionParameter is null)
+		{
+			return;
 		}
+
+		operation.Parameters.Remove(versionParameter);
 	}
 }

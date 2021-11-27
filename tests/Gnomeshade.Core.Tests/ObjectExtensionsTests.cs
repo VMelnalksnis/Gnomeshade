@@ -11,55 +11,54 @@ using JetBrains.Annotations;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Core.Tests
+namespace Gnomeshade.Core.Tests;
+
+public class ObjectExtensionsTests
 {
-	public class ObjectExtensionsTests
+	[Test]
+	public void GetHash_ShouldBeEqualForEquivalent()
 	{
-		[Test]
-		public void GetHash_ShouldBeEqualForEquivalent()
+		var firstHolder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
+		var secondHolder = firstHolder with { };
+
+		ReferenceEquals(firstHolder, secondHolder).Should().BeFalse();
+		firstHolder.GetHash().Should().BeEquivalentTo(secondHolder.GetHash());
+	}
+
+	[Test]
+	public void GetHash_ShouldBeDifferentForDifferentValues()
+	{
+		var firstValue = new AccountHolder { Name = "Foo", LegalId = 12345678987 }.GetHash();
+		var secondValue = new AccountHolder { Name = "Bar", LegalId = 98765432123 }.GetHash();
+
+		using (new AssertionScope())
 		{
-			var firstHolder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
-			var secondHolder = firstHolder with { };
-
-			ReferenceEquals(firstHolder, secondHolder).Should().BeFalse();
-			firstHolder.GetHash().Should().BeEquivalentTo(secondHolder.GetHash());
+			firstValue.Should().NotBeEquivalentTo(secondValue);
+			(firstValue != secondValue).Should().BeTrue();
 		}
+	}
 
-		[Test]
-		public void GetHash_ShouldBeDifferentForDifferentValues()
+	[Test]
+	public async Task GetHashAsync_ShouldBeSameAsSync()
+	{
+		var holder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
+
+		// ReSharper disable once MethodHasAsyncOverload
+		var syncHash = holder.GetHash();
+		var asyncHash = await holder.GetHashAsync();
+
+		using (new AssertionScope())
 		{
-			var firstValue = new AccountHolder { Name = "Foo", LegalId = 12345678987 }.GetHash();
-			var secondValue = new AccountHolder { Name = "Bar", LegalId = 98765432123 }.GetHash();
-
-			using (new AssertionScope())
-			{
-				firstValue.Should().NotBeEquivalentTo(secondValue);
-				(firstValue != secondValue).Should().BeTrue();
-			}
+			asyncHash.Should().BeEquivalentTo(syncHash);
+			(asyncHash == syncHash).Should().BeTrue();
 		}
+	}
 
-		[Test]
-		public async Task GetHashAsync_ShouldBeSameAsSync()
-		{
-			var holder = new AccountHolder { Name = "Foobar", LegalId = 12345678987 };
+	[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
+	public sealed record AccountHolder
+	{
+		public string Name { get; init; } = string.Empty;
 
-			// ReSharper disable once MethodHasAsyncOverload
-			var syncHash = holder.GetHash();
-			var asyncHash = await holder.GetHashAsync();
-
-			using (new AssertionScope())
-			{
-				asyncHash.Should().BeEquivalentTo(syncHash);
-				(asyncHash == syncHash).Should().BeTrue();
-			}
-		}
-
-		[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
-		public sealed record AccountHolder
-		{
-			public string Name { get; init; } = string.Empty;
-
-			public long LegalId { get; init; }
-		}
+		public long LegalId { get; init; }
 	}
 }

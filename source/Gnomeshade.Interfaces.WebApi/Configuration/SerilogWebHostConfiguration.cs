@@ -15,45 +15,44 @@ using Serilog.Events;
 using Serilog.Extensions.Hosting;
 using Serilog.Sinks.Elasticsearch;
 
-namespace Gnomeshade.Interfaces.WebApi.Configuration
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
+
+internal static class SerilogWebHostConfiguration
 {
-	internal static class SerilogWebHostConfiguration
+	internal static ReloadableLogger CreateBoostrapLogger()
 	{
-		internal static ReloadableLogger CreateBoostrapLogger()
-		{
-			return
-				new LoggerConfiguration()
-					.Enrich.FromLogContext()
-					.WriteTo.Console()
-					.MinimumLevel.Verbose()
-					.CreateBootstrapLogger();
-		}
-
-		internal static void Configure(WebHostBuilderContext context, LoggerConfiguration configuration)
-		{
-			var options = new ElasticSearchLoggingOptions();
-			context.Configuration.Bind(ElasticSearchLoggingOptions.SectionName, options);
-
-			configuration
+		return
+			new LoggerConfiguration()
 				.Enrich.FromLogContext()
-				.Enrich.WithElasticApmCorrelationInfo()
 				.WriteTo.Console()
-				.WriteTo.Elasticsearch(new(options.Nodes)
+				.MinimumLevel.Verbose()
+				.CreateBootstrapLogger();
+	}
+
+	internal static void Configure(WebHostBuilderContext context, LoggerConfiguration configuration)
+	{
+		var options = new ElasticSearchLoggingOptions();
+		context.Configuration.Bind(ElasticSearchLoggingOptions.SectionName, options);
+
+		configuration
+			.Enrich.FromLogContext()
+			.Enrich.WithElasticApmCorrelationInfo()
+			.WriteTo.Console()
+			.WriteTo.Elasticsearch(new(options.Nodes)
+			{
+				AutoRegisterTemplate = true,
+				AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+				CustomFormatter = new EcsTextFormatter(),
+				EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog,
+				MinimumLogEventLevel = LogEventLevel.Information,
+				ModifyConnectionSettings = connection =>
 				{
-					AutoRegisterTemplate = true,
-					AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
-					CustomFormatter = new EcsTextFormatter(),
-					EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog,
-					MinimumLogEventLevel = LogEventLevel.Information,
-					ModifyConnectionSettings = connection =>
-					{
-						// connection.ClientCertificates(new X509Certificate2Collection()); todo
-						connection.ServerCertificateValidationCallback((_, _, _, _) => true); // todo
-						connection.BasicAuthentication(options.Username, options.Password);
-						connection.MemoryStreamFactory(RecyclableMemoryStreamFactory.Default);
-						return connection;
-					},
-				});
-		}
+					// connection.ClientCertificates(new X509Certificate2Collection()); todo
+					connection.ServerCertificateValidationCallback((_, _, _, _) => true); // todo
+					connection.BasicAuthentication(options.Username, options.Password);
+					connection.MemoryStreamFactory(RecyclableMemoryStreamFactory.Default);
+					return connection;
+				},
+			});
 	}
 }

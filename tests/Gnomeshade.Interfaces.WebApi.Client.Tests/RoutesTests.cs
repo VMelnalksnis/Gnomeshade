@@ -8,29 +8,28 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Client.Tests
+namespace Gnomeshade.Interfaces.WebApi.Client.Tests;
+
+public class RoutesTests
 {
-	public class RoutesTests
+	[Test]
+	public void AccountUri_ShouldFormatGuidWithoutSeparators()
 	{
-		[Test]
-		public void AccountUri_ShouldFormatGuidWithoutSeparators()
-		{
-			Routes.AccountIdUri(Guid.Empty).Should().Be("Account/00000000000000000000000000000000");
-		}
+		Routes.AccountIdUri(Guid.Empty).Should().Be("Account/00000000000000000000000000000000");
+	}
 
-		[TestCaseSource(typeof(TransactionUriTestCaseSource))]
-		public void TransactionUri_ShouldReturnExpected(DateTimeOffset? from, DateTimeOffset? to, string expectedUri)
-		{
-			Routes.TransactionDateRangeUri(from, to).Should().Be(expectedUri);
-		}
+	[TestCaseSource(typeof(TransactionUriTestCaseSource))]
+	public void TransactionUri_ShouldReturnExpected(DateTimeOffset? from, DateTimeOffset? to, string expectedUri)
+	{
+		Routes.TransactionDateRangeUri(from, to).Should().Be(expectedUri);
+	}
 
-		[TestCase(3, TestName = "Positive offset contains '+'")]
-		[TestCase(0, TestName = "Zero offset contains '+'")]
-		public void UrlEncodeDateTimeOffset_ShouldNotContainPlus(int offsetHours)
-		{
-			var date = new DateTimeOffset(2021, 05, 30, 19, 54, 00, TimeSpan.FromHours(offsetHours));
-			var encoded = Routes.UrlEncodeDateTimeOffset(date);
-			encoded.Should().Be($"2021-05-30T19:54:00.0000000%2B{offsetHours:00}:00");
-		}
+	[TestCase(3, TestName = "Positive offset contains '+'")]
+	[TestCase(0, TestName = "Zero offset contains '+'")]
+	public void UrlEncodeDateTimeOffset_ShouldNotContainPlus(int offsetHours)
+	{
+		var date = new DateTimeOffset(2021, 05, 30, 19, 54, 00, TimeSpan.FromHours(offsetHours));
+		var encoded = Routes.UrlEncodeDateTimeOffset(date);
+		encoded.Should().Be($"2021-05-30T19:54:00.0000000%2B{offsetHours:00}:00");
 	}
 }

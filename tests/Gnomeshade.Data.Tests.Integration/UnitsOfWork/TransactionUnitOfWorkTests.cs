@@ -22,90 +22,89 @@ using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
-namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork
+namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork;
+
+public sealed class TransactionUnitOfWorkTests : IDisposable
 {
-	public sealed class TransactionUnitOfWorkTests : IDisposable
+	private IDbConnection _dbConnection = null!;
+	private TransactionRepository _repository = null!;
+	private TransactionItemRepository _itemRepository = null!;
+	private TransactionUnitOfWork _unitOfWork = null!;
+
+	[SetUp]
+	public async Task OneTimeSetupAsync()
 	{
-		private IDbConnection _dbConnection = null!;
-		private TransactionRepository _repository = null!;
-		private TransactionItemRepository _itemRepository = null!;
-		private TransactionUnitOfWork _unitOfWork = null!;
+		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		_repository = new(_dbConnection);
+		_itemRepository = new(_dbConnection);
+		_unitOfWork = new(_dbConnection, _repository, _itemRepository);
+	}
 
-		[SetUp]
-		public async Task OneTimeSetupAsync()
-		{
-			_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-			_repository = new(_dbConnection);
-			_itemRepository = new(_dbConnection);
-			_unitOfWork = new(_dbConnection, _repository, _itemRepository);
-		}
+	[TearDown]
+	public void Dispose()
+	{
+		_dbConnection.Dispose();
+		_repository.Dispose();
+		_itemRepository.Dispose();
+		_unitOfWork.Dispose();
+	}
 
-		[TearDown]
-		public void Dispose()
-		{
-			_dbConnection.Dispose();
-			_repository.Dispose();
-			_itemRepository.Dispose();
-			_unitOfWork.Dispose();
-		}
+	[Test]
+	public async Task AddGetDelete_WithoutTransaction()
+	{
+		var product = await EntityFactory.GetProductAsync();
+		var (first, second) = await EntityFactory.GetAccountsAsync();
 
-		[Test]
-		public async Task AddGetDelete_WithoutTransaction()
-		{
-			var product = await EntityFactory.GetProductAsync();
-			var (first, second) = await EntityFactory.GetAccountsAsync();
+		var transactionToAdd = new TransactionFaker(TestUser).Generate();
+		var importHash = await transactionToAdd.GetHashAsync();
+		transactionToAdd = transactionToAdd with { ImportHash = importHash };
 
-			var transactionToAdd = new TransactionFaker(TestUser).Generate();
-			var importHash = await transactionToAdd.GetHashAsync();
-			transactionToAdd = transactionToAdd with { ImportHash = importHash };
+		var itemFaker = new TransactionItemFaker(
+			TestUser,
+			transactionToAdd,
+			first.Currencies.Single(),
+			second.Currencies.Single(),
+			product);
 
-			var itemFaker = new TransactionItemFaker(
-				TestUser,
-				transactionToAdd,
-				first.Currencies.Single(),
-				second.Currencies.Single(),
-				product);
+		var transactionItemsToAdd = itemFaker.GenerateBetween(2, 2);
+		transactionToAdd = transactionToAdd with { Items = transactionItemsToAdd };
 
-			var transactionItemsToAdd = itemFaker.GenerateBetween(2, 2);
-			transactionToAdd = transactionToAdd with { Items = transactionItemsToAdd };
+		var transactionId = await _unitOfWork.AddAsync(transactionToAdd);
 
-			var transactionId = await _unitOfWork.AddAsync(transactionToAdd);
+		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
+		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
+		var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
+		var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow, TestUser.Id);
 
-			var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
-			var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
-			var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
-			var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow, TestUser.Id);
+		getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);
+		findTransaction.Should().BeEquivalentTo(getTransaction, Options);
+		findImportTransaction.Should().BeEquivalentTo(getTransaction, Options);
+		allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);
 
-			getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);
-			findTransaction.Should().BeEquivalentTo(getTransaction, Options);
-			findImportTransaction.Should().BeEquivalentTo(getTransaction, Options);
-			allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);
+		await _unitOfWork.DeleteAsync(getTransaction, TestUser.Id);
+	}
 
-			await _unitOfWork.DeleteAsync(getTransaction, TestUser.Id);
-		}
+	private static EquivalencyAssertionOptions<TransactionEntity> Options(
+		EquivalencyAssertionOptions<TransactionEntity> options)
+	{
+		return options.ComparingByMembers<TransactionEntity>().ComparingByMembers<TransactionItemEntity>();
+	}
 
-		private static EquivalencyAssertionOptions<TransactionEntity> Options(
-			EquivalencyAssertionOptions<TransactionEntity> options)
-		{
-			return options.ComparingByMembers<TransactionEntity>().ComparingByMembers<TransactionItemEntity>();
-		}
-
-		private static EquivalencyAssertionOptions<TransactionItemEntity> ItemOptions(
-			EquivalencyAssertionOptions<TransactionItemEntity> options)
-		{
-			return
-				options
-					.ComparingByMembers<TransactionItemEntity>()
-					.Excluding(item => item.Id)
-					.Excluding(item => item.CreatedAt)
-					.Excluding(item => item.ModifiedAt)
-					.Excluding(item => item.TransactionId)
-					.Using<DateTimeOffset>(context =>
-						context.Subject
-							.Should()
-							.BeCloseTo(context.Expectation, TimeSpan.FromMilliseconds(0.001)))
-					.WhenTypeIs<DateTimeOffset>()
-					.ComparingByMembers<ProductEntity>();
-		}
+	private static EquivalencyAssertionOptions<TransactionItemEntity> ItemOptions(
+		EquivalencyAssertionOptions<TransactionItemEntity> options)
+	{
+		return
+			options
+				.ComparingByMembers<TransactionItemEntity>()
+				.Excluding(item => item.Id)
+				.Excluding(item => item.CreatedAt)
+				.Excluding(item => item.ModifiedAt)
+				.Excluding(item => item.TransactionId)
+				.Using<DateTimeOffset>(context =>
+					context.Subject
+						.Should()
+						.BeCloseTo(context.Expectation, TimeSpan.FromMilliseconds(0.001)))
+				.WhenTypeIs<DateTimeOffset>()
+				.ComparingByMembers<ProductEntity>();
 	}
 }

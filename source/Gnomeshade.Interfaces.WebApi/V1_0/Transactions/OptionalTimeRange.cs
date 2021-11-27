@@ -9,38 +9,37 @@ using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+
+/// <summary>
+/// A date range with optional start and end dates.
+/// </summary>
+[PublicAPI]
+[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
+public sealed record OptionalTimeRange : IValidatableObject
 {
+	private const string _errorMessage = "The 'to' date must be before the 'from' date";
+
 	/// <summary>
-	/// A date range with optional start and end dates.
+	/// The start of the date range.
 	/// </summary>
-	[PublicAPI]
-	[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
-	public sealed record OptionalTimeRange : IValidatableObject
+	public DateTimeOffset? From { get; init; }
+
+	/// <summary>
+	/// The end of the date range.
+	/// </summary>
+	public DateTimeOffset? To { get; init; }
+
+	/// <inheritdoc />
+	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 	{
-		private const string _errorMessage = "The 'to' date must be before the 'from' date";
-
-		/// <summary>
-		/// The start of the date range.
-		/// </summary>
-		public DateTimeOffset? From { get; init; }
-
-		/// <summary>
-		/// The end of the date range.
-		/// </summary>
-		public DateTimeOffset? To { get; init; }
-
-		/// <inheritdoc />
-		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+		var results = new List<ValidationResult>(1);
+		if (From is null || To is null || To >= From)
 		{
-			var results = new List<ValidationResult>(1);
-			if (From is null || To is null || To >= From)
-			{
-				return results;
-			}
-
-			results.Add(new(_errorMessage, new[] { nameof(From), nameof(To) }));
 			return results;
 		}
+
+		results.Add(new(_errorMessage, new[] { nameof(From), nameof(To) }));
+		return results;
 	}
 }

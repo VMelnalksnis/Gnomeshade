@@ -12,61 +12,60 @@ using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
+
+public sealed class AccountReportResultBuilder
 {
-	public sealed class AccountReportResultBuilder
+	private readonly Mapper _mapper;
+
+	public AccountReportResultBuilder(Mapper mapper, AccountEntity userAccount, bool created)
 	{
-		private readonly Mapper _mapper;
+		_mapper = mapper;
 
-		public AccountReportResultBuilder(Mapper mapper, AccountEntity userAccount, bool created)
+		var model = _mapper.Map<Account>(userAccount);
+		ReportResult = new() { UserAccount = model };
+		AddAccount(userAccount, created);
+	}
+
+	private AccountReportResult ReportResult { get; set; }
+
+	public void AddAccount(AccountEntity account, bool created)
+	{
+		if (ReportResult.AccountReferences.Any(reference => reference.Account.Name == account.Name))
 		{
-			_mapper = mapper;
-
-			var model = _mapper.Map<Account>(userAccount);
-			ReportResult = new() { UserAccount = model };
-			AddAccount(userAccount, created);
+			return;
 		}
 
-		private AccountReportResult ReportResult { get; set; }
+		var model = _mapper.Map<Account>(account);
+		ReportResult.AccountReferences.Add(new() { Account = model, Created = created });
+	}
 
-		public void AddAccount(AccountEntity account, bool created)
+	public void AddProduct(ProductEntity product, bool created)
+	{
+		if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
 		{
-			if (ReportResult.AccountReferences.Any(reference => reference.Account.Name == account.Name))
-			{
-				return;
-			}
-
-			var model = _mapper.Map<Account>(account);
-			ReportResult.AccountReferences.Add(new() { Account = model, Created = created });
+			return;
 		}
 
-		public void AddProduct(ProductEntity product, bool created)
-		{
-			if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
-			{
-				return;
-			}
+		var model = _mapper.Map<Product>(product);
+		ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
+	}
 
-			var model = _mapper.Map<Product>(product);
-			ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
+	public void AddTransaction(TransactionEntity transaction, bool created)
+	{
+		if (ReportResult.TransactionReferences.Any(reference => reference.Transaction.Id == transaction.Id))
+		{
+			return;
 		}
 
-		public void AddTransaction(TransactionEntity transaction, bool created)
-		{
-			if (ReportResult.TransactionReferences.Any(reference => reference.Transaction.Id == transaction.Id))
-			{
-				return;
-			}
+		var model = _mapper.Map<Transaction>(transaction);
+		ReportResult.TransactionReferences.Add(new() { Transaction = model, Created = created });
+	}
 
-			var model = _mapper.Map<Transaction>(transaction);
-			ReportResult.TransactionReferences.Add(new() { Transaction = model, Created = created });
-		}
-
-		public AccountReportResult ToResult()
-		{
-			var result = ReportResult;
-			ReportResult = new();
-			return result;
-		}
+	public AccountReportResult ToResult()
+	{
+		var result = ReportResult;
+		ReportResult = new();
+		return result;
 	}
 }

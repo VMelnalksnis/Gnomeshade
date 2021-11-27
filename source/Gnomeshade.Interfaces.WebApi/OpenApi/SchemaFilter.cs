@@ -6,21 +6,20 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
-{
-	public abstract class SchemaFilter<T> : ISchemaFilter
-	{
-		/// <inheritdoc/>
-		public void Apply(OpenApiSchema schema, SchemaFilterContext context)
-		{
-			if (typeof(T) != context.Type)
-			{
-				return;
-			}
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
 
-			ApplyFilter(schema, context);
+public abstract class SchemaFilter<T> : ISchemaFilter
+{
+	/// <inheritdoc/>
+	public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+	{
+		if (typeof(T) != context.Type)
+		{
+			return;
 		}
 
-		protected abstract void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context);
+		ApplyFilter(schema, context);
 	}
+
+	protected abstract void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context);
 }

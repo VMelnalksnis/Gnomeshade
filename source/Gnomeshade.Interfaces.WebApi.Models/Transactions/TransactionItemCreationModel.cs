@@ -8,42 +8,41 @@ using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.Models.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
+
+[PublicAPI]
+public sealed record TransactionItemCreationModel
 {
-	[PublicAPI]
-	public sealed record TransactionItemCreationModel
-	{
-		/// <summary>
-		/// The id of the transaction item to update.
-		/// </summary>
-		public Guid? Id { get; init; }
+	/// <summary>
+	/// The id of the transaction item to update.
+	/// </summary>
+	public Guid? Id { get; init; }
 
-		[Required]
-		public decimal? SourceAmount { get; init; }
+	[Required]
+	public decimal? SourceAmount { get; init; }
 
-		[Required]
-		public Guid? SourceAccountId { get; init; }
+	[Required]
+	public Guid? SourceAccountId { get; init; }
 
-		[Required]
-		public decimal? TargetAmount { get; init; }
+	[Required]
+	public decimal? TargetAmount { get; init; }
 
-		[Required]
-		public Guid? TargetAccountId { get; init; }
+	[Required]
+	public Guid? TargetAccountId { get; init; }
 
-		[Required]
-		public Guid? ProductId { get; init; }
+	[Required]
+	public Guid? ProductId { get; init; }
 
-		[Required]
-		public decimal? Amount { get; init; }
+	[Required]
+	public decimal? Amount { get; init; }
 
-		public string? BankReference { get; init; }
+	public string? BankReference { get; init; }
 
-		public string? ExternalReference { get; init; }
+	public string? ExternalReference { get; init; }
 
-		public string? InternalReference { get; init; }
+	public string? InternalReference { get; init; }
 
-		public DateTimeOffset? DeliveryDate { get; init; }
+	public DateTimeOffset? DeliveryDate { get; init; }
 
-		public string? Description { get; init; }
-	}
+	public string? Description { get; init; }
 }

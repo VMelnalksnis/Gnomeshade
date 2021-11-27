@@ -7,16 +7,15 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Products
+namespace Gnomeshade.Interfaces.WebApi.Models.Products;
+
+[PublicAPI]
+public sealed record UnitCreationModel
 {
-	[PublicAPI]
-	public sealed record UnitCreationModel
-	{
-		[Required(AllowEmptyStrings = false)]
-		public string? Name { get; init; }
+	[Required(AllowEmptyStrings = false)]
+	public string? Name { get; init; }
 
-		public Guid? ParentUnitId { get; init; }
+	public Guid? ParentUnitId { get; init; }
 
-		public decimal? Multiplier { get; init; }
-	}
+	public decimal? Multiplier { get; init; }
 }

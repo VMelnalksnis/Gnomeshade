@@ -21,231 +21,230 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using static Gnomeshade.Interfaces.WebApi.Client.Routes;
 
-namespace Gnomeshade.Interfaces.WebApi.Client
+namespace Gnomeshade.Interfaces.WebApi.Client;
+
+/// <inheritdoc cref="IGnomeshadeClient"/>
+public sealed class GnomeshadeClient : IGnomeshadeClient
 {
-	/// <inheritdoc cref="IGnomeshadeClient"/>
-	public sealed class GnomeshadeClient : IGnomeshadeClient
+	private readonly HttpClient _httpClient;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
+	/// </summary>
+	/// <param name="httpClient">The HTTP client to use for requests.</param>
+	public GnomeshadeClient(HttpClient httpClient)
 	{
-		private readonly HttpClient _httpClient;
+		_httpClient = httpClient;
+		_httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
+		_httpClient.DefaultRequestHeaders.Accept.Clear();
+		_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
-		/// </summary>
-		/// <param name="httpClient">The HTTP client to use for requests.</param>
-		public GnomeshadeClient(HttpClient httpClient)
+	/// <inheritdoc/>
+	public async Task<LoginResult> LogInAsync(Login login)
+	{
+		try
 		{
-			_httpClient = httpClient;
-			_httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
-			_httpClient.DefaultRequestHeaders.Accept.Clear();
-			_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
-		}
+			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login).ConfigureAwait(false);
+			if (response.IsSuccessStatusCode)
+			{
+				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false);
+				_httpClient.DefaultRequestHeaders.Authorization =
+					new(JwtBearerDefaults.AuthenticationScheme, loginResponse!.Token);
+				return new SuccessfulLogin(loginResponse);
+			}
 
-		/// <inheritdoc/>
-		public async Task<LoginResult> LogInAsync(Login login)
+			var errorResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+			return new FailedLogin(response.StatusCode, errorResponse);
+		}
+		catch (HttpRequestException httpException)
 		{
-			try
-			{
-				using var response = await _httpClient.PostAsJsonAsync(LoginUri, login).ConfigureAwait(false);
-				if (response.IsSuccessStatusCode)
-				{
-					var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false);
-					_httpClient.DefaultRequestHeaders.Authorization =
-						new(JwtBearerDefaults.AuthenticationScheme, loginResponse!.Token);
-					return new SuccessfulLogin(loginResponse);
-				}
-
-				var errorResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				return new FailedLogin(response.StatusCode, errorResponse);
-			}
-			catch (HttpRequestException httpException)
-			{
-				return new FailedLogin(httpException.StatusCode, httpException.Message);
-			}
+			return new FailedLogin(httpException.StatusCode, httpException.Message);
 		}
+	}
 
-		/// <inheritdoc />
-		public async Task SocialRegister(string accessToken)
+	/// <inheritdoc />
+	public async Task SocialRegister(string accessToken)
+	{
+		_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, accessToken);
+
+		try
 		{
-			_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, accessToken);
-
-			try
-			{
-				using var response = await _httpClient.PostAsync(SocialRegisterUri, new StringContent(string.Empty));
-				response.EnsureSuccessStatusCode();
-			}
-			catch (Exception)
-			{
-				_httpClient.DefaultRequestHeaders.Authorization = null;
-				throw;
-			}
+			using var response = await _httpClient.PostAsync(SocialRegisterUri, new StringContent(string.Empty));
+			response.EnsureSuccessStatusCode();
 		}
-
-		/// <inheritdoc />
-		public async Task LogOutAsync()
+		catch (Exception)
 		{
 			_httpClient.DefaultRequestHeaders.Authorization = null;
-			using var response = await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
-			await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
+			throw;
 		}
+	}
 
-		/// <inheritdoc />
-		public Task<Counterparty> GetMyCounterpartyAsync() =>
-			GetAsync<Counterparty>("Counterparty/Me");
+	/// <inheritdoc />
+	public async Task LogOutAsync()
+	{
+		_httpClient.DefaultRequestHeaders.Authorization = null;
+		using var response = await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
+	}
 
-		/// <inheritdoc/>
-		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
-			PostAsync(TransactionUri, transaction);
+	/// <inheritdoc />
+	public Task<Counterparty> GetMyCounterpartyAsync() =>
+		GetAsync<Counterparty>("Counterparty/Me");
 
-		/// <inheritdoc />
-		public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
-			PutAsync(TransactionUri, transaction);
+	/// <inheritdoc/>
+	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+		PostAsync(TransactionUri, transaction);
 
-		/// <inheritdoc />
-		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item) =>
-			PutAsync(TransactionItemUri(transactionId), item);
+	/// <inheritdoc />
+	public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
+		PutAsync(TransactionUri, transaction);
 
-		/// <inheritdoc />
-		public Task<Transaction> GetTransactionAsync(Guid id) =>
-			GetAsync<Transaction>(TransactionIdUri(id));
+	/// <inheritdoc />
+	public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item) =>
+		PutAsync(TransactionItemUri(transactionId), item);
 
-		/// <inheritdoc />
-		public Task<TransactionItem> GetTransactionItemAsync(Guid id) =>
-			GetAsync<TransactionItem>(TransactionItemIdUri(id));
+	/// <inheritdoc />
+	public Task<Transaction> GetTransactionAsync(Guid id) =>
+		GetAsync<Transaction>(TransactionIdUri(id));
 
-		/// <inheritdoc />
-		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
-			GetAsync<List<Transaction>>(TransactionDateRangeUri(from, to));
+	/// <inheritdoc />
+	public Task<TransactionItem> GetTransactionItemAsync(Guid id) =>
+		GetAsync<TransactionItem>(TransactionItemIdUri(id));
 
-		/// <inheritdoc />
-		public Task DeleteTransactionAsync(Guid id) =>
-			DeleteAsync(TransactionIdUri(id));
+	/// <inheritdoc />
+	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
+		GetAsync<List<Transaction>>(TransactionDateRangeUri(from, to));
 
-		/// <inheritdoc />
-		public Task DeleteTransactionItemAsync(Guid id) =>
-			DeleteAsync(TransactionItemIdUri(id));
+	/// <inheritdoc />
+	public Task DeleteTransactionAsync(Guid id) =>
+		DeleteAsync(TransactionIdUri(id));
 
-		/// <inheritdoc />
-		public Task<Account> GetAccountAsync(Guid id) =>
-			GetAsync<Account>(AccountIdUri(id));
+	/// <inheritdoc />
+	public Task DeleteTransactionItemAsync(Guid id) =>
+		DeleteAsync(TransactionItemIdUri(id));
 
-		/// <inheritdoc />
-		public Task<Account?> FindAccountAsync(string name) =>
-			FindAsync<Account>(AccountNameUri(name));
+	/// <inheritdoc />
+	public Task<Account> GetAccountAsync(Guid id) =>
+		GetAsync<Account>(AccountIdUri(id));
 
-		/// <inheritdoc />
-		public Task<List<Account>> GetAccountsAsync() =>
-			GetAsync<List<Account>>(AllAccountUri);
+	/// <inheritdoc />
+	public Task<Account?> FindAccountAsync(string name) =>
+		FindAsync<Account>(AccountNameUri(name));
 
-		/// <inheritdoc />
-		public Task<List<Account>> GetActiveAccountsAsync() =>
-			GetAsync<List<Account>>(AccountUri);
+	/// <inheritdoc />
+	public Task<List<Account>> GetAccountsAsync() =>
+		GetAsync<List<Account>>(AllAccountUri);
 
-		/// <inheritdoc />
-		public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
-			PostAsync(AccountUri, account);
+	/// <inheritdoc />
+	public Task<List<Account>> GetActiveAccountsAsync() =>
+		GetAsync<List<Account>>(AccountUri);
 
-		/// <inheritdoc />
-		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
-			PostAsync(AccountIdUri(id), currency);
+	/// <inheritdoc />
+	public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
+		PostAsync(AccountUri, account);
 
-		/// <inheritdoc />
-		public Task<List<Currency>> GetCurrenciesAsync() =>
-			GetAsync<List<Currency>>(CurrencyUri);
+	/// <inheritdoc />
+	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+		PostAsync(AccountIdUri(id), currency);
 
-		/// <inheritdoc />
-		public Task<List<Product>> GetProductsAsync() =>
-			GetAsync<List<Product>>(ProductUri);
+	/// <inheritdoc />
+	public Task<List<Currency>> GetCurrenciesAsync() =>
+		GetAsync<List<Currency>>(CurrencyUri);
 
-		/// <inheritdoc />
-		public Task<Product> GetProductAsync(Guid id) =>
-			GetAsync<Product>(ProductIdUri(id));
+	/// <inheritdoc />
+	public Task<List<Product>> GetProductsAsync() =>
+		GetAsync<List<Product>>(ProductUri);
 
-		/// <inheritdoc />
-		public Task<List<Unit>> GetUnitsAsync() =>
-			GetAsync<List<Unit>>(UnitUri);
+	/// <inheritdoc />
+	public Task<Product> GetProductAsync(Guid id) =>
+		GetAsync<Product>(ProductIdUri(id));
 
-		/// <inheritdoc />
-		public Task<Guid> PutProductAsync(ProductCreationModel product) =>
-			PutAsync(ProductUri, product);
+	/// <inheritdoc />
+	public Task<List<Unit>> GetUnitsAsync() =>
+		GetAsync<List<Unit>>(UnitUri);
 
-		/// <inheritdoc />
-		public Task<Guid> CreateUnitAsync(UnitCreationModel unit) =>
-			PostAsync(UnitUri, unit);
+	/// <inheritdoc />
+	public Task<Guid> PutProductAsync(ProductCreationModel product) =>
+		PutAsync(ProductUri, product);
 
-		/// <inheritdoc />
-		public async Task<AccountReportResult> Import(Stream content, string name)
+	/// <inheritdoc />
+	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) =>
+		PostAsync(UnitUri, unit);
+
+	/// <inheritdoc />
+	public async Task<AccountReportResult> Import(Stream content, string name)
+	{
+		var streamContent = new StreamContent(content);
+		streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
+		var multipartContent = new MultipartFormDataContent();
+		multipartContent.Add(streamContent, "formFile", name);
+
+		using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
+		await ThrowIfNotSuccessCode(importResponse);
+
+		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
+	}
+
+	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
+	{
+		try
 		{
-			var streamContent = new StreamContent(content);
-			streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
-			var multipartContent = new MultipartFormDataContent();
-			multipartContent.Add(streamContent, "formFile", name);
-
-			using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
-			await ThrowIfNotSuccessCode(importResponse);
-
-			return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
+			responseMessage.EnsureSuccessStatusCode();
 		}
-
-		private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
+		catch (HttpRequestException requestException)
 		{
-			try
-			{
-				responseMessage.EnsureSuccessStatusCode();
-			}
-			catch (HttpRequestException requestException)
-			{
-				var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-				throw new HttpRequestException(
-					$"Failed with message: {message}",
-					requestException,
-					responseMessage.StatusCode);
-			}
+			var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+			throw new HttpRequestException(
+				$"Failed with message: {message}",
+				requestException,
+				responseMessage.StatusCode);
 		}
+	}
 
-		private async Task<TResult> GetAsync<TResult>(string requestUri)
-			where TResult : notnull
+	private async Task<TResult> GetAsync<TResult>(string requestUri)
+		where TResult : notnull
+	{
+		using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(response);
+
+		return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+	}
+
+	private async Task<TResult?> FindAsync<TResult>(string requestUri)
+		where TResult : class
+	{
+		using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
+		if (response.StatusCode == HttpStatusCode.NotFound)
 		{
-			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
-			await ThrowIfNotSuccessCode(response);
-
-			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+			return null;
 		}
 
-		private async Task<TResult?> FindAsync<TResult>(string requestUri)
-			where TResult : class
-		{
-			using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
-			if (response.StatusCode == HttpStatusCode.NotFound)
-			{
-				return null;
-			}
+		await ThrowIfNotSuccessCode(response);
+		return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+	}
 
-			await ThrowIfNotSuccessCode(response);
-			return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
-		}
+	private async Task<Guid> PostAsync<TRequest>(string requestUri, TRequest request)
+		where TRequest : notnull
+	{
+		using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(response);
 
-		private async Task<Guid> PostAsync<TRequest>(string requestUri, TRequest request)
-			where TRequest : notnull
-		{
-			using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
-			await ThrowIfNotSuccessCode(response);
+		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
+	}
 
-			return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
-		}
+	private async Task<Guid> PutAsync<TRequest>(string requestUri, TRequest request)
+		where TRequest : notnull
+	{
+		using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(response);
 
-		private async Task<Guid> PutAsync<TRequest>(string requestUri, TRequest request)
-			where TRequest : notnull
-		{
-			using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
-			await ThrowIfNotSuccessCode(response);
+		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
+	}
 
-			return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
-		}
-
-		private async Task DeleteAsync(string requestUri)
-		{
-			var deleteResponse = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
-			await ThrowIfNotSuccessCode(deleteResponse);
-		}
+	private async Task DeleteAsync(string requestUri)
+	{
+		var deleteResponse = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(deleteResponse);
 	}
 }

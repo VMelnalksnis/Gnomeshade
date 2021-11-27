@@ -9,32 +9,31 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.Models.Importing
+namespace Gnomeshade.Interfaces.WebApi.Models.Importing;
+
+/// <summary>
+/// Summary of the report import.
+/// </summary>
+[PublicAPI]
+public sealed record AccountReportResult
 {
 	/// <summary>
-	/// Summary of the report import.
+	/// The user account of the imported report.
 	/// </summary>
-	[PublicAPI]
-	public sealed record AccountReportResult
-	{
-		/// <summary>
-		/// The user account of the imported report.
-		/// </summary>
-		public Account UserAccount { get; init; } = null!;
+	public Account UserAccount { get; init; } = null!;
 
-		/// <summary>
-		/// The accounts created or referenced during the import.
-		/// </summary>
-		public List<AccountReference> AccountReferences { get; init; } = new();
+	/// <summary>
+	/// The accounts created or referenced during the import.
+	/// </summary>
+	public List<AccountReference> AccountReferences { get; init; } = new();
 
-		/// <summary>
-		/// The products created or referenced during the import.
-		/// </summary>
-		public List<ProductReference> ProductReferences { get; init; } = new();
+	/// <summary>
+	/// The products created or referenced during the import.
+	/// </summary>
+	public List<ProductReference> ProductReferences { get; init; } = new();
 
-		/// <summary>
-		/// The transactions created or referenced during the import.
-		/// </summary>
-		public List<TransactionReference> TransactionReferences { get; init; } = new();
-	}
+	/// <summary>
+	/// The transactions created or referenced during the import.
+	/// </summary>
+	public List<TransactionReference> TransactionReferences { get; init; } = new();
 }

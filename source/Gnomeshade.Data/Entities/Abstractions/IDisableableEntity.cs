@@ -4,21 +4,20 @@
 
 using System;
 
-namespace Gnomeshade.Data.Entities.Abstractions
+namespace Gnomeshade.Data.Entities.Abstractions;
+
+/// <summary>
+/// An entity that can only be disabled instead of deleted because it is referenced by other entities.
+/// </summary>
+public interface IDisableableEntity : IEntity
 {
 	/// <summary>
-	/// An entity that can only be disabled instead of deleted because it is referenced by other entities.
+	/// Gets or sets the point in time at which this entity was disabled.
 	/// </summary>
-	public interface IDisableableEntity : IEntity
-	{
-		/// <summary>
-		/// Gets or sets the point in time at which this entity was disabled.
-		/// </summary>
-		DateTimeOffset? DisabledAt { get; set; }
+	DateTimeOffset? DisabledAt { get; set; }
 
-		/// <summary>
-		/// Gets or sets the id of the <see cref="UserEntity"/> which disabled the entity.
-		/// </summary>
-		Guid? DisabledByUserId { get; set; }
-	}
+	/// <summary>
+	/// Gets or sets the id of the <see cref="UserEntity"/> which disabled the entity.
+	/// </summary>
+	Guid? DisabledByUserId { get; set; }
 }

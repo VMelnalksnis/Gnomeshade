@@ -6,19 +6,18 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.Data.Entities
-{
-	/// <summary>
-	/// Represents a collection of other entities (users, roles, groups, etc.) that can own other entities.
-	/// </summary>
-	/// <seealso cref="OwnershipEntity"/>
-	/// <seealso cref="UserEntity"/>
-	public sealed record OwnerEntity : IEntity
-	{
-		/// <inheritdoc/>
-		public Guid Id { get; init; }
+namespace Gnomeshade.Data.Entities;
 
-		/// <inheritdoc/>
-		public DateTimeOffset CreatedAt { get; init; }
-	}
+/// <summary>
+/// Represents a collection of other entities (users, roles, groups, etc.) that can own other entities.
+/// </summary>
+/// <seealso cref="OwnershipEntity"/>
+/// <seealso cref="UserEntity"/>
+public sealed record OwnerEntity : IEntity
+{
+	/// <inheritdoc/>
+	public Guid Id { get; init; }
+
+	/// <inheritdoc/>
+	public DateTimeOffset CreatedAt { get; init; }
 }

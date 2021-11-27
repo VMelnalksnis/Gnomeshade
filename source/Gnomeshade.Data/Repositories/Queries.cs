@@ -81,9 +81,7 @@ internal static class Queries
 
 		internal static string Insert { get; } = Read($"Queries.{nameof(Transaction)}.Insert.sql");
 
-
 		internal static string Select { get; } = Read($"Queries.{nameof(Transaction)}.Select.sql");
-
 
 		internal static string Update { get; } = Read($"Queries.{nameof(Transaction)}.Update.sql");
 	}

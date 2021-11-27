@@ -7,22 +7,21 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 using JetBrains.Annotations;
 
 #pragma warning disable SA1623
-namespace Gnomeshade.Interfaces.WebApi.Models.Importing
+namespace Gnomeshade.Interfaces.WebApi.Models.Importing;
+
+/// <summary>
+/// A reference to a product that was used during an import.
+/// </summary>
+[PublicAPI]
+public sealed record ProductReference
 {
 	/// <summary>
-	/// A reference to a product that was used during an import.
+	/// Whether or not the product was created during import.
 	/// </summary>
-	[PublicAPI]
-	public sealed record ProductReference
-	{
-		/// <summary>
-		/// Whether or not the product was created during import.
-		/// </summary>
-		public bool Created { get; init; }
+	public bool Created { get; init; }
 
-		/// <summary>
-		/// The referenced product.
-		/// </summary>
-		public Product Product { get; init; } = null!;
-	}
+	/// <summary>
+	/// The referenced product.
+	/// </summary>
+	public Product Product { get; init; } = null!;
 }

@@ -9,33 +9,32 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Core.Tests
+namespace Gnomeshade.Core.Tests;
+
+public class Sha512ValueTests
 {
-	public class Sha512ValueTests
+	[TestCase("Foo", "Foo", true)]
+	[TestCase("Foo", "Bar", false)]
+	public async Task GetHashCode_Should(object first, object second, bool expected)
 	{
-		[TestCase("Foo", "Foo", true)]
-		[TestCase("Foo", "Bar", false)]
-		public async Task GetHashCode_Should(object first, object second, bool expected)
-		{
-			var firstValue = await first.GetHashAsync().ConfigureAwait(false);
-			var secondValue = await second.GetHashAsync().ConfigureAwait(false);
+		var firstValue = await first.GetHashAsync().ConfigureAwait(false);
+		var secondValue = await second.GetHashAsync().ConfigureAwait(false);
 
-			var areEqual = firstValue.GetHashCode() == secondValue.GetHashCode();
+		var areEqual = firstValue.GetHashCode() == secondValue.GetHashCode();
 
-			areEqual.Should().Be(expected);
-		}
+		areEqual.Should().Be(expected);
+	}
 
-		[TestCase(63, TestName = "Not enough bytes")]
-		[TestCase(65, TestName = "Too many bytes")]
-		public void ShouldAllowOnlyExpectedLength(int invalidByteCount)
-		{
-			FluentActions
-				.Invoking(() => new Sha512Value(new byte[invalidByteCount]))
-				.Should()
-				.ThrowExactly<ArgumentException>()
-				.Which.ParamName
-				.Should()
-				.Be("bytes");
-		}
+	[TestCase(63, TestName = "Not enough bytes")]
+	[TestCase(65, TestName = "Too many bytes")]
+	public void ShouldAllowOnlyExpectedLength(int invalidByteCount)
+	{
+		FluentActions
+			.Invoking(() => new Sha512Value(new byte[invalidByteCount]))
+			.Should()
+			.ThrowExactly<ArgumentException>()
+			.Which.ParamName
+			.Should()
+			.Be("bytes");
 	}
 }

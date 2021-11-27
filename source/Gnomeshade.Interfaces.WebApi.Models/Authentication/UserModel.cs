@@ -4,15 +4,14 @@
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
+namespace Gnomeshade.Interfaces.WebApi.Models.Authentication;
+
+[PublicAPI]
+public sealed record UserModel
 {
-	[PublicAPI]
-	public sealed record UserModel
-	{
-		public string Id { get; init; }
+	public string Id { get; init; }
 
-		public string UserName { get; init; }
+	public string UserName { get; init; }
 
-		public string Email { get; init; }
-	}
+	public string Email { get; init; }
 }

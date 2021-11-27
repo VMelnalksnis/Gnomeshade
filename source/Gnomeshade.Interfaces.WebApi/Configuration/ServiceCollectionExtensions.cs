@@ -5,42 +5,41 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gnomeshade.Interfaces.WebApi.Configuration
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
+
+/// <summary>
+/// Provides methods to register configuration options in a <see cref="IServiceCollection"/>.
+/// </summary>
+public static class ServiceCollectionExtensions
 {
 	/// <summary>
-	/// Provides methods to register configuration options in a <see cref="IServiceCollection"/>.
+	/// Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotation validation.
 	/// </summary>
-	public static class ServiceCollectionExtensions
+	/// <typeparam name="TOptions">The options type to add.</typeparam>
+	/// <param name="services">The service collection to which to add the options.</param>
+	/// <param name="configuration">The configuration to which to bind the options.</param>
+	/// <returns><paramref name="services"/> for chaining calls.</returns>
+	/// <seealso cref="ConfigurationExtensions.GetSectionName(System.Type)"/>
+	public static IServiceCollection AddValidatedOptions<TOptions>(
+		this IServiceCollection services,
+		IConfiguration configuration)
+		where TOptions : class
 	{
-		/// <summary>
-		/// Registers the specified <typeparamref name="TOptions"/> in a service collection with data annotation validation.
-		/// </summary>
-		/// <typeparam name="TOptions">The options type to add.</typeparam>
-		/// <param name="services">The service collection to which to add the options.</param>
-		/// <param name="configuration">The configuration to which to bind the options.</param>
-		/// <returns><paramref name="services"/> for chaining calls.</returns>
-		/// <seealso cref="ConfigurationExtensions.GetSectionName(System.Type)"/>
-		public static IServiceCollection AddValidatedOptions<TOptions>(
-			this IServiceCollection services,
-			IConfiguration configuration)
-			where TOptions : class
-		{
-			var sectionName = typeof(TOptions).GetSectionName();
-			services
-				.AddOptions<TOptions>()
-				.Bind(configuration.GetSection(sectionName))
-				.ValidateDataAnnotations();
+		var sectionName = typeof(TOptions).GetSectionName();
+		services
+			.AddOptions<TOptions>()
+			.Bind(configuration.GetSection(sectionName))
+			.ValidateDataAnnotations();
 
-			return services;
-		}
+		return services;
+	}
 
-		public static TOptions AddAndGetOptions<TOptions>(
-			this IServiceCollection services,
-			IConfiguration configuration)
-			where TOptions : class
-		{
-			services.AddValidatedOptions<TOptions>(configuration);
-			return configuration.GetValid<TOptions>();
-		}
+	public static TOptions AddAndGetOptions<TOptions>(
+		this IServiceCollection services,
+		IConfiguration configuration)
+		where TOptions : class
+	{
+		services.AddValidatedOptions<TOptions>(configuration);
+		return configuration.GetValid<TOptions>();
 	}
 }

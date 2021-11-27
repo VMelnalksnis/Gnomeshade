@@ -9,32 +9,31 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.Configuration;
 
-namespace Gnomeshade.Interfaces.WebApi.Configuration
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
+
+/// <summary>
+/// Provides methods to validate objects based on DataAnnotations.
+/// </summary>
+public static class ConfigurationExtensions
 {
-	/// <summary>
-	/// Provides methods to validate objects based on DataAnnotations.
-	/// </summary>
-	public static class ConfigurationExtensions
+	public static TOptions GetValid<[MeansImplicitUse(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]TOptions>(this IConfiguration configuration)
+		where TOptions : notnull
 	{
-		public static TOptions GetValid<[MeansImplicitUse(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]TOptions>(this IConfiguration configuration)
-			where TOptions : notnull
-		{
-			var sectionName = typeof(TOptions).GetSectionName();
-			return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
-		}
+		var sectionName = typeof(TOptions).GetSectionName();
+		return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
+	}
 
-		public static string GetSectionName(this Type type)
-		{
-			return type.Name.EndsWith("Options")
-				? type.Name[..type.Name.LastIndexOf("Options", StringComparison.Ordinal)]
-				: type.Name;
-		}
+	public static string GetSectionName(this Type type)
+	{
+		return type.Name.EndsWith("Options")
+			? type.Name[..type.Name.LastIndexOf("Options", StringComparison.Ordinal)]
+			: type.Name;
+	}
 
-		private static TOptions ValidateAndThrow<TOptions>(this TOptions options)
-			where TOptions : notnull
-		{
-			Validator.ValidateObject(options, new(options), true);
-			return options;
-		}
+	private static TOptions ValidateAndThrow<TOptions>(this TOptions options)
+		where TOptions : notnull
+	{
+		Validator.ValidateObject(options, new(options), true);
+		return options;
 	}
 }

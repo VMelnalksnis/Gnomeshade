@@ -6,32 +6,31 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Gnomeshade.Data.Identity
+namespace Gnomeshade.Data.Identity;
+
+public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-	public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+	private readonly IConfiguration _configuration;
+
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
+		: base(options)
 	{
-		private readonly IConfiguration _configuration;
+		_configuration = configuration;
+	}
 
-		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
-			: base(options)
+	public ApplicationDbContext(IConfiguration configuration)
+	{
+		_configuration = configuration;
+	}
+
+	/// <inheritdoc/>
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	{
+		if (optionsBuilder.IsConfigured)
 		{
-			_configuration = configuration;
+			return;
 		}
 
-		public ApplicationDbContext(IConfiguration configuration)
-		{
-			_configuration = configuration;
-		}
-
-		/// <inheritdoc/>
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			if (optionsBuilder.IsConfigured)
-			{
-				return;
-			}
-
-			optionsBuilder.ConfigureIdentityContext(_configuration);
-		}
+		optionsBuilder.ConfigureIdentityContext(_configuration);
 	}
 }

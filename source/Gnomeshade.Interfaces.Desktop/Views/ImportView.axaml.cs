@@ -11,34 +11,33 @@ using Avalonia.VisualTree;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+/// <summary>
+/// Data importing and overview of import result.
+/// </summary>
+public sealed class ImportView : FocusOnInitUserControl
 {
 	/// <summary>
-	/// Data importing and overview of import result.
+	/// Initializes a new instance of the <see cref="ImportView"/> class.
 	/// </summary>
-	public sealed class ImportView : FocusOnInitUserControl
+	public ImportView()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ImportView"/> class.
-		/// </summary>
-		public ImportView()
-		{
-			AvaloniaXamlLoader.Load(this);
-			Focus("SelectFileButton");
-		}
+		AvaloniaXamlLoader.Load(this);
+		Focus("SelectFileButton");
+	}
 
-		[PublicAPI]
-		private async void SelectFile_OnClick(object? sender, RoutedEventArgs args)
+	[PublicAPI]
+	private async void SelectFile_OnClick(object? sender, RoutedEventArgs args)
+	{
+		var dialog = new OpenFileDialog
 		{
-			var dialog = new OpenFileDialog
-			{
-				AllowMultiple = false,
-				Title = "Select report file",
-			};
+			AllowMultiple = false,
+			Title = "Select report file",
+		};
 
-			var fileNames = await dialog.ShowAsync((Window)this.GetVisualRoot());
-			var path = this.FindControl<TextBlock>("Path");
-			path.Text = fileNames.Single();
-		}
+		var fileNames = await dialog.ShowAsync((Window)this.GetVisualRoot());
+		var path = this.FindControl<TextBlock>("Path");
+		path.Text = fileNames.Single();
 	}
 }

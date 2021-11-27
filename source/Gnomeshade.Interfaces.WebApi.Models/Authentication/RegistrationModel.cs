@@ -6,25 +6,24 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Authentication
+namespace Gnomeshade.Interfaces.WebApi.Models.Authentication;
+
+/// <summary>
+/// The information needed to register a new user.
+/// </summary>
+[PublicAPI]
+public sealed record RegistrationModel
 {
-	/// <summary>
-	/// The information needed to register a new user.
-	/// </summary>
-	[PublicAPI]
-	public sealed record RegistrationModel
-	{
-		[Required(AllowEmptyStrings = false)]
-		public string Username { get; init; } = null!;
+	[Required(AllowEmptyStrings = false)]
+	public string Username { get; init; } = null!;
 
-		[EmailAddress]
-		[Required(AllowEmptyStrings = false)]
-		public string Email { get; init; } = null!;
+	[EmailAddress]
+	[Required(AllowEmptyStrings = false)]
+	public string Email { get; init; } = null!;
 
-		[Required(AllowEmptyStrings = false)]
-		public string Password { get; init; } = null!;
+	[Required(AllowEmptyStrings = false)]
+	public string Password { get; init; } = null!;
 
-		[Required(AllowEmptyStrings = false)]
-		public string FullName { get; init; } = null!;
-	}
+	[Required(AllowEmptyStrings = false)]
+	public string FullName { get; init; } = null!;
 }

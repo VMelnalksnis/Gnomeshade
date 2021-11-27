@@ -9,33 +9,32 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions
+namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
+
+public sealed class ValidateTestCaseSource : IEnumerable
 {
-	public sealed class ValidateTestCaseSource : IEnumerable
+	public IEnumerator GetEnumerator()
 	{
-		public IEnumerator GetEnumerator()
-		{
-			var timeRange = new OptionalTimeRange();
-			yield return new TestCaseData(timeRange, 0)
-				.SetName("Time range with no values is valid");
+		var timeRange = new OptionalTimeRange();
+		yield return new TestCaseData(timeRange, 0)
+			.SetName("Time range with no values is valid");
 
-			timeRange = new() { From = DateTimeOffset.Now };
-			yield return new TestCaseData(timeRange, 0)
-				.SetName($"Time range with only {nameof(OptionalTimeRange.From)} is valid");
+		timeRange = new() { From = DateTimeOffset.Now };
+		yield return new TestCaseData(timeRange, 0)
+			.SetName($"Time range with only {nameof(OptionalTimeRange.From)} is valid");
 
-			timeRange = new() { To = DateTimeOffset.Now };
-			yield return new TestCaseData(timeRange, 0)
-				.SetName($"Time range with only {nameof(OptionalTimeRange.To)} is valid");
+		timeRange = new() { To = DateTimeOffset.Now };
+		yield return new TestCaseData(timeRange, 0)
+			.SetName($"Time range with only {nameof(OptionalTimeRange.To)} is valid");
 
-			timeRange = new() { From = DateTimeOffset.Now.AddDays(-1), To = DateTimeOffset.Now };
-			yield return new TestCaseData(timeRange, 0)
-				.SetName(
-					$"Time range where {nameof(OptionalTimeRange.From)} is less than {nameof(OptionalTimeRange.To)} is valid");
+		timeRange = new() { From = DateTimeOffset.Now.AddDays(-1), To = DateTimeOffset.Now };
+		yield return new TestCaseData(timeRange, 0)
+			.SetName(
+				$"Time range where {nameof(OptionalTimeRange.From)} is less than {nameof(OptionalTimeRange.To)} is valid");
 
-			timeRange = new() { From = DateTimeOffset.Now.AddDays(1), To = DateTimeOffset.Now };
-			yield return new TestCaseData(timeRange, 1)
-				.SetName(
-					$"Time range where {nameof(OptionalTimeRange.From)} is greater than {nameof(OptionalTimeRange.To)} is not valid");
-		}
+		timeRange = new() { From = DateTimeOffset.Now.AddDays(1), To = DateTimeOffset.Now };
+		yield return new TestCaseData(timeRange, 1)
+			.SetName(
+				$"Time range where {nameof(OptionalTimeRange.From)} is greater than {nameof(OptionalTimeRange.To)} is not valid");
 	}
 }

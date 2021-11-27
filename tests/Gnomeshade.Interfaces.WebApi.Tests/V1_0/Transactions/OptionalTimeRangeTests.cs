@@ -10,21 +10,20 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions
-{
-	public class OptionalTimeRangeTests
-	{
-		[TestCaseSource(typeof(ValidateTestCaseSource))]
-		public void Validate_ShouldReturnExpected(
-			OptionalTimeRange optionalTimeRange,
-			int expectedResultCount)
-		{
-			var validationContext = new ValidationContext(optionalTimeRange);
+namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
 
-			optionalTimeRange
-				.Validate(validationContext)
-				.Should()
-				.HaveCount(expectedResultCount);
-		}
+public class OptionalTimeRangeTests
+{
+	[TestCaseSource(typeof(ValidateTestCaseSource))]
+	public void Validate_ShouldReturnExpected(
+		OptionalTimeRange optionalTimeRange,
+		int expectedResultCount)
+	{
+		var validationContext = new ValidationContext(optionalTimeRange);
+
+		optionalTimeRange
+			.Validate(validationContext)
+			.Should()
+			.HaveCount(expectedResultCount);
 	}
 }

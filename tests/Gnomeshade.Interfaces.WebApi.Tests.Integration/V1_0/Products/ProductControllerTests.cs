@@ -16,83 +16,82 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
+
+public class ProductControllerTests
 {
-	public class ProductControllerTests
+	private IGnomeshadeClient _client = null!;
+
+	[SetUp]
+	public async Task SetUpAsync()
 	{
-		private IGnomeshadeClient _client = null!;
+		_client = await WebserverSetup.CreateAuthorizedClientAsync();
+	}
 
-		[SetUp]
-		public async Task SetUpAsync()
+	[Test]
+	public async Task Put()
+	{
+		var creationModel = CreateUniqueProduct() with { Description = "Foo" };
+		var product = await PutAndGet(creationModel);
+
+		product.Name.Should().Be(creationModel.Name);
+		product.Description.Should().Be(creationModel.Description);
+
+		var exception =
+			await FluentActions
+				.Awaiting(() => _client.PutProductAsync(creationModel))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>("name must be unique, and if was not specified for update");
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+		var creationModelWithId = creationModel with { Id = product.Id };
+		var productWithoutChanges = await PutAndGet(creationModelWithId);
+
+		productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
+		productWithoutChanges.ModifiedAt.Should().BeAfter(product.ModifiedAt, "currently models are not checked for differences");
+
+		var changedCreationModel = creationModelWithId with { Description = null };
+		var productWithChanges = await PutAndGet(changedCreationModel);
+
+		productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndDescription);
+		productWithChanges.Description.Should().BeNull();
+
+		var anotherCreationModel = CreateUniqueProduct();
+		_ = await PutAndGet(anotherCreationModel);
+
+		var creationModelWithDuplicateName = anotherCreationModel with
 		{
-			_client = await WebserverSetup.CreateAuthorizedClientAsync();
-		}
+			Name = product.Name,
+		};
 
-		[Test]
-		public async Task Put()
-		{
-			var creationModel = CreateUniqueProduct() with { Description = "Foo" };
-			var product = await PutAndGet(creationModel);
+		exception =
+			await FluentActions
+				.Awaiting(() => _client.PutProductAsync(creationModelWithDuplicateName))
+				.Should()
+				.ThrowAsync<HttpRequestException>("name must be unique");
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	}
 
-			product.Name.Should().Be(creationModel.Name);
-			product.Description.Should().Be(creationModel.Description);
+	private static ProductCreationModel CreateUniqueProduct()
+	{
+		return new() { Name = Guid.NewGuid().ToString("N") };
+	}
 
-			var exception =
-				await FluentActions
-					.Awaiting(() => _client.PutProductAsync(creationModel))
-					.Should()
-					.ThrowExactlyAsync<HttpRequestException>("name must be unique, and if was not specified for update");
-			exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+	private static EquivalencyAssertionOptions<Product> WithoutModifiedAt(
+		EquivalencyAssertionOptions<Product> options)
+	{
+		return options.ComparingByMembers<Product>().Excluding(model => model.ModifiedAt);
+	}
 
-			var creationModelWithId = creationModel with { Id = product.Id };
-			var productWithoutChanges = await PutAndGet(creationModelWithId);
+	private static EquivalencyAssertionOptions<Product> WithoutModifiedAtAndDescription(
+		EquivalencyAssertionOptions<Product> options)
+	{
+		return WithoutModifiedAt(options).Excluding(model => model.Description);
+	}
 
-			productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
-			productWithoutChanges.ModifiedAt.Should().BeAfter(product.ModifiedAt, "currently models are not checked for differences");
-
-			var changedCreationModel = creationModelWithId with { Description = null };
-			var productWithChanges = await PutAndGet(changedCreationModel);
-
-			productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndDescription);
-			productWithChanges.Description.Should().BeNull();
-
-			var anotherCreationModel = CreateUniqueProduct();
-			_ = await PutAndGet(anotherCreationModel);
-
-			var creationModelWithDuplicateName = anotherCreationModel with
-			{
-				Name = product.Name,
-			};
-
-			exception =
-				await FluentActions
-					.Awaiting(() => _client.PutProductAsync(creationModelWithDuplicateName))
-					.Should()
-					.ThrowAsync<HttpRequestException>("name must be unique");
-			exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-		}
-
-		private static ProductCreationModel CreateUniqueProduct()
-		{
-			return new() { Name = Guid.NewGuid().ToString("N") };
-		}
-
-		private static EquivalencyAssertionOptions<Product> WithoutModifiedAt(
-			EquivalencyAssertionOptions<Product> options)
-		{
-			return options.ComparingByMembers<Product>().Excluding(model => model.ModifiedAt);
-		}
-
-		private static EquivalencyAssertionOptions<Product> WithoutModifiedAtAndDescription(
-			EquivalencyAssertionOptions<Product> options)
-		{
-			return WithoutModifiedAt(options).Excluding(model => model.Description);
-		}
-
-		private async Task<Product> PutAndGet(ProductCreationModel creationModel)
-		{
-			var productId = await _client.PutProductAsync(creationModel);
-			return (await _client.GetProductsAsync()).Single(model => model.Id == productId);
-		}
+	private async Task<Product> PutAndGet(ProductCreationModel creationModel)
+	{
+		var productId = await _client.PutProductAsync(creationModel);
+		return (await _client.GetProductsAsync()).Single(model => model.Id == productId);
 	}
 }

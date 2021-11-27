@@ -6,26 +6,25 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+public sealed class LoginView : UserControl
 {
-	public sealed class LoginView : UserControl
+	private readonly TextBox _username;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LoginView"/> class.
+	/// </summary>
+	public LoginView()
 	{
-		private readonly TextBox _username;
+		AvaloniaXamlLoader.Load(this);
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="LoginView"/> class.
-		/// </summary>
-		public LoginView()
-		{
-			AvaloniaXamlLoader.Load(this);
+		_username = this.FindControl<TextBox>("Username");
+		_username.AttachedToVisualTree += OnUsernameAttachedToVisualTree;
+	}
 
-			_username = this.FindControl<TextBox>("Username");
-			_username.AttachedToVisualTree += OnUsernameAttachedToVisualTree;
-		}
-
-		private void OnUsernameAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs eventArgs)
-		{
-			_username.Focus();
-		}
+	private void OnUsernameAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs eventArgs)
+	{
+		_username.Focus();
 	}
 }

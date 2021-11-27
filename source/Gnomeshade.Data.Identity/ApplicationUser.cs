@@ -4,13 +4,12 @@
 
 using Microsoft.AspNetCore.Identity;
 
-namespace Gnomeshade.Data.Identity
+namespace Gnomeshade.Data.Identity;
+
+public sealed class ApplicationUser : IdentityUser
 {
-	public sealed class ApplicationUser : IdentityUser
-	{
-		/// <summary>
-		/// Gets or sets the full name for this user.
-		/// </summary>
-		public string FullName { get; set; } = null!;
-	}
+	/// <summary>
+	/// Gets or sets the full name for this user.
+	/// </summary>
+	public string FullName { get; set; } = null!;
 }

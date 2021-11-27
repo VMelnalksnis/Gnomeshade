@@ -8,14 +8,13 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
+
+public sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
 {
-	public sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
+	/// <inheritdoc/>
+	protected override void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context)
 	{
-		/// <inheritdoc/>
-		protected override void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context)
-		{
-			schema.Properties["status"].Default = new OpenApiInteger(400);
-		}
+		schema.Properties["status"].Default = new OpenApiInteger(400);
 	}
 }

@@ -4,25 +4,24 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+
+/// <summary>
+/// Event arguments for <see cref="TransactionItemCreationViewModel.TransactionItemCreated"/> event.
+/// </summary>
+public sealed class TransactionItemCreatedEventArgs : EventArgs
 {
 	/// <summary>
-	/// Event arguments for <see cref="TransactionItemCreationViewModel.TransactionItemCreated"/> event.
+	/// Initializes a new instance of the <see cref="TransactionItemCreatedEventArgs"/> class.
 	/// </summary>
-	public sealed class TransactionItemCreatedEventArgs : EventArgs
+	/// <param name="itemId">The id of the created transaction item.</param>
+	public TransactionItemCreatedEventArgs(Guid itemId)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionItemCreatedEventArgs"/> class.
-		/// </summary>
-		/// <param name="itemId">The id of the created transaction item.</param>
-		public TransactionItemCreatedEventArgs(Guid itemId)
-		{
-			ItemId = itemId;
-		}
-
-		/// <summary>
-		/// Gets the id of the created transaction item.
-		/// </summary>
-		public Guid ItemId { get; }
+		ItemId = itemId;
 	}
+
+	/// <summary>
+	/// Gets the id of the created transaction item.
+	/// </summary>
+	public Guid ItemId { get; }
 }

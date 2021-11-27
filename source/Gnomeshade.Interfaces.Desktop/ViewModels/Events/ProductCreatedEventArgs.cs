@@ -4,25 +4,24 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+
+/// <summary>
+/// Event arguments for the <see cref="ProductCreationViewModel.ProductCreated"/> event.
+/// </summary>
+public sealed class ProductCreatedEventArgs : EventArgs
 {
 	/// <summary>
-	/// Event arguments for the <see cref="ProductCreationViewModel.ProductCreated"/> event.
+	/// Initializes a new instance of the <see cref="ProductCreatedEventArgs"/> class.
 	/// </summary>
-	public sealed class ProductCreatedEventArgs : EventArgs
+	/// <param name="productId">The id of the created product.</param>
+	public ProductCreatedEventArgs(Guid productId)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ProductCreatedEventArgs"/> class.
-		/// </summary>
-		/// <param name="productId">The id of the created product.</param>
-		public ProductCreatedEventArgs(Guid productId)
-		{
-			ProductId = productId;
-		}
-
-		/// <summary>
-		/// Gets the id of the product that was created.
-		/// </summary>
-		public Guid ProductId { get; }
+		ProductId = productId;
 	}
+
+	/// <summary>
+	/// Gets the id of the product that was created.
+	/// </summary>
+	public Guid ProductId { get; }
 }

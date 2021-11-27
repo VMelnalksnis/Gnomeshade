@@ -11,35 +11,34 @@ using JetBrains.Annotations;
 using static JetBrains.Annotations.ImplicitUseKindFlags;
 using static JetBrains.Annotations.ImplicitUseTargetFlags;
 
-namespace Gnomeshade.Interfaces.WebApi.Configuration
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
+
+/// <summary>
+/// Options for configuring logging to ElasticSearch.
+/// </summary>
+[UsedImplicitly(Assign, Members)]
+public sealed class ElasticSearchLoggingOptions
 {
 	/// <summary>
-	/// Options for configuring logging to ElasticSearch.
+	/// The name of the configuration section.
 	/// </summary>
-	[UsedImplicitly(Assign, Members)]
-	public sealed class ElasticSearchLoggingOptions
-	{
-		/// <summary>
-		/// The name of the configuration section.
-		/// </summary>
-		public const string SectionName = "ElasticSearchLogging";
+	public const string SectionName = "ElasticSearchLogging";
 
-		/// <summary>
-		/// Gets or sets the ElasticSearch nodes to which to log to.
-		/// </summary>
-		[Required]
-		public List<Uri> Nodes { get; set; } = new();
+	/// <summary>
+	/// Gets or sets the ElasticSearch nodes to which to log to.
+	/// </summary>
+	[Required]
+	public List<Uri> Nodes { get; set; } = new();
 
-		/// <summary>
-		/// Gets or sets the username to use for basic authentication.
-		/// </summary>
-		[Required]
-		public string Username { get; set; } = string.Empty;
+	/// <summary>
+	/// Gets or sets the username to use for basic authentication.
+	/// </summary>
+	[Required]
+	public string Username { get; set; } = string.Empty;
 
-		/// <summary>
-		/// Gets or sets the password to use for basic authentication.
-		/// </summary>
-		[Required]
-		public string Password { get; set; } = string.Empty;
-	}
+	/// <summary>
+	/// Gets or sets the password to use for basic authentication.
+	/// </summary>
+	[Required]
+	public string Password { get; set; } = string.Empty;
 }

@@ -15,226 +15,225 @@ using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+
+/// <summary>
+/// An implementation of <see cref="IGnomeshadeClient"/> for use during design time.
+/// </summary>
+public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 {
-	/// <summary>
-	/// An implementation of <see cref="IGnomeshadeClient"/> for use during design time.
-	/// </summary>
-	public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
+	private static readonly List<Currency> _currencies;
+	private static readonly List<Account> _accounts;
+	private static readonly List<Unit> _units;
+	private static readonly List<Product> _products;
+	private static readonly List<Transaction> _transactions;
+
+	static DesignTimeGnomeshadeClient()
 	{
-		private static readonly List<Currency> _currencies;
-		private static readonly List<Account> _accounts;
-		private static readonly List<Unit> _units;
-		private static readonly List<Product> _products;
-		private static readonly List<Transaction> _transactions;
+		var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
+		var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
+		_currencies = new() { euro, usd };
 
-		static DesignTimeGnomeshadeClient()
+		var cash = new Account
 		{
-			var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
-			var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
-			_currencies = new() { euro, usd };
+			Id = Guid.NewGuid(),
+			Name = "Cash",
+			PreferredCurrency = euro,
+			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
+		};
+		var spending = new Account
+		{
+			Id = Guid.NewGuid(),
+			Name = "Spending",
+			PreferredCurrency = euro,
+			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
+		};
+		_accounts = new() { cash, spending };
 
-			var cash = new Account
+		var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
+		_units = new() { kilogram };
+
+		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
+		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
+		_products = new() { bread, milk };
+
+		var transaction = new Transaction
+		{
+			Id = Guid.Empty,
+			Date = DateTimeOffset.Now,
+			Description = "Some transaction description",
+			Items = new()
 			{
-				Id = Guid.NewGuid(),
-				Name = "Cash",
-				PreferredCurrency = euro,
-				Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
-			};
-			var spending = new Account
-			{
-				Id = Guid.NewGuid(),
-				Name = "Spending",
-				PreferredCurrency = euro,
-				Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
-			};
-			_accounts = new() { cash, spending };
-
-			var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
-			_units = new() { kilogram };
-
-			var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
-			var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
-			_products = new() { bread, milk };
-
-			var transaction = new Transaction
-			{
-				Id = Guid.Empty,
-				Date = DateTimeOffset.Now,
-				Description = "Some transaction description",
-				Items = new()
+				new()
 				{
-					new()
-					{
-						Id = Guid.NewGuid(),
-						TransactionId = Guid.Empty,
-						SourceAmount = 125.35m,
-						TargetAmount = 125.35m,
-						SourceAccountId = spending.Currencies.Single().Id,
-						TargetAccountId = cash.Currencies.Single().Id,
-						Product = bread,
-						Amount = 1,
-					},
-					new()
-					{
-						Id = Guid.NewGuid(),
-						TransactionId = Guid.Empty,
-						SourceAmount = 1.95m,
-						TargetAmount = 1.95m,
-						SourceAccountId = spending.Currencies.Single().Id,
-						TargetAccountId = cash.Currencies.Single().Id,
-						Product = milk,
-						Amount = 2,
-					},
+					Id = Guid.NewGuid(),
+					TransactionId = Guid.Empty,
+					SourceAmount = 125.35m,
+					TargetAmount = 125.35m,
+					SourceAccountId = spending.Currencies.Single().Id,
+					TargetAccountId = cash.Currencies.Single().Id,
+					Product = bread,
+					Amount = 1,
 				},
-			};
-
-			_transactions = new() { transaction };
-		}
-
-		/// <inheritdoc />
-		public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task SocialRegister(string accessToken) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task LogOutAsync() => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
-			throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
-			throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
-		{
-			var transactionWithItem = _transactions.Single(t => t.Id == transactionId);
-			if (item.Id is not null)
-			{
-				var existingItem = transactionWithItem.Items.SingleOrDefault(i => i.Id == item.Id.Value);
-				if (existingItem is not null)
+				new()
 				{
-					transactionWithItem.Items.Remove(existingItem);
-				}
-			}
+					Id = Guid.NewGuid(),
+					TransactionId = Guid.Empty,
+					SourceAmount = 1.95m,
+					TargetAmount = 1.95m,
+					SourceAccountId = spending.Currencies.Single().Id,
+					TargetAccountId = cash.Currencies.Single().Id,
+					Product = milk,
+					Amount = 2,
+				},
+			},
+		};
 
-			var itemModel = new TransactionItem
-			{
-				Id = Guid.NewGuid(),
-				TransactionId = transactionWithItem.Id,
-				SourceAccountId = item.SourceAccountId!.Value,
-				TargetAccountId = item.TargetAccountId!.Value,
-				Product = _products.Single(p => p.Id == item.ProductId),
-			};
-
-			transactionWithItem.Items.Add(itemModel);
-			return Task.FromResult(itemModel.Id);
-		}
-
-		/// <inheritdoc />
-		public Task<Transaction> GetTransactionAsync(Guid id)
-		{
-			return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
-		}
-
-		/// <inheritdoc />
-		public Task<TransactionItem> GetTransactionItemAsync(Guid id)
-		{
-			var selectedItem = _transactions
-				.SelectMany(transaction => transaction.Items)
-				.Single(item => item.Id == id);
-
-			return Task.FromResult(selectedItem);
-		}
-
-		/// <inheritdoc />
-		public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
-		{
-			return Task.FromResult(_transactions.ToList());
-		}
-
-		/// <inheritdoc />
-		public Task DeleteTransactionAsync(Guid id)
-		{
-			_transactions.Remove(_transactions.Single(transaction => transaction.Id == id));
-			return Task.CompletedTask;
-		}
-
-		/// <inheritdoc />
-		public Task DeleteTransactionItemAsync(Guid id)
-		{
-			var transactionWithItem = _transactions.Single(t => t.Items.Select(item => item.Id).Contains(id));
-			transactionWithItem.Items.Remove(transactionWithItem.Items.Single(item => item.Id == id));
-			return Task.CompletedTask;
-		}
-
-		/// <inheritdoc />
-		public Task<Account> GetAccountAsync(Guid id)
-		{
-			return Task.FromResult(_accounts.Single(account => account.Id == id));
-		}
-
-		/// <inheritdoc />
-		public Task<Account?> FindAccountAsync(string name)
-		{
-			var foundAccount = _accounts.SingleOrDefault(account => account.Name.ToUpperInvariant() == name);
-			return Task.FromResult(foundAccount);
-		}
-
-		/// <inheritdoc />
-		public Task<List<Account>> GetAccountsAsync()
-		{
-			return Task.FromResult(_accounts.ToList());
-		}
-
-		/// <inheritdoc />
-		public Task<List<Account>> GetActiveAccountsAsync()
-		{
-			return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
-		}
-
-		/// <inheritdoc />
-		public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
-			throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<List<Currency>> GetCurrenciesAsync()
-		{
-			return Task.FromResult(_currencies.ToList());
-		}
-
-		/// <inheritdoc />
-		public Task<List<Product>> GetProductsAsync()
-		{
-			return Task.FromResult(_products.ToList());
-		}
-
-		/// <inheritdoc />
-		public Task<Product> GetProductAsync(Guid id) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<List<Unit>> GetUnitsAsync()
-		{
-			return Task.FromResult(_units.ToList());
-		}
-
-		/// <inheritdoc />
-		public Task<Guid> PutProductAsync(ProductCreationModel product) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();
-
-		/// <inheritdoc />
-		public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
+		_transactions = new() { transaction };
 	}
+
+	/// <inheritdoc />
+	public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task SocialRegister(string accessToken) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task LogOutAsync() => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
+	{
+		var transactionWithItem = _transactions.Single(t => t.Id == transactionId);
+		if (item.Id is not null)
+		{
+			var existingItem = transactionWithItem.Items.SingleOrDefault(i => i.Id == item.Id.Value);
+			if (existingItem is not null)
+			{
+				transactionWithItem.Items.Remove(existingItem);
+			}
+		}
+
+		var itemModel = new TransactionItem
+		{
+			Id = Guid.NewGuid(),
+			TransactionId = transactionWithItem.Id,
+			SourceAccountId = item.SourceAccountId!.Value,
+			TargetAccountId = item.TargetAccountId!.Value,
+			Product = _products.Single(p => p.Id == item.ProductId),
+		};
+
+		transactionWithItem.Items.Add(itemModel);
+		return Task.FromResult(itemModel.Id);
+	}
+
+	/// <inheritdoc />
+	public Task<Transaction> GetTransactionAsync(Guid id)
+	{
+		return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
+	}
+
+	/// <inheritdoc />
+	public Task<TransactionItem> GetTransactionItemAsync(Guid id)
+	{
+		var selectedItem = _transactions
+			.SelectMany(transaction => transaction.Items)
+			.Single(item => item.Id == id);
+
+		return Task.FromResult(selectedItem);
+	}
+
+	/// <inheritdoc />
+	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+	{
+		return Task.FromResult(_transactions.ToList());
+	}
+
+	/// <inheritdoc />
+	public Task DeleteTransactionAsync(Guid id)
+	{
+		_transactions.Remove(_transactions.Single(transaction => transaction.Id == id));
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public Task DeleteTransactionItemAsync(Guid id)
+	{
+		var transactionWithItem = _transactions.Single(t => t.Items.Select(item => item.Id).Contains(id));
+		transactionWithItem.Items.Remove(transactionWithItem.Items.Single(item => item.Id == id));
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public Task<Account> GetAccountAsync(Guid id)
+	{
+		return Task.FromResult(_accounts.Single(account => account.Id == id));
+	}
+
+	/// <inheritdoc />
+	public Task<Account?> FindAccountAsync(string name)
+	{
+		var foundAccount = _accounts.SingleOrDefault(account => account.Name.ToUpperInvariant() == name);
+		return Task.FromResult(foundAccount);
+	}
+
+	/// <inheritdoc />
+	public Task<List<Account>> GetAccountsAsync()
+	{
+		return Task.FromResult(_accounts.ToList());
+	}
+
+	/// <inheritdoc />
+	public Task<List<Account>> GetActiveAccountsAsync()
+	{
+		return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
+	}
+
+	/// <inheritdoc />
+	public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Currency>> GetCurrenciesAsync()
+	{
+		return Task.FromResult(_currencies.ToList());
+	}
+
+	/// <inheritdoc />
+	public Task<List<Product>> GetProductsAsync()
+	{
+		return Task.FromResult(_products.ToList());
+	}
+
+	/// <inheritdoc />
+	public Task<Product> GetProductAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Unit>> GetUnitsAsync()
+	{
+		return Task.FromResult(_units.ToList());
+	}
+
+	/// <inheritdoc />
+	public Task<Guid> PutProductAsync(ProductCreationModel product) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 }

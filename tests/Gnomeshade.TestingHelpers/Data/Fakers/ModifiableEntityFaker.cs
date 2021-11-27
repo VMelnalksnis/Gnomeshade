@@ -9,24 +9,23 @@ using Bogus;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers
-{
-	public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
-		where TEntity : class, IModifiableEntity, IOwnableEntity
-	{
-		protected ModifiableEntityFaker(Guid userId)
-		{
-			RuleFor(entity => entity.OwnerId, userId);
-			RuleFor(entity => entity.CreatedByUserId, userId);
-			RuleFor(entity => entity.ModifiedByUserId, userId);
-		}
+namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-		/// <inheritdoc />
-		public sealed override Faker<TEntity> RuleFor<TProperty>(
-			Expression<Func<TEntity, TProperty>> property,
-			TProperty value)
-		{
-			return base.RuleFor(property, value);
-		}
+public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
+	where TEntity : class, IModifiableEntity, IOwnableEntity
+{
+	protected ModifiableEntityFaker(Guid userId)
+	{
+		RuleFor(entity => entity.OwnerId, userId);
+		RuleFor(entity => entity.CreatedByUserId, userId);
+		RuleFor(entity => entity.ModifiedByUserId, userId);
+	}
+
+	/// <inheritdoc />
+	public sealed override Faker<TEntity> RuleFor<TProperty>(
+		Expression<Func<TEntity, TProperty>> property,
+		TProperty value)
+	{
+		return base.RuleFor(property, value);
 	}
 }

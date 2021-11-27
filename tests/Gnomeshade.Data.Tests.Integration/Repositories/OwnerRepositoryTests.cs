@@ -12,39 +12,38 @@ using Gnomeshade.Data.Repositories;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Data.Tests.Integration.Repositories
+namespace Gnomeshade.Data.Tests.Integration.Repositories;
+
+public class OwnerRepositoryTests : IDisposable
 {
-	public class OwnerRepositoryTests : IDisposable
+	private IDbConnection _dbConnection = null!;
+	private OwnerRepository _ownerRepository = null!;
+
+	[SetUp]
+	public async Task SetUpAsync()
 	{
-		private IDbConnection _dbConnection = null!;
-		private OwnerRepository _ownerRepository = null!;
+		_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
+		_ownerRepository = new(_dbConnection);
+	}
 
-		[SetUp]
-		public async Task SetUpAsync()
-		{
-			_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
-			_ownerRepository = new(_dbConnection);
-		}
+	[TearDown]
+	public void Dispose()
+	{
+		_dbConnection.Dispose();
+		_ownerRepository.Dispose();
+	}
 
-		[TearDown]
-		public void Dispose()
-		{
-			_dbConnection.Dispose();
-			_ownerRepository.Dispose();
-		}
+	[Test]
+	public async Task AddAsync_ShouldGenerateGuid()
+	{
+		var id = await _ownerRepository.AddAsync();
+		id.Should().NotBe(Guid.Empty);
+	}
 
-		[Test]
-		public async Task AddAsync_ShouldGenerateGuid()
-		{
-			var id = await _ownerRepository.AddAsync();
-			id.Should().NotBe(Guid.Empty);
-		}
-
-		[Test]
-		public async Task GetAllAsync()
-		{
-			var owners = await _ownerRepository.GetAllAsync();
-			owners.Should().OnlyHaveUniqueItems();
-		}
+	[Test]
+	public async Task GetAllAsync()
+	{
+		var owners = await _ownerRepository.GetAllAsync();
+		owners.Should().OnlyHaveUniqueItems();
 	}
 }

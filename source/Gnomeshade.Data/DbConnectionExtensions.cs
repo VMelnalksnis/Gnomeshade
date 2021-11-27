@@ -4,23 +4,22 @@
 
 using System.Data;
 
-namespace Gnomeshade.Data
+namespace Gnomeshade.Data;
+
+internal static class DbConnectionExtensions
 {
-	internal static class DbConnectionExtensions
+	internal static IDbTransaction OpenAndBeginTransaction(this IDbConnection dbConnection)
 	{
-		internal static IDbTransaction OpenAndBeginTransaction(this IDbConnection dbConnection)
+		if (dbConnection.State.IsNotOpen())
 		{
-			if (dbConnection.State.IsNotOpen())
-			{
-				dbConnection.Open();
-			}
-
-			return dbConnection.BeginTransaction();
+			dbConnection.Open();
 		}
 
-		private static bool IsNotOpen(this ConnectionState connectionState)
-		{
-			return (connectionState & ConnectionState.Open) != ConnectionState.Open;
-		}
+		return dbConnection.BeginTransaction();
+	}
+
+	private static bool IsNotOpen(this ConnectionState connectionState)
+	{
+		return (connectionState & ConnectionState.Open) != ConnectionState.Open;
 	}
 }

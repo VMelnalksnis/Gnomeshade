@@ -6,10 +6,9 @@ using System;
 
 using Bogus.DataSets;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers
+namespace Gnomeshade.TestingHelpers.Data.Fakers;
+
+internal static class DateExtensions
 {
-	internal static class DateExtensions
-	{
-		internal static DateTimeOffset RecentUtc(this Date date) => new(date.Recent(1, DateTime.UtcNow), TimeSpan.Zero);
-	}
+	internal static DateTimeOffset RecentUtc(this Date date) => new(date.Recent(1, DateTime.UtcNow), TimeSpan.Zero);
 }

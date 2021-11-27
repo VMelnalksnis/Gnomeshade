@@ -16,40 +16,39 @@ using Npgsql.Logging;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Data.Tests.Integration
+namespace Gnomeshade.Data.Tests.Integration;
+
+[SetUpFixture]
+public class DatabaseInitialization
 {
-	[SetUpFixture]
-	public class DatabaseInitialization
+	private static readonly IConfiguration _configuration =
+		new ConfigurationBuilder()
+			.AddUserSecrets<DatabaseInitialization>(true, true)
+			.AddEnvironmentVariables()
+			.Build();
+
+	private static readonly PostgresInitializer _initializer = new(_configuration);
+
+	public static UserEntity TestUser { get; private set; } = null!;
+
+	public static async Task<NpgsqlConnection> CreateConnectionAsync()
 	{
-		private static readonly IConfiguration _configuration =
-			new ConfigurationBuilder()
-				.AddUserSecrets<DatabaseInitialization>(true, true)
-				.AddEnvironmentVariables()
-				.Build();
+		return await _initializer.CreateConnectionAsync();
+	}
 
-		private static readonly PostgresInitializer _initializer = new(_configuration);
+	[OneTimeSetUp]
+	public static async Task SetupDatabaseAsync()
+	{
+		AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<AccountEntity>());
+		NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
+		NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
-		public static UserEntity TestUser { get; private set; } = null!;
+		TestUser = await _initializer.SetupDatabaseAsync();
+	}
 
-		public static async Task<NpgsqlConnection> CreateConnectionAsync()
-		{
-			return await _initializer.CreateConnectionAsync();
-		}
-
-		[OneTimeSetUp]
-		public static async Task SetupDatabaseAsync()
-		{
-			AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<AccountEntity>());
-			NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
-			NpgsqlLogManager.IsParameterLoggingEnabled = true;
-
-			TestUser = await _initializer.SetupDatabaseAsync();
-		}
-
-		[OneTimeTearDown]
-		public static async Task DropDatabaseAsync()
-		{
-			await _initializer.DropDatabaseAsync();
-		}
+	[OneTimeTearDown]
+	public static async Task DropDatabaseAsync()
+	{
+		await _initializer.DropDatabaseAsync();
 	}
 }

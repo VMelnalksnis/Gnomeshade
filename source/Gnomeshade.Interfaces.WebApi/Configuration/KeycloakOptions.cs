@@ -7,32 +7,31 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Configuration
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
+
+[UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
+public sealed class KeycloakOptions
 {
-	[UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
-	public sealed class KeycloakOptions
-	{
-		public const string SectionName = "Keycloak";
+	public const string SectionName = "Keycloak";
 
-		[Required]
-		public Uri ServerRealm { get; set; } = null!;
+	[Required]
+	public Uri ServerRealm { get; set; } = null!;
 
-		[Required]
-		public Uri Metadata { get; set; } = null!;
+	[Required]
+	public Uri Metadata { get; set; } = null!;
 
-		[Required]
-		public string ClientId { get; set; } = null!;
+	[Required]
+	public string ClientId { get; set; } = null!;
 
-		[Required]
-		public string ClientSecret { get; set; } = null!;
+	[Required]
+	public string ClientSecret { get; set; } = null!;
 
-		[Required]
-		public string CookieName { get; set; } = "keycloak.cookie";
+	[Required]
+	public string CookieName { get; set; } = "keycloak.cookie";
 
-		[Required]
-		public string RemoteSignOutPath { get; set; } = "/protocol/openid-connect/logout";
+	[Required]
+	public string RemoteSignOutPath { get; set; } = "/protocol/openid-connect/logout";
 
-		[Required]
-		public string SignedOutRedirectUri { get; set; } = "/swagger";
-	}
+	[Required]
+	public string SignedOutRedirectUri { get; set; } = "/swagger";
 }

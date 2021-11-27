@@ -7,34 +7,33 @@ using System.Linq.Expressions;
 
 using FluentAssertions.Equivalency;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0
+namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0;
+
+public static class FluentAssertionsExtensions
 {
-	public static class FluentAssertionsExtensions
+	public static EquivalencyAssertionOptions<TExpectation> ByMembers<TExpectation, TActual>(
+		this EquivalencyAssertionOptions<TExpectation> options)
 	{
-		public static EquivalencyAssertionOptions<TExpectation> ByMembers<TExpectation, TActual>(
-			this EquivalencyAssertionOptions<TExpectation> options)
+		return options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>();
+	}
+
+	public static EquivalencyAssertionOptions<TExpectation> ByMembersExcluding<TExpectation, TActual>(
+		this EquivalencyAssertionOptions<TExpectation> options,
+		Expression<Func<TExpectation, object?>> excluding)
+	{
+		return options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>().Excluding(excluding);
+	}
+
+	public static EquivalencyAssertionOptions<TExpectation> ByMembersExcluding<TExpectation, TActual>(
+		this EquivalencyAssertionOptions<TExpectation> options,
+		params Expression<Func<TExpectation, object?>>[] excluding)
+	{
+		options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>();
+		foreach (var expression in excluding)
 		{
-			return options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>();
+			options.Excluding(expression);
 		}
 
-		public static EquivalencyAssertionOptions<TExpectation> ByMembersExcluding<TExpectation, TActual>(
-			this EquivalencyAssertionOptions<TExpectation> options,
-			Expression<Func<TExpectation, object?>> excluding)
-		{
-			return options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>().Excluding(excluding);
-		}
-
-		public static EquivalencyAssertionOptions<TExpectation> ByMembersExcluding<TExpectation, TActual>(
-			this EquivalencyAssertionOptions<TExpectation> options,
-			params Expression<Func<TExpectation, object?>>[] excluding)
-		{
-			options.ComparingByMembers<TExpectation>().ComparingByMembers<TActual>();
-			foreach (var expression in excluding)
-			{
-				options.Excluding(expression);
-			}
-
-			return options;
-		}
+		return options;
 	}
 }

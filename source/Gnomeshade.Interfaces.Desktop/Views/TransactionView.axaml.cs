@@ -5,19 +5,18 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Gnomeshade.Interfaces.Desktop.Views
+namespace Gnomeshade.Interfaces.Desktop.Views;
+
+/// <summary>
+/// An overview of all transactions.
+/// </summary>
+public sealed class TransactionView : UserControl
 {
 	/// <summary>
-	/// An overview of all transactions.
+	/// Initializes a new instance of the <see cref="TransactionView"/> class.
 	/// </summary>
-	public sealed class TransactionView : UserControl
+	public TransactionView()
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionView"/> class.
-		/// </summary>
-		public TransactionView()
-		{
-			AvaloniaXamlLoader.Load(this);
-		}
+		AvaloniaXamlLoader.Load(this);
 	}
 }

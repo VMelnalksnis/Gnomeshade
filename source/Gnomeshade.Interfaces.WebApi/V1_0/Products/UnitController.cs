@@ -21,56 +21,55 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Products
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
+
+[SuppressMessage(
+	"ReSharper",
+	"AsyncConverter.ConfigureAwaitHighlighting",
+	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
+public sealed class UnitController : FinanceControllerBase<UnitEntity, Unit>
 {
-	[SuppressMessage(
-		"ReSharper",
-		"AsyncConverter.ConfigureAwaitHighlighting",
-		Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-	public sealed class UnitController : FinanceControllerBase<UnitEntity, Unit>
+	private readonly UnitRepository _repository;
+
+	public UnitController(
+		UnitRepository repository,
+		ApplicationUserContext applicationUserContext,
+		Mapper mapper)
+		: base(applicationUserContext, mapper)
 	{
-		private readonly UnitRepository _repository;
+		_repository = repository;
+	}
 
-		public UnitController(
-			UnitRepository repository,
-			ApplicationUserContext applicationUserContext,
-			Mapper mapper)
-			: base(applicationUserContext, mapper)
+	[HttpGet("{id:guid}")]
+	[ProducesResponseType(Status200OK)]
+	[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
+	public async Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken)
+	{
+		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
+	}
+
+	[HttpGet]
+	[ProducesResponseType(Status200OK)]
+	public async Task<ActionResult<List<Unit>>> GetAll(CancellationToken cancellationToken)
+	{
+		var units = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var models = units.Select(MapToModel).ToList();
+		return Ok(models);
+	}
+
+	[HttpPost]
+	[ProducesResponseType(Status201Created)]
+	public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] UnitCreationModel creationModel)
+	{
+		var unit = Mapper.Map<UnitEntity>(creationModel) with
 		{
-			_repository = repository;
-		}
+			OwnerId = ApplicationUser.Id,
+			CreatedByUserId = ApplicationUser.Id,
+			ModifiedByUserId = ApplicationUser.Id,
+			NormalizedName = creationModel.Name!.ToUpperInvariant(),
+		};
 
-		[HttpGet("{id:guid}")]
-		[ProducesResponseType(Status200OK)]
-		[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-		public async Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken)
-		{
-			return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
-		}
-
-		[HttpGet]
-		[ProducesResponseType(Status200OK)]
-		public async Task<ActionResult<List<Unit>>> GetAll(CancellationToken cancellationToken)
-		{
-			var units = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-			var models = units.Select(MapToModel).ToList();
-			return Ok(models);
-		}
-
-		[HttpPost]
-		[ProducesResponseType(Status201Created)]
-		public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] UnitCreationModel creationModel)
-		{
-			var unit = Mapper.Map<UnitEntity>(creationModel) with
-			{
-				OwnerId = ApplicationUser.Id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-				NormalizedName = creationModel.Name!.ToUpperInvariant(),
-			};
-
-			var id = await _repository.AddAsync(unit);
-			return CreatedAtAction(nameof(Get), new { id }, id);
-		}
+		var id = await _repository.AddAsync(unit);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

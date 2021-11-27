@@ -9,28 +9,27 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop
+namespace Gnomeshade.Interfaces.Desktop;
+
+internal static class Program
 {
-	internal static class Program
+	// Initialization code. Don't use any Avalonia, third-party APIs or any
+	// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
+	// yet and stuff might break.
+	public static void Main(string[] args)
 	{
-		// Initialization code. Don't use any Avalonia, third-party APIs or any
-		// SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-		// yet and stuff might break.
-		public static void Main(string[] args)
-		{
-			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-		}
+		BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+	}
 
-		[UsedImplicitly]
-		public static AppBuilder BuildAvaloniaApp()
-		{
-			DesignTimeData.ForceAssembliesToLoad();
+	[UsedImplicitly]
+	public static AppBuilder BuildAvaloniaApp()
+	{
+		DesignTimeData.ForceAssembliesToLoad();
 
-			return
-				AppBuilder
-					.Configure<App>()
-					.UsePlatformDetect()
-					.LogToTrace(LogEventLevel.Debug);
-		}
+		return
+			AppBuilder
+				.Configure<App>()
+				.UsePlatformDetect()
+				.LogToTrace(LogEventLevel.Debug);
 	}
 }

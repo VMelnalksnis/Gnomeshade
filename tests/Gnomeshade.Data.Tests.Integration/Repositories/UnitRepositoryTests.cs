@@ -14,81 +14,80 @@ using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
-namespace Gnomeshade.Data.Tests.Integration.Repositories
+namespace Gnomeshade.Data.Tests.Integration.Repositories;
+
+public class UnitRepositoryTests
 {
-	public class UnitRepositoryTests
+	private IDbConnection _dbConnection = null!;
+	private UnitRepository _repository = null!;
+
+	[SetUp]
+	public async Task SetUpAsync()
 	{
-		private IDbConnection _dbConnection = null!;
-		private UnitRepository _repository = null!;
+		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		_repository = new(_dbConnection);
+	}
 
-		[SetUp]
-		public async Task SetUpAsync()
+	[TearDown]
+	public void Dispose()
+	{
+		_dbConnection.Dispose();
+		_repository.Dispose();
+	}
+
+	[Test]
+	public async Task AddGetDelete_WithoutTransaction()
+	{
+		var unitToAdd = new UnitFaker(TestUser).Generate();
+
+		var id = await _repository.AddAsync(unitToAdd);
+		var getUnit = await _repository.GetByIdAsync(id, TestUser.Id);
+		var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id);
+		var allUnits = await _repository.GetAllAsync(TestUser.Id);
+
+		var expectedUnit = unitToAdd with
 		{
-			_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-			_repository = new(_dbConnection);
-		}
+			Id = id,
+			CreatedAt = getUnit.CreatedAt,
+			ModifiedAt = getUnit.ModifiedAt,
+		};
 
-		[TearDown]
-		public void Dispose()
+		getUnit.Should().BeEquivalentTo(expectedUnit);
+		findUnit.Should().BeEquivalentTo(expectedUnit);
+		allUnits.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedUnit);
+
+		await _repository.DeleteAsync(id, TestUser.Id);
+
+		var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
+		afterDelete.Should().BeNull();
+	}
+
+	[Test]
+	public async Task AddGetDelete_WithTransaction()
+	{
+		var unitFaker = new UnitFaker(TestUser);
+		using var dbTransaction = _dbConnection.BeginTransaction();
+
+		var parentUnit = unitFaker.Generate();
+		var parentUnitId = await _repository.AddAsync(parentUnit, dbTransaction);
+
+		var childUnit = unitFaker.GenerateUnique(parentUnit) with { ParentUnitId = parentUnitId, Multiplier = 1 };
+		var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
+
+		dbTransaction.Commit();
+
+		var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id);
+		var expectedUnit = childUnit with
 		{
-			_dbConnection.Dispose();
-			_repository.Dispose();
-		}
+			Id = childUnitId,
+			CreatedAt = getUnit.CreatedAt,
+			ModifiedAt = getUnit.ModifiedAt,
+			ParentUnitId = parentUnitId,
+		};
 
-		[Test]
-		public async Task AddGetDelete_WithoutTransaction()
-		{
-			var unitToAdd = new UnitFaker(TestUser).Generate();
+		getUnit.Should().BeEquivalentTo(expectedUnit);
 
-			var id = await _repository.AddAsync(unitToAdd);
-			var getUnit = await _repository.GetByIdAsync(id, TestUser.Id);
-			var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id);
-			var allUnits = await _repository.GetAllAsync(TestUser.Id);
-
-			var expectedUnit = unitToAdd with
-			{
-				Id = id,
-				CreatedAt = getUnit.CreatedAt,
-				ModifiedAt = getUnit.ModifiedAt,
-			};
-
-			getUnit.Should().BeEquivalentTo(expectedUnit);
-			findUnit.Should().BeEquivalentTo(expectedUnit);
-			allUnits.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedUnit);
-
-			await _repository.DeleteAsync(id, TestUser.Id);
-
-			var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
-			afterDelete.Should().BeNull();
-		}
-
-		[Test]
-		public async Task AddGetDelete_WithTransaction()
-		{
-			var unitFaker = new UnitFaker(TestUser);
-			using var dbTransaction = _dbConnection.BeginTransaction();
-
-			var parentUnit = unitFaker.Generate();
-			var parentUnitId = await _repository.AddAsync(parentUnit, dbTransaction);
-
-			var childUnit = unitFaker.GenerateUnique(parentUnit) with { ParentUnitId = parentUnitId, Multiplier = 1 };
-			var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
-
-			dbTransaction.Commit();
-
-			var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id);
-			var expectedUnit = childUnit with
-			{
-				Id = childUnitId,
-				CreatedAt = getUnit.CreatedAt,
-				ModifiedAt = getUnit.ModifiedAt,
-				ParentUnitId = parentUnitId,
-			};
-
-			getUnit.Should().BeEquivalentTo(expectedUnit);
-
-			await _repository.DeleteAsync(childUnitId, TestUser.Id);
-			await _repository.DeleteAsync(parentUnitId, TestUser.Id);
-		}
+		await _repository.DeleteAsync(childUnitId, TestUser.Id);
+		await _repository.DeleteAsync(parentUnitId, TestUser.Id);
 	}
 }

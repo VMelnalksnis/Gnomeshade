@@ -4,12 +4,11 @@
 
 using System.Net;
 
-namespace Gnomeshade.Interfaces.WebApi.Client
-{
-	/// <summary>
-	/// Indicates a failed login.
-	/// </summary>
-	/// <param name="StatusCode">The response status code.</param>
-	/// <param name="Message">Message describing the failure reason.</param>
-	public sealed record FailedLogin(HttpStatusCode? StatusCode, string Message) : LoginResult;
-}
+namespace Gnomeshade.Interfaces.WebApi.Client;
+
+/// <summary>
+/// Indicates a failed login.
+/// </summary>
+/// <param name="StatusCode">The response status code.</param>
+/// <param name="Message">Message describing the failure reason.</param>
+public sealed record FailedLogin(HttpStatusCode? StatusCode, string Message) : LoginResult;

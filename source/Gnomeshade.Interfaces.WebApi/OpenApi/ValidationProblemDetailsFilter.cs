@@ -10,48 +10,47 @@ using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Gnomeshade.Interfaces.WebApi.OpenApi
+namespace Gnomeshade.Interfaces.WebApi.OpenApi;
+
+public sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
 {
-	public sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
+	/// <inheritdoc/>
+	void ISchemaFilter.Apply(OpenApiSchema swaggerDoc, SchemaFilterContext context)
 	{
-		/// <inheritdoc/>
-		void ISchemaFilter.Apply(OpenApiSchema swaggerDoc, SchemaFilterContext context)
+		context.SchemaGenerator.GenerateSchema(typeof(ValidationProblemDetails), context.SchemaRepository);
+	}
+
+	/// <inheritdoc/>
+	void IOperationFilter.Apply(OpenApiOperation operation, OperationFilterContext context)
+	{
+		var apiControllerAttributes =
+			context
+				.MethodInfo
+				.DeclaringType?
+				.GetCustomAttributes(true)
+				.OfType<ApiControllerAttribute>();
+
+		if (apiControllerAttributes is null ||
+			!apiControllerAttributes.Any() ||
+			(!operation.Parameters.Any() && !(operation.RequestBody?.Required ?? false)))
 		{
-			context.SchemaGenerator.GenerateSchema(typeof(ValidationProblemDetails), context.SchemaRepository);
+			return;
 		}
 
-		/// <inheritdoc/>
-		void IOperationFilter.Apply(OpenApiOperation operation, OperationFilterContext context)
-		{
-			var apiControllerAttributes =
-				context
-					.MethodInfo
-					.DeclaringType?
-					.GetCustomAttributes(true)
-					.OfType<ApiControllerAttribute>();
-
-			if (apiControllerAttributes is null ||
-				!apiControllerAttributes.Any() ||
-				(!operation.Parameters.Any() && !(operation.RequestBody?.Required ?? false)))
+		operation.Responses.Add(
+			"400",
+			new()
 			{
-				return;
-			}
-
-			operation.Responses.Add(
-				"400",
-				new()
+				Content = new Dictionary<string, OpenApiMediaType>
 				{
-					Content = new Dictionary<string, OpenApiMediaType>
 					{
+						"application/problem+json", new OpenApiMediaType
 						{
-							"application/problem+json", new OpenApiMediaType
-							{
-								Schema = context.SchemaRepository.Schemas[nameof(ValidationProblemDetails)],
-							}
-						},
+							Schema = context.SchemaRepository.Schemas[nameof(ValidationProblemDetails)],
+						}
 					},
-					Description = "Bad request",
-				});
-		}
+				},
+				Description = "Bad request",
+			});
 	}
 }

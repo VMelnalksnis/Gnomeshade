@@ -10,48 +10,47 @@ using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 
-namespace Gnomeshade.Interfaces.WebApi.Logging
+namespace Gnomeshade.Interfaces.WebApi.Logging;
+
+/// <summary>
+/// A <see cref="ILogger"/> wrapper for Npgsql.
+/// </summary>
+public sealed class SerilogNpgsqlLogger : NpgsqlLogger
 {
+	private readonly ILogger _logger;
+
 	/// <summary>
-	/// A <see cref="ILogger"/> wrapper for Npgsql.
+	/// Initializes a new instance of the <see cref="SerilogNpgsqlLogger"/> class.
 	/// </summary>
-	public sealed class SerilogNpgsqlLogger : NpgsqlLogger
+	/// <param name="logger">The logger to use for logging.</param>
+	public SerilogNpgsqlLogger(ILogger logger)
 	{
-		private readonly ILogger _logger;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="SerilogNpgsqlLogger"/> class.
-		/// </summary>
-		/// <param name="logger">The logger to use for logging.</param>
-		public SerilogNpgsqlLogger(ILogger logger)
-		{
-			_logger = logger;
-		}
-
-		/// <inheritdoc />
-		public override bool IsEnabled(NpgsqlLogLevel level)
-		{
-			var eventLevel = Translate(level);
-			return _logger.IsEnabled(eventLevel);
-		}
-
-		/// <inheritdoc />
-		public override void Log(NpgsqlLogLevel level, int connectorId, string msg, Exception? exception = null)
-		{
-			using var pushProperty = LogContext.PushProperty("Npgsql.ConnectorId", connectorId.ToString());
-			var eventLevel = Translate(level);
-			_logger.Write(eventLevel, exception, msg);
-		}
-
-		private static LogEventLevel Translate(NpgsqlLogLevel logLevel) => logLevel switch
-		{
-			NpgsqlLogLevel.Fatal => LogEventLevel.Fatal,
-			NpgsqlLogLevel.Error => LogEventLevel.Error,
-			NpgsqlLogLevel.Warn => LogEventLevel.Warning,
-			NpgsqlLogLevel.Info => LogEventLevel.Information,
-			NpgsqlLogLevel.Debug => LogEventLevel.Debug,
-			NpgsqlLogLevel.Trace => LogEventLevel.Verbose,
-			_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null),
-		};
+		_logger = logger;
 	}
+
+	/// <inheritdoc />
+	public override bool IsEnabled(NpgsqlLogLevel level)
+	{
+		var eventLevel = Translate(level);
+		return _logger.IsEnabled(eventLevel);
+	}
+
+	/// <inheritdoc />
+	public override void Log(NpgsqlLogLevel level, int connectorId, string msg, Exception? exception = null)
+	{
+		using var pushProperty = LogContext.PushProperty("Npgsql.ConnectorId", connectorId.ToString());
+		var eventLevel = Translate(level);
+		_logger.Write(eventLevel, exception, msg);
+	}
+
+	private static LogEventLevel Translate(NpgsqlLogLevel logLevel) => logLevel switch
+	{
+		NpgsqlLogLevel.Fatal => LogEventLevel.Fatal,
+		NpgsqlLogLevel.Error => LogEventLevel.Error,
+		NpgsqlLogLevel.Warn => LogEventLevel.Warning,
+		NpgsqlLogLevel.Info => LogEventLevel.Information,
+		NpgsqlLogLevel.Debug => LogEventLevel.Debug,
+		NpgsqlLogLevel.Trace => LogEventLevel.Verbose,
+		_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null),
+	};
 }

@@ -4,25 +4,24 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events
+namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+
+/// <summary>
+/// Event arguments for the <see cref="UnitCreationViewModel.UnitCreated"/> event.
+/// </summary>
+public sealed class UnitCreatedEventArgs : EventArgs
 {
 	/// <summary>
-	/// Event arguments for the <see cref="UnitCreationViewModel.UnitCreated"/> event.
+	/// Initializes a new instance of the <see cref="UnitCreatedEventArgs"/> class.
 	/// </summary>
-	public sealed class UnitCreatedEventArgs : EventArgs
+	/// <param name="unitId">The id of the unit what was created.</param>
+	public UnitCreatedEventArgs(Guid unitId)
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="UnitCreatedEventArgs"/> class.
-		/// </summary>
-		/// <param name="unitId">The id of the unit what was created.</param>
-		public UnitCreatedEventArgs(Guid unitId)
-		{
-			UnitId = unitId;
-		}
-
-		/// <summary>
-		/// Gets the id of the unit that was created.
-		/// </summary>
-		public Guid UnitId { get; }
+		UnitId = unitId;
 	}
+
+	/// <summary>
+	/// Gets the id of the unit that was created.
+	/// </summary>
+	public Guid UnitId { get; }
 }

@@ -6,27 +6,26 @@ using Gnomeshade.Data.Entities;
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
+
+/// <summary>
+/// Specifies that the class or method that this attribute is applied to requires access to
+/// the current application user <see cref="UserEntity"/>.
+/// </summary>
+/// <seealso cref="ApplicationUserContext"/>
+/// <seealso cref="ApplicationUserHandler"/>
+public sealed class AuthorizeApplicationUserAttribute : AuthorizeAttribute
 {
 	/// <summary>
-	/// Specifies that the class or method that this attribute is applied to requires access to
-	/// the current application user <see cref="UserEntity"/>.
+	/// The name of the application user authorization policy.
 	/// </summary>
-	/// <seealso cref="ApplicationUserContext"/>
-	/// <seealso cref="ApplicationUserHandler"/>
-	public sealed class AuthorizeApplicationUserAttribute : AuthorizeAttribute
-	{
-		/// <summary>
-		/// The name of the application user authorization policy.
-		/// </summary>
-		public const string PolicyName = nameof(AuthorizeApplicationUserAttribute);
+	public const string PolicyName = nameof(AuthorizeApplicationUserAttribute);
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="AuthorizeApplicationUserAttribute"/> class.
-		/// </summary>
-		public AuthorizeApplicationUserAttribute()
-			: base(PolicyName)
-		{
-		}
+	/// <summary>
+	/// Initializes a new instance of the <see cref="AuthorizeApplicationUserAttribute"/> class.
+	/// </summary>
+	public AuthorizeApplicationUserAttribute()
+		: base(PolicyName)
+	{
 	}
 }

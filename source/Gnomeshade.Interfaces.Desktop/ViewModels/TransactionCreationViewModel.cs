@@ -15,223 +15,222 @@ using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels
+namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+
+public class TransactionCreationViewModel : ViewModelBase<TransactionCreationView>
 {
-	public class TransactionCreationViewModel : ViewModelBase<TransactionCreationView>
+	private readonly IGnomeshadeClient _gnomeshadeClient;
+
+	private string? _description;
+	private DateTimeOffset? _date;
+	private TimeSpan? _time;
+	private TransactionItemCreationViewModel? _itemCreation;
+	private string? _errorMessage;
+	private TransactionItemCreationViewModel? _selectedItem;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
+	/// </summary>
+	/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
+	public TransactionCreationViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
-		private readonly IGnomeshadeClient _gnomeshadeClient;
+		_gnomeshadeClient = gnomeshadeClient;
 
-		private string? _description;
-		private DateTimeOffset? _date;
-		private TimeSpan? _time;
-		private TransactionItemCreationViewModel? _itemCreation;
-		private string? _errorMessage;
-		private TransactionItemCreationViewModel? _selectedItem;
+		Items = new();
+		Items.CollectionChanged += ItemsOnCollectionChanged;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionCreationViewModel"/> class.
-		/// </summary>
-		/// <param name="gnomeshadeClient">Finance API client for getting/saving data.</param>
-		public TransactionCreationViewModel(IGnomeshadeClient gnomeshadeClient)
+		Date = DateTimeOffset.Now;
+		Time = Date?.TimeOfDay;
+	}
+
+	/// <summary>
+	/// Raised when a new transaction has been successfully created.
+	/// </summary>
+	public event EventHandler<TransactionCreatedEventArgs>? TransactionCreated;
+
+	/// <summary>
+	/// Gets or sets the description of the transaction.
+	/// </summary>
+	public string? Description
+	{
+		get => _description;
+		set => SetAndNotify(ref _description, value, nameof(Description));
+	}
+
+	/// <summary>
+	/// Gets or sets the date on which the transaction was completed.
+	/// </summary>
+	public DateTimeOffset? Date
+	{
+		get => _date;
+		set => SetAndNotifyWithGuard(ref _date, value, nameof(Date), nameof(CanCreate));
+	}
+
+	/// <summary>
+	/// Gets or sets the time at which the transaction was completed.
+	/// </summary>
+	public TimeSpan? Time
+	{
+		get => _time;
+		set => SetAndNotifyWithGuard(ref _time, value, nameof(Time), nameof(CanCreate));
+	}
+
+	/// <summary>
+	/// Gets a collection of transaction items.
+	/// </summary>
+	public ObservableCollection<TransactionItemCreationViewModel> Items { get; }
+
+	/// <summary>
+	/// Gets or sets the selected item from <see cref="Items"/>.
+	/// </summary>
+	public TransactionItemCreationViewModel? SelectedItem
+	{
+		get => _selectedItem;
+		set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem));
+	}
+
+	/// <summary>
+	/// Gets a value indicating whether <see cref="Items"/> contains any item.
+	/// </summary>
+	public bool HasAnyItems => Items.Any();
+
+	/// <summary>
+	/// Gets a value indicating whether a transaction item can be deleted.
+	/// </summary>
+	public bool CanDeleteItem => SelectedItem is not null;
+
+	/// <summary>
+	/// Gets or sets the transaction item creation view model.
+	/// </summary>
+	public TransactionItemCreationViewModel? ItemCreation
+	{
+		get => _itemCreation;
+		set
 		{
-			_gnomeshadeClient = gnomeshadeClient;
+			SetAndNotifyWithGuard(
+				ref _itemCreation,
+				value,
+				nameof(ItemCreation),
+				nameof(CanDeleteItem),
+				nameof(CanAddItem));
 
-			Items = new();
-			Items.CollectionChanged += ItemsOnCollectionChanged;
-
-			Date = DateTimeOffset.Now;
-			Time = Date?.TimeOfDay;
-		}
-
-		/// <summary>
-		/// Raised when a new transaction has been successfully created.
-		/// </summary>
-		public event EventHandler<TransactionCreatedEventArgs>? TransactionCreated;
-
-		/// <summary>
-		/// Gets or sets the description of the transaction.
-		/// </summary>
-		public string? Description
-		{
-			get => _description;
-			set => SetAndNotify(ref _description, value, nameof(Description));
-		}
-
-		/// <summary>
-		/// Gets or sets the date on which the transaction was completed.
-		/// </summary>
-		public DateTimeOffset? Date
-		{
-			get => _date;
-			set => SetAndNotifyWithGuard(ref _date, value, nameof(Date), nameof(CanCreate));
-		}
-
-		/// <summary>
-		/// Gets or sets the time at which the transaction was completed.
-		/// </summary>
-		public TimeSpan? Time
-		{
-			get => _time;
-			set => SetAndNotifyWithGuard(ref _time, value, nameof(Time), nameof(CanCreate));
-		}
-
-		/// <summary>
-		/// Gets a collection of transaction items.
-		/// </summary>
-		public ObservableCollection<TransactionItemCreationViewModel> Items { get; }
-
-		/// <summary>
-		/// Gets or sets the selected item from <see cref="Items"/>.
-		/// </summary>
-		public TransactionItemCreationViewModel? SelectedItem
-		{
-			get => _selectedItem;
-			set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem));
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether <see cref="Items"/> contains any item.
-		/// </summary>
-		public bool HasAnyItems => Items.Any();
-
-		/// <summary>
-		/// Gets a value indicating whether a transaction item can be deleted.
-		/// </summary>
-		public bool CanDeleteItem => SelectedItem is not null;
-
-		/// <summary>
-		/// Gets or sets the transaction item creation view model.
-		/// </summary>
-		public TransactionItemCreationViewModel? ItemCreation
-		{
-			get => _itemCreation;
-			set
+			if (ItemCreation is not null)
 			{
-				SetAndNotifyWithGuard(
-					ref _itemCreation,
-					value,
-					nameof(ItemCreation),
-					nameof(CanDeleteItem),
-					nameof(CanAddItem));
-
-				if (ItemCreation is not null)
-				{
-					ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
-				}
+				ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
 			}
 		}
+	}
 
-		/// <summary>
-		/// Gets a value indicating whether a new transaction can be created with the given information.
-		/// </summary>
-		public bool CanCreate => Date.HasValue && Time.HasValue && Items.Any();
+	/// <summary>
+	/// Gets a value indicating whether a new transaction can be created with the given information.
+	/// </summary>
+	public bool CanCreate => Date.HasValue && Time.HasValue && Items.Any();
 
-		/// <summary>
-		/// Gets or sets the transaction creation error message.
-		/// </summary>
-		public string? ErrorMessage
+	/// <summary>
+	/// Gets or sets the transaction creation error message.
+	/// </summary>
+	public string? ErrorMessage
+	{
+		get => _errorMessage;
+		set => SetAndNotifyWithGuard(ref _errorMessage, value, nameof(ErrorMessage), nameof(IsErrorMessageVisible));
+	}
+
+	/// <summary>
+	/// Gets a value indicating whether the error message should be displayed.
+	/// </summary>
+	public bool IsErrorMessageVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+	/// <summary>
+	/// Gets a value indicating whether a transaction item can be added.
+	/// </summary>
+	public bool CanAddItem => ItemCreation?.CanCreate ?? true;
+
+	/// <summary>
+	/// Adds a transaction item with information from <see cref="ItemCreation"/> to <see cref="Items"/>.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task AddItemAsync()
+	{
+		var itemCreationModelTask = TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
+		if (ItemCreation is null)
 		{
-			get => _errorMessage;
-			set => SetAndNotifyWithGuard(ref _errorMessage, value, nameof(ErrorMessage), nameof(IsErrorMessageVisible));
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether the error message should be displayed.
-		/// </summary>
-		public bool IsErrorMessageVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
-
-		/// <summary>
-		/// Gets a value indicating whether a transaction item can be added.
-		/// </summary>
-		public bool CanAddItem => ItemCreation?.CanCreate ?? true;
-
-		/// <summary>
-		/// Adds a transaction item with information from <see cref="ItemCreation"/> to <see cref="Items"/>.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task AddItemAsync()
-		{
-			var itemCreationModelTask = TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
-			if (ItemCreation is null)
-			{
-				ItemCreation = await itemCreationModelTask;
-				return;
-			}
-
-			Items.Add(ItemCreation);
 			ItemCreation = await itemCreationModelTask;
+			return;
 		}
 
-		/// <summary>
-		/// Removes the <see cref="SelectedItem"/> from <see cref="Items"/>.
-		/// </summary>
-		public void DeleteItem()
+		Items.Add(ItemCreation);
+		ItemCreation = await itemCreationModelTask;
+	}
+
+	/// <summary>
+	/// Removes the <see cref="SelectedItem"/> from <see cref="Items"/>.
+	/// </summary>
+	public void DeleteItem()
+	{
+		if (SelectedItem is not null)
 		{
-			if (SelectedItem is not null)
-			{
-				Items.Remove(SelectedItem);
-			}
+			Items.Remove(SelectedItem);
 		}
+	}
 
-		/// <summary>
-		/// Attempts to create a new transaction with the given information.
-		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-		public async Task CreateTransactionAsync()
+	/// <summary>
+	/// Attempts to create a new transaction with the given information.
+	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task CreateTransactionAsync()
+	{
+		var date = Date.HasValue
+			? new DateTimeOffset(Date.Value.Date).Add(Time.GetValueOrDefault())
+			: default(DateTimeOffset?);
+
+		var transactionCreationModel = new TransactionCreationModel
 		{
-			var date = Date.HasValue
-				? new DateTimeOffset(Date.Value.Date).Add(Time.GetValueOrDefault())
-				: default(DateTimeOffset?);
+			Date = date,
+			Description = Description,
+			Items = Items.Select(item => new TransactionItemCreationModel
+			{
+				// todo currency not yet added to account
+				SourceAccountId = item.SourceAccount?.Currencies.Single(currency => item.SourceCurrency?.Id == currency.Currency.Id).Id,
+				SourceAmount = item.SourceAmount,
+				TargetAccountId = item.TargetAccount?.Currencies.Single(currency => item.TargetCurrency?.Id == currency.Currency.Id).Id,
+				TargetAmount = item.TargetAmount,
+				ProductId = item.Product?.Id,
+				Amount = item.Amount,
+				BankReference = string.IsNullOrWhiteSpace(item.BankReference) ? null : item.BankReference,
+				ExternalReference = string.IsNullOrWhiteSpace(item.ExternalReference) ? null : item.ExternalReference,
+				InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
+			}).ToList(),
+		};
 
-			var transactionCreationModel = new TransactionCreationModel
-			{
-				Date = date,
-				Description = Description,
-				Items = Items.Select(item => new TransactionItemCreationModel
-				{
-					// todo currency not yet added to account
-					SourceAccountId = item.SourceAccount?.Currencies.Single(currency => item.SourceCurrency?.Id == currency.Currency.Id).Id,
-					SourceAmount = item.SourceAmount,
-					TargetAccountId = item.TargetAccount?.Currencies.Single(currency => item.TargetCurrency?.Id == currency.Currency.Id).Id,
-					TargetAmount = item.TargetAmount,
-					ProductId = item.Product?.Id,
-					Amount = item.Amount,
-					BankReference = string.IsNullOrWhiteSpace(item.BankReference) ? null : item.BankReference,
-					ExternalReference = string.IsNullOrWhiteSpace(item.ExternalReference) ? null : item.ExternalReference,
-					InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
-				}).ToList(),
-			};
-
-			try
-			{
-				ErrorMessage = default;
-				var id = await _gnomeshadeClient.CreateTransactionAsync(transactionCreationModel).ConfigureAwait(false);
-				OnTransactionCreated(id);
-			}
-			catch (HttpRequestException httpException)
-			{
-				// todo descriptive error messages
-				ErrorMessage = httpException.Message;
-			}
+		try
+		{
+			ErrorMessage = default;
+			var id = await _gnomeshadeClient.CreateTransactionAsync(transactionCreationModel).ConfigureAwait(false);
+			OnTransactionCreated(id);
 		}
-
-		private void OnTransactionCreated(Guid id)
+		catch (HttpRequestException httpException)
 		{
-			TransactionCreated?.Invoke(this, new(id));
+			// todo descriptive error messages
+			ErrorMessage = httpException.Message;
 		}
+	}
 
-		private void ItemsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-		{
-			OnPropertyChanged(nameof(CanCreate));
-			OnPropertyChanged(nameof(HasAnyItems));
-		}
+	private void OnTransactionCreated(Guid id)
+	{
+		TransactionCreated?.Invoke(this, new(id));
+	}
 
-		private void ItemCreationOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private void ItemsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		OnPropertyChanged(nameof(CanCreate));
+		OnPropertyChanged(nameof(HasAnyItems));
+	}
+
+	private void ItemCreationOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(TransactionItemCreationViewModel.CanCreate))
 		{
-			if (e.PropertyName == nameof(TransactionItemCreationViewModel.CanCreate))
-			{
-				OnPropertyChanged(nameof(CanAddItem));
-			}
+			OnPropertyChanged(nameof(CanAddItem));
 		}
 	}
 }

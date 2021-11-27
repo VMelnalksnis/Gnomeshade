@@ -19,126 +19,125 @@ using Moq;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels
+namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels;
+
+public class TransactionViewModelTests
 {
-	public class TransactionViewModelTests
+	private Mock<IGnomeshadeClient> _gnomeshadeClientMock = null!;
+	private IGnomeshadeClient _gnomeshadeClient = null!;
+	private TransactionViewModel _viewModel = null!;
+
+	[OneTimeSetUp]
+	public void OneTimeSetUp()
 	{
-		private Mock<IGnomeshadeClient> _gnomeshadeClientMock = null!;
-		private IGnomeshadeClient _gnomeshadeClient = null!;
-		private TransactionViewModel _viewModel = null!;
+		var transactionId1 = Guid.NewGuid();
+		var transactionId2 = Guid.NewGuid();
 
-		[OneTimeSetUp]
-		public void OneTimeSetUp()
-		{
-			var transactionId1 = Guid.NewGuid();
-			var transactionId2 = Guid.NewGuid();
+		var accountId1 = Guid.NewGuid();
+		var accountId2 = Guid.NewGuid();
 
-			var accountId1 = Guid.NewGuid();
-			var accountId2 = Guid.NewGuid();
-
-			var mockClient = new Mock<IGnomeshadeClient>();
-			mockClient
-				.Setup(client => client.GetTransactionsAsync(It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
-				.ReturnsAsync(new List<Transaction>
+		var mockClient = new Mock<IGnomeshadeClient>();
+		mockClient
+			.Setup(client => client.GetTransactionsAsync(It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
+			.ReturnsAsync(new List<Transaction>
+			{
+				new()
 				{
-					new()
-					{
-						Id = transactionId1,
-						Items = new() { new() { SourceAccountId = accountId1, TargetAccountId = accountId2 } },
-					},
-					new()
-					{
-						Id = transactionId2,
-						Items = new() { new() { SourceAccountId = accountId2, TargetAccountId = accountId1 } },
-					},
-				});
-
-			mockClient
-				.Setup(client => client.GetAccountsAsync())
-				.ReturnsAsync(new List<Account>
+					Id = transactionId1,
+					Items = new() { new() { SourceAccountId = accountId1, TargetAccountId = accountId2 } },
+				},
+				new()
 				{
-					new() { Currencies = new() { new() { Id = accountId1 } } },
-					new() { Currencies = new() { new() { Id = accountId2 } } },
-				});
+					Id = transactionId2,
+					Items = new() { new() { SourceAccountId = accountId2, TargetAccountId = accountId1 } },
+				},
+			});
 
-			_gnomeshadeClientMock = mockClient;
-			_gnomeshadeClient = mockClient.Object;
-		}
+		mockClient
+			.Setup(client => client.GetAccountsAsync())
+			.ReturnsAsync(new List<Account>
+			{
+				new() { Currencies = new() { new() { Id = accountId1 } } },
+				new() { Currencies = new() { new() { Id = accountId2 } } },
+			});
 
-		[SetUp]
-		public async Task SetUpAsync()
-		{
-			_viewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
-		}
+		_gnomeshadeClientMock = mockClient;
+		_gnomeshadeClient = mockClient.Object;
+	}
 
-		[Test]
-		public void SelectAll_ShouldAffectAllTransactions()
+	[SetUp]
+	public async Task SetUpAsync()
+	{
+		_viewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
+	}
+
+	[Test]
+	public void SelectAll_ShouldAffectAllTransactions()
+	{
+		_viewModel.SelectAll.Should().BeFalse();
+		_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
+
+		_viewModel.SelectAll = true;
+		_viewModel.Transactions.Should().OnlyContain(transaction => transaction.Selected);
+
+		_viewModel.SelectAll = false;
+		_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
+	}
+
+	[Test]
+	public async Task SelectAll_ShouldResetAfterSearch()
+	{
+		_viewModel.SelectAll = true;
+
+		await _viewModel.SearchAsync();
+
+		using (new AssertionScope())
 		{
 			_viewModel.SelectAll.Should().BeFalse();
 			_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
-
-			_viewModel.SelectAll = true;
-			_viewModel.Transactions.Should().OnlyContain(transaction => transaction.Selected);
-
-			_viewModel.SelectAll = false;
-			_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
 		}
+	}
 
-		[Test]
-		public async Task SelectAll_ShouldResetAfterSearch()
+	[Test]
+	public void CanDelete_ShouldBeFalseWhenNoneSelected()
+	{
+		_viewModel.CanDelete.Should().BeFalse();
+
+		_viewModel.Transactions.First().Selected = true;
+
+		_viewModel.CanDelete.Should().BeTrue();
+	}
+
+	[Test]
+	public void CanDelete_ShouldBeNotifiedOfChange()
+	{
+		var canDeleteChanged = false;
+		_viewModel.PropertyChanged += (_, args) =>
 		{
-			_viewModel.SelectAll = true;
-
-			await _viewModel.SearchAsync();
-
-			using (new AssertionScope())
+			if (args.PropertyName == nameof(TransactionViewModel.CanDelete))
 			{
-				_viewModel.SelectAll.Should().BeFalse();
-				_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
+				canDeleteChanged = true;
 			}
-		}
+		};
 
-		[Test]
-		public void CanDelete_ShouldBeFalseWhenNoneSelected()
-		{
-			_viewModel.CanDelete.Should().BeFalse();
+		var firstTransaction = _viewModel.Transactions.First();
+		firstTransaction.Selected = !firstTransaction.Selected;
 
-			_viewModel.Transactions.First().Selected = true;
+		canDeleteChanged.Should().BeTrue();
+	}
 
-			_viewModel.CanDelete.Should().BeTrue();
-		}
+	[Test]
+	public async Task DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
+	{
+		var deletedIds = new List<Guid>();
+		_gnomeshadeClientMock
+			.Setup(client => client.DeleteTransactionAsync(It.IsAny<Guid>()))
+			.Callback<Guid>(id => deletedIds.Add(id));
 
-		[Test]
-		public void CanDelete_ShouldBeNotifiedOfChange()
-		{
-			var canDeleteChanged = false;
-			_viewModel.PropertyChanged += (_, args) =>
-			{
-				if (args.PropertyName == nameof(TransactionViewModel.CanDelete))
-				{
-					canDeleteChanged = true;
-				}
-			};
+		var transactionToDelete = _viewModel.Transactions.First();
+		transactionToDelete.Selected = true;
+		await _viewModel.DeleteSelectedAsync();
 
-			var firstTransaction = _viewModel.Transactions.First();
-			firstTransaction.Selected = !firstTransaction.Selected;
-
-			canDeleteChanged.Should().BeTrue();
-		}
-
-		[Test]
-		public async Task DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
-		{
-			var deletedIds = new List<Guid>();
-			_gnomeshadeClientMock
-				.Setup(client => client.DeleteTransactionAsync(It.IsAny<Guid>()))
-				.Callback<Guid>(id => deletedIds.Add(id));
-
-			var transactionToDelete = _viewModel.Transactions.First();
-			transactionToDelete.Selected = true;
-			await _viewModel.DeleteSelectedAsync();
-
-			deletedIds.Should().ContainSingle().Which.Should().Be(transactionToDelete.Id);
-		}
+		deletedIds.Should().ContainSingle().Which.Should().Be(transactionToDelete.Id);
 	}
 }

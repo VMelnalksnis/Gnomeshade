@@ -4,11 +4,10 @@
 
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
-namespace Gnomeshade.Interfaces.WebApi.Client
-{
-	/// <summary>
-	/// Indicates a successful login.
-	/// </summary>
-	/// <param name="Response">The information return after successful login.</param>
-	public sealed record SuccessfulLogin(LoginResponse Response) : LoginResult;
-}
+namespace Gnomeshade.Interfaces.WebApi.Client;
+
+/// <summary>
+/// Indicates a successful login.
+/// </summary>
+/// <param name="Response">The information return after successful login.</param>
+public sealed record SuccessfulLogin(LoginResponse Response) : LoginResult;

@@ -6,15 +6,14 @@ using System;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers
+namespace Gnomeshade.TestingHelpers.Data.Fakers;
+
+public sealed class CounterpartyFaker : NamedEntityFaker<CounterpartyEntity>
 {
-	public sealed class CounterpartyFaker : NamedEntityFaker<CounterpartyEntity>
+	public CounterpartyFaker(Guid userId)
+		: base(userId)
 	{
-		public CounterpartyFaker(Guid userId)
-			: base(userId)
-		{
-			RuleFor(party => party.Name, faker => faker.Company.CompanyName());
-			RuleFor(party => party.NormalizedName, (_, party) => party.Name.ToUpperInvariant());
-		}
+		RuleFor(party => party.Name, faker => faker.Company.CompanyName());
+		RuleFor(party => party.NormalizedName, (_, party) => party.Name.ToUpperInvariant());
 	}
 }
