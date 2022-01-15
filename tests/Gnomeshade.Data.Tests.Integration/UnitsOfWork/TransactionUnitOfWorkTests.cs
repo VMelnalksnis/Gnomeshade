@@ -7,7 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Bogus.Extensions;
+using Bogus;
 
 using FluentAssertions;
 using FluentAssertions.Equivalency;
