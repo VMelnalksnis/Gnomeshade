@@ -28,6 +28,11 @@ public static class DesignTimeData
 	public static DesignTimeOAuth2Client OAuth2Client { get; } = new();
 
 	/// <summary>
+	/// Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.
+	/// </summary>
+	public static MainWindowViewModel MainWindowViewModel { get; } = new(GnomeshadeClient, OAuth2Client);
+
+	/// <summary>
 	/// Gets an instance of <see cref="AccountCreationViewModel"/> for use during design time.
 	/// </summary>
 	public static AccountCreationViewModel AccountCreationViewModel { get; } =

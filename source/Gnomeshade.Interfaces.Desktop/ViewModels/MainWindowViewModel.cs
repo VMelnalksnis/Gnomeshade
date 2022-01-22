@@ -12,12 +12,7 @@ using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
 using VMelnalksnis.OAuth2;
-using VMelnalksnis.OAuth2.Keycloak;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
@@ -27,39 +22,19 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly IOAuth2Client _keycloakClient;
+	private readonly IOAuth2Client _oAuth2Client;
 
 	private ViewModelBase _activeView = null!;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
 	/// </summary>
-	public MainWindowViewModel()
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="oAuth2Client">OAuth2 provider API client.</param>
+	public MainWindowViewModel(IGnomeshadeClient gnomeshadeClient, IOAuth2Client oAuth2Client)
 	{
-		var configuration = new ConfigurationBuilder()
-			.AddUserSecrets<MainWindowViewModel>()
-			.Build();
-
-		var serviceCollection = new ServiceCollection();
-		serviceCollection
-			.AddOptions<KeycloakOAuth2ClientOptions>()
-			.Bind(configuration.GetSection("Oidc:Keycloak"))
-			.ValidateDataAnnotations()
-			.ValidateOnStart();
-
-		serviceCollection
-			.AddHttpClient<KeycloakOAuth2Client>()
-			.AddTypedClient<GnomeshadeClient>();
-		serviceCollection.AddLogging(builder => builder.AddConsole());
-
-		serviceCollection
-			.AddSingleton<GnomeshadeClient>()
-			.AddSingleton<KeycloakOAuth2Client>();
-
-		var serviceProvider = serviceCollection.BuildServiceProvider();
-
-		_gnomeshadeClient = serviceProvider.GetRequiredService<GnomeshadeClient>();
-		_keycloakClient = serviceProvider.GetRequiredService<KeycloakOAuth2Client>();
+		_gnomeshadeClient = gnomeshadeClient;
+		_oAuth2Client = oAuth2Client;
 
 		SwitchToLogin();
 	}
@@ -92,11 +67,7 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 	/// <summary>
 	/// Safely stops the application.
 	/// </summary>
-	public static void Exit()
-	{
-		var desktopLifetime = (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
-		desktopLifetime.Shutdown();
-	}
+	public static void Exit() => GetApplicationLifetime().Shutdown();
 
 	/// <summary>
 	/// Logs out the current user.
@@ -224,9 +195,26 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 		ActiveView = itemCreationViewModel;
 	}
 
+	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
+	{
+		if (Application.Current is null)
+		{
+			var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)} to be null";
+			throw new NullReferenceException(message);
+		}
+
+		if (Application.Current.ApplicationLifetime is null)
+		{
+			var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
+			throw new NullReferenceException(message);
+		}
+
+		return (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
+	}
+
 	private void SwitchToLogin()
 	{
-		var loginViewModel = new LoginViewModel(_gnomeshadeClient, _keycloakClient);
+		var loginViewModel = new LoginViewModel(_gnomeshadeClient, _oAuth2Client);
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 
 		ActiveView = loginViewModel;
