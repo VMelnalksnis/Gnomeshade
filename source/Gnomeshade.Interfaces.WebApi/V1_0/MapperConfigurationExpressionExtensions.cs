@@ -55,5 +55,6 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<UnitCreationModel, UnitEntity>();
 
 		options.CreateMap<DateTimeOffset, DateTimeOffset>().ConvertUsing<DateTimeOffsetUtcConverter>();
+		options.CreateMap<DateTimeOffset?, DateTimeOffset?>().ConvertUsing<DateTimeOffsetUtcConverter>();
 	}
 }

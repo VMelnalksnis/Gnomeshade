@@ -14,11 +14,19 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0;
 /// Converts all <see cref="DateTimeOffset"/> to UTC.
 /// </summary>
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
-public class DateTimeOffsetUtcConverter : ITypeConverter<DateTimeOffset, DateTimeOffset>
+public class DateTimeOffsetUtcConverter :
+	ITypeConverter<DateTimeOffset, DateTimeOffset>,
+	ITypeConverter<DateTimeOffset?, DateTimeOffset?>
 {
 	/// <inheritdoc />
 	public DateTimeOffset Convert(DateTimeOffset source, DateTimeOffset destination, ResolutionContext context)
 	{
 		return source.ToUniversalTime();
+	}
+
+	/// <inheritdoc />
+	public DateTimeOffset? Convert(DateTimeOffset? source, DateTimeOffset? destination, ResolutionContext context)
+	{
+		return source?.ToUniversalTime();
 	}
 }

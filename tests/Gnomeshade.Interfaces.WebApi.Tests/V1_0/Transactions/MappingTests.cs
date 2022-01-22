@@ -31,13 +31,23 @@ public class MappingTests
 	}
 
 	[Test]
-	public void CreationToDatabase()
+	public void ShouldCorrectlyMapDateTimeOffsets()
 	{
-		var creationModel = new TransactionCreationModel();
+		var creationModel = new TransactionCreationModel
+		{
+			Date = new(2021, 05, 12, 01, 02, 03, TimeSpan.FromHours(2)),
+			Items = new()
+			{
+				new() { DeliveryDate = new DateTimeOffset(2021, 04, 13, 01, 02, 03, TimeSpan.FromHours(3)) },
+			},
+		};
 
 		var transaction = _mapper.Map<TransactionEntity>(creationModel);
 
-		transaction.ImportHash.Should().BeNull();
+		transaction.Date.Offset.Should().Be(TimeSpan.Zero);
+		var item = transaction.Items.Should().ContainSingle().Subject;
+		item.DeliveryDate.Should().NotBeNull();
+		item.DeliveryDate!.Value.Offset.Should().Be(TimeSpan.Zero);
 	}
 
 	[Test]
