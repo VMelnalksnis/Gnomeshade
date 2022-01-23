@@ -39,6 +39,12 @@ public static class DesignTimeData
 		AccountCreationViewModel.CreateAsync(GnomeshadeClient).Result;
 
 	/// <summary>
+	/// Gets an instance of <see cref="AccountDetailViewModel"/> for use during design time.
+	/// </summary>
+	public static AccountDetailViewModel AccountDetailViewModel { get; } =
+		AccountDetailViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>
 	/// Gets an instance of <see cref="AccountViewModel"/> for use during design time.
 	/// </summary>
 	public static AccountViewModel AccountViewModel { get; } =

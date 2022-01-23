@@ -36,7 +36,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 		var cash = new Account
 		{
-			Id = Guid.NewGuid(),
+			Id = Guid.Empty,
 			Name = "Cash",
 			PreferredCurrency = euro,
 			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
