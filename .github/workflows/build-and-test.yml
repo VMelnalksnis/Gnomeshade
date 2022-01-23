@@ -37,11 +37,8 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Run Unit Tests
-        run: dotnet test --filter FullyQualifiedName!~Integration -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --configuration Release --no-build --verbosity normal
-
-      - name: Run Integration Tests
-        run: dotnet test --filter FullyQualifiedName~Integration -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover -p:BuildInParallel=false -m:1 --configuration Release --no-build --verbosity normal
+      - name: Run Tests
+        run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover -p:BuildInParallel=false -m:1 --configuration Release --no-build --verbosity normal
         env:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
@@ -51,4 +48,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-          verbose: true
