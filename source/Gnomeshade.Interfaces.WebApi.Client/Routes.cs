@@ -34,6 +34,13 @@ public static class Routes
 	public static string AccountIdUri(Guid id) => $"{AccountUri}/{Format(id)}";
 
 	/// <summary>
+	/// Gets the relative uri for the currencies of the specified account.
+	/// </summary>
+	/// <param name="id">The id of the account.</param>
+	/// <returns>Relative uri for the currencies of the specified account.</returns>
+	public static string AccountCurrencyUri(Guid id) => $"{AccountUri}/{Format(id)}/Currency";
+
+	/// <summary>
 	/// Gets the relative uri for finding account by its name.
 	/// </summary>
 	/// <param name="name">The name of the account to find.</param>
@@ -96,6 +103,15 @@ public static class Routes
 	/// <param name="id">The id of the transaction item.</param>
 	/// <returns>Relative uri for a specific transaction item.</returns>
 	public static string TransactionItemIdUri(Guid id) => $"{TransactionUri}/Item/{Format(id)}";
+
+	/// <summary>
+	/// Gets the relative uri for the specified transaction and item.
+	/// </summary>
+	/// <param name="transactionId">The id of the transaction.</param>
+	/// <param name="id">The id of the transaction item.</param>
+	/// <returns>Relative uri for the specified transaction and item.</returns>
+	public static string TransactionItemIdUri(Guid transactionId, Guid id) =>
+		$"{TransactionIdUri(transactionId)}/Item/{Format(id)}";
 
 	/// <summary>
 	/// Converts the specified date to a string and encodes it for using within a url.

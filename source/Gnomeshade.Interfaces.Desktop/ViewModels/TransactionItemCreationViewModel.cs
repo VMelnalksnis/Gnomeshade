@@ -328,7 +328,6 @@ public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCre
 
 		var creationModel = new TransactionItemCreationModel
 		{
-			Id = _existingItem.Id,
 			SourceAmount = SourceAmount,
 			SourceAccountId = SourceAccount.Currencies
 				.Single(inCurrency => inCurrency.Currency.Id == SourceCurrency.Id).Id,
@@ -344,8 +343,8 @@ public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCre
 			Description = null,
 		};
 
-		var id = await _transactionClient.PutTransactionItemAsync(_existingItem.TransactionId, creationModel);
-		TransactionItemCreated?.Invoke(this, new(id));
+		await _transactionClient.PutTransactionItemAsync(_existingItem.Id, _existingItem.TransactionId, creationModel);
+		TransactionItemCreated?.Invoke(this, new(_existingItem.Id));
 	}
 
 	/// <summary>

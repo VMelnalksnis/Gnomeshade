@@ -123,14 +123,14 @@ public sealed class ProductCreationViewModel : ViewModelBase<ProductCreationView
 	{
 		var creationModel = new ProductCreationModel
 		{
-			Id = _exisingProduct?.Id,
 			Name = Name,
 			Description = Description,
 			UnitId = SelectedUnit?.Id,
 		};
 
-		var productId = await _productClient.PutProductAsync(creationModel).ConfigureAwait(false);
-		OnProductCreated(productId);
+		var id = _exisingProduct?.Id ?? Guid.NewGuid();
+		await _productClient.PutProductAsync(id, creationModel).ConfigureAwait(false);
+		OnProductCreated(id);
 	}
 
 	private void OnProductCreated(Guid productId)

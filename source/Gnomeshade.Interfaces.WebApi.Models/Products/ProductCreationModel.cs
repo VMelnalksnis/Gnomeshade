@@ -17,11 +17,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 public sealed record ProductCreationModel
 {
 	/// <summary>
-	/// The id of the product to update.
-	/// </summary>
-	public Guid? Id { get; init; }
-
-	/// <summary>
 	/// The name of the product.
 	/// </summary>
 	[Required(AllowEmptyStrings = false)]

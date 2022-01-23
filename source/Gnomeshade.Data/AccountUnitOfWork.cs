@@ -72,12 +72,18 @@ public sealed class AccountUnitOfWork : IDisposable
 	/// <returns>The id of the created account.</returns>
 	public async Task<Guid> AddAsync(AccountEntity account, IDbTransaction dbTransaction)
 	{
+		if (account.Id == Guid.Empty)
+		{
+			account = account with { Id = Guid.NewGuid() };
+		}
+
 		var id = await _repository.AddAsync(account, dbTransaction).ConfigureAwait(false);
 
 		foreach (var currencyId in account.Currencies.Select(inCurrency => inCurrency.CurrencyId))
 		{
 			var inCurrency = new AccountInCurrencyEntity
 			{
+				Id = Guid.NewGuid(),
 				OwnerId = account.OwnerId,
 				CreatedByUserId = account.CreatedByUserId,
 				ModifiedByUserId = account.ModifiedByUserId,

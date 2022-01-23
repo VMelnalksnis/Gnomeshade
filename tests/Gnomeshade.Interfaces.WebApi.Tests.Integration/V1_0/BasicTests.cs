@@ -52,7 +52,8 @@ public class BasicTests
 				.RuleFor(model => model.Description, faker => faker.Lorem.Sentence())
 				.Generate();
 
-			productId = await _authenticatedClient.PutProductAsync(productCreationModel);
+			productId = Guid.NewGuid();
+			await _authenticatedClient.PutProductAsync(productId.Value, productCreationModel);
 		}
 
 		var counterparty = await _authenticatedClient.GetMyCounterpartyAsync();

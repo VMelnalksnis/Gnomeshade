@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,47 +28,43 @@ public class ProductControllerTests
 	}
 
 	[Test]
+	public async Task Put_ShouldReturnConflictOnDuplicateName()
+	{
+		var creationModel = CreateUniqueProduct() with { Description = "Foo" };
+		await _client.PutProductAsync(Guid.NewGuid(), creationModel);
+
+		var exception =
+			await FluentActions
+				.Awaiting(() => _client.PutProductAsync(Guid.NewGuid(), creationModel))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>();
+
+		exception.Which.StatusCode.Should().Be(HttpStatusCode.Conflict);
+	}
+
+	[Test]
 	public async Task Put()
 	{
 		var creationModel = CreateUniqueProduct() with { Description = "Foo" };
-		var product = await PutAndGet(creationModel);
+		var productId = Guid.NewGuid();
+		var product = await PutAndGet(productId, creationModel);
 
 		product.Name.Should().Be(creationModel.Name);
 		product.Description.Should().Be(creationModel.Description);
 
-		var exception =
-			await FluentActions
-				.Awaiting(() => _client.PutProductAsync(creationModel))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>("name must be unique, and if was not specified for update");
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-		var creationModelWithId = creationModel with { Id = product.Id };
-		var productWithoutChanges = await PutAndGet(creationModelWithId);
+		var productWithoutChanges = await PutAndGet(productId, creationModel);
 
 		productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
-		productWithoutChanges.ModifiedAt.Should().BeAfter(product.ModifiedAt, "currently models are not checked for differences");
+		productWithoutChanges.ModifiedAt.Should().BeAfter(product.ModifiedAt);
 
-		var changedCreationModel = creationModelWithId with { Description = null };
-		var productWithChanges = await PutAndGet(changedCreationModel);
+		var changedCreationModel = creationModel with { Description = null };
+		var productWithChanges = await PutAndGet(productId, changedCreationModel);
 
 		productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndDescription);
 		productWithChanges.Description.Should().BeNull();
 
 		var anotherCreationModel = CreateUniqueProduct();
-		_ = await PutAndGet(anotherCreationModel);
-
-		var creationModelWithDuplicateName = anotherCreationModel with
-		{
-			Name = product.Name,
-		};
-
-		exception =
-			await FluentActions
-				.Awaiting(() => _client.PutProductAsync(creationModelWithDuplicateName))
-				.Should()
-				.ThrowAsync<HttpRequestException>("name must be unique");
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+		_ = await PutAndGet(productId, anotherCreationModel);
 	}
 
 	private static ProductCreationModel CreateUniqueProduct()
@@ -89,9 +84,9 @@ public class ProductControllerTests
 		return WithoutModifiedAt(options).Excluding(model => model.Description);
 	}
 
-	private async Task<Product> PutAndGet(ProductCreationModel creationModel)
+	private async Task<Product> PutAndGet(Guid id, ProductCreationModel creationModel)
 	{
-		var productId = await _client.PutProductAsync(creationModel);
-		return (await _client.GetProductsAsync()).Single(model => model.Id == productId);
+		await _client.PutProductAsync(id, creationModel);
+		return await _client.GetProductAsync(id);
 	}
 }

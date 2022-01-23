@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using AutoMapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +31,12 @@ public sealed class ProductController : FinanceControllerBase<ProductEntity, Pro
 {
 	private readonly ProductRepository _repository;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ProductController"/> class.
+	/// </summary>
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
+	/// <param name="applicationUserContext">Context for getting the current application user.</param>
+	/// <param name="mapper">Repository entity and API model mapper.</param>
 	public ProductController(
 		ProductRepository repository,
 		ApplicationUserContext applicationUserContext,
@@ -38,76 +46,92 @@ public sealed class ProductController : FinanceControllerBase<ProductEntity, Pro
 		_repository = repository;
 	}
 
+	/// <summary>
+	/// Gets the product with the specified id.
+	/// </summary>
+	/// <param name="id">The id of the product.</param>
+	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The product with the specified id.</returns>
+	/// <response code="200">Successfully got the product.</response>
+	/// <response code="404">Product with the specified id does not exist.</response>
 	[HttpGet("{id:guid}")]
-	[ProducesResponseType(Status200OK)]
-	[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-	public async Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellationToken)
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellation)
 	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
+		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
 	}
 
+	/// <summary>
+	/// Gets all products.
+	/// </summary>
+	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all products.</returns>
 	[HttpGet]
-	[ProducesResponseType(Status200OK)]
-	public async Task<ActionResult<List<Product>>> GetAll(CancellationToken cancellationToken)
+	public async Task<List<Product>> GetAll(CancellationToken cancellation)
 	{
-		var products = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var productModels = products.Select(account => MapToModel(account)).ToList();
-		return Ok(productModels);
+		var products = await _repository.GetAllAsync(ApplicationUser.Id, cancellation);
+
+		// ReSharper disable once ConvertClosureToMethodGroup
+		return products.Select(account => MapToModel(account)).ToList();
 	}
 
 	/// <summary>
 	/// Creates a new product, or replaces and existing one if one exists with the specified id.
 	/// </summary>
+	/// <param name="id">The id of the product.</param>
 	/// <param name="model">The product to create or replace.</param>
-	/// <returns>The id of the created or replaced product.</returns>
-	/// <response code="200">An existing product was replaced.</response>
+	/// <returns>A status code indicating the result of the action.</returns>
 	/// <response code="201">A new product was created.</response>
-	[HttpPut]
-	[ProducesResponseType(Status200OK)]
+	/// <response code="204">An existing product was replaced.</response>
+	/// <response code="409">A product with the specified name already exists.</response>
+	[HttpPut("{id:guid}")]
 	[ProducesResponseType(Status201Created)]
-	public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] ProductCreationModel model)
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus409Conflict]
+	public async Task<ActionResult> Put(Guid id, [FromBody, BindRequired] ProductCreationModel model)
 	{
-		var normalizedName = model.Name!.ToUpperInvariant();
-		var existingByName = await _repository.FindByNameAsync(normalizedName, ApplicationUser.Id);
-
-		if ((model.Id is not null || (model.Id is null && existingByName is not null)) &&
-			existingByName is not null &&
-			existingByName.Id != model.Id)
-		{
-			// todo use standard error model
-			return BadRequest($"Product with name {model.Name} already exists");
-		}
-
-		var existingById = model.Id is not null
-			? await _repository.FindByIdAsync(model.Id.Value, ApplicationUser.Id)
-			: default;
-
-		return existingById is null
-			? await CreateNewProductAsync(model, ApplicationUser)
-			: await UpdateExistingProductAsync(model, ApplicationUser);
+		var existingProduct = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		return existingProduct is null
+			? await PutNewProductAsync(model, ApplicationUser, id)
+			: await UpdateExistingProductAsync(model, ApplicationUser, id);
 	}
 
-	private async Task<ActionResult<Guid>> CreateNewProductAsync(ProductCreationModel creationModel, UserEntity user)
+	private async Task<ActionResult> PutNewProductAsync(ProductCreationModel model, UserEntity user, Guid id)
 	{
-		var product = Mapper.Map<ProductEntity>(creationModel) with
+		var normalizedName = model.Name!.ToUpperInvariant();
+		var conflictingProduct = await _repository.FindByNameAsync(normalizedName, user.Id);
+		if (conflictingProduct is not null)
 		{
+			return Problem(
+				"Product with the specified name already exists",
+				Url.Action(nameof(Get), new { conflictingProduct.Id }),
+				Status409Conflict);
+		}
+
+		var product = Mapper.Map<ProductEntity>(model) with
+		{
+			Id = id,
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = creationModel.Name!.ToUpperInvariant(),
+			NormalizedName = model.Name!.ToUpperInvariant(),
 		};
 
-		var id = await _repository.AddAsync(product);
-		return CreatedAtAction(nameof(Get), new { id }, id);
+		_ = await _repository.AddAsync(product);
+		return CreatedAtAction(nameof(Get), new { id }, string.Empty);
 	}
 
-	private async Task<ActionResult<Guid>> UpdateExistingProductAsync(ProductCreationModel creationModel, UserEntity user)
+	private async Task<NoContentResult> UpdateExistingProductAsync(ProductCreationModel model, UserEntity user, Guid id)
 	{
-		var product = Mapper.Map<ProductEntity>(creationModel);
-		product.NormalizedName = product.Name.ToUpperInvariant();
-		product.ModifiedByUserId = user.Id;
+		var product = Mapper.Map<ProductEntity>(model) with
+		{
+			Id = id,
+			NormalizedName = model.Name!.ToUpperInvariant(),
+			ModifiedByUserId = user.Id,
+		};
 
-		_ = await _repository.UpdateAsync(product);
-		return Ok(creationModel.Id);
+		var x = await _repository.UpdateAsync(product);
+		Debug.Assert(x > 0, "No rows were changed after update");
+		return NoContent();
 	}
 }

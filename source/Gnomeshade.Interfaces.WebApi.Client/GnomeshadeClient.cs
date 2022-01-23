@@ -97,12 +97,12 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PostAsync(TransactionUri, transaction);
 
 	/// <inheritdoc />
-	public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
-		PutAsync(TransactionUri, transaction);
+	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
+		PutAsync(TransactionIdUri(id), transaction);
 
 	/// <inheritdoc />
-	public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item) =>
-		PutAsync(TransactionItemUri(transactionId), item);
+	public Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item) =>
+		PutAsync(TransactionItemIdUri(transactionId, id), item);
 
 	/// <inheritdoc />
 	public Task<Transaction> GetTransactionAsync(Guid id) =>
@@ -145,8 +145,12 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PostAsync(AccountUri, account);
 
 	/// <inheritdoc />
+	public Task PutAccountAsync(Guid id, AccountCreationModel account) =>
+		PutAsync(AccountIdUri(id), account);
+
+	/// <inheritdoc />
 	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
-		PostAsync(AccountIdUri(id), currency);
+		PostAsync(AccountCurrencyUri(id), currency);
 
 	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync() =>
@@ -165,8 +169,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Unit>>(UnitUri);
 
 	/// <inheritdoc />
-	public Task<Guid> PutProductAsync(ProductCreationModel product) =>
-		PutAsync(ProductUri, product);
+	public Task PutProductAsync(Guid id, ProductCreationModel product) =>
+		PutAsync(ProductIdUri(id), product);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) =>
@@ -233,13 +237,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
 	}
 
-	private async Task<Guid> PutAsync<TRequest>(string requestUri, TRequest request)
+	private async Task PutAsync<TRequest>(string requestUri, TRequest request)
 		where TRequest : notnull
 	{
 		using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
-
-		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
 	}
 
 	private async Task DeleteAsync(string requestUri)

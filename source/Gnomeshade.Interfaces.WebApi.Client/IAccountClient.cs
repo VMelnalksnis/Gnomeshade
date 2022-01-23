@@ -55,6 +55,14 @@ public interface IAccountClient
 	Task<Guid> CreateAccountAsync(AccountCreationModel account);
 
 	/// <summary>
+	/// Creates a new account or replaces an existing  one, if one exists with the specified id.
+	/// </summary>
+	/// <param name="id">The id of the account.</param>
+	/// <param name="account">The account to create or replace.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutAccountAsync(Guid id, AccountCreationModel account);
+
+	/// <summary>
 	/// Adds a currency to an existing account.
 	/// </summary>
 	/// <param name="id">The id of the account to which to add the currency.</param>

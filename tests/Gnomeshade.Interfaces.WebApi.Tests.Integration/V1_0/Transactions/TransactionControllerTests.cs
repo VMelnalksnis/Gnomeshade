@@ -46,7 +46,8 @@ public class TransactionControllerTests
 		_account2 = await CreateAccountAsync(currency2, _counterparty);
 
 		var productCreation = new ProductCreationModel { Name = Guid.NewGuid().ToString("N") };
-		_productId = await _client.PutProductAsync(productCreation);
+		_productId = Guid.NewGuid();
+		await _client.PutProductAsync(_productId, productCreation);
 
 		var sourceAccountId = _account1.Currencies.Single().Id;
 		var targetAccountId = _account2.Currencies.Single().Id;
@@ -68,21 +69,20 @@ public class TransactionControllerTests
 		var transaction = await _client.GetTransactionAsync(transactionId);
 		var createdItem = transaction.Items.Should().ContainSingle().Subject;
 
-		var unchangedItemCreationModel = itemCreationModel with { Id = createdItem.Id };
-		_ = await _client.PutTransactionItemAsync(transactionId, unchangedItemCreationModel);
+		await _client.PutTransactionItemAsync(createdItem.Id, transactionId, itemCreationModel);
 		var unchangedTransaction = await _client.GetTransactionAsync(transactionId);
 		var unchangedItem = unchangedTransaction.Items.Should().ContainSingle().Subject;
 
 		unchangedItem.Should().BeEquivalentTo(createdItem, WithoutModifiedAt);
 		unchangedItem.ModifiedAt.Should().BeAfter(createdItem.ModifiedAt);
 
-		_ = await _client.PutTransactionItemAsync(transactionId, itemCreationModel);
+		await _client.PutTransactionItemAsync(Guid.NewGuid(), transactionId, itemCreationModel);
 		var transactionWithAdditionalItem = await _client.GetTransactionAsync(transactionId);
 		transactionWithAdditionalItem.Items.Should().HaveCount(2);
 
 		var exception =
 			await FluentActions
-				.Awaiting(() => _client.PutTransactionItemAsync(Guid.NewGuid(), itemCreationModel))
+				.Awaiting(() => _client.PutTransactionItemAsync(createdItem.Id, Guid.NewGuid(), itemCreationModel))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>();
 		exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -98,20 +98,20 @@ public class TransactionControllerTests
 			Items = items,
 		};
 
-		var transactionId = await _client.PutTransactionAsync(transactionCreationModel);
+		var transactionId = Guid.NewGuid();
+		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
 		var transaction = await _client.GetTransactionAsync(transactionId);
 
 		transactionCreationModel = transactionCreationModel with
 		{
-			Id = transaction.Id,
 			Items = transactionCreationModel.Items
 				.Zip(transaction.Items)
-				.Select(tuple => tuple.First with { Id = tuple.Second.Id })
+				.Select(tuple => tuple.First)
 				.ToList(),
 		};
 
-		var identicalId = await _client.PutTransactionAsync(transactionCreationModel);
-		var identicalTransaction = await _client.GetTransactionAsync(identicalId);
+		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
+		var identicalTransaction = await _client.GetTransactionAsync(transactionId);
 
 		transaction.Should().BeEquivalentTo(identicalTransaction, WithoutModifiedAt);
 	}

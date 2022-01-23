@@ -13,11 +13,6 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 [PublicAPI]
 public sealed record TransactionItemCreationModel
 {
-	/// <summary>
-	/// The id of the transaction item to update.
-	/// </summary>
-	public Guid? Id { get; init; }
-
 	[Required]
 	public decimal? SourceAmount { get; init; }
 

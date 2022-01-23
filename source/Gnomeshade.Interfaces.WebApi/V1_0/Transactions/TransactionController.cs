@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +15,7 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +29,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 /// <summary>
 /// CRUD operations on transaction entity.
 /// </summary>
-[SuppressMessage(
-	"ReSharper",
-	"AsyncConverter.ConfigureAwaitHighlighting",
-	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 public sealed class TransactionController : FinanceControllerBase<TransactionEntity, Transaction>
 {
 	private readonly TransactionRepository _repository;
@@ -77,8 +73,7 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
 	[HttpGet("{id:guid}")]
-	[ProducesResponseType(Status200OK)]
-	[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
+	[ProducesStatus404NotFound]
 	public async Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellation)
 	{
 		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
@@ -92,7 +87,6 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 	/// <response code="200">Successfully got all transactions.</response>
 	[HttpGet]
-	[ProducesResponseType(Status200OK)]
 	public async Task<ActionResult<IEnumerable<Transaction>>> GetAll(
 		[FromQuery] OptionalTimeRange timeRange,
 		CancellationToken cancellation)
@@ -111,34 +105,38 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <returns><see cref="CreatedAtActionResult"/> with the id of the transaction.</returns>
 	/// <response code="201">Transaction was successfully created.</response>
 	[HttpPost]
-	[ProducesResponseType(Status201Created)]
-	public async Task<ActionResult<Guid>> Create([FromBody, BindRequired] TransactionCreationModel model)
+	[ProducesResponseType(typeof(Guid), Status201Created)]
+	public async Task<ActionResult<Guid>> Post([FromBody, BindRequired] TransactionCreationModel model)
 	{
-		return await CreateNewTransactionAsync(model, ApplicationUser);
+		var transaction = Mapper.Map<TransactionEntity>(model) with
+		{
+			OwnerId = ApplicationUser.Id, // todo
+			CreatedByUserId = ApplicationUser.Id,
+			ModifiedByUserId = ApplicationUser.Id,
+			ImportedAt = model.ImportHash is null ? null : DateTimeOffset.UtcNow,
+			ValidatedAt = model.Validated ? DateTimeOffset.UtcNow : null,
+			ValidatedByUserId = model.Validated ? ApplicationUser.Id : null,
+		};
+
+		var transactionId = await _unitOfWork.AddAsync(transaction);
+		return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
 	}
 
 	/// <summary>
 	/// Creates a new transaction with items, or updates items for an existing transaction.
 	/// </summary>
+	/// <param name="id">The id of the transaction.</param>
 	/// <param name="model">The transaction to create or replace.</param>
 	/// <returns>The id of the created or replaced transaction.</returns>
-	[HttpPut]
-	[ProducesResponseType(Status200OK)]
+	[HttpPut("{id:guid}")]
 	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status404NotFound)]
-	public async Task<ActionResult<Guid>> Put([FromBody, BindRequired] TransactionCreationModel model)
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> Put(Guid id, [FromBody, BindRequired] TransactionCreationModel model)
 	{
-		var existingTransaction = model.Id is not null
-			? await _repository.FindByIdAsync(model.Id.Value, ApplicationUser.Id)
-			: null;
-
-		if (model.Id is not null && existingTransaction is null)
-		{
-			return NotFound();
-		}
+		var existingTransaction = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 
 		return existingTransaction is null
-			? await CreateNewTransactionAsync(model, ApplicationUser)
+			? await CreateNewTransactionAsync(model, ApplicationUser, id)
 			: await UpdateExistingTransactionAsync(model, ApplicationUser, existingTransaction);
 	}
 
@@ -151,7 +149,7 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <response code="404">Transaction with the specified id does not exist.</response>
 	[HttpDelete("{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
-	[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
+	[ProducesStatus404NotFound]
 	public async Task<StatusCodeResult> Delete(Guid id)
 	{
 		var transaction = await _repository.FindByIdAsync(id, ApplicationUser.Id);
@@ -182,7 +180,8 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 		}
 
 		// todo this is already done with one query when getting transaction with all items
-		var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
+		var productEntity =
+			await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
 		var product = Mapper.Map<Product>(productEntity);
 		var item = Mapper.Map<TransactionItem>(itemEntity) with { Product = product };
 
@@ -192,17 +191,19 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <summary>
 	/// Creates a new transaction item, or replaces and existing one if one exists with the specified id.
 	/// </summary>
+	/// <param name="id">The id of the transaction item.</param>
 	/// <param name="transactionId">The id of the transaction to which to add a new item.</param>
 	/// <param name="model">The transaction item to create or replace.</param>
 	/// <returns>The id of the created or replaced transaction item.</returns>
-	/// <response code="200">An existing transaction item was replaced.</response>
 	/// <response code="201">A new transaction item was created.</response>
+	/// <response code="204">An existing transaction item was replaced.</response>
 	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Item")]
-	[ProducesResponseType(Status200OK)]
+	[HttpPut("{transactionId:guid}/Item/{id:guid}")]
 	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType(Status204NoContent)]
 	[ProducesResponseType(Status404NotFound)]
-	public async Task<ActionResult<Guid>> PutItem(
+	public async Task<ActionResult> PutItem(
+		Guid id,
 		Guid transactionId,
 		[FromBody, BindRequired] TransactionItemCreationModel model)
 	{
@@ -211,15 +212,10 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 			return NotFound();
 		}
 
-		if (model.Id is null)
-		{
-			return await CreateNewItemAsync(transactionId, model, ApplicationUser);
-		}
-
-		var existingItem = await _itemRepository.FindByIdAsync(model.Id.Value, ApplicationUser.Id);
+		var existingItem = await _itemRepository.FindByIdAsync(id, ApplicationUser.Id);
 		return existingItem is null
-			? await CreateNewItemAsync(transactionId, model, ApplicationUser)
-			: await UpdateExistingItemAsync(transactionId, model, ApplicationUser);
+			? await CreateNewItemAsync(transactionId, model, ApplicationUser, id)
+			: await UpdateExistingItemAsync(transactionId, model, ApplicationUser, id);
 	}
 
 	/// <summary>
@@ -250,12 +246,14 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 		}
 	}
 
-	private async Task<ActionResult<Guid>> CreateNewTransactionAsync(
+	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(
 		TransactionCreationModel creationModel,
-		UserEntity user)
+		UserEntity user,
+		Guid id)
 	{
 		var transaction = Mapper.Map<TransactionEntity>(creationModel) with
 		{
+			Id = id,
 			OwnerId = user.Id, // todo
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
@@ -265,56 +263,58 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 		};
 
 		var transactionId = await _unitOfWork.AddAsync(transaction);
-		return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
+		return CreatedAtAction(nameof(Get), new { id = transactionId }, string.Empty);
 	}
 
-	private async Task<ActionResult<Guid>> UpdateExistingTransactionAsync(
+	private async Task<NoContentResult> UpdateExistingTransactionAsync(
 		TransactionCreationModel creationModel,
 		UserEntity user,
 		TransactionEntity existingTransaction)
 	{
-		if (creationModel.Items!.Any(item => item.Id is null))
+		var transaction = Mapper.Map<TransactionEntity>(creationModel) with
 		{
-			return NotFound();
-		}
+			Id = existingTransaction.Id,
+		};
 
-		if (creationModel.Items!.Any(item => existingTransaction.Items.All(entity => entity.Id != item.Id!.Value)))
-		{
-			return NotFound("Existing item with not found by id");
-		}
-
-		var transaction = Mapper.Map<TransactionEntity>(creationModel);
 		_ = await _unitOfWork.UpdateAsync(transaction, user);
-		return Ok(creationModel.Id);
+		return NoContent();
 	}
 
-	private async Task<ActionResult<Guid>> CreateNewItemAsync(
+	private async Task<CreatedAtActionResult> CreateNewItemAsync(
 		Guid transactionId,
 		TransactionItemCreationModel creationModel,
-		UserEntity user)
+		UserEntity user,
+		Guid id)
 	{
 		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
 		{
+			Id = id,
 			OwnerId = user.Id, // todo
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			TransactionId = transactionId,
 		};
 
-		var id = await _itemRepository.AddAsync(transactionItem);
-		return CreatedAtAction(nameof(GetItem), new { id }, id);
+		await _itemRepository.AddAsync(transactionItem);
+		return CreatedAtAction(nameof(GetItem), new { id }, string.Empty);
 	}
 
-	private async Task<ActionResult<Guid>> UpdateExistingItemAsync(
+	private async Task<NoContentResult> UpdateExistingItemAsync(
 		Guid transactionId,
 		TransactionItemCreationModel creationModel,
-		UserEntity user)
+		UserEntity user,
+		Guid id)
 	{
-		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel);
+		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
+		{
+			Id = id,
+			ModifiedByUserId = user.Id,
+			TransactionId = transactionId,
+		};
 		transactionItem.ModifiedByUserId = user.Id;
 		transactionItem.TransactionId = transactionId;
 
 		await _itemRepository.UpdateAsync(transactionItem);
-		return Ok(creationModel.Id);
+		return NoContent();
 	}
 }

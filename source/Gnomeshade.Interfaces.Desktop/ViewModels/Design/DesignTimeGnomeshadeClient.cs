@@ -109,20 +109,17 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Guid> PutTransactionAsync(TransactionCreationModel transaction) =>
+	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item)
+	public Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item)
 	{
 		var transactionWithItem = _transactions.Single(t => t.Id == transactionId);
-		if (item.Id is not null)
+		var existingItem = transactionWithItem.Items.SingleOrDefault(i => i.Id == id);
+		if (existingItem is not null)
 		{
-			var existingItem = transactionWithItem.Items.SingleOrDefault(i => i.Id == item.Id.Value);
-			if (existingItem is not null)
-			{
-				transactionWithItem.Items.Remove(existingItem);
-			}
+			transactionWithItem.Items.Remove(existingItem);
 		}
 
 		var itemModel = new TransactionItem
@@ -204,6 +201,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task PutAccountAsync(Guid id, AccountCreationModel account) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
 		throw new NotImplementedException();
 
@@ -229,7 +229,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Guid> PutProductAsync(ProductCreationModel product) => throw new NotImplementedException();
+	public Task PutProductAsync(Guid id, ProductCreationModel product) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();

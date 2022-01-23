@@ -25,17 +25,19 @@ public interface ITransactionClient
 	/// <summary>
 	/// Creates a new transaction or replaces an existing  one, if one exists with the specified id.
 	/// </summary>
+	/// <param name="id">The id of the transaction.</param>
 	/// <param name="transaction">The transaction to create or replace.</param>
-	/// <returns>The id of the created or replaced transaction item.</returns>
-	Task<Guid> PutTransactionAsync(TransactionCreationModel transaction);
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutTransactionAsync(Guid id, TransactionCreationModel transaction);
 
 	/// <summary>
 	/// Creates a new transaction item or replaces an existing one, if one exists with the specified id.
 	/// </summary>
+	/// <param name="id">The id of the transaction item.</param>
 	/// <param name="transactionId">The id of the transaction to which to add a new item.</param>
 	/// <param name="item">The transaction item to create or replace.</param>
-	/// <returns>The id of the created or replaced transaction item.</returns>
-	Task<Guid> PutTransactionItemAsync(Guid transactionId, TransactionItemCreationModel item);
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item);
 
 	/// <summary>
 	/// Gets the specified transaction.

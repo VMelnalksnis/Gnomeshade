@@ -1,5 +1,6 @@
 ﻿INSERT INTO transaction_items
-    (owner_id,
+    (id,
+     owner_id,
      transaction_id,
      source_amount,
      source_account_id,
@@ -15,7 +16,8 @@
      description,
      delivery_date)
 VALUES
-    (@OwnerId,
+    (@Id,
+     @OwnerId,
      @TransactionId,
      @SourceAmount,
      @SourceAccountId,

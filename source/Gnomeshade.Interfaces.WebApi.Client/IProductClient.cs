@@ -37,9 +37,10 @@ public interface IProductClient
 	/// <summary>
 	/// Creates a new product or replaces an existing one if one exists with the specified id.
 	/// </summary>
+	/// <param name="id">The id of the product.</param>
 	/// <param name="product">The product to create or replace.</param>
-	/// <returns>The id of the created or replaced product.</returns>
-	Task<Guid> PutProductAsync(ProductCreationModel product);
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutProductAsync(Guid id, ProductCreationModel product);
 
 	/// <summary>
 	/// Creates a new unit.

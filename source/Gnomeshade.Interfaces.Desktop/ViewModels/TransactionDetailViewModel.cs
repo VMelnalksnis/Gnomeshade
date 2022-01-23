@@ -156,7 +156,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase<TransactionDetail
 			InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
 		};
 
-		_ = await _gnomeshadeClient.PutTransactionItemAsync(_initialId, creationModel).ConfigureAwait(false);
+		await _gnomeshadeClient.PutTransactionItemAsync(Guid.NewGuid(), _initialId, creationModel).ConfigureAwait(false);
 		ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
 		ItemCreation = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
 		await GetTransactionAsync(_initialId).ConfigureAwait(false);

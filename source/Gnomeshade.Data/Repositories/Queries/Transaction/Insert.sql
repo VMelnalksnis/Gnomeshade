@@ -1,5 +1,6 @@
 ﻿INSERT INTO transactions
-    (owner_id,
+    (id,
+     owner_id,
      created_by_user_id,
      modified_by_user_id,
      date,
@@ -9,7 +10,8 @@
      validated_at,
      validated_by_user_id)
 VALUES
-    (@OwnerId,
+    (@Id,
+     @OwnerId,
      @CreatedByUserId,
      @ModifiedByUserId,
      @Date,

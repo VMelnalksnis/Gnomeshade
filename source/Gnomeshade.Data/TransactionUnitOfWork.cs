@@ -73,12 +73,18 @@ public sealed class TransactionUnitOfWork : IDisposable
 			throw new ArgumentException("Transaction must have at least one item", nameof(transaction));
 		}
 
+		if (transaction.Id == Guid.Empty)
+		{
+			transaction = transaction with { Id = Guid.NewGuid() };
+		}
+
 		var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
 
 		foreach (var transactionItem in transaction.Items)
 		{
 			var item = transactionItem with
 			{
+				Id = Guid.NewGuid(),
 				OwnerId = transaction.OwnerId,
 				CreatedByUserId = transaction.CreatedByUserId,
 				ModifiedByUserId = transaction.ModifiedByUserId,

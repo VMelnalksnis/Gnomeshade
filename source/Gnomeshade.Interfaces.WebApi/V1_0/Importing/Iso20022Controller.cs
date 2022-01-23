@@ -391,6 +391,7 @@ public sealed class Iso20022Controller : ControllerBase
 		{
 			product = new()
 			{
+				Id = Guid.NewGuid(),
 				OwnerId = user.Id,
 				CreatedByUserId = user.Id,
 				ModifiedByUserId = user.Id,

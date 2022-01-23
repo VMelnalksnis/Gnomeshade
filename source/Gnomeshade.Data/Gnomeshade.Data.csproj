@@ -21,6 +21,7 @@
         <EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Account\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
