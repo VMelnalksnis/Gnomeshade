@@ -166,9 +166,11 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 	/// <returns>The id of the account to which the currency was added to.</returns>
 	/// <response code="201">Currency was successfully added.</response>
 	/// <response code="404">Account with the specified id does not exist.</response>
+	/// <response code="409">The account already has the specified currency.</response>
 	[HttpPost("{id:guid}/Currency")]
 	[ProducesResponseType(Status201Created)]
 	[ProducesStatus404NotFound]
+	[ProducesStatus409Conflict]
 	public async Task<ActionResult<Guid>> AddCurrency(
 		Guid id,
 		[FromBody, BindRequired] AccountInCurrencyCreationModel creationModel)
@@ -181,9 +183,10 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 
 		if (account.Currencies.Any(currency => currency.CurrencyId == creationModel.CurrencyId))
 		{
-			// todo return full bad request response, instead of just the error dictionary
-			ModelState.AddModelError(nameof(creationModel.CurrencyId), "The currency already exists.");
-			return BadRequest(ModelState);
+			return Problem(
+				"The account already has the specified currency",
+				Url.Action(nameof(Get), new { id }), // todo link to currency instead
+				Status409Conflict);
 		}
 
 		var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(creationModel) with
