@@ -34,6 +34,8 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(Account)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Account)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Account)}.Update.sql");
 	}
 
 	internal static class AccountInCurrency

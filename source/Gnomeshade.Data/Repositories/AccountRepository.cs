@@ -43,7 +43,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	protected override string FindSql => "WHERE a.id = @id AND ownerships.user_id = @ownerId;";
 
 	/// <inheritdoc />
-	protected override string UpdateSql => throw new NotImplementedException();
+	protected override string UpdateSql => Queries.Account.Update;
 
 	/// <inheritdoc />
 	protected override string NameSql => "WHERE a.normalized_name = @name AND ownerships.user_id = @ownerId;";

@@ -4,6 +4,7 @@
 
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -137,22 +138,26 @@ public sealed class AccountUnitOfWork : IDisposable
 	}
 
 	/// <summary>
-	/// Deletes the specified account and all its currencies using the specified transaction.
+	/// Updates the specified account.
 	/// </summary>
-	/// <param name="account">The account to delete.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="dbTransaction">The database transaction to use for the queries.</param>
+	/// <param name="account">The account to update.</param>
+	/// <param name="modifiedBy">The user which modified the <paramref name="account"/>.</param>
 	/// <returns>The number of affected rows.</returns>
-	public async Task<int> DeleteAsync(AccountEntity account, Guid ownerId, IDbTransaction dbTransaction)
+	public async Task<int> UpdateAsync(AccountEntity account, UserEntity modifiedBy)
 	{
-		var rows = 0;
-		foreach (var currency in account.Currencies)
-		{
-			rows += await _inCurrencyRepository.DeleteAsync(currency.Id, ownerId, dbTransaction).ConfigureAwait(false);
-		}
+		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
-		rows += await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
-		return rows;
+		try
+		{
+			var rows = await UpdateAsync(account, modifiedBy, dbTransaction);
+			dbTransaction.Commit();
+			return rows;
+		}
+		catch (Exception)
+		{
+			dbTransaction.Rollback();
+			throw;
+		}
 	}
 
 	/// <inheritdoc />
@@ -162,5 +167,28 @@ public sealed class AccountUnitOfWork : IDisposable
 		_repository.Dispose();
 		_inCurrencyRepository.Dispose();
 		_counterpartyRepository.Dispose();
+	}
+
+	private async Task<int> DeleteAsync(AccountEntity account, Guid ownerId, IDbTransaction dbTransaction)
+	{
+		var rows = 0;
+		foreach (var currency in account.Currencies)
+		{
+			rows += await _inCurrencyRepository.DeleteAsync(currency.Id, ownerId, dbTransaction).ConfigureAwait(false);
+		}
+
+		rows += await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
+
+		Debug.Assert(rows > 0, "No rows were modified when deleting an account.");
+		return rows;
+	}
+
+	private async Task<int> UpdateAsync(AccountEntity account, UserEntity modifiedBy, IDbTransaction dbTransaction)
+	{
+		account.ModifiedByUserId = modifiedBy.Id;
+		var rows = await _repository.UpdateAsync(account, dbTransaction).ConfigureAwait(false);
+
+		Debug.Assert(rows > 0, "No rows were modified when updating an account.");
+		return rows;
 	}
 }
