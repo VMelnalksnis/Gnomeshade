@@ -4,11 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -97,7 +97,7 @@ public sealed class AccountDetailViewModel : ViewModelBase<AccountDetailView>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="id">The id of the account to view.</param>
 	/// <returns>A new instance of the <see cref="AccountDetailViewModel"/> class.</returns>
-	public static async Task<AccountDetailViewModel> CreateAsync(DesignTimeGnomeshadeClient gnomeshadeClient, Guid id)
+	public static async Task<AccountDetailViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid id)
 	{
 		var account = await gnomeshadeClient.GetAccountAsync(id);
 		var currencies = await gnomeshadeClient.GetCurrenciesAsync();
@@ -111,12 +111,21 @@ public sealed class AccountDetailViewModel : ViewModelBase<AccountDetailView>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateAccountAsync()
 	{
+		var currencyIds = _account.Currencies.Select(currency => currency.Currency.Id).ToList();
+		if (!currencyIds.Contains(PreferredCurrency.Id))
+		{
+			currencyIds.Add(PreferredCurrency.Id);
+		}
+
 		var creationModel = new AccountCreationModel
 		{
 			Name = Name,
 			Bic = Bic,
 			Iban = Iban,
 			AccountNumber = AccountNumber,
+			PreferredCurrencyId = PreferredCurrency.Id,
+			CounterpartyId = _account.CounterpartyId, // todo
+			Currencies = currencyIds.Select(id => new AccountInCurrencyCreationModel { CurrencyId = id }).ToList(),
 		};
 
 		await _gnomeshadeClient.PutAccountAsync(_account.Id, creationModel);

@@ -159,6 +159,7 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 		}
 
 		var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		accountViewModel.AccountSelected += OnAccountSelected;
 		ActiveView = accountViewModel;
 	}
 
@@ -234,6 +235,12 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 		ActiveView = transactionDetailViewModel;
 	}
 
+	private async Task SwitchToAccountDetailAsync(Guid id)
+	{
+		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, id);
+		ActiveView = accountDetailViewModel;
+	}
+
 	private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
 	{
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
@@ -295,6 +302,11 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 		}
 	}
 
+	private void OnAccountSelected(object? sender, AccountSelectedEventArgs e)
+	{
+		Task.Run(() => SwitchToAccountDetailAsync(e.AccountId)).Wait();
+	}
+
 	private void Unsubscribe(ViewModelBase viewModel)
 	{
 		switch (viewModel)
@@ -303,7 +315,8 @@ public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
 				accountCreationViewModel.AccountCreated -= OnAccountCreated;
 				break;
 
-			case AccountViewModel:
+			case AccountViewModel accountViewModel:
+				accountViewModel.AccountSelected -= OnAccountSelected;
 				break;
 
 			case ImportViewModel importViewModel:

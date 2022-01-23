@@ -24,7 +24,7 @@ public static class ModelExtensions
 	{
 		return accounts
 			.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
-			.Select(tuple => new AccountOverviewRow
+			.Select(tuple => new AccountOverviewRow(tuple.account.Id)
 			{
 				Name = tuple.account.Name,
 				Currency = tuple.inCurrency.Currency.AlphabeticCode,
