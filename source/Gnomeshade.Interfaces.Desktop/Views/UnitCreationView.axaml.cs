@@ -4,9 +4,11 @@
 
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-public sealed class UnitCreationView : FocusOnInitUserControl
+public sealed class UnitCreationView : FocusOnInitUserControl, IView<UnitCreationViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UnitCreationView"/> class.

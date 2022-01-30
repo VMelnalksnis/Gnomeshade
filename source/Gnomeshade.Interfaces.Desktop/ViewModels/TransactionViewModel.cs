@@ -14,7 +14,6 @@ using Avalonia.Controls;
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
@@ -22,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// All transaction overview view model.
 /// </summary>
-public sealed class TransactionViewModel : ViewModelBase<TransactionView>
+public sealed class TransactionViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 

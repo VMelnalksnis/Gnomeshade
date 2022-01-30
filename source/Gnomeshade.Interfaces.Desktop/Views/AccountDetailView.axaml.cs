@@ -5,12 +5,14 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
 /// <summary>
 /// User control for viewing and editing a single account.
 /// </summary>
-public sealed class AccountDetailView : UserControl
+public sealed class AccountDetailView : UserControl, IView<AccountDetailViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AccountDetailView"/> class.

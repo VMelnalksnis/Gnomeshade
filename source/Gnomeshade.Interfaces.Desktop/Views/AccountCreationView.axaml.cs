@@ -4,12 +4,14 @@
 
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
 /// <summary>
 /// User control for creating a new account.
 /// </summary>
-public sealed class AccountCreationView : FocusOnInitUserControl
+public sealed class AccountCreationView : FocusOnInitUserControl, IView<AccountCreationViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AccountCreationView"/> class.

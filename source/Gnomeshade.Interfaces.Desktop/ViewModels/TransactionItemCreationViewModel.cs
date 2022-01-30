@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -21,7 +20,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Form for creating a single new transaction item.
 /// </summary>
-public class TransactionItemCreationViewModel : ViewModelBase<TransactionItemCreationView>
+public class TransactionItemCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _transactionClient;
 	private readonly TransactionItem? _existingItem;

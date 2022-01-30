@@ -5,12 +5,14 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
 /// <summary>
 /// An overview of of all accounts.
 /// </summary>
-public sealed class AccountView : UserControl
+public sealed class AccountView : UserControl, IView<AccountViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AccountView"/> class.

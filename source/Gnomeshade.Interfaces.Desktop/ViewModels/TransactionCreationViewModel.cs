@@ -11,13 +11,12 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
-public class TransactionCreationViewModel : ViewModelBase<TransactionCreationView>
+public class TransactionCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 

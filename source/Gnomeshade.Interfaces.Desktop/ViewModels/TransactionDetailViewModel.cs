@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -22,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// A detailed view of one transaction and its items.
 /// </summary>
-public sealed class TransactionDetailViewModel : ViewModelBase<TransactionDetailView>
+public sealed class TransactionDetailViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid _initialId;

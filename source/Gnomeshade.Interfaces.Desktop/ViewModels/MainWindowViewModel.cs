@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// A container view which manages navigation and the currently active view.
 /// </summary>
-public sealed class MainWindowViewModel : ViewModelBase<MainWindow>
+public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IOAuth2Client _oAuth2Client;

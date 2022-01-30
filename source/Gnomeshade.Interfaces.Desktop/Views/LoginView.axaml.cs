@@ -6,9 +6,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-public sealed class LoginView : UserControl
+public sealed class LoginView : UserControl, IView<LoginViewModel>
 {
 	private readonly TextBox _username;
 

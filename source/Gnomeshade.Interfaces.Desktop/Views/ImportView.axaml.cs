@@ -9,6 +9,8 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
@@ -16,7 +18,7 @@ namespace Gnomeshade.Interfaces.Desktop.Views;
 /// <summary>
 /// Data importing and overview of import result.
 /// </summary>
-public sealed class ImportView : FocusOnInitUserControl
+public sealed class ImportView : FocusOnInitUserControl, IView<ImportViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ImportView"/> class.

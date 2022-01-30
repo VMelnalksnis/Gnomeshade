@@ -6,7 +6,6 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
@@ -18,7 +17,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Form for authenticating the current user.
 /// </summary>
-public sealed class LoginViewModel : ViewModelBase<LoginView>
+public sealed class LoginViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IOAuth2Client _oAuth2Client;

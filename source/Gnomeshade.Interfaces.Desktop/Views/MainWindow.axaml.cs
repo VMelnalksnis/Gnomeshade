@@ -6,9 +6,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-public sealed class MainWindow : Window
+public sealed class MainWindow : Window, IView<MainWindowViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="MainWindow"/> class.

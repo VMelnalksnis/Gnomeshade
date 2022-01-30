@@ -13,7 +13,6 @@ using Avalonia.Controls;
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -22,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Overview of all accounts.
 /// </summary>
-public sealed class AccountViewModel : ViewModelBase<AccountView>
+public sealed class AccountViewModel : ViewModelBase
 {
 	private AccountOverviewRow? _selectedAccount;
 

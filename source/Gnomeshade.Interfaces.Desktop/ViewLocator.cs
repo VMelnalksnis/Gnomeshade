@@ -3,6 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -13,20 +16,26 @@ namespace Gnomeshade.Interfaces.Desktop;
 
 public sealed class ViewLocator : IDataTemplate
 {
+	private static readonly Dictionary<Type, Type> _viewDictionary = new();
+
 	public bool SupportsRecycling => false;
 
 	/// <inheritdoc />
 	public IControl Build(object data)
 	{
-		var name = data.GetType().FullName!.Replace("ViewModel", "View");
-		var type = Type.GetType(name);
-
-		if (type != null)
+		var dataType = data.GetType();
+		if (!_viewDictionary.TryGetValue(dataType, out var viewType))
 		{
-			return (Control)Activator.CreateInstance(type)!;
+			var interfaceType = typeof(IView<>).MakeGenericType(dataType);
+			viewType = Assembly
+				.GetExecutingAssembly()
+				.GetTypes()
+				.Single(type => type.IsAssignableTo(interfaceType));
+
+			_viewDictionary.Add(dataType, viewType);
 		}
 
-		return new TextBlock { Text = $"Not Found: {name}" };
+		return (Control)Activator.CreateInstance(viewType)!;
 	}
 
 	/// <inheritdoc />

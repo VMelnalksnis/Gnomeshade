@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -18,7 +17,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Form for viewing and editing a single account.
 /// </summary>
-public sealed class AccountDetailViewModel : ViewModelBase<AccountDetailView>
+public sealed class AccountDetailViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Account _account;

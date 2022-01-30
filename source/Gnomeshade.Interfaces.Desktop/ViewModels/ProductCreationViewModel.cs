@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
@@ -19,7 +18,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Form for creating a single new product.
 /// </summary>
-public sealed class ProductCreationViewModel : ViewModelBase<ProductCreationView>
+public sealed class ProductCreationViewModel : ViewModelBase
 {
 	private readonly IProductClient _productClient;
 	private readonly Product? _exisingProduct;

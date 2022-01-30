@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
@@ -18,7 +17,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// <summary>
 /// Form for creating a single new unit.
 /// </summary>
-public sealed class UnitCreationViewModel : ViewModelBase<UnitCreationView>
+public sealed class UnitCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private string? _name;

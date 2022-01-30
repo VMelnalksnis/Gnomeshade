@@ -5,9 +5,11 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.ViewModels;
+
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-public sealed class TransactionCreationView : UserControl
+public sealed class TransactionCreationView : UserControl, IView<TransactionCreationViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TransactionCreationView"/> class.
