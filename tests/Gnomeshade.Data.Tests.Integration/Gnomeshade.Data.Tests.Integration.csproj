@@ -19,11 +19,4 @@
         <ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Remove="CreateDatabase.sql"/>
-        <Content Include="CreateDatabase.sql">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-
 </Project>

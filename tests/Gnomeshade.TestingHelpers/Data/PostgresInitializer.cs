@@ -4,6 +4,8 @@
 
 using System;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
@@ -20,7 +22,6 @@ namespace Gnomeshade.TestingHelpers.Data;
 /// </summary>
 public class PostgresInitializer
 {
-	private const string _initFileName = "PostgresInit.sql";
 	private const string _connectionStringName = "FinanceDb";
 
 	private readonly string _database;
@@ -142,7 +143,14 @@ public class PostgresInitializer
 
 	private static async Task<string> GetInitializationCommand()
 	{
-		var sqlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data/", _initFileName);
-		return await File.ReadAllTextAsync(sqlPath).ConfigureAwait(false);
+		var assembly = Assembly.GetExecutingAssembly();
+		var resourceStream = assembly.GetManifestResourceStream(typeof(PostgresInitializer), "PostgresInit.sql");
+		if (resourceStream is null)
+		{
+			throw new MissingManifestResourceException();
+		}
+
+		using var streamReader = new StreamReader(resourceStream);
+		return await streamReader.ReadToEndAsync();
 	}
 }
