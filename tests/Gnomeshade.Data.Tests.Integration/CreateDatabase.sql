@@ -22,6 +22,17 @@ CREATE TABLE "public"."owners"
     CONSTRAINT "owners_id" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
+DROP TABLE IF EXISTS "access";
+CREATE TABLE "public"."access"
+(
+    "id"              uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "created_at"      timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "name"            text                                   NOT NULL,
+    "normalized_name" text                                   NOT NULL,
+    CONSTRAINT "access_id" PRIMARY KEY ("id")
+) WITH (OIDS = FALSE);
+CREATE UNIQUE INDEX "access_normalized_name_unique_index" ON access (normalized_name);
+
 
 DROP TABLE IF EXISTS "ownerships";
 CREATE TABLE "public"."ownerships"
@@ -30,9 +41,11 @@ CREATE TABLE "public"."ownerships"
     "created_at" timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
     "owner_id"   uuid                                   NOT NULL,
     "user_id"    uuid                                   NOT NULL,
+    "access_id"  uuid                                   NOT NULL,
     CONSTRAINT "ownerships_id" PRIMARY KEY ("id"),
     CONSTRAINT "ownerships_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
-    CONSTRAINT "ownerships_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users (id) NOT DEFERRABLE
+    CONSTRAINT "ownerships_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "ownerships_access_id_fkey" FOREIGN KEY (access_id) REFERENCES access (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
 
 

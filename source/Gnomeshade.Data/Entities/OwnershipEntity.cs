@@ -29,4 +29,9 @@ public sealed class OwnershipEntity : IEntity
 	/// Gets or sets the id of the <see cref="UserEntity"/> which is linked to the <see cref="OwnerEntity"/> with id <see cref="OwnerId"/>.
 	/// </summary>
 	public Guid UserId { get; set; }
+
+	/// <summary>
+	/// Gets or sets the id of the <see cref="AccessEntity"/> 
+	/// </summary>
+	public Guid AccessId { get; set; }
 }

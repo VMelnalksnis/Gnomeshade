@@ -35,10 +35,14 @@ public sealed class OwnershipRepository : IDisposable
 	/// <param name="id">Id of the user.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created ownership.</returns>
-	public Task<Guid> AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
+	public async Task<Guid> AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
 	{
-		var command = new CommandDefinition(Queries.Ownership.Insert, new { id }, dbTransaction);
-		return _dbConnection.QuerySingleAsync<Guid>(command);
+		const string text = "SELECT id Id, created_at CreatedAt, name Name, normalized_name NormalizedName FROM access WHERE normalized_name = 'OWNER'";
+		var access = await _dbConnection.QuerySingleAsync<AccessEntity>(new(text));
+
+		var parameters = new { id, AccessId = access.Id };
+		var command = new CommandDefinition(Queries.Ownership.Insert, parameters, dbTransaction);
+		return await _dbConnection.QuerySingleAsync<Guid>(command);
 	}
 
 	/// <inheritdoc />
