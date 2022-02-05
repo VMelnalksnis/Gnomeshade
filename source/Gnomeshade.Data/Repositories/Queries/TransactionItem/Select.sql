@@ -17,3 +17,4 @@
 FROM transaction_items ti
          INNER JOIN owners ON owners.id = ti.owner_id
          INNER JOIN ownerships ON owners.id = ownerships.owner_id
+         INNER JOIN access ON access.id = ownerships.access_id

@@ -41,5 +41,6 @@
 FROM public.transactions t
          INNER JOIN owners ON owners.id = t.owner_id
          INNER JOIN ownerships ON owners.id = ownerships.owner_id
+         INNER JOIN access ON access.id = ownerships.access_id
          INNER JOIN public.transaction_items ti ON t.id = ti.transaction_id
          INNER JOIN public.products p ON ti.product_id = p.id

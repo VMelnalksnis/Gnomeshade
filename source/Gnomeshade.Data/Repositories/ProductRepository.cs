@@ -35,8 +35,8 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	protected override string UpdateSql => Queries.Product.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE p.id = @id AND ownerships.user_id = @ownerId";
+	protected override string FindSql => $"WHERE p.id = @id AND ownerships.user_id = @ownerId {_accessSql}";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE p.normalized_name = @name AND ownerships.user_id = @ownerId;";
+	protected override string NameSql => $"WHERE p.normalized_name = @name AND ownerships.user_id = @ownerId {_accessSql};";
 }

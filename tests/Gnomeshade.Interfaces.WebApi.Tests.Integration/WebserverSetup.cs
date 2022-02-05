@@ -28,6 +28,7 @@ public sealed class WebserverSetup
 
 	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
 	private static Login _login = null!;
+	private static Login _secondLogin = null!;
 
 	static WebserverSetup()
 	{
@@ -44,17 +45,9 @@ public sealed class WebserverSetup
 
 	public static GnomeshadeClient CreateUnauthorizedClient() => new(CreateHttpClient());
 
-	public static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
-	{
-		var client = CreateUnauthorizedClient();
-		var loginResult = await client.LogInAsync(_login);
-		if (loginResult is not SuccessfulLogin)
-		{
-			throw new(loginResult.ToString());
-		}
+	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
 
-		return client;
-	}
+	public static Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() => CreateAuthorizedClientAsync(_secondLogin);
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
@@ -64,23 +57,14 @@ public sealed class WebserverSetup
 
 		// database needs to be setup after web app, so that the web app can configure static Npg logger
 		await _initializer.SetupDatabaseAsync();
-
-		var registrationModel = new Faker<RegistrationModel>()
+		var registrationFaker = new Faker<RegistrationModel>()
 			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
 			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
 			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
-			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName)
-			.Generate();
+			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
 
-		var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
-		if (response.StatusCode == HttpStatusCode.InternalServerError)
-		{
-			throw new(await response.Content.ReadAsStringAsync());
-		}
-
-		response.EnsureSuccessStatusCode();
-
-		_login = new() { Username = registrationModel.Username, Password = registrationModel.Password };
+		_login = await RegisterUser(client, registrationFaker.Generate());
+		_secondLogin = await RegisterUser(client, registrationFaker.Generate());
 	}
 
 	[OneTimeTearDown]
@@ -88,5 +72,30 @@ public sealed class WebserverSetup
 	{
 		await _initializer.DropDatabaseAsync();
 		await _webApplicationFactory.DisposeAsync();
+	}
+
+	private static async Task<Login> RegisterUser(HttpClient client, RegistrationModel registrationModel)
+	{
+		var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
+		if (response.StatusCode is HttpStatusCode.InternalServerError)
+		{
+			throw new(await response.Content.ReadAsStringAsync());
+		}
+
+		response.EnsureSuccessStatusCode();
+
+		return new() { Username = registrationModel.Username, Password = registrationModel.Password };
+	}
+
+	private static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync(Login login)
+	{
+		var client = CreateUnauthorizedClient();
+		var loginResult = await client.LogInAsync(login);
+		if (loginResult is not SuccessfulLogin)
+		{
+			throw new(loginResult.ToString());
+		}
+
+		return client;
 	}
 }

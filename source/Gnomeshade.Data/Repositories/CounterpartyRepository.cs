@@ -36,5 +36,5 @@ public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 	protected override string UpdateSql => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE c.id = @id AND ownerships.user_id = @ownerId";
+	protected override string FindSql => $"WHERE c.id = @id AND ownerships.user_id = @ownerId {_accessSql}";
 }
