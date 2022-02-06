@@ -274,6 +274,8 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 		var transaction = Mapper.Map<TransactionEntity>(creationModel) with
 		{
 			Id = existingTransaction.Id,
+			OwnerId = user.Id, // todo only works for entities created by the user
+			ModifiedByUserId = user.Id,
 		};
 
 		_ = await _unitOfWork.UpdateAsync(transaction, user);
@@ -308,11 +310,10 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
 		{
 			Id = id,
+			OwnerId = user.Id, // todo only works for entities created by the user
 			ModifiedByUserId = user.Id,
 			TransactionId = transactionId,
 		};
-		transactionItem.ModifiedByUserId = user.Id;
-		transactionItem.TransactionId = transactionId;
 
 		await _itemRepository.UpdateAsync(transactionItem);
 		return NoContent();

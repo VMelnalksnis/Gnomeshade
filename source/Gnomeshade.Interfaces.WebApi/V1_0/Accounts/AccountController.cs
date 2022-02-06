@@ -233,6 +233,7 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 		var account = Mapper.Map<AccountEntity>(model) with
 		{
 			Id = existingAccount.Id,
+			OwnerId = user.Id, // todo only works for entities created by the user
 			NormalizedName = model.Name!.ToUpperInvariant(),
 		};
 

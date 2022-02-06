@@ -126,6 +126,7 @@ public sealed class ProductController : FinanceControllerBase<ProductEntity, Pro
 		var product = Mapper.Map<ProductEntity>(model) with
 		{
 			Id = id,
+			OwnerId = user.Id, // todo only works for entities created by the user
 			NormalizedName = model.Name!.ToUpperInvariant(),
 			ModifiedByUserId = user.Id,
 		};
