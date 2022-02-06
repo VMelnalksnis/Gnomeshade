@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Bogus" Version="34.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0"/>
-        <PackageReference Include="Npgsql" Version="6.0.2"/>
+        <PackageReference Include="Npgsql" Version="6.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
