@@ -8,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
+using Gnomeshade.Interfaces.Desktop.Authentication;
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -52,8 +53,9 @@ public sealed class App : Application
 		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>();
 
 		serviceCollection
-			.AddSingleton<GnomeshadeClient>()
-			.AddSingleton<KeycloakOAuth2Client>()
+			.AddSingleton<IGnomeshadeClient, GnomeshadeClient>()
+			.AddSingleton<IOAuth2Client, KeycloakOAuth2Client>()
+			.AddSingleton<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<MainWindowViewModel>();
 
 		_serviceProvider = serviceCollection.BuildServiceProvider();

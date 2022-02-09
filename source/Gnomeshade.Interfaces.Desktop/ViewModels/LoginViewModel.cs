@@ -3,14 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.Desktop.Authentication;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
-
-using VMelnalksnis.OAuth2;
-using VMelnalksnis.OAuth2.Responses;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
@@ -19,8 +16,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 /// </summary>
 public sealed class LoginViewModel : ViewModelBase
 {
-	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly IOAuth2Client _oAuth2Client;
+	private readonly IAuthenticationService _authenticationService;
 
 	private string? _errorMessage;
 	private string? _username;
@@ -29,12 +25,10 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
 	/// </summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="oAuth2Client">OAuth2 provider API client.</param>
-	public LoginViewModel(IGnomeshadeClient gnomeshadeClient, IOAuth2Client oAuth2Client)
+	/// <param name="authenticationService">Service for handling authentication.</param>
+	public LoginViewModel(IAuthenticationService authenticationService)
 	{
-		_gnomeshadeClient = gnomeshadeClient;
-		_oAuth2Client = oAuth2Client;
+		_authenticationService = authenticationService;
 	}
 
 	/// <summary>
@@ -85,25 +79,21 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AuthenticateExternallyAsync()
 	{
-		var deviceAuthorizationResponse = await _oAuth2Client.StartDeviceFlowAsync();
-		var processInfo = deviceAuthorizationResponse.GetProcessStartInfoForUserApproval();
-		Process.Start(processInfo);
-
-		var tokenResponse = await _oAuth2Client.GetDeviceFlowResultAsync(deviceAuthorizationResponse);
-		await _gnomeshadeClient.SocialRegister(tokenResponse.AccessToken);
+		await _authenticationService.SocialLogin().ConfigureAwait(false);
 		OnUserLoggedIn();
 	}
 
 	/// <summary>
 	/// Attempts to log in using the specified credentials.
 	/// </summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
-	public void LogInAsync()
+	public async Task LogInAsync()
 	{
 		ErrorMessage = string.Empty;
 
-		var loginModel = new Login { Username = Username!, Password = Password! };
-		var loginResult = _gnomeshadeClient.LogInAsync(loginModel).Result;
+		var login = new Login { Username = Username!, Password = Password! };
+		var loginResult = await _authenticationService.Login(login).ConfigureAwait(false);
 
 		switch (loginResult)
 		{

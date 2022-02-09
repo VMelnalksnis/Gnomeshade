@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 
+using Gnomeshade.Interfaces.Desktop.Authentication;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
-
-using VMelnalksnis.OAuth2;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
@@ -22,7 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly IOAuth2Client _oAuth2Client;
+	private readonly IAuthenticationService _authenticationService;
 
 	private ViewModelBase _activeView = null!;
 
@@ -30,11 +29,11 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
 	/// </summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="oAuth2Client">OAuth2 provider API client.</param>
-	public MainWindowViewModel(IGnomeshadeClient gnomeshadeClient, IOAuth2Client oAuth2Client)
+	/// <param name="authenticationService">OAuth2 provider API client.</param>
+	public MainWindowViewModel(IGnomeshadeClient gnomeshadeClient, IAuthenticationService authenticationService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_oAuth2Client = oAuth2Client;
+		_authenticationService = authenticationService;
 
 		SwitchToLogin();
 	}
@@ -75,7 +74,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task LogOut()
 	{
-		await _gnomeshadeClient.LogOutAsync().ConfigureAwait(false);
+		await _authenticationService.Logout().ConfigureAwait(false);
 		SwitchToLogin();
 	}
 
@@ -215,7 +214,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private void SwitchToLogin()
 	{
-		var loginViewModel = new LoginViewModel(_gnomeshadeClient, _oAuth2Client);
+		var loginViewModel = new LoginViewModel(_authenticationService);
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 
 		ActiveView = loginViewModel;

@@ -8,6 +8,7 @@ using System.Reflection;
 using Avalonia.Xaml.Interactions.Core;
 using Avalonia.Xaml.Interactivity;
 
+using Gnomeshade.Interfaces.Desktop.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
@@ -17,20 +18,17 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 /// </summary>
 public static class DesignTimeData
 {
-	/// <summary>
-	/// Gets a Gnomeshade API client for use during design time.
-	/// </summary>
-	public static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
+	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
 
-	/// <summary>
-	/// Gets an OAuth2 API client for use during design time.
-	/// </summary>
-	public static DesignTimeOAuth2Client OAuth2Client { get; } = new();
+	private static DesignTimeOAuth2Client OAuth2Client { get; } = new();
+
+	private static IAuthenticationService AuthenticationService { get; } =
+		new AuthenticationService(GnomeshadeClient, OAuth2Client);
 
 	/// <summary>
 	/// Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.
 	/// </summary>
-	public static MainWindowViewModel MainWindowViewModel { get; } = new(GnomeshadeClient, OAuth2Client);
+	public static MainWindowViewModel MainWindowViewModel { get; } = new(GnomeshadeClient, AuthenticationService);
 
 	/// <summary>
 	/// Gets an instance of <see cref="AccountCreationViewModel"/> for use during design time.
@@ -58,7 +56,7 @@ public static class DesignTimeData
 	/// <summary>
 	/// Gets an instance of <see cref="LoginViewModel"/> for use during design time.
 	/// </summary>
-	public static LoginViewModel LoginViewModel { get; } = new(GnomeshadeClient, OAuth2Client);
+	public static LoginViewModel LoginViewModel { get; } = new(AuthenticationService);
 
 	/// <summary>
 	/// Gets an instance of <see cref="ProductCreationViewModel"/> for use during design time.
