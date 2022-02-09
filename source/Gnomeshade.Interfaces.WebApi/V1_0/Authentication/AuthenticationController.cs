@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -31,10 +30,6 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]/[action]")]
-[SuppressMessage(
-	"ReSharper",
-	"AsyncConverter.ConfigureAwaitHighlighting",
-	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 public sealed class AuthenticationController : ControllerBase
 {
 	private readonly UserManager<ApplicationUser> _userManager;
@@ -184,7 +179,10 @@ public sealed class AuthenticationController : ControllerBase
 		return Ok(_mapper.Map<UserModel>(identityUser));
 	}
 
-	[HttpGet]
-	[ProducesResponseType(Status200OK)]
-	public ActionResult Logout() => SignOut();
+	/// <summary>
+	/// Logs out the currently signed in user.
+	/// </summary>
+	/// <returns><see cref="SignOutResult"/>.</returns>
+	[HttpPost]
+	public SignOutResult Logout() => SignOut();
 }
