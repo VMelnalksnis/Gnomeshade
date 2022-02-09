@@ -7,7 +7,7 @@ namespace VMelnalksnis.OAuth2;
 internal static class GrantTypes
 {
 	internal static readonly KeyValuePair<string, string> DeviceCode = new(FieldNames._grantType, _deviceCode);
-	internal static readonly KeyValuePair<string, string> RefreshToken = new(FieldNames._refreshToken, _refreshToken);
+	internal static readonly KeyValuePair<string, string> RefreshToken = new(FieldNames._grantType, _refreshToken);
 
 	private const string _authorizationCode = "authorization_code";
 	private const string _implicit = "implicit";
