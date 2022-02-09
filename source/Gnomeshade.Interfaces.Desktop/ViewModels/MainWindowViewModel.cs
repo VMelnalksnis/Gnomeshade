@@ -199,17 +199,27 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		if (Application.Current is null)
 		{
-			var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)} to be null";
-			throw new NullReferenceException(message);
+			throw CurrentApplicationIsNull();
 		}
 
 		if (Application.Current.ApplicationLifetime is null)
 		{
-			var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
-			throw new NullReferenceException(message);
+			throw CurrentLifetimeIsNull();
 		}
 
 		return (IClassicDesktopStyleApplicationLifetime)Application.Current.ApplicationLifetime;
+	}
+
+	private static Exception CurrentApplicationIsNull()
+	{
+		var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)} to be null";
+		return new NullReferenceException(message);
+	}
+
+	private static Exception CurrentLifetimeIsNull()
+	{
+		var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
+		return new NullReferenceException(message);
 	}
 
 	private void SwitchToLogin()
