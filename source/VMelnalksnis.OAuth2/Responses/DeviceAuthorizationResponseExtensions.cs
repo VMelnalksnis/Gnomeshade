@@ -4,26 +4,23 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace VMelnalksnis.OAuth2.Responses;
 
+/// <summary/>
 public static class DeviceAuthorizationResponseExtensions
 {
 	/// <summary>
 	/// Get <see cref="T:System.Diagnostics.ProcessStartInfo" /> for opening the <see cref="P:VMelnalksnis.OAuth2.DeviceAuthorizationResponse.VerificationUri" />,
 	/// so that the user can approve/deny the request.
 	/// </summary>
-	/// <param name="response"></param>
+	/// <param name="response">Information needed to continue device flow from a browser.</param>
 	/// <returns><see cref="T:System.Diagnostics.ProcessStartInfo" /> for opening the verification uri in the default browser.</returns>
 	/// <exception cref="T:System.PlatformNotSupportedException">Current platform is not <see cref="P:System.Runtime.InteropServices.OSPlatform.Windows" />.</exception>
 	public static ProcessStartInfo GetProcessStartInfoForUserApproval(this DeviceAuthorizationResponse response)
 	{
-		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-		{
-			throw new PlatformNotSupportedException();
-		}
-
 		if (response.VerificationUriComplete is not null)
 		{
 			return CreateProcessStartInfo(response.VerificationUriComplete);
@@ -36,9 +33,31 @@ public static class DeviceAuthorizationResponseExtensions
 		return CreateProcessStartInfo(uriBuilder.Uri);
 	}
 
-	private static ProcessStartInfo CreateProcessStartInfo(Uri uri) => new(uri.AbsoluteUri)
+	private static ProcessStartInfo CreateProcessStartInfo(Uri uri)
 	{
-		CreateNoWindow = true,
-		UseShellExecute = true,
-	};
+		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+		{
+			return new()
+			{
+				FileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? uri.AbsoluteUri : "open",
+				Arguments = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? uri.AbsoluteUri : string.Empty,
+				CreateNoWindow = true,
+				UseShellExecute = RuntimeInformation.IsOSPlatform(OSPlatform.Windows),
+			};
+		}
+
+		var escapedArgs = Regex
+			.Replace($"xdg-open {uri.AbsoluteUri}", "(?=[`~!#&*()|;'<>])", "\\")
+			.Replace("\"", "\\\\\\\"");
+
+		return new()
+		{
+			FileName = "/bin/sh",
+			Arguments = $"-c \"{escapedArgs}\"",
+			RedirectStandardOutput = true,
+			UseShellExecute = false,
+			CreateNoWindow = true,
+			WindowStyle = ProcessWindowStyle.Hidden,
+		};
+	}
 }
