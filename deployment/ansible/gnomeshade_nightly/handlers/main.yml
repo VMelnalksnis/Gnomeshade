@@ -1,0 +1,12 @@
+- name: Reload gnomeshade
+  become: true
+  systemd:
+    name: gnomeshade
+    state: reloaded
+    daemon_reload: true
+
+- name: Restart gnomeshade
+  become: true
+  systemd:
+    name: gnomeshade
+    state: restarted

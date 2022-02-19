@@ -1,0 +1,2 @@
+# Include Ansible files in language statistics
+*.yml linguist-detectable

@@ -1,0 +1,41 @@
+- name: Create directories
+  become: true
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0750'
+  with_items:
+    - '{{ gnomeshade_install_directory }}'
+    - '{{ gnomeshade_config_directory }}'
+
+- name: Download Gnomeshade
+  get_url:
+    url: '{{ gnomeshade_binary_url }}'
+    dest: '{{ gnomeshade_install_filepath }}'
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0750'
+
+- name: Create configuration
+  template:
+    src: 'templates/appsettings.json.j2'
+    dest: '{{ gnomeshade_config_filepath }}'
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0640'
+  notify:
+    - Restart gnomeshade
+
+- name: Create service unit
+  become: true
+  template:
+    src: 'templates/gnomeshade.service.j2'
+    dest: '/etc/systemd/system/gnomeshade.service'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify:
+    - Reload gnomeshade
+    - Restart gnomeshade

@@ -1,0 +1,22 @@
+{
+    "ConnectionStrings": {
+        "FinanceDb": "{{ gnomeshade_connection_string_finance }}",
+        "IdentityDb": "{{ gnomeshade_connection_string_identity }}"
+    },
+    "AllowedHosts": "{{ gnomeshade_allowed_hosts }}",
+    "Jwt": {
+        "ValidAudience": "{{ gnomeshade_jwt_valid_audience }}",
+        "ValidIssuer": "{{ gnomeshade_jwt_valid_issuer }}",
+        "Secret": "{{ gnomeshade_jwt_secret }}"
+    },
+    "OAuth2Providers": {
+{% for provider in gnomeshade_oauth2_providers %}
+        "{{ provider.name }}": {
+			"ServerRealm": "{{ provider.server_realm }}",
+			"Metadata": "{{ provider.metadata }}",
+			"ClientId": "{{ provider.client_id }}",
+			"ClientSecret": "{{ provider.client_secret }}"
+		}
+{% endfor %}
+	}
+}

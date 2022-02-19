@@ -1,0 +1,18 @@
+[Unit]
+Description=Gnomeshade API
+
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory={{ gnomeshade_config_directory }}
+
+ExecStart={{ gnomeshade_install_filepath }}
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+User={{ gnomeshade_user }}
+Group={{ gnomeshade_group }}
+
+[Install]
+WantedBy=multi-user.target
