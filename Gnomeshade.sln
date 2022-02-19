@@ -59,6 +59,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".workflows", ".workflows", "{07BD57C5-18C3-4C1E-8555-878350D0686F}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
+		.github\workflows\nightly.yml = .github\workflows\nightly.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VMelnalksnis.OAuth2.Tests.Integration", "tests\VMelnalksnis.OAuth2.Tests.Integration\VMelnalksnis.OAuth2.Tests.Integration.csproj", "{F0C00131-F161-4F12-A99C-9C7C0055BFB8}"
