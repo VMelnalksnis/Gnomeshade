@@ -27,6 +27,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
-          rm: true
+          rm: false
           files: |
             **/publish/Gnomeshade.Interfaces.WebApi
