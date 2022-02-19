@@ -9,12 +9,14 @@ gnomeshade_config_filepath: '{{ gnomeshade_config_directory }}/appsettings.json'
 gnomeshade_user: 'gnomeshade'
 gnomeshade_group: 'gnomeshade'
 
+gnomeshade_urls: 'http://localhost:8297'
+
 gnomeshade_connection_string_finance: 'Server = localhost; Port = 5432; Database = gnomeshade; User Id = gnomeshade; Include Error Detail = true;'
 gnomeshade_connection_string_identity: 'Server = localhost; Port = 5432; Database = gnomeshade-identity; User Id = gnomeshade; Include Error Detail = true;'
 
 gnomeshade_allowed_hosts: '*'
-gnomeshade_jwt_valid_audience: 'http://localhost:8297'
-gnomeshade_jwt_valid_issuer: 'http://localhost:8297'
+gnomeshade_jwt_valid_audience: '{{ gnomeshade_urls }}'
+gnomeshade_jwt_valid_issuer: '{{ gnomeshade_urls }}'
 gnomeshade_jwt_secret: '00000000000000000000000000000000'
 
 gnomeshade_oauth2_providers:
