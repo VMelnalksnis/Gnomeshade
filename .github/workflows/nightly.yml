@@ -40,7 +40,10 @@ jobs:
           --configuration Release
           --self-contained true
           -p:PublishSingleFile=true
-          -p:IncludeNativeLibrariesForSelfExtract=true
+
+      - name: Archive published desktop application
+        run: zip -r -9 gnomeshade_desktop_win-x64.zip .
+        working-directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0-windows/win10-x64/publish
 
       - uses: pyTooling/Actions/releaser@r0
         with:
@@ -49,4 +52,4 @@ jobs:
           rm: true
           files: |
             **/linux-x64/publish/gnomeshade_linux-x64.zip
-            **/win10-x64/publish/Gnomeshade.Interfaces.Desktop.exe
+            **/win10-x64/publish/gnomeshade_desktop_win-x64.zip
