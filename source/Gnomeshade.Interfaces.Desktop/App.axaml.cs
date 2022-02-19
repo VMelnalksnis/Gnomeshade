@@ -9,6 +9,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Desktop.Authentication;
+using Gnomeshade.Interfaces.Desktop.Configuration;
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -17,6 +18,7 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Serilog;
 
@@ -37,6 +39,7 @@ public sealed class App : Application
 	public App()
 	{
 		var configuration = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json", true)
 			.AddUserSecrets<MainWindowViewModel>()
 			.Build();
 
@@ -46,11 +49,20 @@ public sealed class App : Application
 			.Bind(configuration.GetSection("Oidc:Keycloak"))
 			.ValidateDataAnnotations()
 			.ValidateOnStart();
+		serviceCollection
+			.AddOptions<GnomeshadeOptions>()
+			.Bind(configuration.GetSection(GnomeshadeOptions._sectionName))
+			.ValidateDataAnnotations()
+			.ValidateOnStart();
 
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
 		serviceCollection.AddHttpClient<IOAuth2Client, KeycloakOAuth2Client>();
-		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>();
+		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
+		{
+			var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
+			client.BaseAddress = gnomeshadeOptions.Value.BaseAddress;
+		});
 
 		serviceCollection
 			.AddSingleton<IGnomeshadeClient, GnomeshadeClient>()

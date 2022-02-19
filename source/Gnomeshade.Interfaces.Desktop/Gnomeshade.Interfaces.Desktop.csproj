@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12"/>
         <PackageReference Include="Avalonia.Desktop" Version="0.10.12"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="0.10.12"/>
@@ -24,5 +20,15 @@
     <ItemGroup>
         <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
         <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**"/>
+
+        <Content Include="appsettings.json">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 </Project>

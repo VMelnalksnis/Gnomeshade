@@ -43,7 +43,12 @@ public sealed class WebserverSetup
 
 	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateClient();
 
-	public static GnomeshadeClient CreateUnauthorizedClient() => new(CreateHttpClient());
+	public static GnomeshadeClient CreateUnauthorizedClient()
+	{
+		var httpClient = CreateHttpClient();
+		httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
+		return new(httpClient);
+	}
 
 	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
 

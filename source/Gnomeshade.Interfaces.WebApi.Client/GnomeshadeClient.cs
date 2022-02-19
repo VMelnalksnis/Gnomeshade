@@ -35,7 +35,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	public GnomeshadeClient(HttpClient httpClient)
 	{
 		_httpClient = httpClient;
-		_httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
 		_httpClient.DefaultRequestHeaders.Accept.Clear();
 		_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 	}
