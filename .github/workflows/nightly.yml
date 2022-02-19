@@ -17,16 +17,17 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore
-
       - name: Publish API
         run: dotnet publish source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj -r linux-x64 -c Release --self-contained true -p:PublishSingleFile=true
+
+      - name: Publish desktop application
+        run: dotnet publish source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj -r win10-x64 -c Release --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
       - uses: pyTooling/Actions/releaser@r0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
-          rm: false
+          rm: true
           files: |
-            **/publish/Gnomeshade.Interfaces.WebApi
+            **/linux-x64/publish/Gnomeshade.Interfaces.WebApi
+            **/win10-x64/publish/Gnomeshade.Interfaces.Desktop.exe
