@@ -35,11 +35,13 @@
 - name: Rename executable
   copy:
     src: '{{ gnomeshade_install_directory }}/Gnomeshade.Interfaces.WebApi'
-    dst: '{{ gnomeshade_install_filepath }}'
+    dest: '{{ gnomeshade_install_filepath }}'
     remote_src: yes
     owner: '{{ gnomeshade_user }}'
     group: '{{ gnomeshade_group }}'
     mode: '0750'
+  notify:
+    - Restart gnomeshade
 
 - name: Remove original executable
   file:
