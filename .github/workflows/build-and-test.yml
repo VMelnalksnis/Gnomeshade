@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-test:
     name: Build and test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     services:
       postgres:
