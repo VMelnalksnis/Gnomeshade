@@ -1,0 +1,32 @@
+name: Nightly Release
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish API
+        run: dotnet publish source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj --arch linux-x64 --configuration Release --no-restore --self-contained true -p:PublishSingleFile=true
+
+      - uses: pyTooling/Actions/releaser@r0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: nightly
+          rm: true
+          files: |
+            **/Gnomeshade.Interfaces.WebApi.exe
