@@ -28,8 +28,8 @@ jobs:
           -p:PublishSingleFile=true
 
       - name: Archive published API
-        run: zip -r -x \*.json publish/gnomeshade_linux-x64.zip publish/
-        working-directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/
+        run: zip -r publish/gnomeshade_linux-x64.zip publish/ -x \*.json
+        working-directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64
 
       - name: Publish desktop application
         run: >
