@@ -2,11 +2,14 @@
     <PropertyGroup>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <Copyright>Valters Melnalksnis</Copyright>
         <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+
+        <Copyright>Valters Melnalksnis</Copyright>
+        <Product>Gnomeshade</Product>
     </PropertyGroup>
 
     <ItemGroup>

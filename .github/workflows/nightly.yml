@@ -26,6 +26,10 @@ jobs:
           --configuration Release
           --self-contained true
           -p:PublishSingleFile=true
+          -p:VersionPrefix=0.1.0
+          -p:VersionSuffix=nightly
+          -p:AssemblyVersion=0.1.0.$GITHUB_RUN_ID
+          -p:InformationalVersion=gnomeshade-0.1.0-nightly+sha.$GITHUB_SHA.linux-x64
 
       - name: Archive published API
         run: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
@@ -40,6 +44,10 @@ jobs:
           --configuration Release
           --self-contained true
           -p:PublishSingleFile=true
+          -p:VersionPrefix=0.1.0
+          -p:VersionSuffix=nightly
+          -p:AssemblyVersion=0.1.0.$GITHUB_RUN_ID
+          -p:InformationalVersion=gnomeshade_desktop-0.1.0-nightly+sha.$GITHUB_SHA.linux-x64
 
       - name: Archive published desktop application
         run: zip -r -9 gnomeshade_desktop_win-x64.zip .
