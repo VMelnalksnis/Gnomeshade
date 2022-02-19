@@ -18,7 +18,7 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Publish API
-        run: |
+        run: >
           dotnet
           publish
           source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
@@ -28,13 +28,13 @@ jobs:
           -p:PublishSingleFile=true
 
       - name: Archive published API
-        run: |
+        run: >
           zip -r 
           source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish/gnomeshade_linux-x64.zip
           source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish/
 
       - name: Publish desktop application
-        run: |
+        run: >
           dotnet
           publish
           source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj 
