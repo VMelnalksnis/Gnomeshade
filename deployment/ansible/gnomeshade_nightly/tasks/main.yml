@@ -13,10 +13,38 @@
 - name: Download Gnomeshade
   get_url:
     url: '{{ gnomeshade_binary_url }}'
-    dest: '{{ gnomeshade_install_filepath }}'
+    dest: '/tmp/gnomeshade_linux-x64.zip'
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0640'
+
+- name: Extract files to installation directory
+  unarchive:
+    src: '/tmp/gnomeshade_linux-x64.zip'
+    dest: '{{ gnomeshade_install_directory }}'
+    remote_src: yes
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0640'
+
+- name: Remove downloaded files
+  file:
+    path: '/tmp/gnomeshade_linux-x64.zip'
+    state: absent
+
+- name: Rename executable
+  copy:
+    src: '{{ gnomeshade_install_directory }}/Gnomeshade.Interfaces.WebApi'
+    dst: '{{ gnomeshade_install_filepath }}'
+    remote_src: yes
     owner: '{{ gnomeshade_user }}'
     group: '{{ gnomeshade_group }}'
     mode: '0750'
+
+- name: Remove original executable
+  file:
+    path: '{{ gnomeshade_install_directory }}/Gnomeshade.Interfaces.WebApi'
+    state: absent
 
 - name: Create configuration
   template:

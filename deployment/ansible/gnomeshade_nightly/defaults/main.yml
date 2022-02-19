@@ -1,4 +1,4 @@
-gnomeshade_binary_url: 'https://github.com/VMelnalksnis/Gnomeshade/releases/download/nightly/Gnomeshade.Interfaces.WebApi'
+gnomeshade_binary_url: 'https://github.com/VMelnalksnis/Gnomeshade/releases/download/nightly/gnomeshade_linux-x64.zip'
 
 gnomeshade_install_directory: '/opt/gnomeshade'
 gnomeshade_install_filepath: '{{ gnomeshade_install_directory }}/gnomeshade'
