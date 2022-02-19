@@ -21,7 +21,7 @@ jobs:
         run: dotnet restore
 
       - name: Publish API
-        run: dotnet publish source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj --runtime linux-x64 --configuration Release --self-contained true -p:PublishSingleFile=true
+        run: dotnet publish source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj --runtime linux-x64 --configuration Release --self-contained true -p:OutputType=Exe -p:PublishSingleFile=true
 
       - uses: pyTooling/Actions/releaser@r0
         with:
@@ -29,4 +29,4 @@ jobs:
           tag: nightly
           rm: true
           files: |
-            **/Gnomeshade.Interfaces.WebApi.exe
+            **/publish/Gnomeshade.Interfaces.WebApi*
