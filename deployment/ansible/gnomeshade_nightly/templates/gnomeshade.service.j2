@@ -6,6 +6,7 @@ Wants=network-online.target
 
 [Service]
 WorkingDirectory={{ gnomeshade_config_directory }}
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 ExecStart={{ gnomeshade_install_filepath }}
 ExecReload=/bin/kill -s HUP $MAINPID
