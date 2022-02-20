@@ -13,8 +13,6 @@ internal static class KestrelConfiguration
 {
 	internal static void ConfigureOptions(WebHostBuilderContext context, KestrelServerOptions options)
 	{
-		var tlsOptions = context.Configuration.GetValid<TlsOptions>();
-
 		options.ConfigureHttpsDefaults(httpsOptions =>
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -22,6 +20,7 @@ internal static class KestrelConfiguration
 				return;
 			}
 
+			var tlsOptions = context.Configuration.GetValid<TlsOptions>();
 			httpsOptions.OnAuthenticate = (_, sslAuthenticationOptions) =>
 			{
 				if (tlsOptions.CipherSuites is not null)
