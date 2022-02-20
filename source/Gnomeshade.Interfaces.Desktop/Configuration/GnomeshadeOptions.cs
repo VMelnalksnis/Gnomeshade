@@ -7,7 +7,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Gnomeshade.Interfaces.Desktop.Configuration;
 
-internal sealed record GnomeshadeOptions([property: Required] Uri BaseAddress)
+/// <summary>
+/// Settings for accessing gnomeshade API.
+/// </summary>
+public sealed record GnomeshadeOptions
 {
 	internal const string _sectionName = "Gnomeshade";
+
+	/// <summary>
+	/// Gets the gnomeshade API base address.
+	/// </summary>
+	[Required]
+	public Uri BaseAddress { get; init; } = null!;
 }

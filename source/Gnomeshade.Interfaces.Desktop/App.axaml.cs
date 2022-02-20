@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Net.Http;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -58,14 +59,19 @@ public sealed class App : Application
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
 		serviceCollection.AddHttpClient<IOAuth2Client, KeycloakOAuth2Client>();
-		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
+		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>(nameof(GnomeshadeClient), (provider, client) =>
 		{
 			var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
 			client.BaseAddress = gnomeshadeOptions.Value.BaseAddress;
 		});
 
 		serviceCollection
-			.AddSingleton<IGnomeshadeClient, GnomeshadeClient>()
+			.AddSingleton<IGnomeshadeClient, GnomeshadeClient>(provider =>
+			{
+				var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
+				var httpClient = httpClientFactory.CreateClient(nameof(GnomeshadeClient));
+				return new(httpClient);
+			})
 			.AddSingleton<IOAuth2Client, KeycloakOAuth2Client>()
 			.AddSingleton<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<MainWindowViewModel>();
