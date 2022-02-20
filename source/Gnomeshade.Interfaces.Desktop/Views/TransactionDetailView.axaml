@@ -38,6 +38,11 @@
 				Command="{ReflectionBinding DeleteItemAsync}">
 				Delete Selected
 			</Button>
+			<Button
+				IsEnabled="{Binding CanSplitItem}"
+				Command="{ReflectionBinding SplitItem}">
+				Split Selected
+			</Button>
 		</StackPanel>
 
 		<DataGrid

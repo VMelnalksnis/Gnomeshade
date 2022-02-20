@@ -4,12 +4,12 @@
 
 using JetBrains.Annotations;
 
+using static JetBrains.Annotations.ImplicitUseKindFlags;
+
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
-/// <summary>
-/// Marker interface for matching views with view models.
-/// </summary>
+/// <summary>Marker interface for matching views with view models.</summary>
 /// <typeparam name="TViewModel">The view model for this view.</typeparam>
-public interface IView<[UsedImplicitly] TViewModel>
+public interface IView<[UsedImplicitly(InstantiatedNoFixedConstructorSignature)] TViewModel>
 {
 }

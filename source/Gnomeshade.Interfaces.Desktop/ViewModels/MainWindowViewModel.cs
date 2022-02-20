@@ -9,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 
 using Gnomeshade.Interfaces.Desktop.Authentication;
+using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -239,15 +240,26 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToTransactionDetailAsync(Guid id)
 	{
-		var transactionDetailViewModel =
-			await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
+		var transactionDetailViewModel = await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
+		transactionDetailViewModel.ItemSplit += TransactionDetailViewModelOnItemSplit;
 		ActiveView = transactionDetailViewModel;
+	}
+
+	private async Task SwitchToTransactionSplitAsync(TransactionItem transactionItem, Guid transactionId)
+	{
+		var transactionItemSplitViewModel = await TransactionItemSplitViewModel.CreateAsync(_gnomeshadeClient, transactionItem, transactionId).ConfigureAwait(false);
+		ActiveView = transactionItemSplitViewModel;
 	}
 
 	private async Task SwitchToAccountDetailAsync(Guid id)
 	{
 		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, id);
 		ActiveView = accountDetailViewModel;
+	}
+
+	private void TransactionDetailViewModelOnItemSplit(object? sender, TransactionItemSplitEventArgs e)
+	{
+		Task.Run(() => SwitchToTransactionSplitAsync(e.TransactionItem, e.TransactionId)).Wait();
 	}
 
 	private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
@@ -345,7 +357,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 				transactionCreationViewModel.TransactionCreated -= OnTransactionCreated;
 				break;
 
-			case TransactionDetailViewModel:
+			case TransactionDetailViewModel transactionDetailViewModel:
+				transactionDetailViewModel.ItemSplit -= TransactionDetailViewModelOnItemSplit;
 				break;
 
 			case TransactionItemCreationViewModel transactionItemCreationViewModel:

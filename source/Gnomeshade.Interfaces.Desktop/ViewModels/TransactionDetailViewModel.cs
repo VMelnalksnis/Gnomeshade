@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -40,6 +41,9 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		_initialId = initialId;
 		ItemCreation = itemCreationViewModel;
 	}
+
+	/// <summary>Raised when an item has been selected for splitting.</summary>
+	public event EventHandler<TransactionItemSplitEventArgs>? ItemSplit;
 
 	/// <summary>
 	/// Gets or sets the book date of the transaction.
@@ -74,13 +78,18 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	public TransactionItem? SelectedItem
 	{
 		get => _selectedItem;
-		set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem));
+		set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem), nameof(CanSplitItem));
 	}
 
 	/// <summary>
 	/// Gets a value indicating whether the <see cref="SelectedItem"/> can be deleted.
 	/// </summary>
 	public bool CanDeleteItem => SelectedItem is not null && Items.Count() > 1;
+
+	/// <summary>
+	/// Gets a value indicating whether the <see cref="SelectedItem"/> can be split into multiple items.
+	/// </summary>
+	public bool CanSplitItem => SelectedItem is not null;
 
 	/// <summary>
 	/// Gets a typed collection of all transaction items.
@@ -176,6 +185,14 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		SelectedItem = null;
 
 		await GetTransactionAsync(_initialId).ConfigureAwait(false);
+	}
+
+	/// <summary>
+	/// Splits the <see cref="SelectedItem"/> into multiple items.
+	/// </summary>
+	public void SplitItem()
+	{
+		ItemSplit?.Invoke(this, new(SelectedItem!, _initialId));
 	}
 
 	private async Task GetTransactionAsync(Guid id)

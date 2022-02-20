@@ -75,6 +75,22 @@ public static class DesignTimeData
 	public static TransactionItemCreationViewModel TransactionItemCreationViewModel { get; } =
 		TransactionItemCreationViewModel.CreateAsync(GnomeshadeClient).Result;
 
+	internal static TransactionItemSplitViewModel TransactionItemSplitViewModel { get; } =
+		TransactionItemSplitViewModel.CreateAsync(
+			GnomeshadeClient,
+			new()
+			{
+				SourceAccount = "Credit",
+				SourceCurrency = "EUR",
+				SourceAmount = 123.45m,
+				TargetAccount = "Amazon",
+				TargetCurrency = "EUR",
+				TargetAmount = 123.45m,
+				Product = "Bread",
+				Amount = 0.5m,
+			},
+			Guid.Empty).Result;
+
 	/// <summary>
 	/// Gets an instance of <see cref="TransactionDetailViewModel"/> for use during design time.
 	/// </summary>
