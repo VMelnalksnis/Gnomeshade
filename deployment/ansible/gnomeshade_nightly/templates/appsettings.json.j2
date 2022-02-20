@@ -1,5 +1,36 @@
 {
-    "urls": "{{ gnomeshade_urls }}"
+	"Kestrel": {
+		"EndpointDefaults": {
+			"Protocols": "Http1AndHttp2"
+		},
+		"Endpoints": {
+			"Https": {
+				"Url": "{{ gnomeshade_url }}",
+
+				"CheckCertificateRevocation": true,
+				"ClientCertificateMode": "RequireCertificate",
+				"SslProtocols": ["Tls13"],
+			}
+		},
+		"Certificates": {
+			"Default": {
+				"Path": "{{ gnomeshade_certificate_path }}",
+				"Password": "{{ gnomeshade_certificate_password }}"
+			}
+		}
+	},
+	"Tls": {
+		"CipherSuites": [
+			"TLS_AES_128_GCM_SHA256",
+			"TLS_AES_256_GCM_SHA384",
+			"TLS_CHACHA20_POLY1305_SHA256"
+		]
+	},
+{% if gnomeshade_elasticapm is not defined %}
+    "ElasticApm": {
+        "Enabled": false
+    },
+{% endif %}
     "ConnectionStrings": {
         "FinanceDb": "{{ gnomeshade_connection_string_finance }}",
         "IdentityDb": "{{ gnomeshade_connection_string_identity }}"
@@ -10,6 +41,7 @@
         "ValidIssuer": "{{ gnomeshade_jwt_valid_issuer }}",
         "Secret": "{{ gnomeshade_jwt_secret }}"
     },
+{% if gnomeshade_oauth2_providers is defined %}
     "OAuth2Providers": {
 {% for provider in gnomeshade_oauth2_providers %}
         "{{ provider.name }}": {
@@ -20,4 +52,5 @@
 		}
 {% endfor %}
 	}
+{% endif %}
 }

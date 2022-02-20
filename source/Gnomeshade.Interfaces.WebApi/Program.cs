@@ -55,6 +55,8 @@ public static class Program
 	[PublicAPI]
 	public static IWebHostBuilder CreateWebHostBuilder(string[] args)
 	{
-		return WebHost.CreateDefaultBuilder<Startup>(args);
+		return WebHost
+			.CreateDefaultBuilder<Startup>(args)
+			.ConfigureKestrel(KestrelConfiguration.ConfigureOptions);
 	}
 }

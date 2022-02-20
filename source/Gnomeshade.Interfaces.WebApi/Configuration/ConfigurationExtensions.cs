@@ -9,21 +9,21 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.Configuration;
 
+using static JetBrains.Annotations.ImplicitUseKindFlags;
+using static JetBrains.Annotations.ImplicitUseTargetFlags;
+
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
-/// <summary>
-/// Provides methods to validate objects based on DataAnnotations.
-/// </summary>
-public static class ConfigurationExtensions
+internal static class ConfigurationExtensions
 {
-	public static TOptions GetValid<[MeansImplicitUse(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]TOptions>(this IConfiguration configuration)
+	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(this IConfiguration configuration)
 		where TOptions : notnull
 	{
 		var sectionName = typeof(TOptions).GetSectionName();
 		return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
 	}
 
-	public static string GetSectionName(this Type type)
+	internal static string GetSectionName(this Type type)
 	{
 		return type.Name.EndsWith("Options")
 			? type.Name[..type.Name.LastIndexOf("Options", StringComparison.Ordinal)]

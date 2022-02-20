@@ -9,7 +9,9 @@ gnomeshade_config_filepath: '{{ gnomeshade_config_directory }}/appsettings.json'
 gnomeshade_user: 'gnomeshade'
 gnomeshade_group: 'gnomeshade'
 
-gnomeshade_urls: 'http://localhost:8297'
+gnomeshade_url: 'https://localhost:8297'
+gnomeshade_certificate_path: 'certificate.pfx'
+gnomeshade_certificate_password: 'changeme'
 
 gnomeshade_connection_string_finance: 'Server = localhost; Port = 5432; Database = gnomeshade; User Id = gnomeshade; Include Error Detail = true;'
 gnomeshade_connection_string_identity: 'Server = localhost; Port = 5432; Database = gnomeshade-identity; User Id = gnomeshade; Include Error Detail = true;'
@@ -21,7 +23,7 @@ gnomeshade_jwt_secret: '00000000000000000000000000000000'
 
 gnomeshade_oauth2_providers:
   - name: 'Keycloak'
-    server_realm: 'http://keycloak.local/auth/realms/gnomeshade'
-    metadata: 'http://keycloak.local/auth/realms/gnomeshade/.well-known/openid-configuration'
+    server_realm: 'https://keycloak.local/auth/realms/gnomeshade'
+    metadata: 'https://keycloak.local/auth/realms/gnomeshade/.well-known/openid-configuration'
     client_id: 'gnomeshade'
     client_secret: '00000000-0000-0000-0000-000000000000'
