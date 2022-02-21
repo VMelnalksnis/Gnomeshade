@@ -182,7 +182,8 @@ public sealed class ImportViewModel : ViewModelBase
 		UserAccount = $"{result.UserAccount.Name}{(accountNumber is null ? null : $"({accountNumber})")}";
 
 		var accounts = result.AccountReferences.Select(reference => reference.Account).ToList();
-		var accountRows = accounts.Translate().ToList();
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var accountRows = accounts.Translate(counterparties).ToList();
 		Accounts = new(accountRows);
 
 		var transactions = result.TransactionReferences.Select(reference => reference.Transaction);
@@ -202,10 +203,11 @@ public sealed class ImportViewModel : ViewModelBase
 	{
 		// todo do not get all accounts
 		var accounts = await _gnomeshadeClient.GetAccountsAsync();
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
 		if (Accounts is not null)
 		{
 			var usedAccounts = accounts.Where(account => Accounts.Any(row => row.Name == account.Name));
-			var accountRows = usedAccounts.Translate().ToList();
+			var accountRows = usedAccounts.Translate(counterparties).ToList();
 			Accounts = new(accountRows);
 		}
 

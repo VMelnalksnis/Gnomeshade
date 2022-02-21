@@ -25,11 +25,11 @@ public sealed class AccountViewModel : ViewModelBase
 {
 	private AccountOverviewRow? _selectedAccount;
 
-	private AccountViewModel(List<Account> accounts)
+	private AccountViewModel(List<Account> accounts, List<Counterparty> counterparties)
 	{
-		var accountOverviewRows = accounts.Translate().ToList();
+		var accountOverviewRows = accounts.Translate(counterparties).ToList();
 		Accounts = new(accountOverviewRows);
-		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Name);
+		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Counterparty);
 		DataGridView.GroupDescriptions.Add(group);
 	}
 
@@ -64,8 +64,9 @@ public sealed class AccountViewModel : ViewModelBase
 	/// <returns>A new instance of <see cref="AccountViewModel"/>.</returns>
 	public static async Task<AccountViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
+		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
 		var accounts = await gnomeshadeClient.GetAccountsAsync();
-		return new(accounts);
+		return new(accounts, counterparties);
 	}
 
 	/// <summary>

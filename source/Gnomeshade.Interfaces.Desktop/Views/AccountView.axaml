@@ -26,6 +26,10 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn
 					x:DataType="m:AccountOverviewRow"
+					Header="Name" IsReadOnly="True"
+					Binding="{Binding Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="m:AccountOverviewRow"
 					Header="Currency" IsReadOnly="True"
 					Binding="{Binding Currency, Mode=OneWay}" />
 				<DataGridTextColumn

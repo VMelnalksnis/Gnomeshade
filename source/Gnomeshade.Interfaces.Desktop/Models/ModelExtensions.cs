@@ -20,15 +20,21 @@ public static class ModelExtensions
 {
 	[LinqTunnel]
 	[Pure]
-	public static IEnumerable<AccountOverviewRow> Translate(this IEnumerable<Account> accounts)
+	public static IEnumerable<AccountOverviewRow> Translate(this IEnumerable<Account> accounts, List<Counterparty> counterparties)
 	{
 		return accounts
 			.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
-			.Select(tuple => new AccountOverviewRow(tuple.account.Id)
+			.Select(tuple =>
 			{
-				Name = tuple.account.Name,
-				Currency = tuple.inCurrency.Currency.AlphabeticCode,
-				Disabled = tuple.inCurrency.Disabled,
+				var counterparty = counterparties.Single(c => c.Id == tuple.account.CounterpartyId);
+				return new AccountOverviewRow(tuple.account.Id)
+				{
+					Name = tuple.account.Name,
+					Currency = tuple.inCurrency.Currency.AlphabeticCode,
+					Disabled = tuple.inCurrency.Disabled,
+					Counterparty = counterparty.Name,
+					CounterpartyId = counterparty.Id,
+				};
 			});
 	}
 

@@ -16,6 +16,8 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 	private readonly string _name = string.Empty;
 	private readonly string _currency = string.Empty;
 	private readonly bool _disabled;
+	private string _counterparty;
+	private Guid _counterpartyId;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AccountOverviewRow"/> class.
@@ -56,5 +58,17 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 	{
 		get => _disabled;
 		init => SetAndNotify(ref _disabled, value, nameof(Disabled));
+	}
+
+	public string Counterparty
+	{
+		get => _counterparty;
+		set => SetAndNotify(ref _counterparty, value);
+	}
+
+	public Guid CounterpartyId
+	{
+		get => _counterpartyId;
+		set => SetAndNotify(ref _counterpartyId, value);
 	}
 }
