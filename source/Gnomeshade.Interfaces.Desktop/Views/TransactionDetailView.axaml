@@ -53,30 +53,50 @@
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
+					<DataTemplate x:DataType="m:TransactionItem">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+							<TextBlock Text="from"/>
+							<TextBlock Text="{Binding SourceAccount, Mode=OneWay}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
+					<DataTemplate x:DataType="m:TransactionItem">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+							<TextBlock Text="to"/>
+							<TextBlock Text="{Binding TargetAccount, Mode=OneWay}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
-					Header="Source Account" IsReadOnly="True"
-					Binding="{Binding SourceAccount, Mode=OneWay}" />
+					Header="Product" IsReadOnly="True"
+					Binding="{Binding Product, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
-					Header="Target Account" IsReadOnly="True"
-					Binding="{Binding TargetAccount, Mode=OneWay}" />
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
-					Header="Source Amount" IsReadOnly="True"
-					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+					Header="Bank Reference" IsReadOnly="True"
+					Binding="{Binding BankReference, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
-					Header="Source Currency" IsReadOnly="True"
-					Binding="{Binding SourceCurrency, Mode=OneWay}" />
+					Header="External Reference" IsReadOnly="True"
+					Binding="{Binding ExternalReference, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="m:TransactionItem"
-					Header="Target Amount" IsReadOnly="True"
-					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-				<DataGridTextColumn
-					x:DataType="m:TransactionItem"
-					Header="Target Currency" IsReadOnly="True"
-					Binding="{Binding TargetCurrency, Mode=OneWay}" />
+					Header="Internal Reference" IsReadOnly="True"
+					Binding="{Binding InternalReference, Mode=OneWay}" />
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>

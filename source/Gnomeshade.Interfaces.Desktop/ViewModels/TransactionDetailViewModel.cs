@@ -231,6 +231,9 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 						TargetAmount = item.TargetAmount,
 						SourceCurrency = sourceCurrency.AlphabeticCode,
 						TargetCurrency = targetCurrency.AlphabeticCode,
+						BankReference = item.BankReference,
+						ExternalReference = item.ExternalReference,
+						InternalReference = item.InternalReference,
 					};
 				}).ToList();
 

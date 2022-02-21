@@ -10,67 +10,88 @@ namespace Gnomeshade.Interfaces.Desktop.Models;
 
 public sealed class TransactionItem : PropertyChangedBase
 {
-	private decimal _sourceAmount;
-	private string _sourceAccount;
-	private decimal _targetAmount;
-	private string _targetAccount;
-	private string _product;
-	private decimal _amount;
-	private string _sourceCurrency;
-	private string _targetCurrency;
-	private Guid _id;
+	private readonly decimal _sourceAmount;
+	private readonly string _sourceAccount;
+	private readonly decimal _targetAmount;
+	private readonly string _targetAccount;
+	private readonly string _product;
+	private readonly decimal _amount;
+	private readonly string _sourceCurrency;
+	private readonly string _targetCurrency;
+	private readonly string? _bankReference;
+	private readonly string? _externalReference;
+	private readonly string? _internalReference;
+	private readonly Guid _id;
 
 	public Guid Id
 	{
 		get => _id;
-		set => SetAndNotify(ref _id, value, nameof(Id));
+		init => SetAndNotify(ref _id, value, nameof(Id));
 	}
 
 	public decimal SourceAmount
 	{
 		get => _sourceAmount;
-		set => SetAndNotify(ref _sourceAmount, value, nameof(SourceAmount));
+		init => SetAndNotify(ref _sourceAmount, value, nameof(SourceAmount));
 	}
 
 	public string SourceAccount
 	{
 		get => _sourceAccount;
-		set => SetAndNotify(ref _sourceAccount, value, nameof(SourceAccount));
+		init => SetAndNotify(ref _sourceAccount, value, nameof(SourceAccount));
 	}
 
 	public string SourceCurrency
 	{
 		get => _sourceCurrency;
-		set => SetAndNotify(ref _sourceCurrency, value, nameof(SourceCurrency));
+		init => SetAndNotify(ref _sourceCurrency, value, nameof(SourceCurrency));
 	}
 
 	public decimal TargetAmount
 	{
 		get => _targetAmount;
-		set => SetAndNotify(ref _targetAmount, value, nameof(TargetAmount));
+		init => SetAndNotify(ref _targetAmount, value, nameof(TargetAmount));
 	}
 
 	public string TargetAccount
 	{
 		get => _targetAccount;
-		set => SetAndNotify(ref _targetAccount, value, nameof(TargetAccount));
+		init => SetAndNotify(ref _targetAccount, value, nameof(TargetAccount));
 	}
 
 	public string TargetCurrency
 	{
 		get => _targetCurrency;
-		set => SetAndNotify(ref _targetCurrency, value, nameof(TargetCurrency));
+		init => SetAndNotify(ref _targetCurrency, value, nameof(TargetCurrency));
 	}
 
 	public string Product
 	{
 		get => _product;
-		set => SetAndNotify(ref _product, value, nameof(Product));
+		init => SetAndNotify(ref _product, value, nameof(Product));
 	}
 
 	public decimal Amount
 	{
 		get => _amount;
-		set => SetAndNotify(ref _amount, value, nameof(Amount));
+		init => SetAndNotify(ref _amount, value, nameof(Amount));
+	}
+
+	public string? BankReference
+	{
+		get => _bankReference;
+		init => SetAndNotify(ref _bankReference, value);
+	}
+
+	public string? ExternalReference
+	{
+		get => _externalReference;
+		init => SetAndNotify(ref _externalReference, value);
+	}
+
+	public string? InternalReference
+	{
+		get => _internalReference;
+		init => SetAndNotify(ref _internalReference, value);
 	}
 }
