@@ -24,6 +24,10 @@ public interface IAccountClient
 	/// <returns>The counterparty with the specified id if it exists; otherwise <see langword="null"/>.</returns>
 	Task<Counterparty> GetCounterpartyAsync(Guid id);
 
+	/// <summary>Gets all counterparties.</summary>
+	/// <returns>A collection of all counterparties.</returns>
+	Task<List<Counterparty>> GetCounterpartiesAsync();
+
 	/// <summary>Creates a new counterparty.</summary>
 	/// <param name="counterparty">The counterparty to create.</param>
 	/// <returns>The id of the created counterparty.</returns>

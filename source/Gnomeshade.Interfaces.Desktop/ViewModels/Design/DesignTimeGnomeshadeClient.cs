@@ -21,6 +21,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 {
 	private static readonly List<Currency> _currencies;
+	private static readonly List<Counterparty> _counterparties;
 	private static readonly List<Account> _accounts;
 	private static readonly List<Unit> _units;
 	private static readonly List<Product> _products;
@@ -32,10 +33,14 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
 		_currencies = new() { euro, usd };
 
+		var counterparty = new Counterparty { Id = Guid.NewGuid(), Name = "John Doe" };
+		_counterparties = new() { counterparty };
+
 		var cash = new Account
 		{
 			Id = Guid.Empty,
 			Name = "Cash",
+			CounterpartyId = counterparty.Id,
 			PreferredCurrency = euro,
 			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
 		};
@@ -43,6 +48,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		{
 			Id = Guid.NewGuid(),
 			Name = "Spending",
+			CounterpartyId = counterparty.Id,
 			PreferredCurrency = euro,
 			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
 		};
@@ -103,7 +109,11 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Counterparty> GetCounterpartyAsync(Guid id) => throw new NotImplementedException();
+	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>
+		Task.FromResult(_counterparties.Single(counterparty => counterparty.Id == id));
+
+	/// <inheritdoc />
+	public Task<List<Counterparty>> GetCounterpartiesAsync() => Task.FromResult(_counterparties.ToList());
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>

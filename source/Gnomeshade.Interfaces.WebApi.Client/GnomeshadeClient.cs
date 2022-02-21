@@ -94,6 +94,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<Counterparty>(CounterpartyIdUri(id));
 
 	/// <inheritdoc />
+	public Task<List<Counterparty>> GetCounterpartiesAsync() =>
+		GetAsync<List<Counterparty>>(CounterpartyUri);
+
+	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
 		PostAsync(CounterpartyUri, counterparty);
 
