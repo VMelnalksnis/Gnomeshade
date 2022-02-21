@@ -28,9 +28,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 {
 	private readonly HttpClient _httpClient;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="GnomeshadeClient"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="GnomeshadeClient"/> class.</summary>
 	/// <param name="httpClient">The HTTP client to use for requests.</param>
 	public GnomeshadeClient(HttpClient httpClient)
 	{
@@ -90,6 +88,21 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
 		GetAsync<Counterparty>("Counterparty/Me");
+
+	/// <inheritdoc />
+	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>
+		GetAsync<Counterparty>(CounterpartyIdUri(id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
+		PostAsync(CounterpartyUri, counterparty);
+
+	/// <inheritdoc />
+	public async Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId)
+	{
+		using var response = await _httpClient.PostAsync(CounterpartyMergeUri(targetId, sourceId), null);
+		await ThrowIfNotSuccessCode(response);
+	}
 
 	/// <inheritdoc/>
 	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>

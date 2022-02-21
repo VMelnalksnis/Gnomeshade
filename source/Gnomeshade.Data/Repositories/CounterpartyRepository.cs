@@ -4,19 +4,18 @@
 
 using System;
 using System.Data;
+using System.Threading.Tasks;
+
+using Dapper;
 
 using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="CounterpartyEntity"/> repository.
-/// </summary>
+/// <summary>Database backed <see cref="CounterpartyEntity"/> repository.</summary>
 public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public CounterpartyRepository(IDbConnection dbConnection)
 		: base(dbConnection)
@@ -37,4 +36,15 @@ public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 
 	/// <inheritdoc />
 	protected override string FindSql => $"WHERE c.id = @id AND ownerships.user_id = @ownerId {_accessSql}";
+
+	/// <summary>Merges one counterparty into another.</summary>
+	/// <param name="targetId">The id of the counterparty into which to merge.</param>
+	/// <param name="sourceId">The id of the counterparty which to merge into the other one.</param>
+	/// <param name="ownerId">The id of the owner of the counterparties.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId)
+	{
+		var command = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId });
+		return DbConnection.ExecuteAsync(command);
+	}
 }

@@ -17,9 +17,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 
-/// <summary>
-/// An implementation of <see cref="IGnomeshadeClient"/> for use during design time.
-/// </summary>
+/// <summary>An implementation of <see cref="IGnomeshadeClient"/> for use during design time.</summary>
 public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 {
 	private static readonly List<Currency> _currencies;
@@ -103,6 +101,16 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Counterparty> GetCounterpartyAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>

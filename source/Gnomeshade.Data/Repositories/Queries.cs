@@ -54,6 +54,8 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(Counterparty)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Counterparty)}.Select.sql");
+
+		internal static string Merge { get; } = Read($"Queries.{nameof(Counterparty)}.Merge.sql");
 	}
 
 	internal static class Currency
