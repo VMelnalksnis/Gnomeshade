@@ -163,6 +163,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = accountViewModel;
 	}
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToCounterpartiesAsync()
+	{
+		if (ActiveView is CounterpartyViewModel)
+		{
+			return;
+		}
+
+		var counterpartyViewModel = await CounterpartyViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		ActiveView = counterpartyViewModel;
+	}
+
 	/// <summary>
 	/// Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.
 	/// </summary>

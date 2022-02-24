@@ -20,6 +20,6 @@ public class AccountViewModelTests
 	{
 		var viewModel = await AccountViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
 
-		viewModel.DataGridView.Groups.Should().HaveCount(2);
+		viewModel.DataGridView.Groups.Should().ContainSingle();
 	}
 }
