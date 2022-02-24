@@ -22,7 +22,7 @@ namespace Gnomeshade.Data.Repositories;
 public abstract class Repository<TEntity> : IDisposable
 	where TEntity : class, IEntity
 {
-	protected const string _accessSql = "AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
+	internal const string _accessSql = "AND ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.
@@ -56,7 +56,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <summary>
 	/// Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.
 	/// </summary>
-	protected virtual string FindSql => $"WHERE id = @id AND owner_id = @ownerId {_accessSql};";
+	protected virtual string FindSql => $"WHERE id = @id {_accessSql};";
 
 	/// <summary>
 	/// Gets the SQL query for updating entities.
@@ -114,7 +114,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>A collection of all entities.</returns>
 	public Task<IEnumerable<TEntity>> GetAllAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var command = new CommandDefinition(SelectSql, new { ownerId }, cancellationToken: cancellationToken);
+		var command = new CommandDefinition($"{SelectSql} {_accessSql}", new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
 

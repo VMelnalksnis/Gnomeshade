@@ -33,7 +33,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
 		_currencies = new() { euro, usd };
 
-		var counterparty = new Counterparty { Id = Guid.NewGuid(), Name = "John Doe" };
+		var counterparty = new Counterparty { Id = Guid.Empty, Name = "John Doe" };
 		_counterparties = new() { counterparty };
 
 		var cash = new Account
@@ -117,6 +117,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />

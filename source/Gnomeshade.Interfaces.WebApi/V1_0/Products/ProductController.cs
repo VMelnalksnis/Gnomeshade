@@ -114,7 +114,7 @@ public sealed class ProductController : FinanceControllerBase<ProductEntity, Pro
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
+			NormalizedName = normalizedName,
 		};
 
 		_ = await _repository.AddAsync(product);

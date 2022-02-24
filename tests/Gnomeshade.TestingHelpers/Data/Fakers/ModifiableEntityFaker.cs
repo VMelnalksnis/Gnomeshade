@@ -16,6 +16,7 @@ public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
 {
 	protected ModifiableEntityFaker(Guid userId)
 	{
+		RuleFor(entity => entity.Id, Guid.NewGuid);
 		RuleFor(entity => entity.OwnerId, userId);
 		RuleFor(entity => entity.CreatedByUserId, userId);
 		RuleFor(entity => entity.ModifiedByUserId, userId);

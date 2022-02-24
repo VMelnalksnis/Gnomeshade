@@ -26,6 +26,7 @@
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Merge.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>

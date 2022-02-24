@@ -13,9 +13,7 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data;
 
-/// <summary>
-/// Performs bulk actions on account entities.
-/// </summary>
+/// <summary>Performs bulk actions on account entities.</summary>
 public sealed class AccountUnitOfWork : IDisposable
 {
 	private readonly IDbConnection _dbConnection;
@@ -23,9 +21,7 @@ public sealed class AccountUnitOfWork : IDisposable
 	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly CounterpartyRepository _counterpartyRepository;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountUnitOfWork"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountUnitOfWork"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	/// <param name="repository">The repository for managing accounts.</param>
 	/// <param name="inCurrencyRepository">The repository for managing accounts in currencies.</param>
@@ -42,9 +38,7 @@ public sealed class AccountUnitOfWork : IDisposable
 		_counterpartyRepository = counterpartyRepository;
 	}
 
-	/// <summary>
-	/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.
-	/// </summary>
+	/// <summary>Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.</summary>
 	/// <param name="account">The account to create.</param>
 	/// <returns>The id of the created account.</returns>
 	public async Task<Guid> AddAsync(AccountEntity account)
@@ -64,9 +58,7 @@ public sealed class AccountUnitOfWork : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.
-	/// </summary>
+	/// <summary>Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.</summary>
 	/// <param name="account">The account to create.</param>
 	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>The id of the created account.</returns>
@@ -97,9 +89,7 @@ public sealed class AccountUnitOfWork : IDisposable
 		return id;
 	}
 
-	/// <summary>
-	/// Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/> and a counterparty.
-	/// </summary>
+	/// <summary>Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/> and a counterparty.</summary>
 	/// <param name="account">The account to create.</param>
 	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>The id of the created account.</returns>
@@ -107,6 +97,7 @@ public sealed class AccountUnitOfWork : IDisposable
 	{
 		var counterparty = new CounterpartyEntity
 		{
+			Id = Guid.NewGuid(),
 			OwnerId = account.OwnerId,
 			CreatedByUserId = account.CreatedByUserId,
 			ModifiedByUserId = account.ModifiedByUserId,
@@ -120,9 +111,7 @@ public sealed class AccountUnitOfWork : IDisposable
 		return await AddAsync(account, dbTransaction);
 	}
 
-	/// <summary>
-	/// Deletes the specified account and all its currencies.
-	/// </summary>
+	/// <summary>Deletes the specified account and all its currencies.</summary>
 	/// <param name="account">The account to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <returns>The number of affected rows.</returns>
@@ -143,9 +132,7 @@ public sealed class AccountUnitOfWork : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Updates the specified account.
-	/// </summary>
+	/// <summary>Updates the specified account.</summary>
 	/// <param name="account">The account to update.</param>
 	/// <param name="modifiedBy">The user which modified the <paramref name="account"/>.</param>
 	/// <returns>The number of affected rows.</returns>

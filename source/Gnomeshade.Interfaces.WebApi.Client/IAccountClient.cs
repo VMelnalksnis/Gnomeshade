@@ -33,6 +33,12 @@ public interface IAccountClient
 	/// <returns>The id of the created counterparty.</returns>
 	Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty);
 
+	/// <summary>Creates a new counterparty, or replaces and existing one if one exists with the specified id.</summary>
+	/// <param name="id">The id of the counterparty.</param>
+	/// <param name="counterparty">The counterparty to create or update.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty);
+
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty in to which to merge.</param>
 	/// <param name="sourceId">The id of the counterparty which to merge into the other one.</param>

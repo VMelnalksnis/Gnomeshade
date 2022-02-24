@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -89,6 +90,7 @@ public sealed class CounterpartyController : FinanceControllerBase<CounterpartyE
 	{
 		var counterparty = Mapper.Map<CounterpartyEntity>(creationModel) with
 		{
+			Id = Guid.NewGuid(),
 			OwnerId = ApplicationUser.Id,
 			CreatedByUserId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
@@ -97,6 +99,23 @@ public sealed class CounterpartyController : FinanceControllerBase<CounterpartyE
 
 		var id = await _repository.AddAsync(counterparty);
 		return CreatedAtAction(nameof(Get), new { id }, id);
+	}
+
+	/// <summary>Creates a new counterparty, or replaces and existing one if one exists with the specified id.</summary>
+	/// <param name="id">The id of the counterparty.</param>
+	/// <param name="model">The counterparty to create or update.</param>
+	/// <returns>A status code indicating the result of the action.</returns>
+	/// <response code="201">A new counterparty was created.</response>
+	/// <response code="204">An existing counterparty was replaced.</response>
+	/// <response code="409">A counterparty with the specified name already exists.</response>
+	[HttpPut("{id:guid}")]
+	public async Task<ActionResult> Put(Guid id, [FromBody] CounterpartyCreationModel model)
+	{
+		var existingCounterparty = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+
+		return existingCounterparty is null
+			? await CreateCounterpartyAsync(id, model, ApplicationUser)
+			: await UpdateCounterpartyAsync(id, model, ApplicationUser);
 	}
 
 	/// <summary>Merges one counterparty into another.</summary>
@@ -109,6 +128,46 @@ public sealed class CounterpartyController : FinanceControllerBase<CounterpartyE
 	public async Task<ActionResult> Merge(Guid targetId, Guid sourceId)
 	{
 		await _repository.MergeAsync(targetId, sourceId, ApplicationUser.Id);
+		return NoContent();
+	}
+
+	private async Task<ActionResult> CreateCounterpartyAsync(Guid id, CounterpartyCreationModel model, UserEntity user)
+	{
+		var normalizedName = model.Name!.ToUpperInvariant();
+		var conflictingCounterparty = await _repository.FindByNameAsync(normalizedName, user.Id);
+		if (conflictingCounterparty is not null)
+		{
+			return Problem(
+				"Counterparty with the specified name already exists",
+				Url.Action(nameof(Get), new { conflictingCounterparty.Id }),
+				Status409Conflict);
+		}
+
+		var counterparty = Mapper.Map<CounterpartyEntity>(model) with
+		{
+			Id = id,
+			OwnerId = user.Id,
+			CreatedByUserId = user.Id,
+			ModifiedByUserId = user.Id,
+			NormalizedName = normalizedName,
+		};
+
+		_ = await _repository.AddAsync(counterparty);
+		return CreatedAtAction(nameof(Get), new { id }, null);
+	}
+
+	private async Task<ActionResult> UpdateCounterpartyAsync(Guid id, CounterpartyCreationModel model, UserEntity user)
+	{
+		var counterparty = Mapper.Map<CounterpartyEntity>(model) with
+		{
+			Id = id,
+			OwnerId = user.Id,
+			ModifiedByUserId = user.Id,
+			NormalizedName = model.Name!.ToUpperInvariant(),
+		};
+
+		var rows = await _repository.UpdateAsync(counterparty);
+		Debug.Assert(rows > 0, "No rows were changed after update");
 		return NoContent();
 	}
 }

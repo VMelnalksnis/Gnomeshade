@@ -36,5 +36,5 @@ public sealed class UnitRepository : Repository<UnitEntity>
 	protected override string UpdateSql => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE u.id = @id AND ownerships.user_id = @ownerId {_accessSql};";
+	protected override string FindSql => $"WHERE u.id = @id {_accessSql};";
 }

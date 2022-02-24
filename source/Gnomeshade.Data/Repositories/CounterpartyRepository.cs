@@ -13,7 +13,7 @@ using Gnomeshade.Data.Entities;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="CounterpartyEntity"/> repository.</summary>
-public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
+public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
@@ -32,10 +32,13 @@ public sealed class CounterpartyRepository : Repository<CounterpartyEntity>
 	protected override string SelectSql => Queries.Counterparty.Select;
 
 	/// <inheritdoc />
-	protected override string UpdateSql => throw new NotImplementedException();
+	protected override string UpdateSql => Queries.Counterparty.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE c.id = @id AND ownerships.user_id = @ownerId {_accessSql}";
+	protected override string FindSql => $"WHERE c.id = @id {_accessSql}";
+
+	/// <inheritdoc />
+	protected override string NameSql => $"WHERE c.normalized_name = @name {_accessSql};";
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>

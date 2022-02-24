@@ -31,6 +31,48 @@ public class CounterpartyControllerTests
 	}
 
 	[Test]
+	public async Task Put_ShouldUpdateExisting()
+	{
+		var id = Guid.NewGuid();
+		var creationModel = new CounterpartyCreationModel { Name = $"{id:N}" };
+
+		(await FluentActions
+				.Awaiting(() => _gnomeshadeClient.GetCounterpartyAsync(id))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode
+			.Should()
+			.Be(HttpStatusCode.NotFound);
+
+		await _gnomeshadeClient.PutCounterpartyAsync(id, creationModel);
+
+		var counterparty = await _gnomeshadeClient.GetCounterpartyAsync(id);
+
+		creationModel = creationModel with { Name = $"{Guid.NewGuid():N}" };
+		await _gnomeshadeClient.PutCounterpartyAsync(id, creationModel);
+
+		var updatedCounterparty = await _gnomeshadeClient.GetCounterpartyAsync(id);
+		updatedCounterparty
+			.ModifiedAt
+			.Should()
+			.BeAfter(counterparty.ModifiedAt);
+	}
+
+	[Test]
+	public async Task Put_ShouldReturnConflictOnDuplicateName()
+	{
+		var existingName = (await _gnomeshadeClient.GetCounterpartiesAsync()).First().Name;
+
+		(await FluentActions
+				.Awaiting(() => _gnomeshadeClient.PutCounterpartyAsync(Guid.NewGuid(), new() { Name = existingName }))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode
+			.Should()
+			.Be(HttpStatusCode.Conflict);
+	}
+
+	[Test]
 	public async Task Merge_MoveAccountsToTargetCounterparty()
 	{
 		var (firstCounterpartyId, firstAccountId) = await CreateCounterpartyWithAccount();

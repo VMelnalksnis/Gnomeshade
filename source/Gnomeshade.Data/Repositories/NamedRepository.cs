@@ -32,7 +32,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <summary>
 	/// Gets the SQL query to append to <see cref="Repository{TEntity}.SelectSql"/> to filter for a single entity by name.
 	/// </summary>
-	protected virtual string NameSql => $"WHERE normalized_name = @name AND owner_id = @ownerId {_accessSql};";
+	protected virtual string NameSql => $"WHERE normalized_name = @name {_accessSql};";
 
 	/// <summary>
 	/// Finds an entity by its normalized name.

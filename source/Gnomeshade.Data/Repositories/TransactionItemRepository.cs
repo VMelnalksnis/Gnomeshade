@@ -35,5 +35,5 @@ public sealed class TransactionItemRepository : Repository<TransactionItemEntity
 	protected override string UpdateSql => Queries.TransactionItem.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE ti.id = @id AND ownerships.user_id = @ownerId {_accessSql}";
+	protected override string FindSql => $"WHERE ti.id = @id {_accessSql}";
 }

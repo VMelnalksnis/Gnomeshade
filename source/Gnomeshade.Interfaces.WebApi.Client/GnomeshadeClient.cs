@@ -102,6 +102,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PostAsync(CounterpartyUri, counterparty);
 
 	/// <inheritdoc />
+	public Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty) =>
+		PutAsync(CounterpartyIdUri(id), counterparty);
+
+	/// <inheritdoc />
 	public async Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId)
 	{
 		using var response = await _httpClient.PostAsync(CounterpartyMergeUri(targetId, sourceId), null);

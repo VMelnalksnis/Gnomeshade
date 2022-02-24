@@ -65,6 +65,7 @@ public sealed class UserUnitOfWork : IDisposable
 			_ = await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
 			var counterparty = new CounterpartyEntity
 			{
+				Id = userId,
 				OwnerId = userId,
 				CreatedByUserId = userId,
 				ModifiedByUserId = userId,
