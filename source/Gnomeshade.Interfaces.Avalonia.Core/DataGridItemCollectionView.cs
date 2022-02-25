@@ -11,7 +11,7 @@ using System.Linq;
 using Avalonia.Collections;
 using Avalonia.Data;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 /// <summary>
 /// Strongly typed wrapper for <see cref="DataGridCollectionView"/>,

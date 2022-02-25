@@ -5,7 +5,7 @@
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels;
+using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 

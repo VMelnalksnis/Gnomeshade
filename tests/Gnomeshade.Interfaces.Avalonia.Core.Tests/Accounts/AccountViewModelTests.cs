@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
+using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Accounts;
 
 public class AccountViewModelTests
 {

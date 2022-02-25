@@ -8,7 +8,9 @@ using System.Reflection;
 using Avalonia.Xaml.Interactions.Core;
 using Avalonia.Xaml.Interactivity;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using VMelnalksnis.OAuth2;
 using VMelnalksnis.OAuth2.Responses;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>
 /// An implementation of <see cref="IOAuth2Client"/> for use during design time.

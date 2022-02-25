@@ -10,12 +10,9 @@ using Avalonia.Collections;
 
 using FluentAssertions;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.Desktop.Tests.ViewModels.Binding;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Tests;
 
 public class DataGridItemCollectionViewTests
 {

@@ -15,7 +15,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>An implementation of <see cref="IGnomeshadeClient"/> for use during design time.</summary>
 public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient

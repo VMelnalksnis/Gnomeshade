@@ -8,12 +8,10 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>
 /// Form for creating a single new account.

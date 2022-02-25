@@ -10,14 +10,10 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>
 /// Overview of all accounts.

@@ -13,7 +13,6 @@ using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 

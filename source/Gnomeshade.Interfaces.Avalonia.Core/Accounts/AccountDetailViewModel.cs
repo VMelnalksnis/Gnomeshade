@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>
 /// Form for viewing and editing a single account.

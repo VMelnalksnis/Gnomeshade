@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 using Avalonia.Collections;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 /// <summary>
 /// A strongly typed version of <see cref="DataGridPathGroupDescription"/>.

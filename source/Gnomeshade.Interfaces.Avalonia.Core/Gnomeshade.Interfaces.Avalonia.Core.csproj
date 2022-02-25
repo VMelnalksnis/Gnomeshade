@@ -10,4 +10,9 @@
         <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.10.12"/>
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.12"/>
+    </ItemGroup>
+
 </Project>

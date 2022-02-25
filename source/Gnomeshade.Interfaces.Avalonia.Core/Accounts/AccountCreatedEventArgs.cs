@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>
 /// Event arguments for <see cref="AccountCreationViewModel.AccountCreated"/> event.

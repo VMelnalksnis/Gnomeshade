@@ -4,9 +4,7 @@
 
 using System;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-
-namespace Gnomeshade.Interfaces.Desktop.Models;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>
 /// Single row in account overview.

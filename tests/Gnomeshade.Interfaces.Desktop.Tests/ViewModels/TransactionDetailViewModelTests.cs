@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Desktop.ViewModels;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
 
 using NUnit.Framework;
 
