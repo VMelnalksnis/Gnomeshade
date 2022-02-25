@@ -19,9 +19,7 @@ using TransactionItem = Gnomeshade.Interfaces.Desktop.Models.TransactionItem;
 
 namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 
-/// <summary>
-/// A detailed view of one transaction and its items.
-/// </summary>
+/// <summary>A detailed view of one transaction and its items.</summary>
 public sealed class TransactionDetailViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -45,86 +43,68 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	/// <summary>Raised when an item has been selected for splitting.</summary>
 	public event EventHandler<TransactionItemSplitEventArgs>? ItemSplit;
 
-	/// <summary>
-	/// Gets or sets the book date of the transaction.
-	/// </summary>
+	/// <summary>Gets or sets the book date of the transaction.</summary>
 	public DateTimeOffset Date
 	{
 		get => _date;
-		set => SetAndNotify(ref _date, value, nameof(Date));
+		set => SetAndNotify(ref _date, value);
 	}
 
-	/// <summary>
-	/// Gets or sets the description of the transaction.
-	/// </summary>
+	/// <summary>Gets or sets the description of the transaction.</summary>
 	public string? Description
 	{
 		get => _description;
-		set => SetAndNotify(ref _description, value, nameof(Description));
+		set => SetAndNotify(ref _description, value);
 	}
 
-	/// <summary>
-	/// Gets all transaction items of the current transaction.
-	/// </summary>
+	/// <summary>Gets all transaction items of the current transaction.</summary>
 	/// /// <remarks>
 	/// Collection item data binding to source only works when using <see cref="DataGridCollectionView"/>.
 	/// Otherwise, it would be nice to use a generic collection and remove <see cref="Items"/>.
 	/// </remarks>
 	public DataGridCollectionView DataGridView => Items;
 
-	/// <summary>
-	/// Gets or sets the selected item from <see cref="Items"/>.
-	/// </summary>
+	/// <summary>Gets or sets the selected item from <see cref="Items"/>.</summary>
 	public TransactionItem? SelectedItem
 	{
 		get => _selectedItem;
 		set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem), nameof(CanSplitItem));
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether the <see cref="SelectedItem"/> can be deleted.
-	/// </summary>
+	/// <summary>Gets a value indicating whether the <see cref="SelectedItem"/> can be deleted.</summary>
 	public bool CanDeleteItem => SelectedItem is not null && Items.Count() > 1;
 
-	/// <summary>
-	/// Gets a value indicating whether the <see cref="SelectedItem"/> can be split into multiple items.
-	/// </summary>
+	/// <summary>Gets a value indicating whether the <see cref="SelectedItem"/> can be split into multiple items.</summary>
 	public bool CanSplitItem => SelectedItem is not null;
 
-	/// <summary>
-	/// Gets a typed collection of all transaction items.
-	/// </summary>
+	/// <summary>Gets a typed collection of all transaction items.</summary>
 	public DataGridItemCollectionView<TransactionItem> Items
 	{
 		get => _items;
 		private set
 		{
+			Items.CollectionChanged -= ItemsOnCollectionChanged;
 			SetAndNotifyWithGuard(ref _items, value, nameof(Items), nameof(DataGridView));
 			Items.CollectionChanged += ItemsOnCollectionChanged;
 		}
 	}
 
-	/// <summary>
-	/// Gets the view model for adding a new item to the current transaction.
-	/// </summary>
+	/// <summary>Gets the view model for adding a new item to the current transaction.</summary>
 	public TransactionItemCreationViewModel ItemCreation
 	{
 		get => _itemCreation;
 		private set
 		{
+			ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
 			SetAndNotifyWithGuard(ref _itemCreation, value, nameof(ItemCreation), nameof(CanAddItem));
 			ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
 		}
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether the item from <see cref="ItemCreation"/> can be added.
-	/// </summary>
+	/// <summary>Gets a value indicating whether the item from <see cref="ItemCreation"/> can be added.</summary>
 	public bool CanAddItem => ItemCreation.CanCreate;
 
-	/// <summary>
-	/// Asynchronously creates a new instance of the <see cref="TransactionDetailViewModel"/> class.
-	/// </summary>
+	/// <summary>Asynchronously creates a new instance of the <see cref="TransactionDetailViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="initialId">The id of the initial transaction to display.</param>
 	/// <returns>A new instance of <see cref="TransactionDetailViewModel"/>.</returns>
@@ -138,9 +118,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		return viewModel;
 	}
 
-	/// <summary>
-	/// Add a new item from <see cref="ItemCreation"/> to the current transaction.
-	/// </summary>
+	/// <summary>Add a new item from <see cref="ItemCreation"/> to the current transaction.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AddItemAsync()
 	{
@@ -164,15 +142,14 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 			InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
 		};
 
-		await _gnomeshadeClient.PutTransactionItemAsync(Guid.NewGuid(), _initialId, creationModel).ConfigureAwait(false);
+		await _gnomeshadeClient.PutTransactionItemAsync(Guid.NewGuid(), _initialId, creationModel)
+			.ConfigureAwait(false);
 		ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
 		ItemCreation = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
 		await GetTransactionAsync(_initialId).ConfigureAwait(false);
 	}
 
-	/// <summary>
-	/// Deletes the <see cref="SelectedItem"/>.
-	/// </summary>
+	/// <summary>Deletes the <see cref="SelectedItem"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task DeleteItemAsync()
 	{
@@ -187,9 +164,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		await GetTransactionAsync(_initialId).ConfigureAwait(false);
 	}
 
-	/// <summary>
-	/// Splits the <see cref="SelectedItem"/> into multiple items.
-	/// </summary>
+	/// <summary>Splits the <see cref="SelectedItem"/> into multiple items.</summary>
 	public void SplitItem()
 	{
 		ItemSplit?.Invoke(this, new(SelectedItem!, _initialId));
