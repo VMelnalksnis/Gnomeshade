@@ -45,6 +45,10 @@ public static class DesignTimeData
 	public static CounterpartyViewModel CounterpartyViewModel { get; } =
 		CounterpartyViewModel.CreateAsync(GnomeshadeClient).Result;
 
+	/// <summary>Gets an instance of <see cref="CounterpartyMergeViewModel"/> for use during design time.</summary>
+	public static CounterpartyMergeViewModel CounterpartyMergeViewModel { get; } =
+		CounterpartyMergeViewModel.CreateAsync(GnomeshadeClient).Result;
+
 	/// <summary>Gets an instance of <see cref="CounterpartyUpdateViewModel"/> for use during design time.</summary>
 	public static CounterpartyUpdateViewModel CounterpartyUpdateViewModel { get; } =
 		CounterpartyUpdateViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;

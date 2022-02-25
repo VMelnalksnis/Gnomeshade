@@ -96,6 +96,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = accountCreationViewModel;
 	}
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task MergeCounterpartiesAsync()
+	{
+		if (ActiveView is CounterpartyMergeViewModel)
+		{
+			return;
+		}
+
+		var counterpartyMergeViewModel = await CounterpartyMergeViewModel.CreateAsync(_gnomeshadeClient);
+		ActiveView = counterpartyMergeViewModel;
+	}
+
 	/// <summary>
 	/// Switches <see cref="ActiveView"/> to <see cref="TransactionCreationViewModel"/>.
 	/// </summary>
