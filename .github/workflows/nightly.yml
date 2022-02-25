@@ -12,7 +12,7 @@ jobs:
         runtime: [ win10-x64 ]
         project: [ source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj ]
         archive_command: [ "7z a -mx9 -r gnomeshade_desktop_win-x64.zip" ]
-        directory: [ source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish ]
+        directory: [ source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0-windows/win10-x64/publish ]
         artifact: [ "**/win10-x64/publish/gnomeshade_desktop_win-x64.zip" ]
         include:
           - os: ubuntu-latest
@@ -21,6 +21,13 @@ jobs:
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
+
+          - os: ubuntu-latest
+            runtime: linux-x64
+            project: source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj
+            archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
+            directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/linux-x64/publish
+            artifact: "**/linux-x64/publish/gnomeshade_desktop_linux-x64.zip"
 
     name: Build
     runs-on: ${{ matrix.os }}
