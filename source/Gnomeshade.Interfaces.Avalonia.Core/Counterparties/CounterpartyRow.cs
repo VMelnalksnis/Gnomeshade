@@ -4,10 +4,9 @@
 
 using System;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-namespace Gnomeshade.Interfaces.Desktop.Models;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>Single row in counterparty overview.</summary>
 public sealed class CounterpartyRow : PropertyChangedBase

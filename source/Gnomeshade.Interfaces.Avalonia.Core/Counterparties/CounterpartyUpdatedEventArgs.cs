@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>Event arguments for <see cref="CounterpartyUpdateViewModel.Updated"/> event.</summary>
 public sealed class CounterpartyUpdatedEventArgs : EventArgs

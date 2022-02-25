@@ -9,11 +9,9 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>Merges one counterparty and its accounts into another.</summary>
 public sealed class CounterpartyMergeViewModel : ViewModelBase

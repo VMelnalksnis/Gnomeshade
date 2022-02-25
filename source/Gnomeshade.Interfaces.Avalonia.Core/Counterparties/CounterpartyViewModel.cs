@@ -9,12 +9,9 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>List of all counterparties.</summary>
 public sealed class CounterpartyViewModel : ViewModelBase

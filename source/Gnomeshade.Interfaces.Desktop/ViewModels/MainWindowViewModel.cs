@@ -11,6 +11,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.Desktop.Views;

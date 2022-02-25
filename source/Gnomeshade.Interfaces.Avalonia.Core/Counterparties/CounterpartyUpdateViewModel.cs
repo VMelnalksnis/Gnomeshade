@@ -5,12 +5,10 @@
 using System;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>Updates the values of a single counterparty.</summary>
 public sealed class CounterpartyUpdateViewModel : ViewModelBase
