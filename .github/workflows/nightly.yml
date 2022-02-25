@@ -32,7 +32,7 @@ jobs:
           -p:InformationalVersion=gnomeshade-0.1.0-nightly+sha.$Env:GITHUB_SHA.linux-x64
 
       - name: Archive published API
-        run: 7z a -x!*.json -mx9 -r gnomeshade_linux-x64.zip
+        run: 7z a -x'!*.json' -mx9 -r gnomeshade_linux-x64.zip
         working-directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
 
       - name: Publish desktop application
