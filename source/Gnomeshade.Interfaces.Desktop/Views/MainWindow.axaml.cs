@@ -7,7 +7,6 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 

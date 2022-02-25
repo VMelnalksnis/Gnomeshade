@@ -4,11 +4,14 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 
 using Avalonia;
 using Avalonia.Logging;
+using Avalonia.Xaml.Interactions.Core;
+using Avalonia.Xaml.Interactivity;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using JetBrains.Annotations;
 
@@ -40,7 +43,11 @@ internal static class Program
 	[UsedImplicitly]
 	public static AppBuilder BuildAvaloniaApp()
 	{
-		DesignTimeData.ForceAssembliesToLoad();
+#if DEBUG
+		typeof(Product).GetTypeInfo();
+		typeof(Interaction).GetTypeInfo();
+		typeof(EventTriggerBehavior).GetTypeInfo();
+#endif
 
 		return
 			AppBuilder

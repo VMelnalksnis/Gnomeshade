@@ -41,7 +41,7 @@ public sealed class App : Application
 	{
 		var configuration = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json", true)
-			.AddUserSecrets<MainWindowViewModel>()
+			.AddUserSecrets<App>()
 			.Build();
 
 		var serviceCollection = new ServiceCollection();

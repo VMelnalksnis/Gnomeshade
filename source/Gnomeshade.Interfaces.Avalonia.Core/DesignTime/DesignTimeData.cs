@@ -3,22 +3,15 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Reflection;
 
-using Avalonia.Xaml.Interactions.Core;
-using Avalonia.Xaml.Interactivity;
-
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
-using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Design;
+namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>Data needed only during design time.</summary>
 public static class DesignTimeData
@@ -105,13 +98,4 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
 		UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
-
-	/// <summary>Forces the loading of assemblies that are needed during design time, but are not automatically included.</summary>
-	/// <remarks>Assemblies that are not directly referenced are not loaded at design time, but are at compile time.</remarks>
-	public static void ForceAssembliesToLoad()
-	{
-		typeof(Product).GetTypeInfo();
-		typeof(Interaction).GetTypeInfo();
-		typeof(EventTriggerBehavior).GetTypeInfo();
-	}
 }
