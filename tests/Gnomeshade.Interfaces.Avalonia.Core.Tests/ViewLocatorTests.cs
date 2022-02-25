@@ -15,7 +15,7 @@ public class ViewLocatorTests
 	[Test]
 	public void Build_ShouldReturnExpected()
 	{
-		var viewLocator = new ViewLocator();
+		var viewLocator = new ViewLocator<TestView>();
 		var viewModel = new TestViewModel();
 
 		var accountView = viewLocator.Build(viewModel);

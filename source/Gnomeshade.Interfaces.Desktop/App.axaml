@@ -2,10 +2,11 @@
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:core="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:desktop="clr-namespace:Gnomeshade.Interfaces.Desktop"
 	x:Class="Gnomeshade.Interfaces.Desktop.App">
 
 	<Application.DataTemplates>
-		<core:ViewLocator />
+		<core:ViewLocator x:TypeArguments="desktop:App" />
 	</Application.DataTemplates>
 
 	<Application.Styles>
