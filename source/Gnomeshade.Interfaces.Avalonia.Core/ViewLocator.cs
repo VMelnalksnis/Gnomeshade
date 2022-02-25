@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -12,13 +13,13 @@ using Avalonia.Controls.Templates;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core;
 
+/// <summary>Data template for locating the <see cref="IView{TViewModel}"/> from the calling assembly.</summary>
 public sealed class ViewLocator : IDataTemplate
 {
 	private static readonly Dictionary<Type, Type> _viewDictionary = new();
 
-	public bool SupportsRecycling => false;
-
 	/// <inheritdoc />
+	[RequiresUnreferencedCode("Uses System.Assembly.GetCallingAssembly().GetTypes()")]
 	public IControl Build(object data)
 	{
 		var dataType = data.GetType();
@@ -33,7 +34,7 @@ public sealed class ViewLocator : IDataTemplate
 			_viewDictionary.Add(dataType, viewType);
 		}
 
-		return (Control)Activator.CreateInstance(viewType)!;
+		return (IControl)Activator.CreateInstance(viewType)!;
 	}
 
 	/// <inheritdoc />
