@@ -18,7 +18,7 @@ jobs:
         include:
           - os: ubuntu-latest
             runtime: linux-x64
-            framework: [ net6.0 ]
+            framework: net6.0
             project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
@@ -26,7 +26,7 @@ jobs:
 
           - os: ubuntu-latest
             runtime: linux-x64
-            framework: [ net6.0 ]
+            framework: net6.0
             project: source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj
             archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
             directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/linux-x64/publish
