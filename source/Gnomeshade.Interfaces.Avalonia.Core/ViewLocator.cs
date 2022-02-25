@@ -23,20 +23,23 @@ public sealed class ViewLocator : IDataTemplate
 	public IControl Build(object data)
 	{
 		var dataType = data.GetType();
-		if (!_viewDictionary.TryGetValue(dataType, out var viewType))
+		if (_viewDictionary.TryGetValue(dataType, out var viewType))
 		{
-			var interfaceType = typeof(IView<>).MakeGenericType(dataType);
-			viewType = Assembly
-				.GetCallingAssembly()
-				.GetTypes()
-				.Single(type => type.IsAssignableTo(interfaceType));
-
-			_viewDictionary.Add(dataType, viewType);
+			return CreateControl(viewType);
 		}
 
-		return (IControl)Activator.CreateInstance(viewType)!;
+		var interfaceType = typeof(IView<>).MakeGenericType(dataType);
+		viewType = Assembly
+			.GetCallingAssembly()
+			.GetTypes()
+			.Single(type => type.IsAssignableTo(interfaceType) && type.IsAssignableTo(typeof(IControl)));
+
+		_viewDictionary.Add(dataType, viewType);
+		return CreateControl(viewType);
 	}
 
 	/// <inheritdoc />
 	public bool Match(object data) => data is ViewModelBase;
+
+	private static IControl CreateControl(Type controlType) => (IControl)Activator.CreateInstance(controlType)!;
 }
