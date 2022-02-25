@@ -10,9 +10,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-
-namespace Gnomeshade.Interfaces.Desktop;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 public sealed class ViewLocator : IDataTemplate
 {
@@ -28,7 +26,7 @@ public sealed class ViewLocator : IDataTemplate
 		{
 			var interfaceType = typeof(IView<>).MakeGenericType(dataType);
 			viewType = Assembly
-				.GetExecutingAssembly()
+				.GetCallingAssembly()
 				.GetTypes()
 				.Single(type => type.IsAssignableTo(interfaceType));
 
