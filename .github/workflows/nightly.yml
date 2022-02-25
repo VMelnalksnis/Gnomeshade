@@ -6,9 +6,24 @@ on:
 
 jobs:
   build:
-    name: Build
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+        runtime: [ win10-x64 ]
+        project: [ source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj ]
+        archive_command: [ "7z a -mx9 -r gnomeshade_desktop_win-x64.zip" ]
+        directory: [ source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish ]
+        artifact: [ "**/win10-x64/publish/gnomeshade_desktop_win-x64.zip" ]
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+            project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
+            archive_command: [ "zip -r -9 gnomeshade_linux-x64.zip . -x \*.json" ]
+            directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
+            artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
 
+    name: Build
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
 
@@ -17,47 +32,45 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Publish API
+      - name: Publish project
+        if: matrix.os == 'ubuntu-latest'
         run: >
           dotnet
           publish
-          source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
-          --runtime linux-x64
+          ${{ matrix.project }}
+          --runtime ${{ matrix.runtime }}
+          --configuration Release
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:VersionPrefix=0.1.0
+          -p:VersionSuffix=nightly
+          -p:AssemblyVersion=0.1.0.${GITHUB_RUN_NUMBER}
+          -p:InformationalVersion=0.1.0-nightly+sha.${GITHUB_SHA}.${{ matrix.runtime }}
+
+      - name: Publish project
+        if: matrix.os == 'windows-latest'
+        run: >
+          dotnet
+          publish
+          ${{ matrix.project }}
+          --runtime ${{ matrix.runtime }}
           --configuration Release
           --self-contained true
           -p:PublishSingleFile=true
           -p:VersionPrefix=0.1.0
           -p:VersionSuffix=nightly
           -p:AssemblyVersion=0.1.0.$Env:GITHUB_RUN_NUMBER
-          -p:InformationalVersion=gnomeshade-0.1.0-nightly+sha.$Env:GITHUB_SHA.linux-x64
+          -p:InformationalVersion=0.1.0-nightly+sha.$Env:GITHUB_SHA.${{ matrix.runtime }}
 
-      - name: Archive published API
-        run: 7z a -x'!*.json' -mx9 -r gnomeshade_linux-x64.zip
-        working-directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
+      - name: Archive published artifacts
+        run: ${{ matrix.archive_command }}
+        working-directory: ${{ matrix.directory }}
 
-      - name: Publish desktop application
-        run: >
-          dotnet
-          publish
-          source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj 
-          --runtime win10-x64
-          --configuration Release
-          --self-contained true
-          -p:PublishSingleFile=true
-          -p:VersionPrefix=0.1.0
-          -p:VersionSuffix=nightly
-          -p:AssemblyVersion=0.1.0.$Env:GITHUB_RUN_NUMBER
-          -p:InformationalVersion=gnomeshade_desktop-0.1.0-nightly+sha.$Env:GITHUB_SHA.win10-x64
-
-      - name: Archive published desktop application
-        run: 7z a -mx9 -r gnomeshade_desktop_win-x64.zip
-        working-directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0-windows/win10-x64/publish
-
-      - uses: pyTooling/Actions/releaser/composite@main
+      - name: Upload artifact to realease
+        uses: pyTooling/Actions/releaser/composite@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
-          rm: true
+          rm: false
           files: |
-            **/linux-x64/publish/gnomeshade_linux-x64.zip
-            **/win10-x64/publish/gnomeshade_desktop_win-x64.zip
+            ${{ matrix.artifact }}
