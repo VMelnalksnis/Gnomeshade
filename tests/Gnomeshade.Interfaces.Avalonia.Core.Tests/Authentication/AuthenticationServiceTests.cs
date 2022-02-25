@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.Desktop.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.WebApi.Client;
 
 using Moq;
@@ -16,7 +16,7 @@ using NUnit.Framework;
 using VMelnalksnis.OAuth2;
 using VMelnalksnis.OAuth2.Responses;
 
-namespace Gnomeshade.Interfaces.Desktop.Tests.Authentication;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Authentication;
 
 public class AuthenticationServiceTests
 {

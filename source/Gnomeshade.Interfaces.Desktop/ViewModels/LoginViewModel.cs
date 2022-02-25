@@ -5,7 +5,7 @@
 using System;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.Desktop.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 

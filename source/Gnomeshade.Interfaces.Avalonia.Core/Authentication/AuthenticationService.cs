@@ -14,7 +14,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using VMelnalksnis.OAuth2;
 using VMelnalksnis.OAuth2.Responses;
 
-namespace Gnomeshade.Interfaces.Desktop.Authentication;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 
 /// <inheritdoc />
 public sealed class AuthenticationService : IAuthenticationService

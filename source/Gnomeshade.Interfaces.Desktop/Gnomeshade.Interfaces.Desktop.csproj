@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Gnomeshade.Interfaces.Avalonia.Core\Gnomeshade.Interfaces.Avalonia.Core.csproj"/>
         <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
         <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
     </ItemGroup>
