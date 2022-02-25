@@ -10,14 +10,10 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-using TransactionItem = Gnomeshade.Interfaces.Desktop.Models.TransactionItem;
-
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>A detailed view of one transaction and its items.</summary>
 public sealed class TransactionDetailViewModel : ViewModelBase

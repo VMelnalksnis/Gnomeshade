@@ -11,12 +11,9 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>
 /// All transaction overview view model.

@@ -3,16 +3,15 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:i="using:Avalonia.Xaml.Interactivity"
 	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
-	xmlns:m="using:Gnomeshade.Interfaces.Desktop.Models"
-	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:dd="using:Gnomeshade.Interfaces.Desktop.ViewModels.Design"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionView"
 	x:CompileBindings="True"
-	x:DataType="vm:TransactionViewModel">
+	x:DataType="t:TransactionViewModel">
 
 	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,*">
 		<StackPanel
@@ -53,37 +52,37 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridCheckBoxColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					IsReadOnly="False"
 					Binding="{Binding Selected, Mode=TwoWay}">
 					<DataGridCheckBoxColumn.Header>
 						<CheckBox
-							x:DataType="vm:TransactionViewModel"
+							x:DataType="t:TransactionViewModel"
 							IsChecked="{Binding SelectAll}" />
 					</DataGridCheckBoxColumn.Header>
 				</DataGridCheckBoxColumn>
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					IsReadOnly="True" Header="Date"
 					Binding="{Binding Date, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					Header="Source Account" IsReadOnly="True"
 					Binding="{Binding SourceAccount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					Header="Target Account" IsReadOnly="True"
 					Binding="{Binding TargetAccount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					Header="Source Amount" IsReadOnly="True"
 					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 				<DataGridTextColumn
-					x:DataType="m:TransactionOverview"
+					x:DataType="t:TransactionOverview"
 					Header="Target Amount" IsReadOnly="True"
 					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 			</DataGrid.Columns>

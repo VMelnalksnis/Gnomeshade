@@ -11,13 +11,12 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
-using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Imports;
 
 /// <summary>
 /// External data import view model.

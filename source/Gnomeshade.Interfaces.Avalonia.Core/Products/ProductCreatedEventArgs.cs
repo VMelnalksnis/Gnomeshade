@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>
 /// Event arguments for the <see cref="ProductCreationViewModel.ProductCreated"/> event.

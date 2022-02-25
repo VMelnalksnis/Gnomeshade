@@ -4,7 +4,9 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+using Gnomeshade.Interfaces.Avalonia.Core.Imports;
+
+namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>
 /// Event arguments for <see cref="ImportViewModel.ProductSelected"/> event.

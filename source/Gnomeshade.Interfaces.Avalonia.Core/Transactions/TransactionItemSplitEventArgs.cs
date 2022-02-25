@@ -4,9 +4,7 @@
 
 using System;
 
-using Gnomeshade.Interfaces.Desktop.Models;
-
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>Event arguments for <see cref="TransactionDetailViewModel.ItemSplit"/> event.</summary>
 public sealed class TransactionItemSplitEventArgs : EventArgs

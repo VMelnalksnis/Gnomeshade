@@ -4,10 +4,9 @@
 
 using System;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Desktop.Models;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 public sealed class TransactionOverview : PropertyChangedBase
 {

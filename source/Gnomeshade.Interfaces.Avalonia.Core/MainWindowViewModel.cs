@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
-using Gnomeshade.Interfaces.Desktop.Models;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
-using Gnomeshade.Interfaces.Desktop.Views;
+using Gnomeshade.Interfaces.Avalonia.Core.Imports;
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 /// <summary>
 /// A container view which manages navigation and the currently active view.
@@ -146,9 +145,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = productCreationViewModel;
 	}
 
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="UnitCreationView"/>.
-	/// </summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateUnitAsync()
 	{

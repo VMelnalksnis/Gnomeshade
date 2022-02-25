@@ -5,43 +5,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop.Models;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
-/// <summary>
-/// Extension methods for translating API models to grid row models.
-/// </summary>
-public static class ModelExtensions
+internal static class TransactionExtensions
 {
 	[LinqTunnel]
 	[Pure]
-	public static IEnumerable<AccountOverviewRow> Translate(this IEnumerable<Account> accounts, List<Counterparty> counterparties)
-	{
-		return accounts
-			.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
-			.Select(tuple =>
-			{
-				var counterparty = counterparties.Single(c => c.Id == tuple.account.CounterpartyId);
-				return new AccountOverviewRow(tuple.account.Id)
-				{
-					Name = tuple.account.Name,
-					Currency = tuple.inCurrency.Currency.AlphabeticCode,
-					Disabled = tuple.inCurrency.Disabled,
-					Counterparty = counterparty.Name,
-					CounterpartyId = counterparty.Id,
-				};
-			});
-	}
-
-	[LinqTunnel]
-	[Pure]
-	public static IEnumerable<TransactionOverview> Translate(
+	internal static IEnumerable<TransactionOverview> Translate(
 		this IEnumerable<Transaction> transactions,
 		IReadOnlyCollection<Account> accounts)
 	{
@@ -70,7 +45,8 @@ public static class ModelExtensions
 
 	[LinqTunnel]
 	[Pure]
-	public static IEnumerable<TransactionItemOverviewRow> Translate(this IEnumerable<WebApi.Models.Transactions.TransactionItem> items)
+	internal static IEnumerable<TransactionItemOverviewRow> Translate(
+		this IEnumerable<WebApi.Models.Transactions.TransactionItem> items)
 	{
 		return items
 			.Select(item => new TransactionItemOverviewRow
@@ -81,19 +57,6 @@ public static class ModelExtensions
 				Product = item.Product.Name,
 				Amount = item.Amount,
 				Description = item.Description,
-			});
-	}
-
-
-	[LinqTunnel]
-	[Pure]
-	public static IEnumerable<ProductOverviewRow> Translate(this IEnumerable<Product> products)
-	{
-		return products
-			.Select(product => new ProductOverviewRow
-			{
-				Id = product.Id,
-				Name = product.Name,
 			});
 	}
 }

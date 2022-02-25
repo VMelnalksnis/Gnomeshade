@@ -1,10 +1,10 @@
 <Window
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:vm="using:Gnomeshade.Interfaces.Desktop.ViewModels"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:dd="using:Gnomeshade.Interfaces.Desktop.ViewModels.Design"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:core="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.MainWindowViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.MainWindow"
@@ -15,7 +15,7 @@
 	ExtendClientAreaToDecorationsHint="False"
 
 	x:CompileBindings="True"
-	x:DataType="vm:MainWindowViewModel">
+	x:DataType="core:MainWindowViewModel">
 
 	<Panel>
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">

@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>
 /// Form for creating a single new transaction item.
@@ -24,7 +23,7 @@ namespace Gnomeshade.Interfaces.Desktop.ViewModels;
 public class TransactionItemCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _transactionClient;
-	private readonly TransactionItem? _existingItem;
+	private readonly WebApi.Models.Transactions.TransactionItem? _existingItem;
 
 	private Account? _sourceAccount;
 	private decimal? _sourceAmount;
@@ -61,7 +60,7 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		List<Account> accounts,
 		List<Currency> currencies,
 		List<Product> products,
-		TransactionItem item)
+		WebApi.Models.Transactions.TransactionItem item)
 		: this(transactionClient, accounts, currencies, products)
 	{
 		_existingItem = item;
