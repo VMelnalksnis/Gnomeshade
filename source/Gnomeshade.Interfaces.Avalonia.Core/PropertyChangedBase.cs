@@ -8,8 +8,9 @@ using System.Runtime.CompilerServices;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
+/// <summary>Base class for all models and view models used for binding in views.</summary>
 public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyPropertyChanged
 {
 	/// <inheritdoc />
@@ -66,6 +67,14 @@ public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyProp
 		OnPropertiesChanged(propertyName, guardPropertyNames);
 	}
 
+	/// <summary>Invokes <see cref="PropertyChanged"/> with the name of the calling property.</summary>
+	/// <param name="propertyName">The name of the property that has changed.</param>
+	[NotifyPropertyChangedInvocator]
+	protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
 	private void OnPropertyChanging([CallerMemberName] string propertyName = "")
 	{
 		PropertyChanging?.Invoke(this, new(propertyName));
@@ -83,12 +92,6 @@ public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyProp
 		{
 			PropertyChanging(this, new(propertyName));
 		}
-	}
-
-	[NotifyPropertyChangedInvocator]
-	protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-	{
-		PropertyChanged?.Invoke(this, new(propertyName));
 	}
 
 	private void OnPropertiesChanged(string property, params string[] propertyNames)

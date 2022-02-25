@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 
+using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.ViewModels;
 
 using JetBrains.Annotations;

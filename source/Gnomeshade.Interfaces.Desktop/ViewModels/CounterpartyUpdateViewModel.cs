@@ -5,6 +5,7 @@
 using System;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;

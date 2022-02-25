@@ -4,7 +4,7 @@
 
 using System;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Desktop.Models;

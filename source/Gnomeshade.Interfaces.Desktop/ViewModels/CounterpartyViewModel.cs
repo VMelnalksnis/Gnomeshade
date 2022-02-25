@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
+using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.Models;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Events;

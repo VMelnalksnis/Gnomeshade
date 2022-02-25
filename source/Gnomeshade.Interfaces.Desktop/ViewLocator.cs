@@ -10,7 +10,7 @@ using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-using Gnomeshade.Interfaces.Desktop.ViewModels;
+using Gnomeshade.Interfaces.Avalonia.Core;
 
 namespace Gnomeshade.Interfaces.Desktop;
 

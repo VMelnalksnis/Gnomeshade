@@ -2,10 +2,9 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
+namespace Gnomeshade.Interfaces.Avalonia.Core;
 
-namespace Gnomeshade.Interfaces.Desktop.ViewModels;
-
+/// <summary>Base class for all view models.</summary>
 public abstract class ViewModelBase : PropertyChangedBase
 {
 }

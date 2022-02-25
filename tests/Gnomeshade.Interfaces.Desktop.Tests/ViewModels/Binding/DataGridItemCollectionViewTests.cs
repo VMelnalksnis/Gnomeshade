@@ -10,6 +10,7 @@ using Avalonia.Collections;
 
 using FluentAssertions;
 
+using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.ViewModels.Binding;
 
 using NUnit.Framework;

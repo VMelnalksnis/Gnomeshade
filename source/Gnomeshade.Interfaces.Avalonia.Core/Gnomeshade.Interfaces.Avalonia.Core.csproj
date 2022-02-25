@@ -2,11 +2,12 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj" />
-        <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj" />
+        <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
+        <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
     </ItemGroup>
 
 </Project>
