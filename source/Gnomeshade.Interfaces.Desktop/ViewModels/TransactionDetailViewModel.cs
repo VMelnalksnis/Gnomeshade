@@ -28,7 +28,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	private DateTimeOffset _date;
 	private TransactionItem? _selectedItem;
 	private DataGridItemCollectionView<TransactionItem> _items = null!;
-	private TransactionItemCreationViewModel _itemCreation = null!;
+	private TransactionItemCreationViewModel _itemCreation;
 
 	private TransactionDetailViewModel(
 		IGnomeshadeClient gnomeshadeClient,
@@ -37,7 +37,8 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_initialId = initialId;
-		ItemCreation = itemCreationViewModel;
+		_itemCreation = itemCreationViewModel;
+		ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
 	}
 
 	/// <summary>Raised when an item has been selected for splitting.</summary>
@@ -68,7 +69,13 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	public TransactionItem? SelectedItem
 	{
 		get => _selectedItem;
-		set => SetAndNotifyWithGuard(ref _selectedItem, value, nameof(SelectedItem), nameof(CanDeleteItem), nameof(CanSplitItem));
+		set => SetAndNotifyWithGuard(
+			ref _selectedItem,
+			value,
+			nameof(SelectedItem),
+			nameof(CanDeleteItem),
+			nameof(CanSplitItem),
+			nameof(CanUpdateItem));
 	}
 
 	/// <summary>Gets a value indicating whether the <see cref="SelectedItem"/> can be deleted.</summary>
@@ -83,7 +90,11 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		get => _items;
 		private set
 		{
-			Items.CollectionChanged -= ItemsOnCollectionChanged;
+			if (_items is not null)
+			{
+				Items.CollectionChanged -= ItemsOnCollectionChanged;
+			}
+
 			SetAndNotifyWithGuard(ref _items, value, nameof(Items), nameof(DataGridView));
 			Items.CollectionChanged += ItemsOnCollectionChanged;
 		}
@@ -103,6 +114,9 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the item from <see cref="ItemCreation"/> can be added.</summary>
 	public bool CanAddItem => ItemCreation.CanCreate;
+
+	/// <summary>Gets a value indicating whether the <see cref="SelectedItem"/> item can be updated with values from <see cref="ItemCreation"/>.</summary>
+	public bool CanUpdateItem => ItemCreation.CanCreate && SelectedItem is not null;
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="TransactionDetailViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
@@ -168,6 +182,43 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	public void SplitItem()
 	{
 		ItemSplit?.Invoke(this, new(SelectedItem!, _initialId));
+	}
+
+	/// <summary>Updates <see cref="SelectedItem"/> with values from <see cref="ItemCreation"/>.</summary>
+	/// <exception cref="InvalidOperationException"><see cref="SelectedItem"/> is <see langword="null"/>.</exception>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UpdateItemAsync()
+	{
+		if (SelectedItem is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		var item = ItemCreation;
+		var sourceAccountId = item.SourceAccount?.Currencies
+			.Single(currency => item.SourceCurrency?.Id == currency.Currency.Id).Id;
+		var targetAccountId = item.TargetAccount?.Currencies
+			.Single(currency => item.TargetCurrency?.Id == currency.Currency.Id).Id;
+
+		var creationModel = new TransactionItemCreationModel
+		{
+			// todo currency not yet added to account
+			SourceAccountId = sourceAccountId,
+			SourceAmount = item.SourceAmount,
+			TargetAccountId = targetAccountId,
+			TargetAmount = item.TargetAmount,
+			ProductId = item.Product?.Id,
+			Amount = item.Amount,
+			BankReference = string.IsNullOrWhiteSpace(item.BankReference) ? null : item.BankReference,
+			ExternalReference = string.IsNullOrWhiteSpace(item.ExternalReference) ? null : item.ExternalReference,
+			InternalReference = string.IsNullOrWhiteSpace(item.InternalReference) ? null : item.InternalReference,
+		};
+
+		await _gnomeshadeClient.PutTransactionItemAsync(SelectedItem.Id, _initialId, creationModel)
+			.ConfigureAwait(false);
+		ItemCreation.PropertyChanged -= ItemCreationOnPropertyChanged;
+		ItemCreation = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient);
+		await GetTransactionAsync(_initialId).ConfigureAwait(false);
 	}
 
 	private async Task GetTransactionAsync(Guid id)
@@ -248,5 +299,6 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	private void ItemCreationOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		OnPropertyChanged(nameof(CanAddItem));
+		OnPropertyChanged(nameof(CanUpdateItem));
 	}
 }

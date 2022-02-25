@@ -32,7 +32,7 @@
 				Text="{Binding Description}" />
 		</Grid>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Horizontal" Spacing="10">
 			<Button
 				IsEnabled="{Binding CanDeleteItem}"
 				Command="{ReflectionBinding DeleteItemAsync}">
@@ -107,10 +107,17 @@
 		</DataGrid>
 
 		<UserControl Content="{Binding ItemCreation}" />
-		<Button
-			IsEnabled="{Binding CanAddItem}"
-			Command="{ReflectionBinding AddItemAsync}">
-			Add new item
-		</Button>
+		<StackPanel Orientation="Horizontal" Spacing="10">
+			<Button
+				IsEnabled="{Binding CanAddItem}"
+				Command="{ReflectionBinding AddItemAsync}">
+				Add new item
+			</Button>
+			<Button
+				IsEnabled="{Binding CanUpdateItem}"
+				Command="{ReflectionBinding UpdateItemAsync}">
+				Update item
+			</Button>
+		</StackPanel>
 	</StackPanel>
 </UserControl>
