@@ -47,7 +47,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	protected override string UpdateSql => Queries.Transaction.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE t.id = @id {_accessSql};";
+	protected override string FindSql => "WHERE t.id = @id";
 
 	/// <summary>
 	/// Searches for a transaction with the specified import hash.
@@ -61,7 +61,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE t.import_hash = @importHash {_accessSql};";
+		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {_accessSql};";
 		var command = new CommandDefinition(sql, new { importHash, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -78,7 +78,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE t.import_hash = @importHash {_accessSql};";
+		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {_accessSql};";
 		var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -97,7 +97,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE t.date >= @from AND t.date <= @to {_accessSql} ORDER BY t.date DESC";
+		var sql = $"{SelectSql} WHERE t.date >= @from AND t.date <= @to AND {_accessSql} ORDER BY t.date DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);

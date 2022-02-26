@@ -56,6 +56,39 @@ CREATE TABLE "public"."ownerships"
 ) WITH (OIDS = FALSE);
 
 
+DROP TABLE IF EXISTS "tags";
+CREATE TABLE "public"."tags"
+(
+    "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
+    "created_at"          timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "owner_id"            uuid                                   NOT NULL,
+    "created_by_user_id"  uuid                                   NOT NULL,
+    "modified_at"         timestamptz DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+    "modified_by_user_id" uuid                                   NOT NULL,
+    "name"                text                                   NOT NULL,
+    "normalized_name"     text                                   NOT NULL,
+    "description"         text,
+    CONSTRAINT "tags_id" PRIMARY KEY ("id"),
+    CONSTRAINT "tags_normalized_name" UNIQUE ("normalized_name"),
+    CONSTRAINT "tags_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "tags_modified_by_user_id_fkey" FOREIGN KEY (modified_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "tags_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE
+) WITH (OIDS = FALSE);
+
+
+DROP TABLE IF EXISTS "tag_tags";
+CREATE TABLE "public"."tag_tags"
+(
+    "created_at"         timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_by_user_id" uuid                                  NOT NULL,
+    "tag_id"             uuid                                  NOT NULL,
+    "tagged_item_id"     uuid                                  NOT NULL,
+    CONSTRAINT "tag_tags_pkey" PRIMARY KEY ("tag_id", "tagged_item_id"),
+    CONSTRAINT "tag_tags_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "tag_tags_tagged_item_id_fkey" FOREIGN KEY (tagged_item_id) REFERENCES tags (id) NOT DEFERRABLE
+) WITH (OIDS = FALSE);
+
+
 DROP TABLE IF EXISTS "currencies";
 CREATE TABLE "public"."currencies"
 (
@@ -276,4 +309,17 @@ CREATE TABLE "public"."transaction_items"
     CONSTRAINT "transaction_items_source_account_id_fkey" FOREIGN KEY (source_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_target_account_id_fkey" FOREIGN KEY (target_account_id) REFERENCES accounts_in_currency (id) NOT DEFERRABLE,
     CONSTRAINT "transaction_items_transaction_id_fkey" FOREIGN KEY (transaction_id) REFERENCES transactions (id) NOT DEFERRABLE
+) WITH (OIDS = FALSE);
+
+
+DROP TABLE IF EXISTS "transaction_item_tags";
+CREATE TABLE "public"."transaction_item_tags"
+(
+    "created_at"         timestamptz DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_by_user_id" uuid                                  NOT NULL,
+    "tag_id"             uuid                                  NOT NULL,
+    "tagged_item_id"     uuid                                  NOT NULL,
+    CONSTRAINT "transaction_item_tags_pkey" PRIMARY KEY ("tag_id", "tagged_item_id"),
+    CONSTRAINT "transaction_item_tags_created_by_user_id_fkey" FOREIGN KEY (created_by_user_id) REFERENCES users (id) NOT DEFERRABLE,
+    CONSTRAINT "transaction_item_tags_tagged_item_id_fkey" FOREIGN KEY (tagged_item_id) REFERENCES transaction_items (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);

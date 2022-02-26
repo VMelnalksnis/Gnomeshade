@@ -33,8 +33,14 @@
         <EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Product\Update.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Tag\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Tag\RemoveTag.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Tag\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Tag\AddTag.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\AddTag.sql"/>
         <EmbeddedResource Include="Repositories\Queries\TransactionItem\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\TransactionItem\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\TransactionItem\RemoveTag.sql"/>
         <EmbeddedResource Include="Repositories\Queries\TransactionItem\Select.sql"/>
         <EmbeddedResource Include="Repositories\Queries\TransactionItem\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>

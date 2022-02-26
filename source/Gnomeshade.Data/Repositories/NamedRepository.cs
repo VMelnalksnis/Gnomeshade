@@ -32,7 +32,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <summary>
 	/// Gets the SQL query to append to <see cref="Repository{TEntity}.SelectSql"/> to filter for a single entity by name.
 	/// </summary>
-	protected virtual string NameSql => $"WHERE normalized_name = @name {_accessSql};";
+	protected virtual string NameSql => "WHERE normalized_name = @name";
 
 	/// <summary>
 	/// Finds an entity by its normalized name.
@@ -43,7 +43,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {NameSql}";
+		var sql = $"{SelectSql} {NameSql} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}

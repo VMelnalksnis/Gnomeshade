@@ -22,7 +22,7 @@ namespace Gnomeshade.Data.Repositories;
 public abstract class Repository<TEntity> : IDisposable
 	where TEntity : class, IEntity
 {
-	internal const string _accessSql = "AND ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
+	internal const string _accessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.
@@ -56,7 +56,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <summary>
 	/// Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.
 	/// </summary>
-	protected virtual string FindSql => $"WHERE id = @id {_accessSql};";
+	protected virtual string FindSql => "WHERE id = @id;";
 
 	/// <summary>
 	/// Gets the SQL query for updating entities.
@@ -114,7 +114,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>A collection of all entities.</returns>
 	public Task<IEnumerable<TEntity>> GetAllAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var command = new CommandDefinition($"{SelectSql} {_accessSql}", new { ownerId }, cancellationToken: cancellationToken);
+		var command = new CommandDefinition($"{SelectSql} WHERE {_accessSql}", new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
 
@@ -127,7 +127,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>The entity with the specified id.</returns>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {FindSql}";
+		var sql = $"{SelectSql} {FindSql} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return GetAsync(command);
 	}
@@ -141,7 +141,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>The entity with the specified id.</returns>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} {FindSql}";
+		var sql = $"{SelectSql} {FindSql} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return GetAsync(command);
 	}
@@ -155,7 +155,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {FindSql}";
+		var sql = $"{SelectSql} {FindSql} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -169,7 +169,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} {FindSql}";
+		var sql = $"{SelectSql} {FindSql} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}

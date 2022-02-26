@@ -35,10 +35,10 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	protected override string UpdateSql => Queries.Counterparty.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE c.id = @id {_accessSql}";
+	protected override string FindSql => "WHERE c.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => $"WHERE c.normalized_name = @name {_accessSql};";
+	protected override string NameSql => "WHERE c.normalized_name = @name";
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>

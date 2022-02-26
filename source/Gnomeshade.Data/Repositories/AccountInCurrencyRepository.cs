@@ -36,5 +36,5 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	protected override string UpdateSql => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE a.id = @id {_accessSql};";
+	protected override string FindSql => "WHERE a.id = @id";
 }

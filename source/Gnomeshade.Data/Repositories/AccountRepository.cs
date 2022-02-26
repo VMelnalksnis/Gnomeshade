@@ -40,13 +40,13 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	protected override string SelectSql => Queries.Account.Select;
 
 	/// <inheritdoc />
-	protected override string FindSql => $"WHERE a.id = @id {_accessSql};";
+	protected override string FindSql => "WHERE a.id = @id";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Account.Update;
 
 	/// <inheritdoc />
-	protected override string NameSql => $"WHERE a.normalized_name = @name {_accessSql};";
+	protected override string NameSql => "WHERE a.normalized_name = @name";
 
 	/// <summary>
 	/// Finds an account with the specified IBAN.
@@ -57,7 +57,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.iban = @iban {_accessSql};";
+		var sql = $"{SelectSql} WHERE a.iban = @iban AND {_accessSql};";
 		var command = new CommandDefinition(sql, new { iban, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -71,7 +71,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.bic = @bic {_accessSql};";
+		var sql = $"{SelectSql} WHERE a.bic = @bic AND {_accessSql};";
 		var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -84,7 +84,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>A collection of all active accounts.</returns>
 	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL {_accessSql} ORDER BY a.created_at;";
+		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {_accessSql} ORDER BY a.created_at;";
 		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
