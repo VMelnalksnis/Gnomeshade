@@ -12,7 +12,7 @@ jobs:
         runtime: [ win10-x64 ]
         project: [ source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj ]
         archive_command: [ "7z a -mx9 -r gnomeshade_desktop_win-x64.zip" ]
-        directory: [ source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0-windows/win10-x64/publish ]
+        directory: [ source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/win10-x64/publish ]
         artifact: [ "**/win10-x64/publish/gnomeshade_desktop_win-x64.zip" ]
         include:
           - os: ubuntu-latest
