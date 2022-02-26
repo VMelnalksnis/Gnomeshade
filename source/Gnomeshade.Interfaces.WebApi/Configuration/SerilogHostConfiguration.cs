@@ -7,8 +7,8 @@ using Elastic.CommonSchema.Serilog;
 
 using Elasticsearch.Net;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 using Serilog;
 using Serilog.Events;
@@ -17,7 +17,7 @@ using Serilog.Sinks.Elasticsearch;
 
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
-internal static class SerilogWebHostConfiguration
+internal static class SerilogHostConfiguration
 {
 	internal static ReloadableLogger CreateBoostrapLogger()
 	{
@@ -29,7 +29,7 @@ internal static class SerilogWebHostConfiguration
 				.CreateBootstrapLogger();
 	}
 
-	internal static void Configure(WebHostBuilderContext context, LoggerConfiguration configuration)
+	internal static void Configure(HostBuilderContext context, LoggerConfiguration configuration)
 	{
 		var options = new ElasticSearchLoggingOptions();
 		context.Configuration.Bind(ElasticSearchLoggingOptions.SectionName, options);

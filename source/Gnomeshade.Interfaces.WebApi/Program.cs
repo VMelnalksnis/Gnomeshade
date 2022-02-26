@@ -9,8 +9,8 @@ using Gnomeshade.Interfaces.WebApi.Configuration;
 
 using JetBrains.Annotations;
 
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
@@ -25,12 +25,12 @@ public static class Program
 	public static void Main(string[] args)
 	{
 		Serilog.Debugging.SelfLog.Enable(output => Debug.WriteLine(output));
-		Log.Logger = SerilogWebHostConfiguration.CreateBoostrapLogger();
+		Log.Logger = SerilogHostConfiguration.CreateBoostrapLogger();
 
 		try
 		{
-			CreateWebHostBuilder(args)
-				.UseSerilog(SerilogWebHostConfiguration.Configure)
+			CreateHostBuilder(args)
+				.UseSerilog(SerilogHostConfiguration.Configure)
 				.Build()
 				.Run();
 		}
@@ -46,17 +46,21 @@ public static class Program
 	}
 
 	/// <summary>
-	/// Creates and configures a new <see cref="IWebHostBuilder"/>.
+	/// Creates and configures a new <see cref="IHostBuilder"/>.
 	/// Used by WebApplicationFactory for in-memory integration tests and EF Core tools."/>.
 	/// </summary>
 	/// <param name="args">The command line arguments from which to parse configuration.</param>
 	/// <returns>A configured web host builder.</returns>
 	/// <seealso href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host#set-up-a-host"/>
 	[PublicAPI]
-	public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+	public static IHostBuilder CreateHostBuilder(string[] args)
 	{
-		return WebHost
-			.CreateDefaultBuilder<Startup>(args)
-			.ConfigureKestrel(KestrelConfiguration.ConfigureOptions);
+		return Host
+			.CreateDefaultBuilder(args)
+			.ConfigureWebHostDefaults(builder =>
+			{
+				builder.UseStartup<Startup>();
+				builder.ConfigureKestrel(KestrelConfiguration.ConfigureOptions);
+			});
 	}
 }
