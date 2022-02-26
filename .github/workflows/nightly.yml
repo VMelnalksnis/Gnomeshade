@@ -61,7 +61,6 @@ jobs:
           publish
           ${{ matrix.project }}
           --runtime ${{ matrix.runtime }}
-          --framework ${{ matrix.framework }}
           --configuration Release
           --self-contained true
           -p:PublishSingleFile=true
