@@ -6,10 +6,6 @@
         <UserSecretsId>d04b4465-36e6-48eb-86c4-a1b1ccb1b023</UserSecretsId>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
-        <TargetFrameworks>net6.0;net6.0-windows</TargetFrameworks>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.12"/>
         <PackageReference Include="Avalonia.Desktop" Version="0.10.12"/>
