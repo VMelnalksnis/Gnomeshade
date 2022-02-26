@@ -22,8 +22,8 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	private readonly Guid _initialId;
 	private string? _description;
 	private DateTimeOffset _date;
-	private TransactionItem? _selectedItem;
-	private DataGridItemCollectionView<TransactionItem> _items = null!;
+	private TransactionItemRow? _selectedItem;
+	private DataGridItemCollectionView<TransactionItemRow> _items = null!;
 	private TransactionItemCreationViewModel _itemCreation;
 
 	private TransactionDetailViewModel(
@@ -62,7 +62,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	public DataGridCollectionView DataGridView => Items;
 
 	/// <summary>Gets or sets the selected item from <see cref="Items"/>.</summary>
-	public TransactionItem? SelectedItem
+	public TransactionItemRow? SelectedItem
 	{
 		get => _selectedItem;
 		set => SetAndNotifyWithGuard(
@@ -81,7 +81,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	public bool CanSplitItem => SelectedItem is not null;
 
 	/// <summary>Gets a typed collection of all transaction items.</summary>
-	public DataGridItemCollectionView<TransactionItem> Items
+	public DataGridItemCollectionView<TransactionItemRow> Items
 	{
 		get => _items;
 		private set
@@ -242,21 +242,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 						targetAccount.Currencies
 							.SingleOrDefault(inCurrency => inCurrency.Currency.Id == currency.Id)?.Currency.Id);
 
-					return new TransactionItem
-					{
-						Id = item.Id,
-						Amount = item.Amount,
-						Product = item.Product.Name,
-						SourceAccount = sourceAccount.Name,
-						TargetAccount = targetAccount.Name,
-						SourceAmount = item.SourceAmount,
-						TargetAmount = item.TargetAmount,
-						SourceCurrency = sourceCurrency.AlphabeticCode,
-						TargetCurrency = targetCurrency.AlphabeticCode,
-						BankReference = item.BankReference,
-						ExternalReference = item.ExternalReference,
-						InternalReference = item.InternalReference,
-					};
+					return new TransactionItemRow(item, sourceAccount, sourceCurrency, targetAccount, targetCurrency);
 				}).ToList();
 
 		Date = transaction.Date;

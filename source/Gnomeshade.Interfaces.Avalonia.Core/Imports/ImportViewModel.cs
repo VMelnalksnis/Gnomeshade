@@ -32,8 +32,8 @@ public sealed class ImportViewModel : ViewModelBase
 	private ProductOverviewRow? _selectedProduct;
 	private DataGridItemCollectionView<TransactionOverview>? _transactions;
 	private TransactionOverview? _selectedTransaction;
-	private DataGridItemCollectionView<TransactionItemOverviewRow>? _items;
-	private TransactionItemOverviewRow? _selectedItem;
+	private DataGridItemCollectionView<TransactionItemRow>? _items;
+	private TransactionItemRow? _selectedItem;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ImportViewModel"/> class.
@@ -147,7 +147,7 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <summary>
 	/// Gets or sets a typed collection of rows in <see cref="ItemGridView"/>.
 	/// </summary>
-	public DataGridItemCollectionView<TransactionItemOverviewRow>? Items
+	public DataGridItemCollectionView<TransactionItemRow>? Items
 	{
 		get => _items;
 		set => SetAndNotifyWithGuard(ref _items, value, nameof(Items), nameof(ItemGridView));
@@ -156,7 +156,7 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <summary>
 	/// Gets or sets the selected transaction item from <see cref="Items"/>.
 	/// </summary>
-	public TransactionItemOverviewRow? SelectedItem
+	public TransactionItemRow? SelectedItem
 	{
 		get => _selectedItem;
 		set => SetAndNotify(ref _selectedItem, value, nameof(SelectedItem));
@@ -216,7 +216,7 @@ public sealed class ImportViewModel : ViewModelBase
 			// todo do not get all transactions
 			var transactions = await _gnomeshadeClient.GetTransactionsAsync(DateTimeOffset.UnixEpoch, DateTimeOffset.Now);
 			var usedTransactions = transactions
-				.Where(transaction => Transactions.Any(row => row.Transaction.Id == transaction.Id));
+				.Where(transaction => Transactions.Any(row => row.Id == transaction.Id));
 			var transactionRows = usedTransactions.Translate(accounts).ToList();
 			Transactions = new(transactionRows);
 		}
@@ -279,7 +279,6 @@ public sealed class ImportViewModel : ViewModelBase
 			return;
 		}
 
-		var items = SelectedTransaction.Transaction.Items.Translate().ToList();
-		Items = new(items);
+		Items = new(SelectedTransaction.Items);
 	}
 }

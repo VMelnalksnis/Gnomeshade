@@ -44,12 +44,28 @@ public class TransactionViewModelTests
 				new()
 				{
 					Id = transactionId1,
-					Items = new() { new() { SourceAccountId = accountId1, TargetAccountId = accountId2 } },
+					Items = new()
+					{
+						new()
+						{
+							SourceAccountId = accountId1,
+							TargetAccountId = accountId2,
+							Product = new() { Name = "Foo" },
+						},
+					},
 				},
 				new()
 				{
 					Id = transactionId2,
-					Items = new() { new() { SourceAccountId = accountId2, TargetAccountId = accountId1 } },
+					Items = new()
+					{
+						new()
+						{
+							SourceAccountId = accountId2,
+							TargetAccountId = accountId1,
+							Product = new() { Name = "Bar" },
+						},
+					},
 				},
 			});
 
@@ -57,8 +73,8 @@ public class TransactionViewModelTests
 			.Setup(client => client.GetAccountsAsync())
 			.ReturnsAsync(new List<Account>
 			{
-				new() { Currencies = new() { new() { Id = accountId1 } } },
-				new() { Currencies = new() { new() { Id = accountId2 } } },
+				new() { Currencies = new() { new() { Id = accountId1, Currency = new() { Name = "EUR" } } } },
+				new() { Currencies = new() { new() { Id = accountId2, Currency = new() { Name = "EUR" } } } },
 			});
 
 		_gnomeshadeClientMock = mockClient;

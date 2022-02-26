@@ -3,76 +3,74 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
+/// <summary>A summary of a single transaction.</summary>
 public sealed class TransactionOverview : PropertyChangedBase
 {
-	private DateTime _date;
-	private string? _description;
-	private string _sourceAccount;
-	private string _targetAccount;
-	private decimal _sourceAmount;
-	private decimal _targetAmount;
 	private bool _selected;
-	private Guid _id;
 
-	// todo see if there's a better way of retaining the item models for the transaction
-	public Transaction Transaction { get; set; }
-
-	/// <summary>
-	/// Gets or sets the id of the transaction which this overview represents.
-	/// </summary>
-	public Guid Id
+	/// <summary>Initializes a new instance of the <see cref="TransactionOverview"/> class.</summary>
+	/// <param name="transaction">The transaction for which to create an overview.</param>
+	/// <param name="sourceAccount">The account from which money was withdrawn.</param>
+	/// <param name="sourceCurrency">The currency of the withdrawn amount.</param>
+	/// <param name="sourceAmount">The amount withdrawn from source account.</param>
+	/// <param name="targetAccount">The account into which money was deposited.</param>
+	/// <param name="targetCurrency">The currency of the deposited amount.</param>
+	/// <param name="targetAmount">The amount deposited into target account.</param>
+	public TransactionOverview(
+		Transaction transaction,
+		Account sourceAccount,
+		Currency sourceCurrency,
+		decimal sourceAmount,
+		Account targetAccount,
+		Currency targetCurrency,
+		decimal targetAmount)
 	{
-		get => _id;
-		set => SetAndNotify(ref _id, value, nameof(Id));
+		Id = transaction.Id;
+		Date = transaction.Date.LocalDateTime;
+		Description = transaction.Description;
+		SourceAccount = sourceAccount.Name;
+		TargetAccount = targetAccount.Name;
+		SourceAmount = sourceAmount;
+		TargetAmount = targetAmount;
+		Items = transaction.Items.Select(item => new TransactionItemRow(item, sourceAccount, sourceCurrency, targetAccount, targetCurrency)).ToList();
 	}
 
-	/// <summary>
-	/// Gets or sets a value indicating whether this transaction is selected.
-	/// </summary>
+	/// <summary>Gets or sets a value indicating whether this transaction is selected.</summary>
 	public bool Selected
 	{
 		get => _selected;
 		set => SetAndNotify(ref _selected, value, nameof(Selected));
 	}
 
-	public DateTime Date
-	{
-		get => _date;
-		set => SetAndNotify(ref _date, value, nameof(Date));
-	}
+	/// <summary>Gets the id of the transaction which this overview represents.</summary>
+	public Guid Id { get; }
 
-	public string? Description
-	{
-		get => _description;
-		set => SetAndNotify(ref _description, value, nameof(Description));
-	}
+	/// <summary>Gets the book date of the transaction.</summary>
+	public DateTime Date { get; }
 
-	public string SourceAccount
-	{
-		get => _sourceAccount;
-		set => SetAndNotify(ref _sourceAccount, value, nameof(SourceAccount));
-	}
+	/// <summary>Gets the description of the transaction.</summary>
+	public string? Description { get; }
 
-	public string TargetAccount
-	{
-		get => _targetAccount;
-		set => SetAndNotify(ref _targetAccount, value, nameof(TargetAccount));
-	}
+	/// <summary>Gets the name of the source account of the transaction.</summary>
+	public string SourceAccount { get; }
 
-	public decimal SourceAmount
-	{
-		get => _sourceAmount;
-		set => SetAndNotify(ref _sourceAmount, value, nameof(SourceAmount));
-	}
+	/// <summary>Gets the name of the target account of the transaction.</summary>
+	public string TargetAccount { get; }
 
-	public decimal TargetAmount
-	{
-		get => _targetAmount;
-		set => SetAndNotify(ref _targetAmount, value, nameof(TargetAmount));
-	}
+	/// <summary>Gets the amount withdrawn from the source account.</summary>
+	public decimal SourceAmount { get; }
+
+	/// <summary>Gets the amount deposited in the target account.</summary>
+	public decimal TargetAmount { get; }
+
+	/// <summary>Gets the items of this transaction.</summary>
+	public IReadOnlyCollection<TransactionItemRow> Items { get; }
 }

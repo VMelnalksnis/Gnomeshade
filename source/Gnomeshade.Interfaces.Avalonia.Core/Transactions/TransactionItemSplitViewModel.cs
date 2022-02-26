@@ -18,33 +18,33 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 public sealed class TransactionItemSplitViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly TransactionItem _transactionItemToSplit;
+	private readonly TransactionItemRow _transactionItemRowToSplit;
 	private readonly Guid _transactionId;
 	private TransactionItemCreationViewModel? _selectedItem;
 	private TransactionItemCreationViewModel? _itemCreation;
 
 	private TransactionItemSplitViewModel(
 		IGnomeshadeClient gnomeshadeClient,
-		TransactionItem transactionItemToSplit,
+		TransactionItemRow transactionItemRowToSplit,
 		Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_transactionItemToSplit = transactionItemToSplit;
+		_transactionItemRowToSplit = transactionItemRowToSplit;
 		_transactionId = transactionId;
 
 		Items = new();
 		Items.CollectionChanged += ItemsOnCollectionChanged;
 
-		SourceAccount = _transactionItemToSplit.SourceAccount;
-		SourceAccountCurrency = _transactionItemToSplit.SourceCurrency;
-		SourceAmount = _transactionItemToSplit.SourceAmount;
+		SourceAccount = _transactionItemRowToSplit.SourceAccount;
+		SourceAccountCurrency = _transactionItemRowToSplit.SourceCurrency;
+		SourceAmount = _transactionItemRowToSplit.SourceAmount;
 
-		TargetAccount = _transactionItemToSplit.TargetAccount;
-		TargetAccountCurrency = _transactionItemToSplit.TargetCurrency;
-		TargetAmount = _transactionItemToSplit.TargetAmount;
+		TargetAccount = _transactionItemRowToSplit.TargetAccount;
+		TargetAccountCurrency = _transactionItemRowToSplit.TargetCurrency;
+		TargetAmount = _transactionItemRowToSplit.TargetAmount;
 
-		Product = _transactionItemToSplit.Product;
-		Amount = _transactionItemToSplit.Amount;
+		Product = _transactionItemRowToSplit.Product;
+		Amount = _transactionItemRowToSplit.Amount;
 		Unit = string.Empty;
 	}
 
@@ -110,26 +110,26 @@ public sealed class TransactionItemSplitViewModel : ViewModelBase
 	/// <summary>Gets a value indicating whether or not the current changes can be saved.</summary>
 	public bool CanSave =>
 		Items.All(item =>
-			item.SourceCurrency?.AlphabeticCode == _transactionItemToSplit.SourceCurrency &&
-			item.TargetCurrency?.AlphabeticCode == _transactionItemToSplit.TargetCurrency) &&
-		Items.Sum(item => item.SourceAmount) == _transactionItemToSplit.SourceAmount &&
-		Items.Sum(item => item.TargetAmount) == _transactionItemToSplit.TargetAmount;
+			item.SourceCurrency?.AlphabeticCode == _transactionItemRowToSplit.SourceCurrency &&
+			item.TargetCurrency?.AlphabeticCode == _transactionItemRowToSplit.TargetCurrency) &&
+		Items.Sum(item => item.SourceAmount) == _transactionItemRowToSplit.SourceAmount &&
+		Items.Sum(item => item.TargetAmount) == _transactionItemRowToSplit.TargetAmount;
 
 	/// <summary>Gets a value indicating whether a transaction item can be added.</summary>
 	public bool CanAddItem => ItemCreation?.CanCreate ?? true;
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="TransactionItemSplitViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
-	/// <param name="transactionItemToSplit">The transaction item to split into multiple.</param>
+	/// <param name="transactionItemRowToSplit">The transaction item to split into multiple.</param>
 	/// <param name="transactionId">The id of the transaction to modify.</param>
 	/// <returns>A new instance of <see cref="TransactionItemSplitViewModel"/>.</returns>
 	public static Task<TransactionItemSplitViewModel> CreateAsync(
 		IGnomeshadeClient gnomeshadeClient,
-		TransactionItem transactionItemToSplit,
+		TransactionItemRow transactionItemRowToSplit,
 		Guid transactionId)
 	{
 		return Task.FromResult(
-			new TransactionItemSplitViewModel(gnomeshadeClient, transactionItemToSplit, transactionId));
+			new TransactionItemSplitViewModel(gnomeshadeClient, transactionItemRowToSplit, transactionId));
 	}
 
 	/// <summary>Adds a transaction item with information from <see cref="ItemCreation"/> to <see cref="Items"/>.</summary>
@@ -171,7 +171,7 @@ public sealed class TransactionItemSplitViewModel : ViewModelBase
 			await _gnomeshadeClient.PutTransactionItemAsync(Guid.NewGuid(), _transactionId, itemToAdd);
 		}
 
-		await _gnomeshadeClient.DeleteTransactionItemAsync(_transactionItemToSplit.Id);
+		await _gnomeshadeClient.DeleteTransactionItemAsync(_transactionItemRowToSplit.Id);
 	}
 
 	private void ItemsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

@@ -29,34 +29,14 @@ internal static class TransactionExtensions
 				var targetAccount = accounts.Single(account =>
 					account.Currencies.Any(currency => currency.Id == firstItem.TargetAccountId));
 
-				return new TransactionOverview
-				{
-					Transaction = transaction,
-					Id = transaction.Id,
-					Date = transaction.Date.LocalDateTime,
-					Description = transaction.Description,
-					SourceAccount = sourceAccount.Name,
-					TargetAccount = targetAccount.Name,
-					SourceAmount = transaction.Items.Sum(item => item.SourceAmount), // todo select per currency
-					TargetAmount = transaction.Items.Sum(item => item.TargetAmount),
-				};
-			});
-	}
+				var sourceCurrency = sourceAccount.Currencies.Single(currency => currency.Id == firstItem.SourceAccountId).Currency;
+				var targetCurrency = targetAccount.Currencies.Single(currency => currency.Id == firstItem.TargetAccountId).Currency;
 
-	[LinqTunnel]
-	[Pure]
-	internal static IEnumerable<TransactionItemOverviewRow> Translate(
-		this IEnumerable<WebApi.Models.Transactions.TransactionItem> items)
-	{
-		return items
-			.Select(item => new TransactionItemOverviewRow
-			{
-				Id = item.Id,
-				SourceAmount = item.SourceAmount,
-				TargetAmount = item.TargetAmount,
-				Product = item.Product.Name,
-				Amount = item.Amount,
-				Description = item.Description,
+				// todo select per currency
+				var sourceAmount = transaction.Items.Sum(item => item.SourceAmount);
+				var targetAmount = transaction.Items.Sum(item => item.TargetAmount);
+
+				return new TransactionOverview(transaction, sourceAccount, sourceCurrency, sourceAmount, targetAccount, targetCurrency, targetAmount);
 			});
 	}
 }

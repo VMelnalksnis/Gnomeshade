@@ -159,23 +159,23 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemOverviewRow"
+					x:DataType="t:TransactionItemRow"
 					Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding SourceAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemOverviewRow"
+					x:DataType="t:TransactionItemRow"
 					Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding TargetAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemOverviewRow"
+					x:DataType="t:TransactionItemRow"
 					Header="Product" IsReadOnly="True"
 					Binding="{Binding Product, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemOverviewRow"
+					x:DataType="t:TransactionItemRow"
 					Header="Amount" IsReadOnly="True"
 					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemOverviewRow"
+					x:DataType="t:TransactionItemRow"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 			</DataGrid.Columns>

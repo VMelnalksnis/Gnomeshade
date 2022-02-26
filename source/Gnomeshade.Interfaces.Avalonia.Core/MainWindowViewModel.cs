@@ -271,9 +271,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = transactionDetailViewModel;
 	}
 
-	private async Task SwitchToTransactionSplitAsync(TransactionItem transactionItem, Guid transactionId)
+	private async Task SwitchToTransactionSplitAsync(TransactionItemRow transactionItemRow, Guid transactionId)
 	{
-		var transactionItemSplitViewModel = await TransactionItemSplitViewModel.CreateAsync(_gnomeshadeClient, transactionItem, transactionId).ConfigureAwait(false);
+		var transactionItemSplitViewModel = await TransactionItemSplitViewModel.CreateAsync(_gnomeshadeClient, transactionItemRow, transactionId).ConfigureAwait(false);
 		ActiveView = transactionItemSplitViewModel;
 	}
 
@@ -285,7 +285,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private void TransactionDetailViewModelOnItemSplit(object? sender, TransactionItemSplitEventArgs e)
 	{
-		Task.Run(() => SwitchToTransactionSplitAsync(e.TransactionItem, e.TransactionId)).Wait();
+		Task.Run(() => SwitchToTransactionSplitAsync(e.TransactionItemRow, e.TransactionId)).Wait();
 	}
 
 	private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
