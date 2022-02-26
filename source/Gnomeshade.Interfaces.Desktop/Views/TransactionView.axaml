@@ -45,7 +45,7 @@
 			Grid.Row="2"
 			x:Name="DataGrid"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-			VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Visible"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			Items="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding SelectedOverview, Mode=TwoWay}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
@@ -77,14 +77,20 @@
 					x:DataType="t:TransactionOverview"
 					Header="Target Account" IsReadOnly="True"
 					Binding="{Binding TargetAccount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
-					Header="Source Amount" IsReadOnly="True"
-					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
-					Header="Target Amount" IsReadOnly="True"
-					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTemplateColumn Header="Source Amount" IsReadOnly="True">
+					<DataTemplate DataType="t:TransactionOverview">
+						<TextBlock
+							Margin="5 0" VerticalAlignment="Center" HorizontalAlignment="Right"
+							Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Target Amount" IsReadOnly="True">
+					<DataTemplate DataType="t:TransactionOverview">
+						<TextBlock
+							Margin="5 0" VerticalAlignment="Center" HorizontalAlignment="Right"
+							Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
 			<i:Interaction.Behaviors>
