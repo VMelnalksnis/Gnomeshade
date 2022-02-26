@@ -176,10 +176,12 @@ public sealed class TransactionViewModel : ViewModelBase
 		DateTimeOffset? to)
 	{
 		// todo don't get all accounts
-		var accounts = await gnomeshadeClient.GetAccountsAsync();
-		var transactions = await gnomeshadeClient.GetTransactionsAsync(from, to);
+		var accounts = await gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
+		var transactions = await gnomeshadeClient.GetTransactionsAsync(from, to).ConfigureAwait(false);
+		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var userCounterparty = await gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 
-		var transactionOverviews = transactions.Translate(accounts).ToList();
+		var transactionOverviews = transactions.Translate(accounts, counterparties, userCounterparty).ToList();
 		return new(transactionOverviews);
 	}
 

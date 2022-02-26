@@ -15,14 +15,18 @@ public sealed class TransactionItemRow : PropertyChangedBase
 	/// <summary>Initializes a new instance of the <see cref="TransactionItemRow"/> class.</summary>
 	/// <param name="item">The API model from which to create the overview.</param>
 	/// <param name="sourceAccount">The account from which money was withdrawn.</param>
+	/// <param name="sourceCounterparty">The counterparty of source account.</param>
 	/// <param name="sourceCurrency">The currency of the withdrawn amount.</param>
 	/// <param name="targetAccount">The account into which money was deposited.</param>
+	/// <param name="targetCounterparty">The counterparty of target account.</param>
 	/// <param name="targetCurrency">The currency of the deposited amount.</param>
 	public TransactionItemRow(
 		TransactionItem item,
 		Account sourceAccount,
+		Counterparty? sourceCounterparty,
 		Currency sourceCurrency,
 		Account targetAccount,
+		Counterparty? targetCounterparty,
 		Currency targetCurrency)
 	{
 		Id = item.Id;
@@ -36,8 +40,8 @@ public sealed class TransactionItemRow : PropertyChangedBase
 		BankReference = item.BankReference;
 		ExternalReference = item.ExternalReference;
 		InternalReference = item.InternalReference;
-		SourceAccount = sourceAccount.Name;
-		TargetAccount = targetAccount.Name;
+		SourceAccount = sourceCounterparty?.Name ?? sourceAccount.Name;
+		TargetAccount = targetCounterparty?.Name ?? targetAccount.Name;
 		SourceCurrency = sourceCurrency.AlphabeticCode;
 		TargetCurrency = targetCurrency.AlphabeticCode;
 	}

@@ -19,28 +19,41 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <summary>Initializes a new instance of the <see cref="TransactionOverview"/> class.</summary>
 	/// <param name="transaction">The transaction for which to create an overview.</param>
 	/// <param name="sourceAccount">The account from which money was withdrawn.</param>
+	/// <param name="sourceCounterparty">The counterparty of source account.</param>
 	/// <param name="sourceCurrency">The currency of the withdrawn amount.</param>
 	/// <param name="sourceAmount">The amount withdrawn from source account.</param>
 	/// <param name="targetAccount">The account into which money was deposited.</param>
+	/// <param name="targetCounterparty">The counterparty of target account.</param>
 	/// <param name="targetCurrency">The currency of the deposited amount.</param>
 	/// <param name="targetAmount">The amount deposited into target account.</param>
 	public TransactionOverview(
 		Transaction transaction,
 		Account sourceAccount,
+		Counterparty? sourceCounterparty,
 		Currency sourceCurrency,
 		decimal sourceAmount,
 		Account targetAccount,
+		Counterparty? targetCounterparty,
 		Currency targetCurrency,
 		decimal targetAmount)
 	{
 		Id = transaction.Id;
 		Date = transaction.Date.LocalDateTime;
 		Description = transaction.Description;
-		SourceAccount = sourceAccount.Name;
-		TargetAccount = targetAccount.Name;
+		SourceAccount = sourceCounterparty?.Name ?? sourceAccount.Name;
+		TargetAccount = targetCounterparty?.Name ?? targetAccount.Name;
 		SourceAmount = sourceAmount;
 		TargetAmount = targetAmount;
-		Items = transaction.Items.Select(item => new TransactionItemRow(item, sourceAccount, sourceCurrency, targetAccount, targetCurrency)).ToList();
+		Items = transaction.Items
+			.Select(item => new TransactionItemRow(
+				item,
+				sourceAccount,
+				sourceCounterparty,
+				sourceCurrency,
+				targetAccount,
+				targetCounterparty,
+				targetCurrency))
+			.ToList();
 	}
 
 	/// <summary>Gets or sets a value indicating whether this transaction is selected.</summary>

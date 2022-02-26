@@ -182,12 +182,13 @@ public sealed class ImportViewModel : ViewModelBase
 		UserAccount = $"{result.UserAccount.Name}{(accountNumber is null ? null : $"({accountNumber})")}";
 
 		var accounts = result.AccountReferences.Select(reference => reference.Account).ToList();
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 		var accountRows = accounts.Translate(counterparties).ToList();
 		Accounts = new(accountRows);
 
 		var transactions = result.TransactionReferences.Select(reference => reference.Transaction);
-		var transactionRows = transactions.Translate(accounts).ToList();
+		var transactionRows = transactions.Translate(accounts, counterparties, userCounterparty).ToList();
 		Transactions = new(transactionRows);
 
 		var products = result.ProductReferences.Select(reference => reference.Product);
@@ -202,8 +203,9 @@ public sealed class ImportViewModel : ViewModelBase
 	public async Task RefreshAsync()
 	{
 		// todo do not get all accounts
-		var accounts = await _gnomeshadeClient.GetAccountsAsync();
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 		if (Accounts is not null)
 		{
 			var usedAccounts = accounts.Where(account => Accounts.Any(row => row.Name == account.Name));
@@ -217,7 +219,7 @@ public sealed class ImportViewModel : ViewModelBase
 			var transactions = await _gnomeshadeClient.GetTransactionsAsync(DateTimeOffset.UnixEpoch, DateTimeOffset.Now);
 			var usedTransactions = transactions
 				.Where(transaction => Transactions.Any(row => row.Id == transaction.Id));
-			var transactionRows = usedTransactions.Translate(accounts).ToList();
+			var transactionRows = usedTransactions.Translate(accounts, counterparties, userCounterparty).ToList();
 			Transactions = new(transactionRows);
 		}
 

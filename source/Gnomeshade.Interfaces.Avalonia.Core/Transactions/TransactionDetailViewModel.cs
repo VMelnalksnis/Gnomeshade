@@ -222,11 +222,12 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		var transaction = await _gnomeshadeClient.GetTransactionAsync(id).ConfigureAwait(false);
 		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
 		var currencies = await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 
 		var items =
 			transaction
 				.Items
-				.Select(item =>
+				.Select(async item =>
 				{
 					var sourceAccount = accounts.Single(account =>
 						account.Currencies.Any(currency => currency.Id == item.SourceAccountId));
@@ -235,6 +236,10 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 						sourceAccount.Currencies
 							.SingleOrDefault(inCurrency => inCurrency.Currency.Id == currency.Id)?.Currency.Id);
 
+					var sourceCounterparty = sourceAccount.CounterpartyId == userCounterparty.Id
+						? null
+						: await _gnomeshadeClient.GetCounterpartyAsync(sourceAccount.CounterpartyId);
+
 					var targetAccount = accounts.Single(account =>
 						account.Currencies.Any(currency => currency.Id == item.TargetAccountId));
 					var targetCurrency = currencies.Single(currency =>
@@ -242,8 +247,14 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 						targetAccount.Currencies
 							.SingleOrDefault(inCurrency => inCurrency.Currency.Id == currency.Id)?.Currency.Id);
 
-					return new TransactionItemRow(item, sourceAccount, sourceCurrency, targetAccount, targetCurrency);
-				}).ToList();
+					var targetCounterparty = targetAccount.CounterpartyId == userCounterparty.Id
+						? null
+						: await _gnomeshadeClient.GetCounterpartyAsync(targetAccount.CounterpartyId);
+
+					return new TransactionItemRow(item, sourceAccount, sourceCounterparty, sourceCurrency, targetAccount, targetCounterparty, targetCurrency);
+				})
+				.Select(task => task.Result)
+				.ToList();
 
 		Date = transaction.Date;
 		Description = transaction.Description;

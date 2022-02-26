@@ -106,7 +106,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task LogOutAsync() => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Counterparty> GetMyCounterpartyAsync() => throw new NotImplementedException();
+	public Task<Counterparty> GetMyCounterpartyAsync() =>
+		Task.FromResult(_counterparties.Single(counterparty => counterparty.Id == Guid.Empty));
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>

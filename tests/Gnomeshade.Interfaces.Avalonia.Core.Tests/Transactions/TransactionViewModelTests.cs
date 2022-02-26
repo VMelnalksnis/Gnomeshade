@@ -77,6 +77,10 @@ public class TransactionViewModelTests
 				new() { Currencies = new() { new() { Id = accountId2, Currency = new() { Name = "EUR" } } } },
 			});
 
+		mockClient
+			.Setup(client => client.GetMyCounterpartyAsync())
+			.ReturnsAsync(new Counterparty());
+
 		_gnomeshadeClientMock = mockClient;
 		_gnomeshadeClient = mockClient.Object;
 	}
