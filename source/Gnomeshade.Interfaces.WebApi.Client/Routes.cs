@@ -125,7 +125,7 @@ public static class Routes
 	/// <param name="id">The id of the tag.</param>
 	/// <param name="tagId">The id of the tag tag.</param>
 	/// <returns>Relative uri for the specified tag tag.</returns>
-	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagIdUri(id)}/{Format(tagId)}";
+	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagIdUri(id)}/Tag/{Format(tagId)}";
 
 	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
 	/// <param name="date">The date to convert.</param>

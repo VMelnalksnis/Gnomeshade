@@ -135,11 +135,31 @@ public class TransactionControllerTests
 			.NotThrowAsync();
 
 		(await FluentActions
-			.Awaiting(async () => await _secondClient.GetTransactionAsync(transactionId))
-			.Should()
-			.ThrowAsync<HttpRequestException>())
+				.Awaiting(async () => await _secondClient.GetTransactionAsync(transactionId))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task TagUntagTransactionItem()
+	{
+		var transactionCreationModel = new TransactionCreationModel
+		{
+			Date = DateTimeOffset.Now,
+			Items = new() { _itemCreationFaker.Generate() },
+		};
+
+		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var transaction = await _client.GetTransactionAsync(transactionId);
+		var itemId = transaction.Items.First().Id;
+
+		var tagId = Guid.NewGuid();
+		await _client.PutTagAsync(tagId, new() { Name = $"{tagId:N}" });
+
+		await _client.TagTransactionItemAsync(itemId, tagId);
+		await _client.UntagTransactionItemAsync(itemId, tagId);
 	}
 
 	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(
