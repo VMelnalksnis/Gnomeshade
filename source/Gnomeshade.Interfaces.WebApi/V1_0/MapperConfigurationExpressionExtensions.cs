@@ -11,18 +11,15 @@ using Gnomeshade.Data.Identity;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0;
 
-/// <summary>
-/// Extensions for configuring AutoMapper for v1.0 API.
-/// </summary>
+/// <summary>Extensions for configuring AutoMapper for v1.0 API.</summary>
 public static class MapperConfigurationExpressionExtensions
 {
-	/// <summary>
-	/// Creates maps for all v1.0 models.
-	/// </summary>
+	/// <summary>Creates maps for all v1.0 models.</summary>
 	/// <param name="options">The options to which to add the maps.</param>
 	public static void CreateMapsForV1_0(this IMapperConfigurationExpression options)
 	{
@@ -50,6 +47,9 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<ProductEntity, Product>();
 		options.CreateMap<ProductCreationModel, ProductEntity>();
+
+		options.CreateMap<TagEntity, Tag>();
+		options.CreateMap<TagCreation, TagEntity>();
 
 		options.CreateMap<UnitEntity, Unit>();
 		options.CreateMap<UnitCreationModel, UnitEntity>();

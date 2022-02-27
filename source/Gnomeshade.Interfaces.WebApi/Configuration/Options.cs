@@ -23,11 +23,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
-public static class Options
+internal static class Options
 {
 	private const string _oAuth2Providers = "OAuth2Providers";
 
-	public static void ConfigurePolicies(
+	internal static void ConfigurePolicies(
 		this AuthorizationOptions authorizationOptions,
 		IConfiguration configuration)
 	{
@@ -55,20 +55,14 @@ public static class Options
 				.AddRequirements(new ApplicationUserRequirement()));
 	}
 
-	public static void SetSchemes(this AuthenticationOptions authenticationOptions)
+	internal static void SetSchemes(this AuthenticationOptions authenticationOptions)
 	{
 		authenticationOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 		authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 		authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 	}
 
-	/// <summary>
-	/// Adds JWT bearer authentication from sources defined in <paramref name="configuration"/>.
-	/// </summary>
-	/// <param name="authenticationBuilder">The authentication builder to configure.</param>
-	/// <param name="configuration">Configuration containing JWT source definitions.</param>
-	/// <returns>The <paramref name="authenticationBuilder"/> for chaining calls.</returns>
-	public static AuthenticationBuilder AddJwtBearerAuthentication(
+	internal static AuthenticationBuilder AddJwtBearerAuthentication(
 		this AuthenticationBuilder authenticationBuilder,
 		IConfiguration configuration)
 	{
@@ -125,8 +119,9 @@ public static class Options
 		return authenticationBuilder;
 	}
 
-	public static void SwaggerGen(SwaggerGenOptions options)
+	internal static void SwaggerGen(SwaggerGenOptions options)
 	{
+		options.SupportNonNullableReferenceTypes();
 		options.SwaggerDocV1_0();
 
 		options.DocumentFilter<ApiVersioningFilter>();

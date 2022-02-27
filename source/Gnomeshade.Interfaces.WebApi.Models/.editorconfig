@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS1591: Property summary documentation must match accessors
+dotnet_diagnostic.SA1623.severity = none

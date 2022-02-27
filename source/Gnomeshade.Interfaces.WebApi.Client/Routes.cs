@@ -22,6 +22,7 @@ public static class Routes
 	internal const string ProductUri = "Product";
 	internal const string TransactionUri = "Transaction";
 	internal const string UnitUri = "Unit";
+	internal const string TagUri = "Tag";
 	internal const string AllAccountUri = $"{AccountUri}?onlyActive=false";
 	internal const string LoginUri = $"{AuthenticationUri}/Login";
 	internal const string LogOutUri = $"{AuthenticationUri}/Logout";
@@ -107,6 +108,24 @@ public static class Routes
 	/// <returns>Relative uri for the specified transaction and item.</returns>
 	public static string TransactionItemIdUri(Guid transactionId, Guid id) =>
 		$"{TransactionIdUri(transactionId)}/Item/{Format(id)}";
+
+	/// <summary>Gets the relative uri for the specified transaction item tag.</summary>
+	/// <param name="id">The id of the transaction item.</param>
+	/// <param name="tagId">The id of the tag.</param>
+	/// <returns>Relative uri for the specified transaction item and tag.</returns>
+	public static string TransactionItemTagIdUri(Guid id, Guid tagId) =>
+		$"{TransactionItemIdUri(id)}/Tag/{Format(tagId)}";
+
+	/// <summary>Gets the relative uri for the specified tag.</summary>
+	/// <param name="id">The id of the tag.</param>
+	/// <returns>Relative uri for the specified tag.</returns>
+	public static string TagIdUri(Guid id) => $"{TagUri}/{Format(id)}";
+
+	/// <summary>Gets the relative uri for the specified tag tag.</summary>
+	/// <param name="id">The id of the tag.</param>
+	/// <param name="tagId">The id of the tag tag.</param>
+	/// <returns>Relative uri for the specified tag tag.</returns>
+	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagIdUri(id)}/{Format(tagId)}";
 
 	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
 	/// <param name="date">The date to convert.</param>

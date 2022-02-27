@@ -9,35 +9,36 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-/// <summary>
-/// Represents information needed in order to create a transaction.
-/// </summary>
+/// <summary>Information needed in order to create a transaction.</summary>
 [PublicAPI]
 public sealed record TransactionCreationModel
 {
-	/// <summary>
-	/// The date on which the transaction was completed on.
-	/// </summary>
+	/// <inheritdoc cref="Transaction.Date"/>
 	[Required]
 	public DateTimeOffset? Date { get; init; }
 
+	/// <inheritdoc cref="Transaction.Description"/>
 	public string? Description { get; init; }
 
+	/// <summary>Whether the transaction item was generated or entered manually.</summary>
 	[DefaultValue(true)]
 	public bool Generated { get; init; } = true;
 
+	/// <inheritdoc cref="Transaction.Validated"/>
 	[DefaultValue(false)]
 	public bool Validated { get; init; }
 
+	/// <summary>Whether the transaction is completed.</summary>
 	[DefaultValue(false)]
 	public bool Completed { get; init; }
 
+	/// <summary>SHA512 hash of the imported data.</summary>
 	[MinLength(64)]
 	[MaxLength(64)]
 	public byte[]? ImportHash { get; init; }
 
+	/// <inheritdoc cref="Transaction.Items"/>
 	public List<TransactionItemCreationModel>? Items { get; init; }
 }

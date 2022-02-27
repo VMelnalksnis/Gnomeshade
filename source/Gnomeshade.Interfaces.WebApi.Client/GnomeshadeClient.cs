@@ -15,6 +15,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,7 +82,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	public async Task LogOutAsync()
 	{
 		_httpClient.DefaultRequestHeaders.Authorization = null;
-		using var response = await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+		using var response =
+			await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
 	}
 
@@ -143,6 +145,14 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task DeleteTransactionItemAsync(Guid id) =>
 		DeleteAsync(TransactionItemIdUri(id));
+
+	/// <inheritdoc />
+	public Task TagTransactionItemAsync(Guid id, Guid tagId) =>
+		PutAsync(TransactionItemTagIdUri(id, tagId));
+
+	/// <inheritdoc />
+	public Task UntagTransactionItemAsync(Guid id, Guid tagId) =>
+		DeleteAsync(TransactionItemTagIdUri(id, tagId));
 
 	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id) =>
@@ -210,6 +220,24 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
 	}
 
+	/// <inheritdoc />
+	public Task<List<Tag>> GetTagsAsync() => GetAsync<List<Tag>>(TagUri);
+
+	/// <inheritdoc />
+	public Task<Tag> GetTagAsync(Guid id) => GetAsync<Tag>(TagIdUri(id));
+
+	/// <inheritdoc />
+	public Task PutTagAsync(Guid id, TagCreation tag) => PutAsync(TagIdUri(id), tag);
+
+	/// <inheritdoc />
+	public Task DeleteTagAsync(Guid id) => DeleteAsync(TagIdUri(id));
+
+	/// <inheritdoc />
+	public Task TagTagAsync(Guid id, Guid tagId) => PutAsync(TagTagIdUri(id, tagId));
+
+	/// <inheritdoc />
+	public Task UntagTagAsync(Guid id, Guid tagId) => DeleteAsync(TagTagIdUri(id, tagId));
+
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{
 		try
@@ -255,6 +283,12 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		await ThrowIfNotSuccessCode(response);
 
 		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
+	}
+
+	private async Task PutAsync(string requestUri)
+	{
+		using var response = await _httpClient.PutAsync(requestUri, null).ConfigureAwait(false);
+		await ThrowIfNotSuccessCode(response);
 	}
 
 	private async Task PutAsync<TRequest>(string requestUri, TRequest request)

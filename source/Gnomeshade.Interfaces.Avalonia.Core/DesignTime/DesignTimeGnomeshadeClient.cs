@@ -13,6 +13,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
@@ -196,6 +197,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task TagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task UntagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));
@@ -259,4 +266,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Tag>> GetTagsAsync() => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Tag> GetTagAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutTagAsync(Guid id, TagCreation tag) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteTagAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task TagTagAsync(Guid id, Guid tagId) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task UntagTagAsync(Guid id, Guid tagId) => throw new NotImplementedException();
 }
