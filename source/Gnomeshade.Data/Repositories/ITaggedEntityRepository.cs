@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Repositories;
@@ -22,6 +23,13 @@ public interface ITaggedEntityRepository<TEntity>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>All entities with the specified tag.</returns>
 	Task<IEnumerable<TEntity>> GetTaggedAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default);
+
+	/// <summary>Gets all tags for the specified entity.</summary>
+	/// <param name="id">The id of the entity for which to get the tags.</param>
+	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>All the tags of the specified entity.</returns>
+	Task<IEnumerable<TagEntity>> GetTagsAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default);
 
 	/// <summary>Tags the specified entity with the specified tag.</summary>
 	/// <param name="id">The id of the entity to tag.</param>

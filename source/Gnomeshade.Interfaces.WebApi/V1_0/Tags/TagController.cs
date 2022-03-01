@@ -40,6 +40,7 @@ public sealed class TagController : FinanceControllerBase<TagEntity, Tag>
 	}
 
 	/// <inheritdoc cref="ITagClient.GetTagsAsync"/>
+	/// <response code="200">Successfully got the tags.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
 	public async Task<ActionResult<List<Tag>>> Get(CancellationToken cancellationToken = default)
@@ -83,6 +84,17 @@ public sealed class TagController : FinanceControllerBase<TagEntity, Tag>
 	{
 		await _repository.DeleteAsync(id, ApplicationUser.Id);
 		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITagClient.GetTagTagsAsync"/>
+	/// <response code="200">Successfully got the tags.</response>
+	[HttpGet("{id:guid}/Tag")]
+	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
+	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
+	{
+		var tagEntities = await _repository.GetTagsAsync(id, ApplicationUser.Id, cancellationToken);
+		var tags = tagEntities.Select(MapToModel).ToList();
+		return Ok(tags);
 	}
 
 	/// <inheritdoc cref="ITagClient.TagTagAsync"/>

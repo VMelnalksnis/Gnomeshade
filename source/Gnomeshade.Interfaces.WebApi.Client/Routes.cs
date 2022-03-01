@@ -109,23 +109,34 @@ public static class Routes
 	public static string TransactionItemIdUri(Guid transactionId, Guid id) =>
 		$"{TransactionIdUri(transactionId)}/Item/{Format(id)}";
 
+	/// <summary>Gets the relative uri for the tags of the specified transaction item.</summary>
+	/// <param name="id">The id of the transaction item.</param>
+	/// <returns>Relative uri for the tags of the specified transaction item.</returns>
+	public static string TransactionItemTagUri(Guid id) =>
+		$"{TransactionItemIdUri(id)}/Tag";
+
 	/// <summary>Gets the relative uri for the specified transaction item tag.</summary>
 	/// <param name="id">The id of the transaction item.</param>
 	/// <param name="tagId">The id of the tag.</param>
 	/// <returns>Relative uri for the specified transaction item and tag.</returns>
 	public static string TransactionItemTagIdUri(Guid id, Guid tagId) =>
-		$"{TransactionItemIdUri(id)}/Tag/{Format(tagId)}";
+		$"{TransactionItemTagUri(id)}/{Format(tagId)}";
 
 	/// <summary>Gets the relative uri for the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <returns>Relative uri for the specified tag.</returns>
 	public static string TagIdUri(Guid id) => $"{TagUri}/{Format(id)}";
 
+	/// <summary>Gets the relative uri for the tags of the specified tag.</summary>
+	/// <param name="id">The id of the tag.</param>
+	/// <returns>Relative uri for the tags of the specified tag.</returns>
+	public static string TagTagUri(Guid id) => $"{TagIdUri(id)}/Tag";
+
 	/// <summary>Gets the relative uri for the specified tag tag.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <param name="tagId">The id of the tag tag.</param>
 	/// <returns>Relative uri for the specified tag tag.</returns>
-	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagIdUri(id)}/Tag/{Format(tagId)}";
+	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagTagUri(id)}/{Format(tagId)}";
 
 	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
 	/// <param name="date">The date to convert.</param>

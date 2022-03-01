@@ -60,6 +60,19 @@ WHERE tags.id = @id AND {_accessSql}";
 	}
 
 	/// <inheritdoc />
+	public Task<IEnumerable<TagEntity>> GetTagsAsync(
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = $@"{Queries.Tag.Select}
+INNER JOIN transaction_item_tags ON transaction_item_tags.tag_id = t.id
+WHERE transaction_item_tags.tagged_item_id = @id AND {_accessSql}";
+		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
+		return DbConnection.QueryAsync<TagEntity>(command);
+	}
+
+	/// <inheritdoc />
 	public Task<int> TagAsync(Guid id, Guid tagId, Guid ownerId)
 	{
 		var command = new CommandDefinition(Queries.TransactionItem.AddTag, new { id, tagId, ownerId });

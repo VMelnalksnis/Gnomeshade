@@ -147,6 +147,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(TransactionItemIdUri(id));
 
 	/// <inheritdoc />
+	Task<List<Tag>> ITransactionClient.GetTransactionItemTagsAsync(Guid id) =>
+		GetAsync<List<Tag>>(TransactionItemTagUri(id));
+
+	/// <inheritdoc />
 	public Task TagTransactionItemAsync(Guid id, Guid tagId) =>
 		PutAsync(TransactionItemTagIdUri(id, tagId));
 
@@ -231,6 +235,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task DeleteTagAsync(Guid id) => DeleteAsync(TagIdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<Tag>> GetTagTagsAsync(Guid id) =>
+		GetAsync<List<Tag>>(TagTagUri(id));
 
 	/// <inheritdoc />
 	public Task TagTagAsync(Guid id, Guid tagId) => PutAsync(TagTagIdUri(id, tagId));

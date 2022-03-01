@@ -33,6 +33,11 @@ public interface ITagClient
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteTagAsync(Guid id);
 
+	/// <summary>Gets all tags of the specified tag.</summary>
+	/// <param name="id">The id of the tag for which to get the tags.</param>
+	/// <returns>All tags of the specified tag.</returns>
+	Task<List<Tag>> GetTagTagsAsync(Guid id);
+
 	/// <summary>Tags the specified tag with the specified tag.</summary>
 	/// <param name="id">The id of the tag to tag.</param>
 	/// <param name="tagId">The id of the tag to add.</param>

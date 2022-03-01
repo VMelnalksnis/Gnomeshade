@@ -197,6 +197,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<Tag>> GetTransactionItemTagsAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task TagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
 
 	/// <inheritdoc />
@@ -278,6 +281,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task DeleteTagAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Tag>> GetTagTagsAsync(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task TagTagAsync(Guid id, Guid tagId) => throw new NotImplementedException();

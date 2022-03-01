@@ -159,7 +159,16 @@ public class TransactionControllerTests
 		await _client.PutTagAsync(tagId, new() { Name = $"{tagId:N}" });
 
 		await _client.TagTransactionItemAsync(itemId, tagId);
+		(await _client.GetTransactionItemTagsAsync(itemId))
+			.Should()
+			.ContainSingle()
+			.Which.Id.Should()
+			.Be(tagId);
+
 		await _client.UntagTransactionItemAsync(itemId, tagId);
+		(await _client.GetTransactionItemTagsAsync(itemId))
+			.Should()
+			.BeEmpty();
 	}
 
 	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(

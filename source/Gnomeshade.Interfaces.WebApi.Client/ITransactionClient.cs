@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
@@ -56,6 +57,11 @@ public interface ITransactionClient
 	/// <param name="id">The id of the transaction item to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteTransactionItemAsync(Guid id);
+
+	/// <summary>Gets all tags of the specified transaction item.</summary>
+	/// <param name="id">The id of the transaction item for which to get the tags.</param>
+	/// <returns>All tags of the specified transaction item.</returns>
+	Task<List<Tag>> GetTransactionItemTagsAsync(Guid id);
 
 	/// <summary>Tags the specified transaction item with the specified tag.</summary>
 	/// <param name="id">The id of the transaction item to tag.</param>

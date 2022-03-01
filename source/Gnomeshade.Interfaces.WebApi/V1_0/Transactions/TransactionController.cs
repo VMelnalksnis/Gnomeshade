@@ -15,6 +15,7 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
@@ -208,6 +209,17 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 				transactionItemId);
 			return StatusCode(Status500InternalServerError);
 		}
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetTransactionItemTagsAsync"/>
+	/// <response code="200">Successfully got the tags.</response>
+	[HttpGet("Item/{id:guid}/Tag")]
+	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
+	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
+	{
+		var tagEntities = await _itemRepository.GetTagsAsync(id, ApplicationUser.Id, cancellationToken);
+		var tags = tagEntities.Select(entity => Mapper.Map<Tag>(entity)).ToList();
+		return Ok(tags);
 	}
 
 	/// <inheritdoc cref="ITransactionClient.TagTransactionItemAsync"/>

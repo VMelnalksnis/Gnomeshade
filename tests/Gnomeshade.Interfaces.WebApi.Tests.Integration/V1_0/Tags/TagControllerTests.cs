@@ -38,5 +38,15 @@ public class TagControllerTests
 		await _client.PutTagAsync(otherTagId, new() { Name = $"{otherTagId:N}" });
 
 		await _client.TagTagAsync(tagId, otherTagId);
+		(await _client.GetTagTagsAsync(tagId))
+			.Should()
+			.ContainSingle()
+			.Which.Id.Should()
+			.Be(otherTagId);
+
+		await _client.UntagTagAsync(tagId, otherTagId);
+		(await _client.GetTagTagsAsync(tagId))
+			.Should()
+			.BeEmpty();
 	}
 }
