@@ -7,6 +7,7 @@
 	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:tags="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Tags;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionItemCreationViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionItemCreationView"
@@ -158,15 +159,44 @@
 			MinWidth="300"
 			Text="{Binding InternalReference}" />
 
-		<Button
+		<TextBlock
 			Grid.Column="0" Grid.Row="6"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Tags: "/>
+		<ItemsControl
+			Grid.Column="1" Grid.Row="6"
+			Items="{Binding TagsToAdd}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Vertical" Spacing="5"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+		</ItemsControl>
+		<AutoCompleteBox
+			Grid.Column="2" Grid.Row="6"
+			MinWidth="300"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Tags}"
+			ItemSelector="{Binding TagSelector}"
+			SelectedItem="{Binding Tag, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="tags:Tag">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<Button
+			Grid.Column="0" Grid.Row="7"
 			IsVisible="{Binding CanUpdate}"
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 
 		<UserControl
-			Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2"
+			Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="2"
 			Content="{Binding ProductCreation}"/>
 	</Grid>
 </UserControl>

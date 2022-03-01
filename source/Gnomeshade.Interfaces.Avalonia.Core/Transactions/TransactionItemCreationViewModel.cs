@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Collections;
 using Avalonia.Controls;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
@@ -23,7 +25,7 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 public class TransactionItemCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _transactionClient;
-	private readonly WebApi.Models.Transactions.TransactionItem? _existingItem;
+	private readonly TransactionItem? _existingItem;
 
 	private Account? _sourceAccount;
 	private decimal? _sourceAmount;
@@ -38,21 +40,25 @@ public class TransactionItemCreationViewModel : ViewModelBase
 	private string? _internalReference;
 	private ProductCreationViewModel? _productCreation;
 	private List<Product> _products;
+	private Tag _tag;
 
 	private TransactionItemCreationViewModel(
 		IGnomeshadeClient transactionClient,
 		List<Account> accounts,
 		List<Currency> currencies,
-		List<Product> products)
+		List<Product> products,
+		List<Tag> tags)
 	{
 		_transactionClient = transactionClient;
 		Accounts = accounts;
 		Currencies = currencies;
+		Tags = tags;
 		_products = products;
 
 		AccountSelector = (_, item) => ((Account)item).Name;
 		CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
 		ProductSelector = (_, item) => ((Product)item).Name;
+		TagSelector = (_, item) => ((Tag)item).Name;
 	}
 
 	private TransactionItemCreationViewModel(
@@ -60,8 +66,9 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		List<Account> accounts,
 		List<Currency> currencies,
 		List<Product> products,
-		WebApi.Models.Transactions.TransactionItem item)
-		: this(transactionClient, accounts, currencies, products)
+		List<Tag> tags,
+		TransactionItem item)
+		: this(transactionClient, accounts, currencies, products, tags)
 	{
 		_existingItem = item;
 
@@ -258,6 +265,18 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		set => SetAndNotify(ref _internalReference, value, nameof(InternalReference));
 	}
 
+	public List<Tag> Tags { get; set; }
+
+	public DataGridCollectionView TagsToAdd { get; set; }
+
+	public AutoCompleteSelector<object> TagSelector { get; }
+
+	public Tag Tag
+	{
+		get => _tag;
+		set => SetAndNotify(ref _tag, value);
+	}
+
 	/// <summary>
 	/// Gets a view model for creating a new product.
 	/// </summary>
@@ -300,14 +319,15 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		var accounts = await gnomeshadeClient.GetActiveAccountsAsync();
 		var currencies = await gnomeshadeClient.GetCurrenciesAsync();
 		var products = await gnomeshadeClient.GetProductsAsync();
+		var tags = await gnomeshadeClient.GetTagsAsync();
 
 		if (itemId is null)
 		{
-			return new(gnomeshadeClient, accounts, currencies, products);
+			return new(gnomeshadeClient, accounts, currencies, products, tags);
 		}
 
 		var existingItem = await gnomeshadeClient.GetTransactionItemAsync(itemId.Value);
-		return new(gnomeshadeClient, accounts, currencies, products, existingItem);
+		return new(gnomeshadeClient, accounts, currencies, products, tags, existingItem);
 	}
 
 	/// <summary>

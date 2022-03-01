@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
@@ -20,6 +21,7 @@ public sealed class TransactionItemRow : PropertyChangedBase
 	/// <param name="targetAccount">The account into which money was deposited.</param>
 	/// <param name="targetCounterparty">The counterparty of target account.</param>
 	/// <param name="targetCurrency">The currency of the deposited amount.</param>
+	/// <param name="tags">The tags of the transaction item.</param>
 	public TransactionItemRow(
 		TransactionItem item,
 		Account sourceAccount,
@@ -27,11 +29,10 @@ public sealed class TransactionItemRow : PropertyChangedBase
 		Currency sourceCurrency,
 		Account targetAccount,
 		Counterparty? targetCounterparty,
-		Currency targetCurrency)
+		Currency targetCurrency,
+		List<string> tags)
 	{
 		Id = item.Id;
-		SourceAmount = item.SourceAmount;
-		TargetAmount = item.TargetAmount;
 		Product = item.Product.Name;
 		Amount = item.Amount;
 		Description = item.Description;
@@ -44,6 +45,7 @@ public sealed class TransactionItemRow : PropertyChangedBase
 		TargetAccount = targetCounterparty?.Name ?? targetAccount.Name;
 		SourceCurrency = sourceCurrency.AlphabeticCode;
 		TargetCurrency = targetCurrency.AlphabeticCode;
+		Tags = tags;
 	}
 
 	/// <summary>Gets the id of the transaction item.</summary>
@@ -84,4 +86,7 @@ public sealed class TransactionItemRow : PropertyChangedBase
 
 	/// <summary>Gets the internal reference code of this item.</summary>
 	public string? InternalReference { get; }
+
+	/// <summary>Gets the tags of this item.</summary>
+	public List<string> Tags { get; }
 }

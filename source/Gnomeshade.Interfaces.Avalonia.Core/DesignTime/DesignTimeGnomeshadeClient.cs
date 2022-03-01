@@ -197,7 +197,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Tag>> GetTransactionItemTagsAsync(Guid id) => throw new NotImplementedException();
+	public Task<List<Tag>> GetTransactionItemTagsAsync(Guid id)
+	{
+		return Task.FromResult(new List<Tag> { new() { Name = "test" }, new() { Name = "other" } });
+	}
 
 	/// <inheritdoc />
 	public Task TagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
@@ -271,7 +274,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Tag>> GetTagsAsync() => throw new NotImplementedException();
+	public Task<List<Tag>> GetTagsAsync()
+	{
+		return Task.FromResult<List<Tag>>(new() { new() { Name = "Foo" }, new() { Name = "Bar" } });
+	}
 
 	/// <inheritdoc />
 	public Task<Tag> GetTagAsync(Guid id) => throw new NotImplementedException();

@@ -59,7 +59,7 @@
 							VerticalAlignment="Center" HorizontalAlignment="Right">
 							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
 							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-							<TextBlock Text="from"/>
+							<TextBlock Text="from" />
 							<TextBlock Text="{Binding SourceAccount, Mode=OneWay}" />
 						</StackPanel>
 					</DataTemplate>
@@ -71,7 +71,7 @@
 							VerticalAlignment="Center" HorizontalAlignment="Right">
 							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
 							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-							<TextBlock Text="to"/>
+							<TextBlock Text="to" />
 							<TextBlock Text="{Binding TargetAccount, Mode=OneWay}" />
 						</StackPanel>
 					</DataTemplate>
@@ -86,16 +86,29 @@
 					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionItemRow"
-					Header="Bank Reference" IsReadOnly="True"
+					Header="Bank" IsReadOnly="True"
 					Binding="{Binding BankReference, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionItemRow"
-					Header="External Reference" IsReadOnly="True"
+					Header="External" IsReadOnly="True"
 					Binding="{Binding ExternalReference, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionItemRow"
-					Header="Internal Reference" IsReadOnly="True"
+					Header="Internal" IsReadOnly="True"
 					Binding="{Binding InternalReference, Mode=OneWay}" />
+				<DataGridTemplateColumn Header="Tags" IsReadOnly="True">
+					<DataTemplate x:DataType="t:TransactionItemRow">
+						<ItemsControl Items="{Binding Tags}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel
+										Orientation="Horizontal" Spacing="5" Margin="5 0"
+										VerticalAlignment="Center" HorizontalAlignment="Right" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>

@@ -85,7 +85,8 @@ public static class DesignTimeData
 				null,
 				new() { AlphabeticCode = "EUR" },
 				new() { Name = "Amazon DE 123" },
-				new() { Name = "Amazon" }, new() { AlphabeticCode = "EUR" }),
+				new() { Name = "Amazon" }, new() { AlphabeticCode = "EUR" },
+				new() { "Food" }),
 			Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionDetailViewModel"/> for use during design time.</summary>

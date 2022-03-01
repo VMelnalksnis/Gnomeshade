@@ -52,7 +52,8 @@ public sealed class TransactionOverview : PropertyChangedBase
 				sourceCurrency,
 				targetAccount,
 				targetCounterparty,
-				targetCurrency))
+				targetCurrency,
+				new())) // todo
 			.ToList();
 	}
 

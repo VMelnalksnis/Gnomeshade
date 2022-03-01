@@ -251,7 +251,10 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 						? null
 						: await _gnomeshadeClient.GetCounterpartyAsync(targetAccount.CounterpartyId);
 
-					return new TransactionItemRow(item, sourceAccount, sourceCounterparty, sourceCurrency, targetAccount, targetCounterparty, targetCurrency);
+					var tags = await _gnomeshadeClient.GetTransactionItemTagsAsync(item.Id);
+					var tagNames = tags.Select(tag => tag.Name).ToList();
+
+					return new TransactionItemRow(item, sourceAccount, sourceCounterparty, sourceCurrency, targetAccount, targetCounterparty, targetCurrency, tagNames);
 				})
 				.Select(task => task.Result)
 				.ToList();
