@@ -25,7 +25,7 @@ public sealed class TagRepository : NamedRepository<TagEntity>, ITaggedEntityRep
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => throw new NotImplementedException();
+	protected override string DeleteSql => Queries.Tag.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Tag.Insert;
@@ -34,7 +34,7 @@ public sealed class TagRepository : NamedRepository<TagEntity>, ITaggedEntityRep
 	protected override string SelectSql => Queries.Tag.Select;
 
 	/// <inheritdoc />
-	protected override string UpdateSql => throw new NotImplementedException();
+	protected override string UpdateSql => Queries.Tag.Update;
 
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE t.id = @id";

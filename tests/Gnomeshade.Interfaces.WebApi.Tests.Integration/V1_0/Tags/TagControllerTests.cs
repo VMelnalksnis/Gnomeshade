@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -15,7 +17,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Tags;
 
 public class TagControllerTests
 {
-	private IGnomeshadeClient _client = null!;
+	private ITagClient _client = null!;
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -48,5 +50,19 @@ public class TagControllerTests
 		(await _client.GetTagTagsAsync(tagId))
 			.Should()
 			.BeEmpty();
+
+		await _client.PutTagAsync(tagId, new() { Name = $"{Guid.NewGuid():N}" });
+		var updatedTag = await _client.GetTagAsync(tagId);
+		updatedTag.Name.Should().NotBeEquivalentTo(tag.Name);
+		updatedTag.ModifiedAt.Should().BeAfter(tag.ModifiedAt);
+
+		await _client.DeleteTagAsync(tagId);
+
+		(await FluentActions
+				.Awaiting(() => _client.GetTagAsync(tagId))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
 	}
 }

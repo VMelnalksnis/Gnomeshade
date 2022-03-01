@@ -83,9 +83,13 @@ internal static class Queries
 
 	internal static class Tag
 	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Tag)}.Delete.sql");
+
 		internal static string Insert { get; } = Read($"Queries.{nameof(Tag)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Tag)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Tag)}.Update.sql");
 
 		internal static string AddTag { get; } = Read($"Queries.{nameof(Tag)}.AddTag.sql");
 
