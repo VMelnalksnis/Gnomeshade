@@ -13,6 +13,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -160,6 +161,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = unitCreationViewModel;
 	}
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="TagCreationViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToTagAsync()
+	{
+		if (ActiveView is TagViewModel)
+		{
+			return;
+		}
+
+		var tagCreationViewModel = await TagViewModel.CreateAsync(_gnomeshadeClient);
+		ActiveView = tagCreationViewModel;
+	}
+
 	/// <summary>
 	/// Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.
 	/// </summary>
@@ -245,7 +259,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private static Exception CurrentLifetimeIsNull()
 	{
-		var message = $"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
+		var message =
+			$"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
 		return new NullReferenceException(message);
 	}
 
@@ -266,14 +281,16 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToTransactionDetailAsync(Guid id)
 	{
-		var transactionDetailViewModel = await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
+		var transactionDetailViewModel =
+			await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
 		transactionDetailViewModel.ItemSplit += TransactionDetailViewModelOnItemSplit;
 		ActiveView = transactionDetailViewModel;
 	}
 
 	private async Task SwitchToTransactionSplitAsync(TransactionItemRow transactionItemRow, Guid transactionId)
 	{
-		var transactionItemSplitViewModel = await TransactionItemSplitViewModel.CreateAsync(_gnomeshadeClient, transactionItemRow, transactionId).ConfigureAwait(false);
+		var transactionItemSplitViewModel = await TransactionItemSplitViewModel
+			.CreateAsync(_gnomeshadeClient, transactionItemRow, transactionId).ConfigureAwait(false);
 		ActiveView = transactionItemSplitViewModel;
 	}
 

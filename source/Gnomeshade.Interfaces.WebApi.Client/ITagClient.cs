@@ -22,6 +22,11 @@ public interface ITagClient
 	/// <returns>The tag with the specified id.</returns>
 	Task<Tag> GetTagAsync(Guid id);
 
+	/// <summary>Creates a new tag.</summary>
+	/// <param name="tag">The tag to create.</param>
+	/// <returns>The id of the created tag.</returns>
+	Task<Guid> CreateTagAsync(TagCreation tag);
+
 	/// <summary>Creates a new tag, or replaces and existing one if one exists with the specified id.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <param name="tag">The tag to create or update.</param>

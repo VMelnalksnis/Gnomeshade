@@ -9,6 +9,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
@@ -100,4 +101,12 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
 		UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="TagCreationViewModel"/> for use during design time.</summary>
+	public static TagCreationViewModel TagCreationViewModel { get; } =
+		TagCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="TagViewModel"/> for use during design time.</summary>
+	public static TagViewModel TagViewModel { get; } =
+		TagViewModel.CreateAsync(GnomeshadeClient).Result;
 }

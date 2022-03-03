@@ -231,6 +231,9 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	public Task<Tag> GetTagAsync(Guid id) => GetAsync<Tag>(TagIdUri(id));
 
 	/// <inheritdoc />
+	public Task<Guid> CreateTagAsync(TagCreation tag) => PostAsync(TagUri, tag);
+
+	/// <inheritdoc />
 	public Task PutTagAsync(Guid id, TagCreation tag) => PutAsync(TagIdUri(id), tag);
 
 	/// <inheritdoc />

@@ -67,6 +67,9 @@
 					<MenuItem
 						x:Name="Import" Header="_Import"
 						Command="{ReflectionBinding SwitchToImport}"/>
+					<MenuItem
+						x:Name="CreateTag" Header="Tags"
+						Command="{ReflectionBinding SwitchToTagAsync}"/>
 				</MenuItem>
 			</Menu>
 

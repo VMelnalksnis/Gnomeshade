@@ -63,6 +63,17 @@ public sealed class TagController : FinanceControllerBase<TagEntity, Tag>
 
 	/// <inheritdoc cref="ITagClient.PutTagAsync"/>
 	/// <response code="201">A new product was created.</response>
+	/// <response code="409">A product with the specified name already exists.</response>
+	[HttpPost]
+	[ProducesResponseType(Status201Created)]
+	[ProducesStatus409Conflict]
+	public async Task<ActionResult<Guid>> Post([FromBody] TagCreation tag)
+	{
+		return await CreateTagAsync(tag, ApplicationUser, Guid.NewGuid());
+	}
+
+	/// <inheritdoc cref="ITagClient.PutTagAsync"/>
+	/// <response code="201">A new product was created.</response>
 	/// <response code="204">An existing product was replaced.</response>
 	/// <response code="409">A product with the specified name already exists.</response>
 	[HttpPut("{id:guid}")]
@@ -139,7 +150,7 @@ public sealed class TagController : FinanceControllerBase<TagEntity, Tag>
 		};
 
 		_ = await _repository.AddAsync(tag);
-		return CreatedAtAction(nameof(Get), new { id }, null);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
 	private async Task<NoContentResult> UpdateTagAsync(TagCreation model, UserEntity user, Guid id)

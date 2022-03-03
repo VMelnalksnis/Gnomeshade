@@ -283,6 +283,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<Tag> GetTagAsync(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<Guid> CreateTagAsync(TagCreation tag) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task PutTagAsync(Guid id, TagCreation tag) => throw new NotImplementedException();
 
 	/// <inheritdoc />
