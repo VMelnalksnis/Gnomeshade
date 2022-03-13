@@ -1,0 +1,3 @@
+﻿# Include Avalonia views
+*.axaml linguist-detectable=true
+*.axaml linguist-language=xml

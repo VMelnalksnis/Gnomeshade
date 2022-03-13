@@ -64,6 +64,3 @@
 
 *.sql   linguist-detectable=true
 *.sql   linguist-language=sql
-
-*.axaml linguist-detectable=true
-*.axaml linguist-language=xml
