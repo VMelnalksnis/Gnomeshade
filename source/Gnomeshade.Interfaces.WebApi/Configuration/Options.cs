@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -66,6 +67,7 @@ internal static class Options
 		this AuthenticationBuilder authenticationBuilder,
 		IConfiguration configuration)
 	{
+		IdentityModelEventSource.ShowPII = true;
 		if (configuration.GetChildren().Any(section => section.Key == typeof(JwtOptions).GetSectionName()))
 		{
 			authenticationBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
