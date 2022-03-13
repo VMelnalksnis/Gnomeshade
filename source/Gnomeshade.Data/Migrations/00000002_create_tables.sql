@@ -1,7 +1,4 @@
-﻿CREATE
-    EXTENSION IF NOT EXISTS "uuid-ossp";
-
-DROP TABLE IF EXISTS "users";
+﻿DROP TABLE IF EXISTS "users";
 CREATE TABLE "public"."users"
 (
     "id"                  uuid        DEFAULT uuid_generate_v4() NOT NULL,
@@ -22,6 +19,7 @@ CREATE TABLE "public"."owners"
     CONSTRAINT "owners_id" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
+
 DROP TABLE IF EXISTS "access";
 CREATE TABLE "public"."access"
 (
@@ -33,13 +31,6 @@ CREATE TABLE "public"."access"
 ) WITH (OIDS = FALSE);
 CREATE UNIQUE INDEX "access_normalized_name_unique_index" ON access (normalized_name);
 
-INSERT INTO "access"
-    (name, normalized_name)
-VALUES
-    ('Read', 'READ'),
-    ('Write', 'WRITE'),
-    ('Delete', 'DELETE'),
-    ('Owner', 'OWNER');
 
 DROP TABLE IF EXISTS "ownerships";
 CREATE TABLE "public"."ownerships"
@@ -107,35 +98,6 @@ CREATE TABLE "public"."currencies"
     CONSTRAINT "currencies_pk" PRIMARY KEY ("id")
 ) WITH (OIDS = FALSE);
 
-INSERT INTO "currencies"
-    ("name",
-     "normalized_name",
-     "numeric_code",
-     "alphabetic_code",
-     "minor_unit",
-     "official",
-     "crypto",
-     "historical",
-     "active_from",
-     "active_until")
-VALUES
-    ('Czech koruna', 'CZECH KORUNA', 203, 'CZK', 2, TRUE, FALSE, FALSE, '1993-01-01 00:00:00+00', NULL),
-    ('Euro', 'EURO', 978, 'EUR', 2, TRUE, FALSE, FALSE, '1999-01-01 00:00:00+00', NULL),
-    ('Pound sterling', 'POUND STERLING', 826, 'GBP', 2, TRUE, FALSE, FALSE, '1694-07-27 00:00:00+00', NULL),
-    ('Croatian kuna', 'CROATIAN KUNA', 191, 'HRK', 2, TRUE, FALSE, FALSE, '1994-05-30 00:00:00+00', NULL),
-    ('Latvian lats',
-     'LATVIAN LATS',
-     428,
-     'LVL',
-     2,
-     TRUE,
-     FALSE,
-     TRUE,
-     '1993-03-05 00:00:00+00',
-     '2013-12-31 23:59:59+00'),
-    ('Polish złoty', 'POLISH ZŁOTY', 985, 'PLN', 2, TRUE, FALSE, FALSE, '1995-01-01 00:00:00+00', NULL),
-    ('Russian ruble', 'RUSSIAN RUBLE', 643, 'RUB', 2, TRUE, FALSE, FALSE, '1998-01-01 00:00:00+00', NULL),
-    ('United States dollar', 'UNITED STATES DOLLAR', 840, 'USD', 2, TRUE, FALSE, FALSE, '1792-04-02 00:00:00+00', NULL);
 
 DROP TABLE IF EXISTS "counterparties";
 CREATE TABLE "public"."counterparties"
@@ -158,6 +120,7 @@ CREATE TABLE "public"."counterparties"
 ALTER TABLE "public"."users"
     ADD CONSTRAINT "users_counterparty_id_fkey" FOREIGN KEY (counterparty_id) REFERENCES counterparties (id)
         DEFERRABLE INITIALLY DEFERRED;
+
 
 DROP TABLE IF EXISTS "accounts";
 CREATE TABLE "public"."accounts"
@@ -277,7 +240,6 @@ CREATE TABLE "public"."products"
     CONSTRAINT "products_owner_id_fkey" FOREIGN KEY (owner_id) REFERENCES owners (id) NOT DEFERRABLE,
     CONSTRAINT "products_unit_id_fkey" FOREIGN KEY (unit_id) REFERENCES units (id) NOT DEFERRABLE
 ) WITH (OIDS = FALSE);
-
 
 
 DROP TABLE IF EXISTS "transaction_items";

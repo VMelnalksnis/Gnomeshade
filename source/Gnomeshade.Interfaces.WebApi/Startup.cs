@@ -11,6 +11,7 @@ using Elastic.Apm.NetCoreAll;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.Logging;
@@ -49,9 +50,6 @@ public class Startup
 
 		NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
 		NpgsqlLogManager.IsParameterLoggingEnabled = true;
-
-		using var database = new ApplicationDbContext(Configuration);
-		database.Database.EnsureCreated();
 	}
 
 	/// <summary>
@@ -111,6 +109,10 @@ public class Startup
 			});
 
 		services.AddSwaggerGen(Options.SwaggerGen);
+
+		services
+			.AddTransient<DatabaseMigrator>()
+			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 	}
 
 	/// <summary>

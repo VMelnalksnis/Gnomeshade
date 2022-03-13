@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.0.123"/>
+        <PackageReference Include="dbup-postgresql" Version="4.5.0"/>
         <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
     </ItemGroup>
 
@@ -15,6 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="Migrations\00000001_database_extensions.sql"/>
+        <EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
@@ -55,6 +58,7 @@
         <EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
         <EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
+        <EmbeddedResource Include="Migrations\00000002_create_tables.sql"/>
     </ItemGroup>
 
 </Project>

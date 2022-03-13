@@ -17,8 +17,4 @@
         <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Include="Data\PostgresInit.sql"/>
-    </ItemGroup>
-
 </Project>

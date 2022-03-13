@@ -3,15 +3,14 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Repositories;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using Npgsql;
 
@@ -25,13 +24,14 @@ public class PostgresInitializer
 	private const string _connectionStringName = "FinanceDb";
 
 	private readonly string _database;
+	private readonly DatabaseMigrator _databaseMigrator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="PostgresInitializer"/> class.
 	/// </summary>
 	/// <param name="configuration">Configuration containing the connection string for the test database.</param>
 	/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
-	public PostgresInitializer(IConfiguration configuration)
+	public PostgresInitializer(IConfiguration configuration, ILogger<DatabaseMigrator> logger)
 	{
 		ConnectionString = configuration.GetConnectionString(_connectionStringName);
 		var database = new NpgsqlConnectionStringBuilder(ConnectionString).Database;
@@ -43,6 +43,8 @@ public class PostgresInitializer
 		}
 
 		_database = database;
+
+		_databaseMigrator = new(logger);
 	}
 
 	/// <summary>
@@ -81,12 +83,7 @@ public class PostgresInitializer
 		await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 		await sqlConnection.ChangeDatabaseAsync(_database).ConfigureAwait(false);
-
-		var sql = await GetInitializationCommand().ConfigureAwait(false);
-		var createTables = sqlConnection.CreateCommand();
-		createTables.CommandText = sql;
-
-		await createTables.ExecuteNonQueryAsync().ConfigureAwait(false);
+		_databaseMigrator.Migrate(ConnectionString);
 
 		await using var transaction = await sqlConnection.BeginTransactionAsync().ConfigureAwait(false);
 
@@ -139,18 +136,5 @@ public class PostgresInitializer
 		var createDatabase = sqlConnection.CreateCommand();
 		createDatabase.CommandText = $"DROP DATABASE IF EXISTS \"{_database}\";";
 		await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
-	}
-
-	private static async Task<string> GetInitializationCommand()
-	{
-		var assembly = Assembly.GetExecutingAssembly();
-		var resourceStream = assembly.GetManifestResourceStream(typeof(PostgresInitializer), "PostgresInit.sql");
-		if (resourceStream is null)
-		{
-			throw new MissingManifestResourceException();
-		}
-
-		using var streamReader = new StreamReader(resourceStream);
-		return await streamReader.ReadToEndAsync();
 	}
 }

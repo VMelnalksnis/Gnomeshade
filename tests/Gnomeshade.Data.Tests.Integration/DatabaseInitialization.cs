@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Migrations;
 using Gnomeshade.TestingHelpers.Data;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using Npgsql;
 using Npgsql.Logging;
@@ -27,7 +29,7 @@ public class DatabaseInitialization
 			.AddEnvironmentVariables()
 			.Build();
 
-	private static readonly PostgresInitializer _initializer = new(_configuration);
+	private static readonly PostgresInitializer _initializer = new(_configuration, new NullLogger<DatabaseMigrator>());
 
 	public static UserEntity TestUser { get; private set; } = null!;
 

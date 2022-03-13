@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using Bogus;
 
+using Gnomeshade.Data.Migrations;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.TestingHelpers;
@@ -16,6 +17,7 @@ using Gnomeshade.TestingHelpers.Data;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using NUnit.Framework;
 
@@ -24,7 +26,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 [SetUpFixture]
 public sealed class WebserverSetup
 {
-	private static readonly PostgresInitializer _initializer;
+	private static readonly IConfiguration _configuration;
 
 	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
 	private static Login _login = null!;
@@ -32,13 +34,11 @@ public sealed class WebserverSetup
 
 	static WebserverSetup()
 	{
-		IConfiguration configuration =
+		_configuration =
 			new ConfigurationBuilder()
 				.AddUserSecrets<WebserverSetup>(true, true)
 				.AddEnvironmentVariables()
 				.Build();
-
-		_initializer = new(configuration);
 	}
 
 	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateClient();
@@ -57,11 +57,8 @@ public sealed class WebserverSetup
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
 	{
-		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_initializer.ConnectionString);
+		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_configuration.GetConnectionString("FinanceDb"));
 		var client = _webApplicationFactory.CreateClient();
-
-		// database needs to be setup after web app, so that the web app can configure static Npg logger
-		await _initializer.SetupDatabaseAsync();
 		var registrationFaker = new Faker<RegistrationModel>()
 			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
 			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
@@ -75,7 +72,7 @@ public sealed class WebserverSetup
 	[OneTimeTearDown]
 	public async Task OneTimeTearDownAsync()
 	{
-		await _initializer.DropDatabaseAsync();
+		await new PostgresInitializer(_configuration, NullLogger<DatabaseMigrator>.Instance).DropDatabaseAsync();
 		await _webApplicationFactory.DisposeAsync();
 	}
 
