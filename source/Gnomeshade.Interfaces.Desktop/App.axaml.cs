@@ -15,16 +15,16 @@ using Gnomeshade.Interfaces.Desktop.Configuration;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
+using IdentityModel.OidcClient;
+
 using JetBrains.Annotations;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Serilog;
-
-using VMelnalksnis.OAuth2;
-using VMelnalksnis.OAuth2.Keycloak;
 
 namespace Gnomeshade.Interfaces.Desktop;
 
@@ -46,8 +46,8 @@ public sealed class App : Application
 
 		var serviceCollection = new ServiceCollection();
 		serviceCollection
-			.AddOptions<KeycloakOAuth2ClientOptions>()
-			.Bind(configuration.GetSection("Oidc:Keycloak"))
+			.AddOptions<OidcClientOptions>()
+			.Bind(configuration.GetSection("Oidc"))
 			.ValidateDataAnnotations()
 			.ValidateOnStart();
 		serviceCollection
@@ -58,7 +58,16 @@ public sealed class App : Application
 
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
-		serviceCollection.AddHttpClient<IOAuth2Client, KeycloakOAuth2Client>();
+		serviceCollection.AddSingleton<OidcClient>(provider =>
+		{
+			var options = provider.GetRequiredService<IOptions<OidcClientOptions>>().Value;
+			var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+			options.Browser = new SystemBrowser(options.RedirectUri);
+			options.HttpClientFactory = _ => provider.GetRequiredService<HttpClient>();
+			options.LoggerFactory = loggerFactory;
+			return new(options);
+		});
+		serviceCollection.AddHttpClient();
 		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>(nameof(GnomeshadeClient), (provider, client) =>
 		{
 			var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
@@ -72,7 +81,6 @@ public sealed class App : Application
 				var httpClient = httpClientFactory.CreateClient(nameof(GnomeshadeClient));
 				return new(httpClient);
 			})
-			.AddSingleton<IOAuth2Client, KeycloakOAuth2Client>()
 			.AddSingleton<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<MainWindowViewModel>();
 

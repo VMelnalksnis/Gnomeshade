@@ -12,6 +12,8 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
+using IdentityModel.OidcClient;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>Data needed only during design time.</summary>
@@ -19,10 +21,10 @@ public static class DesignTimeData
 {
 	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
 
-	private static DesignTimeOAuth2Client OAuth2Client { get; } = new();
+	private static OidcClient OidcClient { get; } = new(new());
 
 	private static IAuthenticationService AuthenticationService { get; } =
-		new AuthenticationService(GnomeshadeClient, OAuth2Client);
+		new AuthenticationService(GnomeshadeClient, OidcClient);
 
 	// Static member order is important due to initialization order
 #pragma warning disable SA1202

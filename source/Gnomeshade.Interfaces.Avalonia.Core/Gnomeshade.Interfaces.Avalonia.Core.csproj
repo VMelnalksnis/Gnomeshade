@@ -7,12 +7,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
-        <ProjectReference Include="..\VMelnalksnis.OAuth2\VMelnalksnis.OAuth2.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.13"/>
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.13"/>
+        <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0"/>
     </ItemGroup>
 
 </Project>
