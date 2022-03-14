@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Ardalis.SmartEnum" Version="2.0.1"/>
         <PackageReference Include="AutoMapper" Version="11.0.1"/>
-        <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.14.0"/>
+        <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.14.1"/>
         <PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
         <PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
         <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
