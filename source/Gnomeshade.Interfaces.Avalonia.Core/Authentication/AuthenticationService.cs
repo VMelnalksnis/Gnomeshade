@@ -2,6 +2,9 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -17,6 +20,9 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 public sealed class AuthenticationService : IAuthenticationService
 {
 	private static readonly LoginRequest _loginRequest = new();
+
+	private readonly BackgroundWorker _backgroundWorker = new();
+	private readonly CancellationTokenSource _refreshCancellationSource = new();
 
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly OidcClient _oidcClient;
@@ -37,6 +43,23 @@ public sealed class AuthenticationService : IAuthenticationService
 	{
 		var loginResult = await _oidcClient.LoginAsync(_loginRequest).ConfigureAwait(false);
 		await _gnomeshadeClient.SocialRegister(loginResult.AccessToken).ConfigureAwait(false);
+
+		_backgroundWorker.DoWork += async (_, _) =>
+		{
+			var refreshToken = loginResult.RefreshToken;
+			var refreshDelay = (loginResult.AccessTokenExpiration - DateTimeOffset.Now) / 2;
+
+			while (!_refreshCancellationSource.IsCancellationRequested)
+			{
+				await Task.Delay(refreshDelay).ConfigureAwait(false);
+				var refreshResult = await _oidcClient.RefreshTokenAsync(refreshToken);
+				await _gnomeshadeClient.SocialRegister(refreshResult.AccessToken).ConfigureAwait(false);
+
+				refreshToken = refreshResult.RefreshToken;
+				refreshDelay = (refreshResult.AccessTokenExpiration - DateTimeOffset.Now) / 2;
+			}
+		};
+		_backgroundWorker.RunWorkerAsync();
 	}
 
 	/// <inheritdoc />
