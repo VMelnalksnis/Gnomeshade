@@ -65,7 +65,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var transaction = new Transaction
 		{
 			Id = Guid.Empty,
-			Date = DateTimeOffset.Now,
+			BookedAt = DateTimeOffset.UtcNow,
 			Description = "Some transaction description",
 			Items = new()
 			{

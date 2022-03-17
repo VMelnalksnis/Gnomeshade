@@ -21,7 +21,7 @@ public static class DesignTimeData
 {
 	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
 
-	private static OidcClient OidcClient { get; } = new(new());
+	private static OidcClient OidcClient { get; } = new(new() { Authority = "http://localhost" });
 
 	private static IAuthenticationService AuthenticationService { get; } =
 		new AuthenticationService(GnomeshadeClient, OidcClient);
@@ -77,7 +77,8 @@ public static class DesignTimeData
 	public static TransactionItemSplitViewModel TransactionItemSplitViewModel { get; } =
 		TransactionItemSplitViewModel.CreateAsync(
 			GnomeshadeClient,
-			new(new()
+			new(
+				new()
 				{
 					SourceAmount = 123.45m,
 					TargetAmount = 123.45m,
@@ -88,7 +89,8 @@ public static class DesignTimeData
 				null,
 				new() { AlphabeticCode = "EUR" },
 				new() { Name = "Amazon DE 123" },
-				new() { Name = "Amazon" }, new() { AlphabeticCode = "EUR" },
+				new() { Name = "Amazon" },
+				new() { AlphabeticCode = "EUR" },
 				new() { "Food" }),
 			Guid.Empty).Result;
 

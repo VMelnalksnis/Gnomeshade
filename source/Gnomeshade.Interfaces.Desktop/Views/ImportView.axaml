@@ -116,7 +116,7 @@
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					IsReadOnly="True" Header="Date"
-					Binding="{Binding Date, Mode=OneWay}" />
+					Binding="{Binding BookedAt, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					Header="Description" IsReadOnly="True"

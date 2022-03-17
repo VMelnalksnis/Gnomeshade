@@ -102,8 +102,8 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 			CreatedByUserId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
 			ImportedAt = transaction.ImportHash is null ? null : DateTimeOffset.UtcNow,
-			ValidatedAt = transaction.Validated ? DateTimeOffset.UtcNow : null,
-			ValidatedByUserId = transaction.Validated ? ApplicationUser.Id : null,
+			ReconciledAt = transaction.Reconciled ? DateTimeOffset.UtcNow : null,
+			ReconciledByUserId = transaction.Reconciled ? ApplicationUser.Id : null,
 		};
 
 		var transactionId = await _unitOfWork.AddAsync(entity);
@@ -250,8 +250,8 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.UtcNow,
-			ValidatedAt = creationModel.Validated ? DateTimeOffset.UtcNow : null,
-			ValidatedByUserId = creationModel.Validated ? user.Id : null,
+			ReconciledAt = creationModel.Reconciled ? DateTimeOffset.UtcNow : null,
+			ReconciledByUserId = creationModel.Reconciled ? user.Id : null,
 		};
 
 		var transactionId = await _unitOfWork.AddAsync(transaction);

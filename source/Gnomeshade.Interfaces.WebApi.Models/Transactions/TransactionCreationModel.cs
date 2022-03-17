@@ -15,9 +15,13 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 [PublicAPI]
 public sealed record TransactionCreationModel
 {
-	/// <inheritdoc cref="Transaction.Date"/>
-	[Required]
-	public DateTimeOffset? Date { get; init; }
+	/// <inheritdoc cref="Transaction.BookedAt"/>
+	[RequiredIfNull(nameof(ValuedAt))]
+	public DateTimeOffset? BookedAt { get; init; }
+
+	/// <inheritdoc cref="Transaction.ValuedAt"/>
+	[RequiredIfNull(nameof(BookedAt))]
+	public DateTimeOffset? ValuedAt { get; init; }
 
 	/// <inheritdoc cref="Transaction.Description"/>
 	public string? Description { get; init; }
@@ -26,9 +30,9 @@ public sealed record TransactionCreationModel
 	[DefaultValue(true)]
 	public bool Generated { get; init; } = true;
 
-	/// <inheritdoc cref="Transaction.Validated"/>
+	/// <inheritdoc cref="Transaction.Reconciled"/>
 	[DefaultValue(false)]
-	public bool Validated { get; init; }
+	public bool Reconciled { get; init; }
 
 	/// <summary>Whether the transaction is completed.</summary>
 	[DefaultValue(false)]

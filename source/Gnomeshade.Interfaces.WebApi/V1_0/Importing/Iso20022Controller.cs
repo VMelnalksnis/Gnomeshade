@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,18 +35,12 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 
-/// <summary>
-/// Manages ISO 20022 messages.
-/// </summary>
+/// <summary>Manages ISO 20022 messages.</summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Authorize]
 [AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]
-[SuppressMessage(
-	"ReSharper",
-	"AsyncConverter.ConfigureAwaitHighlighting",
-	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
 public sealed class Iso20022Controller : ControllerBase
 {
 	private readonly ApplicationUserContext _applicationUserContext;
@@ -91,9 +84,7 @@ public sealed class Iso20022Controller : ControllerBase
 		_mapper = mapper;
 	}
 
-	/// <summary>
-	/// Imports transactions from an ISO 20022 Bank-To-Customer Account Report v02.
-	/// </summary>
+	/// <summary>Imports transactions from an ISO 20022 Bank-To-Customer Account Report v02.</summary>
 	/// <param name="formFile">A CAMT.052.001.02 message.</param>
 	/// <returns>Summary of all created or references transactions, accounts and products.</returns>
 	/// <response code="200">Transactions were successfully imported.</response>
@@ -493,7 +484,7 @@ public sealed class Iso20022Controller : ControllerBase
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			Date = bookingDate.ToUniversalTime(),
+			BookedAt = bookingDate.ToUniversalTime(),
 			ImportHash = importHash,
 			ImportedAt = DateTimeOffset.UtcNow, // todo at db transaction level
 			Description = reportEntry.AccountServicerReference,

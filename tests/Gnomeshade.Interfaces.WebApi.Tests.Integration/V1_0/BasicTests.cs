@@ -78,7 +78,7 @@ public class BasicTests
 
 		var transaction = new TransactionCreationModel
 		{
-			Date = DateTimeOffset.Now,
+			ValuedAt = DateTimeOffset.Now,
 			Description = "Transaction with items creation test",
 			Items = new()
 			{

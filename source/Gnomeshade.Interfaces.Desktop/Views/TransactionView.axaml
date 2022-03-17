@@ -63,8 +63,12 @@
 				</DataGridCheckBoxColumn>
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
-					IsReadOnly="True" Header="Date"
-					Binding="{Binding Date, Mode=OneWay}" />
+					IsReadOnly="True" Header="Booked At"
+					Binding="{Binding BookedAt, Mode=OneWay, StringFormat=\{0:d\}}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionOverview"
+					IsReadOnly="True" Header="Valued At"
+					Binding="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:d\}}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					Header="Description" IsReadOnly="True"

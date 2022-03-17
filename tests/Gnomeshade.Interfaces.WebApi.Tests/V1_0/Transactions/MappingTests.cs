@@ -35,7 +35,7 @@ public class MappingTests
 	{
 		var creationModel = new TransactionCreationModel
 		{
-			Date = new(2021, 05, 12, 01, 02, 03, TimeSpan.FromHours(2)),
+			BookedAt = new(2021, 05, 12, 01, 02, 03, TimeSpan.FromHours(2)),
 			Items = new()
 			{
 				new() { DeliveryDate = new DateTimeOffset(2021, 04, 13, 01, 02, 03, TimeSpan.FromHours(3)) },
@@ -44,7 +44,8 @@ public class MappingTests
 
 		var transaction = _mapper.Map<TransactionEntity>(creationModel);
 
-		transaction.Date.Offset.Should().Be(TimeSpan.Zero);
+		transaction.BookedAt.Should().NotBeNull();
+		transaction.BookedAt!.Value.Offset.Should().Be(TimeSpan.Zero);
 		var item = transaction.Items.Should().ContainSingle().Subject;
 		item.DeliveryDate.Should().NotBeNull();
 		item.DeliveryDate!.Value.Offset.Should().Be(TimeSpan.Zero);

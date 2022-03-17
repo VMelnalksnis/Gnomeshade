@@ -9,14 +9,15 @@
       AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE transactions
-SET modified_at          = DEFAULT,
-    modified_by_user_id  = @ModifiedByUserId,
-    date                 = @Date,
-    description          = @Description,
-    import_hash          = @ImportHash,
-    imported_at          = @ImportedAt,
-    validated_at         = @ValidatedAt,
-    validated_by_user_id = @ValidatedByUserId
+SET modified_at           = DEFAULT,
+    modified_by_user_id   = @ModifiedByUserId,
+    booked_at             = @BookedAt,
+    valued_at             = @ValuedAt,
+    description           = @Description,
+    import_hash           = @ImportHash,
+    imported_at           = @ImportedAt,
+    reconciled_at         = @ReconciledAt,
+    reconciled_by_user_id = @ReconciledByUserId
 FROM t
 WHERE transactions.id = t.id
 RETURNING t.id;

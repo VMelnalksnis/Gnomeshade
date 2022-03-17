@@ -21,7 +21,10 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid _initialId;
 	private string? _description;
-	private DateTimeOffset _date;
+	private DateTimeOffset? _bookingDate;
+	private TimeSpan? _bookingTime;
+	private DateTimeOffset? _valueDate;
+	private TimeSpan? _valueTime;
 	private TransactionItemRow? _selectedItem;
 	private DataGridItemCollectionView<TransactionItemRow> _items = null!;
 	private TransactionItemCreationViewModel _itemCreation;
@@ -40,11 +43,32 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	/// <summary>Raised when an item has been selected for splitting.</summary>
 	public event EventHandler<TransactionItemSplitEventArgs>? ItemSplit;
 
-	/// <summary>Gets or sets the book date of the transaction.</summary>
-	public DateTimeOffset Date
+	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
+	public DateTimeOffset? BookingDate
 	{
-		get => _date;
-		set => SetAndNotify(ref _date, value);
+		get => _bookingDate;
+		set => SetAndNotify(ref _bookingDate, value);
+	}
+
+	/// <summary>Gets or sets the time at which the transaction was posted to an account on the account servicer accounting books.</summary>
+	public TimeSpan? BookingTime
+	{
+		get => _bookingTime;
+		set => SetAndNotify(ref _bookingTime, value);
+	}
+
+	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public DateTimeOffset? ValueDate
+	{
+		get => _valueDate;
+		set => SetAndNotify(ref _valueDate, value);
+	}
+
+	/// <summary>Gets or sets the time at which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public TimeSpan? ValueTime
+	{
+		get => _valueTime;
+		set => SetAndNotify(ref _valueTime, value);
 	}
 
 	/// <summary>Gets or sets the description of the transaction.</summary>
@@ -259,7 +283,10 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 				.Select(task => task.Result)
 				.ToList();
 
-		Date = transaction.Date;
+		BookingDate = transaction.BookedAt?.ToLocalTime();
+		BookingTime = transaction.BookedAt?.ToLocalTime().TimeOfDay;
+		ValueDate = transaction.ValuedAt?.ToLocalTime();
+		ValueTime = transaction.ValuedAt?.ToLocalTime().TimeOfDay;
 		Description = transaction.Description;
 
 		// ReSharper disable once ConditionIsAlwaysTrueOrFalse

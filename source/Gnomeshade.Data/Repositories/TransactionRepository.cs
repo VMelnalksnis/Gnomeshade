@@ -17,16 +17,12 @@ using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="TransactionEntity"/> repository.
-/// </summary>
+/// <summary>Database backed <see cref="TransactionEntity"/> repository.</summary>
 public sealed class TransactionRepository : Repository<TransactionEntity>
 {
 	private readonly IDbConnection _dbConnection;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public TransactionRepository(IDbConnection dbConnection)
 		: base(dbConnection)
@@ -49,9 +45,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE t.id = @id";
 
-	/// <summary>
-	/// Searches for a transaction with the specified import hash.
-	/// </summary>
+	/// <summary>Searches for a transaction with the specified import hash.</summary>
 	/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -66,9 +60,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>
-	/// Searches for a transaction with the specified import hash using the specified database transaction.
-	/// </summary>
+	/// <summary>Searches for a transaction with the specified import hash using the specified database transaction.</summary>
 	/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
@@ -83,9 +75,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>
-	/// Gets all transactions which have their <see cref="TransactionEntity.Date"/> within the specified period.
-	/// </summary>
+	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
 	/// <param name="from">The start of the time range.</param>
 	/// <param name="to">The end of the time range.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
@@ -97,7 +87,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE t.date >= @from AND t.date <= @to AND {_accessSql} ORDER BY t.date DESC";
+		var sql = $"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {_accessSql} ORDER BY t.valued_at DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);

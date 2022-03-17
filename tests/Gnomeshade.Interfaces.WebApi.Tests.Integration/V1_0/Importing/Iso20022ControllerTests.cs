@@ -10,11 +10,13 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Importing;
 
+[TestOf(typeof(Iso20022Controller))]
 public class Iso20022ControllerTests
 {
 	private IGnomeshadeClient _client = null!;

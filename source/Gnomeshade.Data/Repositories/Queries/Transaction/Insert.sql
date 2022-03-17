@@ -3,21 +3,23 @@
      owner_id,
      created_by_user_id,
      modified_by_user_id,
-     date,
+     booked_at,
+     valued_at,
      description,
      import_hash,
      imported_at,
-     validated_at,
-     validated_by_user_id)
+     reconciled_at,
+     reconciled_by_user_id)
 VALUES
     (@Id,
      @OwnerId,
      @CreatedByUserId,
      @ModifiedByUserId,
-     @Date,
+     @BookedAt,
+     @ValuedAt,
      @Description,
      @ImportHash,
      @ImportedAt,
-     @ValidatedAt,
-     @ValidatedByUserId)
+     @ReconciledAt,
+     @ReconciledByUserId)
 RETURNING id;

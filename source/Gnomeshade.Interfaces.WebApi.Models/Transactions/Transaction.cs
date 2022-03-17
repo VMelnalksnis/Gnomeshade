@@ -31,8 +31,11 @@ public sealed record Transaction
 	/// <summary>The id of the user that last modified this transaction.</summary>
 	public Guid ModifiedByUserId { get; init; }
 
-	/// <summary>The point in time when this transaction was completed.</summary>
-	public DateTimeOffset Date { get; init; }
+	/// <summary>The point in time when this transaction was posted to an account on the account servicer accounting books.</summary>
+	public DateTimeOffset? BookedAt { get; init; }
+
+	/// <summary>The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public DateTimeOffset? ValuedAt { get; init; }
 
 	/// <summary>The description of the transaction.</summary>
 	public string? Description { get; init; }
@@ -43,11 +46,11 @@ public sealed record Transaction
 	/// <summary>Whether or not this transaction was imported.</summary>
 	public bool Imported => ImportedAt.HasValue;
 
-	/// <summary>The point in time when this transaction was validated.</summary>
-	public DateTimeOffset? ValidatedAt { get; init; }
+	/// <summary>The point in time when this transaction was reconciled.</summary>
+	public DateTimeOffset? ReconciledAt { get; init; }
 
-	/// <summary>Whether or not this transaction was validated.</summary>
-	public bool Validated => ValidatedAt.HasValue;
+	/// <summary>Whether or not this transaction was reconciled.</summary>
+	public bool Reconciled => ReconciledAt.HasValue;
 
 	/// <summary>All items that are a part of this transaction.</summary>
 	public List<TransactionItem> Items { get; init; } = null!;

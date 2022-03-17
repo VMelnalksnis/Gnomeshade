@@ -16,12 +16,14 @@ using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 using Gnomeshade.TestingHelpers.Models;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions;
 
+[TestOf(typeof(TransactionController))]
 public class TransactionControllerTests
 {
 	private IGnomeshadeClient _client = null!;
@@ -63,7 +65,7 @@ public class TransactionControllerTests
 
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			Date = DateTimeOffset.Now,
+			ValuedAt = DateTimeOffset.Now,
 			Items = new() { itemCreationModel },
 		};
 
@@ -96,7 +98,7 @@ public class TransactionControllerTests
 		var items = _itemCreationFaker.Generate(2);
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			Date = DateTimeOffset.Now,
+			ValuedAt = DateTimeOffset.Now,
 			Items = items,
 		};
 
@@ -123,7 +125,7 @@ public class TransactionControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			Date = DateTimeOffset.Now,
+			ValuedAt = DateTimeOffset.Now,
 			Items = new() { _itemCreationFaker.Generate() },
 		};
 
@@ -147,7 +149,7 @@ public class TransactionControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			Date = DateTimeOffset.Now,
+			ValuedAt = DateTimeOffset.Now,
 			Items = new() { _itemCreationFaker.Generate() },
 		};
 

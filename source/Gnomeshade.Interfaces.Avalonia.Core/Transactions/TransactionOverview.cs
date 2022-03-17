@@ -38,7 +38,8 @@ public sealed class TransactionOverview : PropertyChangedBase
 		decimal targetAmount)
 	{
 		Id = transaction.Id;
-		Date = transaction.Date.LocalDateTime;
+		BookedAt = transaction.BookedAt?.LocalDateTime;
+		ValuedAt = transaction.ValuedAt?.LocalDateTime;
 		Description = transaction.Description;
 		SourceAccount = sourceCounterparty?.Name ?? sourceAccount.Name;
 		TargetAccount = targetCounterparty?.Name ?? targetAccount.Name;
@@ -67,8 +68,11 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <summary>Gets the id of the transaction which this overview represents.</summary>
 	public Guid Id { get; }
 
-	/// <summary>Gets the book date of the transaction.</summary>
-	public DateTime Date { get; }
+	/// <summary>Gets the booking date of the transaction.</summary>
+	public DateTime? BookedAt { get; }
+
+	/// <summary>Gets the value date of the transactions.</summary>
+	public DateTime? ValuedAt { get; }
 
 	/// <summary>Gets the description of the transaction.</summary>
 	public string? Description { get; }
