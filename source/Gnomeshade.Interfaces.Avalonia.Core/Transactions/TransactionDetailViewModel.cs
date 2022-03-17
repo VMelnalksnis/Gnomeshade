@@ -152,6 +152,44 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		return viewModel;
 	}
 
+	/// <summary>Updates the transaction with information in this viewmodel.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UpdateAsync()
+	{
+		var bookedAt = BookingDate.HasValue
+			? new DateTimeOffset(BookingDate.Value.Date).Add(BookingTime.GetValueOrDefault())
+			: default(DateTimeOffset?);
+
+		var valuedAt = ValueDate.HasValue
+			? new DateTimeOffset(ValueDate.Value.Date).Add(ValueTime.GetValueOrDefault())
+			: default(DateTimeOffset?);
+
+		var transaction = await _gnomeshadeClient.GetTransactionAsync(_initialId).ConfigureAwait(false);
+		var creationModel = new TransactionCreationModel
+		{
+			BookedAt = bookedAt,
+			Description = Description,
+			Items = transaction.Items.Select(item => new TransactionItemCreationModel
+			{
+				SourceAmount = item.SourceAmount,
+				SourceAccountId = item.SourceAccountId,
+				TargetAmount = item.TargetAmount,
+				TargetAccountId = item.TargetAccountId,
+				ProductId = item.Product.Id,
+				Amount = item.Amount,
+				BankReference = item.BankReference,
+				ExternalReference = item.ExternalReference,
+				InternalReference = item.InternalReference,
+				DeliveryDate = item.DeliveryDate,
+				Description = item.Description,
+			}).ToList(),
+			ValuedAt = valuedAt,
+		};
+
+		await _gnomeshadeClient.PutTransactionAsync(_initialId, creationModel).ConfigureAwait(false);
+		await GetTransactionAsync(_initialId).ConfigureAwait(false);
+	}
+
 	/// <summary>Add a new item from <see cref="ItemCreation"/> to the current transaction.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AddItemAsync()

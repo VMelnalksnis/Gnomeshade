@@ -55,6 +55,10 @@
 
 		<StackPanel Orientation="Horizontal" Spacing="10">
 			<Button
+				Command="{ReflectionBinding UpdateAsync}">
+				Update Transaction
+			</Button>
+			<Button
 				IsEnabled="{Binding CanDeleteItem}"
 				Command="{ReflectionBinding DeleteItemAsync}">
 				Delete Selected
