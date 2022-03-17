@@ -8,6 +8,7 @@
 	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:tags="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Tags;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:tags1="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Tags;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionItemCreationViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransactionItemCreationView"
@@ -169,9 +170,14 @@
 			Items="{Binding TagsToAdd}">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
-					<StackPanel Orientation="Vertical" Spacing="5"/>
+					<StackPanel Orientation="Vertical" Spacing="5" />
 				</ItemsPanelTemplate>
 			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate x:DataType="tags1:TagRow">
+					<TextBlock Text="{Binding Name}"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 		<AutoCompleteBox
 			Grid.Column="2" Grid.Row="6"
@@ -183,7 +189,7 @@
 			SelectedItem="{Binding Tag, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="tags:Tag">
-					<TextBlock Text="{Binding Name}" />
+					<TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
