@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -20,11 +21,6 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid _initialId;
-	private string? _description;
-	private DateTimeOffset? _bookingDate;
-	private TimeSpan? _bookingTime;
-	private DateTimeOffset? _valueDate;
-	private TimeSpan? _valueTime;
 	private TransactionItemRow? _selectedItem;
 	private DataGridItemCollectionView<TransactionItemRow> _items = null!;
 	private TransactionItemCreationViewModel _itemCreation;
@@ -38,45 +34,15 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		_initialId = initialId;
 		_itemCreation = itemCreationViewModel;
 		ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
+
+		TransactionProperties = new();
 	}
 
 	/// <summary>Raised when an item has been selected for splitting.</summary>
 	public event EventHandler<TransactionItemSplitEventArgs>? ItemSplit;
 
-	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public DateTimeOffset? BookingDate
-	{
-		get => _bookingDate;
-		set => SetAndNotify(ref _bookingDate, value);
-	}
-
-	/// <summary>Gets or sets the time at which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public TimeSpan? BookingTime
-	{
-		get => _bookingTime;
-		set => SetAndNotify(ref _bookingTime, value);
-	}
-
-	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public DateTimeOffset? ValueDate
-	{
-		get => _valueDate;
-		set => SetAndNotify(ref _valueDate, value);
-	}
-
-	/// <summary>Gets or sets the time at which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public TimeSpan? ValueTime
-	{
-		get => _valueTime;
-		set => SetAndNotify(ref _valueTime, value);
-	}
-
-	/// <summary>Gets or sets the description of the transaction.</summary>
-	public string? Description
-	{
-		get => _description;
-		set => SetAndNotify(ref _description, value);
-	}
+	/// <summary>Gets transaction information.</summary>
+	public TransactionProperties TransactionProperties { get; }
 
 	/// <summary>Gets all transaction items of the current transaction.</summary>
 	/// /// <remarks>
@@ -156,19 +122,11 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateAsync()
 	{
-		var bookedAt = BookingDate.HasValue
-			? new DateTimeOffset(BookingDate.Value.Date).Add(BookingTime.GetValueOrDefault())
-			: default(DateTimeOffset?);
-
-		var valuedAt = ValueDate.HasValue
-			? new DateTimeOffset(ValueDate.Value.Date).Add(ValueTime.GetValueOrDefault())
-			: default(DateTimeOffset?);
-
 		var transaction = await _gnomeshadeClient.GetTransactionAsync(_initialId).ConfigureAwait(false);
 		var creationModel = new TransactionCreationModel
 		{
-			BookedAt = bookedAt,
-			Description = Description,
+			BookedAt = TransactionProperties.BookedAt,
+			Description = TransactionProperties.Description,
 			Items = transaction.Items.Select(item => new TransactionItemCreationModel
 			{
 				SourceAmount = item.SourceAmount,
@@ -183,7 +141,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 				DeliveryDate = item.DeliveryDate,
 				Description = item.Description,
 			}).ToList(),
-			ValuedAt = valuedAt,
+			ValuedAt = TransactionProperties.ValuedAt,
 		};
 
 		await _gnomeshadeClient.PutTransactionAsync(_initialId, creationModel).ConfigureAwait(false);
@@ -321,11 +279,11 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 				.Select(task => task.Result)
 				.ToList();
 
-		BookingDate = transaction.BookedAt?.ToLocalTime();
-		BookingTime = transaction.BookedAt?.ToLocalTime().TimeOfDay;
-		ValueDate = transaction.ValuedAt?.ToLocalTime();
-		ValueTime = transaction.ValuedAt?.ToLocalTime().TimeOfDay;
-		Description = transaction.Description;
+		TransactionProperties.BookingDate = transaction.BookedAt?.ToLocalTime();
+		TransactionProperties.BookingTime = transaction.BookedAt?.ToLocalTime().TimeOfDay;
+		TransactionProperties.ValueDate = transaction.ValuedAt?.ToLocalTime();
+		TransactionProperties.ValueTime = transaction.ValuedAt?.ToLocalTime().TimeOfDay;
+		TransactionProperties.Description = transaction.Description;
 
 		// ReSharper disable once ConditionIsAlwaysTrueOrFalse
 		if (Items is not null)

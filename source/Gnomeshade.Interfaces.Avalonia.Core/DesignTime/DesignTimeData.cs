@@ -11,6 +11,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 
 using IdentityModel.OidcClient;
 
@@ -113,4 +114,7 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="TagViewModel"/> for use during design time.</summary>
 	public static TagViewModel TagViewModel { get; } =
 		TagViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="TransactionProperties"/> for use during design time.</summary>
+	public static TransactionProperties TransactionProperties { get; } = new();
 }

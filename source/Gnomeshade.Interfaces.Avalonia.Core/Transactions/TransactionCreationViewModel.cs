@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -20,11 +21,6 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
-	private string? _description;
-	private DateTimeOffset? _bookingDate;
-	private TimeSpan? _bookingTime;
-	private DateTimeOffset? _valueDate;
-	private TimeSpan? _valueTime;
 	private TransactionItemCreationViewModel? _itemCreation;
 	private string? _errorMessage;
 	private TransactionItemCreationViewModel? _selectedItem;
@@ -35,6 +31,9 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 
+		TransactionProperties = new();
+		TransactionProperties.PropertyChanged += TransactionPropertiesOnPropertyChanged;
+
 		Items = new();
 		Items.CollectionChanged += ItemsOnCollectionChanged;
 	}
@@ -42,40 +41,8 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 	/// <summary>Raised when a new transaction has been successfully created.</summary>
 	public event EventHandler<TransactionCreatedEventArgs>? TransactionCreated;
 
-	/// <summary>Gets or sets the description of the transaction.</summary>
-	public string? Description
-	{
-		get => _description;
-		set => SetAndNotify(ref _description, value, nameof(Description));
-	}
-
-	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public DateTimeOffset? BookingDate
-	{
-		get => _bookingDate;
-		set => SetAndNotifyWithGuard(ref _bookingDate, value, nameof(BookingDate), nameof(CanCreate));
-	}
-
-	/// <summary>Gets or sets the time at which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public TimeSpan? BookingTime
-	{
-		get => _bookingTime;
-		set => SetAndNotifyWithGuard(ref _bookingTime, value, nameof(BookingTime), nameof(CanCreate));
-	}
-
-	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public DateTimeOffset? ValueDate
-	{
-		get => _valueDate;
-		set => SetAndNotifyWithGuard(ref _valueDate, value, nameof(ValueDate), nameof(CanCreate));
-	}
-
-	/// <summary>Gets or sets the time at which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public TimeSpan? ValueTime
-	{
-		get => _valueTime;
-		set => SetAndNotifyWithGuard(ref _valueTime, value, nameof(ValueTime), nameof(CanCreate));
-	}
+	/// <summary>Gets transaction information.</summary>
+	public TransactionProperties TransactionProperties { get; }
 
 	/// <summary>Gets a collection of transaction items.</summary>
 	public ObservableCollection<TransactionItemCreationViewModel> Items { get; }
@@ -114,9 +81,7 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets a value indicating whether a new transaction can be created with the given information.</summary>
-	public bool CanCreate =>
-		((BookingDate.HasValue && BookingTime.HasValue) || (ValueDate.HasValue && ValueTime.HasValue)) &&
-		Items.Any();
+	public bool CanCreate => TransactionProperties.IsValid && Items.Any();
 
 	/// <summary>Gets or sets the transaction creation error message.</summary>
 	public string? ErrorMessage
@@ -159,19 +124,11 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateTransactionAsync()
 	{
-		var bookedAt = BookingDate.HasValue
-			? new DateTimeOffset(BookingDate.Value.Date).Add(BookingTime.GetValueOrDefault())
-			: default(DateTimeOffset?);
-
-		var valuedAt = ValueDate.HasValue
-			? new DateTimeOffset(ValueDate.Value.Date).Add(ValueTime.GetValueOrDefault())
-			: default(DateTimeOffset?);
-
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			BookedAt = bookedAt,
-			ValuedAt = valuedAt,
-			Description = Description,
+			BookedAt = TransactionProperties.BookedAt,
+			ValuedAt = TransactionProperties.ValuedAt,
+			Description = TransactionProperties.Description,
 			Items = Items.Select(item => new TransactionItemCreationModel
 			{
 				// todo currency not yet added to account
@@ -205,6 +162,11 @@ public sealed class TransactionCreationViewModel : ViewModelBase
 	private void OnTransactionCreated(Guid id)
 	{
 		TransactionCreated?.Invoke(this, new(id));
+	}
+
+	private void TransactionPropertiesOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		OnPropertyChanged(nameof(CanCreate));
 	}
 
 	private void ItemsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

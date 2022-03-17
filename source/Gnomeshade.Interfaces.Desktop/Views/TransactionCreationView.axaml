@@ -13,53 +13,18 @@
 
 	<Grid ColumnDefinitions="Auto,Auto,Auto,*"
 	      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-		<TextBlock
-			Grid.Column="0" Grid.Row="0"
-			Padding="10 0"
-			VerticalAlignment="Center"
-			Text="Booking Date:" />
-		<DatePicker
-			Grid.Column="1" Grid.Row="0"
-			Margin="5"
-			SelectedDate="{Binding BookingDate}"/>
-		<TimePicker
-			Grid.Column="2" Grid.Row="0"
-			Margin="5"
-			SelectedTime="{Binding BookingTime}" />
+		<UserControl
+			Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4"
+			Content="{Binding TransactionProperties}" />
 
 		<TextBlock
-			Grid.Column="0" Grid.Row="1"
-			Padding="10 0"
-			VerticalAlignment="Center"
-			Text="Value Date:" />
-		<DatePicker
-			Grid.Column="1" Grid.Row="1"
-			Margin="5"
-			SelectedDate="{Binding ValueDate}"/>
-		<TimePicker
-			Grid.Column="2" Grid.Row="1"
-			Margin="5"
-			SelectedTime="{Binding ValueTime}" />
-
-		<TextBlock
-			Grid.Column="0" Grid.Row="2"
-			Padding="10 0"
-			VerticalAlignment="Center"
-			Text="Description:" />
-		<TextBox
-			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"
-			MinWidth="300" Margin="5"
-			AcceptsReturn="True"
-			Text="{Binding Description}" />
-
-		<TextBlock
-			Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3"
+			Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3"
 			Margin="10"
 			HorizontalAlignment="Center"
 			Text="Transaction items" />
 
 		<DataGrid
-			Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="4"
+			Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4"
 			Margin="5"
 			IsVisible="{Binding HasAnyItems}"
 			IsReadOnly="False"
@@ -101,32 +66,32 @@
 		</DataGrid>
 
 		<UserControl
-			Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3"
+			Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3"
 			Content="{Binding ItemCreation}" />
 
 		<Button
-			Grid.Column="0" Grid.Row="6"
+			Grid.Column="0" Grid.Row="4"
 			Margin="5"
 			IsEnabled="{Binding CanAddItem}"
 			Command="{ReflectionBinding AddItemAsync}">
 			Add item
 		</Button>
 		<Button
-			Grid.Column="1" Grid.Row="5"
+			Grid.Column="1" Grid.Row="4"
 			Margin="5"
 			IsEnabled="{Binding CanDeleteItem}"
 			Command="{ReflectionBinding DeleteItem}">
 			Delete Item
 		</Button>
 		<Button
-			Grid.Column="2" Grid.Row="5"
+			Grid.Column="2" Grid.Row="4"
 			Margin="5"
 			IsEnabled="{Binding CanCreate}"
 			Command="{ReflectionBinding CreateTransactionAsync}">
 			Create transaction
 		</Button>
 		<TextBlock
-			Grid.Column="3" Grid.Row="5"
+			Grid.Column="3" Grid.Row="4"
 			VerticalAlignment="Center"
 			IsVisible="{Binding IsErrorMessageVisible}"
 			Text="{Binding ErrorMessage}" />
