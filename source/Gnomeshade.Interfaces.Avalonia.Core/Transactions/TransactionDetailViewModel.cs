@@ -36,6 +36,8 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 		ItemCreation.PropertyChanged += ItemCreationOnPropertyChanged;
 
 		TransactionProperties = new();
+
+		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <summary>Raised when an item has been selected for splitting.</summary>
@@ -319,5 +321,20 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 	{
 		OnPropertyChanged(nameof(CanAddItem));
 		OnPropertyChanged(nameof(CanUpdateItem));
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is not nameof(SelectedItem) ||
+			SelectedItem is null)
+		{
+			return;
+		}
+
+		ItemCreation = TransactionItemCreationViewModel
+			.CreateAsync(_gnomeshadeClient, SelectedItem.Id)
+			.ConfigureAwait(false)
+			.GetAwaiter()
+			.GetResult();
 	}
 }

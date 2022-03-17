@@ -19,6 +19,7 @@ using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionDetailV
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
+[TestOf(typeof(TransactionDetailViewModel))]
 public class TransactionDetailViewModelTests
 {
 	[Test]
@@ -62,5 +63,19 @@ public class TransactionDetailViewModelTests
 
 		viewModel.SelectedItem = viewModel.Items.Last();
 		await viewModel.DeleteItemAsync();
+	}
+
+	[Test]
+	public async Task SetSelectedItem_ShouldUpdateItemCreation()
+	{
+		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
+		var itemToSelect = viewModel.Items.First();
+
+		viewModel.ItemCreation.Amount.Should().BeNull();
+
+		viewModel.SelectedItem = itemToSelect;
+
+		viewModel.ItemCreation.Amount.Should().Be(itemToSelect.Amount);
+		viewModel.ItemCreation.Amount.Should().NotBeNull();
 	}
 }
