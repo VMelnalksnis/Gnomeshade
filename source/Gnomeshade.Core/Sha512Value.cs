@@ -7,22 +7,19 @@ using System.Text;
 
 namespace Gnomeshade.Core;
 
-/// <summary>
-/// The value of a SHA-2 hash with a digest size of 512 bits (64 bytes).
-/// </summary>
+/// <summary>The value of a SHA-2 hash with a digest size of 512 bits (64 bytes).</summary>
 public readonly struct Sha512Value : IEquatable<Sha512Value>
 {
 	private const int _hashByteCount = 64;
+
 	private readonly byte[] _bytes;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="Sha512Value"/> struct.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="Sha512Value"/> struct.</summary>
 	/// <param name="bytes">The bytes of the hash value.</param>
 	/// <exception cref="ArgumentException"><paramref name="bytes"/> length is not 64 bytes.</exception>
 	public Sha512Value(byte[] bytes)
 	{
-		if (bytes.Length != _hashByteCount)
+		if (bytes.Length is not _hashByteCount)
 		{
 			throw new ArgumentException($"SHA512 hash value must be {_hashByteCount} bytes long", nameof(bytes));
 		}
@@ -30,24 +27,18 @@ public readonly struct Sha512Value : IEquatable<Sha512Value>
 		_bytes = bytes;
 	}
 
-	/// <summary>
-	/// Implicitly converts a hash value to its binary value.
-	/// </summary>
+	/// <summary>Implicitly converts a hash value to its binary value.</summary>
 	/// <param name="value">The hash value to convert.</param>
 	/// <returns>The binary value of the hash value.</returns>
 	public static implicit operator byte[](Sha512Value value) => value._bytes;
 
-	/// <summary>
-	/// Indicates whether the two values are equal.
-	/// </summary>
+	/// <summary>Indicates whether the two values are equal.</summary>
 	/// <param name="left">The first value to compare.</param>
 	/// <param name="right">The second value to compare.</param>
 	/// <returns><see langword="true"/> if values are equal; otherwise <see langword="false"/>.</returns>
 	public static bool operator ==(Sha512Value left, Sha512Value right) => left.Equals(right);
 
-	/// <summary>
-	/// Indicates whether the two values are not equal.
-	/// </summary>
+	/// <summary>Indicates whether the two values are not equal.</summary>
 	/// <param name="left">The first value to compare.</param>
 	/// <param name="right">The second value to compare.</param>
 	/// <returns><see langword="true"/> if values are not equal; otherwise <see langword="false"/>.</returns>
