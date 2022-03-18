@@ -13,7 +13,7 @@ namespace Gnomeshade.Core;
 /// <summary>Extensions methods for hashing XML representations of objects.</summary>
 public static class ObjectExtensions
 {
-	/// <summary>Computes a <see cref="SHA512"/> hash value for the specified <paramref name="@object"/> of type <typeparamref name="T"/>.</summary>
+	/// <summary>Computes a <see cref="SHA512"/> hash value for the specified <paramref name="object"/> of type <typeparamref name="T"/>.</summary>
 	/// <param name="object">The object for which to compute the hash value for.</param>
 	/// <typeparam name="T">The type of the object for which to compute the hash value for.</typeparam>
 	/// <returns>The computed <see cref="SHA512"/> hash value.</returns>
@@ -30,7 +30,7 @@ public static class ObjectExtensions
 		return new(hashBytes);
 	}
 
-	/// <summary>Asynchronously computes a <see cref="SHA512"/> hash value for the specified <paramref name="@object"/> of type <typeparamref name="T"/>.</summary>
+	/// <summary>Asynchronously computes a <see cref="SHA512"/> hash value for the specified <paramref name="object"/> of type <typeparamref name="T"/>.</summary>
 	/// <param name="object">The object for which to compute the hash value for.</param>
 	/// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
 	/// <typeparam name="T">The type of the object for which to compute the hash value for.</typeparam>
