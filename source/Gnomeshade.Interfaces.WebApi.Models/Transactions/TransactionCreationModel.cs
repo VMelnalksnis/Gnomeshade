@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
@@ -26,17 +25,8 @@ public sealed record TransactionCreationModel
 	/// <inheritdoc cref="Transaction.Description"/>
 	public string? Description { get; init; }
 
-	/// <summary>Whether the transaction item was generated or entered manually.</summary>
-	[DefaultValue(true)]
-	public bool Generated { get; init; } = true;
-
-	/// <inheritdoc cref="Transaction.Reconciled"/>
-	[DefaultValue(false)]
-	public bool Reconciled { get; init; }
-
-	/// <summary>Whether the transaction is completed.</summary>
-	[DefaultValue(false)]
-	public bool Completed { get; init; }
+	/// <inheritdoc cref="Transaction.ReconciledAt"/>
+	public DateTimeOffset? ReconciledAt { get; init; }
 
 	/// <summary>SHA512 hash of the imported data.</summary>
 	[MinLength(64)]
