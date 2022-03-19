@@ -256,7 +256,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Product> GetProductAsync(Guid id) => throw new NotImplementedException();
+	public Task<Product> GetProductAsync(Guid id)
+	{
+		return Task.FromResult(_products.Single(product => product.Id == id));
+	}
 
 	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync()
@@ -265,7 +268,25 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task PutProductAsync(Guid id, ProductCreationModel product) => throw new NotImplementedException();
+	public Task PutProductAsync(Guid id, ProductCreationModel product)
+	{
+		var model = new Product
+		{
+			Id = id,
+			Name = product.Name!,
+			Description = product.Description,
+			UnitId = product.UnitId,
+		};
+
+		var existingProduct = _products.SingleOrDefault(p => p.Id == id);
+		if (existingProduct is not null)
+		{
+			_products.Remove(existingProduct);
+		}
+
+		_products.Add(model);
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
 	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();

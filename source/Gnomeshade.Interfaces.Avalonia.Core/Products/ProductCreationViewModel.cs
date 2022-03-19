@@ -14,9 +14,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
-/// <summary>
-/// Form for creating a single new product.
-/// </summary>
+/// <summary>Form for creating a single new product.</summary>
 public sealed class ProductCreationViewModel : ViewModelBase
 {
 	private readonly IProductClient _productClient;
@@ -46,56 +44,40 @@ public sealed class ProductCreationViewModel : ViewModelBase
 			: Units.Single(unit => unit.Id == _exisingProduct.UnitId.Value);
 	}
 
-	/// <summary>
-	/// Raised when a new product has been successfully created.
-	/// </summary>
+	/// <summary>Raised when a new product has been successfully created.</summary>
 	public event EventHandler<ProductCreatedEventArgs>? ProductCreated;
 
-	/// <summary>
-	/// Gets or sets the name of the product.
-	/// </summary>
+	/// <summary>Gets or sets the name of the product.</summary>
 	public string? Name
 	{
 		get => _name;
 		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
 	}
 
-	/// <summary>
-	/// Gets or sets the description of the product.
-	/// </summary>
+	/// <summary>Gets or sets the description of the product.</summary>
 	public string? Description
 	{
 		get => _description;
 		set => SetAndNotify(ref _description, value, nameof(Description));
 	}
 
-	/// <summary>
-	/// Gets or sets the unit in which an amount of this product is measured in.
-	/// </summary>
+	/// <summary>Gets or sets the unit in which an amount of this product is measured in.</summary>
 	public Unit? SelectedUnit
 	{
 		get => _selectedUnit;
 		set => SetAndNotify(ref _selectedUnit, value, nameof(SelectedUnit));
 	}
 
-	/// <summary>
-	/// Gets a collection of all available units.
-	/// </summary>
+	/// <summary>Gets a collection of all available units.</summary>
 	public List<Unit> Units { get; }
 
-	/// <summary>
-	/// Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.
-	/// </summary>
+	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector { get; }
 
-	/// <summary>
-	/// Gets a value indicating whether a product can be created from currently provided values.
-	/// </summary>
+	/// <summary>Gets a value indicating whether a product can be created from currently provided values.</summary>
 	public bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ProductCreationViewModel"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ProductCreationViewModel"/> class.</summary>
 	/// <param name="productClient">Gnomeshade API client.</param>
 	/// <param name="productId">The id of the product to edit.</param>
 	/// <returns>A new instance of the <see cref="ProductCreationViewModel"/> class.</returns>
@@ -113,9 +95,7 @@ public sealed class ProductCreationViewModel : ViewModelBase
 		return new(productClient, units, product);
 	}
 
-	/// <summary>
-	/// Creates a new product from the provided values.
-	/// </summary>
+	/// <summary>Creates a new product from the provided values.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task SaveAsync()
 	{

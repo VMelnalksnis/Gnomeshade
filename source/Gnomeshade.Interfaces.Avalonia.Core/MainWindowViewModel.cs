@@ -236,6 +236,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = itemCreationViewModel;
 	}
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToProductAsync()
+	{
+		if (ActiveView is ProductViewModel)
+		{
+			return;
+		}
+
+		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		ActiveView = productViewModel;
+	}
+
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
 	{
 		if (Application.Current is null)

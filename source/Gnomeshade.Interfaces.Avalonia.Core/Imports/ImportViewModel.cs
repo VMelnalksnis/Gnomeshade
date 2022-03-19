@@ -18,9 +18,7 @@ using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Imports;
 
-/// <summary>
-/// External data import view model.
-/// </summary>
+/// <summary>External data import view model.</summary>
 public sealed class ImportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -28,16 +26,14 @@ public sealed class ImportViewModel : ViewModelBase
 	private string? _filePath;
 	private string? _userAccount;
 	private DataGridItemCollectionView<AccountOverviewRow>? _accounts;
-	private DataGridItemCollectionView<ProductOverviewRow>? _products;
-	private ProductOverviewRow? _selectedProduct;
+	private DataGridItemCollectionView<ProductRow>? _products;
+	private ProductRow? _selectedProduct;
 	private DataGridItemCollectionView<TransactionOverview>? _transactions;
 	private TransactionOverview? _selectedTransaction;
 	private DataGridItemCollectionView<TransactionItemRow>? _items;
 	private TransactionItemRow? _selectedItem;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ImportViewModel"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ImportViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	public ImportViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
@@ -46,125 +42,91 @@ public sealed class ImportViewModel : ViewModelBase
 		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>
-	/// Raised when a product is selected for editing.
-	/// </summary>
+	/// <summary>Raised when a product is selected for editing.</summary>
 	public event EventHandler<ProductSelectedEventArgs>? ProductSelected;
 
-	/// <summary>
-	/// Raised when a transaction item is selected for editing.
-	/// </summary>
+	/// <summary>Raised when a transaction item is selected for editing.</summary>
 	public event EventHandler<TransactionItemSelectedEventArgs>? TransactionItemSelected;
 
-	/// <summary>
-	/// Gets or sets the local path of the report file to import.
-	/// </summary>
+	/// <summary>Gets or sets the local path of the report file to import.</summary>
 	public string? FilePath
 	{
 		get => _filePath;
 		set => SetAndNotifyWithGuard(ref _filePath, value, nameof(FilePath));
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether the information needed for <see cref="ImportAsync"/> is valid.
-	/// </summary>
+	/// <summary>Gets a value indicating whether the information needed for <see cref="ImportAsync"/> is valid.</summary>
 	public bool CanImport => !string.IsNullOrWhiteSpace(FilePath);
 
-	/// <summary>
-	/// Gets or sets the name of the imported user account.
-	/// </summary>
+	/// <summary>Gets or sets the name of the imported user account.</summary>
 	public string? UserAccount
 	{
 		get => _userAccount;
 		set => SetAndNotify(ref _userAccount, value, nameof(UserAccount));
 	}
 
-	/// <summary>
-	/// Gets a grid view of all accounts referenced in imported transactions.
-	/// </summary>
+	/// <summary>Gets a grid view of all accounts referenced in imported transactions.</summary>
 	public DataGridCollectionView? AccountGridView => Accounts ?? default(DataGridCollectionView);
 
-	/// <summary>
-	/// Gets or sets a typed collection of rows in <see cref="AccountGridView"/>.
-	/// </summary>
+	/// <summary>Gets or sets a typed collection of rows in <see cref="AccountGridView"/>.</summary>
 	public DataGridItemCollectionView<AccountOverviewRow>? Accounts
 	{
 		get => _accounts;
 		set => SetAndNotifyWithGuard(ref _accounts, value, nameof(Accounts), nameof(AccountGridView));
 	}
 
-	/// <summary>
-	/// Gets a grid view of all products referenced in imported transactions.
-	/// </summary>
+	/// <summary>Gets a grid view of all products referenced in imported transactions.</summary>
 	public DataGridCollectionView? ProductGridView => Products ?? default(DataGridCollectionView);
 
-	/// <summary>
-	/// Gets or sets a typed collection of rows in <see cref="ProductGridView"/>.
-	/// </summary>
-	public DataGridItemCollectionView<ProductOverviewRow>? Products
+	/// <summary>Gets or sets a typed collection of rows in <see cref="ProductGridView"/>.</summary>
+	public DataGridItemCollectionView<ProductRow>? Products
 	{
 		get => _products;
 		set => SetAndNotifyWithGuard(ref _products, value, nameof(Products), nameof(ProductGridView));
 	}
 
-	/// <summary>
-	/// Gets or sets the selected product from <see cref="Products"/>.
-	/// </summary>
-	public ProductOverviewRow? SelectedProduct
+	/// <summary>Gets or sets the selected product from <see cref="Products"/>.</summary>
+	public ProductRow? SelectedProduct
 	{
 		get => _selectedProduct;
 		set => SetAndNotify(ref _selectedProduct, value, nameof(SelectedProduct));
 	}
 
-	/// <summary>
-	/// Gets a grid view of all transaction in the imported report.
-	/// </summary>
+	/// <summary>Gets a grid view of all transaction in the imported report.</summary>
 	public DataGridCollectionView? TransactionGridView => Transactions ?? default(DataGridCollectionView);
 
-	/// <summary>
-	/// Gets or sets a typed collection of rows in <see cref="TransactionGridView"/>.
-	/// </summary>
+	/// <summary>Gets or sets a typed collection of rows in <see cref="TransactionGridView"/>.</summary>
 	public DataGridItemCollectionView<TransactionOverview>? Transactions
 	{
 		get => _transactions;
 		set => SetAndNotifyWithGuard(ref _transactions, value, nameof(Transactions), nameof(TransactionGridView));
 	}
 
-	/// <summary>
-	/// Gets or sets the selected transaction from <see cref="Transactions"/>.
-	/// </summary>
+	/// <summary>Gets or sets the selected transaction from <see cref="Transactions"/>.</summary>
 	public TransactionOverview? SelectedTransaction
 	{
 		get => _selectedTransaction;
 		set => SetAndNotify(ref _selectedTransaction, value, nameof(SelectedTransaction));
 	}
 
-	/// <summary>
-	/// Gets a grid view of all transaction items in the <see cref="SelectedTransaction"/>.
-	/// </summary>
+	/// <summary>Gets a grid view of all transaction items in the <see cref="SelectedTransaction"/>.</summary>
 	public DataGridCollectionView? ItemGridView => Items ?? default(DataGridCollectionView);
 
-	/// <summary>
-	/// Gets or sets a typed collection of rows in <see cref="ItemGridView"/>.
-	/// </summary>
+	/// <summary>Gets or sets a typed collection of rows in <see cref="ItemGridView"/>.</summary>
 	public DataGridItemCollectionView<TransactionItemRow>? Items
 	{
 		get => _items;
 		set => SetAndNotifyWithGuard(ref _items, value, nameof(Items), nameof(ItemGridView));
 	}
 
-	/// <summary>
-	/// Gets or sets the selected transaction item from <see cref="Items"/>.
-	/// </summary>
+	/// <summary>Gets or sets the selected transaction item from <see cref="Items"/>.</summary>
 	public TransactionItemRow? SelectedItem
 	{
 		get => _selectedItem;
 		set => SetAndNotify(ref _selectedItem, value, nameof(SelectedItem));
 	}
 
-	/// <summary>
-	/// Imports the located at <see cref="FilePath"/>.
-	/// </summary>
+	/// <summary>Imports the located at <see cref="FilePath"/>.</summary>
 	/// <exception cref="InvalidOperationException"><see cref="FilePath"/> is null or whitespace.</exception>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ImportAsync()
@@ -192,13 +154,11 @@ public sealed class ImportViewModel : ViewModelBase
 		Transactions = new(transactionRows);
 
 		var products = result.ProductReferences.Select(reference => reference.Product);
-		var productsRows = products.Translate().ToList();
+		var productsRows = await _gnomeshadeClient.GetProductRowsAsync(products);
 		Products = new(productsRows);
 	}
 
-	/// <summary>
-	/// Gets the latest version of referenced accounts, products and transactions.
-	/// </summary>
+	/// <summary>Gets the latest version of referenced accounts, products and transactions.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task RefreshAsync()
 	{
@@ -228,14 +188,12 @@ public sealed class ImportViewModel : ViewModelBase
 			// todo do not get all products
 			var products = await _gnomeshadeClient.GetProductsAsync();
 			var usedProducts = products.Where(product => Products.Any(row => row.Id == product.Id));
-			var productRows = usedProducts.Translate().ToList();
+			var productRows = await _gnomeshadeClient.GetProductRowsAsync(usedProducts).ConfigureAwait(false);
 			Products = new(productRows);
 		}
 	}
 
-	/// <summary>
-	/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ProductGridView"/>.
-	/// </summary>
+	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ProductGridView"/>.</summary>
 	public void OnProductDataGridDoubleTapped()
 	{
 		if (SelectedProduct is null || ProductSelected is null)
@@ -246,9 +204,7 @@ public sealed class ImportViewModel : ViewModelBase
 		ProductSelected(this, new(SelectedProduct.Id));
 	}
 
-	/// <summary>
-	/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ItemGridView"/>.
-	/// </summary>
+	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ItemGridView"/>.</summary>
 	public void OnItemDataGridDoubleTapped()
 	{
 		if (SelectedItem is null || TransactionItemSelected is null)

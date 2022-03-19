@@ -117,4 +117,8 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionProperties"/> for use during design time.</summary>
 	public static TransactionProperties TransactionProperties { get; } = new();
+
+	/// <summary>Gets an instance of <see cref="ProductViewModel"/> for use during design time.</summary>
+	public static ProductViewModel ProductViewModel { get; } =
+		ProductViewModel.CreateAsync(GnomeshadeClient).Result;
 }

@@ -50,9 +50,6 @@
 						x:Name="CreateTransaction" Header="Create _Transaction"
 						Command="{ReflectionBinding CreateTransaction}" />
 					<MenuItem
-						x:Name="CreateProduct" Header="Create _Product"
-						Command="{ReflectionBinding CreateProductAsync}" />
-					<MenuItem
 						x:Name="CreateUnit" Header="Create _Unit"
 						Command="{ReflectionBinding CreateUnitAsync}" />
 					<MenuItem
@@ -70,6 +67,9 @@
 					<MenuItem
 						x:Name="CreateTag" Header="Tags"
 						Command="{ReflectionBinding SwitchToTagAsync}"/>
+					<MenuItem
+						x:Name="Products" Header="_Products"
+						Command="{ReflectionBinding SwitchToProductAsync}"/>
 				</MenuItem>
 			</Menu>
 

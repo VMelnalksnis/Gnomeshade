@@ -86,7 +86,7 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="p:ProductOverviewRow"
+					x:DataType="p:ProductRow"
 					Header="Name" IsReadOnly="True"
 					Binding="{Binding Name, Mode=OneWay}" />
 			</DataGrid.Columns>
