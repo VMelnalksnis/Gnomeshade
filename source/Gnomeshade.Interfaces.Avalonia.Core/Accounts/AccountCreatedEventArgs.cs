@@ -6,22 +6,16 @@ using System;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
-/// <summary>
-/// Event arguments for <see cref="AccountCreationViewModel.AccountCreated"/> event.
-/// </summary>
+/// <summary>Event arguments for <see cref="AccountDetailViewModel.AccountCreated"/> event.</summary>
 public sealed class AccountCreatedEventArgs : EventArgs
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountCreatedEventArgs"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountCreatedEventArgs"/> class.</summary>
 	/// <param name="accountId">The id of the created account.</param>
 	public AccountCreatedEventArgs(Guid accountId)
 	{
 		AccountId = accountId;
 	}
 
-	/// <summary>
-	/// Gets the id of the created account.
-	/// </summary>
+	/// <summary>Gets the id of the created account.</summary>
 	public Guid AccountId { get; }
 }

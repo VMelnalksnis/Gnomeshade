@@ -8,51 +8,34 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-/// <summary>
-/// The information needed to create a new account.
-/// </summary>
+/// <summary>The information needed to create a new account.</summary>
 [PublicAPI]
 public sealed record AccountCreationModel
 {
-	/// <summary>
-	/// The name of the account to create. Required.
-	/// </summary>
+	/// <inheritdoc cref="Account.Name"/>
 	[Required]
 	public string? Name { get; init; }
 
-	/// <summary>
-	/// The id of the counterparty to which this account belongs to. Required.
-	/// </summary>
+	/// <inheritdoc cref="Account.CounterpartyId"/>
 	[Required]
 	public Guid? CounterpartyId { get; init; }
 
-	/// <summary>
-	/// The id of the preferred currency of the account to create. Required.
-	/// </summary>
+	/// <summary>The id of the preferred currency of the account.</summary>
 	[Required]
 	public Guid? PreferredCurrencyId { get; init; }
 
-	/// <summary>
-	/// The BIC (Business Identifier Code) of the account to create.
-	/// </summary>
+	/// <inheritdoc cref="Account.Bic"/>
 	public string? Bic { get; init; }
 
-	/// <summary>
-	/// The IBAN (International Bank Account Number) of the account to create.
-	/// </summary>
+	/// <inheritdoc cref="Account.Iban"/>
 	public string? Iban { get; init; }
 
-	/// <summary>
-	/// The account number of the account to create.
-	/// </summary>
+	/// <inheritdoc cref="Account.AccountNumber"/>
 	public string? AccountNumber { get; init; }
 
-	/// <summary>
-	/// A collection of currencies available for the account to create. Requires at least one currency.
-	/// </summary>
+	/// <inheritdoc cref="Account.Currencies"/>
 	[Required]
 	[MinLength(1)]
 	public List<AccountInCurrencyCreationModel>? Currencies { get; init; }

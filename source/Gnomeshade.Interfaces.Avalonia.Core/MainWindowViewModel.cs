@@ -82,21 +82,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 		SwitchToLogin();
 	}
 
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="AccountCreationViewModel"/>.
-	/// </summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountDetailViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateAccountAsync()
 	{
-		if (ActiveView is AccountCreationViewModel)
+		if (ActiveView is AccountDetailViewModel)
 		{
 			return;
 		}
 
-		var accountCreationViewModel = await AccountCreationViewModel.CreateAsync(_gnomeshadeClient);
-		accountCreationViewModel.AccountCreated += OnAccountCreated;
+		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient);
+		accountDetailViewModel.AccountCreated += OnAccountCreated;
 
-		ActiveView = accountCreationViewModel;
+		ActiveView = accountDetailViewModel;
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>
@@ -401,8 +399,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		switch (viewModel)
 		{
-			case AccountCreationViewModel accountCreationViewModel:
-				accountCreationViewModel.AccountCreated -= OnAccountCreated;
+			case AccountDetailViewModel accountDetailViewModel:
+				accountDetailViewModel.AccountCreated -= OnAccountCreated;
 				break;
 
 			case AccountViewModel accountViewModel:
