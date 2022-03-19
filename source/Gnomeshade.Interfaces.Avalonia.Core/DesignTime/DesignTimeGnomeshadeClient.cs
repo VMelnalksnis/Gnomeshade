@@ -263,6 +263,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<Unit> GetUnitAsync(Guid id)
+	{
+		return Task.FromResult(_units.Single(unit => unit.Id == id));
+	}
+
+	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync()
 	{
 		return Task.FromResult(_units.ToList());
@@ -290,18 +296,24 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
+	public Task PutUnitAsync(Guid id, UnitCreationModel unit)
 	{
-		var id = Guid.NewGuid();
-		_units.Add(new()
+		var model = new Unit
 		{
 			Id = id,
 			Name = unit.Name!,
 			ParentUnitId = unit.ParentUnitId,
 			Multiplier = unit.Multiplier,
-		});
+		};
 
-		return Task.FromResult(id);
+		var existingUnit = _units.SingleOrDefault(u => u.Id == id);
+		if (existingUnit is not null)
+		{
+			_units.Remove(existingUnit);
+		}
+
+		_units.Add(model);
+		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc />

@@ -9,14 +9,10 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="UnitEntity"/> repository.
-/// </summary>
-public sealed class UnitRepository : Repository<UnitEntity>
+/// <summary>Database backed <see cref="UnitEntity"/> repository.</summary>
+public sealed class UnitRepository : NamedRepository<UnitEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UnitRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="UnitRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public UnitRepository(IDbConnection dbConnection)
 		: base(dbConnection)
@@ -37,4 +33,7 @@ public sealed class UnitRepository : Repository<UnitEntity>
 
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE u.id = @id";
+
+	/// <inheritdoc />
+	protected override string NameSql => "WHERE u.normalized_name = @name";
 }

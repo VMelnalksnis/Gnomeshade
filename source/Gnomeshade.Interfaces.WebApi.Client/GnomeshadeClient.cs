@@ -199,6 +199,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<Product>(ProductIdUri(id));
 
 	/// <inheritdoc />
+	public Task<Unit> GetUnitAsync(Guid id) =>
+		GetAsync<Unit>(UnitIdUri(id));
+
+	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync() =>
 		GetAsync<List<Unit>>(UnitUri);
 
@@ -207,8 +211,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PutAsync(ProductIdUri(id), product);
 
 	/// <inheritdoc />
-	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) =>
-		PostAsync(UnitUri, unit);
+	public Task PutUnitAsync(Guid id, UnitCreationModel unit) =>
+		PutAsync(UnitIdUri(id), unit);
 
 	/// <inheritdoc />
 	public async Task<AccountReportResult> Import(Stream content, string name)

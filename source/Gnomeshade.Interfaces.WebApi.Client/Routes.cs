@@ -138,6 +138,11 @@ public static class Routes
 	/// <returns>Relative uri for the specified tag tag.</returns>
 	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagTagUri(id)}/{Format(tagId)}";
 
+	/// <summary>Gets the relative uri for the specified unit.</summary>
+	/// <param name="id">The id of the unit.</param>
+	/// <returns>Relative uri for the specified unit.</returns>
+	public static string UnitIdUri(Guid id) => $"{UnitUri}/{Format(id)}";
+
 	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
 	/// <param name="date">The date to convert.</param>
 	/// <returns>A string representation of the <paramref name="date"/> that can be used in urls.</returns>

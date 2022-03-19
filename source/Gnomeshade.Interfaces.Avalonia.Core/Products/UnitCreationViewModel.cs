@@ -107,10 +107,8 @@ public sealed class UnitCreationViewModel : ViewModelBase
 		};
 
 		var id = _existingUnit?.Id ?? Guid.NewGuid();
-
-		// todo put
-		var unitId = await _productClient.CreateUnitAsync(unit).ConfigureAwait(false);
-		OnUnitCreated(unitId);
+		await _productClient.PutUnitAsync(id, unit).ConfigureAwait(false);
+		OnUnitCreated(id);
 	}
 
 	private void OnUnitCreated(Guid unitId)
