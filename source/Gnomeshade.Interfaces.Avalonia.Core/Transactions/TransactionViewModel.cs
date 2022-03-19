@@ -96,6 +96,12 @@ public sealed class TransactionViewModel : ViewModelBase
 			Transactions.CollectionChanged -= DataGridViewOnCollectionChanged;
 			SetAndNotifyWithGuard(ref _dataGridView, value, nameof(Transactions), nameof(DataGridView));
 			Transactions.CollectionChanged += DataGridViewOnCollectionChanged;
+			var sortDescriptions = new DataGridSortDescriptionCollection
+			{
+				DataGridSortDescription.FromPath(nameof(TransactionOverview.BookedAt)),
+				DataGridSortDescription.FromPath(nameof(TransactionOverview.ValuedAt)),
+			};
+			DataGridView.SortDescriptions.AddRange(sortDescriptions);
 		}
 	}
 
