@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Data;
 
 using Gnomeshade.Data.Entities;
@@ -29,7 +28,7 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	protected override string SelectSql => Queries.Unit.Select;
 
 	/// <inheritdoc />
-	protected override string UpdateSql => throw new NotImplementedException();
+	protected override string UpdateSql => Queries.Unit.Update;
 
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE u.id = @id";

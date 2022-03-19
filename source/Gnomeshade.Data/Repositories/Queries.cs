@@ -129,6 +129,8 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(Unit)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Unit)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Unit)}.Update.sql");
 	}
 
 	internal static class User

@@ -27,7 +27,7 @@ internal sealed class RequiredIfNotNullAttribute : RequiredAttribute
 		}
 
 		var propertyValue = propertyInfo.GetValue(validationContext.ObjectInstance);
-		return propertyValue is null
+		return propertyValue is not null
 			? base.IsValid(value, validationContext)
 			: null;
 	}
