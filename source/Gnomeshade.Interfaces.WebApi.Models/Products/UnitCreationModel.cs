@@ -9,13 +9,19 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
+/// <summary>The information needed to create or update a unit.</summary>
 [PublicAPI]
 public sealed record UnitCreationModel
 {
-	[Required(AllowEmptyStrings = false)]
+	/// <inheritdoc cref="Unit.Name"/>
+	[Required]
 	public string? Name { get; init; }
 
+	/// <inheritdoc cref="Unit.ParentUnitId"/>
+	[RequiredIfNotNull(nameof(Multiplier))]
 	public Guid? ParentUnitId { get; init; }
 
+	/// <inheritdoc cref="Unit.Multiplier"/>
+	[RequiredIfNotNull(nameof(ParentUnitId))]
 	public decimal? Multiplier { get; init; }
 }

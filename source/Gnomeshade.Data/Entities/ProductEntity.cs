@@ -8,9 +8,7 @@ using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Entities;
 
-/// <summary>
-/// Represents a product that is exchanged during a transaction.
-/// </summary>
+/// <summary>Represents a product that is exchanged during a transaction.</summary>
 public sealed record ProductEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	/// <inheritdoc />
@@ -37,13 +35,9 @@ public sealed record ProductEntity : IOwnableEntity, IModifiableEntity, INamedEn
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
-	/// <summary>
-	/// Gets or sets the description of this product.
-	/// </summary>
+	/// <summary>Gets or sets the description of this product.</summary>
 	public string? Description { get; set; }
 
-	/// <summary>
-	/// Gets or sets the id of the <see cref="UnitEntity"/> for amounts of this product.
-	/// </summary>
+	/// <summary>Gets or sets the id of the <see cref="UnitEntity"/> for amounts of this product.</summary>
 	public Guid? UnitId { get; set; }
 }

@@ -8,9 +8,7 @@ using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Entities;
 
-/// <summary>
-/// Represents a unit for <see cref="ProductEntity"/> amount.
-/// </summary>
+/// <summary>Represents a unit for <see cref="ProductEntity"/> amount.</summary>
 public sealed record UnitEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	/// <inheritdoc />
@@ -37,13 +35,9 @@ public sealed record UnitEntity : IOwnableEntity, IModifiableEntity, INamedEntit
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
-	/// <summary>
-	/// Gets or sets the id of the parent <see cref="UnitEntity"/>.
-	/// </summary>
+	/// <summary>Gets or sets the id of the parent <see cref="UnitEntity"/>.</summary>
 	public Guid? ParentUnitId { get; set; }
 
-	/// <summary>
-	/// Gets or sets the multiplier to convert a value in this unit to the parent unit.
-	/// </summary>
+	/// <summary>Gets or sets the multiplier to convert a value in this unit to the parent unit.</summary>
 	public decimal? Multiplier { get; set; }
 }
