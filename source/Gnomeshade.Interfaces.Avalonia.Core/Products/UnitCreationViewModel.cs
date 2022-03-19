@@ -17,6 +17,8 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 /// <summary>Form for creating a single new unit.</summary>
 public sealed class UnitCreationViewModel : ViewModelBase
 {
+	private static readonly string[] _canCreate = { nameof(CanCreate) };
+
 	private readonly IProductClient _productClient;
 	private readonly Unit? _existingUnit;
 
@@ -51,14 +53,14 @@ public sealed class UnitCreationViewModel : ViewModelBase
 	public string? Name
 	{
 		get => _name;
-		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanCreate));
+		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), _canCreate);
 	}
 
 	/// <summary>Gets or sets the unit on which this unit is based on.</summary>
 	public Unit? ParentUnit
 	{
 		get => _parentUnit;
-		set => SetAndNotifyWithGuard(ref _parentUnit, value, nameof(ParentUnit), nameof(CanCreate));
+		set => SetAndNotifyWithGuard(ref _parentUnit, value, nameof(ParentUnit), _canCreate);
 	}
 
 	/// <summary>Gets a collection of all available units.</summary>
@@ -71,7 +73,7 @@ public sealed class UnitCreationViewModel : ViewModelBase
 	public decimal? Multiplier
 	{
 		get => _multiplier;
-		set => SetAndNotifyWithGuard(ref _multiplier, value, nameof(Multiplier), nameof(ParentUnit));
+		set => SetAndNotifyWithGuard(ref _multiplier, value, nameof(Multiplier), _canCreate);
 	}
 
 	/// <summary>Gets a value indicating whether or not a unit can be created from the currently specified values.</summary>
