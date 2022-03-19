@@ -23,8 +23,13 @@ internal static class ProductClientExtensions
 		this IProductClient productClient,
 		IEnumerable<Product> products)
 	{
-		var units = await productClient.GetUnitsAsync().ConfigureAwait(false);
-		var unitRows = units.Select(unit => new UnitRow(unit)).ToList();
+		var unitRows = (await productClient.GetUnitRowsAsync().ConfigureAwait(false)).ToList();
 		return products.Select(product => new ProductRow(product, unitRows));
+	}
+
+	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)
+	{
+		var units = await productClient.GetUnitsAsync().ConfigureAwait(false);
+		return units.Select(unit => new UnitRow(unit));
 	}
 }

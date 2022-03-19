@@ -121,4 +121,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="ProductViewModel"/> for use during design time.</summary>
 	public static ProductViewModel ProductViewModel { get; } =
 		ProductViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="UnitViewModel"/> for use during design time.</summary>
+	public static UnitViewModel UnitViewModel { get; } =
+		UnitViewModel.CreateAsync(GnomeshadeClient).Result;
 }
