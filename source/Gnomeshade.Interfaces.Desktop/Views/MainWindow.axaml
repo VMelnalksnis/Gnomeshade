@@ -70,6 +70,9 @@
 					<MenuItem
 						x:Name="Products" Header="_Products"
 						Command="{ReflectionBinding SwitchToProductAsync}"/>
+					<MenuItem
+						x:Name="Units" Header="_Units"
+						Command="{ReflectionBinding SwitchToUnitAsync}"/>
 				</MenuItem>
 			</Menu>
 
