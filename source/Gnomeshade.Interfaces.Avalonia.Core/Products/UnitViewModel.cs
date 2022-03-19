@@ -42,7 +42,7 @@ public sealed class UnitViewModel : ViewModelBase
 	public DataGridItemCollectionView<UnitRow> Units
 	{
 		get => _units;
-		private set => SetAndNotify(ref _units, value);
+		private set => SetAndNotifyWithGuard(ref _units, value, nameof(Units), nameof(DataGridView));
 	}
 
 	/// <summary>Gets or sets the selected unit from <see cref="DataGridView"/>.</summary>
