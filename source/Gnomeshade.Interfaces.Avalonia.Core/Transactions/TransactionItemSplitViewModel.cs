@@ -140,11 +140,27 @@ public sealed class TransactionItemSplitViewModel : ViewModelBase
 		if (ItemCreation is null)
 		{
 			ItemCreation = await itemCreationModelTask;
+			ItemCreation.SourceAccount = ItemCreation.Accounts.SingleOrDefault(account => account.Name == _transactionItemRowToSplit.SourceAccount);
+			ItemCreation.SourceCurrency = ItemCreation.Currencies.SingleOrDefault(currency => currency.AlphabeticCode == _transactionItemRowToSplit.SourceCurrency);
+			ItemCreation.TargetAccount = ItemCreation.Accounts.SingleOrDefault(account => account.Name == _transactionItemRowToSplit.TargetAccount);
+			ItemCreation.TargetCurrency = ItemCreation.Currencies.SingleOrDefault(currency => currency.AlphabeticCode == _transactionItemRowToSplit.TargetCurrency);
+			ItemCreation.BankReference = ItemCreation.BankReference;
+			ItemCreation.ExternalReference = ItemCreation.ExternalReference;
+			ItemCreation.InternalReference = ItemCreation.InternalReference;
 			return;
 		}
 
 		Items.Add(ItemCreation);
-		ItemCreation = await itemCreationModelTask;
+		var newItemCreation = await itemCreationModelTask;
+		newItemCreation.SourceAccount = ItemCreation.SourceAccount;
+		newItemCreation.SourceCurrency = ItemCreation.SourceCurrency;
+		newItemCreation.TargetAccount = ItemCreation.TargetAccount;
+		newItemCreation.TargetCurrency = ItemCreation.TargetCurrency;
+		newItemCreation.BankReference = ItemCreation.BankReference;
+		newItemCreation.ExternalReference = ItemCreation.ExternalReference;
+		newItemCreation.InternalReference = ItemCreation.InternalReference;
+
+		ItemCreation = newItemCreation;
 	}
 
 	/// <summary>Creates the new items and deletes the old one.</summary>
