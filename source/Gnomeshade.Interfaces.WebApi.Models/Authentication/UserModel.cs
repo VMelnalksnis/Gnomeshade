@@ -6,12 +6,16 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
+/// <summary>Information about a user.</summary>
 [PublicAPI]
 public sealed record UserModel
 {
-	public string Id { get; init; }
+	/// <summary>The id of the user.</summary>
+	public string Id { get; init; } = null!;
 
-	public string UserName { get; init; }
+	/// <summary>The username of the user.</summary>
+	public string Username { get; init; } = null!;
 
-	public string Email { get; init; }
+	/// <summary>The primary email address of the user.</summary>
+	public string Email { get; init; } = null!;
 }

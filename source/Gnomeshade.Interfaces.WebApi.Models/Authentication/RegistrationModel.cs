@@ -8,22 +8,24 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
-/// <summary>
-/// The information needed to register a new user.
-/// </summary>
+/// <summary>The information needed to register a new user.</summary>
 [PublicAPI]
 public sealed record RegistrationModel
 {
-	[Required(AllowEmptyStrings = false)]
+	/// <inheritdoc cref="UserModel.Username"/>
+	[Required]
 	public string Username { get; init; } = null!;
 
+	/// <inheritdoc cref="UserModel.Email"/>
 	[EmailAddress]
-	[Required(AllowEmptyStrings = false)]
+	[Required]
 	public string Email { get; init; } = null!;
 
-	[Required(AllowEmptyStrings = false)]
+	/// <summary>The password of the user.</summary>
+	[Required]
 	public string Password { get; init; } = null!;
 
-	[Required(AllowEmptyStrings = false)]
+	/// <summary>The full name of the user.</summary>
+	[Required]
 	public string FullName { get; init; } = null!;
 }
