@@ -30,6 +30,6 @@ internal static class ProductClientExtensions
 	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)
 	{
 		var units = await productClient.GetUnitsAsync().ConfigureAwait(false);
-		return units.Select(unit => new UnitRow(unit));
+		return units.Select(unit => new UnitRow(unit, units));
 	}
 }

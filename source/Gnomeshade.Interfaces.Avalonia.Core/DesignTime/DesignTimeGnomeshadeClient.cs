@@ -56,7 +56,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_accounts = new() { cash, spending };
 
 		var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
-		_units = new() { kilogram };
+		var gram = new Unit { Id = Guid.NewGuid(), Name = "Gram", ParentUnitId = kilogram.Id, Multiplier = 1000m };
+		_units = new() { kilogram, gram };
 
 		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
 		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
@@ -289,7 +290,19 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Guid> CreateUnitAsync(UnitCreationModel unit) => throw new NotImplementedException();
+	public Task<Guid> CreateUnitAsync(UnitCreationModel unit)
+	{
+		var id = Guid.NewGuid();
+		_units.Add(new()
+		{
+			Id = id,
+			Name = unit.Name!,
+			ParentUnitId = unit.ParentUnitId,
+			Multiplier = unit.Multiplier,
+		});
+
+		return Task.FromResult(id);
+	}
 
 	/// <inheritdoc />
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
