@@ -140,6 +140,8 @@ internal static class Options
 		options.IncludeXmlComments(xmlDocumentationFilepath, true);
 		var modelDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.Models.xml");
 		options.IncludeXmlComments(modelDocumentationFilepath, true);
+		var clientDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.Interfaces.WebApi.Client.xml");
+		options.IncludeXmlComments(clientDocumentationFilepath, true);
 		options.EnableAnnotations();
 
 		const string jwtSecurityDefinition = "JWT";
