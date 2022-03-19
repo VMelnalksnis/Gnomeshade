@@ -11,7 +11,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
 /// <summary>An overview of of all units.</summary>
-public sealed class UnitView : UserControl, IView<ProductViewModel>
+public sealed class UnitView : UserControl, IView<UnitViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="UnitView"/> class.</summary>
 	public UnitView()

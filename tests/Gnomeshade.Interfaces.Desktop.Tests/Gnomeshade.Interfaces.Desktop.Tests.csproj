@@ -1,16 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.Desktop\Gnomeshade.Interfaces.Desktop.csproj"/>
-        <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Moq" Version="4.16.1"/>
     </ItemGroup>
 
 </Project>
