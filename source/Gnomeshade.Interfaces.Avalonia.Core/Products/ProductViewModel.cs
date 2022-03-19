@@ -42,7 +42,7 @@ public sealed class ProductViewModel : ViewModelBase
 	public DataGridItemCollectionView<ProductRow> Products
 	{
 		get => _products;
-		private set => SetAndNotify(ref _products, value);
+		private set => SetAndNotifyWithGuard(ref _products, value, nameof(Products), nameof(DataGridView));
 	}
 
 	/// <summary>Gets or sets the selected product from <see cref="DataGridView"/>.</summary>
