@@ -68,7 +68,7 @@
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					IsReadOnly="True" Header="Valued At"
-					Binding="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:d\}}" />
+					Binding="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:g\}}" />
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					Header="Description" IsReadOnly="True"
