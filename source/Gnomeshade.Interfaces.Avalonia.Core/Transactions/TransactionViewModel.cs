@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,9 +16,7 @@ using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
-/// <summary>
-/// All transaction overview view model.
-/// </summary>
+/// <summary>All transaction overview view model.</summary>
 public sealed class TransactionViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
@@ -27,6 +26,7 @@ public sealed class TransactionViewModel : ViewModelBase
 	private DataGridItemCollectionView<TransactionOverview> _dataGridView = new(new List<TransactionOverview>(0));
 	private bool _selectAll;
 	private TransactionOverview? _selectedOverview;
+	private TransactionDetailViewModel? _transaction;
 
 	private TransactionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
@@ -38,34 +38,28 @@ public sealed class TransactionViewModel : ViewModelBase
 		From = from;
 		To = to;
 		Transactions = dataGridView;
+
+		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>
-	/// Raised when a transaction is selected for viewing its details.
-	/// </summary>
+	/// <summary>Raised when a transaction is selected for viewing its details.</summary>
 	public event EventHandler<TransactionSelectedEventArgs>? TransactionSelected;
 
-	/// <summary>
-	/// Gets or sets the time from which to select the transactions.
-	/// </summary>
+	/// <summary>Gets or sets the time from which to select the transactions.</summary>
 	public DateTimeOffset From
 	{
 		get => _from;
 		set => SetAndNotify(ref _from, value, nameof(From));
 	}
 
-	/// <summary>
-	/// Gets or sets the time until which to select the transactions.
-	/// </summary>
+	/// <summary>Gets or sets the time until which to select the transactions.</summary>
 	public DateTimeOffset To
 	{
 		get => _to;
 		set => SetAndNotify(ref _to, value, nameof(To));
 	}
 
-	/// <summary>
-	/// Gets or sets a value indicating whether all transactions are selected.
-	/// </summary>
+	/// <summary>Gets or sets a value indicating whether all transactions are selected.</summary>
 	public bool SelectAll
 	{
 		get => _selectAll;
@@ -80,14 +74,10 @@ public sealed class TransactionViewModel : ViewModelBase
 		}
 	}
 
-	/// <summary>
-	/// Gets the grid view of all transactions.
-	/// </summary>
+	/// <summary>Gets the grid view of all transactions.</summary>
 	public DataGridCollectionView DataGridView => Transactions;
 
-	/// <summary>
-	/// Gets a typed collection of all transactions for the current user.
-	/// </summary>
+	/// <summary>Gets a typed collection of all transactions for the current user.</summary>
 	public DataGridItemCollectionView<TransactionOverview> Transactions
 	{
 		get => _dataGridView;
@@ -105,23 +95,24 @@ public sealed class TransactionViewModel : ViewModelBase
 		}
 	}
 
-	/// <summary>
-	/// Gets or sets the selected row in <see cref="DataGridView"/>.
-	/// </summary>
+	/// <summary>Gets or sets the selected row in <see cref="DataGridView"/>.</summary>
 	public TransactionOverview? SelectedOverview
 	{
 		get => _selectedOverview;
-		set => SetAndNotify(ref _selectedOverview, value, nameof(SelectedOverview));
+		set => SetAndNotify(ref _selectedOverview, value);
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether the selected transaction can be deleted.
-	/// </summary>
+	/// <summary>Gets the transaction detail view of the <see cref="SelectedOverview"/>.</summary>
+	public TransactionDetailViewModel? Transaction
+	{
+		get => _transaction;
+		private set => SetAndNotify(ref _transaction, value);
+	}
+
+	/// <summary>Gets a value indicating whether the selected transaction can be deleted.</summary>
 	public bool CanDelete => Transactions.Any(transaction => transaction.Selected);
 
-	/// <summary>
-	/// Asynchronously creates a new instance of the <see cref="TransactionViewModel"/> class.
-	/// </summary>
+	/// <summary>Asynchronously creates a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
 	public static async Task<TransactionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
@@ -133,9 +124,7 @@ public sealed class TransactionViewModel : ViewModelBase
 		return new(gnomeshadeClient, from, to, transactions);
 	}
 
-	/// <summary>
-	/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="DataGridView"/>.
-	/// </summary>
+	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
 		if (SelectedOverview is null || TransactionSelected is null)
@@ -146,9 +135,7 @@ public sealed class TransactionViewModel : ViewModelBase
 		TransactionSelected(this, new(SelectedOverview.Id));
 	}
 
-	/// <summary>
-	/// Deletes all the selected transactions.
-	/// </summary>
+	/// <summary>Deletes all the selected transactions.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task DeleteSelectedAsync()
 	{
@@ -166,9 +153,7 @@ public sealed class TransactionViewModel : ViewModelBase
 		await SearchAsync().ConfigureAwait(false);
 	}
 
-	/// <summary>
-	/// Searches for transaction using the specified filters.
-	/// </summary>
+	/// <summary>Searches for transaction using the specified filters.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task SearchAsync()
 	{
@@ -189,6 +174,26 @@ public sealed class TransactionViewModel : ViewModelBase
 
 		var transactionOverviews = transactions.Translate(accounts, counterparties, userCounterparty).ToList();
 		return new(transactionOverviews);
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is not nameof(SelectedOverview))
+		{
+			return;
+		}
+
+		if (SelectedOverview is null)
+		{
+			Transaction = null;
+			return;
+		}
+
+		Transaction = Task
+			.Run(() => TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, SelectedOverview.Id))
+			.ConfigureAwait(false)
+			.GetAwaiter()
+			.GetResult();
 	}
 
 	private void DataGridViewOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

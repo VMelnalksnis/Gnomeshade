@@ -6,22 +6,16 @@ using System;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
-/// <summary>
-/// Event arguments for <see cref="TransactionViewModel.TransactionSelected"/> event.
-/// </summary>
+/// <summary>Event arguments for <see cref="TransactionViewModel.TransactionSelected"/> event.</summary>
 public sealed class TransactionSelectedEventArgs : EventArgs
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionSelectedEventArgs"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="TransactionSelectedEventArgs"/> class.</summary>
 	/// <param name="transactionId">The id of the selected transaction.</param>
 	public TransactionSelectedEventArgs(Guid transactionId)
 	{
 		TransactionId = transactionId;
 	}
 
-	/// <summary>
-	/// Gets the id of the selected transaction.
-	/// </summary>
+	/// <summary>Gets the id of the selected transaction.</summary>
 	public Guid TransactionId { get; }
 }

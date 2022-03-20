@@ -13,9 +13,9 @@
 	x:CompileBindings="True"
 	x:DataType="t:TransactionViewModel">
 
-	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,*">
+	<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,*">
 		<StackPanel
-			Grid.Row="0"
+			Grid.Column="0" Grid.Row="0"
 			Orientation="Horizontal" Spacing="10">
 			<DatePicker
 				SelectedDate="{Binding From, Mode=TwoWay}"
@@ -26,7 +26,7 @@
 		</StackPanel>
 
 		<StackPanel
-			Grid.Row="1"
+			Grid.Column="0" Grid.Row="1"
 			Orientation="Horizontal" Spacing="10">
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
@@ -42,7 +42,7 @@
 		</StackPanel>
 
 		<DataGrid
-			Grid.Row="2"
+			Grid.Column="0" Grid.Row="2"
 			x:Name="DataGrid"
 			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
@@ -109,5 +109,9 @@
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
+
+		<UserControl
+			Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+			Content="{Binding Transaction, Mode=OneWay}"/>
 	</Grid>
 </UserControl>
