@@ -35,14 +35,10 @@ using Serilog;
 
 namespace Gnomeshade.Interfaces.WebApi;
 
-/// <summary>
-/// Configures services and HTTP request pipeline.
-/// </summary>
+/// <summary>Configures services and HTTP request pipeline.</summary>
 public class Startup
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="Startup"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="Startup"/> class.</summary>
 	/// <param name="configuration">Configuration for configuring services and request pipeline.</param>
 	public Startup(IConfiguration configuration)
 	{
@@ -52,14 +48,10 @@ public class Startup
 		NpgsqlLogManager.IsParameterLoggingEnabled = true;
 	}
 
-	/// <summary>
-	/// Gets the configuration used for configuring services and request pipeline.
-	/// </summary>
+	/// <summary>Gets the configuration used for configuring services and request pipeline.</summary>
 	public IConfiguration Configuration { get; }
 
-	/// <summary>
-	/// This method gets called by the runtime. Use this method to add services to the container.
-	/// </summary>
+	/// <summary>This method gets called by the runtime. Use this method to add services to the container.</summary>
 	/// <param name="services">Service collection to which to add services to.</param>
 	public void ConfigureServices(IServiceCollection services)
 	{
@@ -70,7 +62,7 @@ public class Startup
 		services.AddControllers().AddControllersAsServices();
 		services.AddApiVersioning();
 
-		services.AddIdentityContext(builder => builder.ConfigureIdentityContext(Configuration));
+		services.AddIdentityContext();
 
 		services
 			.AddAuthorization(options => options.ConfigurePolicies(Configuration))
@@ -115,9 +107,7 @@ public class Startup
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 	}
 
-	/// <summary>
-	/// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-	/// </summary>
+	/// <summary>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</summary>
 	/// <param name="application">Application builder used to configure the HTTP request pipeline.</param>
 	/// <param name="environment">The current application environment.</param>
 	public void Configure(IApplicationBuilder application, IWebHostEnvironment environment)

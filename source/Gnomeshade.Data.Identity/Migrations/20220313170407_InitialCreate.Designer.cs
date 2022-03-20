@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+#pragma warning disable CS1591, SA1601
 
 namespace Gnomeshade.Data.Identity.Migrations
 {
@@ -278,3 +279,4 @@ namespace Gnomeshade.Data.Identity.Migrations
         }
     }
 }
+#pragma warning restore CS1591, SA1601

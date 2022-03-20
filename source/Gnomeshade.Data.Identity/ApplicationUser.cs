@@ -6,10 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Gnomeshade.Data.Identity;
 
+/// <summary>Application identity user.</summary>
 public sealed class ApplicationUser : IdentityUser
 {
-	/// <summary>
-	/// Gets or sets the full name for this user.
-	/// </summary>
+	/// <summary>Gets or sets the full name for this user.</summary>
 	public string FullName { get; set; } = null!;
 }

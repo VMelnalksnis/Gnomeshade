@@ -2,32 +2,25 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
-
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gnomeshade.Data.Identity;
 
+/// <summary>Extensions methods for configuring <see cref="ApplicationDbContext"/>.</summary>
 public static class ConfigurationExtensions
 {
-	public static IdentityBuilder AddIdentityContext(this IServiceCollection services, Action<DbContextOptionsBuilder>? optionsAction = null)
+	/// <summary>Adds <see cref="ApplicationDbContext"/> to service collection.</summary>
+	/// <param name="services">The <see cref="IServiceCollection"/> to which to add the context.</param>
+	/// <returns>The current <see cref="IdentityBuilder"/>.</returns>
+	public static IdentityBuilder AddIdentityContext(
+		this IServiceCollection services)
 	{
 		return
 			services
-				.AddDbContext<ApplicationDbContext>(optionsAction)
+				.AddDbContext<ApplicationDbContext>()
 				.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>()
 				.AddDefaultTokenProviders();
-	}
-
-	public static void ConfigureIdentityContext(this DbContextOptionsBuilder options, IConfiguration configuration)
-	{
-		options
-			.LogTo(Console.WriteLine)
-			.EnableSensitiveDataLogging()
-			.UseNpgsql(configuration.GetConnectionString("IdentityDb")); // todo remove dependency on Npgsql
 	}
 }

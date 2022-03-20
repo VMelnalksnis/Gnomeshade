@@ -8,16 +8,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace Gnomeshade.Data.Identity;
 
+/// <summary>Identity database context for <see cref="ApplicationUser"/>.</summary>
 public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
 	private readonly IConfiguration _configuration;
 
-	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration configuration)
-		: base(options)
-	{
-		_configuration = configuration;
-	}
-
+	/// <summary>Initializes a new instance of the <see cref="ApplicationDbContext"/> class.</summary>
+	/// <param name="configuration">Configuration from which to get the connection string.</param>
 	public ApplicationDbContext(IConfiguration configuration)
 	{
 		_configuration = configuration;
@@ -26,11 +23,7 @@ public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 	/// <inheritdoc/>
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		if (optionsBuilder.IsConfigured)
-		{
-			return;
-		}
-
-		optionsBuilder.ConfigureIdentityContext(_configuration);
+		optionsBuilder.EnableSensitiveDataLogging();
+		optionsBuilder.UseNpgsql(_configuration.GetConnectionString("IdentityDb"));
 	}
 }

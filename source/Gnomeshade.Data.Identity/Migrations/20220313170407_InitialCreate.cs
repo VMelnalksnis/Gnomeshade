@@ -3,11 +3,14 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+#pragma warning disable CS1591, SA1601
 
 namespace Gnomeshade.Data.Identity.Migrations
 {
@@ -224,3 +227,4 @@ namespace Gnomeshade.Data.Identity.Migrations
 		}
 	}
 }
+#pragma warning restore CS1591, SA1601

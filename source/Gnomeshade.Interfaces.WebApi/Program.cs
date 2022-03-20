@@ -16,11 +16,10 @@ using Serilog;
 
 namespace Gnomeshade.Interfaces.WebApi;
 
+/// <summary>The application entry point.</summary>
 public static class Program
 {
-	/// <summary>
-	/// The application entry point.
-	/// </summary>
+	/// <summary>The application entry point.</summary>
 	/// <param name="args">The command-line arguments of the application.</param>
 	public static void Main(string[] args)
 	{

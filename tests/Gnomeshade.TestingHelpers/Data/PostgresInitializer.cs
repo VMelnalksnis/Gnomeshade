@@ -30,6 +30,7 @@ public class PostgresInitializer
 	/// Initializes a new instance of the <see cref="PostgresInitializer"/> class.
 	/// </summary>
 	/// <param name="configuration">Configuration containing the connection string for the test database.</param>
+	/// <param name="logger">Logger for initializing the test database.</param>
 	/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
 	public PostgresInitializer(IConfiguration configuration, ILogger<DatabaseMigrator> logger)
 	{
