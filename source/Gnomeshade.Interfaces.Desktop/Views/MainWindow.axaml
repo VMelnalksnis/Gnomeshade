@@ -10,6 +10,7 @@
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.MainWindow"
 	Icon="/Assets/avalonia-logo.ico"
 	Title="Gnomeshade"
+	FontFamily="/Assets/Inconsolata-Regular.ttf"
 
 	WindowStartupLocation="CenterScreen"
 	ExtendClientAreaToDecorationsHint="False"
