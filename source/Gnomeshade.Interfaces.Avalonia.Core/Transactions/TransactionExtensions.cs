@@ -46,6 +46,49 @@ internal static class TransactionExtensions
 				var sourceAmount = transaction.Items.Sum(item => item.SourceAmount);
 				var targetAmount = transaction.Items.Sum(item => item.TargetAmount);
 
+				var sourceAccounts = accounts
+					.Where(account =>
+						account.Currencies.Any(currency =>
+							transaction.Items.Any(item => item.SourceAccountId == currency.Id)))
+					.DistinctBy(account => account.Id)
+					.ToList();
+
+				var sourceCounterparties = counterparties
+					.Where(counterparty => sourceAccounts.Any(account => account.CounterpartyId == counterparty.Id))
+					.DistinctBy(counterparty => counterparty.Id)
+					.ToList();
+
+				var targetAccounts = accounts
+					.Where(account =>
+						account.Currencies.Any(currency =>
+							transaction.Items.Any(item => item.TargetAccountId == currency.Id)))
+					.DistinctBy(account => account.Id)
+					.ToList();
+
+				var targetCounterparties = counterparties
+					.Where(counterparty => targetAccounts.Any(account => account.CounterpartyId == counterparty.Id))
+					.DistinctBy(counterparty => counterparty.Id)
+					.ToList();
+
+				if (sourceCounterparties.Count == 1 && targetCounterparties.Count == 1)
+				{
+					var sourceCounterparty2 = sourceCounterparties.Single();
+					var targetCounterparty2 = targetCounterparties.Single();
+
+					if (sourceCounterparty2.Id != targetCounterparty2.Id)
+					{
+						if (sourceCounterparty2.Id == userCounterparty.Id)
+						{
+							sourceAmount = -transaction.Items.Sum(item => item.SourceAmount);
+						}
+
+						if (targetCounterparty2.Id != userCounterparty.Id)
+						{
+							targetAmount = -transaction.Items.Sum(item => item.TargetAmount);
+						}
+					}
+				}
+
 				return new TransactionOverview(
 					transaction,
 					sourceAccount,

@@ -24,7 +24,6 @@ public sealed class TransactionViewModel : ViewModelBase
 	private DateTimeOffset _from;
 	private DateTimeOffset _to;
 	private DataGridItemCollectionView<TransactionOverview> _dataGridView = new(new List<TransactionOverview>(0));
-	private bool _selectAll;
 	private TransactionOverview? _selectedOverview;
 	private TransactionDetailViewModel? _transaction;
 
@@ -59,21 +58,6 @@ public sealed class TransactionViewModel : ViewModelBase
 		set => SetAndNotify(ref _to, value, nameof(To));
 	}
 
-	/// <summary>Gets or sets a value indicating whether all transactions are selected.</summary>
-	public bool SelectAll
-	{
-		get => _selectAll;
-		set
-		{
-			foreach (var transactionOverview in Transactions)
-			{
-				transactionOverview.Selected = value;
-			}
-
-			SetAndNotify(ref _selectAll, value, nameof(SelectAll));
-		}
-	}
-
 	/// <summary>Gets the grid view of all transactions.</summary>
 	public DataGridCollectionView DataGridView => Transactions;
 
@@ -99,7 +83,7 @@ public sealed class TransactionViewModel : ViewModelBase
 	public TransactionOverview? SelectedOverview
 	{
 		get => _selectedOverview;
-		set => SetAndNotify(ref _selectedOverview, value);
+		set => SetAndNotifyWithGuard(ref _selectedOverview, value, nameof(SelectedOverview), nameof(CanDelete));
 	}
 
 	/// <summary>Gets the transaction detail view of the <see cref="SelectedOverview"/>.</summary>
@@ -110,7 +94,7 @@ public sealed class TransactionViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets a value indicating whether the selected transaction can be deleted.</summary>
-	public bool CanDelete => Transactions.Any(transaction => transaction.Selected);
+	public bool CanDelete => SelectedOverview is not null;
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
@@ -139,17 +123,12 @@ public sealed class TransactionViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task DeleteSelectedAsync()
 	{
-		var selectedIds =
-			Transactions
-				.Where(transaction => transaction.Selected)
-				.Select(transaction => transaction.Id)
-				.Distinct();
-
-		foreach (var id in selectedIds)
+		if (SelectedOverview is null)
 		{
-			await _gnomeshadeClient.DeleteTransactionAsync(id).ConfigureAwait(false);
+			throw new InvalidOperationException();
 		}
 
+		await _gnomeshadeClient.DeleteTransactionAsync(SelectedOverview.Id).ConfigureAwait(false);
 		await SearchAsync().ConfigureAwait(false);
 	}
 
@@ -158,7 +137,6 @@ public sealed class TransactionViewModel : ViewModelBase
 	public async Task SearchAsync()
 	{
 		Transactions = await CreateDataGridViewAsync(_gnomeshadeClient, From, To).ConfigureAwait(false);
-		SelectAll = false; // todo this probably is pretty bad performance wise
 	}
 
 	private static async Task<DataGridItemCollectionView<TransactionOverview>> CreateDataGridViewAsync(

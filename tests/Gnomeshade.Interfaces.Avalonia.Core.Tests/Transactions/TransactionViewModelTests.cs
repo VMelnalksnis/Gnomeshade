@@ -3,19 +3,14 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
-using FluentAssertions.Execution;
 
+using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
-
-using Moq;
 
 using NUnit.Framework;
 
@@ -23,99 +18,13 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
 public class TransactionViewModelTests
 {
-	private Mock<IGnomeshadeClient> _gnomeshadeClientMock = null!;
-	private IGnomeshadeClient _gnomeshadeClient = null!;
+	private readonly IGnomeshadeClient _gnomeshadeClient = new DesignTimeGnomeshadeClient();
 	private TransactionViewModel _viewModel = null!;
-
-	[OneTimeSetUp]
-	public void OneTimeSetUp()
-	{
-		var transactionId1 = Guid.NewGuid();
-		var transactionId2 = Guid.NewGuid();
-
-		var accountId1 = Guid.NewGuid();
-		var accountId2 = Guid.NewGuid();
-
-		var mockClient = new Mock<IGnomeshadeClient>();
-		mockClient
-			.Setup(client => client.GetTransactionsAsync(It.IsAny<DateTimeOffset?>(), It.IsAny<DateTimeOffset?>()))
-			.ReturnsAsync(new List<Transaction>
-			{
-				new()
-				{
-					Id = transactionId1,
-					Items = new()
-					{
-						new()
-						{
-							SourceAccountId = accountId1,
-							TargetAccountId = accountId2,
-							Product = new() { Name = "Foo" },
-						},
-					},
-				},
-				new()
-				{
-					Id = transactionId2,
-					Items = new()
-					{
-						new()
-						{
-							SourceAccountId = accountId2,
-							TargetAccountId = accountId1,
-							Product = new() { Name = "Bar" },
-						},
-					},
-				},
-			});
-
-		mockClient
-			.Setup(client => client.GetAccountsAsync())
-			.ReturnsAsync(new List<Account>
-			{
-				new() { Currencies = new() { new() { Id = accountId1, Currency = new() { Name = "EUR" } } } },
-				new() { Currencies = new() { new() { Id = accountId2, Currency = new() { Name = "EUR" } } } },
-			});
-
-		mockClient
-			.Setup(client => client.GetMyCounterpartyAsync())
-			.ReturnsAsync(new Counterparty());
-
-		_gnomeshadeClientMock = mockClient;
-		_gnomeshadeClient = mockClient.Object;
-	}
 
 	[SetUp]
 	public async Task SetUpAsync()
 	{
-		_viewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
-	}
-
-	[Test]
-	public void SelectAll_ShouldAffectAllTransactions()
-	{
-		_viewModel.SelectAll.Should().BeFalse();
-		_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
-
-		_viewModel.SelectAll = true;
-		_viewModel.Transactions.Should().OnlyContain(transaction => transaction.Selected);
-
-		_viewModel.SelectAll = false;
-		_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
-	}
-
-	[Test]
-	public async Task SelectAll_ShouldResetAfterSearch()
-	{
-		_viewModel.SelectAll = true;
-
-		await _viewModel.SearchAsync();
-
-		using (new AssertionScope())
-		{
-			_viewModel.SelectAll.Should().BeFalse();
-			_viewModel.Transactions.Should().NotContain(transaction => transaction.Selected);
-		}
+		_viewModel = await TransactionViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
 	}
 
 	[Test]
@@ -123,7 +32,7 @@ public class TransactionViewModelTests
 	{
 		_viewModel.CanDelete.Should().BeFalse();
 
-		_viewModel.Transactions.First().Selected = true;
+		_viewModel.SelectedOverview = _viewModel.Transactions.First();
 
 		_viewModel.CanDelete.Should().BeTrue();
 	}
@@ -140,8 +49,7 @@ public class TransactionViewModelTests
 			}
 		};
 
-		var firstTransaction = _viewModel.Transactions.First();
-		firstTransaction.Selected = !firstTransaction.Selected;
+		_viewModel.SelectedOverview = _viewModel.Transactions.First();
 
 		canDeleteChanged.Should().BeTrue();
 	}
@@ -149,15 +57,13 @@ public class TransactionViewModelTests
 	[Test]
 	public async Task DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
 	{
-		var deletedIds = new List<Guid>();
-		_gnomeshadeClientMock
-			.Setup(client => client.DeleteTransactionAsync(It.IsAny<Guid>()))
-			.Callback<Guid>(id => deletedIds.Add(id));
-
 		var transactionToDelete = _viewModel.Transactions.First();
-		transactionToDelete.Selected = true;
+		_viewModel.SelectedOverview = transactionToDelete;
 		await _viewModel.DeleteSelectedAsync();
 
-		deletedIds.Should().ContainSingle().Which.Should().Be(transactionToDelete.Id);
+		await FluentActions
+			.Awaiting(() => _gnomeshadeClient.GetTransactionAsync(transactionToDelete.Id))
+			.Should()
+			.ThrowAsync<InvalidOperationException>();
 	}
 }

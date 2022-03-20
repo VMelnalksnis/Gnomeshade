@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -14,8 +13,6 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 /// <summary>A summary of a single transaction.</summary>
 public sealed class TransactionOverview : PropertyChangedBase
 {
-	private bool _selected;
-
 	/// <summary>Initializes a new instance of the <see cref="TransactionOverview"/> class.</summary>
 	/// <param name="transaction">The transaction for which to create an overview.</param>
 	/// <param name="sourceAccount">The account from which money was withdrawn.</param>
@@ -44,8 +41,15 @@ public sealed class TransactionOverview : PropertyChangedBase
 		SourceAccount = sourceCounterparty?.Name ?? sourceAccount.Name;
 		TargetAccount = targetCounterparty?.Name ?? targetAccount.Name;
 		SourceAmount = sourceAmount;
-		TargetAmount = targetAmount;
-		Items = transaction.Items
+		TargetAmount = sourceCurrency.Id != targetCurrency.Id || sourceAmount != targetAmount
+			? targetAmount
+			: null;
+		SourceCurrency = sourceCurrency.AlphabeticCode;
+		TargetCurrency = sourceCurrency.Id != targetCurrency.Id || sourceAmount != targetAmount
+			? $"{targetCurrency.AlphabeticCode})"
+			: null;
+
+		Items = new(transaction.Items
 			.Select(item => new TransactionItemRow(
 				item,
 				sourceAccount,
@@ -54,15 +58,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 				targetAccount,
 				targetCounterparty,
 				targetCurrency,
-				new())) // todo
-			.ToList();
-	}
-
-	/// <summary>Gets or sets a value indicating whether this transaction is selected.</summary>
-	public bool Selected
-	{
-		get => _selected;
-		set => SetAndNotify(ref _selected, value, nameof(Selected));
+				new())));
 	}
 
 	/// <summary>Gets the id of the transaction which this overview represents.</summary>
@@ -87,8 +83,17 @@ public sealed class TransactionOverview : PropertyChangedBase
 	public decimal SourceAmount { get; }
 
 	/// <summary>Gets the amount deposited in the target account.</summary>
-	public decimal TargetAmount { get; }
+	public decimal? TargetAmount { get; }
+
+	/// <summary>Gets the alphabetic currency code of <see cref="SourceAmount"/>.</summary>
+	public string SourceCurrency { get; }
+
+	/// <summary>Gets the alphabetic currency code of <see cref="TargetAmount"/>.</summary>
+	public string? TargetCurrency { get; }
+
+	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should be displayed.</summary>
+	public bool DisplayTarget => TargetAmount is not null;
 
 	/// <summary>Gets the items of this transaction.</summary>
-	public IReadOnlyCollection<TransactionItemRow> Items { get; }
+	public DataGridItemCollectionView<TransactionItemRow> Items { get; }
 }

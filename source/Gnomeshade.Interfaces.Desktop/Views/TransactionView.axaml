@@ -51,16 +51,6 @@
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
-				<DataGridCheckBoxColumn
-					x:DataType="t:TransactionOverview"
-					IsReadOnly="False"
-					Binding="{Binding Selected, Mode=TwoWay}">
-					<DataGridCheckBoxColumn.Header>
-						<CheckBox
-							x:DataType="t:TransactionViewModel"
-							IsChecked="{Binding SelectAll}" />
-					</DataGridCheckBoxColumn.Header>
-				</DataGridCheckBoxColumn>
 				<DataGridTextColumn
 					x:DataType="t:TransactionOverview"
 					IsReadOnly="True" Header="Booked At"
@@ -69,32 +59,37 @@
 					x:DataType="t:TransactionOverview"
 					IsReadOnly="True" Header="Valued At"
 					Binding="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:g\}}" />
-				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
-					Header="Description" IsReadOnly="True"
-					Binding="{Binding Description, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
-					Header="Source Account" IsReadOnly="True"
-					Binding="{Binding SourceAccount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
-					Header="Target Account" IsReadOnly="True"
-					Binding="{Binding TargetAccount, Mode=OneWay}" />
-				<DataGridTemplateColumn Header="Source Amount" IsReadOnly="True">
+				<DataGridTemplateColumn Header="Amount" IsReadOnly="True">
 					<DataTemplate DataType="t:TransactionOverview">
 						<TextBlock
-							Margin="5 0" VerticalAlignment="Center" HorizontalAlignment="Right"
+							VerticalAlignment="Center" HorizontalAlignment="Right"
 							Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Target Amount" IsReadOnly="True">
+				<DataGridTextColumn
+					x:DataType="t:TransactionOverview"
+					IsReadOnly="True"
+					Binding="{Binding SourceCurrency, Mode=OneWay}" />
+				<DataGridTemplateColumn IsReadOnly="True">
 					<DataTemplate DataType="t:TransactionOverview">
 						<TextBlock
-							Margin="5 0" VerticalAlignment="Center" HorizontalAlignment="Right"
-							Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}"/>
+							IsVisible="{Binding DisplayTarget}"
+							VerticalAlignment="Center" HorizontalAlignment="Right"
+							Text="{Binding TargetAmount, Mode=OneWay, StringFormat=(\{0:N2\}}"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
+				<DataGridTextColumn
+					x:DataType="t:TransactionOverview"
+					IsReadOnly="True"
+					Binding="{Binding TargetCurrency, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionOverview"
+					Header="From" IsReadOnly="True"
+					Binding="{Binding SourceAccount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionOverview"
+					Header="To" IsReadOnly="True"
+					Binding="{Binding TargetAccount, Mode=OneWay}" />
 			</DataGrid.Columns>
 
 			<i:Interaction.Behaviors>
