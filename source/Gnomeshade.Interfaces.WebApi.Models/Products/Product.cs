@@ -33,6 +33,9 @@ public sealed record Product
 	/// <summary>The name of the product.</summary>
 	public string Name { get; init; } = null!;
 
+	/// <summary>The SKU (stock-keeping unit) of the product.</summary>
+	public string? Sku { get; init; }
+
 	/// <summary>The description of the product.</summary>
 	public string? Description { get; init; }
 

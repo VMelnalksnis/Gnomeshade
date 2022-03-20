@@ -49,6 +49,7 @@ public class BasicTests
 		{
 			var productCreationModel = new Faker<ProductCreationModel>()
 				.RuleFor(model => model.Name, faker => faker.Commerce.ProductName())
+				.RuleFor(model => model.Name, faker => faker.Commerce.Ean13())
 				.RuleFor(model => model.Description, faker => faker.Lorem.Sentence())
 				.Generate();
 

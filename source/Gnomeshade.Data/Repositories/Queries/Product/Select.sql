@@ -6,6 +6,7 @@
        modified_by_user_id ModifiedByUserId,
        p.name AS           Name,
        p.normalized_name   NormalizedName,
+       p.sku               Sku,
        description,
        unit_id             UnitId
 FROM products p

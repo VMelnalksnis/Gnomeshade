@@ -19,6 +19,7 @@
         <EmbeddedResource Include="Migrations\00000001_database_extensions.sql"/>
         <EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
         <EmbeddedResource Include="Migrations\00000004_transaction_dates.sql"/>
+        <EmbeddedResource Include="Migrations\00000005_product_sku.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>

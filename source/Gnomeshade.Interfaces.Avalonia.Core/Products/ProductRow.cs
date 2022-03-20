@@ -20,18 +20,22 @@ public sealed class ProductRow : PropertyChangedBase
 	{
 		Id = product.Id;
 		Name = product.Name;
+		Sku = product.Sku;
 		Description = product.Description;
 		UnitName = product.UnitId is null ? null : unitRows.Single(unit => unit.Id == product.UnitId.Value).Name;
 	}
 
-	/// <summary>Gets the id of the product.</summary>
+	/// <inheritdoc cref="Product.Id"/>
 	public Guid Id { get; }
 
-	/// <summary>Gets the name of the product.</summary>
+	/// <inheritdoc cref="Product.Name"/>
 	public string Name { get; }
 
-	/// <summary>Gets the description of the product.</summary>
+	/// <inheritdoc cref="Product.Description"/>
 	public string? Description { get; }
+
+	/// <inheritdoc cref="Product.Sku"/>
+	public string? Sku { get; }
 
 	/// <summary>Gets the name of the unit of the product.</summary>
 	public string? UnitName { get; }

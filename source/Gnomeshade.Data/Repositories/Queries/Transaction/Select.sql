@@ -37,6 +37,7 @@
        p.modified_by_user_id   ModifiedByUserId,
        p.name,
        p.normalized_name       NormalizedName,
+       p.sku                   Sku,
        p.description,
        p.unit_id               UnitId
 FROM public.transactions t

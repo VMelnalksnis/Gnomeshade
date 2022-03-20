@@ -35,6 +35,9 @@ public sealed record ProductEntity : IOwnableEntity, IModifiableEntity, INamedEn
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
+	/// <summary>Gets or sets the SKU (stock-keeping unit) of this product.</summary>
+	public string? Sku { get; set; }
+
 	/// <summary>Gets or sets the description of this product.</summary>
 	public string? Description { get; set; }
 

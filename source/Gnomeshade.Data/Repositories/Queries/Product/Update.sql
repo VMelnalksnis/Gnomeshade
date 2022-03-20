@@ -14,6 +14,7 @@ SET modified_at         = DEFAULT,
     name                = @Name,
     normalized_name     = @NormalizedName,
     description         = @Description,
+    sku                 = @Sku,
     unit_id             = @UnitId
 FROM p
 WHERE products.id = p.id

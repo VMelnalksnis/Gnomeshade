@@ -31,6 +31,7 @@ public sealed class ProductFaker : ModifiableEntityFaker<ProductEntity>
 	{
 		RuleFor(product => product.Name, faker => faker.Commerce.ProductName());
 		RuleFor(product => product.NormalizedName, (_, product) => product.Name.ToUpperInvariant());
+		RuleFor(product => product.Sku, faker => faker.Commerce.Ean13());
 		RuleFor(product => product.Description, faker => faker.Commerce.ProductDescription());
 	}
 }

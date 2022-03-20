@@ -8,14 +8,10 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="ProductEntity"/> repository.
-/// </summary>
+/// <summary>Database backed <see cref="ProductEntity"/> repository.</summary>
 public sealed class ProductRepository : NamedRepository<ProductEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ProductRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ProductRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public ProductRepository(IDbConnection dbConnection)
 		: base(dbConnection)

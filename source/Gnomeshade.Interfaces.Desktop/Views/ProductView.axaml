@@ -29,6 +29,12 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn
 					x:DataType="p:ProductRow"
+					Header="SKU" IsReadOnly="True"
+					Binding="{Binding Sku, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="p:ProductRow"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 			</DataGrid.Columns>

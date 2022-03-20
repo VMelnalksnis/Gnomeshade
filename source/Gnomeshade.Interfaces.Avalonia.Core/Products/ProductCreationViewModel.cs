@@ -22,6 +22,7 @@ public sealed class ProductCreationViewModel : ViewModelBase
 
 	private string? _name;
 	private Unit? _selectedUnit;
+	private string? _sku;
 	private string? _description;
 
 	private ProductCreationViewModel(IProductClient productClient, List<Unit> units)
@@ -52,6 +53,13 @@ public sealed class ProductCreationViewModel : ViewModelBase
 	{
 		get => _name;
 		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
+	}
+
+	/// <summary>Gets or sets the SKU of the product.</summary>
+	public string? Sku
+	{
+		get => _sku;
+		set => SetAndNotify(ref _sku, value, nameof(Sku));
 	}
 
 	/// <summary>Gets or sets the description of the product.</summary>
@@ -102,6 +110,7 @@ public sealed class ProductCreationViewModel : ViewModelBase
 		var creationModel = new ProductCreationModel
 		{
 			Name = Name,
+			Sku = Sku,
 			Description = Description,
 			UnitId = SelectedUnit?.Id,
 		};

@@ -58,7 +58,7 @@ public class ProductRepositoryTests : IDisposable
 		findProduct.Should().BeEquivalentTo(expectedProduct);
 		allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
-		var productToUpdate = getProduct with { Description = "Foo" };
+		var productToUpdate = getProduct with { Sku = "123", Description = "Foo" };
 		_ = await _repository.UpdateAsync(productToUpdate);
 		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
 

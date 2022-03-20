@@ -17,6 +17,9 @@ public sealed record ProductCreationModel
 	[Required]
 	public string? Name { get; init; }
 
+	/// <inheritdoc cref="Product.Sku"/>
+	public string? Sku { get; init; }
+
 	/// <inheritdoc cref="Product.Description"/>
 	public string? Description { get; init; }
 
