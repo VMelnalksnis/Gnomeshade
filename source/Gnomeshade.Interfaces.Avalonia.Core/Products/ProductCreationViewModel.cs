@@ -39,6 +39,7 @@ public sealed class ProductCreationViewModel : ViewModelBase
 		_exisingProduct = product;
 
 		Name = _exisingProduct.Name;
+		Sku = _exisingProduct.Sku;
 		Description = _exisingProduct.Description;
 		SelectedUnit = _exisingProduct.UnitId is null
 			? null
