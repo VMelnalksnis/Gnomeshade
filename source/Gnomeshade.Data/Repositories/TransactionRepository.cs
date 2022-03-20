@@ -45,21 +45,6 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE t.id = @id";
 
-	/// <summary>Searches for a transaction with the specified import hash.</summary>
-	/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransactionEntity?> FindByImportHashAsync(
-		byte[] importHash,
-		Guid ownerId,
-		CancellationToken cancellationToken = default)
-	{
-		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {_accessSql};";
-		var command = new CommandDefinition(sql, new { importHash, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
-	}
-
 	/// <summary>Searches for a transaction with the specified import hash using the specified database transaction.</summary>
 	/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
@@ -72,6 +57,21 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	{
 		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {_accessSql};";
 		var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
+		return FindAsync(command);
+	}
+
+	/// <summary>Searches for a transaction which has items with the specified bank reference.</summary>
+	/// <param name="bankReference">The bank reference by which to search.</param>
+	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
+	/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
+	public Task<TransactionEntity?> FindByBankReferenceAsync(
+		string bankReference,
+		Guid ownerId,
+		IDbTransaction dbTransaction)
+	{
+		var sql = $"{SelectSql} WHERE ti.bank_reference = @bankReference AND {_accessSql};";
+		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
 

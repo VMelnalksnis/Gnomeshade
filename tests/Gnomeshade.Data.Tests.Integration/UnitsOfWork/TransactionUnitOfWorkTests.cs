@@ -73,7 +73,9 @@ public sealed class TransactionUnitOfWorkTests : IDisposable
 
 		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
 		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
-		var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
+		var dbTransaction = _dbConnection.BeginTransaction();
+		var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id, dbTransaction);
+		dbTransaction.Commit();
 		var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow, TestUser.Id);
 
 		getTransaction.Items.Should().BeEquivalentTo(transactionItemsToAdd, ItemOptions);

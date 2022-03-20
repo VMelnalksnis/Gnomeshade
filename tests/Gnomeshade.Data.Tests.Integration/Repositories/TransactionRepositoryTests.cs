@@ -52,7 +52,9 @@ public class TransactionRepositoryTests : IDisposable
 	public async Task FindByImportHashAsync_ShouldReturnNullIfDoesNotExist()
 	{
 		var importHash = await new TransactionEntity().GetHashAsync();
-		var transaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id);
+		var dbTransaction = _dbConnection.BeginTransaction();
+		var transaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id, dbTransaction);
+		dbTransaction.Commit();
 		transaction.Should().BeNull();
 	}
 }

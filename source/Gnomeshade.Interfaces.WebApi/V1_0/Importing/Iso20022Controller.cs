@@ -310,8 +310,24 @@ public sealed class Iso20022Controller : ControllerBase
 	{
 		_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
+		_logger.LogTrace("Entry contains {EntryDetailCount} details", reportEntry.EntryDetails.Count);
+		var entryDetails = reportEntry.EntryDetails.First();
+		_logger.LogTrace("Entry details contains {TransactionDetailCount} details", entryDetails.TransactionDetails.Count);
+		var transactionDetails = entryDetails.TransactionDetails.First();
+
+		var bankReference = transactionDetails.References?.Proprietary?.Reference;
+		_logger.LogTrace("Bank reference {BankReference}", bankReference);
+
 		var importHash = await reportEntry.GetHashAsync();
 		var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, user.Id, dbTransaction);
+		if (existingTransaction is null && !string.IsNullOrWhiteSpace(bankReference))
+		{
+			existingTransaction = await _transactionRepository.FindByBankReferenceAsync(
+				bankReference,
+				user.Id,
+				dbTransaction);
+		}
+
 		if (existingTransaction is not null)
 		{
 			resultBuilder.AddTransaction(existingTransaction, false);
@@ -361,17 +377,7 @@ public sealed class Iso20022Controller : ControllerBase
 			throw new InvalidOperationException("Booking date is null");
 		_logger.LogTrace("Booking date {BookingDate}", bookingDate);
 
-		_logger.LogTrace("Entry contains {EntryDetailCount} details", reportEntry.EntryDetails.Count);
-		var entryDetails = reportEntry.EntryDetails.First();
-		_logger.LogTrace(
-			"Entry details contains {TransactionDetailCount} details",
-			entryDetails.TransactionDetails.Count);
-		var transactionDetails = entryDetails.TransactionDetails.First();
-
-		var bankReference = transactionDetails.References?.Proprietary?.Reference;
-		_logger.LogTrace("Bank reference {BankReference}", bankReference);
-		var description =
-			string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new());
+		var description = string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new());
 		_logger.LogTrace("Item description {ItemDescription}", description);
 
 		_logger.LogTrace("Mapping {Code} to product", reportEntry.BankTransactionCode);
