@@ -237,8 +237,10 @@ public class TransactionItemCreationViewModel : ViewModelBase
 	/// <summary>Gets a list of all available tags.</summary>
 	public List<Tag> Tags { get; }
 
+	/// <summary>Gets a grid view of all tags added to the transaction item.</summary>
 	public DataGridCollectionView TagsToAdd => TagRows;
 
+	/// <summary>Gets a strongly typed collection of all transaction items in <see cref="TagsToAdd"/>.</summary>
 	public DataGridItemCollectionView<TagRow> TagRows
 	{
 		get => _tagRows;
@@ -347,14 +349,14 @@ public class TransactionItemCreationViewModel : ViewModelBase
 	public async Task CreateProductAsync()
 	{
 		var creationViewModel = await ProductCreationViewModel.CreateAsync(_transactionClient);
-		creationViewModel.ProductCreated += OnProductCreated;
+		creationViewModel.Upserted += OnProductUpserted;
 		ProductCreation = creationViewModel;
 	}
 
-	private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
 		Products = Task.Run(() => _transactionClient.GetProductsAsync()).Result;
-		ProductCreation!.ProductCreated -= OnProductCreated;
+		ProductCreation!.Upserted -= OnProductUpserted;
 		ProductCreation = null;
 	}
 

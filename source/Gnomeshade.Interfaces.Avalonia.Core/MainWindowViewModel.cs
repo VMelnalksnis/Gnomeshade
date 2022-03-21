@@ -139,7 +139,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, productId);
-		productCreationViewModel.ProductCreated += OnProductCreated;
+		productCreationViewModel.Upserted += OnProductUpserted;
 
 		ActiveView = productCreationViewModel;
 	}
@@ -344,7 +344,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
 		if (PreviousView is ImportViewModel importViewModel)
 		{
@@ -417,7 +417,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 				break;
 
 			case ProductCreationViewModel productCreationViewModel:
-				productCreationViewModel.ProductCreated -= OnProductCreated;
+				productCreationViewModel.Upserted -= OnProductUpserted;
 				break;
 
 			case TransactionCreationViewModel transactionCreationViewModel:

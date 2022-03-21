@@ -15,20 +15,20 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 /// <summary>Overview and editing of all products.</summary>
 public sealed class ProductViewModel : ViewModelBase
 {
-	private readonly IProductClient _productClient;
+	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private ProductRow? _selectedProduct;
 	private ProductCreationViewModel _product;
 	private DataGridItemCollectionView<ProductRow> _products;
 
 	private ProductViewModel(
-		IProductClient productClient,
+		IGnomeshadeClient gnomeshadeClient,
 		IEnumerable<ProductRow> productRows,
 		ProductCreationViewModel productCreationViewModel)
 	{
-		_productClient = productClient;
+		_gnomeshadeClient = gnomeshadeClient;
 		_product = productCreationViewModel;
-		Product.ProductCreated += OnProductCreated;
+		Product.Upserted += OnProductUpserted;
 
 		_products = new(productRows);
 
@@ -58,21 +58,21 @@ public sealed class ProductViewModel : ViewModelBase
 		get => _product;
 		private set
 		{
-			Product.ProductCreated -= OnProductCreated;
+			Product.Upserted -= OnProductUpserted;
 			SetAndNotify(ref _product, value);
-			Product.ProductCreated += OnProductCreated;
+			Product.Upserted += OnProductUpserted;
 		}
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
-	/// <param name="productClient">Gnomeshade API client.</param>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of the <see cref="ProductViewModel"/> class.</returns>
-	public static async Task<ProductViewModel> CreateAsync(IProductClient productClient)
+	public static async Task<ProductViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
-		var productRows = await productClient.GetProductRowsAsync().ConfigureAwait(false);
-		var productCreation = await ProductCreationViewModel.CreateAsync(productClient).ConfigureAwait(false);
+		var productRows = await gnomeshadeClient.GetProductRowsAsync().ConfigureAwait(false);
+		var productCreation = await ProductCreationViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
 
-		return new(productClient, productRows, productCreation);
+		return new(gnomeshadeClient, productRows, productCreation);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -82,13 +82,13 @@ public sealed class ProductViewModel : ViewModelBase
 			return;
 		}
 
-		Product = Task.Run(() => ProductCreationViewModel.CreateAsync(_productClient, SelectedProduct?.Id)).Result;
+		Product = Task.Run(() => ProductCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedProduct?.Id)).Result;
 	}
 
-	private void OnProductCreated(object? sender, ProductCreatedEventArgs e)
+	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var productRowsTask = Task.Run(() => _productClient.GetProductRowsAsync());
-		var productCreationTask = Task.Run(() => ProductCreationViewModel.CreateAsync(_productClient));
+		var productRowsTask = Task.Run(() => _gnomeshadeClient.GetProductRowsAsync());
+		var productCreationTask = Task.Run(() => ProductCreationViewModel.CreateAsync(_gnomeshadeClient));
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		Products = new(productRowsTask.GetAwaiter().GetResult());

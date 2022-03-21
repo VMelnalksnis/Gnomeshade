@@ -15,9 +15,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Form for creating a single new product.</summary>
-public sealed class ProductCreationViewModel : ViewModelBase
+public sealed class ProductCreationViewModel : UpsertionViewModel
 {
-	private readonly IProductClient _productClient;
 	private readonly Product? _exisingProduct;
 
 	private string? _name;
@@ -25,16 +24,16 @@ public sealed class ProductCreationViewModel : ViewModelBase
 	private string? _sku;
 	private string? _description;
 
-	private ProductCreationViewModel(IProductClient productClient, List<Unit> units)
+	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+		: base(gnomeshadeClient)
 	{
-		_productClient = productClient;
 		Units = units;
 
 		UnitSelector = (_, item) => ((Unit)item).Name;
 	}
 
-	private ProductCreationViewModel(IProductClient productClient, List<Unit> units, Product product)
-		: this(productClient, units)
+	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Product product)
+		: this(gnomeshadeClient, units)
 	{
 		_exisingProduct = product;
 
@@ -45,9 +44,6 @@ public sealed class ProductCreationViewModel : ViewModelBase
 			? null
 			: Units.Single(unit => unit.Id == _exisingProduct.UnitId.Value);
 	}
-
-	/// <summary>Raised when a new product has been successfully created.</summary>
-	public event EventHandler<ProductCreatedEventArgs>? ProductCreated;
 
 	/// <summary>Gets or sets the name of the product.</summary>
 	public string? Name
@@ -83,30 +79,29 @@ public sealed class ProductCreationViewModel : ViewModelBase
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector { get; }
 
-	/// <summary>Gets a value indicating whether a product can be created from currently provided values.</summary>
-	public bool CanSave => !string.IsNullOrWhiteSpace(Name);
+	/// <inheritdoc />
+	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
 	/// <summary>Initializes a new instance of the <see cref="ProductCreationViewModel"/> class.</summary>
-	/// <param name="productClient">Gnomeshade API client.</param>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="productId">The id of the product to edit.</param>
 	/// <returns>A new instance of the <see cref="ProductCreationViewModel"/> class.</returns>
 	public static async Task<ProductCreationViewModel> CreateAsync(
-		IProductClient productClient,
+		IGnomeshadeClient gnomeshadeClient,
 		Guid? productId = null)
 	{
-		var units = await productClient.GetUnitsAsync();
+		var units = await gnomeshadeClient.GetUnitsAsync();
 		if (productId is null)
 		{
-			return new(productClient, units);
+			return new(gnomeshadeClient, units);
 		}
 
-		var product = await productClient.GetProductAsync(productId.Value);
-		return new(productClient, units, product);
+		var product = await gnomeshadeClient.GetProductAsync(productId.Value);
+		return new(gnomeshadeClient, units, product);
 	}
 
-	/// <summary>Creates a new product from the provided values.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SaveAsync()
+	/// <inheritdoc />
+	public override async Task SaveAsync()
 	{
 		var creationModel = new ProductCreationModel
 		{
@@ -117,12 +112,7 @@ public sealed class ProductCreationViewModel : ViewModelBase
 		};
 
 		var id = _exisingProduct?.Id ?? Guid.NewGuid();
-		await _productClient.PutProductAsync(id, creationModel).ConfigureAwait(false);
-		OnProductCreated(id);
-	}
-
-	private void OnProductCreated(Guid productId)
-	{
-		ProductCreated?.Invoke(this, new(productId));
+		await GnomeshadeClient.PutProductAsync(id, creationModel).ConfigureAwait(false);
+		OnUpserted(id);
 	}
 }
