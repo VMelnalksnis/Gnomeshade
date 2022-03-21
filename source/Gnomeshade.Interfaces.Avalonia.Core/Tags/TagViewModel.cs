@@ -16,17 +16,17 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Tags;
 /// <summary>An overview of all tags.</summary>
 public sealed class TagViewModel : ViewModelBase
 {
-	private readonly ITagClient _tagClient;
+	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private DataGridItemCollectionView<TagRow> _tagDataGridView;
 	private TagRow? _selectedTag;
 	private TagCreationViewModel _tag;
 
-	private TagViewModel(ITagClient tagClient, IEnumerable<TagRow> tagRows, TagCreationViewModel tagCreationViewModel)
+	private TagViewModel(IGnomeshadeClient gnomeshadeClient, IEnumerable<TagRow> tagRows, TagCreationViewModel tagCreationViewModel)
 	{
-		_tagClient = tagClient;
+		_gnomeshadeClient = gnomeshadeClient;
 		_tag = tagCreationViewModel;
-		Tag.TagCreated += OnTagCreated;
+		Tag.Upserted += OnTagUpserted;
 
 		_tagDataGridView = new(tagRows);
 		PropertyChanged += OnPropertyChanged;
@@ -56,40 +56,40 @@ public sealed class TagViewModel : ViewModelBase
 		get => _tag;
 		private set
 		{
-			Tag.TagCreated -= OnTagCreated;
+			Tag.Upserted -= OnTagUpserted;
 			SetAndNotify(ref _tag, value);
-			Tag.TagCreated += OnTagCreated;
+			Tag.Upserted += OnTagUpserted;
 		}
 	}
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="TagViewModel"/> class.</summary>
-	/// <param name="tagClient">API client for getting tag data.</param>
+	/// <param name="gnomeshadeClient">API client for getting tag data.</param>
 	/// <returns>A new instance of the <see cref="TagViewModel"/> class.</returns>
-	public static async Task<TagViewModel> CreateAsync(ITagClient tagClient)
+	public static async Task<TagViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
-		var tags = await tagClient.GetTagsAsync();
+		var tags = await gnomeshadeClient.GetTagsAsync();
 		var tagRows = tags.Select(tag => new TagRow(tag.Id, tag.Name, tag.Description));
-		var tagCreationViewModel = await TagCreationViewModel.CreateAsync(tagClient);
-		return new(tagClient, tagRows, tagCreationViewModel);
+		var tagCreationViewModel = await TagCreationViewModel.CreateAsync(gnomeshadeClient);
+		return new(gnomeshadeClient, tagRows, tagCreationViewModel);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(SelectedTag))
 		{
-			Tag = Task.Run(() => TagCreationViewModel.CreateAsync(_tagClient, SelectedTag?.Id)).Result;
+			Tag = Task.Run(() => TagCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedTag?.Id)).Result;
 		}
 	}
 
-	private void OnTagCreated(object? sender, TagCreatedEventArgs e)
+	private void OnTagUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var tags = _tagClient.GetTagsAsync().Result;
+		var tags = _gnomeshadeClient.GetTagsAsync().Result;
 		var tagRows = tags.Select(tag => new TagRow(tag.Id, tag.Name, tag.Description));
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 
 		TagDataGridView = new(tagRows);
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
-		Tag = Task.Run(() => TagCreationViewModel.CreateAsync(_tagClient)).Result;
+		Tag = Task.Run(() => TagCreationViewModel.CreateAsync(_gnomeshadeClient)).Result;
 	}
 }

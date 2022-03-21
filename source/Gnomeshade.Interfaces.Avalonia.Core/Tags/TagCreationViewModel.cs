@@ -11,28 +11,26 @@ using Gnomeshade.Interfaces.WebApi.Models.Tags;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tags;
 
 /// <summary>Creating or updating an existing tag.</summary>
-public sealed class TagCreationViewModel : ViewModelBase
+public sealed class TagCreationViewModel : UpsertionViewModel
 {
-	private readonly ITagClient _tagClient;
+	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid? _originalId;
 
-	private string _name;
+	private string? _name;
 	private string? _description;
 
-	private TagCreationViewModel(ITagClient tagClient, Tag? tag = null)
+	private TagCreationViewModel(IGnomeshadeClient gnomeshadeClient, Tag? tag = null)
+		: base(gnomeshadeClient)
 	{
-		_tagClient = tagClient;
+		_gnomeshadeClient = gnomeshadeClient;
 		_originalId = tag?.Id;
 
-		_name = tag?.Name ?? string.Empty;
+		_name = tag?.Name;
 		_description = tag?.Description;
 	}
 
-	/// <summary>Raised when a new tag has been created.</summary>
-	public event EventHandler<TagCreatedEventArgs>? TagCreated;
-
 	/// <summary>Gets or sets the name of the tag.</summary>
-	public string Name
+	public string? Name
 	{
 		get => _name;
 		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
@@ -45,40 +43,39 @@ public sealed class TagCreationViewModel : ViewModelBase
 		set => SetAndNotify(ref _description, value);
 	}
 
-	/// <summary>Gets a value indicating whether the tag can be saved.</summary>
-	public bool CanSave => !string.IsNullOrWhiteSpace(Name);
+	/// <inheritdoc />
+	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="TagCreationViewModel"/> class.</summary>
-	/// <param name="tagClient">API client for getting tag data.</param>
+	/// <param name="gnomeshadeClient">API client for getting tag data.</param>
 	/// <param name="originalId">The id of the tag to edit.</param>
 	/// <returns>A new instance of the <see cref="TagCreationViewModel"/> class.</returns>
-	public static async Task<TagCreationViewModel> CreateAsync(ITagClient tagClient, Guid? originalId = null)
+	public static async Task<TagCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? originalId = null)
 	{
 		if (originalId is null)
 		{
-			return new(tagClient);
+			return new(gnomeshadeClient);
 		}
 
-		var originalTag = await tagClient.GetTagAsync(originalId.Value);
-		return new(tagClient, originalTag);
+		var originalTag = await gnomeshadeClient.GetTagAsync(originalId.Value);
+		return new(gnomeshadeClient, originalTag);
 	}
 
-	/// <summary>Creates new tag from information in this viewmodel.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SaveAsync()
+	/// <inheritdoc />
+	public override async Task SaveAsync()
 	{
 		var tagCreationModel = new TagCreation
 		{
-			Name = Name,
+			Name = Name!,
 			Description = Description,
 		};
 
-		var tagId = _originalId ?? await _tagClient.CreateTagAsync(tagCreationModel);
+		var tagId = _originalId ?? await _gnomeshadeClient.CreateTagAsync(tagCreationModel);
 		if (_originalId is not null)
 		{
-			await _tagClient.PutTagAsync(tagId, tagCreationModel);
+			await _gnomeshadeClient.PutTagAsync(tagId, tagCreationModel);
 		}
 
-		TagCreated?.Invoke(this, new(tagId));
+		OnUpserted(tagId);
 	}
 }
