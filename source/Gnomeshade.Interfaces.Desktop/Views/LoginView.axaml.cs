@@ -2,8 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
@@ -11,23 +9,13 @@ using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-public sealed class LoginView : UserControl, IView<LoginViewModel>
+/// <summary>Authenticate the current user.</summary>
+public sealed class LoginView : FocusOnInitUserControl, IView<LoginViewModel>
 {
-	private readonly TextBox _username;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="LoginView"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="LoginView"/> class.</summary>
 	public LoginView()
 	{
 		AvaloniaXamlLoader.Load(this);
-
-		_username = this.FindControl<TextBox>("Username");
-		_username.AttachedToVisualTree += OnUsernameAttachedToVisualTree;
-	}
-
-	private void OnUsernameAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs eventArgs)
-	{
-		_username.Focus();
+		Focus("Username");
 	}
 }

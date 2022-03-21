@@ -6,67 +6,36 @@ using System;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
-/// <summary>
-/// Single row in account overview.
-/// </summary>
+/// <summary>Single row in account overview.</summary>
 public sealed class AccountOverviewRow : PropertyChangedBase
 {
-	private readonly string _name = string.Empty;
-	private readonly string _currency = string.Empty;
-	private readonly bool _disabled;
-	private string _counterparty;
-	private Guid _counterpartyId;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountOverviewRow"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountOverviewRow"/> class.</summary>
 	/// <param name="id">The id of the account.</param>
-	public AccountOverviewRow(Guid id)
+	/// <param name="name">The name of the account.</param>
+	/// <param name="currency">The currency of the account.</param>
+	/// <param name="disabled">Whether this account is disabled.</param>
+	/// <param name="counterparty">The name of the counterparty of the account.</param>
+	public AccountOverviewRow(Guid id, string name, string currency, bool disabled, string counterparty)
 	{
 		Id = id;
+		Name = name;
+		Currency = currency;
+		Disabled = disabled;
+		Counterparty = counterparty;
 	}
 
-	/// <summary>
-	/// Gets the id of the account.
-	/// </summary>
+	/// <summary>Gets the id of the account.</summary>
 	public Guid Id { get; }
 
-	/// <summary>
-	/// Gets the name of the account.
-	/// </summary>
-	public string Name
-	{
-		get => _name;
-		init => SetAndNotify(ref _name, value, nameof(Name));
-	}
+	/// <summary>Gets the name of the account.</summary>
+	public string Name { get; }
 
-	/// <summary>
-	/// Gets the currency of the account.
-	/// </summary>
-	public string Currency
-	{
-		get => _currency;
-		init => SetAndNotify(ref _currency, value, nameof(Currency));
-	}
+	/// <summary>Gets the currency of the account.</summary>
+	public string Currency { get; }
 
-	/// <summary>
-	/// Gets a value indicating whether this account is disabled.
-	/// </summary>
-	public bool Disabled
-	{
-		get => _disabled;
-		init => SetAndNotify(ref _disabled, value, nameof(Disabled));
-	}
+	/// <summary>Gets a value indicating whether this account is disabled.</summary>
+	public bool Disabled { get; }
 
-	public string Counterparty
-	{
-		get => _counterparty;
-		set => SetAndNotify(ref _counterparty, value);
-	}
-
-	public Guid CounterpartyId
-	{
-		get => _counterpartyId;
-		set => SetAndNotify(ref _counterpartyId, value);
-	}
+	/// <summary>Gets the name of the counterparty of the account.</summary>
+	public string Counterparty { get; }
 }

@@ -24,14 +24,12 @@ internal static class AccountExtensions
 			.Select(tuple =>
 			{
 				var counterparty = counterparties.Single(c => c.Id == tuple.account.CounterpartyId);
-				return new AccountOverviewRow(tuple.account.Id)
-				{
-					Name = tuple.account.Name,
-					Currency = tuple.inCurrency.Currency.AlphabeticCode,
-					Disabled = tuple.inCurrency.Disabled,
-					Counterparty = counterparty.Name,
-					CounterpartyId = counterparty.Id,
-				};
+				return new AccountOverviewRow(
+					tuple.account.Id,
+					tuple.account.Name,
+					tuple.inCurrency.Currency.AlphabeticCode,
+					tuple.inCurrency.Disabled,
+					counterparty.Name);
 			});
 	}
 }

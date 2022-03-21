@@ -10,11 +10,10 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
+/// <summary>Create or update a single transaction.</summary>
 public sealed class TransactionCreationView : UserControl, IView<TransactionCreationViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionCreationView"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="TransactionCreationView"/> class.</summary>
 	public TransactionCreationView()
 	{
 		AvaloniaXamlLoader.Load(this);

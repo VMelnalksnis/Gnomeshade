@@ -10,11 +10,10 @@ using Gnomeshade.Interfaces.Avalonia.Core;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
+/// <summary>The root element of the application.</summary>
 public sealed class MainWindow : Window, IView<MainWindowViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="MainWindow"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="MainWindow"/> class.</summary>
 	public MainWindow()
 	{
 		AvaloniaXamlLoader.Load(this);

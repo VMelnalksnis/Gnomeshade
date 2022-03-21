@@ -9,11 +9,10 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
+/// <summary>Create or update a single unit.</summary>
 public sealed class UnitCreationView : FocusOnInitUserControl, IView<UnitCreationViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UnitCreationView"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="UnitCreationView"/> class.</summary>
 	public UnitCreationView()
 	{
 		AvaloniaXamlLoader.Load(this);
