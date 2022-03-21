@@ -78,10 +78,10 @@ public sealed class CounterpartyViewModel : ViewModelBase
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(SelectedCounterparty) && SelectedCounterparty is not null)
+		if (e.PropertyName is nameof(SelectedCounterparty))
 		{
 			Counterparty = Task.Run(() =>
-				CounterpartyUpdateViewModel.CreateAsync(_gnomeshadeClient, SelectedCounterparty.Id)).Result;
+				CounterpartyUpdateViewModel.CreateAsync(_gnomeshadeClient, SelectedCounterparty?.Id)).Result;
 		}
 	}
 
