@@ -60,8 +60,8 @@
 			Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-			IsEnabled="{Binding CanCreate}"
-			Command="{ReflectionBinding CreateUnitAsync}">
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
 			Create
 		</Button>
 	</Grid>

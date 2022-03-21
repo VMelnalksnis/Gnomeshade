@@ -15,27 +15,26 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Form for creating a single new unit.</summary>
-public sealed class UnitCreationViewModel : ViewModelBase
+public sealed class UnitCreationViewModel : UpsertionViewModel
 {
-	private static readonly string[] _canCreate = { nameof(CanCreate) };
+	private static readonly string[] _canCreate = { nameof(CanSave) };
 
-	private readonly IProductClient _productClient;
 	private readonly Unit? _existingUnit;
 
 	private string? _name;
 	private Unit? _parentUnit;
 	private decimal? _multiplier;
 
-	private UnitCreationViewModel(IProductClient productClient, List<Unit> units)
+	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+		: base(gnomeshadeClient)
 	{
-		_productClient = productClient;
 		Units = units;
 
 		UnitSelector = (_, item) => ((Unit)item).Name;
 	}
 
-	private UnitCreationViewModel(IProductClient productClient, List<Unit> units, Unit existingUnit)
-		: this(productClient, units)
+	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Unit existingUnit)
+		: this(gnomeshadeClient, units)
 	{
 		_existingUnit = existingUnit;
 
@@ -45,9 +44,6 @@ public sealed class UnitCreationViewModel : ViewModelBase
 			: units.Single(unit => unit.Id == existingUnit.ParentUnitId.Value);
 		Multiplier = existingUnit.Multiplier;
 	}
-
-	/// <summary>Raised when a new unit has been successfully created.</summary>
-	public event EventHandler<UnitCreatedEventArgs>? UnitCreated;
 
 	/// <summary>Gets or sets the name of the unit.</summary>
 	public string? Name
@@ -76,30 +72,29 @@ public sealed class UnitCreationViewModel : ViewModelBase
 		set => SetAndNotifyWithGuard(ref _multiplier, value, nameof(Multiplier), _canCreate);
 	}
 
-	/// <summary>Gets a value indicating whether or not a unit can be created from the currently specified values.</summary>
-	public bool CanCreate =>
+	/// <inheritdoc />
+	public override bool CanSave =>
 		!string.IsNullOrWhiteSpace(Name) &&
 		((ParentUnit is null && Multiplier is null) || (ParentUnit is not null && Multiplier is not null));
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="UnitCreationViewModel"/> class.</summary>
-	/// <param name="productClient">API client for getting finance data.</param>
+	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="unitId">The id of the unit to edit.</param>
 	/// <returns>A new instance of the <see cref="UnitCreationViewModel"/> class.</returns>
-	public static async Task<UnitCreationViewModel> CreateAsync(IProductClient productClient, Guid? unitId = null)
+	public static async Task<UnitCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? unitId = null)
 	{
-		var units = await productClient.GetUnitsAsync().ConfigureAwait(false);
+		var units = await gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
 		if (unitId is null)
 		{
-			return new(productClient, units);
+			return new(gnomeshadeClient, units);
 		}
 
 		var existingUnit = units.Single(unit => unit.Id == unitId.Value);
-		return new(productClient, units, existingUnit);
+		return new(gnomeshadeClient, units, existingUnit);
 	}
 
-	/// <summary>Creates a new unit form the specified values.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task CreateUnitAsync()
+	/// <inheritdoc />
+	public override async Task SaveAsync()
 	{
 		var unit = new UnitCreationModel
 		{
@@ -109,12 +104,7 @@ public sealed class UnitCreationViewModel : ViewModelBase
 		};
 
 		var id = _existingUnit?.Id ?? Guid.NewGuid();
-		await _productClient.PutUnitAsync(id, unit).ConfigureAwait(false);
-		OnUnitCreated(id);
-	}
-
-	private void OnUnitCreated(Guid unitId)
-	{
-		UnitCreated?.Invoke(this, new(unitId));
+		await GnomeshadeClient.PutUnitAsync(id, unit).ConfigureAwait(false);
+		OnUpserted(id);
 	}
 }

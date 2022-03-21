@@ -15,20 +15,20 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 /// <summary>Overview and editing of all units.</summary>
 public sealed class UnitViewModel : ViewModelBase
 {
-	private readonly IProductClient _productClient;
+	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private UnitRow? _selectedUnit;
 	private UnitCreationViewModel _unit;
 	private DataGridItemCollectionView<UnitRow> _units;
 
 	private UnitViewModel(
-		IProductClient productClient,
+		IGnomeshadeClient gnomeshadeClient,
 		IEnumerable<UnitRow> unitRows,
 		UnitCreationViewModel unitCreationViewModel)
 	{
-		_productClient = productClient;
+		_gnomeshadeClient = gnomeshadeClient;
 		_unit = unitCreationViewModel;
-		Unit.UnitCreated += OnUnitCreated;
+		Unit.Upserted += OnUnitUpserted;
 
 		_units = new(unitRows);
 
@@ -58,21 +58,21 @@ public sealed class UnitViewModel : ViewModelBase
 		get => _unit;
 		private set
 		{
-			Unit.UnitCreated -= OnUnitCreated;
+			Unit.Upserted -= OnUnitUpserted;
 			SetAndNotify(ref _unit, value);
-			Unit.UnitCreated += OnUnitCreated;
+			Unit.Upserted += OnUnitUpserted;
 		}
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="UnitViewModel"/> class.</summary>
-	/// <param name="productClient">Gnomeshade API client.</param>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of the <see cref="UnitViewModel"/> class.</returns>
-	public static async Task<UnitViewModel> CreateAsync(IProductClient productClient)
+	public static async Task<UnitViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
-		var productRows = await productClient.GetUnitRowsAsync().ConfigureAwait(false);
-		var productCreation = await UnitCreationViewModel.CreateAsync(productClient).ConfigureAwait(false);
+		var productRows = await gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false);
+		var productCreation = await UnitCreationViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
 
-		return new(productClient, productRows, productCreation);
+		return new(gnomeshadeClient, productRows, productCreation);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -82,13 +82,13 @@ public sealed class UnitViewModel : ViewModelBase
 			return;
 		}
 
-		Unit = Task.Run(() => UnitCreationViewModel.CreateAsync(_productClient, SelectedUnit?.Id)).Result;
+		Unit = Task.Run(() => UnitCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedUnit?.Id)).Result;
 	}
 
-	private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
+	private void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var unitRowsTask = Task.Run(() => _productClient.GetUnitRowsAsync());
-		var unitCreationTask = Task.Run(() => UnitCreationViewModel.CreateAsync(_productClient));
+		var unitRowsTask = Task.Run(() => _gnomeshadeClient.GetUnitRowsAsync());
+		var unitCreationTask = Task.Run(() => UnitCreationViewModel.CreateAsync(_gnomeshadeClient));
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		Units = new(unitRowsTask.GetAwaiter().GetResult());

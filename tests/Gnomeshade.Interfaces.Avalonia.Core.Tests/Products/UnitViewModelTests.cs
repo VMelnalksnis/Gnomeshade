@@ -28,7 +28,7 @@ public class UnitViewModelTests
 
 		var newUnitName = Guid.NewGuid().ToString("N");
 		viewModel.Unit.Name = newUnitName;
-		await viewModel.Unit.CreateUnitAsync();
+		await viewModel.Unit.SaveAsync();
 
 		viewModel.Units.Should().HaveCount(3).And.ContainSingle(product => product.Name == newUnitName);
 	}

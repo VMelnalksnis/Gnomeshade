@@ -154,7 +154,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
-		unitCreationViewModel.UnitCreated += OnUnitCreated;
+		unitCreationViewModel.Upserted += OnUnitUpserted;
 
 		ActiveView = unitCreationViewModel;
 	}
@@ -357,7 +357,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 	}
 
-	private void OnUnitCreated(object? sender, UnitCreatedEventArgs e)
+	private void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
@@ -437,7 +437,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 				break;
 
 			case UnitCreationViewModel unitCreationViewModel:
-				unitCreationViewModel.UnitCreated -= OnUnitCreated;
+				unitCreationViewModel.Upserted -= OnUnitUpserted;
 				break;
 		}
 	}
