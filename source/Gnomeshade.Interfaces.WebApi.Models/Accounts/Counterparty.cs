@@ -6,47 +6,30 @@ using System;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-/// <summary>
-/// A party that participates in a financial transaction.
-/// </summary>
+/// <summary>A party that participates in a financial transaction.</summary>
 [PublicAPI]
 public sealed record Counterparty
 {
-	/// <summary>
-	/// The id of the counterparty.
-	/// </summary>
+	/// <summary>The id of the counterparty.</summary>
 	public Guid Id { get; init; }
 
-	/// <summary>
-	/// The point in time when this counterparty was created.
-	/// </summary>
+	/// <summary>The point in time when this counterparty was created. </summary>
 	public DateTimeOffset CreatedAt { get; init; }
 
-	/// <summary>
-	/// The id of the owner of this counterparty.
-	/// </summary>
-	public Guid OwnerId { get; init; } // todo is this relevant?
+	/// <summary>The id of the owner of this counterparty.</summary>
+	public Guid OwnerId { get; init; }
 
-	/// <summary>
-	/// The id of the user which created this counterparty.
-	/// </summary>
+	/// <summary>The id of the user which created this counterparty.</summary>
 	public Guid CreatedByUserId { get; init; }
 
-	/// <summary>
-	/// The point in time when this counterparty was last modified.
-	/// </summary>
+	/// <summary>The point in time when this counterparty was last modified.</summary>
 	public DateTimeOffset ModifiedAt { get; init; }
 
-	/// <summary>
-	/// The id of the user which last modified this counterparty.
-	/// </summary>
+	/// <summary>The id of the user which last modified this counterparty.</summary>
 	public Guid ModifiedByUserId { get; init; }
 
-	/// <summary>
-	/// The name of the counterparty.
-	/// </summary>
+	/// <summary>The name of the counterparty.</summary>
 	public string Name { get; init; } = null!;
 }

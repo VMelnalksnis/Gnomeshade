@@ -55,13 +55,13 @@ public sealed class CounterpartyViewModel : ViewModelBase
 		{
 			if (Counterparty is not null)
 			{
-				Counterparty.Updated -= CounterpartyOnUpdated;
+				Counterparty.Upserted -= CounterpartyOnUpserted;
 			}
 
 			SetAndNotify(ref _counterparty, value);
 			if (Counterparty is not null)
 			{
-				Counterparty.Updated += CounterpartyOnUpdated;
+				Counterparty.Upserted += CounterpartyOnUpserted;
 			}
 		}
 	}
@@ -85,7 +85,7 @@ public sealed class CounterpartyViewModel : ViewModelBase
 		}
 	}
 
-	private void CounterpartyOnUpdated(object? sender, CounterpartyUpdatedEventArgs e)
+	private void CounterpartyOnUpserted(object? sender, UpsertedEventArgs e)
 	{
 		var counterparties = Task.Run(() => _gnomeshadeClient.GetCounterpartiesAsync()).Result;
 		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty));

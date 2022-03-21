@@ -13,8 +13,8 @@
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 		<TextBox Text="{Binding Name}" />
-		<Button IsEnabled="{Binding CanUpdate}" Command="{ReflectionBinding UpdateAsync}">
-			Update
+		<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+			Save
 		</Button>
 	</StackPanel>
 </UserControl>
