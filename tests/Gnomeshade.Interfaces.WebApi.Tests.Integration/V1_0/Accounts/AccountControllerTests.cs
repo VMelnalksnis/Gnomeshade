@@ -90,6 +90,21 @@ public class AccountControllerTests
 		exception.Which.StatusCode.Should().Be(HttpStatusCode.Conflict);
 	}
 
+	[Test]
+	public async Task Put_DuplicateNameDifferentCounterparty()
+	{
+		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
+		await _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel);
+
+		var differentCounterparty = await (await WebserverSetup.CreateAuthorizedSecondClientAsync()).GetMyCounterpartyAsync();
+		var secondAccount = accountCreationModel with
+		{
+			CounterpartyId = differentCounterparty.Id,
+		};
+
+		await _client.PutAccountAsync(Guid.NewGuid(), secondAccount);
+	}
+
 	private AccountCreationModel GetAccountCreationModel(Currency currency)
 	{
 		return new()

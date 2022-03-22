@@ -224,12 +224,17 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 		return CreatedAtAction(nameof(Get), new { id }, string.Empty);
 	}
 
-	private async Task<NoContentResult> UpdateExistingAccountAsync(
+	private async Task<ActionResult> UpdateExistingAccountAsync(
 		AccountCreationModel model,
 		UserEntity user,
 		AccountEntity existingAccount)
 	{
-		// todo validation
+		var conflictingResult = await GetConflictResult(model, user, existingAccount.Id);
+		if (conflictingResult is not null)
+		{
+			return conflictingResult;
+		}
+
 		var account = Mapper.Map<AccountEntity>(model) with
 		{
 			Id = existingAccount.Id,
@@ -241,11 +246,15 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 		return NoContent();
 	}
 
-	private async Task<ActionResult?> GetConflictResult(AccountCreationModel model, UserEntity user)
+	private async Task<ActionResult?> GetConflictResult(
+		AccountCreationModel model,
+		UserEntity user,
+		Guid? existingAccountId = null)
 	{
 		var normalizedName = model.Name!.ToUpperInvariant();
 		var conflictingAccount = await _repository.FindByNameAsync(normalizedName, user.Id);
 		if (conflictingAccount is null ||
+			conflictingAccount.Id == existingAccountId ||
 			conflictingAccount.CounterpartyId != model.CounterpartyId)
 		{
 			return null;
