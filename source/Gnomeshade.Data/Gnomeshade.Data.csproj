@@ -20,6 +20,7 @@
         <EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
         <EmbeddedResource Include="Migrations\00000004_transaction_dates.sql"/>
         <EmbeddedResource Include="Migrations\00000005_product_sku.sql"/>
+        <EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>

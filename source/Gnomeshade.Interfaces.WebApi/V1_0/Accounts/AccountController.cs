@@ -245,7 +245,8 @@ public sealed class AccountController : FinanceControllerBase<AccountEntity, Acc
 	{
 		var normalizedName = model.Name!.ToUpperInvariant();
 		var conflictingAccount = await _repository.FindByNameAsync(normalizedName, user.Id);
-		if (conflictingAccount is null)
+		if (conflictingAccount is null ||
+			conflictingAccount.CounterpartyId != model.CounterpartyId)
 		{
 			return null;
 		}
