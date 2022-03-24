@@ -14,6 +14,7 @@ jobs:
         archive_command: [ "7z a -mx9 -r gnomeshade_desktop_win-x64.zip" ]
         directory: [ source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/win10-x64/publish ]
         artifact: [ "**/win10-x64/publish/gnomeshade_desktop_win-x64.zip" ]
+        publishSingleFile: [ true ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
@@ -21,6 +22,7 @@ jobs:
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
+            publishSingleFile: false
 
           - os: ubuntu-latest
             runtime: linux-x64
@@ -28,6 +30,7 @@ jobs:
             archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
             directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_desktop_linux-x64.zip"
+            publishSingleFile: true
 
     name: Build
     runs-on: ${{ matrix.os }}
@@ -63,7 +66,7 @@ jobs:
           --runtime ${{ matrix.runtime }}
           --configuration Release
           --self-contained true
-          -p:PublishSingleFile=true
+          -p:PublishSingleFile=${{ matrix.publishSingleFile }}
           -p:VersionPrefix=0.1.0
           -p:VersionSuffix=nightly
           -p:AssemblyVersion=0.1.0.$Env:GITHUB_RUN_NUMBER
