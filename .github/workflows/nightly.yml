@@ -51,7 +51,7 @@ jobs:
           --runtime ${{ matrix.runtime }}
           --configuration Release
           --self-contained true
-          -p:PublishSingleFile=true
+          -p:PublishSingleFile=${{ matrix.publishSingleFile }}
           -p:VersionPrefix=0.1.0
           -p:VersionSuffix=nightly
           -p:AssemblyVersion=0.1.0.${GITHUB_RUN_NUMBER}
