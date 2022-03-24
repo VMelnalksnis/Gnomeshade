@@ -22,7 +22,7 @@ jobs:
             project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
-            artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"]
+            artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
             self_contained: false
             publishSingleFile: false
 
