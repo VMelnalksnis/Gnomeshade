@@ -89,7 +89,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
-		GetAsync<Counterparty>("Counterparty/Me");
+		GetAsync<Counterparty>($"{CounterpartyUri}/Me");
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>

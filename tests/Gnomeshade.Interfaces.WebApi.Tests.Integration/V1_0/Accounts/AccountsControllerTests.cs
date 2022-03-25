@@ -17,7 +17,7 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts;
 
-public class AccountControllerTests
+public class AccountsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 	private Currency _firstCurrency = null!;

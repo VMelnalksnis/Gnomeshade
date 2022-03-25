@@ -15,7 +15,7 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Tags;
 
-public class TagControllerTests
+public class TagsControllerTests
 {
 	private ITagClient _client = null!;
 

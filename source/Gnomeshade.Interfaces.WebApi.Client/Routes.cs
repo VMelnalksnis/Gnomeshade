@@ -15,14 +15,14 @@ namespace Gnomeshade.Interfaces.WebApi.Client;
 public static class Routes
 {
 	internal const string AuthenticationUri = "Authentication";
-	internal const string AccountUri = "Account";
-	internal const string CounterpartyUri = "Counterparty";
-	internal const string CurrencyUri = "Currency";
+	internal const string AccountUri = "Accounts";
+	internal const string CounterpartyUri = "Counterparties";
+	internal const string CurrencyUri = "Currencies";
 	internal const string Iso20022 = "Iso";
-	internal const string ProductUri = "Product";
-	internal const string TransactionUri = "Transaction";
-	internal const string UnitUri = "Unit";
-	internal const string TagUri = "Tag";
+	internal const string ProductUri = "Products";
+	internal const string TransactionUri = "Transactions";
+	internal const string UnitUri = "Units";
+	internal const string TagUri = "Tags";
 	internal const string AllAccountUri = $"{AccountUri}?onlyActive=false";
 	internal const string LoginUri = $"{AuthenticationUri}/Login";
 	internal const string LogOutUri = $"{AuthenticationUri}/Logout";

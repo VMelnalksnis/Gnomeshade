@@ -18,7 +18,7 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts;
 
-public class CounterpartyControllerTests
+public class CounterpartiesControllerTests
 {
 	private IGnomeshadeClient _gnomeshadeClient = null!;
 	private Currency _currency = null!;

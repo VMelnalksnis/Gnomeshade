@@ -28,11 +28,11 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 	"ReSharper",
 	"AsyncConverter.ConfigureAwaitHighlighting",
 	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
-public sealed class CurrencyController : FinanceControllerBase<CurrencyEntity, Currency>
+public sealed class CurrenciesController : FinanceControllerBase<CurrencyEntity, Currency>
 {
 	private readonly CurrencyRepository _currencyRepository;
 
-	public CurrencyController(
+	public CurrenciesController(
 		CurrencyRepository currencyRepository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)

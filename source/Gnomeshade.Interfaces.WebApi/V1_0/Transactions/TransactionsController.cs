@@ -28,15 +28,15 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 /// <summary>CRUD operations on transaction entity.</summary>
-public sealed class TransactionController : FinanceControllerBase<TransactionEntity, Transaction>
+public sealed class TransactionsController : FinanceControllerBase<TransactionEntity, Transaction>
 {
 	private readonly TransactionRepository _repository;
 	private readonly TransactionItemRepository _itemRepository;
 	private readonly ProductRepository _productRepository;
-	private readonly ILogger<TransactionController> _logger;
+	private readonly ILogger<TransactionsController> _logger;
 	private readonly TransactionUnitOfWork _unitOfWork;
 
-	/// <summary>Initializes a new instance of the <see cref="TransactionController"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
 	/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItemEntity"/>.</param>
 	/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
@@ -44,11 +44,11 @@ public sealed class TransactionController : FinanceControllerBase<TransactionEnt
 	/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	public TransactionController(
+	public TransactionsController(
 		TransactionRepository repository,
 		TransactionItemRepository itemRepository,
 		ProductRepository productRepository,
-		ILogger<TransactionController> logger,
+		ILogger<TransactionsController> logger,
 		TransactionUnitOfWork unitOfWork,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)

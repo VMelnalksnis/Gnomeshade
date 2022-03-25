@@ -28,21 +28,21 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 /// <summary>
 /// CRUD operations on account entity.
 /// </summary>
-public sealed class AccountController : FinanceControllerBase<AccountEntity, Account>
+public sealed class AccountsController : FinanceControllerBase<AccountEntity, Account>
 {
 	private readonly AccountRepository _repository;
 	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountController"/> class.
+	/// Initializes a new instance of the <see cref="AccountsController"/> class.
 	/// </summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
-	public AccountController(
+	public AccountsController(
 		AccountRepository repository,
 		AccountInCurrencyRepository inCurrencyRepository,
 		ApplicationUserContext applicationUserContext,

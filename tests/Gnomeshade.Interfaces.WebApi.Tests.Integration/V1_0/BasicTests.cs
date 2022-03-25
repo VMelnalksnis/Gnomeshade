@@ -35,7 +35,7 @@ public class BasicTests
 	{
 		var client = WebserverSetup.CreateHttpClient();
 
-		var response = await client.GetAsync("/api/v1.0/transaction");
+		var response = await client.GetAsync("/api/v1.0/transactions");
 
 		response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 	}

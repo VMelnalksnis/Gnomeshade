@@ -23,8 +23,8 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions;
 
-[TestOf(typeof(TransactionController))]
-public class TransactionControllerTests
+[TestOf(typeof(TransactionsController))]
+public class TransactionsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _secondClient = null!;

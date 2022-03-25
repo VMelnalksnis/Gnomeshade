@@ -27,17 +27,17 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 /// <summary>
 /// CRUD operations on account entity.
 /// </summary>
-public sealed class ProductController : FinanceControllerBase<ProductEntity, Product>
+public sealed class ProductsController : FinanceControllerBase<ProductEntity, Product>
 {
 	private readonly ProductRepository _repository;
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ProductController"/> class.
+	/// Initializes a new instance of the <see cref="ProductsController"/> class.
 	/// </summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	public ProductController(
+	public ProductsController(
 		ProductRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)

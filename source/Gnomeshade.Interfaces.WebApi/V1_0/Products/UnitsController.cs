@@ -26,15 +26,15 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 /// <summary>CRUD operations on unit entity.</summary>
-public sealed class UnitController : FinanceControllerBase<UnitEntity, Unit>
+public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
 {
 	private readonly UnitRepository _repository;
 
-	/// <summary>Initializes a new instance of the <see cref="UnitController"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="UnitsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	public UnitController(
+	public UnitsController(
 		UnitRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)

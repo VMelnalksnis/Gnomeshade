@@ -17,7 +17,7 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
 
-public class ProductControllerTests
+public class ProductsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 

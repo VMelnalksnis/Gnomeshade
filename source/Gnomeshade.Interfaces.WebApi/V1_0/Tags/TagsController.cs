@@ -25,15 +25,15 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Tags;
 
 /// <summary>CRUD operations on tags.</summary>
-public sealed class TagController : FinanceControllerBase<TagEntity, Tag>
+public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 {
 	private readonly TagRepository _repository;
 
-	/// <summary>Initializes a new instance of the <see cref="TagController"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="TagsController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TagEntity"/>.</param>
-	public TagController(ApplicationUserContext applicationUserContext, Mapper mapper, TagRepository repository)
+	public TagsController(ApplicationUserContext applicationUserContext, Mapper mapper, TagRepository repository)
 		: base(applicationUserContext, mapper)
 	{
 		_repository = repository;

@@ -25,15 +25,15 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 /// <summary>CRUD operations on account entity.</summary>
-public sealed class CounterpartyController : FinanceControllerBase<CounterpartyEntity, Counterparty>
+public sealed class CounterpartiesController : FinanceControllerBase<CounterpartyEntity, Counterparty>
 {
 	private readonly CounterpartyRepository _repository;
 
-	/// <summary>Initializes a new instance of the <see cref="CounterpartyController"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="CounterpartiesController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CounterpartyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	public CounterpartyController(
+	public CounterpartiesController(
 		CounterpartyRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)

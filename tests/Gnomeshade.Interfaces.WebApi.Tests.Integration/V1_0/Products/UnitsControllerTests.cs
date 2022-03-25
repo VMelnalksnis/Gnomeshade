@@ -18,8 +18,8 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
 
-[TestOf(typeof(UnitController))]
-public class UnitControllerTests
+[TestOf(typeof(UnitsController))]
+public class UnitsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 	private Unit _parentUnit = null!;

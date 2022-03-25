@@ -20,28 +20,28 @@ public sealed class TransactionUriTestCaseSource : IEnumerable
 			new TestCaseData(
 					null,
 					null,
-					"Transaction")
+					"Transactions")
 				.SetName("Without parameters");
 
 		yield return
 			new TestCaseData(
 					firstDay,
 					null,
-					"Transaction?from=2021-05-01T00:00:00.0000000%2B03:00")
+					"Transactions?from=2021-05-01T00:00:00.0000000%2B03:00")
 				.SetName("With only from date");
 
 		yield return
 			new TestCaseData(
 					null,
 					now,
-					"Transaction?to=2021-05-21T13:05:29.0000000%2B03:00")
+					"Transactions?to=2021-05-21T13:05:29.0000000%2B03:00")
 				.SetName("With only to date");
 
 		yield return
 			new TestCaseData(
 					firstDay,
 					now,
-					"Transaction?from=2021-05-01T00:00:00.0000000%2B03:00&to=2021-05-21T13:05:29.0000000%2B03:00")
+					"Transactions?from=2021-05-01T00:00:00.0000000%2B03:00&to=2021-05-21T13:05:29.0000000%2B03:00")
 				.SetName("With both dates");
 	}
 }
