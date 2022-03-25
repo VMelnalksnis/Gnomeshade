@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using AutoMapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
@@ -21,31 +21,31 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
-/// <summary>
-/// CRUD operations on currency entity.
-/// </summary>
-[SuppressMessage(
-	"ReSharper",
-	"AsyncConverter.ConfigureAwaitHighlighting",
-	Justification = "ASP.NET Core doesn't have a SynchronizationContext")]
+/// <summary>CRUD operations on currency entity.</summary>
 public sealed class CurrenciesController : FinanceControllerBase<CurrencyEntity, Currency>
 {
-	private readonly CurrencyRepository _currencyRepository;
+	private readonly CurrencyRepository _repository;
 
+	/// <summary>Initializes a new instance of the <see cref="CurrenciesController"/> class.</summary>
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="CurrencyEntity"/>.</param>
+	/// <param name="applicationUserContext">Context for getting the current application user.</param>
+	/// <param name="mapper">Repository entity and API model mapper.</param>
 	public CurrenciesController(
-		CurrencyRepository currencyRepository,
+		CurrencyRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper)
 		: base(applicationUserContext, mapper)
 	{
-		_currencyRepository = currencyRepository;
+		_repository = repository;
 	}
 
+	/// <inheritdoc cref="IAccountClient.GetCurrenciesAsync"/>
+	/// <response code="200">Successfully got all currencies.</response>
 	[HttpGet]
-	[ProducesResponseType(Status200OK)]
-	public async Task<ActionResult<IEnumerable<Currency>>> GetCurrencies(CancellationToken cancellationToken)
+	[ProducesResponseType(typeof(List<Currency>), Status200OK)]
+	public async Task<ActionResult<List<Currency>>> GetCurrencies(CancellationToken cancellationToken)
 	{
-		var currencies = await _currencyRepository.GetAllAsync(cancellationToken);
+		var currencies = await _repository.GetAllAsync(cancellationToken);
 		var models = currencies.Select(currency => MapToModel(currency)).ToList();
 		return Ok(models);
 	}
