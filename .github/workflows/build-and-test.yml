@@ -39,6 +39,7 @@ jobs:
           dotnet build 
           --configuration Release 
           --no-restore
+          /warnAsError
           /nologo
           /clp:NoSummary
 
