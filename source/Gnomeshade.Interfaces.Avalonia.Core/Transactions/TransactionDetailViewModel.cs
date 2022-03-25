@@ -83,7 +83,7 @@ public sealed class TransactionDetailViewModel : ViewModelBase
 				Items.CollectionChanged -= ItemsOnCollectionChanged;
 			}
 
-			SetAndNotifyWithGuard(ref _items, value, nameof(Items), nameof(DataGridView));
+			SetAndNotifyWithGuard(ref _items!, value, nameof(Items), nameof(DataGridView));
 			Items.CollectionChanged += ItemsOnCollectionChanged;
 		}
 	}
