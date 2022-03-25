@@ -88,25 +88,25 @@ public static class Routes
 	/// <summary>Gets the relative uri for the items of the specified transaction.</summary>
 	/// <param name="id">The id of the transaction.</param>
 	/// <returns>Relative uri for items of a transaction.</returns>
-	public static string TransactionItemUri(Guid id) => $"{TransactionIdUri(id)}/Item";
+	public static string TransactionItemUri(Guid id) => $"{TransactionIdUri(id)}/Items";
 
 	/// <summary>Gets the relative uri for the specified transaction item.</summary>
 	/// <param name="id">The id of the transaction item.</param>
 	/// <returns>Relative uri for a specific transaction item.</returns>
-	public static string TransactionItemIdUri(Guid id) => $"{_transactionUri}/Item/{Format(id)}";
+	public static string TransactionItemIdUri(Guid id) => $"{_transactionUri}/Items/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the specified transaction and item.</summary>
 	/// <param name="transactionId">The id of the transaction.</param>
 	/// <param name="id">The id of the transaction item.</param>
 	/// <returns>Relative uri for the specified transaction and item.</returns>
 	public static string TransactionItemIdUri(Guid transactionId, Guid id) =>
-		$"{TransactionIdUri(transactionId)}/Item/{Format(id)}";
+		$"{TransactionIdUri(transactionId)}/Items/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the tags of the specified transaction item.</summary>
 	/// <param name="id">The id of the transaction item.</param>
 	/// <returns>Relative uri for the tags of the specified transaction item.</returns>
 	public static string TransactionItemTagUri(Guid id) =>
-		$"{TransactionItemIdUri(id)}/Tag";
+		$"{TransactionItemIdUri(id)}/{_tagUri}";
 
 	/// <summary>Gets the relative uri for the specified transaction item tag.</summary>
 	/// <param name="id">The id of the transaction item.</param>

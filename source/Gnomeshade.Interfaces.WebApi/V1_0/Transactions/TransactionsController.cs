@@ -143,7 +143,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <inheritdoc cref="ITransactionClient.GetTransactionItemAsync"/>
 	/// <response code="200">Transaction item with the specified id exists.</response>
 	/// <response code="404">Transaction item with the specified id does not exist.</response>
-	[HttpGet("Item/{id:guid}")]
+	[HttpGet("Items/{id:guid}")]
 	[ProducesResponseType(typeof(TransactionItem), Status200OK)]
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<TransactionItem>> GetItem(Guid id, CancellationToken cancellation)
@@ -167,7 +167,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <response code="201">A new transaction item was created.</response>
 	/// <response code="204">An existing transaction item was replaced.</response>
 	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Item/{id:guid}")]
+	[HttpPut("{transactionId:guid}/Items/{id:guid}")]
 	[ProducesResponseType(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
@@ -187,7 +187,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <inheritdoc cref="ITransactionClient.DeleteTransactionItemAsync"/>
 	/// <response code="204">Transaction item was successfully deleted.</response>
 	/// <response code="404">Transaction item with the specified id does not exist.</response>
-	[HttpDelete("Item/{id:guid}")]
+	[HttpDelete("Items/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
 	public async Task<StatusCodeResult> DeleteItem(Guid id)
@@ -212,7 +212,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionItemTagsAsync"/>
 	/// <response code="200">Successfully got the tags.</response>
-	[HttpGet("Item/{id:guid}/Tag")]
+	[HttpGet("Items/{id:guid}/Tags")]
 	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
 	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
 	{
@@ -222,7 +222,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	}
 
 	/// <inheritdoc cref="ITransactionClient.TagTransactionItemAsync"/>
-	[HttpPut("Item/{id:guid}/Tag/{tagId:guid}")]
+	[HttpPut("Items/{id:guid}/Tags/{tagId:guid}")]
 	public async Task<StatusCodeResult> TagItem(Guid id, Guid tagId)
 	{
 		await _itemRepository.TagAsync(id, tagId, ApplicationUser.Id);
@@ -230,7 +230,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	}
 
 	/// <inheritdoc cref="ITransactionClient.UntagTransactionItemAsync"/>
-	[HttpDelete("Item/{id:guid}/Tag/{tagId:guid}")]
+	[HttpDelete("Items/{id:guid}/Tags/{tagId:guid}")]
 	public async Task<StatusCodeResult> UntagItem(Guid id, Guid tagId)
 	{
 		await _itemRepository.UntagAsync(id, tagId, ApplicationUser.Id);
