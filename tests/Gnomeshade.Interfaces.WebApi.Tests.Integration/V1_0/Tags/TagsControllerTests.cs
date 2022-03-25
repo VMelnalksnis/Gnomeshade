@@ -10,11 +10,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.V1_0.Tags;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Tags;
 
+[TestOf(typeof(TagsController))]
 public class TagsControllerTests
 {
 	private ITagClient _client = null!;

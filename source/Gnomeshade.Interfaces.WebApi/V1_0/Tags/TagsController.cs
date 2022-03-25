@@ -99,7 +99,7 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 
 	/// <inheritdoc cref="ITagClient.GetTagTagsAsync"/>
 	/// <response code="200">Successfully got the tags.</response>
-	[HttpGet("{id:guid}/Tag")]
+	[HttpGet("{id:guid}/Tags")]
 	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
 	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
 	{
@@ -110,7 +110,7 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 
 	/// <inheritdoc cref="ITagClient.TagTagAsync"/>
 	/// <response code="204">The tag was tagged successfully.</response>
-	[HttpPut("{id:guid}/Tag/{tagId:guid}")]
+	[HttpPut("{id:guid}/Tags/{tagId:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	public async Task<StatusCodeResult> Tag(Guid id, Guid tagId)
 	{
@@ -120,7 +120,7 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 
 	/// <inheritdoc cref="ITagClient.UntagTagAsync"/>
 	/// <response code="204">The tag was untagged successfully.</response>
-	[HttpDelete("{id:guid}/Tag/{tagId:guid}")]
+	[HttpDelete("{id:guid}/Tags/{tagId:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	public async Task<StatusCodeResult> Untag(Guid id, Guid tagId)
 	{

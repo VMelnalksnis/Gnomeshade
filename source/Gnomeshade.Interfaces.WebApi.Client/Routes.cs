@@ -123,7 +123,7 @@ public static class Routes
 	/// <summary>Gets the relative uri for the tags of the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <returns>Relative uri for the tags of the specified tag.</returns>
-	public static string TagTagUri(Guid id) => $"{TagIdUri(id)}/Tag";
+	public static string TagTagUri(Guid id) => $"{TagIdUri(id)}/{_tagUri}";
 
 	/// <summary>Gets the relative uri for the specified tag tag.</summary>
 	/// <param name="id">The id of the tag.</param>
