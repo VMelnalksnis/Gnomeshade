@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -27,6 +26,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 
+/// <summary>User authentication and information.</summary>
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]/[action]")]
@@ -39,6 +39,13 @@ public sealed class AuthenticationController : ControllerBase
 	private readonly JwtSecurityTokenHandler _securityTokenHandler;
 	private readonly ProblemDetailsFactory _problemDetailFactory;
 
+	/// <summary>Initializes a new instance of the <see cref="AuthenticationController"/> class.</summary>
+	/// <param name="userManager">Identity user persistence store.</param>
+	/// <param name="userUnitOfWork">Application user persistence store.</param>
+	/// <param name="mapper">Repository and API model mapper.</param>
+	/// <param name="jwtOptions">Built-in authentication options.</param>
+	/// <param name="securityTokenHandler">JWT token writer.</param>
+	/// <param name="problemDetailsFactory"><see cref="ProblemDetailsFactory"/>.</param>
 	public AuthenticationController(
 		UserManager<ApplicationUser> userManager,
 		UserUnitOfWork userUnitOfWork,
@@ -55,11 +62,14 @@ public sealed class AuthenticationController : ControllerBase
 		_problemDetailFactory = problemDetailsFactory;
 	}
 
+	/// <summary>Authenticates a user using the specified login information.</summary>
+	/// <param name="login">Information for logging in.</param>
+	/// <returns>Information about the authentication section.</returns>
 	[AllowAnonymous]
 	[HttpPost]
-	[ProducesResponseType(Status200OK)]
+	[ProducesResponseType(typeof(LoginResponse), Status200OK)]
 	[ProducesResponseType(Status401Unauthorized)]
-	public async Task<ActionResult<LoginResponse>> Login([FromBody, BindRequired] Login login)
+	public async Task<ActionResult<LoginResponse>> Login([FromBody] Login login)
 	{
 		var user = await _userManager.FindByNameAsync(login.Username);
 		if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))
@@ -90,10 +100,13 @@ public sealed class AuthenticationController : ControllerBase
 		return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
 	}
 
+	/// <summary>Registers a new user.</summary>
+	/// <param name="registration">The information about the user to register.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[AllowAnonymous]
 	[HttpPost]
-	[ProducesResponseType(Status200OK)]
-	public async Task<ActionResult> Register([FromBody, BindRequired] RegistrationModel registration)
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> Register([FromBody] RegistrationModel registration)
 	{
 		var user = _mapper.Map<ApplicationUser>(registration);
 		user.SecurityStamp = Guid.NewGuid().ToString();
@@ -117,9 +130,11 @@ public sealed class AuthenticationController : ControllerBase
 			throw;
 		}
 
-		return Ok();
+		return NoContent();
 	}
 
+	/// <summary>Registers or authenticates a user using and OIDC provider.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[HttpPost]
 	public async Task<ActionResult> SocialRegister()
 	{
@@ -169,19 +184,7 @@ public sealed class AuthenticationController : ControllerBase
 		return StatusCode(Status201Created);
 	}
 
-	[HttpGet]
-	[ProducesResponseType(Status200OK)]
-	public async Task<ActionResult<UserModel>> Info()
-	{
-		var identityUser = await _userManager.GetUserAsync(User);
-
-		// var user = (await _userRepository.GetAllAsync()).Single(u => u.IdentityUserId == identityUser.Id);
-		return Ok(_mapper.Map<UserModel>(identityUser));
-	}
-
-	/// <summary>
-	/// Logs out the currently signed in user.
-	/// </summary>
+	/// <summary>Logs out the currently signed in user.</summary>
 	/// <returns><see cref="SignOutResult"/>.</returns>
 	[HttpPost]
 	public SignOutResult Logout() => SignOut();

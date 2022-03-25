@@ -41,6 +41,6 @@ public sealed class ImportView : FocusOnInitUserControl, IView<ImportViewModel>
 
 		var fileNames = await dialog.ShowAsync((Window)this.GetVisualRoot());
 		var path = this.FindControl<TextBlock>("Path");
-		path.Text = fileNames.Single();
+		path.Text = fileNames?.Single();
 	}
 }

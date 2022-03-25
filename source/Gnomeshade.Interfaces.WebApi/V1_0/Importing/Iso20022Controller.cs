@@ -56,6 +56,19 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly IDbConnection _dbConnection;
 	private readonly Mapper _mapper;
 
+	/// <summary>Initializes a new instance of the <see cref="Iso20022Controller"/> class.</summary>
+	/// <param name="applicationUserContext">Context for getting the current application user.</param>
+	/// <param name="logger">Context specific logger.</param>
+	/// <param name="reportReader">Bank account report reader.</param>
+	/// <param name="currencyRepository">The repository for performing CRUD operations on <see cref="CurrencyEntity"/>.</param>
+	/// <param name="accountRepository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
+	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
+	/// <param name="transactionRepository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
+	/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
+	/// <param name="transactionUnitOfWork">Unit of work for managing transactions and all related entities.</param>
+	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
+	/// <param name="dbConnection">Database connection for managing transactions.</param>
+	/// <param name="mapper">Repository entity and API model mapper.</param>
 	public Iso20022Controller(
 		ApplicationUserContext applicationUserContext,
 		ILogger<Iso20022Controller> logger,
