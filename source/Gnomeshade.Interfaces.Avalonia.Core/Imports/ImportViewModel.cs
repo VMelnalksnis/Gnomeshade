@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
-using Avalonia.Controls;
+using Avalonia.Input;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
@@ -194,7 +194,7 @@ public sealed class ImportViewModel : ViewModelBase
 		}
 	}
 
-	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ProductGridView"/>.</summary>
+	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="ProductGridView"/>.</summary>
 	public void OnProductDataGridDoubleTapped()
 	{
 		if (SelectedProduct is null || ProductSelected is null)
@@ -205,7 +205,7 @@ public sealed class ImportViewModel : ViewModelBase
 		ProductSelected(this, new(SelectedProduct.Id));
 	}
 
-	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="ItemGridView"/>.</summary>
+	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="ItemGridView"/>.</summary>
 	public void OnItemDataGridDoubleTapped()
 	{
 		if (SelectedItem is null || TransactionItemSelected is null)

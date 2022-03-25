@@ -5,6 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,8 +20,8 @@ public sealed record JwtOptions
 	[Required]
 	public string ValidAudience { get; init; } = null!;
 
-	/// <inheritdoc cref="JwtBearerOptions.ClaimsIssuer"/>
-	/// <seealso cref="JwtBearerOptions.ClaimsIssuer"/>
+	/// <inheritdoc cref="AuthenticationSchemeOptions.ClaimsIssuer"/>
+	/// <seealso cref="AuthenticationSchemeOptions.ClaimsIssuer"/>
 	/// <seealso cref="TokenValidationParameters.ValidIssuer"/>
 	[Required]
 	public string ValidIssuer { get; init; } = null!;

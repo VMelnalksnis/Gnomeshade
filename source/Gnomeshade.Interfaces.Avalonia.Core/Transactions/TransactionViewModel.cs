@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
-using Avalonia.Controls;
+using Avalonia.Input;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -108,7 +108,7 @@ public sealed class TransactionViewModel : ViewModelBase
 		return new(gnomeshadeClient, from, to, transactions);
 	}
 
-	/// <summary>Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="DataGridView"/>.</summary>
+	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
 		if (SelectedOverview is null || TransactionSelected is null)

@@ -8,16 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
-using Avalonia.Controls;
+using Avalonia.Input;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
-/// <summary>
-/// Overview of all accounts.
-/// </summary>
+/// <summary>Overview of all accounts.</summary>
 public sealed class AccountViewModel : ViewModelBase
 {
 	private AccountOverviewRow? _selectedAccount;
@@ -30,33 +28,23 @@ public sealed class AccountViewModel : ViewModelBase
 		DataGridView.GroupDescriptions.Add(group);
 	}
 
-	/// <summary>
-	/// Raised when a account is selected for viewing its details.
-	/// </summary>
+	/// <summary>Raised when a account is selected for viewing its details.</summary>
 	public event EventHandler<AccountSelectedEventArgs>? AccountSelected;
 
-	/// <summary>
-	/// Gets a grid view of all accounts.
-	/// </summary>
+	/// <summary>Gets a grid view of all accounts.</summary>
 	public DataGridCollectionView DataGridView => Accounts;
 
-	/// <summary>
-	/// Gets a typed collection of accounts in <see cref="DataGridView"/>.
-	/// </summary>
+	/// <summary>Gets a typed collection of accounts in <see cref="DataGridView"/>.</summary>
 	public DataGridItemCollectionView<AccountOverviewRow> Accounts { get; }
 
-	/// <summary>
-	/// Gets or sets the selected row in <see cref="DataGridView"/>.
-	/// </summary>
+	/// <summary>Gets or sets the selected row in <see cref="DataGridView"/>.</summary>
 	public AccountOverviewRow? SelectedAccount
 	{
 		get => _selectedAccount;
 		set => SetAndNotify(ref _selectedAccount, value);
 	}
 
-	/// <summary>
-	/// Asynchronously creates a new instance of the <see cref="AccountViewModel"/> class.
-	/// </summary>
+	/// <summary>Asynchronously creates a new instance of the <see cref="AccountViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of <see cref="AccountViewModel"/>.</returns>
 	public static async Task<AccountViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
@@ -66,9 +54,7 @@ public sealed class AccountViewModel : ViewModelBase
 		return new(accounts, counterparties);
 	}
 
-	/// <summary>
-	/// Handles the <see cref="DataGrid.DoubleTapped"/> event for <see cref="DataGridView"/>.
-	/// </summary>
+	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
 		if (SelectedAccount is null || AccountSelected is null)
