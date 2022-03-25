@@ -19,7 +19,7 @@ public interface IAccountClient
 
 	/// <summary>Gets the counterparty with the specified id.</summary>
 	/// <param name="id">The id by which to search for the counterparty.</param>
-	/// <returns>The counterparty with the specified id if it exists; otherwise <see langword="null"/>.</returns>
+	/// <returns>The counterparty with the specified id if it exists.</returns>
 	Task<Counterparty> GetCounterpartyAsync(Guid id);
 
 	/// <summary>Gets all counterparties.</summary>
