@@ -35,10 +35,23 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: >
+          dotnet build 
+          --configuration Release 
+          --no-restore
+          /nologo
+          /clp:NoSummary
 
       - name: Run Tests
-        run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover -p:BuildInParallel=false -m:1 --configuration Release --no-build --verbosity normal
+        run: >
+          dotnet test
+          -p:CollectCoverage=true
+          -p:CoverletOutput=TestResults/
+          -p:CoverletOutputFormat=opencover
+          -p:BuildInParallel=false
+          -m:1
+          --configuration Release
+          --no-build
         env:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
