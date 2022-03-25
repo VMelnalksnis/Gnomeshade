@@ -12,51 +12,51 @@ namespace Gnomeshade.Interfaces.WebApi.Client;
 /// <summary>Relative URIs of API endpoints.</summary>
 public static class Routes
 {
-	internal const string AuthenticationUri = "Authentication";
-	internal const string AccountUri = "Accounts";
-	internal const string CounterpartyUri = "Counterparties";
-	internal const string CurrencyUri = "Currencies";
-	internal const string Iso20022 = "Iso";
-	internal const string ProductUri = "Products";
-	internal const string TransactionUri = "Transactions";
-	internal const string UnitUri = "Units";
-	internal const string TagUri = "Tags";
-	internal const string AllAccountUri = $"{AccountUri}?onlyActive=false";
-	internal const string LoginUri = $"{AuthenticationUri}/Login";
-	internal const string LogOutUri = $"{AuthenticationUri}/Logout";
-	internal const string SocialRegisterUri = $"{AuthenticationUri}/SocialRegister";
+	internal const string _authenticationUri = "Authentication";
+	internal const string _accountUri = "Accounts";
+	internal const string _counterpartyUri = "Counterparties";
+	internal const string _currencyUri = "Currencies";
+	internal const string _iso20022 = "Iso";
+	internal const string _productUri = "Products";
+	internal const string _transactionUri = "Transactions";
+	internal const string _unitUri = "Units";
+	internal const string _tagUri = "Tags";
+	internal const string _allAccountUri = $"{_accountUri}?onlyActive=false";
+	internal const string _loginUri = $"{_authenticationUri}/Login";
+	internal const string _logOutUri = $"{_authenticationUri}/Logout";
+	internal const string _socialRegisterUri = $"{_authenticationUri}/SocialRegister";
 
 	/// <summary>Gets the relative uri for the specified account.</summary>
 	/// <param name="id">The id of the account.</param>
 	/// <returns>Relative uri for a specific account.</returns>
-	public static string AccountIdUri(Guid id) => $"{AccountUri}/{Format(id)}";
+	public static string AccountIdUri(Guid id) => $"{_accountUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the currencies of the specified account.</summary>
 	/// <param name="id">The id of the account.</param>
 	/// <returns>Relative uri for the currencies of the specified account.</returns>
-	public static string AccountCurrencyUri(Guid id) => $"{AccountUri}/{Format(id)}/Currencies";
+	public static string AccountCurrencyUri(Guid id) => $"{_accountUri}/{Format(id)}/Currencies";
 
 	/// <summary>Gets the relative uri for the specified counterparty.</summary>
 	/// <param name="id">The id of the counterparty.</param>
 	/// <returns>Relative uri for a specified counterparty.</returns>
-	public static string CounterpartyIdUri(Guid id) => $"{CounterpartyUri}/{Format(id)}";
+	public static string CounterpartyIdUri(Guid id) => $"{_counterpartyUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for merging two counterparties.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>
 	/// <param name="sourceId">The id of the counterparty which to merge into the other.</param>
 	/// <returns>Relative uri for merging two counterparties.</returns>
 	public static string CounterpartyMergeUri(Guid targetId, Guid sourceId) =>
-		$"{CounterpartyUri}/{Format(targetId)}/Merge/{Format(sourceId)}";
+		$"{_counterpartyUri}/{Format(targetId)}/Merge/{Format(sourceId)}";
 
 	/// <summary>Gets the relative uri for the specified product.</summary>
 	/// <param name="id">The id of the product.</param>
 	/// <returns>Relative uri for a specific account.</returns>
-	public static string ProductIdUri(Guid id) => $"{ProductUri}/{Format(id)}";
+	public static string ProductIdUri(Guid id) => $"{_productUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the specified transaction.</summary>
 	/// <param name="id">The id of the transaction.</param>
 	/// <returns>Relative uri for a specific transaction.</returns>
-	public static string TransactionIdUri(Guid id) => $"{TransactionUri}/{Format(id)}";
+	public static string TransactionIdUri(Guid id) => $"{_transactionUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for all transactions within the specified period.</summary>
 	/// <param name="from">The point in time from which to select transactions.</param>
@@ -77,12 +77,12 @@ public static class Routes
 
 		if (!keyValues.Any())
 		{
-			return TransactionUri;
+			return _transactionUri;
 		}
 
 		var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
 		var query = string.Join('&', parameters);
-		return $"{TransactionUri}?{query}";
+		return $"{_transactionUri}?{query}";
 	}
 
 	/// <summary>Gets the relative uri for the items of the specified transaction.</summary>
@@ -93,7 +93,7 @@ public static class Routes
 	/// <summary>Gets the relative uri for the specified transaction item.</summary>
 	/// <param name="id">The id of the transaction item.</param>
 	/// <returns>Relative uri for a specific transaction item.</returns>
-	public static string TransactionItemIdUri(Guid id) => $"{TransactionUri}/Item/{Format(id)}";
+	public static string TransactionItemIdUri(Guid id) => $"{_transactionUri}/Item/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the specified transaction and item.</summary>
 	/// <param name="transactionId">The id of the transaction.</param>
@@ -118,7 +118,7 @@ public static class Routes
 	/// <summary>Gets the relative uri for the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <returns>Relative uri for the specified tag.</returns>
-	public static string TagIdUri(Guid id) => $"{TagUri}/{Format(id)}";
+	public static string TagIdUri(Guid id) => $"{_tagUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the tags of the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
@@ -134,7 +134,7 @@ public static class Routes
 	/// <summary>Gets the relative uri for the specified unit.</summary>
 	/// <param name="id">The id of the unit.</param>
 	/// <returns>Relative uri for the specified unit.</returns>
-	public static string UnitIdUri(Guid id) => $"{UnitUri}/{Format(id)}";
+	public static string UnitIdUri(Guid id) => $"{_unitUri}/{Format(id)}";
 
 	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
 	/// <param name="date">The date to convert.</param>

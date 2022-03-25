@@ -42,7 +42,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		try
 		{
-			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login).ConfigureAwait(false);
+			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
 				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false);
@@ -67,7 +67,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 		try
 		{
-			using var response = await _httpClient.PostAsync(SocialRegisterUri, new StringContent(string.Empty));
+			using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
 			response.EnsureSuccessStatusCode();
 		}
 		catch (Exception)
@@ -82,13 +82,13 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		_httpClient.DefaultRequestHeaders.Authorization = null;
 		using var response =
-			await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+			await _httpClient.PostAsync(_logOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
-		GetAsync<Counterparty>($"{CounterpartyUri}/Me");
+		GetAsync<Counterparty>($"{_counterpartyUri}/Me");
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>
@@ -96,11 +96,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Counterparty>> GetCounterpartiesAsync() =>
-		GetAsync<List<Counterparty>>(CounterpartyUri);
+		GetAsync<List<Counterparty>>(_counterpartyUri);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
-		PostAsync(CounterpartyUri, counterparty);
+		PostAsync(_counterpartyUri, counterparty);
 
 	/// <inheritdoc />
 	public Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty) =>
@@ -115,7 +115,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc/>
 	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
-		PostAsync(TransactionUri, transaction);
+		PostAsync(_transactionUri, transaction);
 
 	/// <inheritdoc />
 	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
@@ -163,15 +163,15 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync() =>
-		GetAsync<List<Account>>(AllAccountUri);
+		GetAsync<List<Account>>(_allAccountUri);
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetActiveAccountsAsync() =>
-		GetAsync<List<Account>>(AccountUri);
+		GetAsync<List<Account>>(_accountUri);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
-		PostAsync(AccountUri, account);
+		PostAsync(_accountUri, account);
 
 	/// <inheritdoc />
 	public Task PutAccountAsync(Guid id, AccountCreationModel account) =>
@@ -183,11 +183,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync() =>
-		GetAsync<List<Currency>>(CurrencyUri);
+		GetAsync<List<Currency>>(_currencyUri);
 
 	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync() =>
-		GetAsync<List<Product>>(ProductUri);
+		GetAsync<List<Product>>(_productUri);
 
 	/// <inheritdoc />
 	public Task<Product> GetProductAsync(Guid id) =>
@@ -199,7 +199,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync() =>
-		GetAsync<List<Unit>>(UnitUri);
+		GetAsync<List<Unit>>(_unitUri);
 
 	/// <inheritdoc />
 	public Task PutProductAsync(Guid id, ProductCreationModel product) =>
@@ -217,20 +217,20 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		var multipartContent = new MultipartFormDataContent();
 		multipartContent.Add(streamContent, "formFile", name);
 
-		using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
+		using var importResponse = await _httpClient.PostAsync(_iso20022, multipartContent);
 		await ThrowIfNotSuccessCode(importResponse);
 
 		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
 	}
 
 	/// <inheritdoc />
-	public Task<List<Tag>> GetTagsAsync() => GetAsync<List<Tag>>(TagUri);
+	public Task<List<Tag>> GetTagsAsync() => GetAsync<List<Tag>>(_tagUri);
 
 	/// <inheritdoc />
 	public Task<Tag> GetTagAsync(Guid id) => GetAsync<Tag>(TagIdUri(id));
 
 	/// <inheritdoc />
-	public Task<Guid> CreateTagAsync(TagCreation tag) => PostAsync(TagUri, tag);
+	public Task<Guid> CreateTagAsync(TagCreation tag) => PostAsync(_tagUri, tag);
 
 	/// <inheritdoc />
 	public Task PutTagAsync(Guid id, TagCreation tag) => PutAsync(TagIdUri(id), tag);
