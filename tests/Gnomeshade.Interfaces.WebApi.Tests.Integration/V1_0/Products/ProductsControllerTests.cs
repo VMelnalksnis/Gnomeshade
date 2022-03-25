@@ -12,11 +12,13 @@ using FluentAssertions.Equivalency;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
 
+[TestOf(typeof(ProductsController))]
 public class ProductsControllerTests
 {
 	private IGnomeshadeClient _client = null!;

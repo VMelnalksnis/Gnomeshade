@@ -13,20 +13,18 @@ using AutoMapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
-/// <summary>
-/// CRUD operations on account entity.
-/// </summary>
+/// <summary>CRUD operations on account entity.</summary>
 public sealed class ProductsController : FinanceControllerBase<ProductEntity, Product>
 {
 	private readonly ProductRepository _repository;
@@ -46,12 +44,7 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		_repository = repository;
 	}
 
-	/// <summary>
-	/// Gets the product with the specified id.
-	/// </summary>
-	/// <param name="id">The id of the product.</param>
-	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The product with the specified id.</returns>
+	/// <inheritdoc cref="IProductClient.GetProductAsync"/>
 	/// <response code="200">Successfully got the product.</response>
 	/// <response code="404">Product with the specified id does not exist.</response>
 	[HttpGet("{id:guid}")]
@@ -61,12 +54,10 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
 	}
 
-	/// <summary>
-	/// Gets all products.
-	/// </summary>
-	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all products.</returns>
+	/// <inheritdoc cref="IProductClient.GetProductsAsync"/>
+	/// <response code="200">Successfully got all products.</response>
 	[HttpGet]
+	[ProducesResponseType(typeof(List<Product>), Status200OK)]
 	public async Task<List<Product>> GetAll(CancellationToken cancellation)
 	{
 		var products = await _repository.GetAllAsync(ApplicationUser.Id, cancellation);
@@ -75,12 +66,7 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		return products.Select(account => MapToModel(account)).ToList();
 	}
 
-	/// <summary>
-	/// Creates a new product, or replaces and existing one if one exists with the specified id.
-	/// </summary>
-	/// <param name="id">The id of the product.</param>
-	/// <param name="model">The product to create or replace.</param>
-	/// <returns>A status code indicating the result of the action.</returns>
+	/// <inheritdoc cref="IProductClient.PutProductAsync"/>
 	/// <response code="201">A new product was created.</response>
 	/// <response code="204">An existing product was replaced.</response>
 	/// <response code="409">A product with the specified name already exists.</response>
@@ -88,12 +74,12 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 	[ProducesResponseType(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody, BindRequired] ProductCreationModel model)
+	public async Task<ActionResult> Put(Guid id, [FromBody] ProductCreationModel product)
 	{
 		var existingProduct = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 		return existingProduct is null
-			? await PutNewProductAsync(model, ApplicationUser, id)
-			: await UpdateExistingProductAsync(model, ApplicationUser, id);
+			? await PutNewProductAsync(product, ApplicationUser, id)
+			: await UpdateExistingProductAsync(product, ApplicationUser, id);
 	}
 
 	private async Task<ActionResult> PutNewProductAsync(ProductCreationModel model, UserEntity user, Guid id)
