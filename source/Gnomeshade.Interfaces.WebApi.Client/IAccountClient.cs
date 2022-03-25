@@ -10,9 +10,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
 
-/// <summary>
-/// Provides typed interface for using the account API.
-/// </summary>
+/// <summary>Provides typed interface for using the account API.</summary>
 public interface IAccountClient
 {
 	/// <summary>Gets the counterparty that represents the current user.</summary>
@@ -47,13 +45,8 @@ public interface IAccountClient
 
 	/// <summary>Finds an account with the specified id.</summary>
 	/// <param name="id">The id by which to search for an account.</param>
-	/// <returns>The account with the specified id if it exists; otherwise <see langword="null"/>.</returns>
+	/// <returns>The account with the specified id.</returns>
 	Task<Account> GetAccountAsync(Guid id);
-
-	/// <summary>Finds an account with the specified normalized name.</summary>
-	/// <param name="name">The normalized by which to search for an account.</param>
-	/// <returns>The account with the specified name if it exists; otherwise <see langword="null"/>.</returns>
-	Task<Account?> FindAccountAsync(string name);
 
 	/// <summary>Gets all accounts.</summary>
 	/// <returns>A collection with all accounts.</returns>

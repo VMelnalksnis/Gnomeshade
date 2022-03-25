@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -163,10 +162,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<Account>(AccountIdUri(id));
 
 	/// <inheritdoc />
-	public Task<Account?> FindAccountAsync(string name) =>
-		FindAsync<Account>(AccountNameUri(name));
-
-	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync() =>
 		GetAsync<List<Account>>(AllAccountUri);
 
@@ -275,19 +270,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
 
-		return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
-	}
-
-	private async Task<TResult?> FindAsync<TResult>(string requestUri)
-		where TResult : class
-	{
-		using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
-		if (response.StatusCode == HttpStatusCode.NotFound)
-		{
-			return null;
-		}
-
-		await ThrowIfNotSuccessCode(response);
 		return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
 	}
 

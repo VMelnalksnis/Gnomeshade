@@ -68,12 +68,8 @@ public class BasicTests
 				.RuleFor(model => model.Currencies, () => new() { new() { CurrencyId = currency.Id } })
 				.Generate();
 
-		var account = await _authenticatedClient.FindAccountAsync(accountCreationModel.Name!);
-		if (account is null)
-		{
-			var accountId = await _authenticatedClient.CreateAccountAsync(accountCreationModel);
-			account = await _authenticatedClient.GetAccountAsync(accountId);
-		}
+		var accountId = await _authenticatedClient.CreateAccountAsync(accountCreationModel);
+		var account = await _authenticatedClient.GetAccountAsync(accountId);
 
 		await _authenticatedClient.GetTransactionsAsync(null, null);
 

@@ -12,11 +12,13 @@ using FluentAssertions;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts;
 
+[TestOf(typeof(AccountsController))]
 public class AccountsControllerTests
 {
 	private IGnomeshadeClient _client = null!;

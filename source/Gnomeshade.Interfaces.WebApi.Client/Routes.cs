@@ -9,9 +9,7 @@ using System.Linq;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
 
-/// <summary>
-/// Relative URIs of API endpoints.
-/// </summary>
+/// <summary>Relative URIs of API endpoints.</summary>
 public static class Routes
 {
 	internal const string AuthenticationUri = "Authentication";
@@ -36,12 +34,7 @@ public static class Routes
 	/// <summary>Gets the relative uri for the currencies of the specified account.</summary>
 	/// <param name="id">The id of the account.</param>
 	/// <returns>Relative uri for the currencies of the specified account.</returns>
-	public static string AccountCurrencyUri(Guid id) => $"{AccountUri}/{Format(id)}/Currency";
-
-	/// <summary>Gets the relative uri for finding account by its name.</summary>
-	/// <param name="name">The name of the account to find.</param>
-	/// <returns>Relative uri for finding an account by its name.</returns>
-	public static string AccountNameUri(string name) => $"{AccountUri}/Find/{name}";
+	public static string AccountCurrencyUri(Guid id) => $"{AccountUri}/{Format(id)}/Currencies";
 
 	/// <summary>Gets the relative uri for the specified counterparty.</summary>
 	/// <param name="id">The id of the counterparty.</param>

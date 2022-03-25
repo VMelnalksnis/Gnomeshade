@@ -14,29 +14,25 @@ using AutoMapper;
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
-/// <summary>
-/// CRUD operations on account entity.
-/// </summary>
+/// <summary>CRUD operations on account entity.</summary>
 public sealed class AccountsController : FinanceControllerBase<AccountEntity, Account>
 {
 	private readonly AccountRepository _repository;
 	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountsController"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -55,39 +51,17 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		_accountUnitOfWork = accountUnitOfWork;
 	}
 
-	/// <summary>
-	/// Gets the account with the specified name.
-	/// </summary>
-	/// <param name="name">The name of the account.</param>
-	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The account with the specified name.</returns>
-	/// <response code="200">Successfully got the account.</response>
-	/// <response code="404">Account with the specified name does not exist.</response>
-	[HttpGet("find/{name}")] // todo route
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Account>> Find(string name, CancellationToken cancellation)
-	{
-		return await Find(() => _repository.FindByNameAsync(name.ToUpperInvariant(), ApplicationUser.Id, cancellation));
-	}
-
-	/// <summary>
-	/// Gets the account with the specified id.
-	/// </summary>
-	/// <param name="id">The id of the account.</param>
-	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The account with the specified id.</returns>
+	/// <inheritdoc cref="IAccountClient.GetAccountAsync"/>
 	/// <response code="200">Successfully got the account.</response>
 	/// <response code="404">Account with the specified id does not exist.</response>
-	[HttpGet("{id:guid}", Name = "GetAccountById")]
+	[HttpGet("{id:guid}")]
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellation)
 	{
 		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
 	}
 
-	/// <summary>
-	/// Gets all accounts.
-	/// </summary>
+	/// <summary>Gets all accounts.</summary>
 	/// <param name="onlyActive">Whether to get only active accounts.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all accounts.</returns>
@@ -106,42 +80,33 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		return Ok(models);
 	}
 
-	/// <summary>
-	/// Creates a new account.
-	/// </summary>
-	/// <param name="model">The account to create.</param>
-	/// <returns>The id of the created account.</returns>
+	/// <inheritdoc cref="IAccountClient.CreateAccountAsync"/>
 	/// <response code="201">A new account was created.</response>
 	/// <response code="409">An account with the specified name already exists.</response>
 	[HttpPost]
 	[ProducesResponseType(typeof(Guid), Status201Created)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Post([FromBody, BindRequired] AccountCreationModel model)
+	public async Task<ActionResult> Post([FromBody] AccountCreationModel account)
 	{
-		var conflictingResult = await GetConflictResult(model, ApplicationUser);
+		var conflictingResult = await GetConflictResult(account, ApplicationUser);
 		if (conflictingResult is not null)
 		{
 			return conflictingResult;
 		}
 
-		var account = Mapper.Map<AccountEntity>(model) with
+		var entity = Mapper.Map<AccountEntity>(account) with
 		{
 			OwnerId = ApplicationUser.Id,
 			CreatedByUserId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
+			NormalizedName = account.Name!.ToUpperInvariant(),
 		};
 
-		var id = await _accountUnitOfWork.AddAsync(account);
+		var id = await _accountUnitOfWork.AddAsync(entity);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
-	/// <summary>
-	/// Creates a new account, or replaces an existing one with the specified id.
-	/// </summary>
-	/// <param name="id">The id of the account.</param>
-	/// <param name="model">The account to create or replace.</param>
-	/// <returns>A status code indicating the result of the action.</returns>
+	/// <inheritdoc cref="IAccountClient.PutAccountAsync"/>
 	/// <response code="201">A new account was created.</response>
 	/// <response code="204">An existing account was replaced.</response>
 	/// <response code="409">An account with the specified name already exists.</response>
@@ -149,31 +114,24 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	[ProducesResponseType(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody, BindRequired] AccountCreationModel model)
+	public async Task<ActionResult> Put(Guid id, [FromBody] AccountCreationModel account)
 	{
 		var existingAccount = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 
 		return existingAccount is null
-			? await PutNewAccountAsync(model, ApplicationUser, id)
-			: await UpdateExistingAccountAsync(model, ApplicationUser, existingAccount);
+			? await PutNewAccountAsync(account, ApplicationUser, id)
+			: await UpdateExistingAccountAsync(account, ApplicationUser, existingAccount);
 	}
 
-	/// <summary>
-	/// Add a new currency to an existing account.
-	/// </summary>
-	/// <param name="id">The id of the account to which to add the currency.</param>
-	/// <param name="creationModel">The currency to add to the account.</param>
-	/// <returns>The id of the account to which the currency was added to.</returns>
+	/// <inheritdoc cref="IAccountClient.AddCurrencyToAccountAsync"/>
 	/// <response code="201">Currency was successfully added.</response>
 	/// <response code="404">Account with the specified id does not exist.</response>
 	/// <response code="409">The account already has the specified currency.</response>
-	[HttpPost("{id:guid}/Currency")]
+	[HttpPost("{id:guid}/Currencies")]
 	[ProducesResponseType(Status201Created)]
 	[ProducesStatus404NotFound]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Guid>> AddCurrency(
-		Guid id,
-		[FromBody, BindRequired] AccountInCurrencyCreationModel creationModel)
+	public async Task<ActionResult<Guid>> AddCurrency(Guid id, [FromBody] AccountInCurrencyCreationModel currency)
 	{
 		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 		if (account is null)
@@ -181,15 +139,16 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 			return NotFound();
 		}
 
-		if (account.Currencies.Any(currency => currency.CurrencyId == creationModel.CurrencyId))
+		var conflictingCurrency = account.Currencies.FirstOrDefault(c => c.CurrencyId == currency.CurrencyId);
+		if (conflictingCurrency is not null)
 		{
 			return Problem(
 				"The account already has the specified currency",
-				Url.Action(nameof(Get), new { id }), // todo link to currency instead
+				Url.Action(nameof(Get), new { conflictingCurrency.AccountId }),
 				Status409Conflict);
 		}
 
-		var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(creationModel) with
+		var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(currency) with
 		{
 			OwnerId = account.OwnerId,
 			CreatedByUserId = ApplicationUser.Id,

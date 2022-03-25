@@ -216,13 +216,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Account?> FindAccountAsync(string name)
-	{
-		var foundAccount = _accounts.SingleOrDefault(account => account.Name.ToUpperInvariant() == name);
-		return Task.FromResult(foundAccount);
-	}
-
-	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync()
 	{
 		return Task.FromResult(_accounts.ToList());
