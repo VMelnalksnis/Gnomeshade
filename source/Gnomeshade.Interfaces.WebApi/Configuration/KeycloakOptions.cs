@@ -7,31 +7,26 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
+/// <summary>Options for configuration Keycloak OIDC provider.</summary>
 [UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
 public sealed class KeycloakOptions
 {
-	public const string SectionName = "Keycloak";
-
+	/// <inheritdoc cref="JwtBearerOptions.Authority"/>
+	/// <seealso cref="JwtBearerOptions.Authority"/>
 	[Required]
-	public Uri ServerRealm { get; set; } = null!;
+	public Uri ServerRealm { get; init; } = null!;
 
+	/// <inheritdoc cref="JwtBearerOptions.MetadataAddress"/>
+	/// <seealso cref="JwtBearerOptions.MetadataAddress"/>
 	[Required]
-	public Uri Metadata { get; set; } = null!;
+	public Uri Metadata { get; init; } = null!;
 
+	/// <inheritdoc cref="JwtBearerOptions.Audience"/>
+	/// <seealso cref="JwtBearerOptions.Audience"/>
 	[Required]
-	public string ClientId { get; set; } = null!;
-
-	[Required]
-	public string ClientSecret { get; set; } = null!;
-
-	[Required]
-	public string CookieName { get; set; } = "keycloak.cookie";
-
-	[Required]
-	public string RemoteSignOutPath { get; set; } = "/protocol/openid-connect/logout";
-
-	[Required]
-	public string SignedOutRedirectUri { get; set; } = "/swagger";
+	public string ClientId { get; init; } = null!;
 }
