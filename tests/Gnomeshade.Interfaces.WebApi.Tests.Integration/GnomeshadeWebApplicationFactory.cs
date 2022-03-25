@@ -4,9 +4,9 @@
 
 using System.Collections.Generic;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
@@ -30,8 +30,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 		Server.AllowSynchronousIO = true;
 	}
 
-	/// <inheritdoc />
-	protected override void ConfigureWebHost(IWebHostBuilder builder)
+	protected override IHost CreateHost(IHostBuilder builder)
 	{
 		builder.UseSerilog();
 		builder.ConfigureAppConfiguration((_, configurationBuilder) =>
@@ -42,5 +41,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 				{ "ConnectionStrings:FinanceDb", _connectionString },
 			});
 		});
+
+		return base.CreateHost(builder);
 	}
 }
