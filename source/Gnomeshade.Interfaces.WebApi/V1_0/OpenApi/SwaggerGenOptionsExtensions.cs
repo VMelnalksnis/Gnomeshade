@@ -8,14 +8,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.OpenApi;
 
-public static class SwaggerGenOptionsExtensions
+internal static class SwaggerGenOptionsExtensions
 {
-	/// <summary>
-	/// Define the document to be created by Swagger generator for version 1.0.
-	/// </summary>
-	///
-	/// <param name="options">The <see cref="SwaggerGenOptions"/> in which to define the document.</param>
-	public static void SwaggerDocV1_0(this SwaggerGenOptions options)
+	internal static void SwaggerDocV1_0(this SwaggerGenOptions options)
 	{
 		options
 			.SwaggerDoc(

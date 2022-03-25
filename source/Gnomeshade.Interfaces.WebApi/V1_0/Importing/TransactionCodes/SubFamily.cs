@@ -6,13 +6,13 @@ using Ardalis.SmartEnum;
 
 using JetBrains.Annotations;
 
+#pragma warning disable CS1591
+
 // ReSharper disable StringLiteralTypo
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes;
 
-/// <summary>
-/// Lowest definition level: e.g. type of cheques: drafts, etc.
-/// </summary>
+/// <summary>Lowest definition level: e.g. type of cheques: drafts, etc.</summary>
 [UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
 public sealed class SubFamily : SmartEnum<SubFamily>
 {
@@ -27,9 +27,7 @@ public sealed class SubFamily : SmartEnum<SubFamily>
 
 	public static readonly SubFamily DomesticCreditTransfer = new("DMCT", 10105);
 
-	/// <summary>
-	/// Transaction is an ATM deposit operation.
-	/// </summary>
+	/// <summary>Transaction is an ATM deposit operation.</summary>
 	public static readonly SubFamily CashDeposit = new("CDPT", 10902);
 
 	public static readonly SubFamily PointOfSaleDebitCard = new("POSD", 10904);

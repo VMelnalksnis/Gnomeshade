@@ -8,6 +8,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Gnomeshade.Interfaces.WebApi.OpenApi;
 
+/// <summary>An <see cref="ISchemaFilter"/> applied only to a specific type.</summary>
+/// <typeparam name="T">The <see cref="SchemaFilterContext.Type"/> to which to apply the filer.</typeparam>
 public abstract class SchemaFilter<T> : ISchemaFilter
 {
 	/// <inheritdoc/>
@@ -21,5 +23,6 @@ public abstract class SchemaFilter<T> : ISchemaFilter
 		ApplyFilter(schema, context);
 	}
 
+	/// <inheritdoc cref="Apply"/>
 	protected abstract void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context);
 }

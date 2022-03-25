@@ -12,16 +12,12 @@ using Serilog.Events;
 
 namespace Gnomeshade.Interfaces.WebApi.Logging;
 
-/// <summary>
-/// A <see cref="ILogger"/> wrapper for Npgsql.
-/// </summary>
+/// <summary>A <see cref="ILogger"/> wrapper for Npgsql.</summary>
 public sealed class SerilogNpgsqlLogger : NpgsqlLogger
 {
 	private readonly ILogger _logger;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="SerilogNpgsqlLogger"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="SerilogNpgsqlLogger"/> class.</summary>
 	/// <param name="logger">The logger to use for logging.</param>
 	public SerilogNpgsqlLogger(ILogger logger)
 	{

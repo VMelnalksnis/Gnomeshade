@@ -25,6 +25,14 @@ public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
 	/// <inheritdoc />
 	public sealed override Faker<TEntity> RuleFor<TProperty>(
 		Expression<Func<TEntity, TProperty>> property,
+		Func<TProperty> valueFunction)
+	{
+		return base.RuleFor(property, valueFunction);
+	}
+
+	/// <inheritdoc />
+	public sealed override Faker<TEntity> RuleFor<TProperty>(
+		Expression<Func<TEntity, TProperty>> property,
 		TProperty value)
 	{
 		return base.RuleFor(property, value);

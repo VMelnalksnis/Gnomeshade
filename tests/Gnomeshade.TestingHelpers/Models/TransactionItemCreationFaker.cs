@@ -5,7 +5,6 @@
 using System;
 
 using Bogus;
-using Bogus.Extensions;
 
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 

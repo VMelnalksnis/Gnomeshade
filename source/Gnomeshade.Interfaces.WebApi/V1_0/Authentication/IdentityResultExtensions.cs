@@ -10,9 +10,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 
-public static class IdentityResultExtensions
+internal static class IdentityResultExtensions
 {
-	public static ValidationProblemDetails GetProblemDetails(
+	internal static ValidationProblemDetails GetProblemDetails(
 		this IdentityResult identityResult,
 		ProblemDetailsFactory problemDetailsFactory,
 		HttpContext httpContext)

@@ -14,11 +14,11 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 
-public sealed class AccountReportResultBuilder
+internal sealed class AccountReportResultBuilder
 {
 	private readonly Mapper _mapper;
 
-	public AccountReportResultBuilder(Mapper mapper, AccountEntity userAccount, bool created)
+	internal AccountReportResultBuilder(Mapper mapper, AccountEntity userAccount, bool created)
 	{
 		_mapper = mapper;
 
@@ -29,7 +29,7 @@ public sealed class AccountReportResultBuilder
 
 	private AccountReportResult ReportResult { get; set; }
 
-	public void AddAccount(AccountEntity account, bool created)
+	internal void AddAccount(AccountEntity account, bool created)
 	{
 		if (ReportResult.AccountReferences.Any(reference => reference.Account.Name == account.Name))
 		{
@@ -40,7 +40,7 @@ public sealed class AccountReportResultBuilder
 		ReportResult.AccountReferences.Add(new() { Account = model, Created = created });
 	}
 
-	public void AddProduct(ProductEntity product, bool created)
+	internal void AddProduct(ProductEntity product, bool created)
 	{
 		if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
 		{
@@ -51,7 +51,7 @@ public sealed class AccountReportResultBuilder
 		ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
 	}
 
-	public void AddTransaction(TransactionEntity transaction, bool created)
+	internal void AddTransaction(TransactionEntity transaction, bool created)
 	{
 		if (ReportResult.TransactionReferences.Any(reference => reference.Transaction.Id == transaction.Id))
 		{
@@ -62,7 +62,7 @@ public sealed class AccountReportResultBuilder
 		ReportResult.TransactionReferences.Add(new() { Transaction = model, Created = created });
 	}
 
-	public AccountReportResult ToResult()
+	internal AccountReportResult ToResult()
 	{
 		var result = ReportResult;
 		ReportResult = new();

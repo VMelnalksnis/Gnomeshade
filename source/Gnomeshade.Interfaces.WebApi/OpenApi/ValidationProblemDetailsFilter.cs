@@ -5,6 +5,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using JetBrains.Annotations;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -12,6 +14,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Gnomeshade.Interfaces.WebApi.OpenApi;
 
+/// <summary>Adds 400 response with <see cref="ValidationProblemDetails"/> to all operations.</summary>
+[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 public sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
 {
 	/// <inheritdoc/>

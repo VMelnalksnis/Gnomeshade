@@ -16,9 +16,7 @@ using Npgsql;
 
 namespace Gnomeshade.TestingHelpers.Data;
 
-/// <summary>
-/// Postgres database initializer for integration testing.
-/// </summary>
+/// <summary>Postgres database initializer for integration testing.</summary>
 public class PostgresInitializer
 {
 	private const string _connectionStringName = "FinanceDb";
@@ -26,9 +24,7 @@ public class PostgresInitializer
 	private readonly string _database;
 	private readonly DatabaseMigrator _databaseMigrator;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="PostgresInitializer"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="PostgresInitializer"/> class.</summary>
 	/// <param name="configuration">Configuration containing the connection string for the test database.</param>
 	/// <param name="logger">Logger for initializing the test database.</param>
 	/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
@@ -48,14 +44,10 @@ public class PostgresInitializer
 		_databaseMigrator = new(logger);
 	}
 
-	/// <summary>
-	/// Gets the connection string for the integration test database.
-	/// </summary>
+	/// <summary>Gets the connection string for the integration test database.</summary>
 	public string ConnectionString { get; }
 
-	/// <summary>
-	/// Creates a new open connection to the integration test database.
-	/// </summary>
+	/// <summary>Creates a new open connection to the integration test database.</summary>
 	/// <returns>An open database connection.</returns>
 	public async Task<NpgsqlConnection> CreateConnectionAsync()
 	{
@@ -64,9 +56,7 @@ public class PostgresInitializer
 		return sqlConnection;
 	}
 
-	/// <summary>
-	/// Creates a new database for integration testing.
-	/// </summary>
+	/// <summary>Creates a new database for integration testing.</summary>
 	/// <returns>A valid user for testing.</returns>
 	public async Task<UserEntity> SetupDatabaseAsync()
 	{
@@ -116,9 +106,7 @@ public class PostgresInitializer
 		return user;
 	}
 
-	/// <summary>
-	/// Drops the integration test database.
-	/// </summary>
+	/// <summary>Drops the integration test database.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task DropDatabaseAsync()
 	{

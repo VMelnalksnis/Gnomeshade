@@ -48,7 +48,7 @@ public sealed class ApplicationUserHandler : AuthorizationHandler<ApplicationUse
 		var providerKeyClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
 		if (identityUser is null && providerKeyClaim is not null)
 		{
-			identityUser = await _userManager.FindByLoginAsync(providerKeyClaim?.OriginalIssuer, providerKeyClaim?.Value);
+			identityUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
 		}
 
 		if (identityUser is null)
