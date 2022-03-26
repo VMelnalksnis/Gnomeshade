@@ -29,4 +29,13 @@ public sealed class ElasticSearchLoggingOptions
 	/// <summary>Gets the password to use for basic authentication.</summary>
 	[Required]
 	public string Password { get; init; } = null!;
+
+	/// <summary>Gets the filepath of the SSL client certificate.</summary>
+	public string? CertificateFilePath { get; init; }
+
+	/// <summary>Gets the filepath of the private key for <see cref="CertificateFilePath"/>.</summary>
+	public string? KeyFilePath { get; init; }
+
+	/// <summary>Gets the filepath of the certificate authority for validating SSL certificates.</summary>
+	public string? CertificateAuthorityFilePath { get; init; }
 }
