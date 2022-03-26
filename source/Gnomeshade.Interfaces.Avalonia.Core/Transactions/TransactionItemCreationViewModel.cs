@@ -42,6 +42,7 @@ public class TransactionItemCreationViewModel : ViewModelBase
 	private List<Product> _products;
 	private Tag? _tag;
 	private DataGridItemCollectionView<TagRow> _tagRows;
+	private DateTimeOffset? _deliveryDate;
 
 	private TransactionItemCreationViewModel(
 		IGnomeshadeClient transactionClient,
@@ -89,6 +90,8 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		BankReference = item.BankReference;
 		ExternalReference = item.ExternalReference;
 		InternalReference = item.InternalReference;
+		DeliveryDate = item.DeliveryDate;
+		DeliveryTime = item.DeliveryDate?.TimeOfDay;
 		TagRows = new(existingTags.Select(tag => new TagRow(tag.Id, tag.Name, tag.Description)));
 	}
 
@@ -257,6 +260,16 @@ public class TransactionItemCreationViewModel : ViewModelBase
 		set => SetAndNotify(ref _tag, value);
 	}
 
+	/// <summary>Gets or sets the date on which the <see cref="Product"/> was delivered.</summary>
+	public DateTimeOffset? DeliveryDate
+	{
+		get => _deliveryDate;
+		set => SetAndNotify(ref _deliveryDate, value);
+	}
+
+	/// <summary>Gets or sets the time at which the <see cref="Product"/> was delivered.</summary>
+	public TimeSpan? DeliveryTime { get; set; }
+
 	/// <summary>Gets a view model for creating a new product.</summary>
 	public ProductCreationViewModel? ProductCreation
 	{
@@ -320,6 +333,10 @@ public class TransactionItemCreationViewModel : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
+		var deliveryDate = DeliveryDate.HasValue
+			? new DateTimeOffset(DeliveryDate.Value.Date).Add(DeliveryTime.GetValueOrDefault())
+			: default(DateTimeOffset?);
+
 		var creationModel = new TransactionItemCreationModel
 		{
 			SourceAmount = SourceAmount,
@@ -331,7 +348,7 @@ public class TransactionItemCreationViewModel : ViewModelBase
 			BankReference = BankReference,
 			ExternalReference = ExternalReference,
 			InternalReference = InternalReference,
-			DeliveryDate = null,
+			DeliveryDate = deliveryDate,
 			Description = null,
 		};
 
