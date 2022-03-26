@@ -54,6 +54,7 @@ internal static class SerilogHostConfiguration
 				MinimumLogEventLevel = LogEventLevel.Information,
 				TypeName = null, // _type is removed in ElasticSearch 8.x.x
 				InlineFields = true,
+				IndexFormat = "logs-gnomeshade-{0:yyyy.MM.dd}",
 				ModifyConnectionSettings = connection =>
 				{
 					connection.BasicAuthentication(options.Username, options.Password);
