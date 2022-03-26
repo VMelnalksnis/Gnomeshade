@@ -7,6 +7,12 @@ using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.Elasticsearch;
+using Elastic.Apm.EntityFrameworkCore;
+using Elastic.Apm.SqlClient;
+
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Migrations;
@@ -110,6 +116,13 @@ public class Startup
 	/// <param name="environment">The current application environment.</param>
 	public void Configure(IApplicationBuilder application, IWebHostEnvironment environment)
 	{
+		application.UseElasticApm(
+			Configuration,
+			new HttpDiagnosticsSubscriber(),
+			new EfCoreDiagnosticsSubscriber(),
+			new SqlClientDiagnosticSubscriber(),
+			new ElasticsearchDiagnosticsSubscriber());
+
 		if (environment.IsDevelopment())
 		{
 			application.UseDeveloperExceptionPage();
