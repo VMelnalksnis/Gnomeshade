@@ -20,7 +20,7 @@ jobs:
           - os: windows-latest
             runtime: linux-x64
             project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
-            archive_command: 7z a -mx9 -r gnomeshade_linux-x64.zip -xr!*.json
+            archive_command: 7z a -mx9 -r gnomeshade_linux-x64.zip "-xr!*.json"
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
             self_contained: true
