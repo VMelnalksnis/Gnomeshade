@@ -17,7 +17,7 @@ jobs:
         self_contained: [ true ]
         publishSingleFile: [ true ]
         include:
-          - os: ubuntu-latest
+          - os: windows-latest
             runtime: linux-x64
             project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
@@ -26,7 +26,7 @@ jobs:
             self_contained: true
             publishSingleFile: true
 
-          - os: ubuntu-latest
+          - os: windows-latest
             runtime: linux-x64
             project: source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj
             archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
