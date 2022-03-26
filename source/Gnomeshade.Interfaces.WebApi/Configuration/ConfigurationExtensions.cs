@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -21,6 +22,12 @@ internal static class ConfigurationExtensions
 	{
 		var sectionName = typeof(TOptions).GetSectionName();
 		return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
+	}
+
+	internal static bool IsSectionDefined<TOptions>(this IConfiguration configuration)
+	{
+		var sectionName = typeof(TOptions).GetSectionName();
+		return configuration.GetChildren().Any(section => section.Key == sectionName);
 	}
 
 	internal static string GetSectionName(this Type type)

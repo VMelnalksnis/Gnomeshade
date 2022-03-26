@@ -7,7 +7,6 @@ using Elastic.CommonSchema.Serilog;
 
 using Elasticsearch.Net;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -31,13 +30,18 @@ internal static class SerilogHostConfiguration
 
 	internal static void Configure(HostBuilderContext context, LoggerConfiguration configuration)
 	{
-		var options = new ElasticSearchLoggingOptions();
-		context.Configuration.Bind(ElasticSearchLoggingOptions.SectionName, options);
-
 		configuration
 			.Enrich.FromLogContext()
 			.Enrich.WithElasticApmCorrelationInfo()
-			.WriteTo.Console()
+			.WriteTo.Console();
+
+		if (!context.Configuration.IsSectionDefined<ElasticSearchLoggingOptions>())
+		{
+			return;
+		}
+
+		var options = context.Configuration.GetValid<ElasticSearchLoggingOptions>();
+		configuration
 			.WriteTo.Elasticsearch(new(options.Nodes)
 			{
 				AutoRegisterTemplate = true,

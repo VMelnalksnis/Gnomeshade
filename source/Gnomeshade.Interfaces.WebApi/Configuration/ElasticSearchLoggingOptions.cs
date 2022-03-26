@@ -13,32 +13,20 @@ using static JetBrains.Annotations.ImplicitUseTargetFlags;
 
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
-/// <summary>
-/// Options for configuring logging to ElasticSearch.
-/// </summary>
+/// <summary>Options for configuring logging to ElasticSearch.</summary>
 [UsedImplicitly(Assign, Members)]
 public sealed class ElasticSearchLoggingOptions
 {
-	/// <summary>
-	/// The name of the configuration section.
-	/// </summary>
-	public const string SectionName = "ElasticSearchLogging";
-
-	/// <summary>
-	/// Gets or sets the ElasticSearch nodes to which to log to.
-	/// </summary>
+	/// <summary>Gets the ElasticSearch nodes to which to log to.</summary>
 	[Required]
-	public List<Uri> Nodes { get; set; } = new();
+	[MinLength(1)]
+	public List<Uri> Nodes { get; init; } = null!;
 
-	/// <summary>
-	/// Gets or sets the username to use for basic authentication.
-	/// </summary>
+	/// <summary>Gets the username to use for basic authentication.</summary>
 	[Required]
-	public string Username { get; set; } = string.Empty;
+	public string Username { get; init; } = null!;
 
-	/// <summary>
-	/// Gets or sets the password to use for basic authentication.
-	/// </summary>
+	/// <summary>Gets the password to use for basic authentication.</summary>
 	[Required]
-	public string Password { get; set; } = string.Empty;
+	public string Password { get; init; } = null!;
 }
