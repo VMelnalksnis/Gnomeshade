@@ -55,6 +55,7 @@ internal static class SerilogHostConfiguration
 				TypeName = null, // _type is removed in ElasticSearch 8.x.x
 				InlineFields = true,
 				IndexFormat = "logs-gnomeshade-{0:yyyy.MM.dd}",
+				BatchAction = ElasticOpType.Create,
 				ModifyConnectionSettings = connection =>
 				{
 					connection.BasicAuthentication(options.Username, options.Password);
