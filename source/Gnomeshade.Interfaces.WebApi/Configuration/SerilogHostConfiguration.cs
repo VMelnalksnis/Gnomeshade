@@ -53,6 +53,7 @@ internal static class SerilogHostConfiguration
 				EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog,
 				MinimumLogEventLevel = LogEventLevel.Information,
 				TypeName = null, // _type is removed in ElasticSearch 8.x.x
+				InlineFields = true,
 				ModifyConnectionSettings = connection =>
 				{
 					connection.BasicAuthentication(options.Username, options.Password);
