@@ -42,7 +42,7 @@ public abstract class Repository<TEntity> : IDisposable
 	protected abstract string SelectSql { get; }
 
 	/// <summary>Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.</summary>
-	protected virtual string FindSql => "WHERE id = @id;";
+	protected virtual string FindSql => "WHERE Id = @id";
 
 	/// <summary>Gets the SQL query for updating entities.</summary>
 	protected abstract string UpdateSql { get; }

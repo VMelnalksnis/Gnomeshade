@@ -107,6 +107,17 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Transaction)}.Update.sql");
 	}
 
+	internal static class Transfer
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Transfer)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Transfer)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Transfer)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Transfer)}.Update.sql");
+	}
+
 	internal static class TransactionItem
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(TransactionItem)}.Delete.sql");
