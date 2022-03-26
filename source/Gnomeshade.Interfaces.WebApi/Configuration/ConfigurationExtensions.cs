@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using JetBrains.Annotations;
@@ -17,6 +18,21 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 internal static class ConfigurationExtensions
 {
+	internal static bool GetValidIfDefined<[MeansImplicitUse(Assign, Members)] TOptions>(
+		this IConfiguration configuration,
+		[NotNullWhen(true)] out TOptions? options)
+		where TOptions : notnull
+	{
+		if (!configuration.IsSectionDefined<TOptions>())
+		{
+			options = default;
+			return false;
+		}
+
+		options = configuration.GetValid<TOptions>();
+		return true;
+	}
+
 	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(this IConfiguration configuration)
 		where TOptions : notnull
 	{
@@ -24,17 +40,17 @@ internal static class ConfigurationExtensions
 		return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
 	}
 
-	internal static bool IsSectionDefined<TOptions>(this IConfiguration configuration)
-	{
-		var sectionName = typeof(TOptions).GetSectionName();
-		return configuration.GetChildren().Any(section => section.Key == sectionName);
-	}
-
 	internal static string GetSectionName(this Type type)
 	{
 		return type.Name.EndsWith("Options")
 			? type.Name[..type.Name.LastIndexOf("Options", StringComparison.Ordinal)]
 			: type.Name;
+	}
+
+	private static bool IsSectionDefined<TOptions>(this IConfiguration configuration)
+	{
+		var sectionName = typeof(TOptions).GetSectionName();
+		return configuration.GetChildren().Any(section => section.Key == sectionName);
 	}
 
 	private static TOptions ValidateAndThrow<TOptions>(this TOptions options)

@@ -5,14 +5,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-using JetBrains.Annotations;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 /// <summary>Options for configuration Keycloak OIDC provider.</summary>
-[UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
 public sealed class KeycloakOptions
 {
 	/// <inheritdoc cref="JwtBearerOptions.Authority"/>

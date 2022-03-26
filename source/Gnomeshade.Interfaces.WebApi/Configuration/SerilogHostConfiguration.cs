@@ -39,12 +39,11 @@ internal static class SerilogHostConfiguration
 			.Enrich.WithElasticApmCorrelationInfo()
 			.WriteTo.Console();
 
-		if (!context.Configuration.IsSectionDefined<ElasticSearchLoggingOptions>())
+		if (!context.Configuration.GetValidIfDefined<ElasticSearchLoggingOptions>(out var options))
 		{
 			return;
 		}
 
-		var options = context.Configuration.GetValid<ElasticSearchLoggingOptions>();
 		configuration
 			.WriteTo.Elasticsearch(new(options.Nodes)
 			{

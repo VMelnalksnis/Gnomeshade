@@ -2,8 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Runtime.InteropServices;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -15,18 +13,14 @@ internal static class KestrelConfiguration
 	{
 		options.ConfigureHttpsDefaults(httpsOptions =>
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (!context.Configuration.GetValidIfDefined<TlsOptions>(out var tlsOptions))
 			{
 				return;
 			}
 
-			var tlsOptions = context.Configuration.GetValid<TlsOptions>();
 			httpsOptions.OnAuthenticate = (_, sslAuthenticationOptions) =>
 			{
-				if (tlsOptions.CipherSuites is not null)
-				{
-					sslAuthenticationOptions.CipherSuitesPolicy = new(tlsOptions.CipherSuites);
-				}
+				sslAuthenticationOptions.CipherSuitesPolicy = new(tlsOptions.CipherSuites);
 			};
 		});
 	}

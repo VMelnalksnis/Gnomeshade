@@ -8,9 +8,7 @@ using Serilog.Core;
 
 namespace Gnomeshade.Interfaces.WebApi.Logging;
 
-/// <summary>
-/// Provides <see cref="SerilogNpgsqlLogger"/> for Npgsql.
-/// </summary>
+/// <summary>Provides <see cref="SerilogNpgsqlLogger"/> for Npgsql.</summary>
 public sealed class SerilogNpgsqlLoggingProvider : INpgsqlLoggingProvider
 {
 	/// <inheritdoc />

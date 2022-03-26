@@ -34,8 +34,11 @@ public sealed class SerilogNpgsqlLogger : NpgsqlLogger
 	/// <inheritdoc />
 	public override void Log(NpgsqlLogLevel level, int connectorId, string msg, Exception? exception = null)
 	{
-		using var pushProperty = LogContext.PushProperty("Npgsql.ConnectorId", connectorId.ToString());
+		using var pushProperty = LogContext.PushProperty("NpgsqlConnectorId", connectorId.ToString());
 		var eventLevel = Translate(level);
+
+		// This is a wrapper, so message cannot be controlled
+		// ReSharper disable once TemplateIsNotCompileTimeConstantProblem
 		_logger.Write(eventLevel, exception, msg);
 	}
 
@@ -47,6 +50,6 @@ public sealed class SerilogNpgsqlLogger : NpgsqlLogger
 		NpgsqlLogLevel.Info => LogEventLevel.Information,
 		NpgsqlLogLevel.Debug => LogEventLevel.Debug,
 		NpgsqlLogLevel.Trace => LogEventLevel.Verbose,
-		_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, null),
+		_ => throw new ArgumentOutOfRangeException(nameof(logLevel), logLevel, $"Unexpected {nameof(NpgsqlLogLevel)}"),
 	};
 }

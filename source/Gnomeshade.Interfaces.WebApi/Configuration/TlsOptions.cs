@@ -14,14 +14,16 @@ public sealed record TlsOptions : IValidatableObject
 {
 	/// <summary>Gets allowed cipher suites for <see cref="SslServerAuthenticationOptions"/>.</summary>
 	/// <seealso href="https://github.com/dotnet/runtime/issues/23818#issuecomment-482764511"/>
-	public List<TlsCipherSuite>? CipherSuites { get; init; }
+	[Required]
+	[MinLength(1)]
+	public List<TlsCipherSuite> CipherSuites { get; init; } = null!;
 
 	/// <inheritdoc />
 	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 	{
 		var validationResults = new List<ValidationResult>();
 
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && CipherSuites is not null)
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 		{
 			validationResults.Add(new("Configuring cipher suites is not supported on windows", new[] { nameof(CipherSuites) }));
 		}

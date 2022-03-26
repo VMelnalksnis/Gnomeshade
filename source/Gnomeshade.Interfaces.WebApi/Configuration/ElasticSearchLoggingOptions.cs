@@ -6,15 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-using JetBrains.Annotations;
-
-using static JetBrains.Annotations.ImplicitUseKindFlags;
-using static JetBrains.Annotations.ImplicitUseTargetFlags;
-
 namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 /// <summary>Options for configuring logging to ElasticSearch.</summary>
-[UsedImplicitly(Assign, Members)]
 public sealed class ElasticSearchLoggingOptions
 {
 	/// <summary>Gets the ElasticSearch nodes to which to log to.</summary>
