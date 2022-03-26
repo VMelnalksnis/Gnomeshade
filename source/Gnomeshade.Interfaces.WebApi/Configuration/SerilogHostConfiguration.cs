@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 using Elastic.Apm.SerilogEnricher;
@@ -10,6 +11,7 @@ using Elastic.CommonSchema.Serilog;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -44,12 +46,29 @@ internal static class SerilogHostConfiguration
 			return;
 		}
 
+		var ecsConfiguration = new EcsTextFormatterConfiguration();
+		if (context.Configuration
+				.GetChildren()
+				.SingleOrDefault(section => section.Key == "ElasticApm")?
+				.GetChildren()
+				.Any(section => section.Key == "ServiceName") ??
+			false)
+		{
+			(ecsConfiguration as IEcsTextFormatterConfiguration).MapCustom = (@base, _) =>
+			{
+				var serviceName = context.Configuration.GetValue<string>("ElasticApm:ServiceName");
+				@base.Service ??= new();
+				@base.Service.Name = serviceName;
+				return @base;
+			};
+		}
+
 		configuration
 			.WriteTo.Elasticsearch(new(options.Nodes)
 			{
 				AutoRegisterTemplate = true,
 				AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
-				CustomFormatter = new EcsTextFormatter(),
+				CustomFormatter = new EcsTextFormatter(ecsConfiguration),
 				EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog,
 				MinimumLogEventLevel = LogEventLevel.Information,
 				TypeName = null, // _type is removed in ElasticSearch 8.x.x
