@@ -3,13 +3,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:items="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionDetailViewModel}"
-	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.TransactionDetailView"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.Items.TransactionDetailView"
 	x:CompileBindings="True"
-	x:DataType="t:TransactionDetailViewModel">
+	x:DataType="items:TransactionDetailViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="10" VerticalAlignment="Stretch">
 
@@ -41,7 +41,7 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
-					<DataTemplate x:DataType="t:TransactionItemRow">
+					<DataTemplate x:DataType="items:TransactionItemRow">
 						<StackPanel
 							Orientation="Horizontal" Spacing="5" Margin="5 0"
 							VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -53,7 +53,7 @@
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
-					<DataTemplate x:DataType="t:TransactionItemRow">
+					<DataTemplate x:DataType="items:TransactionItemRow">
 						<StackPanel
 							Orientation="Horizontal" Spacing="5" Margin="5 0"
 							VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -65,27 +65,27 @@
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Product" IsReadOnly="True"
 					Binding="{Binding Product, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Amount" IsReadOnly="True"
 					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Bank" IsReadOnly="True"
 					Binding="{Binding BankReference, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="External" IsReadOnly="True"
 					Binding="{Binding ExternalReference, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Internal" IsReadOnly="True"
 					Binding="{Binding InternalReference, Mode=OneWay}" />
 				<DataGridTemplateColumn Header="Tags" IsReadOnly="True">
-					<DataTemplate x:DataType="t:TransactionItemRow">
+					<DataTemplate x:DataType="items:TransactionItemRow">
 						<ItemsControl Items="{Binding Tags}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>

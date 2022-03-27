@@ -6,7 +6,7 @@ using System;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 /// <summary>
 /// Event arguments for <see cref="ImportViewModel.TransactionItemSelected"/> event.

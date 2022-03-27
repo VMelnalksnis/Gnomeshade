@@ -7,9 +7,9 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:a="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Accounts;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:p="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Products;assembly=Gnomeshade.Interfaces.Avalonia.Core"
-	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:imports="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Imports;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:items="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.ImportViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.Imports.ImportView"
@@ -114,27 +114,27 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					IsReadOnly="True" Header="Date"
 					Binding="{Binding BookedAt, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					Header="Source Account" IsReadOnly="True"
 					Binding="{Binding SourceAccount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					Header="Target Account" IsReadOnly="True"
 					Binding="{Binding TargetAccount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionOverview"
+					x:DataType="items:TransactionOverview"
 					Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 			</DataGrid.Columns>
@@ -159,23 +159,23 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding SourceAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
 					Binding="{Binding TargetAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Product" IsReadOnly="True"
 					Binding="{Binding Product, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Amount" IsReadOnly="True"
 					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemRow"
+					x:DataType="items:TransactionItemRow"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 			</DataGrid.Columns>

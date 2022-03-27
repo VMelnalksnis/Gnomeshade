@@ -3,13 +3,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:items="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionCreationViewModel}"
-	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.TransactionCreationView"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.Items.TransactionCreationView"
 	x:CompileBindings="True"
-	x:DataType="t:TransactionCreationViewModel">
+	x:DataType="items:TransactionCreationViewModel">
 
 	<Grid ColumnDefinitions="Auto,Auto,Auto,*"
 	      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -34,27 +34,27 @@
 			SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Source Amount"
 					Binding="{Binding SourceAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Source Account"
 					Binding="{Binding SourceAccount.Name, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Target Amount"
 					Binding="{Binding TargetAmount, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Target Account"
 					Binding="{Binding TargetAccount.Name, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Product"
 					Binding="{Binding Product.Name, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="t:TransactionItemCreationViewModel"
+					x:DataType="items:TransactionItemCreationViewModel"
 					IsReadOnly="True" Header="Amount"
 					Binding="{Binding Amount, Mode=OneWay}" />
 			</DataGrid.Columns>

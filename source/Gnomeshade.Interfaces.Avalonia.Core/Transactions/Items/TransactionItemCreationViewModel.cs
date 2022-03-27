@@ -19,7 +19,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 /// <summary>Form for creating a single new transaction item.</summary>
 public class TransactionItemCreationViewModel : ViewModelBase

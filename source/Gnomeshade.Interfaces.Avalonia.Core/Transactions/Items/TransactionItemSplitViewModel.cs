@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 /// <summary>Splitting a transaction item into multiple items.</summary>
 public sealed class TransactionItemSplitViewModel : ViewModelBase

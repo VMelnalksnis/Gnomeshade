@@ -14,7 +14,7 @@ using Avalonia.Input;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Imports;

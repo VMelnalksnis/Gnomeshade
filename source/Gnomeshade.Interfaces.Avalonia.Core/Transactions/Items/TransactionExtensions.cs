@@ -10,7 +10,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 internal static class TransactionExtensions
 {

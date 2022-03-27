@@ -14,7 +14,7 @@ using Avalonia.Input;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 /// <summary>All transaction overview view model.</summary>
 public sealed class TransactionViewModel : ViewModelBase

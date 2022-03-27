@@ -5,9 +5,9 @@
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
-namespace Gnomeshade.Interfaces.Desktop.Views.Transactions;
+namespace Gnomeshade.Interfaces.Desktop.Views.Transactions.Items;
 
 /// <summary>
 /// Split single transaction item into multiple.

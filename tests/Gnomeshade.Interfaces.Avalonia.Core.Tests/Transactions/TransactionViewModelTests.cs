@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 using Gnomeshade.Interfaces.WebApi.Client;
 
 using NUnit.Framework;

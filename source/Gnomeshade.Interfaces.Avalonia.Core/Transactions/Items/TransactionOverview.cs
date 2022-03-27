@@ -8,7 +8,7 @@ using System.Linq;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 /// <summary>A summary of a single transaction.</summary>
 public sealed class TransactionOverview : PropertyChangedBase

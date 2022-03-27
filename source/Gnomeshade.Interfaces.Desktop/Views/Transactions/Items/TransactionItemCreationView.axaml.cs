@@ -5,9 +5,9 @@
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
-namespace Gnomeshade.Interfaces.Desktop.Views.Transactions;
+namespace Gnomeshade.Interfaces.Desktop.Views.Transactions.Items;
 
 /// <summary>Create or update a single transaction item.</summary>
 public sealed class TransactionItemCreationView : FocusOnInitUserControl, IView<TransactionItemCreationViewModel>

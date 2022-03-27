@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 
 using NUnit.Framework;
 
-using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionDetailViewModel;
+using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items.TransactionDetailViewModel;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
