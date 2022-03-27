@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -208,6 +209,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task UntagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteTransferAsync(Guid transactionId, Guid id) =>
+		throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)

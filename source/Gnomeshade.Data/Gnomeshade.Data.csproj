@@ -58,10 +58,10 @@
         <EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfers\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfers\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfers\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfers\Update.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transfer\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Transfer\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Unit\Select.sql"/>

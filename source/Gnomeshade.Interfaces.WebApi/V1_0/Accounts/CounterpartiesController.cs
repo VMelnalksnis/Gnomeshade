@@ -19,6 +19,7 @@ using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -33,11 +34,13 @@ public sealed class CounterpartiesController : FinanceControllerBase<Counterpart
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CounterpartyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	public CounterpartiesController(
 		CounterpartyRepository repository,
 		ApplicationUserContext applicationUserContext,
-		Mapper mapper)
-		: base(applicationUserContext, mapper)
+		Mapper mapper,
+		ILogger<CounterpartiesController> logger)
+		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 	}

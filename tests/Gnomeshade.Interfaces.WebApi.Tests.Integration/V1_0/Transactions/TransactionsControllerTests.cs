@@ -173,6 +173,69 @@ public class TransactionsControllerTests
 			.BeEmpty();
 	}
 
+	[Test]
+	public async Task Transfers()
+	{
+		var transactionCreationModel = new TransactionCreationModel
+		{
+			ValuedAt = DateTimeOffset.Now,
+			Items = new() { _itemCreationFaker.Generate() },
+		};
+
+		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+
+		var transferId = Guid.NewGuid();
+		var transferCreation = new TransferCreation
+		{
+			SourceAmount = 1,
+			SourceAccountId = _account1.Currencies.First().Id,
+			TargetAmount = 1,
+			TargetAccountId = _account2.Currencies.First().Id,
+		};
+
+		await _client.PutTransferAsync(transactionId, transferId, transferCreation);
+		var transfer = await _client.GetTransferAsync(transactionId, transferId);
+		var transfers = await _client.GetTransfersAsync(transactionId);
+
+		transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
+		transfer.Should().BeEquivalentTo(transferCreation);
+
+		var bankReference = $"{Guid.NewGuid():N}";
+		transferCreation = transferCreation with { BankReference = bankReference };
+		await _client.PutTransferAsync(transactionId, transferId, transferCreation);
+		(await _client.GetTransferAsync(transactionId, transferId)).BankReference.Should().Be(bankReference);
+
+		await _client.DeleteTransferAsync(transactionId, transferId);
+		(await _client.GetTransfersAsync(transactionId)).Should().BeEmpty();
+		(await FluentActions
+				.Awaiting(() => _client.GetTransferAsync(transactionId, transferId))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task PutTransfer_NonExistentTransaction()
+	{
+		var transactionId = Guid.NewGuid();
+		var transferId = Guid.NewGuid();
+		var transferCreation = new TransferCreation
+		{
+			SourceAmount = 1,
+			SourceAccountId = _account1.Currencies.First().Id,
+			TargetAmount = 1,
+			TargetAccountId = _account2.Currencies.First().Id,
+		};
+
+		(await FluentActions
+				.Awaiting(() => _client.PutTransferAsync(transactionId, transferId, transferCreation))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
 	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(
 		EquivalencyAssertionOptions<Transaction> options)
 	{

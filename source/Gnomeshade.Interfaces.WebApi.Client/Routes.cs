@@ -13,7 +13,6 @@ namespace Gnomeshade.Interfaces.WebApi.Client;
 public static class Routes
 {
 	internal const string _authenticationUri = "Authentication";
-	internal const string _accountUri = "Accounts";
 	internal const string _counterpartyUri = "Counterparties";
 	internal const string _currencyUri = "Currencies";
 	internal const string _iso20022 = "Iso";
@@ -21,20 +20,9 @@ public static class Routes
 	internal const string _transactionUri = "Transactions";
 	internal const string _unitUri = "Units";
 	internal const string _tagUri = "Tags";
-	internal const string _allAccountUri = $"{_accountUri}?onlyActive=false";
 	internal const string _loginUri = $"{_authenticationUri}/Login";
 	internal const string _logOutUri = $"{_authenticationUri}/Logout";
 	internal const string _socialRegisterUri = $"{_authenticationUri}/SocialRegister";
-
-	/// <summary>Gets the relative uri for the specified account.</summary>
-	/// <param name="id">The id of the account.</param>
-	/// <returns>Relative uri for a specific account.</returns>
-	public static string AccountIdUri(Guid id) => $"{_accountUri}/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the currencies of the specified account.</summary>
-	/// <param name="id">The id of the account.</param>
-	/// <returns>Relative uri for the currencies of the specified account.</returns>
-	public static string AccountCurrencyUri(Guid id) => $"{_accountUri}/{Format(id)}/Currencies";
 
 	/// <summary>Gets the relative uri for the specified counterparty.</summary>
 	/// <param name="id">The id of the counterparty.</param>
@@ -148,4 +136,30 @@ public static class Routes
 	}
 
 	private static string Format(Guid guid) => guid.ToString("N", CultureInfo.InvariantCulture);
+
+	/// <summary>Account routes.</summary>
+	public static class Accounts
+	{
+		internal const string _uri = nameof(Accounts);
+		internal const string _allUri = $"{_uri}?onlyActive=false";
+
+		/// <summary>Gets the relative uri for the specified account.</summary>
+		/// <param name="id">The id of the account.</param>
+		/// <returns>Relative uri for a specific account.</returns>
+		public static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+
+		/// <summary>Gets the relative uri for the currencies of the specified account.</summary>
+		/// <param name="id">The id of the account.</param>
+		/// <returns>Relative uri for the currencies of the specified account.</returns>
+		public static string CurrencyUri(Guid id) => $"{_uri}/{Format(id)}/{_currencyUri}";
+	}
+
+	internal static class Transfers
+	{
+		private const string _path = nameof(Transfers);
+
+		internal static string Uri(Guid transactionId) => $"{TransactionIdUri(transactionId)}/{_path}";
+
+		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+	}
 }

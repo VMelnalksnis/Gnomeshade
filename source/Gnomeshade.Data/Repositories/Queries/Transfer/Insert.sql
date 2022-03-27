@@ -1,9 +1,7 @@
 ﻿INSERT INTO transfers
     (id,
-     created_at,
      owner_id,
      created_by_user_id,
-     modified_at,
      modified_by_user_id,
      transaction_id,
      source_amount,
@@ -15,10 +13,8 @@
      internal_reference)
 VALUES
     (@Id,
-     @CreatedAt,
      @OwnerId,
      @CreatedByUserId,
-     @ModifiedAt,
      @ModifiedByUserId,
      @TransactionId,
      @SourceAmount,
@@ -27,4 +23,5 @@ VALUES
      @TargetAccountId,
      @BankReference,
      @ExternalReference,
-     @InternalReference);
+     @InternalReference)
+RETURNING id;

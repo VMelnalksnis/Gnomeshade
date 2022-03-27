@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Models.Tags;
@@ -74,4 +75,30 @@ public interface ITransactionClient
 	/// <param name="tagId">The id of the tag to remove.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task UntagTransactionItemAsync(Guid id, Guid tagId);
+
+	/// <summary>Gets all transfers for the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get all the transfers.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All transfers for the specified transaction.</returns>
+	Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default);
+
+	/// <summary>Gets the specified transfer.</summary>
+	/// <param name="transactionId">The id of transaction of which the transfer is a part of.</param>
+	/// <param name="id">The id of the transfer to get.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>The transfer with the specified id.</returns>
+	Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default);
+
+	/// <summary>Creates a new transfer or replaces an existing one, if one exists with the specified id.</summary>
+	/// <param name="transactionId">The id of the transaction to which to add a new transfer.</param>
+	/// <param name="id">The id of the transfer.</param>
+	/// <param name="transfer">The transfer to create or replace.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer);
+
+	/// <summary>Deletes the specified transfer.</summary>
+	/// <param name="transactionId">The id of the transaction of the transfer.</param>
+	/// <param name="id">The id of the transfer to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task DeleteTransferAsync(Guid transactionId, Guid id);
 }

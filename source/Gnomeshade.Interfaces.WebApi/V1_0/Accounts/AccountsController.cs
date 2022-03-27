@@ -20,6 +20,7 @@ using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -37,14 +38,16 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	public AccountsController(
 		AccountRepository repository,
 		AccountInCurrencyRepository inCurrencyRepository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
+		ILogger<AccountsController> logger,
 		AccountUnitOfWork accountUnitOfWork)
-		: base(applicationUserContext, mapper)
+		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 		_inCurrencyRepository = inCurrencyRepository;

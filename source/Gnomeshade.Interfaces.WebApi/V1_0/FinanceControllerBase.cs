@@ -13,6 +13,9 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0;
 
@@ -29,14 +32,20 @@ public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 	where TModel : class
 {
 	private readonly ApplicationUserContext _applicationUserContext;
+	private readonly ILogger<FinanceControllerBase<TEntity, TModel>> _logger;
 
 	/// <summary>Initializes a new instance of the <see cref="FinanceControllerBase{TEntity, TModel}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	protected FinanceControllerBase(ApplicationUserContext applicationUserContext, Mapper mapper)
+	/// <param name="logger">Logger for logging in the specified category.</param>
+	protected FinanceControllerBase(
+		ApplicationUserContext applicationUserContext,
+		Mapper mapper,
+		ILogger<FinanceControllerBase<TEntity, TModel>> logger)
 	{
 		_applicationUserContext = applicationUserContext;
 		Mapper = mapper;
+		_logger = logger;
 	}
 
 	/// <summary>Gets the repository entity and API model mapper.</summary>
@@ -64,4 +73,30 @@ public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 	/// <param name="entity">The repository entity to map.</param>
 	/// <returns>An API model equivalent to <paramref name="entity"/>.</returns>
 	protected TModel MapToModel(TEntity entity) => Mapper.Map<TModel>(entity);
+
+	/// <summary>Creates an action result for entity deletion.</summary>
+	/// <param name="id">The id of the deleted entity.</param>
+	/// <param name="deletedCount">The count of deleted rows.</param>
+	/// <typeparam name="TDeleted">The type of the deleted entity.</typeparam>
+	/// <returns>Appropriate action result.</returns>
+	protected StatusCodeResult DeletedEntity<TDeleted>(Guid id, int deletedCount)
+	{
+		return deletedCount switch
+		{
+			0 => NotFound(),
+			1 => NoContent(),
+			_ => HandleFailedDelete(deletedCount, id),
+		};
+
+		StatusCodeResult HandleFailedDelete(int count, Guid transferId)
+		{
+			_logger.LogError(
+				"Deleted {EntityCount} {EntityType} by id {EntityId}",
+				count,
+				typeof(TDeleted).Name,
+				transferId);
+
+			return StatusCode(Status500InternalServerError);
+		}
+	}
 }

@@ -19,6 +19,7 @@ using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -32,9 +33,14 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 	/// <summary>Initializes a new instance of the <see cref="TagsController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TagEntity"/>.</param>
-	public TagsController(ApplicationUserContext applicationUserContext, Mapper mapper, TagRepository repository)
-		: base(applicationUserContext, mapper)
+	public TagsController(
+		ApplicationUserContext applicationUserContext,
+		Mapper mapper,
+		ILogger<TagsController> logger,
+		TagRepository repository)
+		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 	}
@@ -93,8 +99,8 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 	[HttpDelete("{id:guid}")]
 	public async Task<StatusCodeResult> Delete(Guid id)
 	{
-		await _repository.DeleteAsync(id, ApplicationUser.Id);
-		return NoContent();
+		var deletedCount = await _repository.DeleteAsync(id, ApplicationUser.Id);
+		return DeletedEntity<TagEntity>(id, deletedCount);
 	}
 
 	/// <inheritdoc cref="ITagClient.GetTagTagsAsync"/>

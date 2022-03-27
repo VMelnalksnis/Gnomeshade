@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -158,28 +159,44 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(TransactionItemTagIdUri(id, tagId));
 
 	/// <inheritdoc />
+	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync<List<Transfer>>(Transfers.Uri(transactionId), cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<Transfer>(Transfers.IdUri(transactionId, id), cancellationToken);
+
+	/// <inheritdoc />
+	public Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer) =>
+		PutAsync(Transfers.IdUri(transactionId, id), transfer);
+
+	/// <inheritdoc />
+	public Task DeleteTransferAsync(Guid transactionId, Guid id) =>
+		DeleteAsync(Transfers.IdUri(transactionId, id));
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id) =>
-		GetAsync<Account>(AccountIdUri(id));
+		GetAsync<Account>(Accounts.IdUri(id));
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync() =>
-		GetAsync<List<Account>>(_allAccountUri);
+		GetAsync<List<Account>>(Accounts._allUri);
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetActiveAccountsAsync() =>
-		GetAsync<List<Account>>(_accountUri);
+		GetAsync<List<Account>>(Accounts._uri);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
-		PostAsync(_accountUri, account);
+		PostAsync(Accounts._uri, account);
 
 	/// <inheritdoc />
 	public Task PutAccountAsync(Guid id, AccountCreationModel account) =>
-		PutAsync(AccountIdUri(id), account);
+		PutAsync(Accounts.IdUri(id), account);
 
 	/// <inheritdoc />
 	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
-		PostAsync(AccountCurrencyUri(id), currency);
+		PostAsync(Accounts.CurrencyUri(id), currency);
 
 	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync() =>
@@ -264,13 +281,13 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		}
 	}
 
-	private async Task<TResult> GetAsync<TResult>(string requestUri)
+	private async Task<TResult> GetAsync<TResult>(string requestUri, CancellationToken cancellationToken = default)
 		where TResult : notnull
 	{
-		using var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false);
+		using var response = await _httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
 
-		return (await response.Content.ReadFromJsonAsync<TResult>().ConfigureAwait(false))!;
+		return (await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false))!;
 	}
 
 	private async Task<Guid> PostAsync<TRequest>(string requestUri, TRequest request)

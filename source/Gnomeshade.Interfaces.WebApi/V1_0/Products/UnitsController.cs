@@ -20,6 +20,7 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -34,11 +35,13 @@ public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	public UnitsController(
 		UnitRepository repository,
 		ApplicationUserContext applicationUserContext,
-		Mapper mapper)
-		: base(applicationUserContext, mapper)
+		Mapper mapper,
+		ILogger<UnitsController> logger)
+		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 	}

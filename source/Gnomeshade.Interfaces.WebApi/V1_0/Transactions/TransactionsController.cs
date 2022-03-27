@@ -32,8 +32,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 {
 	private readonly TransactionRepository _repository;
 	private readonly TransactionItemRepository _itemRepository;
+	private readonly TransferRepository _transferRepository;
 	private readonly ProductRepository _productRepository;
-	private readonly ILogger<TransactionsController> _logger;
 	private readonly TransactionUnitOfWork _unitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
@@ -44,6 +44,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
 	public TransactionsController(
 		TransactionRepository repository,
 		TransactionItemRepository itemRepository,
@@ -51,14 +52,15 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		ILogger<TransactionsController> logger,
 		TransactionUnitOfWork unitOfWork,
 		ApplicationUserContext applicationUserContext,
-		Mapper mapper)
-		: base(applicationUserContext, mapper)
+		Mapper mapper,
+		TransferRepository transferRepository)
+		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 		_itemRepository = itemRepository;
 		_productRepository = productRepository;
-		_logger = logger;
 		_unitOfWork = unitOfWork;
+		_transferRepository = transferRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
@@ -155,8 +157,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		}
 
 		// todo this is already done with one query when getting transaction with all items
-		var productEntity =
-			await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
+		var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
 		var product = Mapper.Map<Product>(productEntity);
 		var item = Mapper.Map<TransactionItem>(itemEntity) with { Product = product };
 
@@ -193,21 +194,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	public async Task<StatusCodeResult> DeleteItem(Guid id)
 	{
 		var deletedCount = await _itemRepository.DeleteAsync(id, ApplicationUser.Id);
-		return deletedCount switch
-		{
-			0 => NotFound(),
-			1 => NoContent(),
-			_ => HandleFailedDelete(deletedCount, id),
-		};
-
-		StatusCodeResult HandleFailedDelete(int count, Guid transactionItemId)
-		{
-			_logger.LogError(
-				"Deleted {DeletedCount} transaction items by id {TransactionItemId}",
-				count,
-				transactionItemId);
-			return StatusCode(Status500InternalServerError);
-		}
+		return DeletedEntity<TransactionItem>(id, deletedCount);
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionItemTagsAsync"/>
@@ -235,6 +222,88 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	{
 		await _itemRepository.UntagAsync(id, tagId, ApplicationUser.Id);
 		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync"/>
+	/// <response code="200">Successfully got all transfers.</response>
+	[HttpGet("{transactionId:guid}/Transfers")]
+	[ProducesResponseType(typeof(List<Transfer>), Status200OK)]
+	public async Task<List<Transfer>> GetTransfers(
+		Guid transactionId,
+		CancellationToken cancellationToken)
+	{
+		var transfers = await _transferRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var models = transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
+		return models;
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
+	/// <response code="200">Successfully got the transfer with the specified id.</response>
+	/// <response code="404">Transfer with the specified id does not exist.</response>
+	[HttpGet("{transactionId:guid}/Transfers/{id:guid}")]
+	[ProducesResponseType(typeof(Transfer), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<Transfer>> GetTransfer(
+		Guid transactionId,
+		Guid id,
+		CancellationToken cancellationToken)
+	{
+		var transfer = await _transferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		if (transfer is null)
+		{
+			return NotFound();
+		}
+
+		var model = Mapper.Map<Transfer>(transfer);
+		return Ok(model);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.PutTransferAsync"/>
+	/// <response code="201">Successfully created a new transfer.</response>
+	/// <response code="204">Successfully replaced an existing transfer.</response>
+	/// <response code="404">Transaction with the specified id was not found.</response>
+	[HttpPut("{transactionId:guid}/Transfers/{id:guid}")]
+	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> PutTransfer(Guid transactionId, Guid id, [FromBody] TransferCreation transfer)
+	{
+		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		{
+			return NotFound();
+		}
+
+		var existingTransfer = await _transferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
+		var entity = Mapper.Map<TransferEntity>(transfer) with
+		{
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			OwnerId = ApplicationUser.Id, // todo
+			ModifiedByUserId = ApplicationUser.Id,
+			TransactionId = transactionId,
+		};
+
+		if (existingTransfer is null)
+		{
+			await _transferRepository.AddAsync(entity);
+			return CreatedAtAction(nameof(GetTransfer), new { transactionId, id }, null);
+		}
+
+		await _transferRepository.UpdateAsync(entity);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.DeleteTransferAsync"/>
+	/// <response code="204">Successfully deleted transfer.</response>
+	/// <response code="404">Transfer with the specified id does not exist.</response>
+	[HttpDelete("{transactionId:guid}/Transfers/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<StatusCodeResult> DeleteItem(Guid transactionId, Guid id)
+	{
+		// todo add transaction id
+		var deletedCount = await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
+		return DeletedEntity<TransferEntity>(id, deletedCount);
 	}
 
 	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(
