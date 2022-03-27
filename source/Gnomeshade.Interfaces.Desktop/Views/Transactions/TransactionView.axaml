@@ -1,0 +1,94 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:transactions="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:design="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:transfers="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.TransactionViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.TransactionView"
+	x:CompileBindings="True"
+	x:DataType="transactions:TransactionViewModel">
+
+	<!-- todo filtering -->
+	<DataGrid
+		x:Name="DataGrid"
+		VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+		VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+		Items="{Binding DataGridView, Mode=TwoWay}"
+		SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
+		AutoGenerateColumns="False" IsReadOnly="False"
+		CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+		<DataGrid.Columns>
+			<DataGridTemplateColumn
+				Header="Booked At" IsReadOnly="True"
+				SortMemberPath="BookedAt" CanUserSort="True">
+				<DataTemplate DataType="transactions:TransactionOverview">
+					<TextBlock
+						HorizontalAlignment="Right" VerticalAlignment="Top"
+						Text="{Binding BookedAt, Mode=OneWay, StringFormat=\{0:d\}}" />
+				</DataTemplate>
+			</DataGridTemplateColumn>
+			<DataGridTemplateColumn
+				Header="Valued At" IsReadOnly="True"
+				SortMemberPath="ValuedAt" CanUserSort="True">
+				<DataTemplate DataType="transactions:TransactionOverview">
+					<TextBlock
+						HorizontalAlignment="Right" VerticalAlignment="Top"
+						Text="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:g\}}" />
+				</DataTemplate>
+			</DataGridTemplateColumn>
+			<DataGridTemplateColumn
+				Header="Reconciled At" IsReadOnly="True"
+				SortMemberPath="ReconciledAt" CanUserSort="True">
+				<DataTemplate DataType="transactions:TransactionOverview">
+					<TextBlock
+						HorizontalAlignment="Right" VerticalAlignment="Top"
+						Text="{Binding ReconciledAt, Mode=OneWay, StringFormat=\{0:d\}}" />
+				</DataTemplate>
+			</DataGridTemplateColumn>
+			<DataGridTemplateColumn Header="Transfers" IsReadOnly="True">
+				<DataTemplate DataType="transactions:TransactionOverview">
+					<ItemsControl Items="{Binding Transfers, Mode=OneWay}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Vertical" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="transfers:TransferOverview">
+								<StackPanel Orientation="Horizontal" Margin="10 0">
+									<TextBlock Text="{Binding SourceCurrency}" Padding="0 0 5 0" />
+									<TextBlock Text="{Binding SourceAmount, StringFormat=\{0:N2\}}" />
+									<TextBlock Text="from" Padding="5 0" />
+									<TextBlock Text="{Binding SourceAccount}" />
+									<TextBlock Text="to" Padding="5 0" />
+									<TextBlock Text="{Binding TargetAccount}" />
+									<!-- todo hide if currencies the same -->
+									<TextBlock Text="(" Padding="5 0 0 0" />
+									<TextBlock Text="{Binding TargetCurrency}" Padding="0 0 5 0" />
+									<TextBlock Text="{Binding TargetAmount, StringFormat=\{0:N2\}}" />
+									<TextBlock Text=")" />
+								</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DataTemplate>
+			</DataGridTemplateColumn>
+		</DataGrid.Columns>
+
+		<Interaction.Behaviors>
+			<EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #DataGrid}">
+				<InvokeCommandAction Command="{ReflectionBinding OnDataGridDoubleTapped}" />
+			</EventTriggerBehavior>
+		</Interaction.Behaviors>
+
+		<DataGrid.Styles>
+			<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+				<Setter Property="Fill" Value="#05769d" />
+			</Style>
+		</DataGrid.Styles>
+	</DataGrid>
+</UserControl>

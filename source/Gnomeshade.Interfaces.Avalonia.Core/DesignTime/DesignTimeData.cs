@@ -17,6 +17,8 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 using IdentityModel.OidcClient;
 
+using TransactionViewModel = Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionViewModel;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>Data needed only during design time.</summary>
@@ -97,9 +99,9 @@ public static class DesignTimeData
 	public static TransactionDetailViewModel TransactionDetailViewModel { get; } =
 		TransactionDetailViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 
-	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
-	public static TransactionViewModel TransactionViewModel { get; } =
-		TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
+	/// <summary>Gets an instance of <see cref="ItemsTransactionViewModel"/> for use during design time.</summary>
+	public static Core.Transactions.Items.TransactionViewModel ItemsTransactionViewModel { get; } =
+		Core.Transactions.Items.TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
@@ -139,4 +141,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="PurchaseViewModel"/> for use during design time.</summary>
 	public static PurchaseViewModel PurchaseViewModel { get; } =
 		PurchaseViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
+	public static TransactionViewModel TransactionViewModel { get; } =
+		TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
 }

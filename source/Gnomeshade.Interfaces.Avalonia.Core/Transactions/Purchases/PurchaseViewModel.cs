@@ -47,14 +47,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview>
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
 
-		var overviews = purchases.Select(purchase =>
-			new PurchaseOverview(
-				purchase.Id,
-				purchase.Price,
-				currencies.Single(currency => currency.Id == purchase.CurrencyId).AlphabeticCode,
-				products.Single(product => product.Id == purchase.ProductId).Name,
-				purchase.Amount,
-				purchase.DeliveryDate?.ToLocalTime()));
+		var overviews = purchases.Select(purchase => purchase.ToOverview(currencies, products));
 
 		Rows = new(overviews); // todo sorting
 	}

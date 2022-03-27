@@ -42,25 +42,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview>
 		await Task.WhenAll(transfersTask, accountsTask).ConfigureAwait(false);
 
 		var accounts = accountsTask.Result;
-		var overviews = transfersTask.Result.Select(transfer =>
-		{
-			var sourceAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
-			var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
-			var targetAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
-			var targetCurrency = targetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
-
-			return new TransferOverview(
-				transfer.Id,
-				transfer.SourceAmount,
-				sourceAccount.Name,
-				sourceCurrency.AlphabeticCode,
-				transfer.TargetAmount,
-				targetAccount.Name,
-				targetCurrency.AlphabeticCode,
-				transfer.BankReference,
-				transfer.ExternalReference,
-				transfer.InternalReference);
-		});
+		var overviews = transfersTask.Result.Select(transfer => transfer.ToOverview(accounts));
 
 		Rows = new(overviews); // todo sorting
 	}
