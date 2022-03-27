@@ -5,12 +5,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	xmlns:design="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
-	xmlns:transactions="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:transfers="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.TransferUpsertionViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.TransferUpsertionView"
 	x:CompileBindings="True"
-	x:DataType="transactions:TransferUpsertionViewModel">
+	x:DataType="transfers:TransferUpsertionViewModel">
 
 	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 		<!--Source-->

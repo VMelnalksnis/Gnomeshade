@@ -14,7 +14,7 @@ using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 /// <summary>Create or update a transfer.</summary>
 public sealed class TransferUpsertionViewModel : UpsertionViewModel

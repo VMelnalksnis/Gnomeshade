@@ -12,6 +12,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 using IdentityModel.OidcClient;
 
@@ -125,4 +126,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
 	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
 		TransferUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>Gets an instance of <see cref="TransferViewModel"/> for use during design time.</summary>
+	public static TransferViewModel TransferViewModel { get; } =
+		TransferViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 }

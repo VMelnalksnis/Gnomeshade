@@ -159,9 +159,8 @@ public sealed class ImportViewModel : ViewModelBase
 		Products = new(productsRows);
 	}
 
-	/// <summary>Gets the latest version of referenced accounts, products and transactions.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task RefreshAsync()
+	/// <inheritdoc />
+	public override async Task RefreshAsync()
 	{
 		// todo do not get all accounts
 		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);

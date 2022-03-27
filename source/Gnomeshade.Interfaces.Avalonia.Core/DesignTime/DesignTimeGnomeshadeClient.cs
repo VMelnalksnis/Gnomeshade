@@ -28,6 +28,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Unit> _units;
 	private static readonly List<Product> _products;
 	private static readonly List<Transaction> _transactions;
+	private static readonly List<Transfer> _transfers;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -97,6 +98,25 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		};
 
 		_transactions = new() { transaction };
+		_transfers = new()
+		{
+			new()
+			{
+				TransactionId = transaction.Id,
+				SourceAmount = 125.35m,
+				SourceAccountId = spending.Currencies.Single().Id,
+				TargetAmount = 125.35m,
+				TargetAccountId = cash.Currencies.Single().Id,
+			},
+			new()
+			{
+				TransactionId = transaction.Id,
+				SourceAmount = 1.95m,
+				SourceAccountId = spending.Currencies.Single().Id,
+				TargetAmount = 1.95m,
+				TargetAccountId = cash.Currencies.Single().Id,
+			},
+		};
 	}
 
 	/// <inheritdoc />
@@ -211,12 +231,17 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task UntagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(_transfers.Where(transfer => transfer.TransactionId == transactionId).ToList());
+	}
 
 	/// <inheritdoc />
-	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	{
+		var transfers = _transfers.Where(transfer => transfer.TransactionId == transactionId);
+		return Task.FromResult(transfers.Single(transfer => transfer.Id == id));
+	}
 
 	/// <inheritdoc />
 	public Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer) =>

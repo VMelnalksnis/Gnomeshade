@@ -10,11 +10,11 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 namespace Gnomeshade.Interfaces.Desktop.Views;
 
-/// <inheritdoc cref="TransferUpsertionViewModel"/>
-public sealed class TransferUpsertionView : UserControl, IView<TransferUpsertionViewModel>
+/// <inheritdoc cref="TransferViewModel" />
+public sealed class TransferView : UserControl, IView<TransferViewModel>
 {
-	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionView"/> class.</summary>
-	public TransferUpsertionView()
+	/// <summary>Initializes a new instance of the <see cref="TransferView"/> class.</summary>
+	public TransferView()
 	{
 		AvaloniaXamlLoader.Load(this);
 	}
