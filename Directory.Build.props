@@ -1,7 +1,6 @@
 <Project>
     <PropertyGroup>
         <Nullable>enable</Nullable>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
