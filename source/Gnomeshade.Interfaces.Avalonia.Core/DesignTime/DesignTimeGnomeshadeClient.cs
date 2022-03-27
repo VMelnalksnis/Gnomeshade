@@ -29,6 +29,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Product> _products;
 	private static readonly List<Transaction> _transactions;
 	private static readonly List<Transfer> _transfers;
+	private static readonly List<Purchase> _purchases;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -115,6 +116,27 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				SourceAccountId = spending.Currencies.Single().Id,
 				TargetAmount = 1.95m,
 				TargetAccountId = cash.Currencies.Single().Id,
+			},
+		};
+
+		_purchases = new()
+		{
+			new()
+			{
+				TransactionId = transaction.Id,
+				Price = 1,
+				CurrencyId = euro.Id,
+				Amount = 2,
+				ProductId = milk.Id,
+			},
+			new()
+			{
+				TransactionId = transaction.Id,
+				Price = 2.35m,
+				CurrencyId = euro.Id,
+				Amount = 500,
+				ProductId = bread.Id,
+				DeliveryDate = DateTimeOffset.Now,
 			},
 		};
 	}
@@ -252,12 +274,17 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(_purchases.Where(purchase => purchase.TransactionId == transactionId).ToList());
+	}
 
 	/// <inheritdoc />
-	public Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	{
+		var purchases = _purchases.Where(transfer => transfer.TransactionId == transactionId);
+		return Task.FromResult(purchases.Single(purchase => purchase.Id == id));
+	}
 
 	/// <inheritdoc />
 	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase) =>
