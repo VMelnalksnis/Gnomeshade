@@ -1,0 +1,53 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:i="using:Avalonia.Xaml.Interactivity"
+	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:a="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Accounts;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.AccountViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Accounts.AccountView"
+	x:CompileBindings="True"
+	x:DataType="a:AccountViewModel">
+
+	<Grid ColumnDefinitions="*" RowDefinitions="*">
+		<DataGrid
+			Grid.Column="0" Grid.Row="0"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			x:Name="DataGrid"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="a:AccountOverviewRow"
+					Header="Name" IsReadOnly="True"
+					Binding="{Binding Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="a:AccountOverviewRow"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding Currency, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="a:AccountOverviewRow"
+					Header="Disabled" IsReadOnly="True"
+					Binding="{Binding Disabled, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<i:Interaction.Behaviors>
+				<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #DataGrid}">
+					<ia:InvokeCommandAction Command="{ReflectionBinding OnDataGridDoubleTapped}" />
+				</ia:EventTriggerBehavior>
+			</i:Interaction.Behaviors>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+	</Grid>
+</UserControl>

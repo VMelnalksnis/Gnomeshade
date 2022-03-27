@@ -1,0 +1,223 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:ma="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:tags="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Tags;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:tags1="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Tags;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionItemCreationViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.TransactionItemCreationView"
+	x:CompileBindings="True"
+	x:DataType="t:TransactionItemCreationViewModel">
+
+	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+		<!--Source-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="0"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Source:" />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="0"
+			MinWidth="300"
+			x:Name="SourceAccount"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Accounts}"
+			ItemSelector="{Binding AccountSelector}"
+			SelectedItem="{Binding SourceAccount, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="ma:Account">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		<TextBox
+			Grid.Column="2" Grid.Row="0"
+			MinWidth="150"
+			Text="{Binding SourceAmount}" />
+		<AutoCompleteBox
+			Grid.Column="3" Grid.Row="0"
+			MinWidth="100"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Currencies}"
+			ItemSelector="{Binding CurrencySelector}"
+			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="ma:Currency">
+					<TextBlock Text="{Binding AlphabeticCode}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<!--Target-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="1"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Target:" />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="1"
+			MinWidth="300"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Accounts}"
+			ItemSelector="{Binding AccountSelector}"
+			SelectedItem="{Binding TargetAccount, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="ma:Account">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		<TextBox
+			Grid.Column="2" Grid.Row="1"
+			MinWidth="150"
+			IsReadOnly="{Binding IsTargetAmountReadOnly}"
+			Text="{Binding TargetAmount}" />
+		<AutoCompleteBox
+			Grid.Column="3" Grid.Row="1"
+			MinWidth="100"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Currencies}"
+			ItemSelector="{Binding CurrencySelector}"
+			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="ma:Currency">
+					<TextBlock Text="{Binding AlphabeticCode}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<!--Product-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="2"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Product:" />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="2"
+			MinWidth="300"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Products}"
+			ItemSelector="{Binding ProductSelector}"
+			SelectedItem="{Binding Product, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="mp:Product">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		<TextBox
+			Grid.Column="2" Grid.Row="2"
+			MinWidth="150"
+			Text="{Binding Amount}" />
+		<Button
+			Grid.Column="3" Grid.Row="2"
+			IsEnabled="{Binding CanCreateProduct}"
+			Command="{ReflectionBinding CreateProductAsync}">
+			New Product
+		</Button>
+
+		<!--Bank Reference-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="3"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Bank reference:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="3"
+			MinWidth="300"
+			Text="{Binding BankReference}" />
+
+		<!--External Reference-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="4"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="External Reference:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="4"
+			MinWidth="300"
+			Text="{Binding ExternalReference}" />
+
+		<!--Internal Reference-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="5"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Internal Reference:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="5"
+			MinWidth="300"
+			Text="{Binding InternalReference}" />
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="6"
+			Margin="5" VerticalAlignment="Center"
+			Text="Delivery Date:"/>
+		<StackPanel
+			Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"
+			Orientation="Horizontal" Spacing="5">
+			<DatePicker
+				Margin="5"
+				SelectedDate="{Binding DeliveryDate}" />
+			<TimePicker
+				Margin="5"
+				SelectedTime="{Binding DeliveryTime}" />
+		</StackPanel>
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="7"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Tags: "/>
+		<ItemsControl
+			Grid.Column="1" Grid.Row="7"
+			Items="{Binding TagsToAdd}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Vertical" Spacing="5" />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate x:DataType="tags1:TagRow">
+					<TextBlock Text="{Binding Name}"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+		<AutoCompleteBox
+			Grid.Column="2" Grid.Row="7"
+			MinWidth="300"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Tags}"
+			ItemSelector="{Binding TagSelector}"
+			SelectedItem="{Binding Tag, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="tags:Tag">
+					<TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<Button
+			Grid.Column="0" Grid.Row="8"
+			IsVisible="{Binding CanUpdate}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
+
+		<UserControl
+			Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2"
+			Content="{Binding ProductCreation}"/>
+	</Grid>
+</UserControl>

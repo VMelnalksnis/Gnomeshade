@@ -1,0 +1,149 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionItemSplitViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.TransactionItemSplitView"
+	x:CompileBindings="True"
+	x:DataType="t:TransactionItemSplitViewModel">
+
+	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+		<!--Source-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="0"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Source:" />
+		<TextBlock
+			Grid.Column="1" Grid.Row="0"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding SourceAccount}"/>
+		<TextBlock
+			Grid.Column="2" Grid.Row="0"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding SourceAccountCurrency}"/>
+		<TextBlock
+			Grid.Column="3" Grid.Row="0"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding SourceAmount}"/>
+
+		<!--Target-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="1"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Target:" />
+		<TextBlock
+			Grid.Column="1" Grid.Row="1"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding TargetAccount}"/>
+		<TextBlock
+			Grid.Column="2" Grid.Row="1"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding TargetAccountCurrency}"/>
+		<TextBlock
+			Grid.Column="3" Grid.Row="1"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding TargetAmount}"/>
+
+		<!--Product-->
+		<TextBlock
+			Grid.Column="0" Grid.Row="2"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="Product:" />
+		<TextBlock
+			Grid.Column="1" Grid.Row="2"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding Product}"/>
+		<TextBlock
+			Grid.Column="2" Grid.Row="2"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding Unit}"/>
+		<TextBlock
+			Grid.Column="3" Grid.Row="2"
+			Margin="5"
+			VerticalAlignment="Center"
+			Text="{Binding Amount}"/>
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4"
+			Margin="5"
+			HorizontalAlignment="Left"
+			Text="Transaction items" />
+
+		<DataGrid
+			Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="5"
+			Margin="5"
+			IsVisible="{Binding HasAnyItems}"
+			IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True"
+			HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+			Items="{Binding Items}"
+			SelectedItem="{Binding SelectedItem}" SelectionMode="Single">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Source Amount"
+					Binding="{Binding SourceAmount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Source Account"
+					Binding="{Binding SourceAccount.Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Target Amount"
+					Binding="{Binding TargetAmount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Target Account"
+					Binding="{Binding TargetAccount.Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Product"
+					Binding="{Binding Product.Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="t:TransactionItemCreationViewModel"
+					IsReadOnly="True" Header="Amount"
+					Binding="{Binding Amount, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+
+		<Button
+			Grid.Column="0" Grid.Row="5"
+			Margin="5"
+			IsEnabled="{Binding CanAddItem}"
+			Command="{ReflectionBinding AddItemAsync}">
+			Add item
+		</Button>
+
+		<Button
+			Grid.Column="1" Grid.Row="5"
+			Margin="5"
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save Changes
+		</Button>
+
+		<UserControl
+			Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="5"
+			Content="{Binding ItemCreation}" />
+	</Grid>
+</UserControl>

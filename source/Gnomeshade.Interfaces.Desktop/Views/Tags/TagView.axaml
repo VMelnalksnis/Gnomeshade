@@ -1,0 +1,47 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:t="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Tags;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TagViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Tags.TagView"
+	x:CompileBindings="True"
+	x:DataType="t:TagViewModel">
+
+	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
+		<DataGrid
+			Grid.Column="0" Grid.Row="0"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			x:Name="DataGrid"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding SelectedTag, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="t:TagRow"
+					Header="Name" IsReadOnly="True"
+					Binding="{Binding Name, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="t:TagRow"
+					Header="Description" IsReadOnly="True"
+					Binding="{Binding Description, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+
+		<UserControl
+			Grid.Column="1" Grid.Row="0"
+			Content="{Binding Tag, Mode=OneWay}"/>
+	</Grid>
+</UserControl>
