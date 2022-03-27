@@ -101,7 +101,7 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task SaveAsync()
+	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var creationModel = new ProductCreationModel
 		{
@@ -113,6 +113,6 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 
 		var id = _exisingProduct?.Id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutProductAsync(id, creationModel).ConfigureAwait(false);
-		OnUpserted(id);
+		return id;
 	}
 }

@@ -94,7 +94,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task SaveAsync()
+	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var unit = new UnitCreationModel
 		{
@@ -105,6 +105,6 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 
 		var id = _existingUnit?.Id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutUnitAsync(id, unit).ConfigureAwait(false);
-		OnUpserted(id);
+		return id;
 	}
 }

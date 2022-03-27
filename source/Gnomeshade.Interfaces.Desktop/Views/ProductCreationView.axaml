@@ -69,12 +69,17 @@
 		</AutoCompleteBox>
 
 		<Button
-			Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
+			Grid.Column="0" Grid.Row="4"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}"
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
+		<TextBlock
+			Grid.Column="1" Grid.Row="4"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

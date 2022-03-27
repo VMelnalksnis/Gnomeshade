@@ -36,12 +36,17 @@
 			Text="{Binding Description}" />
 
 		<Button
-			Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"
+			Grid.Column="0" Grid.Row="2"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}"
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
+		<TextBlock
+			Grid.Column="1" Grid.Row="2"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

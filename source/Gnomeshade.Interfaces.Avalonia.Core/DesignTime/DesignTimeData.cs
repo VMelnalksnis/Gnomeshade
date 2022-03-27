@@ -121,4 +121,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="UnitViewModel"/> for use during design time.</summary>
 	public static UnitViewModel UnitViewModel { get; } =
 		UnitViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
+	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
+		TransferUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 }

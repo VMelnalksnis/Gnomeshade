@@ -62,7 +62,7 @@ public sealed class TagCreationViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task SaveAsync()
+	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var tagCreationModel = new TagCreation
 		{
@@ -76,6 +76,6 @@ public sealed class TagCreationViewModel : UpsertionViewModel
 			await _gnomeshadeClient.PutTagAsync(tagId, tagCreationModel);
 		}
 
-		OnUpserted(tagId);
+		return tagId;
 	}
 }
