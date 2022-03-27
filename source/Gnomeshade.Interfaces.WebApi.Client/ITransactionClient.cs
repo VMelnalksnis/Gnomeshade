@@ -101,4 +101,30 @@ public interface ITransactionClient
 	/// <param name="id">The id of the transfer to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteTransferAsync(Guid transactionId, Guid id);
+
+	/// <summary>Gets all purchases for the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get all the purchases.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All purchases for the specified transaction.</returns>
+	Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default);
+
+	/// <summary>Gets the specified purchase.</summary>
+	/// <param name="transactionId">The id of transaction of which the purchase is a part of.</param>
+	/// <param name="id">The id of the purchase to get.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>The purchase with the specified id.</returns>
+	Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default);
+
+	/// <summary>Creates a new purchase or replaces an existing one, if one exists with the specified id.</summary>
+	/// <param name="transactionId">The id of the transaction to which to add a new purchase.</param>
+	/// <param name="id">The id of the purchase.</param>
+	/// <param name="purchase">The purchase to create or replace.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase);
+
+	/// <summary>Deletes the specified purchase.</summary>
+	/// <param name="transactionId">The id of the transaction of the purchase.</param>
+	/// <param name="id">The id of the purchase to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task DeletePurchaseAsync(Guid transactionId, Guid id);
 }

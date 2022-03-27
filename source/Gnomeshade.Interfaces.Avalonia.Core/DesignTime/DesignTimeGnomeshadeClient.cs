@@ -227,6 +227,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePurchaseAsync(Guid transactionId, Guid id) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));

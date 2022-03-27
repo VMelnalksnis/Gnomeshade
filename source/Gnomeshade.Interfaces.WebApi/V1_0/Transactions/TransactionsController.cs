@@ -33,6 +33,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	private readonly TransactionRepository _repository;
 	private readonly TransactionItemRepository _itemRepository;
 	private readonly TransferRepository _transferRepository;
+	private readonly PurchaseRepository _purchaseRepository;
 	private readonly ProductRepository _productRepository;
 	private readonly TransactionUnitOfWork _unitOfWork;
 
@@ -45,6 +46,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
+	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
 	public TransactionsController(
 		TransactionRepository repository,
 		TransactionItemRepository itemRepository,
@@ -53,7 +55,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		TransactionUnitOfWork unitOfWork,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		TransferRepository transferRepository)
+		TransferRepository transferRepository,
+		PurchaseRepository purchaseRepository)
 		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
@@ -61,6 +64,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		_productRepository = productRepository;
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
+		_purchaseRepository = purchaseRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
@@ -299,11 +303,93 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpDelete("{transactionId:guid}/Transfers/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> DeleteItem(Guid transactionId, Guid id)
+	public async Task<StatusCodeResult> DeleteTransfer(Guid transactionId, Guid id)
 	{
 		// todo add transaction id
 		var deletedCount = await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
 		return DeletedEntity<TransferEntity>(id, deletedCount);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync"/>
+	/// <response code="200">Successfully got all purchases.</response>
+	[HttpGet("{transactionId:guid}/Purchases")]
+	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
+	public async Task<List<Purchase>> GetPurchases(
+		Guid transactionId,
+		CancellationToken cancellationToken)
+	{
+		var purchases = await _purchaseRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var models = purchases.Select(purchase => Mapper.Map<Purchase>(purchase)).ToList();
+		return models;
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetPurchaseAsync"/>
+	/// <response code="200">Successfully got the purchase with the specified id.</response>
+	/// <response code="404">Purchase with the specified id does not exist.</response>
+	[HttpGet("{transactionId:guid}/Purchases/{id:guid}")]
+	[ProducesResponseType(typeof(Purchase), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<Purchase>> GetPurchase(
+		Guid transactionId,
+		Guid id,
+		CancellationToken cancellationToken)
+	{
+		var purchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		if (purchase is null)
+		{
+			return NotFound();
+		}
+
+		var model = Mapper.Map<Purchase>(purchase);
+		return Ok(model);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.PutPurchaseAsync"/>
+	/// <response code="201">Successfully created a new purchase.</response>
+	/// <response code="204">Successfully replaced an existing purchase.</response>
+	/// <response code="404">Transaction with the specified id was not found.</response>
+	[HttpPut("{transactionId:guid}/Purchases/{id:guid}")]
+	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> PutPurchase(Guid transactionId, Guid id, [FromBody] PurchaseCreation purchase)
+	{
+		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		{
+			return NotFound();
+		}
+
+		var existingPurchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
+		var entity = Mapper.Map<PurchaseEntity>(purchase) with
+		{
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			OwnerId = ApplicationUser.Id, // todo
+			ModifiedByUserId = ApplicationUser.Id,
+			TransactionId = transactionId,
+		};
+
+		if (existingPurchase is null)
+		{
+			await _purchaseRepository.AddAsync(entity);
+			return CreatedAtAction(nameof(GetPurchase), new { transactionId, id }, null);
+		}
+
+		await _purchaseRepository.UpdateAsync(entity);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.DeletePurchaseAsync"/>
+	/// <response code="204">Successfully deleted purchase.</response>
+	/// <response code="404">Purchase with the specified id does not exist.</response>
+	[HttpDelete("{transactionId:guid}/Purchases/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<StatusCodeResult> DeletePurchase(Guid transactionId, Guid id)
+	{
+		// todo add transaction id
+		var deletedCount = await _purchaseRepository.DeleteAsync(id, ApplicationUser.Id);
+		return DeletedEntity<PurchaseEntity>(id, deletedCount);
 	}
 
 	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(

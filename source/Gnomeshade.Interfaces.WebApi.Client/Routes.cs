@@ -162,4 +162,13 @@ public static class Routes
 
 		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
 	}
+
+	internal static class Purchases
+	{
+		private const string _path = nameof(Purchases);
+
+		internal static string Uri(Guid transactionId) => $"{TransactionIdUri(transactionId)}/{_path}";
+
+		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+	}
 }

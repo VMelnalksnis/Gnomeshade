@@ -175,6 +175,22 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Transfers.IdUri(transactionId, id));
 
 	/// <inheritdoc />
+	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync<List<Purchase>>(Purchases.Uri(transactionId), cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<Purchase>(Purchases.IdUri(transactionId, id), cancellationToken);
+
+	/// <inheritdoc />
+	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase) =>
+		PutAsync(Purchases.IdUri(transactionId, id), purchase);
+
+	/// <inheritdoc />
+	public Task DeletePurchaseAsync(Guid transactionId, Guid id) =>
+		DeleteAsync(Purchases.IdUri(transactionId, id));
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id) =>
 		GetAsync<Account>(Accounts.IdUri(id));
 

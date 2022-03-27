@@ -81,6 +81,7 @@ public class Startup
 			.AddScoped<OwnerRepository>()
 			.AddScoped<OwnershipRepository>()
 			.AddScoped<TransactionRepository>()
+			.AddScoped<PurchaseRepository>()
 			.AddScoped<TransferRepository>()
 			.AddScoped<TransactionItemRepository>()
 			.AddScoped<UserRepository>()

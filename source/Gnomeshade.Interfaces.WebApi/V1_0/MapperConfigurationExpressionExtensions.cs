@@ -31,6 +31,9 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<TransactionCreationModel, TransactionEntity>();
 		options.CreateMap<TransactionEntity, Transaction>();
 
+		options.CreateMap<PurchaseCreation, PurchaseEntity>();
+		options.CreateMap<PurchaseEntity, Purchase>();
+
 		options.CreateMap<TransferCreation, TransferEntity>();
 		options.CreateMap<TransferEntity, Transfer>();
 

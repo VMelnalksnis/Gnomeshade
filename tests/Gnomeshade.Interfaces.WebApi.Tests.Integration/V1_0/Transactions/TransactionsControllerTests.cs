@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using FluentAssertions.Extensions;
 
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -230,6 +231,71 @@ public class TransactionsControllerTests
 
 		(await FluentActions
 				.Awaiting(() => _client.PutTransferAsync(transactionId, transferId, transferCreation))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Purchases()
+	{
+		var transactionCreationModel = new TransactionCreationModel
+		{
+			ValuedAt = DateTimeOffset.Now,
+			Items = new() { _itemCreationFaker.Generate() },
+		};
+
+		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+
+		var purchaseId = Guid.NewGuid();
+		var purchaseCreation = new PurchaseCreation
+		{
+			Price = 2.53m,
+			CurrencyId = _account1.Currencies.First().Currency.Id,
+			ProductId = _productId,
+			Amount = 1,
+		};
+
+		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
+		var purchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
+		var purchases = await _client.GetPurchasesAsync(transactionId);
+
+		purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
+		purchase.Should().BeEquivalentTo(purchaseCreation);
+
+		var deliveryDate = DateTimeOffset.Now;
+		purchaseCreation = purchaseCreation with { DeliveryDate = deliveryDate };
+		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
+		(await _client.GetPurchaseAsync(transactionId, purchaseId)).DeliveryDate
+			.Should()
+			.BeCloseTo(deliveryDate.ToUniversalTime(), 100.Milliseconds());
+
+		await _client.DeletePurchaseAsync(transactionId, purchaseId);
+		(await _client.GetPurchasesAsync(transactionId)).Should().BeEmpty();
+		(await FluentActions
+				.Awaiting(() => _client.GetPurchaseAsync(transactionId, purchaseId))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task PutPurchase_NonExistentTransaction()
+	{
+		var transactionId = Guid.NewGuid();
+		var purchaseId = Guid.NewGuid();
+		var purchaseCreation = new PurchaseCreation
+		{
+			Price = 2.53m,
+			CurrencyId = _account1.Currencies.First().Currency.Id,
+			ProductId = _productId,
+			Amount = 1,
+		};
+
+		(await FluentActions
+				.Awaiting(() => _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
