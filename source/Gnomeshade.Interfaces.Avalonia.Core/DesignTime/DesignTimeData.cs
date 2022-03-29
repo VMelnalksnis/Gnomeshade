@@ -145,4 +145,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
 		TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
+
+	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
+	public static TransactionFilter TransactionFilter { get; } =
+		new() { FromDate = DateTimeOffset.Now, ToDate = DateTimeOffset.Now };
 }

@@ -2,11 +2,13 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Input;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -22,7 +24,16 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	private TransactionViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+
+		Filter = new();
+		Filter.PropertyChanged += FilterOnPropertyChanged;
 	}
+
+	/// <summary>Gets the transaction filter.</summary>
+	public TransactionFilter Filter { get; }
+
+	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
+	public bool CanRefresh => Filter.IsValid;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
@@ -37,7 +48,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task RefreshAsync()
 	{
-		var transactions = await _gnomeshadeClient.GetTransactionsAsync(null, null).ConfigureAwait(false);
+		var transactions = await _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate).ConfigureAwait(false);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
@@ -76,5 +87,13 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow}.DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
+	}
+
+	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(TransactionFilter.IsValid))
+		{
+			OnPropertyChanged(nameof(CanRefresh));
+		}
 	}
 }
