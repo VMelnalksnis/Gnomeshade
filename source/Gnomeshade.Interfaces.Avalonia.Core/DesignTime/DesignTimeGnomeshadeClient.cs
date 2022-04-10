@@ -181,8 +181,27 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
-		throw new NotImplementedException();
+	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction)
+	{
+		var existingTransaction = _transactions.SingleOrDefault(t => t.Id == id);
+		if (existingTransaction is not null)
+		{
+			_transactions.Remove(existingTransaction);
+		}
+
+		_transactions.Add(new()
+		{
+			Id = id,
+			BookedAt = transaction.BookedAt,
+			ValuedAt = transaction.ValuedAt,
+			ReconciledAt = transaction.ReconciledAt,
+			Description = transaction.Description,
+			CreatedAt = DateTimeOffset.UtcNow,
+			ModifiedAt = DateTimeOffset.Now,
+		});
+
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
 	public Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item)

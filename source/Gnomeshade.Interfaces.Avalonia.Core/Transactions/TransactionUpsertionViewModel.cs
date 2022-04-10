@@ -10,6 +10,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
@@ -80,7 +81,20 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	protected override Task<Guid> SaveValidatedAsync() => throw new NotImplementedException();
+	protected override async Task<Guid> SaveValidatedAsync()
+	{
+		var creationModel = new TransactionCreationModel
+		{
+			BookedAt = Properties.BookedAt,
+			ValuedAt = Properties.ValuedAt,
+			ReconciledAt = Properties.ReconciledAt,
+			Description = Properties.Description,
+		};
+
+		await GnomeshadeClient.PutTransactionAsync(_id, creationModel).ConfigureAwait(false);
+		await RefreshAsync().ConfigureAwait(false);
+		return _id;
+	}
 
 	private void PropertiesOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{

@@ -2,29 +2,51 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
+using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
+[TestOf(typeof(TransactionViewModel))]
 public class TransactionViewModelTests
 {
-	private readonly IGnomeshadeClient _gnomeshadeClient = new DesignTimeGnomeshadeClient();
 	private TransactionViewModel _viewModel = null!;
 
 	[SetUp]
-	public async Task SetUpAsync()
+	public async Task SetUp()
 	{
 		_viewModel = await TransactionViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+	}
+
+	[Test]
+	public void Details_ShouldBeUpdatedBySelected()
+	{
+		using (new AssertionScope())
+		{
+			_viewModel.Selected.Should().BeNull();
+			_viewModel.Details.Should().BeNull();
+		}
+
+		_viewModel.Selected = _viewModel.Rows.First();
+		_viewModel.Details.Should().NotBeNull();
+		_viewModel.Details!.CanSave.Should().BeTrue();
+
+		_viewModel.Selected = null;
+		_viewModel.Details.Should().BeNull();
+	}
+
+	[Test]
+	public void DataGridView_ShouldBeEquivalentToRows()
+	{
+		_viewModel.Rows.Should().HaveCount(_viewModel.DataGridView.Count);
 	}
 
 	[Test]
@@ -32,7 +54,7 @@ public class TransactionViewModelTests
 	{
 		_viewModel.CanDelete.Should().BeFalse();
 
-		_viewModel.SelectedOverview = _viewModel.Transactions.First();
+		_viewModel.Selected = _viewModel.Rows.First();
 
 		_viewModel.CanDelete.Should().BeTrue();
 	}
@@ -49,21 +71,20 @@ public class TransactionViewModelTests
 			}
 		};
 
-		_viewModel.SelectedOverview = _viewModel.Transactions.First();
+		_viewModel.Selected = _viewModel.Rows.First();
 
 		canDeleteChanged.Should().BeTrue();
 	}
 
+	// todo currently testing against static data, test order matters for deleting
 	[Test]
-	public async Task DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
+	public async Task X_DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
 	{
-		var transactionToDelete = _viewModel.Transactions.First();
-		_viewModel.SelectedOverview = transactionToDelete;
+		var transactionToDelete = _viewModel.Rows.First();
+		_viewModel.Selected = transactionToDelete;
+
 		await _viewModel.DeleteSelectedAsync();
 
-		await FluentActions
-			.Awaiting(() => _gnomeshadeClient.GetTransactionAsync(transactionToDelete.Id))
-			.Should()
-			.ThrowAsync<InvalidOperationException>();
+		_viewModel.Rows.Should().BeEmpty();
 	}
 }

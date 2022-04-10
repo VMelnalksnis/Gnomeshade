@@ -3,79 +3,37 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 using FluentAssertions;
 
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 using NUnit.Framework;
 
-using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items.TransactionDetailViewModel;
+using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionUpsertionViewModel;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
-[TestOf(typeof(TransactionDetailViewModel))]
+[TestOf(typeof(TransactionUpsertionViewModel))]
 public class TransactionDetailViewModelTests
 {
 	[Test]
-	public async Task CanDelete_ShouldBeExpected()
+	public async Task SaveAsync_ShouldUpdate()
 	{
 		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
-		viewModel.Items.Should().HaveCount(2);
 
-		viewModel.SelectedItem.Should().BeNull();
-		viewModel.CanDeleteItem.Should().BeFalse();
+		var reconciledAt = DateTimeOffset.Now;
 
-		viewModel.SelectedItem = viewModel.Items.First();
-		viewModel.CanDeleteItem.Should().BeTrue();
+		viewModel.Properties.ReconciliationDate = reconciledAt;
+		viewModel.Properties.ReconciliationTime = reconciledAt.TimeOfDay;
 
-		await viewModel.DeleteItemAsync();
+		viewModel.CanSave.Should().BeTrue();
 
-		viewModel.SelectedItem.Should().BeNull();
-		viewModel.CanDeleteItem.Should().BeFalse();
-		viewModel.Items.Should().ContainSingle();
-	}
+		await viewModel.SaveAsync();
 
-	[Test]
-	public async Task AddItemAsync_ShouldRefreshDataGridView()
-	{
-		var changedProperties = new List<PropertyChangedEventArgs>();
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
-		viewModel.PropertyChanged += (_, args) => changedProperties.Add(args);
-
-		var existingItem = viewModel.Items.First();
-		var itemCreation = viewModel.ItemCreation;
-		itemCreation.SourceAccount = itemCreation.Accounts.Single(a => a.Name == existingItem.SourceAccount);
-		itemCreation.SourceAmount = existingItem.SourceAmount;
-		itemCreation.TargetAccount = itemCreation.Accounts.Single(a => a.Name == existingItem.TargetAccount);
-		itemCreation.Product = itemCreation.Products.Single(p => p.Name == existingItem.Product);
-		itemCreation.Amount = existingItem.Amount;
-
-		viewModel.CanAddItem.Should().BeTrue();
-		await viewModel.AddItemAsync();
-
-		changedProperties.Should().Contain(args => args.PropertyName == nameof(TransactionDetailViewModel.DataGridView));
-
-		viewModel.SelectedItem = viewModel.Items.Last();
-		await viewModel.DeleteItemAsync();
-	}
-
-	[Test]
-	public async Task SetSelectedItem_ShouldUpdateItemCreation()
-	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
-		var itemToSelect = viewModel.Items.First();
-
-		viewModel.ItemCreation.Amount.Should().BeNull();
-
-		viewModel.SelectedItem = itemToSelect;
-
-		viewModel.ItemCreation.Amount.Should().Be(itemToSelect.Amount);
-		viewModel.ItemCreation.Amount.Should().NotBeNull();
+		viewModel.ErrorMessage.Should().BeNullOrWhiteSpace();
+		viewModel.Properties.ReconciledAt.Should().Be(reconciledAt);
 	}
 }

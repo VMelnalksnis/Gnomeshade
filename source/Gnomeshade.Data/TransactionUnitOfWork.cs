@@ -4,7 +4,6 @@
 
 using System;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
@@ -68,11 +67,6 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <exception cref="ArgumentException"><paramref name="transaction"/> does not have any items.</exception>
 	public async Task<Guid> AddAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
 	{
-		if (!transaction.Items.Any())
-		{
-			throw new ArgumentException("Transaction must have at least one item", nameof(transaction));
-		}
-
 		if (transaction.Id == Guid.Empty)
 		{
 			transaction = transaction with { Id = Guid.NewGuid() };
@@ -170,11 +164,6 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <returns>The number of affected rows.</returns>
 	public async Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, IDbTransaction dbTransaction)
 	{
-		if (!transaction.Items.Any())
-		{
-			throw new ArgumentException("Transaction must have at least one item", nameof(transaction));
-		}
-
 		transaction.ModifiedByUserId = modifiedBy.Id;
 		var rows = await _repository.UpdateAsync(transaction, dbTransaction).ConfigureAwait(false);
 
