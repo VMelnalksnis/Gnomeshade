@@ -90,6 +90,7 @@ public class Startup
 			.AddScoped<ProductRepository>()
 			.AddScoped<UnitRepository>()
 			.AddScoped<CounterpartyRepository>()
+			.AddScoped<LinkRepository>()
 			.AddScoped<AccountUnitOfWork>()
 			.AddScoped<TagRepository>()
 			.AddScoped<TransactionUnitOfWork>()

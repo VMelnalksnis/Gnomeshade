@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
@@ -40,6 +41,24 @@ public interface ITransactionClient
 	/// <param name="id">The id of the transaction to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteTransactionAsync(Guid id);
+
+	/// <summary>Gets all links for the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get the links.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All links for the specified transaction.</returns>
+	Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default);
+
+	/// <summary>Adds the specified link to a transaction.</summary>
+	/// <param name="transactionId">The id of the transaction to which to add the link.</param>
+	/// <param name="linkId">The id of the link to add to the transaction.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task AddLinkToTransactionAsync(Guid transactionId, Guid linkId);
+
+	/// <summary>Removes the specified link from a transaction.</summary>
+	/// <param name="transactionId">The id of the transaction from which to remove the link.</param>
+	/// <param name="linkId">The id of the link to remove from the transaction.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task RemoveLinkFromTransactionAsync(Guid transactionId, Guid linkId);
 
 	/// <summary>Gets all transfers for the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get all the transfers.</param>

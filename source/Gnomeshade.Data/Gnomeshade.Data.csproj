@@ -24,6 +24,7 @@
         <EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql"/>
         <EmbeddedResource Include="Migrations\00000007_transfers.sql"/>
         <EmbeddedResource Include="Migrations\00000008_purchases.sql"/>
+        <EmbeddedResource Include="Migrations\00000009_links.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
@@ -37,6 +38,10 @@
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Link\Delete.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Link\Insert.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Link\Select.sql"/>
+        <EmbeddedResource Include="Repositories\Queries\Link\Update.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
         <EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>

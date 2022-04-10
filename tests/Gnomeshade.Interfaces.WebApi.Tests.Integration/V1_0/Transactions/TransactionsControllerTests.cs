@@ -14,6 +14,7 @@ using FluentAssertions.Extensions;
 
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
@@ -222,6 +223,31 @@ public class TransactionsControllerTests
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Links()
+	{
+		var transactionCreation = new TransactionCreationModel { ValuedAt = DateTimeOffset.Now };
+		var transactionId = await _client.CreateTransactionAsync(transactionCreation);
+
+		var uri = $"https://localhost/documents/{Guid.NewGuid()}";
+		var linkCreation = new LinkCreation { Uri = new(uri) };
+		var linkId = Guid.NewGuid();
+		await _client.PutLinkAsync(linkId, linkCreation);
+
+		(await _client.GetTransactionLinksAsync(transactionId)).Should().BeEmpty();
+
+		await _client.AddLinkToTransactionAsync(transactionId, linkId);
+		var link = (await _client.GetTransactionLinksAsync(transactionId))
+			.Should()
+			.ContainSingle().Subject;
+
+		link.Id.Should().Be(linkId);
+		link.Uri.Should().Be(uri);
+
+		await _client.RemoveLinkFromTransactionAsync(transactionId, linkId);
+		(await _client.GetTransactionLinksAsync(transactionId)).Should().BeEmpty();
 	}
 
 	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(

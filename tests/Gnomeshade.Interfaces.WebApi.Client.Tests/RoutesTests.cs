@@ -21,7 +21,7 @@ public class RoutesTests
 	[TestCaseSource(typeof(TransactionUriTestCaseSource))]
 	public void TransactionUri_ShouldReturnExpected(DateTimeOffset? from, DateTimeOffset? to, string expectedUri)
 	{
-		Routes.TransactionDateRangeUri(from, to).Should().Be(expectedUri);
+		Routes.Transactions.DateRangeUri(from, to).Should().Be(expectedUri);
 	}
 
 	[TestCase(3, TestName = "Positive offset contains '+'")]

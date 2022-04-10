@@ -8,6 +8,7 @@ using AutoMapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -56,6 +57,9 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<UnitEntity, Unit>();
 		options.CreateMap<UnitCreationModel, UnitEntity>();
+
+		options.CreateMap<LinkEntity, Link>();
+		options.CreateMap<LinkCreation, Link>();
 
 		options.CreateMap<DateTimeOffset, DateTimeOffset>().ConvertUsing<DateTimeOffsetUtcConverter>();
 		options.CreateMap<DateTimeOffset?, DateTimeOffset?>().ConvertUsing<DateTimeOffsetUtcConverter>();

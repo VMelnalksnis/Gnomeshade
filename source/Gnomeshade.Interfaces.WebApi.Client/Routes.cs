@@ -17,7 +17,6 @@ public static class Routes
 	internal const string _currencyUri = "Currencies";
 	internal const string _iso20022 = "Iso";
 	internal const string _productUri = "Products";
-	internal const string _transactionUri = "Transactions";
 	internal const string _unitUri = "Units";
 	internal const string _tagUri = "Tags";
 	internal const string _loginUri = $"{_authenticationUri}/Login";
@@ -40,38 +39,6 @@ public static class Routes
 	/// <param name="id">The id of the product.</param>
 	/// <returns>Relative uri for a specific account.</returns>
 	public static string ProductIdUri(Guid id) => $"{_productUri}/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the specified transaction.</summary>
-	/// <param name="id">The id of the transaction.</param>
-	/// <returns>Relative uri for a specific transaction.</returns>
-	public static string TransactionIdUri(Guid id) => $"{_transactionUri}/{Format(id)}";
-
-	/// <summary>Gets the relative uri for all transactions within the specified period.</summary>
-	/// <param name="from">The point in time from which to select transactions.</param>
-	/// <param name="to">The point in time to which to select transactions.</param>
-	/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
-	public static string TransactionDateRangeUri(DateTimeOffset? from, DateTimeOffset? to)
-	{
-		var keyValues = new Dictionary<DateTimeOffset, string>(2);
-		if (from.HasValue)
-		{
-			keyValues.Add(from.Value, "from");
-		}
-
-		if (to.HasValue)
-		{
-			keyValues.Add(to.Value, "to");
-		}
-
-		if (!keyValues.Any())
-		{
-			return _transactionUri;
-		}
-
-		var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
-		var query = string.Join('&', parameters);
-		return $"{_transactionUri}?{query}";
-	}
 
 	/// <summary>Gets the relative uri for the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
@@ -124,11 +91,57 @@ public static class Routes
 		public static string CurrencyUri(Guid id) => $"{_uri}/{Format(id)}/{_currencyUri}";
 	}
 
+	/// <summary>Transaction routes.</summary>
+	public static class Transactions
+	{
+		internal const string _uri = "Transactions";
+
+		/// <summary>Gets the relative uri for all transactions within the specified period.</summary>
+		/// <param name="from">The point in time from which to select transactions.</param>
+		/// <param name="to">The point in time to which to select transactions.</param>
+		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
+		public static string DateRangeUri(DateTimeOffset? from, DateTimeOffset? to)
+		{
+			var keyValues = new Dictionary<DateTimeOffset, string>(2);
+			if (from.HasValue)
+			{
+				keyValues.Add(from.Value, "from");
+			}
+
+			if (to.HasValue)
+			{
+				keyValues.Add(to.Value, "to");
+			}
+
+			if (!keyValues.Any())
+			{
+				return _uri;
+			}
+
+			var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
+			var query = string.Join('&', parameters);
+			return $"{_uri}?{query}";
+		}
+
+		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+
+		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
+
+		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
+	}
+
+	internal static class Links
+	{
+		internal const string _uri = "Links";
+
+		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+	}
+
 	internal static class Transfers
 	{
 		private const string _path = nameof(Transfers);
 
-		internal static string Uri(Guid transactionId) => $"{TransactionIdUri(transactionId)}/{_path}";
+		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
 
 		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
 	}
@@ -137,7 +150,7 @@ public static class Routes
 	{
 		private const string _path = nameof(Purchases);
 
-		internal static string Uri(Guid transactionId) => $"{TransactionIdUri(transactionId)}/{_path}";
+		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
 
 		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
 	}

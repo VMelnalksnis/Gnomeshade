@@ -70,6 +70,17 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(Ownership)}.Insert.sql");
 	}
 
+	internal static class Link
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Link)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Link)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Link)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Link)}.Update.sql");
+	}
+
 	internal static class Product
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Product)}.Delete.sql");

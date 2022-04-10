@@ -11,6 +11,7 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
@@ -88,6 +89,22 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<Link>> GetLinksAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Link>>(Links._uri, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Link> GetLinkAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<Link>(Links.IdUri(id), cancellationToken);
+
+	/// <inheritdoc />
+	public Task PutLinkAsync(Guid id, LinkCreation link) =>
+		PutAsync(Links.IdUri(id), link);
+
+	/// <inheritdoc />
+	public Task DeleteLinkAsync(Guid id) =>
+		DeleteAsync(Links.IdUri(id));
+
+	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
 		GetAsync<Counterparty>($"{_counterpartyUri}/Me");
 
@@ -116,23 +133,35 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc/>
 	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
-		PostAsync(_transactionUri, transaction);
+		PostAsync(Transactions._uri, transaction);
 
 	/// <inheritdoc />
 	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
-		PutAsync(TransactionIdUri(id), transaction);
+		PutAsync(Transactions.IdUri(id), transaction);
 
 	/// <inheritdoc />
 	public Task<Transaction> GetTransactionAsync(Guid id) =>
-		GetAsync<Transaction>(TransactionIdUri(id));
+		GetAsync<Transaction>(Transactions.IdUri(id));
 
 	/// <inheritdoc />
 	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
-		GetAsync<List<Transaction>>(TransactionDateRangeUri(from, to));
+		GetAsync<List<Transaction>>(Transactions.DateRangeUri(from, to));
 
 	/// <inheritdoc />
 	public Task DeleteTransactionAsync(Guid id) =>
-		DeleteAsync(TransactionIdUri(id));
+		DeleteAsync(Transactions.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync<List<Link>>(Transactions.LinkUri(transactionId), cancellationToken);
+
+	/// <inheritdoc />
+	public Task AddLinkToTransactionAsync(Guid transactionId, Guid linkId) =>
+		PutAsync(Transactions.LinkIdUri(transactionId, linkId));
+
+	/// <inheritdoc />
+	public Task RemoveLinkFromTransactionAsync(Guid transactionId, Guid linkId) =>
+		DeleteAsync(Transactions.LinkIdUri(transactionId, linkId));
 
 	/// <inheritdoc />
 	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>

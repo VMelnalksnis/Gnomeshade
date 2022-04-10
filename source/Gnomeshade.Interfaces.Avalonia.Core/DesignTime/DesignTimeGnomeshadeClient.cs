@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
@@ -130,6 +131,30 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task LogOutAsync() => throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<List<Link>> GetLinksAsync(CancellationToken cancellationToken = default)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task<Link> GetLinkAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task PutLinkAsync(Guid id, LinkCreation link)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task DeleteLinkAsync(Guid id)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
 		Task.FromResult(_counterparties.Single(counterparty => counterparty.Id == Guid.Empty));
 
@@ -195,6 +220,24 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	{
 		_transactions.Remove(_transactions.Single(transaction => transaction.Id == id));
 		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task AddLinkToTransactionAsync(Guid transactionId, Guid linkId)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task RemoveLinkFromTransactionAsync(Guid transactionId, Guid linkId)
+	{
+		throw new NotImplementedException();
 	}
 
 	/// <inheritdoc />

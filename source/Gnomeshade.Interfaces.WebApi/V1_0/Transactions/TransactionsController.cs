@@ -14,6 +14,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
@@ -133,6 +134,37 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		}
 
 		_ = await _unitOfWork.DeleteAsync(transaction, ApplicationUser.Id);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetTransactionLinksAsync"/>
+	/// <response code="200">Successfully got all links.</response>
+	[HttpGet("{transactionId:guid}/Links")]
+	[ProducesResponseType(typeof(List<Link>), Status200OK)]
+	public async Task<List<Link>> GetLinks(Guid transactionId, CancellationToken cancellationToken)
+	{
+		var links = await _repository.GetAllLinksAsync(transactionId, ApplicationUser.Id, cancellationToken);
+		var models = links.Select(link => Mapper.Map<Link>(link)).ToList();
+		return models;
+	}
+
+	/// <inheritdoc cref="ITransactionClient.AddLinkToTransactionAsync"/>
+	/// <response code="204">Successfully added link to transaction.</response>
+	[HttpPut("{transactionId:guid}/Links/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> AddLink(Guid transactionId, Guid id)
+	{
+		await _repository.AddLinkAsync(transactionId, id, ApplicationUser.Id);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.RemoveLinkFromTransactionAsync"/>
+	/// <response code="204">Successfully removed link to transaction.</response>
+	[HttpDelete("{transactionId:guid}/Links/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> RemoveLink(Guid transactionId, Guid id)
+	{
+		await _repository.RemoveLinkAsync(transactionId, id, ApplicationUser.Id);
 		return NoContent();
 	}
 

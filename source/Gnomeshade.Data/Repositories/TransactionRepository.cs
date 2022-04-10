@@ -56,25 +56,10 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>Searches for a transaction which has items with the specified bank reference.</summary>
-	/// <param name="bankReference">The bank reference by which to search.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransactionEntity?> FindByBankReferenceAsync(
-		string bankReference,
-		Guid ownerId,
-		IDbTransaction dbTransaction)
-	{
-		var sql = $"{SelectSql} WHERE ti.bank_reference = @bankReference AND {_accessSql};";
-		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
-		return FindAsync(command);
-	}
-
 	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
 	/// <param name="from">The start of the time range.</param>
 	/// <param name="to">The end of the time range.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="ownerId">The id of the owner of the transactions.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all transactions.</returns>
 	public async Task<List<TransactionEntity>> GetAllAsync(
@@ -83,10 +68,62 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {_accessSql} ORDER BY t.valued_at DESC";
+		var sql =
+			$"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {_accessSql} ORDER BY t.valued_at DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return transactions.ToList();
+	}
+
+	/// <summary>Gets all links of the specified transaction.</summary>
+	/// <param name="id">The id of the transaction for which to get all links.</param>
+	/// <param name="ownerId">The id of the owner of the transaction and links.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>All links of the specified transaction.</returns>
+	public Task<IEnumerable<LinkEntity>> GetAllLinksAsync(
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = $@"{Queries.Link.Select}
+         INNER JOIN transaction_links ON transaction_links.link_id = links.id
+         WHERE transaction_links.transaction_id = @id
+           AND {_accessSql};";
+		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
+		return DbConnection.QueryAsync<LinkEntity>(command);
+	}
+
+	/// <summary>Adds the specified link to the specified transaction.</summary>
+	/// <param name="id">The id of the transaction to which to add the link.</param>
+	/// <param name="linkId">The id of the link to add to the transaction.</param>
+	/// <param name="ownerId">The id of the owner of the transaction and link.</param>
+	/// <returns>The number of rows affected.</returns>
+	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid ownerId)
+	{
+		const string sql = @"
+INSERT INTO transaction_links 
+    (created_at, created_by_user_id, link_id, transaction_id) 
+VALUES 
+    (DEFAULT, @ownerId, @linkId, @id);";
+
+		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
+		return DbConnection.ExecuteAsync(command);
+	}
+
+	/// <summary>Removes the specified link to the specified transaction.</summary>
+	/// <param name="id">The id of the transaction from which to remove the link.</param>
+	/// <param name="linkId">The id of the link to remove from the transaction.</param>
+	/// <param name="ownerId">The id of the owner of the transaction and link.</param>
+	/// <returns>The number of rows affected.</returns>
+	public Task<int> RemoveLinkAsync(Guid id, Guid linkId, Guid ownerId)
+	{
+		const string sql = @"
+DELETE FROM transaction_links
+WHERE transaction_links.transaction_id = @id
+  AND transaction_links.link_id = @linkId;";
+
+		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
+		return DbConnection.ExecuteAsync(command);
 	}
 }
