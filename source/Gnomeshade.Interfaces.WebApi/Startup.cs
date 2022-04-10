@@ -111,6 +111,8 @@ public class Startup
 		services
 			.AddTransient<DatabaseMigrator>()
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
+
+		services.AddHealthChecks();
 	}
 
 	/// <summary>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</summary>
@@ -137,7 +139,11 @@ public class Startup
 		application.UseAuthentication();
 		application.UseAuthorization();
 
-		application.UseEndpoints(builder => builder.MapControllers().RequireAuthorization());
+		application.UseEndpoints(builder =>
+		{
+			builder.MapControllers().RequireAuthorization();
+			builder.MapHealthChecks("/health").AllowAnonymous();
+		});
 
 		application.UseSwagger();
 		application.UseSwaggerUI(options => options.SwaggerEndpointV1_0());
