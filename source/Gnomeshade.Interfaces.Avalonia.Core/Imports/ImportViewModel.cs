@@ -46,9 +46,6 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <summary>Raised when a product is selected for editing.</summary>
 	public event EventHandler<ProductSelectedEventArgs>? ProductSelected;
 
-	/// <summary>Raised when a transaction item is selected for editing.</summary>
-	public event EventHandler<TransactionItemSelectedEventArgs>? TransactionItemSelected;
-
 	/// <summary>Gets or sets the local path of the report file to import.</summary>
 	public string? FilePath
 	{
@@ -207,12 +204,9 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="ItemGridView"/>.</summary>
 	public void OnItemDataGridDoubleTapped()
 	{
-		if (SelectedItem is null || TransactionItemSelected is null)
+		if (SelectedItem is null)
 		{
-			return;
 		}
-
-		TransactionItemSelected(this, new(SelectedItem.Id));
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs args)

@@ -48,9 +48,6 @@
 						x:Name="MergeCounterparties" Header="_Merge Counterparties"
 						Command="{ReflectionBinding MergeCounterpartiesAsync}" />
 					<MenuItem
-						x:Name="CreateTransaction" Header="Create _Transaction"
-						Command="{ReflectionBinding CreateTransaction}" />
-					<MenuItem
 						x:Name="CreateUnit" Header="Create _Unit"
 						Command="{ReflectionBinding CreateUnitAsync}" />
 					<MenuItem

@@ -12,13 +12,10 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 using IdentityModel.OidcClient;
-
-using TransactionViewModel = Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionViewModel;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
@@ -67,42 +64,6 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="ProductCreationViewModel"/> for use during design time.</summary>
 	public static ProductCreationViewModel ProductCreationViewModel { get; } =
 		ProductCreationViewModel.CreateAsync(GnomeshadeClient).Result;
-
-	/// <summary>Gets an instance of <see cref="TransactionCreationViewModel"/> for use during design time.</summary>
-	public static TransactionCreationViewModel TransactionCreationViewModel { get; } = new(GnomeshadeClient);
-
-	/// <summary>Gets an instance of <see cref="TransactionItemCreationViewModel"/> for use during design time.</summary>
-	public static TransactionItemCreationViewModel TransactionItemCreationViewModel { get; } =
-		TransactionItemCreationViewModel.CreateAsync(GnomeshadeClient).Result;
-
-	/// <summary>Gets an instance of <see cref="TransactionItemSplitViewModel"/> for use during design time.</summary>
-	public static TransactionItemSplitViewModel TransactionItemSplitViewModel { get; } =
-		TransactionItemSplitViewModel.CreateAsync(
-			GnomeshadeClient,
-			new(
-				new()
-				{
-					SourceAmount = 123.45m,
-					TargetAmount = 123.45m,
-					Product = new() { Name = "Bread" },
-					Amount = 0.5m,
-				},
-				new() { Name = "Credit" },
-				null,
-				new() { AlphabeticCode = "EUR" },
-				new() { Name = "Amazon DE 123" },
-				new() { Name = "Amazon" },
-				new() { AlphabeticCode = "EUR" },
-				new() { "Food" }),
-			Guid.Empty).Result;
-
-	/// <summary>Gets an instance of <see cref="TransactionDetailViewModel"/> for use during design time.</summary>
-	public static TransactionDetailViewModel TransactionDetailViewModel { get; } =
-		TransactionDetailViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
-
-	/// <summary>Gets an instance of <see cref="ItemsTransactionViewModel"/> for use during design time.</summary>
-	public static Core.Transactions.Items.TransactionViewModel ItemsTransactionViewModel { get; } =
-		Core.Transactions.Items.TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =

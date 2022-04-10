@@ -14,7 +14,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core;
@@ -111,22 +111,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 	}
 
 	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="TransactionCreationViewModel"/>.
-	/// </summary>
-	public void CreateTransaction()
-	{
-		if (ActiveView is TransactionCreationViewModel)
-		{
-			return;
-		}
-
-		var transactionCreationViewModel = new TransactionCreationViewModel(_gnomeshadeClient);
-		transactionCreationViewModel.TransactionCreated += OnTransactionCreated;
-
-		ActiveView = transactionCreationViewModel;
-	}
-
-	/// <summary>
 	/// Switches <see cref="ActiveView"/> to <see cref="ProductCreationViewModel"/>.
 	/// </summary>
 	/// <param name="productId">The id of the product to edit.</param>
@@ -213,25 +197,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 		var importViewModel = new ImportViewModel(_gnomeshadeClient);
 		importViewModel.ProductSelected += OnProductSelected;
-		importViewModel.TransactionItemSelected += OnTransactionItemSelected;
 		ActiveView = importViewModel;
-	}
-
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="TransactionItemCreationViewModel"/>.
-	/// </summary>
-	/// <param name="itemId">The id of the transaction item to edit.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task CreateTransactionItem(Guid itemId)
-	{
-		if (ActiveView is TransactionItemCreationViewModel)
-		{
-			return;
-		}
-
-		var itemCreationViewModel = await TransactionItemCreationViewModel.CreateAsync(_gnomeshadeClient, itemId);
-		itemCreationViewModel.TransactionItemCreated += OnTransactionItemCreated;
-		ActiveView = itemCreationViewModel;
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>
@@ -299,39 +265,13 @@ public sealed class MainWindowViewModel : ViewModelBase
 	private async Task SwitchToTransactionOverviewAsync()
 	{
 		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
-		transactionViewModel.TransactionSelected += OnTransactionSelected;
 		ActiveView = transactionViewModel;
-	}
-
-	private async Task SwitchToTransactionDetailAsync(Guid id)
-	{
-		var transactionDetailViewModel =
-			await TransactionDetailViewModel.CreateAsync(_gnomeshadeClient, id).ConfigureAwait(false);
-		transactionDetailViewModel.ItemSplit += TransactionDetailViewModelOnItemSplit;
-		ActiveView = transactionDetailViewModel;
-	}
-
-	private async Task SwitchToTransactionSplitAsync(TransactionItemRow transactionItemRow, Guid transactionId)
-	{
-		var transactionItemSplitViewModel = await TransactionItemSplitViewModel
-			.CreateAsync(_gnomeshadeClient, transactionItemRow, transactionId).ConfigureAwait(false);
-		ActiveView = transactionItemSplitViewModel;
 	}
 
 	private async Task SwitchToAccountDetailAsync(Guid id)
 	{
 		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, id);
 		ActiveView = accountDetailViewModel;
-	}
-
-	private void TransactionDetailViewModelOnItemSplit(object? sender, TransactionItemSplitEventArgs e)
-	{
-		Task.Run(() => SwitchToTransactionSplitAsync(e.TransactionItemRow, e.TransactionId)).Wait();
-	}
-
-	private void OnTransactionCreated(object? sender, TransactionCreatedEventArgs e)
-	{
-		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
 	private void OnUserLoggedIn(object? sender, EventArgs e)
@@ -362,32 +302,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void OnTransactionSelected(object? sender, TransactionSelectedEventArgs e)
-	{
-		Task.Run(() => SwitchToTransactionDetailAsync(e.TransactionId)).Wait();
-	}
-
 	private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
 	{
 		Task.Run(() => CreateProductAsync(e.ProductId)).Wait();
-	}
-
-	private void OnTransactionItemSelected(object? sender, TransactionItemSelectedEventArgs args)
-	{
-		Task.Run(() => CreateTransactionItem(args.ItemId)).Wait();
-	}
-
-	private void OnTransactionItemCreated(object? sender, TransactionItemCreatedEventArgs args)
-	{
-		if (PreviousView is ImportViewModel importViewModel)
-		{
-			Task.Run(() => importViewModel.RefreshAsync()).Wait();
-			ActiveView = importViewModel;
-		}
-		else
-		{
-			Task.Run(SwitchToTransactionOverviewAsync).Wait();
-		}
 	}
 
 	private void OnAccountSelected(object? sender, AccountSelectedEventArgs e)
@@ -409,7 +326,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 			case ImportViewModel importViewModel:
 				importViewModel.ProductSelected -= OnProductSelected;
-				importViewModel.TransactionItemSelected -= OnTransactionItemSelected;
 				break;
 
 			case LoginViewModel loginViewModel:
@@ -418,22 +334,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 			case ProductCreationViewModel productCreationViewModel:
 				productCreationViewModel.Upserted -= OnProductUpserted;
-				break;
-
-			case TransactionCreationViewModel transactionCreationViewModel:
-				transactionCreationViewModel.TransactionCreated -= OnTransactionCreated;
-				break;
-
-			case TransactionDetailViewModel transactionDetailViewModel:
-				transactionDetailViewModel.ItemSplit -= TransactionDetailViewModelOnItemSplit;
-				break;
-
-			case TransactionItemCreationViewModel transactionItemCreationViewModel:
-				transactionItemCreationViewModel.TransactionItemCreated -= OnTransactionItemCreated;
-				break;
-
-			case TransactionViewModel transactionViewModel:
-				transactionViewModel.TransactionSelected -= OnTransactionSelected;
 				break;
 
 			case UnitCreationViewModel unitCreationViewModel:
