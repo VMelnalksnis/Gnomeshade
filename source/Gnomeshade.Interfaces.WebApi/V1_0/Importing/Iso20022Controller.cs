@@ -8,8 +8,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Ardalis.SmartEnum;
-
 using AutoMapper;
 
 using Gnomeshade.Core;
@@ -50,7 +48,7 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly AccountRepository _accountRepository;
 	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly TransactionRepository _transactionRepository;
-	private readonly ProductRepository _productRepository;
+	private readonly TransferRepository _transferRepository;
 	private readonly TransactionUnitOfWork _transactionUnitOfWork;
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 	private readonly IDbConnection _dbConnection;
@@ -64,7 +62,7 @@ public sealed class Iso20022Controller : ControllerBase
 	/// <param name="accountRepository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="transactionRepository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
-	/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
+	/// <param name="transferRepository">The repository for performing CRUD operations on <see cref="TransferEntity"/>.</param>
 	/// <param name="transactionUnitOfWork">Unit of work for managing transactions and all related entities.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	/// <param name="dbConnection">Database connection for managing transactions.</param>
@@ -77,7 +75,7 @@ public sealed class Iso20022Controller : ControllerBase
 		AccountRepository accountRepository,
 		AccountInCurrencyRepository inCurrencyRepository,
 		TransactionRepository transactionRepository,
-		ProductRepository productRepository,
+		TransferRepository transferRepository,
 		TransactionUnitOfWork transactionUnitOfWork,
 		AccountUnitOfWork accountUnitOfWork,
 		IDbConnection dbConnection,
@@ -90,11 +88,11 @@ public sealed class Iso20022Controller : ControllerBase
 		_accountRepository = accountRepository;
 		_inCurrencyRepository = inCurrencyRepository;
 		_transactionRepository = transactionRepository;
-		_productRepository = productRepository;
 		_transactionUnitOfWork = transactionUnitOfWork;
 		_accountUnitOfWork = accountUnitOfWork;
 		_dbConnection = dbConnection;
 		_mapper = mapper;
+		_transferRepository = transferRepository;
 	}
 
 	/// <summary>Imports transactions from an ISO 20022 Bank-To-Customer Account Report v02.</summary>
@@ -161,13 +159,19 @@ public sealed class Iso20022Controller : ControllerBase
 							bankAccount,
 							user);
 
-						if (transaction.Id != Guid.Empty)
+						if (transaction.Transaction.Id != Guid.Empty)
 						{
 							return (transaction, false);
 						}
 
-						var id = await _transactionUnitOfWork.AddAsync(transaction, dbTransaction);
-						transaction = await _transactionRepository.GetByIdAsync(id, user.Id, dbTransaction);
+						var id = await _transactionUnitOfWork.AddAsync(transaction.Transaction, dbTransaction);
+						var transferId =
+							await _transferRepository.AddAsync(
+								transaction.Transfer with { Id = Guid.NewGuid(), TransactionId = id },
+								dbTransaction);
+						var t1 = await _transactionRepository.GetByIdAsync(id, user.Id, dbTransaction);
+						var t2 = await _transferRepository.GetByIdAsync(transferId, user.Id, dbTransaction);
+						transaction = (t1, t2);
 						return (transaction, true);
 					})
 					.Select(task => task.Result)
@@ -175,7 +179,8 @@ public sealed class Iso20022Controller : ControllerBase
 
 			foreach (var (transaction, created) in importResults)
 			{
-				resultBuilder.AddTransaction(transaction, created);
+				resultBuilder.AddTransaction(transaction.Transaction, created);
+				resultBuilder.AddTransfer(transaction.Transfer, created);
 			}
 
 			dbTransaction.Commit();
@@ -313,7 +318,7 @@ public sealed class Iso20022Controller : ControllerBase
 		throw new KeyNotFoundException($"Could not find account by name {bankAccount}");
 	}
 
-	private async Task<TransactionEntity> Translate(
+	private async Task<(TransactionEntity Transaction, TransferEntity Transfer)> Translate(
 		IDbTransaction dbTransaction,
 		AccountReportResultBuilder resultBuilder,
 		ReportEntry2 reportEntry,
@@ -331,23 +336,15 @@ public sealed class Iso20022Controller : ControllerBase
 		var bankReference = transactionDetails.References?.Proprietary?.Reference;
 		_logger.LogTrace("Bank reference {BankReference}", bankReference);
 
+		var existingTransfer = string.IsNullOrWhiteSpace(bankReference)
+			? null
+			: await _transferRepository.FindByBankReferenceAsync(bankReference, user.Id, dbTransaction);
 		var importHash = await reportEntry.GetHashAsync();
-		var existingTransaction = await _transactionRepository.FindByImportHashAsync(importHash, user.Id, dbTransaction);
-		if (existingTransaction is null && !string.IsNullOrWhiteSpace(bankReference))
+		if (existingTransfer is not null)
 		{
-			existingTransaction = await _transactionRepository.FindByBankReferenceAsync(
-				bankReference,
-				user.Id,
-				dbTransaction);
-		}
-
-		if (existingTransaction is not null)
-		{
+			var existingTransaction = await _transactionRepository.GetByIdAsync(existingTransfer.TransactionId, user.Id, dbTransaction);
 			resultBuilder.AddTransaction(existingTransaction, false);
-			var items = existingTransaction.Items;
-			var inCurrencyIds = items
-				.Select(item => item.SourceAccountId)
-				.Concat(items.Select(item => item.TargetAccountId))
+			var inCurrencyIds = new[] { existingTransfer.SourceAccountId, existingTransfer.TargetAccountId }
 				.Distinct();
 
 			var accounts = inCurrencyIds
@@ -361,12 +358,7 @@ public sealed class Iso20022Controller : ControllerBase
 				resultBuilder.AddAccount(account, false);
 			}
 
-			foreach (var itemProduct in items.Select(item => item.Product))
-			{
-				resultBuilder.AddProduct(itemProduct, false);
-			}
-
-			return existingTransaction;
+			return (existingTransaction, existingTransfer);
 		}
 
 		var amount = reportEntry.Amount.Value;
@@ -394,31 +386,6 @@ public sealed class Iso20022Controller : ControllerBase
 		_logger.LogTrace("Item description {ItemDescription}", description);
 
 		_logger.LogTrace("Mapping {Code} to product", reportEntry.BankTransactionCode);
-
-		var productName = GetProductName(reportEntry.BankTransactionCode);
-		var product = await _productRepository.FindByNameAsync(productName.ToUpperInvariant(), user.Id);
-		if (product is null)
-		{
-			product = new()
-			{
-				Id = Guid.NewGuid(),
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				Name = productName,
-				NormalizedName = productName.ToUpperInvariant(),
-			};
-
-			var id = await _productRepository.AddAsync(product, dbTransaction);
-			product = await _productRepository.GetByIdAsync(id, user.Id);
-			resultBuilder.AddProduct(product, true);
-		}
-		else
-		{
-			resultBuilder.AddProduct(product, false);
-		}
-
-		_logger.LogTrace("Mapped to {Product}", product);
 
 		var (otherCurrency, otherAmount) = await GetOtherAmount(transactionDetails, amount, currency);
 
@@ -472,25 +439,23 @@ public sealed class Iso20022Controller : ControllerBase
 
 		var otherAccountCurrency = otherAccount.Currencies.Single(aic => aic.CurrencyId == otherCurrency.Id);
 
-		var transactionItem = new TransactionItemEntity
+		var transfer = new TransferEntity
 		{
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			BankReference = bankReference,
-			Description = description,
-			ProductId = product.Id,
 		};
 
-		transactionItem = creditDebit == CreditDebitCode.CRDT
-			? transactionItem with
+		transfer = creditDebit == CreditDebitCode.CRDT
+			? transfer with
 			{
 				SourceAmount = otherAmount,
 				SourceAccountId = otherAccountCurrency.Id,
 				TargetAmount = amount,
 				TargetAccountId = reportAccountInCurrency.Id,
 			}
-			: transactionItem with
+			: transfer with
 			{
 				SourceAmount = amount,
 				SourceAccountId = reportAccountInCurrency.Id,
@@ -506,11 +471,10 @@ public sealed class Iso20022Controller : ControllerBase
 			BookedAt = bookingDate.ToUniversalTime(),
 			ImportHash = importHash,
 			ImportedAt = DateTimeOffset.UtcNow, // todo at db transaction level
-			Description = reportEntry.AccountServicerReference,
-			Items = new() { transactionItem },
+			Description = description,
 		};
 
-		return transaction;
+		return (transaction, transfer);
 	}
 
 	private async Task<AccountEntity?> FindOtherAccount(TransactionParty2? relatedParty, UserEntity user)
@@ -581,20 +545,6 @@ public sealed class Iso20022Controller : ControllerBase
 		}
 
 		return null;
-	}
-
-	private string GetProductName(BankTransactionCodeStructure4 transactionCode)
-	{
-		if (transactionCode.Domain is null)
-		{
-			return transactionCode.Proprietary!.Code;
-		}
-
-		var domain = Domain.FromName(transactionCode.Domain.Code, true);
-		var family = SmartEnum<Family, int>.FromName(transactionCode.Domain.Family.Code, true);
-		var subFamily = SmartEnum<SubFamily, int>.FromName(transactionCode.Domain.Family.SubFamilyCode, true);
-
-		return $"{domain.Name} - Family {family.Name}; Subfamily {subFamily.Name}";
 	}
 
 	private async Task<(CurrencyEntity Currency, decimal Amount)> GetOtherAmount(

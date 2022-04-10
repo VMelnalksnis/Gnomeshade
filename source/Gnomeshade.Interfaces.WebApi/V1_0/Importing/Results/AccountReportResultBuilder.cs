@@ -9,7 +9,6 @@ using AutoMapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
@@ -40,15 +39,15 @@ internal sealed class AccountReportResultBuilder
 		ReportResult.AccountReferences.Add(new() { Account = model, Created = created });
 	}
 
-	internal void AddProduct(ProductEntity product, bool created)
+	internal void AddTransfer(TransferEntity transfer, bool created)
 	{
-		if (ReportResult.ProductReferences.Any(reference => reference.Product.Name == product.Name))
+		if (ReportResult.TransferReferences.Any(reference => reference.Transfer.Id == transfer.Id))
 		{
 			return;
 		}
 
-		var model = _mapper.Map<Product>(product);
-		ReportResult.ProductReferences.Add(new() { Product = model, Created = created });
+		var model = _mapper.Map<Transfer>(transfer);
+		ReportResult.TransferReferences.Add(new() { Transfer = model, Created = created });
 	}
 
 	internal void AddTransaction(TransactionEntity transaction, bool created)

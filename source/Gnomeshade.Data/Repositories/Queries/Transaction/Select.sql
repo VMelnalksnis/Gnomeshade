@@ -10,39 +10,8 @@
        t.import_hash           ImportHash,
        t.imported_at           ImportedAt,
        t.reconciled_at         ReconciledAt,
-       t.reconciled_by_user_id ReconciledByUserId,
-       ti.id,
-       ti.owner_id             OwnerId,
-       ti.transaction_id       TransactionId,
-       ti.source_amount        SourceAmount,
-       ti.source_account_id    SourceAccountId,
-       ti.target_amount        TargetAmount,
-       ti.target_account_id    TargetAccountId,
-       ti.created_at           CreatedAt,
-       ti.created_by_user_id   CreatedByUserId,
-       ti.modified_at          ModifiedAt,
-       ti.modified_by_user_id  ModifiedByUserId,
-       ti.product_id           ProductId,
-       ti.amount,
-       ti.bank_reference       BankReference,
-       ti.external_reference   ExternalReference,
-       ti.internal_reference   InternalReference,
-       ti.description,
-       ti.delivery_date        DeliveryDate,
-       p.id,
-       p.created_at            CreatedAt,
-       p.owner_id              OwnerId,
-       p.created_by_user_id    CreatedByUserId,
-       p.modified_at           ModifiedAt,
-       p.modified_by_user_id   ModifiedByUserId,
-       p.name,
-       p.normalized_name       NormalizedName,
-       p.sku                   Sku,
-       p.description,
-       p.unit_id               UnitId
+       t.reconciled_by_user_id ReconciledByUserId
 FROM public.transactions t
          INNER JOIN owners ON owners.id = t.owner_id
          INNER JOIN ownerships ON owners.id = ownerships.owner_id
          INNER JOIN access ON access.id = ownerships.access_id
-         INNER JOIN public.transaction_items ti ON t.id = ti.transaction_id
-         INNER JOIN public.products p ON ti.product_id = p.id

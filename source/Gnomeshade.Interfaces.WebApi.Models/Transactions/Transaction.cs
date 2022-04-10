@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -51,7 +50,4 @@ public sealed record Transaction
 
 	/// <summary>Whether or not this transaction was reconciled.</summary>
 	public bool Reconciled => ReconciledAt.HasValue;
-
-	/// <summary>All items that are a part of this transaction.</summary>
-	public List<TransactionItem> Items { get; init; } = null!;
 }

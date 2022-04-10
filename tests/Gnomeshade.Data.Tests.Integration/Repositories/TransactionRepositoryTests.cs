@@ -22,14 +22,12 @@ public class TransactionRepositoryTests : IDisposable
 {
 	private IDbConnection _dbConnection = null!;
 	private TransactionRepository _repository = null!;
-	private TransactionItemRepository _itemRepository = null!;
 
 	[SetUp]
 	public async Task SetUpAsync()
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 		_repository = new(_dbConnection);
-		_itemRepository = new(_dbConnection);
 	}
 
 	[TearDown]
@@ -37,7 +35,6 @@ public class TransactionRepositoryTests : IDisposable
 	{
 		_dbConnection.Dispose();
 		_repository.Dispose();
-		_itemRepository.Dispose();
 	}
 
 	[Test]

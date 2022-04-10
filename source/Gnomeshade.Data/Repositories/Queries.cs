@@ -129,21 +129,6 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Purchase)}.Update.sql");
 	}
 
-	internal static class TransactionItem
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(TransactionItem)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(TransactionItem)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(TransactionItem)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(TransactionItem)}.Update.sql");
-
-		internal static string AddTag { get; } = Read($"Queries.{nameof(TransactionItem)}.AddTag.sql");
-
-		internal static string RemoveTag { get; } = Read($"Queries.{nameof(TransactionItem)}.RemoveTag.sql");
-	}
-
 	internal static class Unit
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Unit)}.Delete.sql");

@@ -54,6 +54,12 @@
                 </BkTxCd>
                 <NtryDtls>
                     <TxDtls>
+                        <Refs>
+                            <Prtry>
+                                <Tp>SOME_BANK_REF</Tp>
+                                <Ref>FOO111111111</Ref>
+                            </Prtry>
+                        </Refs>
                         <RmtInf>
                             <Ustrd>Komisijas maksa</Ustrd>
                         </RmtInf>
@@ -81,6 +87,10 @@
                     <TxDtls>
                         <Refs>
                             <EndToEndId>34</EndToEndId>
+                            <Prtry>
+                                <Tp>SOME_BANK_REF</Tp>
+                                <Ref>FOO222222222</Ref>
+                            </Prtry>
                         </Refs>
                         <AmtDtls>
                             <InstdAmt>

@@ -3,11 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Gnomeshade.Data.Entities.Abstractions;
-using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Entities;
 
@@ -52,17 +49,4 @@ public sealed record TransactionEntity : IOwnableEntity, IModifiableEntity
 
 	/// <summary>Gets or sets the id of the user that reconciled the transaction.</summary>
 	public Guid? ReconciledByUserId { get; set; }
-
-	/// <summary>Gets or sets the transaction items of this transaction.</summary>
-	public List<TransactionItemEntity> Items { get; set; } = null!;
-
-	/// <summary>Initializes a transaction from a grouping of transaction items.</summary>
-	/// <param name="grouping">A grouping of transaction items by transaction.</param>
-	/// <returns>A transaction with initialized <see cref="Items"/>.</returns>
-	public static TransactionEntity FromGrouping(IGrouping<Guid, OneToOne<TransactionEntity, TransactionItemEntity>> grouping)
-	{
-		var transaction = grouping.First().First;
-		transaction.Items = grouping.Select(oneToOne => oneToOne.Second).ToList();
-		return transaction;
-	}
 }

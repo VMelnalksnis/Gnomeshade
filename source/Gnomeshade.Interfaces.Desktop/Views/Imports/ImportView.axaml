@@ -1,15 +1,10 @@
 ﻿<UserControl
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:i="using:Avalonia.Xaml.Interactivity"
-	xmlns:ia="using:Avalonia.Xaml.Interactions.Core"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:a="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Accounts;assembly=Gnomeshade.Interfaces.Avalonia.Core"
-	xmlns:p="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Products;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:imports="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Imports;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
-	xmlns:items="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.ImportViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.Imports.ImportView"
@@ -40,161 +35,6 @@
 				Import File
 			</Button>
 		</StackPanel>
-
-		<Grid
-			Grid.Column="0" Grid.Row="2"
-			ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,*">
-			<TextBlock Grid.Column="0" Grid.Row="0" Text="Account:" />
-			<TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding UserAccount}" />
-
-			<DataGrid
-				Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
-				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-				Items="{Binding AccountGridView, Mode=TwoWay}"
-				AutoGenerateColumns="False" IsReadOnly="False"
-				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-				<DataGrid.Columns>
-					<DataGridTextColumn
-						x:DataType="a:AccountOverviewRow"
-						Header="Name" IsReadOnly="True"
-						Binding="{Binding Name, Mode=OneWay}" />
-					<DataGridTextColumn
-						x:DataType="a:AccountOverviewRow"
-						Header="Currency" IsReadOnly="True"
-						Binding="{Binding Currency, Mode=OneWay}" />
-					<DataGridTextColumn
-						x:DataType="a:AccountOverviewRow"
-						Header="Disabled" IsReadOnly="True"
-						Binding="{Binding Disabled, Mode=OneWay}" />
-				</DataGrid.Columns>
-
-				<DataGrid.Styles>
-					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-						<Setter Property="Fill" Value="#05769d" />
-					</Style>
-				</DataGrid.Styles>
-			</DataGrid>
-		</Grid>
-
-		<DataGrid
-			Grid.Column="1" Grid.Row="2"
-			x:Name="ProductDataGrid"
-			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-			Items="{Binding ProductGridView, Mode=TwoWay}"
-			SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-			AutoGenerateColumns="False" IsReadOnly="False"
-			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-			<DataGrid.Columns>
-				<DataGridTextColumn
-					x:DataType="p:ProductRow"
-					Header="Name" IsReadOnly="True"
-					Binding="{Binding Name, Mode=OneWay}" />
-			</DataGrid.Columns>
-
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #ProductDataGrid}">
-					<ia:InvokeCommandAction Command="{ReflectionBinding OnProductDataGridDoubleTapped}" />
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
-
-			<DataGrid.Styles>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
-		</DataGrid>
-
-		<DataGrid
-			Grid.Column="0" Grid.Row="3"
-			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-			Items="{Binding TransactionGridView, Mode=TwoWay}"
-			SelectedItem="{Binding SelectedTransaction}" SelectionMode="Single"
-			AutoGenerateColumns="False" IsReadOnly="False"
-			VerticalAlignment="Stretch"
-			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-			<DataGrid.Columns>
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					IsReadOnly="True" Header="Date"
-					Binding="{Binding BookedAt, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					Header="Description" IsReadOnly="True"
-					Binding="{Binding Description, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					Header="Source Account" IsReadOnly="True"
-					Binding="{Binding SourceAccount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					Header="Target Account" IsReadOnly="True"
-					Binding="{Binding TargetAccount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
-					Binding="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionOverview"
-					Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
-					Binding="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-			</DataGrid.Columns>
-
-			<DataGrid.Styles>
-				<Style Selector="DataGridCell.amount">
-					<Setter Property="HorizontalContentAlignment" Value="Right" />
-				</Style>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
-		</DataGrid>
-
-		<DataGrid
-			Grid.Column="1" Grid.Row="3"
-			x:Name="ItemDataGrid"
-			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-			Items="{Binding ItemGridView, Mode=TwoWay}"
-			SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-			AutoGenerateColumns="False" IsReadOnly="False"
-			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-			<DataGrid.Columns>
-				<DataGridTextColumn
-					x:DataType="items:TransactionItemRow"
-					Header="Source Amount" IsReadOnly="True" CellStyleClasses="amount"
-					Binding="{Binding SourceAmount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionItemRow"
-					Header="Target Amount" IsReadOnly="True" CellStyleClasses="amount"
-					Binding="{Binding TargetAmount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionItemRow"
-					Header="Product" IsReadOnly="True"
-					Binding="{Binding Product, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionItemRow"
-					Header="Amount" IsReadOnly="True"
-					Binding="{Binding Amount, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="items:TransactionItemRow"
-					Header="Description" IsReadOnly="True"
-					Binding="{Binding Description, Mode=OneWay}" />
-			</DataGrid.Columns>
-
-			<i:Interaction.Behaviors>
-				<ia:EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #ItemDataGrid}">
-					<ia:InvokeCommandAction Command="{ReflectionBinding OnItemDataGridDoubleTapped}" />
-				</ia:EventTriggerBehavior>
-			</i:Interaction.Behaviors>
-
-			<DataGrid.Styles>
-				<Style Selector="DataGridCell.amount">
-					<Setter Property="HorizontalContentAlignment" Value="Right" />
-				</Style>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
-		</DataGrid>
 	</Grid>
 
 </UserControl>

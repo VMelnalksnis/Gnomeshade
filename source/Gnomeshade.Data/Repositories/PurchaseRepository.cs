@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,24 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Purchase.Update;
+
+	/// <inheritdoc />
+	protected override string FindSql => "WHERE purchases.id = @id";
+
+	/// <summary>Gets all purchases of the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get the purchases.</param>
+	/// <param name="ownerId">The id of the owner of the purchases.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all purchases for the specified transaction.</returns>
+	public Task<IEnumerable<PurchaseEntity>> GetAllAsync(
+		Guid transactionId,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} WHERE purchases.transaction_id = @transactionId AND {_accessSql}";
+		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
+		return GetEntitiesAsync(command);
+	}
 
 	/// <summary>Searches for a purchase for a specific transaction with the specified id.</summary>
 	/// <param name="transactionId">The transaction id for which to get the purchase.</param>

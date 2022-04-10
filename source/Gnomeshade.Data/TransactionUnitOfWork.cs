@@ -11,34 +11,22 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data;
 
-/// <summary>
-/// Transaction related actions spanning multiple entities.
-/// </summary>
+/// <summary>Transaction related actions spanning multiple entities.</summary>
 public sealed class TransactionUnitOfWork : IDisposable
 {
 	private readonly IDbConnection _dbConnection;
 	private readonly TransactionRepository _repository;
-	private readonly TransactionItemRepository _itemRepository;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="TransactionUnitOfWork"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="TransactionUnitOfWork"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	/// <param name="repository">The repository for managing transactions.</param>
-	/// <param name="itemRepository">The repository for managing transaction items.</param>
-	public TransactionUnitOfWork(
-		IDbConnection dbConnection,
-		TransactionRepository repository,
-		TransactionItemRepository itemRepository)
+	public TransactionUnitOfWork(IDbConnection dbConnection, TransactionRepository repository)
 	{
 		_dbConnection = dbConnection;
 		_repository = repository;
-		_itemRepository = itemRepository;
 	}
 
-	/// <summary>
-	/// Adds a new transaction with the specified items.
-	/// </summary>
+	/// <summary>Adds a new transaction with the specified items.</summary>
 	/// <param name="transaction">The transaction to create.</param>
 	/// <returns>The id of the created transaction.</returns>
 	public async Task<Guid> AddAsync(TransactionEntity transaction)
@@ -58,9 +46,7 @@ public sealed class TransactionUnitOfWork : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Adds a new transaction with the specified items.
-	/// </summary>
+	/// <summary>Adds a new transaction with the specified items.</summary>
 	/// <param name="transaction">The transaction to create.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created transaction.</returns>
@@ -73,27 +59,10 @@ public sealed class TransactionUnitOfWork : IDisposable
 		}
 
 		var transactionId = await _repository.AddAsync(transaction, dbTransaction).ConfigureAwait(false);
-
-		foreach (var transactionItem in transaction.Items)
-		{
-			var item = transactionItem with
-			{
-				Id = Guid.NewGuid(),
-				OwnerId = transaction.OwnerId,
-				CreatedByUserId = transaction.CreatedByUserId,
-				ModifiedByUserId = transaction.ModifiedByUserId,
-				TransactionId = transactionId,
-			};
-
-			_ = await _itemRepository.AddAsync(item, dbTransaction).ConfigureAwait(false);
-		}
-
 		return transactionId;
 	}
 
-	/// <summary>
-	/// Deletes the specified transaction and all its items.
-	/// </summary>
+	/// <summary>Deletes the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <returns>The number of affected rows.</returns>
@@ -113,9 +82,7 @@ public sealed class TransactionUnitOfWork : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Deletes the specified transaction and all its items.
-	/// </summary>
+	/// <summary>Deletes the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
@@ -123,11 +90,6 @@ public sealed class TransactionUnitOfWork : IDisposable
 	public async Task<int> DeleteAsync(TransactionEntity transaction, Guid ownerId, IDbTransaction dbTransaction)
 	{
 		var rows = 0;
-		foreach (var item in transaction.Items)
-		{
-			rows += await _itemRepository.DeleteAsync(item.Id, ownerId, dbTransaction).ConfigureAwait(false);
-		}
-
 		rows += await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
 		return rows;
 	}
@@ -155,9 +117,7 @@ public sealed class TransactionUnitOfWork : IDisposable
 		}
 	}
 
-	/// <summary>
-	/// Updates the specified transaction and all its items.
-	/// </summary>
+	/// <summary>Updates the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to update.</param>
 	/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
@@ -166,14 +126,6 @@ public sealed class TransactionUnitOfWork : IDisposable
 	{
 		transaction.ModifiedByUserId = modifiedBy.Id;
 		var rows = await _repository.UpdateAsync(transaction, dbTransaction).ConfigureAwait(false);
-
-		foreach (var transactionItem in transaction.Items)
-		{
-			transactionItem.ModifiedByUserId = modifiedBy.Id;
-			transactionItem.TransactionId = transaction.Id;
-			rows += await _itemRepository.UpdateAsync(transactionItem, dbTransaction).ConfigureAwait(false);
-		}
-
 		return rows;
 	}
 
@@ -182,6 +134,5 @@ public sealed class TransactionUnitOfWork : IDisposable
 	{
 		_dbConnection.Dispose();
 		_repository.Dispose();
-		_itemRepository.Dispose();
 	}
 }

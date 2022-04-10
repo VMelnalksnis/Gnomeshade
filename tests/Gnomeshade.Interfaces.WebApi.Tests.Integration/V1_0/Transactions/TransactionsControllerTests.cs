@@ -18,7 +18,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
-using Gnomeshade.TestingHelpers.Models;
 
 using NUnit.Framework;
 
@@ -34,7 +33,6 @@ public class TransactionsControllerTests
 	private Account _account1 = null!;
 	private Account _account2 = null!;
 	private Guid _productId;
-	private TransactionItemCreationFaker _itemCreationFaker = null!;
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -53,54 +51,14 @@ public class TransactionsControllerTests
 		var productCreation = new ProductCreationModel { Name = Guid.NewGuid().ToString("N") };
 		_productId = Guid.NewGuid();
 		await _client.PutProductAsync(_productId, productCreation);
-
-		var sourceAccountId = _account1.Currencies.Single().Id;
-		var targetAccountId = _account2.Currencies.Single().Id;
-		_itemCreationFaker = new(sourceAccountId, targetAccountId, _productId);
-	}
-
-	[Test]
-	public async Task PutItem()
-	{
-		var itemCreationModel = _itemCreationFaker.Generate();
-
-		var transactionCreationModel = new TransactionCreationModel
-		{
-			ValuedAt = DateTimeOffset.Now,
-			Items = new() { itemCreationModel },
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
-		var transaction = await _client.GetTransactionAsync(transactionId);
-		var createdItem = transaction.Items.Should().ContainSingle().Subject;
-
-		await _client.PutTransactionItemAsync(createdItem.Id, transactionId, itemCreationModel);
-		var unchangedTransaction = await _client.GetTransactionAsync(transactionId);
-		var unchangedItem = unchangedTransaction.Items.Should().ContainSingle().Subject;
-
-		unchangedItem.Should().BeEquivalentTo(createdItem, WithoutModifiedAt);
-		unchangedItem.ModifiedAt.Should().BeAfter(createdItem.ModifiedAt);
-
-		await _client.PutTransactionItemAsync(Guid.NewGuid(), transactionId, itemCreationModel);
-		var transactionWithAdditionalItem = await _client.GetTransactionAsync(transactionId);
-		transactionWithAdditionalItem.Items.Should().HaveCount(2);
-
-		var exception =
-			await FluentActions
-				.Awaiting(() => _client.PutTransactionItemAsync(createdItem.Id, Guid.NewGuid(), itemCreationModel))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>();
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.NotFound);
 	}
 
 	[Test]
 	public async Task PutTransaction()
 	{
-		var items = _itemCreationFaker.Generate(2);
 		var transactionCreationModel = new TransactionCreationModel
 		{
 			ValuedAt = DateTimeOffset.Now,
-			Items = items,
 		};
 
 		var transactionId = Guid.NewGuid();
@@ -109,10 +67,6 @@ public class TransactionsControllerTests
 
 		transactionCreationModel = transactionCreationModel with
 		{
-			Items = transactionCreationModel.Items
-				.Zip(transaction.Items)
-				.Select(tuple => tuple.First)
-				.ToList(),
 		};
 
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
@@ -127,7 +81,6 @@ public class TransactionsControllerTests
 		var transactionCreationModel = new TransactionCreationModel
 		{
 			ValuedAt = DateTimeOffset.Now,
-			Items = new() { _itemCreationFaker.Generate() },
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -146,41 +99,11 @@ public class TransactionsControllerTests
 	}
 
 	[Test]
-	public async Task TagUntagTransactionItem()
-	{
-		var transactionCreationModel = new TransactionCreationModel
-		{
-			ValuedAt = DateTimeOffset.Now,
-			Items = new() { _itemCreationFaker.Generate() },
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
-		var transaction = await _client.GetTransactionAsync(transactionId);
-		var itemId = transaction.Items.First().Id;
-
-		var tagId = Guid.NewGuid();
-		await _client.PutTagAsync(tagId, new() { Name = $"{tagId:N}" });
-
-		await _client.TagTransactionItemAsync(itemId, tagId);
-		(await _client.GetTransactionItemTagsAsync(itemId))
-			.Should()
-			.ContainSingle()
-			.Which.Id.Should()
-			.Be(tagId);
-
-		await _client.UntagTransactionItemAsync(itemId, tagId);
-		(await _client.GetTransactionItemTagsAsync(itemId))
-			.Should()
-			.BeEmpty();
-	}
-
-	[Test]
 	public async Task Transfers()
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
 			ValuedAt = DateTimeOffset.Now,
-			Items = new() { _itemCreationFaker.Generate() },
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -243,7 +166,6 @@ public class TransactionsControllerTests
 		var transactionCreationModel = new TransactionCreationModel
 		{
 			ValuedAt = DateTimeOffset.Now,
-			Items = new() { _itemCreationFaker.Generate() },
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -307,16 +229,6 @@ public class TransactionsControllerTests
 	{
 		return options
 			.ComparingByMembers<Transaction>()
-			.ComparingByMembers<TransactionItem>()
-			.ComparingByMembers<Product>()
-			.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
-	}
-
-	private static EquivalencyAssertionOptions<TransactionItem> WithoutModifiedAt(
-		EquivalencyAssertionOptions<TransactionItem> options)
-	{
-		return options
-			.ComparingByMembers<TransactionItem>()
 			.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
 	}
 

@@ -110,24 +110,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = counterpartyMergeViewModel;
 	}
 
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="ProductCreationViewModel"/>.
-	/// </summary>
-	/// <param name="productId">The id of the product to edit.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task CreateProductAsync(Guid? productId = null)
-	{
-		if (ActiveView is ProductCreationViewModel)
-		{
-			return;
-		}
-
-		var productCreationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, productId);
-		productCreationViewModel.Upserted += OnProductUpserted;
-
-		ActiveView = productCreationViewModel;
-	}
-
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateUnitAsync()
@@ -196,7 +178,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var importViewModel = new ImportViewModel(_gnomeshadeClient);
-		importViewModel.ProductSelected += OnProductSelected;
 		ActiveView = importViewModel;
 	}
 
@@ -302,11 +283,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void OnProductSelected(object? sender, ProductSelectedEventArgs e)
-	{
-		Task.Run(() => CreateProductAsync(e.ProductId)).Wait();
-	}
-
 	private void OnAccountSelected(object? sender, AccountSelectedEventArgs e)
 	{
 		Task.Run(() => SwitchToAccountDetailAsync(e.AccountId)).Wait();
@@ -322,10 +298,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 			case AccountViewModel accountViewModel:
 				accountViewModel.AccountSelected -= OnAccountSelected;
-				break;
-
-			case ImportViewModel importViewModel:
-				importViewModel.ProductSelected -= OnProductSelected;
 				break;
 
 			case LoginViewModel loginViewModel:

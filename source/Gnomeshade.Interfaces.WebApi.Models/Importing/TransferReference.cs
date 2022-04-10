@@ -8,13 +8,13 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Importing;
 
-/// <summary>A reference to an transaction that was used during import.</summary>
+/// <summary>A reference to an transfer that was used during import.</summary>
 [PublicAPI]
-public sealed record TransactionReference
+public sealed record TransferReference
 {
-	/// <summary>Whether or not the transaction was created during import.</summary>
+	/// <summary>Whether or not the transfer was created during import.</summary>
 	public bool Created { get; init; }
 
-	/// <summary>The referenced transaction.</summary>
-	public Transaction Transaction { get; init; } = null!;
+	/// <summary>The referenced transfer.</summary>
+	public Transfer Transfer { get; init; } = null!;
 }

@@ -14,8 +14,6 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
@@ -31,16 +29,12 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 public sealed class TransactionsController : FinanceControllerBase<TransactionEntity, Transaction>
 {
 	private readonly TransactionRepository _repository;
-	private readonly TransactionItemRepository _itemRepository;
 	private readonly TransferRepository _transferRepository;
 	private readonly PurchaseRepository _purchaseRepository;
-	private readonly ProductRepository _productRepository;
 	private readonly TransactionUnitOfWork _unitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
-	/// <param name="itemRepository">The repository for performing CRUD operations on <see cref="TransactionItemEntity"/>.</param>
-	/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -49,8 +43,6 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
 	public TransactionsController(
 		TransactionRepository repository,
-		TransactionItemRepository itemRepository,
-		ProductRepository productRepository,
 		ILogger<TransactionsController> logger,
 		TransactionUnitOfWork unitOfWork,
 		ApplicationUserContext applicationUserContext,
@@ -60,8 +52,6 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
-		_itemRepository = itemRepository;
-		_productRepository = productRepository;
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
 		_purchaseRepository = purchaseRepository;
@@ -146,88 +136,6 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		return NoContent();
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetTransactionItemAsync"/>
-	/// <response code="200">Transaction item with the specified id exists.</response>
-	/// <response code="404">Transaction item with the specified id does not exist.</response>
-	[HttpGet("Items/{id:guid}")]
-	[ProducesResponseType(typeof(TransactionItem), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<TransactionItem>> GetItem(Guid id, CancellationToken cancellation)
-	{
-		var itemEntity = await _itemRepository.FindByIdAsync(id, ApplicationUser.Id, cancellation);
-		if (itemEntity is null)
-		{
-			return NotFound();
-		}
-
-		// todo this is already done with one query when getting transaction with all items
-		var productEntity = await _productRepository.GetByIdAsync(itemEntity.ProductId, ApplicationUser.Id, cancellation);
-		var product = Mapper.Map<Product>(productEntity);
-		var item = Mapper.Map<TransactionItem>(itemEntity) with { Product = product };
-
-		return Ok(item);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.PutTransactionItemAsync"/>
-	/// <response code="201">A new transaction item was created.</response>
-	/// <response code="204">An existing transaction item was replaced.</response>
-	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Items/{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> PutItem(Guid id, Guid transactionId, [FromBody] TransactionItemCreationModel item)
-	{
-		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
-		{
-			return NotFound();
-		}
-
-		var existingItem = await _itemRepository.FindByIdAsync(id, ApplicationUser.Id);
-		return existingItem is null
-			? await CreateNewItemAsync(transactionId, item, ApplicationUser, id)
-			: await UpdateExistingItemAsync(transactionId, item, ApplicationUser, id);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.DeleteTransactionItemAsync"/>
-	/// <response code="204">Transaction item was successfully deleted.</response>
-	/// <response code="404">Transaction item with the specified id does not exist.</response>
-	[HttpDelete("Items/{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> DeleteItem(Guid id)
-	{
-		var deletedCount = await _itemRepository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<TransactionItem>(id, deletedCount);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.GetTransactionItemTagsAsync"/>
-	/// <response code="200">Successfully got the tags.</response>
-	[HttpGet("Items/{id:guid}/Tags")]
-	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
-	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
-	{
-		var tagEntities = await _itemRepository.GetTagsAsync(id, ApplicationUser.Id, cancellationToken);
-		var tags = tagEntities.Select(entity => Mapper.Map<Tag>(entity)).ToList();
-		return Ok(tags);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.TagTransactionItemAsync"/>
-	[HttpPut("Items/{id:guid}/Tags/{tagId:guid}")]
-	public async Task<StatusCodeResult> TagItem(Guid id, Guid tagId)
-	{
-		await _itemRepository.TagAsync(id, tagId, ApplicationUser.Id);
-		return NoContent();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.UntagTransactionItemAsync"/>
-	[HttpDelete("Items/{id:guid}/Tags/{tagId:guid}")]
-	public async Task<StatusCodeResult> UntagItem(Guid id, Guid tagId)
-	{
-		await _itemRepository.UntagAsync(id, tagId, ApplicationUser.Id);
-		return NoContent();
-	}
-
 	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync"/>
 	/// <response code="200">Successfully got all transfers.</response>
 	[HttpGet("{transactionId:guid}/Transfers")]
@@ -236,7 +144,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		Guid transactionId,
 		CancellationToken cancellationToken)
 	{
-		var transfers = await _transferRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var transfers = await _transferRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
 		var models = transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
 		return models;
 	}
@@ -318,7 +226,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		Guid transactionId,
 		CancellationToken cancellationToken)
 	{
-		var purchases = await _purchaseRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var purchases = await _purchaseRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
 		var models = purchases.Select(purchase => Mapper.Map<Purchase>(purchase)).ToList();
 		return models;
 	}
@@ -334,7 +242,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		Guid id,
 		CancellationToken cancellationToken)
 	{
-		var purchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		var purchase =
+			await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
 		if (purchase is null)
 		{
 			return NotFound();
@@ -424,43 +333,6 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		};
 
 		_ = await _unitOfWork.UpdateAsync(transaction, user);
-		return NoContent();
-	}
-
-	private async Task<CreatedAtActionResult> CreateNewItemAsync(
-		Guid transactionId,
-		TransactionItemCreationModel creationModel,
-		UserEntity user,
-		Guid id)
-	{
-		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
-		{
-			Id = id,
-			OwnerId = user.Id, // todo
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			TransactionId = transactionId,
-		};
-
-		await _itemRepository.AddAsync(transactionItem);
-		return CreatedAtAction(nameof(GetItem), new { id }, string.Empty);
-	}
-
-	private async Task<NoContentResult> UpdateExistingItemAsync(
-		Guid transactionId,
-		TransactionItemCreationModel creationModel,
-		UserEntity user,
-		Guid id)
-	{
-		var transactionItem = Mapper.Map<TransactionItemEntity>(creationModel) with
-		{
-			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
-			ModifiedByUserId = user.Id,
-			TransactionId = transactionId,
-		};
-
-		await _itemRepository.UpdateAsync(transactionItem);
 		return NoContent();
 	}
 }

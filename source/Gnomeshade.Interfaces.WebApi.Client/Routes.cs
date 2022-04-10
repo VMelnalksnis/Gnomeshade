@@ -73,36 +73,6 @@ public static class Routes
 		return $"{_transactionUri}?{query}";
 	}
 
-	/// <summary>Gets the relative uri for the items of the specified transaction.</summary>
-	/// <param name="id">The id of the transaction.</param>
-	/// <returns>Relative uri for items of a transaction.</returns>
-	public static string TransactionItemUri(Guid id) => $"{TransactionIdUri(id)}/Items";
-
-	/// <summary>Gets the relative uri for the specified transaction item.</summary>
-	/// <param name="id">The id of the transaction item.</param>
-	/// <returns>Relative uri for a specific transaction item.</returns>
-	public static string TransactionItemIdUri(Guid id) => $"{_transactionUri}/Items/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the specified transaction and item.</summary>
-	/// <param name="transactionId">The id of the transaction.</param>
-	/// <param name="id">The id of the transaction item.</param>
-	/// <returns>Relative uri for the specified transaction and item.</returns>
-	public static string TransactionItemIdUri(Guid transactionId, Guid id) =>
-		$"{TransactionIdUri(transactionId)}/Items/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the tags of the specified transaction item.</summary>
-	/// <param name="id">The id of the transaction item.</param>
-	/// <returns>Relative uri for the tags of the specified transaction item.</returns>
-	public static string TransactionItemTagUri(Guid id) =>
-		$"{TransactionItemIdUri(id)}/{_tagUri}";
-
-	/// <summary>Gets the relative uri for the specified transaction item tag.</summary>
-	/// <param name="id">The id of the transaction item.</param>
-	/// <param name="tagId">The id of the tag.</param>
-	/// <returns>Relative uri for the specified transaction item and tag.</returns>
-	public static string TransactionItemTagIdUri(Guid id, Guid tagId) =>
-		$"{TransactionItemTagUri(id)}/{Format(tagId)}";
-
 	/// <summary>Gets the relative uri for the specified tag.</summary>
 	/// <param name="id">The id of the tag.</param>
 	/// <returns>Relative uri for the specified tag.</returns>

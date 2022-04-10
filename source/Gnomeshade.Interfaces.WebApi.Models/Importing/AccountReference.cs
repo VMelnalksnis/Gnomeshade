@@ -6,22 +6,15 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Importing;
 
-/// <summary>
-/// A reference to an account that was used during import.
-/// </summary>
+/// <summary>A reference to an account that was used during import.</summary>
 [PublicAPI]
 public sealed record AccountReference
 {
-	/// <summary>
-	/// Whether or not the account was created during import.
-	/// </summary>
+	/// <summary>Whether or not the account was created during import.</summary>
 	public bool Created { get; init; }
 
-	/// <summary>
-	/// The referenced account.
-	/// </summary>
+	/// <summary>The referenced account.</summary>
 	public Account Account { get; init; } = null!;
 }

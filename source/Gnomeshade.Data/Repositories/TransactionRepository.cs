@@ -13,21 +13,17 @@ using Dapper;
 
 using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="TransactionEntity"/> repository.</summary>
 public sealed class TransactionRepository : Repository<TransactionEntity>
 {
-	private readonly IDbConnection _dbConnection;
-
 	/// <summary>Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public TransactionRepository(IDbConnection dbConnection)
 		: base(dbConnection)
 	{
-		_dbConnection = dbConnection;
 	}
 
 	/// <inheritdoc />
@@ -92,23 +88,5 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return transactions.ToList();
-	}
-
-	/// <inheritdoc />
-	protected override async Task<IEnumerable<TransactionEntity>> GetEntitiesAsync(CommandDefinition command)
-	{
-		var oneToOnes =
-			await _dbConnection
-				.QueryAsync<TransactionEntity, TransactionItemEntity, ProductEntity, OneToOne<TransactionEntity, TransactionItemEntity>>(
-					command,
-					(transaction, item, product) =>
-					{
-						item.Product = product;
-						return new(transaction, item);
-					})
-				.ConfigureAwait(false);
-
-		// ReSharper disable once ConvertClosureToMethodGroup
-		return oneToOnes.GroupBy(oneToOne => oneToOne.First.Id).Select(grouping => TransactionEntity.FromGrouping(grouping));
 	}
 }

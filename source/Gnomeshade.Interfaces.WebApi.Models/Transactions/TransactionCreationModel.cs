@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
@@ -32,7 +31,4 @@ public sealed record TransactionCreationModel
 	[MinLength(64)]
 	[MaxLength(64)]
 	public byte[]? ImportHash { get; init; }
-
-	/// <inheritdoc cref="Transaction.Items"/>
-	public List<TransactionItemCreationModel>? Items { get; init; }
 }

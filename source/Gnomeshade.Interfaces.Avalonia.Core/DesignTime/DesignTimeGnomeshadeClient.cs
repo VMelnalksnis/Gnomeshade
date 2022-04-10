@@ -71,31 +71,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Id = Guid.Empty,
 			BookedAt = DateTimeOffset.UtcNow,
 			Description = "Some transaction description",
-			Items = new()
-			{
-				new()
-				{
-					Id = Guid.NewGuid(),
-					TransactionId = Guid.Empty,
-					SourceAmount = 125.35m,
-					TargetAmount = 125.35m,
-					SourceAccountId = spending.Currencies.Single().Id,
-					TargetAccountId = cash.Currencies.Single().Id,
-					Product = bread,
-					Amount = 1,
-				},
-				new()
-				{
-					Id = Guid.NewGuid(),
-					TransactionId = Guid.Empty,
-					SourceAmount = 1.95m,
-					TargetAmount = 1.95m,
-					SourceAccountId = spending.Currencies.Single().Id,
-					TargetAccountId = cash.Currencies.Single().Id,
-					Product = milk,
-					Amount = 2,
-				},
-			},
 		};
 
 		_transactions = new() { transaction };
@@ -204,42 +179,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item)
-	{
-		var transactionWithItem = _transactions.Single(t => t.Id == transactionId);
-		var existingItem = transactionWithItem.Items.SingleOrDefault(i => i.Id == id);
-		if (existingItem is not null)
-		{
-			transactionWithItem.Items.Remove(existingItem);
-		}
-
-		var itemModel = new TransactionItem
-		{
-			Id = Guid.NewGuid(),
-			TransactionId = transactionWithItem.Id,
-			SourceAccountId = item.SourceAccountId!.Value,
-			TargetAccountId = item.TargetAccountId!.Value,
-			Product = _products.Single(p => p.Id == item.ProductId),
-		};
-
-		transactionWithItem.Items.Add(itemModel);
-		return Task.FromResult(itemModel.Id);
-	}
-
-	/// <inheritdoc />
 	public Task<Transaction> GetTransactionAsync(Guid id)
 	{
 		return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
-	}
-
-	/// <inheritdoc />
-	public Task<TransactionItem> GetTransactionItemAsync(Guid id)
-	{
-		var selectedItem = _transactions
-			.SelectMany(transaction => transaction.Items)
-			.Single(item => item.Id == id);
-
-		return Task.FromResult(selectedItem);
 	}
 
 	/// <inheritdoc />
@@ -254,26 +196,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_transactions.Remove(_transactions.Single(transaction => transaction.Id == id));
 		return Task.CompletedTask;
 	}
-
-	/// <inheritdoc />
-	public Task DeleteTransactionItemAsync(Guid id)
-	{
-		var transactionWithItem = _transactions.Single(t => t.Items.Select(item => item.Id).Contains(id));
-		transactionWithItem.Items.Remove(transactionWithItem.Items.Single(item => item.Id == id));
-		return Task.CompletedTask;
-	}
-
-	/// <inheritdoc />
-	public Task<List<Tag>> GetTransactionItemTagsAsync(Guid id)
-	{
-		return Task.FromResult(new List<Tag> { new() { Name = "test" }, new() { Name = "other" } });
-	}
-
-	/// <inheritdoc />
-	public Task TagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
-
-	/// <inheritdoc />
-	public Task UntagTransactionItemAsync(Guid id, Guid tagId) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default)

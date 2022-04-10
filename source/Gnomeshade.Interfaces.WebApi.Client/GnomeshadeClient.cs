@@ -123,16 +123,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PutAsync(TransactionIdUri(id), transaction);
 
 	/// <inheritdoc />
-	public Task PutTransactionItemAsync(Guid id, Guid transactionId, TransactionItemCreationModel item) =>
-		PutAsync(TransactionItemIdUri(transactionId, id), item);
-
-	/// <inheritdoc />
 	public Task<Transaction> GetTransactionAsync(Guid id) =>
 		GetAsync<Transaction>(TransactionIdUri(id));
-
-	/// <inheritdoc />
-	public Task<TransactionItem> GetTransactionItemAsync(Guid id) =>
-		GetAsync<TransactionItem>(TransactionItemIdUri(id));
 
 	/// <inheritdoc />
 	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
@@ -141,22 +133,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task DeleteTransactionAsync(Guid id) =>
 		DeleteAsync(TransactionIdUri(id));
-
-	/// <inheritdoc />
-	public Task DeleteTransactionItemAsync(Guid id) =>
-		DeleteAsync(TransactionItemIdUri(id));
-
-	/// <inheritdoc />
-	Task<List<Tag>> ITransactionClient.GetTransactionItemTagsAsync(Guid id) =>
-		GetAsync<List<Tag>>(TransactionItemTagUri(id));
-
-	/// <inheritdoc />
-	public Task TagTransactionItemAsync(Guid id, Guid tagId) =>
-		PutAsync(TransactionItemTagIdUri(id, tagId));
-
-	/// <inheritdoc />
-	public Task UntagTransactionItemAsync(Guid id, Guid tagId) =>
-		DeleteAsync(TransactionItemTagIdUri(id, tagId));
 
 	/// <inheritdoc />
 	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>

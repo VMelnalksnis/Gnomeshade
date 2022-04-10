@@ -45,7 +45,7 @@ public class Iso20022ControllerTests
 		{
 			reportResult.Should().NotBeNull();
 			reportResult.AccountReferences.Should().HaveCount(3);
-			reportResult.ProductReferences.Should().HaveCount(2);
+			reportResult.TransferReferences.Should().HaveCount(2);
 			reportResult.TransactionReferences.Should().HaveCount(2);
 			reportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(true);
 		}
