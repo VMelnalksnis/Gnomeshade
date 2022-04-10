@@ -41,10 +41,10 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
-	public static AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
+	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
 	/// <summary>Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.</summary>
-	public static AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
+	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
 
 	/// <summary>Gets a collection of all currencies.</summary>
 	public List<Currency> Currencies

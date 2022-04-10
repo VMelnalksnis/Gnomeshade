@@ -28,7 +28,7 @@ public sealed class ImportViewModel : ViewModelBase
 	public string? FilePath
 	{
 		get => _filePath;
-		set => SetAndNotifyWithGuard(ref _filePath, value, nameof(FilePath));
+		set => SetAndNotifyWithGuard(ref _filePath, value, nameof(FilePath), nameof(CanImport));
 	}
 
 	/// <summary>Gets a value indicating whether the information needed for <see cref="ImportAsync"/> is valid.</summary>

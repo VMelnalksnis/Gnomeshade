@@ -28,7 +28,7 @@
 				Content="{Binding Transfers}" />
 
 			<UserControl
-				Grid.Column="1" Grid.Row="0"
+				Grid.Column="0" Grid.Row="1"
 				Content="{Binding Purchases}" />
 		</Grid>
 	</StackPanel>
