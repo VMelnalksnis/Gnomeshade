@@ -11,57 +11,73 @@
 	x:CompileBindings="True"
 	x:DataType="transfers:TransferViewModel">
 
-	<DataGrid
-		x:Name="DataGrid"
-		VerticalAlignment="Stretch"
-		Items="{Binding DataGridView, Mode=TwoWay}"
-		SelectedItem="{Binding Selected}" SelectionMode="Single"
-		AutoGenerateColumns="False" IsReadOnly="False"
-		CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
-		<DataGrid.Columns>
-			<DataGridTemplateColumn Header="Source" IsReadOnly="True">
-				<DataTemplate x:DataType="transfers:TransferOverview">
-					<StackPanel
-						Orientation="Horizontal" Spacing="5" Margin="5 0"
-						VerticalAlignment="Center" HorizontalAlignment="Right">
-						<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
-						<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-						<TextBlock Text="from" />
-						<TextBlock Text="{Binding SourceAccount, Mode=OneWay}" />
-					</StackPanel>
-				</DataTemplate>
-			</DataGridTemplateColumn>
-			<DataGridTemplateColumn Header="Target" IsReadOnly="True">
-				<DataTemplate x:DataType="transfers:TransferOverview">
-					<StackPanel
-						Orientation="Horizontal" Spacing="5" Margin="5 0"
-						VerticalAlignment="Center" HorizontalAlignment="Right">
-						<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
-						<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-						<TextBlock Text="to" />
-						<TextBlock Text="{Binding TargetAccount, Mode=OneWay}" />
-					</StackPanel>
-				</DataTemplate>
-			</DataGridTemplateColumn>
-			<DataGridTextColumn
-				x:DataType="transfers:TransferOverview"
-				Header="Bank" IsReadOnly="True"
-				Binding="{Binding BankReference, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="transfers:TransferOverview"
-				Header="External" IsReadOnly="True"
-				Binding="{Binding ExternalReference, Mode=OneWay}" />
-			<DataGridTextColumn
-				x:DataType="transfers:TransferOverview"
-				Header="Internal" IsReadOnly="True"
-				Binding="{Binding InternalReference, Mode=OneWay}" />
-		</DataGrid.Columns>
+	<StackPanel Orientation="Vertical" Spacing="5">
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<TextBlock Text="Total transferred:" />
+			<TextBlock Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		</StackPanel>
 
-		<DataGrid.Styles>
-			<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-				<Setter Property="Fill" Value="#05769d" />
-			</Style>
-		</DataGrid.Styles>
-	</DataGrid>
+		<DataGrid
+			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+							<TextBlock Text="from" />
+							<TextBlock Text="{Binding SourceAccount, Mode=OneWay}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Right">
+							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+							<TextBlock Text="to" />
+							<TextBlock Text="{Binding TargetAccount, Mode=OneWay}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn
+					x:DataType="transfers:TransferOverview"
+					Header="Bank" IsReadOnly="True"
+					Binding="{Binding BankReference, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="transfers:TransferOverview"
+					Header="External" IsReadOnly="True"
+					Binding="{Binding ExternalReference, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="transfers:TransferOverview"
+					Header="Internal" IsReadOnly="True"
+					Binding="{Binding InternalReference, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+
+		<StackPanel Orientation="Horizontal">
+			<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<UserControl Content="{Binding Details}" />
+
+	</StackPanel>
 
 </UserControl>

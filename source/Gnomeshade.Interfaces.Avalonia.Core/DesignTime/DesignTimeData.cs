@@ -10,6 +10,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Tags;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Items;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
@@ -149,4 +150,8 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =
 		new() { FromDate = DateTimeOffset.Now, ToDate = DateTimeOffset.Now };
+
+	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
+	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
+		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 }

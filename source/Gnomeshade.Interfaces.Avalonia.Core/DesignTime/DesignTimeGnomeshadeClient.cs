@@ -103,6 +103,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		{
 			new()
 			{
+				Id = Guid.NewGuid(),
 				TransactionId = transaction.Id,
 				SourceAmount = 125.35m,
 				SourceAccountId = spending.Currencies.Single().Id,
@@ -111,6 +112,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			},
 			new()
 			{
+				Id = Guid.NewGuid(),
 				TransactionId = transaction.Id,
 				SourceAmount = 1.95m,
 				SourceAccountId = spending.Currencies.Single().Id,
@@ -123,6 +125,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		{
 			new()
 			{
+				Id = Guid.NewGuid(),
 				TransactionId = transaction.Id,
 				Price = 1,
 				CurrencyId = euro.Id,
@@ -131,6 +134,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			},
 			new()
 			{
+				Id = Guid.NewGuid(),
 				TransactionId = transaction.Id,
 				Price = 2.35m,
 				CurrencyId = euro.Id,

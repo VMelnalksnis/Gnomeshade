@@ -22,7 +22,7 @@
 			Text="Product:" />
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="0"
-			MinWidth="300"
+			MinWidth="200"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Items="{Binding Products}"
@@ -51,7 +51,7 @@
 			Text="{Binding Price}" />
 		<AutoCompleteBox
 			Grid.Column="2" Grid.Row="1"
-			MinWidth="300"
+			MinWidth="200"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Items="{Binding Currencies}"
@@ -70,7 +70,7 @@
 			Text="Delivery Date:" />
 		<StackPanel
 			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"
-			Orientation="Horizontal" Spacing="5">
+			Orientation="Vertical">
 			<DatePicker
 				Margin="5"
 				SelectedDate="{Binding DeliveryDate}" />
@@ -81,7 +81,7 @@
 
 		<Button
 			Grid.Column="0" Grid.Row="3"
-			IsVisible="{Binding CanSave}"
+			IsEnabled="{Binding CanSave}"
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>

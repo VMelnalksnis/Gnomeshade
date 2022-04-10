@@ -11,7 +11,13 @@
 	x:CompileBindings="True"
 	x:DataType="purchases:PurchaseViewModel">
 
-	<DataGrid
+	<StackPanel Orientation="Vertical">
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<TextBlock Text="Total purchased:" />
+			<TextBlock Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		</StackPanel>
+
+		<DataGrid
 			x:Name="DataGrid"
 			VerticalAlignment="Stretch"
 			Items="{Binding DataGridView, Mode=TwoWay}"
@@ -47,5 +53,15 @@
 				</Style>
 			</DataGrid.Styles>
 		</DataGrid>
+
+		<StackPanel Orientation="Horizontal">
+			<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<UserControl Content="{Binding Details}" />
+
+	</StackPanel>
 
 </UserControl>

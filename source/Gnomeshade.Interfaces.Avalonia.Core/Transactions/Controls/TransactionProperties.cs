@@ -17,6 +17,8 @@ public sealed class TransactionProperties : ViewModelBase
 	private TimeSpan? _bookingTime;
 	private DateTimeOffset? _valueDate;
 	private TimeSpan? _valueTime;
+	private DateTimeOffset? _reconciliationDate;
+	private TimeSpan? _reconciliationTime;
 	private string? _description;
 
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
@@ -57,6 +59,25 @@ public sealed class TransactionProperties : ViewModelBase
 		? new DateTimeOffset(ValueDate.Value.Date).Add(ValueTime.GetValueOrDefault())
 		: default(DateTimeOffset?);
 
+	/// <summary>Gets or sets the date on which the transaction was reconciled.</summary>
+	public DateTimeOffset? ReconciliationDate
+	{
+		get => _reconciliationDate;
+		set => SetAndNotifyWithGuard(ref _reconciliationDate, value, nameof(ReconciliationDate), _isValid);
+	}
+
+	/// <summary>Gets or sets the time when the transaction was reconciled.</summary>
+	public TimeSpan? ReconciliationTime
+	{
+		get => _reconciliationTime;
+		set => SetAndNotifyWithGuard(ref _reconciliationTime, value, nameof(ReconciliationTime), _isValid);
+	}
+
+	/// <inheritdoc cref="Transaction.ReconciledAt"/>
+	public DateTimeOffset? ReconciledAt => ReconciliationDate.HasValue
+		? new DateTimeOffset(ReconciliationDate.Value.Date).Add(ReconciliationTime.GetValueOrDefault())
+		: default(DateTimeOffset?);
+
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	public string? Description
 	{
@@ -66,6 +87,7 @@ public sealed class TransactionProperties : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>
 	public bool IsValid =>
-		(BookingDate.HasValue && BookingTime.HasValue) ||
-		(ValueDate.HasValue && ValueTime.HasValue);
+		((BookingDate.HasValue && BookingTime.HasValue) ||
+		(ValueDate.HasValue && ValueTime.HasValue)) &&
+		((ReconciledAt is null && ReconciliationTime is null) || ReconciledAt is not null);
 }

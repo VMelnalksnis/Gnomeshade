@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,13 +18,17 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
-public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview>
+public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel?>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+
+	private TransactionUpsertionViewModel? _details;
 
 	private TransactionViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+
+		PropertyChanged += OnPropertyChanged;
 
 		Filter = new();
 		Filter.PropertyChanged += FilterOnPropertyChanged;
@@ -34,6 +39,13 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
 	public bool CanRefresh => Filter.IsValid;
+
+	/// <inheritdoc />
+	public override TransactionUpsertionViewModel? Details
+	{
+		get => _details;
+		set => SetAndNotify(ref _details, value);
+	}
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
@@ -48,7 +60,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task RefreshAsync()
 	{
-		var transactions = await _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate).ConfigureAwait(false);
+		var transactions = await _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate)
+			.ConfigureAwait(false);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
@@ -84,9 +97,31 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Rows = new(overviews); // todo sorting
 	}
 
-	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow}.DataGridView"/>.</summary>
+	/// <inheritdoc />
+	public override async Task DeleteSelectedAsync()
+	{
+		if (Selected is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		await _gnomeshadeClient.DeleteTransactionAsync(Selected.Id).ConfigureAwait(false);
+		await RefreshAsync();
+	}
+
+	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(Selected))
+		{
+			Details = Selected is null
+				? null
+				: TransactionUpsertionViewModel.CreateAsync(_gnomeshadeClient, Selected.Id).Result;
+		}
 	}
 
 	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
@@ -10,10 +12,14 @@ namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 /// <summary>Base class for view models which display all available entities of a specific type.</summary>
 /// <typeparam name="TRow">The type of items displayed in data grid.</typeparam>
-public abstract class OverviewViewModel<TRow> : ViewModelBase
+/// <typeparam name="TUpsertion">The view model type for creating or updating rows.</typeparam>
+[SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "Better than allocating per call")]
+public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 	where TRow : PropertyChangedBase
+	where TUpsertion : UpsertionViewModel?
 {
 	private static readonly string[] _dataGridViewNames = { nameof(DataGridView) };
+	private static readonly string[] _selectedGuardNames = { nameof(Details), nameof(CanDelete) };
 
 	private DataGridItemCollectionView<TRow> _rows = new(Array.Empty<TRow>());
 	private TRow? _selected;
@@ -32,6 +38,16 @@ public abstract class OverviewViewModel<TRow> : ViewModelBase
 	public TRow? Selected
 	{
 		get => _selected;
-		set => SetAndNotify(ref _selected, value);
+		set => SetAndNotifyWithGuard(ref _selected, value, nameof(Selected), _selectedGuardNames);
 	}
+
+	/// <summary>Gets or sets the view model for the currently <see cref="Selected"/> row.</summary>
+	public abstract TUpsertion Details { get; set; }
+
+	/// <summary>Gets a value indicating whether <see cref="DeleteSelectedAsync"/> can be called.</summary>
+	public bool CanDelete => Selected is not null;
+
+	/// <summary>Deletes <see cref="Selected"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public abstract Task DeleteSelectedAsync();
 }
