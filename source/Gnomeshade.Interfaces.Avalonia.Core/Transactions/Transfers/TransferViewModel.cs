@@ -31,6 +31,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		_details = details;
 
 		PropertyChanged += OnPropertyChanged;
+		_details.Upserted += DetailsOnUpserted;
 	}
 
 	/// <summary>Gets the total transferred amount.</summary>
@@ -40,7 +41,12 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	public override TransferUpsertionViewModel Details
 	{
 		get => _details;
-		set => SetAndNotify(ref _details, value);
+		set
+		{
+			_details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			_details.Upserted += DetailsOnUpserted;
+		}
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
@@ -93,5 +99,10 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	private void RowsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		OnPropertyChanged(nameof(Total));
+	}
+
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }

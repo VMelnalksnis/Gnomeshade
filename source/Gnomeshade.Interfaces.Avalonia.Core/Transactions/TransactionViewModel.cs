@@ -43,7 +43,19 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	public override TransactionUpsertionViewModel? Details
 	{
 		get => _details;
-		set => SetAndNotify(ref _details, value);
+		set
+		{
+			if (_details is not null)
+			{
+				_details.Upserted -= DetailsOnUpserted;
+			}
+
+			SetAndNotify(ref _details, value);
+			if (_details is not null)
+			{
+				_details.Upserted += DetailsOnUpserted;
+			}
+		}
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
@@ -59,13 +71,13 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task RefreshAsync()
 	{
-		var transactions = await _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate)
-			.ConfigureAwait(false);
+		var transactionsTask = _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
 
-		await Task.WhenAll(accountsTask, currenciesTask, productsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false);
+		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
@@ -93,7 +105,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var overviews = await Task.WhenAll(overviewTasks).ConfigureAwait(false);
 
-		Rows = new(overviews); // todo sorting
+		var sort = DataGridView.SortDescriptions;
+		Rows = new(overviews);
+		DataGridView.SortDescriptions.AddRange(sort);
 	}
 
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>
@@ -124,5 +138,51 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		{
 			OnPropertyChanged(nameof(CanRefresh));
 		}
+	}
+
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		var updatedRow = Rows.Single(row => row.Id == e.Id);
+
+		var transactionTask = _gnomeshadeClient.GetTransactionAsync(updatedRow.Id);
+		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
+		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
+		var productsTask = _gnomeshadeClient.GetProductsAsync();
+
+		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter()
+			.GetResult();
+		var transaction = transactionTask.Result;
+		var accounts = accountsTask.Result;
+		var currencies = currenciesTask.Result;
+		var products = productsTask.Result;
+
+		var transfers = _gnomeshadeClient
+			.GetTransfersAsync(transaction.Id)
+			.ConfigureAwait(false)
+			.GetAwaiter()
+			.GetResult()
+			.Select(transfer => transfer.ToOverview(accounts))
+			.ToList();
+
+		var purchases = _gnomeshadeClient.GetPurchasesAsync(transaction.Id)
+			.ConfigureAwait(false)
+			.GetAwaiter()
+			.GetResult()
+			.Select(purchase => purchase.ToOverview(currencies, products))
+			.ToList();
+
+		var overview = new TransactionOverview(
+			transaction.Id,
+			transaction.BookedAt?.ToLocalTime(),
+			transaction.ValuedAt?.ToLocalTime(),
+			transaction.Description,
+			transaction.ImportedAt?.ToLocalTime(),
+			transaction.ReconciledAt?.ToLocalTime(),
+			transfers,
+			purchases);
+
+		var sort = DataGridView.SortDescriptions;
+		Rows = new(Rows.Except(new[] { updatedRow }).Append(overview).ToList());
+		DataGridView.SortDescriptions.AddRange(sort);
 	}
 }

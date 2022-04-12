@@ -31,13 +31,19 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		_details = details;
 
 		PropertyChanged += OnPropertyChanged;
+		_details.Upserted += DetailsOnUpserted;
 	}
 
 	/// <inheritdoc />
 	public override PurchaseUpsertionViewModel Details
 	{
 		get => _details;
-		set => SetAndNotify(ref _details, value);
+		set
+		{
+			_details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			_details.Upserted += DetailsOnUpserted;
+		}
 	}
 
 	/// <summary>Gets the total purchased amount.</summary>
@@ -98,5 +104,10 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	private void RowsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		OnPropertyChanged(nameof(Total));
+	}
+
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }

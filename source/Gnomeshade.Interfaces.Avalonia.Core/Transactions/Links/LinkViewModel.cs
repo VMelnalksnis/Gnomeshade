@@ -26,13 +26,19 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		_details = details;
 
 		PropertyChanged += OnPropertyChanged;
+		_details.Upserted += DetailsOnUpserted;
 	}
 
 	/// <inheritdoc />
 	public override LinkUpsertionViewModel Details
 	{
 		get => _details;
-		set => SetAndNotify(ref _details, value);
+		set
+		{
+			_details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			_details.Upserted += DetailsOnUpserted;
+		}
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="LinkViewModel"/> class.</summary>
@@ -69,5 +75,10 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		{
 			Details = LinkUpsertionViewModel.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id).GetAwaiter().GetResult();
 		}
+	}
+
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }
