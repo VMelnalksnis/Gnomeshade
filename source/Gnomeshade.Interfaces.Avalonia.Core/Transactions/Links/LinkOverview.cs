@@ -4,6 +4,7 @@
 
 using System;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
@@ -25,4 +26,7 @@ public sealed class LinkOverview : PropertyChangedBase
 
 	/// <summary>Gets the external link value.</summary>
 	public string Uri { get; }
+
+	/// <summary>Opens <see cref="Uri"/> using the system browser.</summary>
+	public void Open() => SystemBrowser.OpenBrowser(Uri);
 }

@@ -24,6 +24,15 @@
 					x:DataType="links:LinkOverview"
 					Header="Link" IsReadOnly="True"
 					Binding="{Binding Uri, Mode=OneWay}" />
+				<DataGridTemplateColumn>
+					<DataTemplate x:DataType="links:LinkOverview">
+						<Button
+							HorizontalAlignment="Center" Padding="5 2"
+							Command="{ReflectionBinding Open}">
+							⧉
+						</Button>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>
