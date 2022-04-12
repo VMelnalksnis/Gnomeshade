@@ -82,11 +82,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 			return new TransactionOverview(
 				transaction.Id,
-				transaction.BookedAt,
-				transaction.ValuedAt,
+				transaction.BookedAt?.ToLocalTime(),
+				transaction.ValuedAt?.ToLocalTime(),
 				transaction.Description,
-				transaction.ImportedAt,
-				transaction.ReconciledAt,
+				transaction.ImportedAt?.ToLocalTime(),
+				transaction.ReconciledAt?.ToLocalTime(),
 				transfers,
 				purchases);
 		});
