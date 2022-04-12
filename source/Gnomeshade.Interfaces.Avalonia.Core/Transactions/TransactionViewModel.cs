@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -97,21 +96,16 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Rows = new(overviews); // todo sorting
 	}
 
-	/// <inheritdoc />
-	public override async Task DeleteSelectedAsync()
-	{
-		if (Selected is null)
-		{
-			throw new InvalidOperationException();
-		}
-
-		await _gnomeshadeClient.DeleteTransactionAsync(Selected.Id).ConfigureAwait(false);
-		await RefreshAsync();
-	}
-
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>
 	public void OnDataGridDoubleTapped()
 	{
+	}
+
+	/// <inheritdoc />
+	protected override async Task DeleteAsync(TransactionOverview row)
+	{
+		await _gnomeshadeClient.DeleteTransactionAsync(row.Id).ConfigureAwait(false);
+		await RefreshAsync();
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

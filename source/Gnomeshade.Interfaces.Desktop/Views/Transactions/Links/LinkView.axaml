@@ -1,0 +1,46 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:links="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.LinkViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.Links.LinkView"
+	x:CompileBindings="True"
+	x:DataType="links:LinkViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<DataGrid
+			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="links:LinkOverview"
+					Header="Link" IsReadOnly="True"
+					Binding="{Binding Uri, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+
+		<StackPanel Orientation="Horizontal">
+			<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<UserControl Content="{Binding Details}" />
+
+	</StackPanel>
+
+</UserControl>

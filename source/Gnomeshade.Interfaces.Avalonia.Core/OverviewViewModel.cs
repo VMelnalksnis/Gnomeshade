@@ -49,5 +49,18 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 
 	/// <summary>Deletes <see cref="Selected"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public abstract Task DeleteSelectedAsync();
+	public async Task DeleteSelectedAsync()
+	{
+		if (!CanDelete || Selected is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		await DeleteAsync(Selected);
+	}
+
+	/// <summary>Deletes the specified row.</summary>
+	/// <param name="row">The row to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	protected abstract Task DeleteAsync(TRow row);
 }

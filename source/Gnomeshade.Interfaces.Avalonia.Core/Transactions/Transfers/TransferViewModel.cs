@@ -71,14 +71,9 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	}
 
 	/// <inheritdoc />
-	public override async Task DeleteSelectedAsync()
+	protected override async Task DeleteAsync(TransferOverview row)
 	{
-		if (Selected is null)
-		{
-			throw new InvalidOperationException();
-		}
-
-		await _gnomeshadeClient.DeleteTransferAsync(_transactionId, Selected.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteTransferAsync(_transactionId, row.Id).ConfigureAwait(false);
 		await RefreshAsync();
 	}
 

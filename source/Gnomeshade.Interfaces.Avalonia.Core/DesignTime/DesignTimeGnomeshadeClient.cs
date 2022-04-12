@@ -31,6 +31,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Transaction> _transactions;
 	private static readonly List<Transfer> _transfers;
 	private static readonly List<Purchase> _purchases;
+	private static readonly List<Link> _links;
+	private static readonly List<KeyValuePair<Guid, Guid>> _transactionLinks;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -119,6 +121,18 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				DeliveryDate = DateTimeOffset.Now,
 			},
 		};
+
+		_links = new()
+		{
+			new() { Id = Guid.Empty, Uri = "https://localhost/documents/1" },
+			new() { Id = Guid.NewGuid(), Uri = "https://localhost/documents/1" },
+		};
+
+		_transactionLinks = new()
+		{
+			new(Guid.Empty, Guid.Empty),
+			new(Guid.Empty, _links.Last().Id),
+		};
 	}
 
 	/// <inheritdoc />
@@ -133,25 +147,34 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<List<Link>> GetLinksAsync(CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		return Task.FromResult(_links.ToList());
 	}
 
 	/// <inheritdoc />
 	public Task<Link> GetLinkAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		return Task.FromResult(_links.Single(link => link.Id == id));
 	}
 
 	/// <inheritdoc />
 	public Task PutLinkAsync(Guid id, LinkCreation link)
 	{
-		throw new NotImplementedException();
+		var existingLink = _links.SingleOrDefault(l => l.Id == id);
+		if (existingLink is not null)
+		{
+			_links.Remove(existingLink);
+		}
+
+		_links.Add(new() { Id = id, Uri = link.Uri!.ToString() });
+		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc />
 	public Task DeleteLinkAsync(Guid id)
 	{
-		throw new NotImplementedException();
+		var link = _links.Single(link => link.Id == id);
+		_links.Remove(link);
+		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc />
@@ -225,19 +248,28 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default)
 	{
-		throw new NotImplementedException();
+		var links = _transactionLinks
+			.Where(kvp => kvp.Key == transactionId)
+			.Select(kvp => kvp.Value)
+			.Select(id => _links.Single(link => link.Id == id))
+			.ToList();
+
+		return Task.FromResult(links);
 	}
 
 	/// <inheritdoc />
 	public Task AddLinkToTransactionAsync(Guid transactionId, Guid linkId)
 	{
-		throw new NotImplementedException();
+		_transactionLinks.Add(new(transactionId, linkId));
+		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc />
 	public Task RemoveLinkFromTransactionAsync(Guid transactionId, Guid linkId)
 	{
-		throw new NotImplementedException();
+		var relation = _transactionLinks.Single(kvp => kvp.Key == transactionId && kvp.Value == linkId);
+		_transactionLinks.Remove(relation);
+		return Task.CompletedTask;
 	}
 
 	/// <inheritdoc />

@@ -76,14 +76,9 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	}
 
 	/// <inheritdoc />
-	public override async Task DeleteSelectedAsync()
+	protected override async Task DeleteAsync(PurchaseOverview row)
 	{
-		if (Selected is null)
-		{
-			throw new InvalidOperationException();
-		}
-
-		await _gnomeshadeClient.DeletePurchaseAsync(_transactionId, Selected.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeletePurchaseAsync(_transactionId, row.Id).ConfigureAwait(false);
 		await RefreshAsync();
 	}
 

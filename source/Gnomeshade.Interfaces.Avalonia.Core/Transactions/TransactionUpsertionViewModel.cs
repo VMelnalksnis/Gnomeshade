@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -23,12 +24,14 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		IGnomeshadeClient gnomeshadeClient,
 		Guid id,
 		TransferViewModel transfers,
-		PurchaseViewModel purchases)
+		PurchaseViewModel purchases,
+		LinkViewModel links)
 		: base(gnomeshadeClient)
 	{
 		_id = id;
 		Transfers = transfers;
 		Purchases = purchases;
+		Links = links;
 
 		Properties = new();
 		Properties.PropertyChanged += PropertiesOnPropertyChanged;
@@ -43,6 +46,9 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <summary>Gets view model of all purchases of this transaction.</summary>
 	public PurchaseViewModel Purchases { get; }
 
+	/// <summary>Gets view model of all links of this transaction.</summary>
+	public LinkViewModel Links { get; }
+
 	/// <inheritdoc />
 	public override bool CanSave => Properties.IsValid;
 
@@ -54,8 +60,9 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
+		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 
-		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, id, transferViewModel, purchaseViewModel);
+		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, id, transferViewModel, purchaseViewModel, linkViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
