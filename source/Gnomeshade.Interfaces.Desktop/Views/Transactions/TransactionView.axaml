@@ -62,7 +62,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn Header="Transfers" IsReadOnly="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
