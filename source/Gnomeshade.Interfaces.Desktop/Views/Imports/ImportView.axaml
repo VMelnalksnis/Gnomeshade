@@ -23,10 +23,13 @@
 
 		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
 			<Button
-				x:Name="SelectFileButton"
 				MinWidth="100" HorizontalContentAlignment="Center"
 				Click="SelectFile_OnClick">
 				Select File
+
+				<Interaction.Behaviors>
+					<FocusOnAttachedToVisualTreeBehavior />
+				</Interaction.Behaviors>
 			</Button>
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"

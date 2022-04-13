@@ -22,8 +22,12 @@
 			Grid.Column="1" Grid.Row="0"
 			MinWidth="300" Margin="5"
 			AcceptsReturn="False"
-			x:Name="ProductName"
-			Text="{Binding Name}" />
+			Text="{Binding Name}">
+
+			<Interaction.Behaviors>
+				<FocusOnAttachedToVisualTreeBehavior />
+			</Interaction.Behaviors>
+		</TextBox>
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="1"

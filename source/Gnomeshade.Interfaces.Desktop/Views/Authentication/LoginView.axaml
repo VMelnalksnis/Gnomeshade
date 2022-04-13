@@ -35,7 +35,12 @@
 		<TextBox
 			Grid.Row="2" Grid.Column="2"
 			MinWidth="350" Margin="0 0 0 10"
-			x:Name="Username" Text="{Binding Username}" />
+			Text="{Binding Username}">
+
+			<Interaction.Behaviors>
+				<FocusOnAttachedToVisualTreeBehavior />
+			</Interaction.Behaviors>
+		</TextBox>
 
 		<!--Password-->
 		<TextBlock

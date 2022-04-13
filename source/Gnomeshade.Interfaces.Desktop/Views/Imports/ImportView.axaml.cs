@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.Desktop.Views.Imports;
 /// <summary>
 /// Data importing and overview of import result.
 /// </summary>
-public sealed class ImportView : FocusOnInitUserControl, IView<ImportViewModel>
+public sealed class ImportView : UserControl, IView<ImportViewModel>
 {
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ImportView"/> class.
@@ -27,7 +27,6 @@ public sealed class ImportView : FocusOnInitUserControl, IView<ImportViewModel>
 	public ImportView()
 	{
 		AvaloniaXamlLoader.Load(this);
-		Focus("SelectFileButton");
 	}
 
 	[PublicAPI]
