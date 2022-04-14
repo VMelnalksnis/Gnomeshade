@@ -9,6 +9,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>The act or an instance of buying of a <see cref="Product"/> as a part of a <see cref="Transaction"/>.</summary>
@@ -19,7 +21,7 @@ public sealed record Purchase
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when the purchase was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of the purchase.</summary>
 	public Guid OwnerId { get; init; }
@@ -28,7 +30,7 @@ public sealed record Purchase
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in the when the purchase was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user that last modified this purchase.</summary>
 	public Guid ModifiedByUserId { get; init; }
@@ -52,5 +54,5 @@ public sealed record Purchase
 	public decimal Amount { get; init; }
 
 	/// <summary>The date when the <see cref="ProductId"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate { get; init; }
+	public Instant? DeliveryDate { get; init; }
 }

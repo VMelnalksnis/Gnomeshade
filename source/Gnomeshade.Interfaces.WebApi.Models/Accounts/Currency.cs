@@ -6,6 +6,8 @@ using System;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 #pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -24,7 +26,7 @@ public sealed record Currency
 	/// <summary>
 	/// The point in time when this currency was created.
 	/// </summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>
 	/// The name of the currency.
@@ -64,10 +66,10 @@ public sealed record Currency
 	/// <summary>
 	/// The point of time from which this currency has been used.
 	/// </summary>
-	public DateTimeOffset? ActiveFrom { get; init; }
+	public Instant? ActiveFrom { get; init; }
 
 	/// <summary>
 	/// The point of time until which this currency has been used.
 	/// </summary>
-	public DateTimeOffset? ActiveUntil { get; init; }
+	public Instant? ActiveUntil { get; init; }
 }

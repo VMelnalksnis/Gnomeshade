@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
+using NodaTime;
+
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
@@ -97,7 +99,7 @@ public sealed class AuthenticationController : ControllerBase
 			DateTime.Now.AddHours(3),
 			new(authSigningKey, SecurityAlgorithms.HmacSha256));
 
-		return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), token.ValidTo));
+		return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), Instant.FromDateTimeUtc(token.ValidTo)));
 	}
 
 	/// <summary>Registers a new user.</summary>

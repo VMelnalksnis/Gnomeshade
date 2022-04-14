@@ -4,6 +4,8 @@
 
 using System;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities.Abstractions;
 
 /// <summary>
@@ -19,5 +21,5 @@ public interface IEntity
 	/// <summary>
 	/// Gets the timestamp of the creation of this entity.
 	/// </summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 }

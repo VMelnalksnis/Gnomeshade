@@ -6,6 +6,8 @@ using System;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 #pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
@@ -23,7 +25,7 @@ public sealed record AccountInCurrency
 	/// <summary>
 	/// The point in time when this account in currency was created.
 	/// </summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>
 	/// The id of the owner of this account in currency.
@@ -38,7 +40,7 @@ public sealed record AccountInCurrency
 	/// <summary>
 	/// The point in time when this account in currency was last modified.
 	/// </summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>
 	/// The id of the user which last modified this account in currency.
@@ -53,7 +55,7 @@ public sealed record AccountInCurrency
 	/// <summary>
 	/// The point in time when this account in currency was disabled.
 	/// </summary>
-	public DateTimeOffset? DisabledAt { get; init; }
+	public Instant? DisabledAt { get; init; }
 
 	/// <summary>
 	/// The id of the user which disabled this account in currency.

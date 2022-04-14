@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>Information needed to create a purchase.</summary>
@@ -31,5 +33,5 @@ public sealed record PurchaseCreation
 	public decimal? Amount { get; set; }
 
 	/// <inheritdoc cref="Purchase.DeliveryDate"/>
-	public DateTimeOffset? DeliveryDate { get; set; }
+	public Instant? DeliveryDate { get; set; }
 }

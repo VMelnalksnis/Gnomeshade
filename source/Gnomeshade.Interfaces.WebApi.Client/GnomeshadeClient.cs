@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,9 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
+
 using static Gnomeshade.Interfaces.WebApi.Client.Routes;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
@@ -28,6 +32,7 @@ namespace Gnomeshade.Interfaces.WebApi.Client;
 /// <inheritdoc cref="IGnomeshadeClient"/>
 public sealed class GnomeshadeClient : IGnomeshadeClient
 {
+	private readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
 	private readonly HttpClient _httpClient;
 
 	/// <summary>Initializes a new instance of the <see cref="GnomeshadeClient"/> class.</summary>
@@ -37,6 +42,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		_httpClient = httpClient;
 		_httpClient.DefaultRequestHeaders.Accept.Clear();
 		_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
+
+		_jsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 	}
 
 	/// <inheritdoc/>
@@ -44,10 +51,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		try
 		{
-			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login).ConfigureAwait(false);
+			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login, _jsonSerializerOptions).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
-				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>().ConfigureAwait(false);
+				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions).ConfigureAwait(false);
 				_httpClient.DefaultRequestHeaders.Authorization =
 					new(JwtBearerDefaults.AuthenticationScheme, loginResponse!.Token);
 				return new SuccessfulLogin(loginResponse);
@@ -258,7 +265,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		using var importResponse = await _httpClient.PostAsync(_iso20022, multipartContent);
 		await ThrowIfNotSuccessCode(importResponse);
 
-		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>())!;
+		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>(_jsonSerializerOptions))!;
 	}
 
 	/// <inheritdoc />
@@ -308,16 +315,16 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		using var response = await _httpClient.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
 
-		return (await response.Content.ReadFromJsonAsync<TResult>(cancellationToken: cancellationToken).ConfigureAwait(false))!;
+		return (await response.Content.ReadFromJsonAsync<TResult>(_jsonSerializerOptions, cancellationToken).ConfigureAwait(false))!;
 	}
 
 	private async Task<Guid> PostAsync<TRequest>(string requestUri, TRequest request)
 		where TRequest : notnull
 	{
-		using var response = await _httpClient.PostAsJsonAsync(requestUri, request).ConfigureAwait(false);
+		using var response = await _httpClient.PostAsJsonAsync(requestUri, request, _jsonSerializerOptions).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
 
-		return await response.Content.ReadFromJsonAsync<Guid>().ConfigureAwait(false);
+		return await response.Content.ReadFromJsonAsync<Guid>(_jsonSerializerOptions).ConfigureAwait(false);
 	}
 
 	private async Task PutAsync(string requestUri)
@@ -329,7 +336,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	private async Task PutAsync<TRequest>(string requestUri, TRequest request)
 		where TRequest : notnull
 	{
-		using var response = await _httpClient.PutAsJsonAsync(requestUri, request).ConfigureAwait(false);
+		using var response = await _httpClient.PutAsJsonAsync(requestUri, request, _jsonSerializerOptions).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response);
 	}
 

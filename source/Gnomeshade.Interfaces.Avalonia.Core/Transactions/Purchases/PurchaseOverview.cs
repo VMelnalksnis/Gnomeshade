@@ -24,7 +24,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		string currencyName,
 		string productName,
 		decimal amount,
-		DateTimeOffset? deliveryDate)
+		DateTime? deliveryDate)
 	{
 		Id = id;
 		Price = price;
@@ -50,5 +50,5 @@ public sealed class PurchaseOverview : PropertyChangedBase
 	public decimal Amount { get; }
 
 	/// <summary>Gets the date when the <see cref="ProductName"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate { get; }
+	public DateTime? DeliveryDate { get; }
 }

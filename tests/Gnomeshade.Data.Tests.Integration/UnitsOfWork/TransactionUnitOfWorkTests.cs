@@ -14,6 +14,8 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.TestingHelpers.Data.Fakers;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -56,7 +58,8 @@ public sealed class TransactionUnitOfWorkTests : IDisposable
 		var dbTransaction = _dbConnection.BeginTransaction();
 		var findImportTransaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id, dbTransaction);
 		dbTransaction.Commit();
-		var allTransactions = await _repository.GetAllAsync(DateTimeOffset.UtcNow.AddMonths(-1), DateTimeOffset.UtcNow, TestUser.Id);
+		var now = SystemClock.Instance.GetCurrentInstant();
+		var allTransactions = await _repository.GetAllAsync(now - Duration.FromDays(31), now, TestUser.Id);
 
 		findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 		findImportTransaction.Should().BeEquivalentTo(getTransaction, Options);

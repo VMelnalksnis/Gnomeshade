@@ -24,6 +24,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using NodaTime;
+
 using VMelnalksnis.ISO20022DotNet.MessageSets.BankToCustomerCashManagement.V2.AccountReport;
 
 using static Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes.Family;
@@ -192,6 +194,28 @@ public sealed class Iso20022Controller : ControllerBase
 			dbTransaction.Rollback();
 			throw;
 		}
+	}
+
+	private static Instant GetBookingDate(DateAndDateTimeChoice? dateAndDateTimeChoice)
+	{
+		if (dateAndDateTimeChoice is null)
+		{
+			throw new ArgumentNullException(nameof(dateAndDateTimeChoice));
+		}
+
+		if (dateAndDateTimeChoice.DateTime is null && dateAndDateTimeChoice.Date is null)
+		{
+			throw new ArgumentException("Choice does not contain any values", nameof(dateAndDateTimeChoice));
+		}
+
+		if (dateAndDateTimeChoice.DateTime is not null)
+		{
+			var dateTime = dateAndDateTimeChoice.DateTime.Value;
+			return Instant.FromUtc(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second);
+		}
+
+		var (year, month, day) = dateAndDateTimeChoice.Date!.Value;
+		return Instant.FromUtc(year, month, day, 0, 0);
 	}
 
 	private async Task<AccountReport11> ReadReport(IFormFile formFile)
@@ -376,10 +400,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var creditDebit = reportEntry.CreditDebitIndicator;
 		_logger.LogTrace("Credit or debit indicator {CreditDebit}", creditDebit);
 
-		var bookingDate =
-			reportEntry.BookingDate?.DateTime ??
-			reportEntry.BookingDate?.Date!.Value ??
-			throw new InvalidOperationException("Booking date is null");
+		var bookingDate = GetBookingDate(reportEntry.BookingDate);
 		_logger.LogTrace("Booking date {BookingDate}", bookingDate);
 
 		var description = string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new());
@@ -468,9 +489,8 @@ public sealed class Iso20022Controller : ControllerBase
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			BookedAt = bookingDate.ToUniversalTime(),
+			BookedAt = bookingDate,
 			ImportHash = importHash,
-			ImportedAt = DateTimeOffset.UtcNow, // todo at db transaction level
 			Description = description,
 		};
 

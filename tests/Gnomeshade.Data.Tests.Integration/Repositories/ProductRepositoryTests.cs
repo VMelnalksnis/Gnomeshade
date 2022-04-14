@@ -59,16 +59,17 @@ public class ProductRepositoryTests : IDisposable
 		allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
 		var productToUpdate = getProduct with { Sku = "123", Description = "Foo" };
-		_ = await _repository.UpdateAsync(productToUpdate);
+		(await _repository.UpdateAsync(productToUpdate)).Should().Be(1);
 		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
 
 		using (new AssertionScope())
 		{
 			updatedProduct.Id.Should().Be(getProduct.Id);
 			updatedProduct.CreatedAt.Should().Be(getProduct.CreatedAt);
-			updatedProduct.ModifiedAt.Should().BeAfter(getProduct.ModifiedAt);
+			updatedProduct.ModifiedAt.Should().BeGreaterThan(getProduct.ModifiedAt);
 			updatedProduct.Name.Should().Be(getProduct.Name);
-			updatedProduct.Description.Should().NotBe(getProduct.Description);
+			updatedProduct.Sku.Should().Be("123");
+			updatedProduct.Description.Should().Be("Foo");
 		}
 
 		await _repository.DeleteAsync(id, TestUser.Id);

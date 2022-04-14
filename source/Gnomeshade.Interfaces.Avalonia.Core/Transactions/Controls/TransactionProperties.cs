@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Transaction information besides transaction items.</summary>
@@ -13,16 +15,16 @@ public sealed class TransactionProperties : ViewModelBase
 {
 	private static readonly string[] _isValid = { nameof(IsValid) };
 
-	private DateTimeOffset? _bookingDate;
+	private DateTime? _bookingDate;
 	private TimeSpan? _bookingTime;
-	private DateTimeOffset? _valueDate;
+	private DateTime? _valueDate;
 	private TimeSpan? _valueTime;
-	private DateTimeOffset? _reconciliationDate;
+	private DateTime? _reconciliationDate;
 	private TimeSpan? _reconciliationTime;
 	private string? _description;
 
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public DateTimeOffset? BookingDate
+	public DateTime? BookingDate
 	{
 		get => _bookingDate;
 		set => SetAndNotifyWithGuard(ref _bookingDate, value, nameof(BookingDate), _isValid);
@@ -36,12 +38,19 @@ public sealed class TransactionProperties : ViewModelBase
 	}
 
 	/// <inheritdoc cref="Transaction.BookedAt"/>
-	public DateTimeOffset? BookedAt => BookingDate.HasValue
-		? new DateTimeOffset(BookingDate.Value.Date).Add(BookingTime.GetValueOrDefault())
-		: default(DateTimeOffset?);
+	public ZonedDateTime? BookedAt => BookingDate.HasValue
+		? new ZonedDateTime(
+			Instant.FromUtc(
+				BookingDate.Value.Year,
+				BookingDate.Value.Month,
+				BookingDate.Value.Day,
+				BookingTime.GetValueOrDefault().Hours,
+				BookingTime.GetValueOrDefault().Minutes),
+			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+		: null;
 
 	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public DateTimeOffset? ValueDate
+	public DateTime? ValueDate
 	{
 		get => _valueDate;
 		set => SetAndNotifyWithGuard(ref _valueDate, value, nameof(ValueDate), _isValid);
@@ -55,12 +64,19 @@ public sealed class TransactionProperties : ViewModelBase
 	}
 
 	/// <inheritdoc cref="Transaction.ValuedAt"/>
-	public DateTimeOffset? ValuedAt => ValueDate.HasValue
-		? new DateTimeOffset(ValueDate.Value.Date).Add(ValueTime.GetValueOrDefault())
-		: default(DateTimeOffset?);
+	public ZonedDateTime? ValuedAt => ValueDate.HasValue
+		? new ZonedDateTime(
+			Instant.FromUtc(
+				ValueDate.Value.Year,
+				ValueDate.Value.Month,
+				ValueDate.Value.Day,
+				ValueTime.GetValueOrDefault().Hours,
+				ValueTime.GetValueOrDefault().Minutes),
+			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+		: null;
 
 	/// <summary>Gets or sets the date on which the transaction was reconciled.</summary>
-	public DateTimeOffset? ReconciliationDate
+	public DateTime? ReconciliationDate
 	{
 		get => _reconciliationDate;
 		set => SetAndNotifyWithGuard(ref _reconciliationDate, value, nameof(ReconciliationDate), _isValid);
@@ -74,9 +90,16 @@ public sealed class TransactionProperties : ViewModelBase
 	}
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
-	public DateTimeOffset? ReconciledAt => ReconciliationDate.HasValue
-		? new DateTimeOffset(ReconciliationDate.Value.Date).Add(ReconciliationTime.GetValueOrDefault())
-		: default(DateTimeOffset?);
+	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue
+		? new ZonedDateTime(
+			Instant.FromUtc(
+				ReconciliationDate.Value.Year,
+				ReconciliationDate.Value.Month,
+				ReconciliationDate.Value.Day,
+				ReconciliationTime.GetValueOrDefault().Hours,
+				ReconciliationTime.GetValueOrDefault().Minutes),
+			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+		: null;
 
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	public string? Description

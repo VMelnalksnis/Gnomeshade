@@ -6,6 +6,8 @@ using System;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
 /// <summary>A good or a service that can be exchanged during a transaction.</summary>
@@ -16,7 +18,7 @@ public sealed record Product
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when the product was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of the product.</summary>
 	public Guid OwnerId { get; init; }
@@ -25,7 +27,7 @@ public sealed record Product
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in the when the product was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user that last modified this product.</summary>
 	public Guid ModifiedByUserId { get; init; }

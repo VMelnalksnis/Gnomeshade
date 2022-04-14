@@ -20,6 +20,8 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using NodaTime;
+
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0;
@@ -78,11 +80,11 @@ public sealed class LinksController : FinanceControllerBase<LinkEntity, Link>
 		{
 			Id = id,
 			OwnerId = ApplicationUser.Id,
-			CreatedAt = DateTimeOffset.UtcNow,
+			CreatedAt = SystemClock.Instance.GetCurrentInstant(),
 			CreatedByUserId = ApplicationUser.Id,
 		};
 
-		linkToCreate.ModifiedAt = DateTimeOffset.UtcNow;
+		linkToCreate.ModifiedAt = SystemClock.Instance.GetCurrentInstant();
 		linkToCreate.ModifiedByUserId = ApplicationUser.Id;
 		linkToCreate.Uri = link.Uri!.ToString();
 

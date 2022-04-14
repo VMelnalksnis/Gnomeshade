@@ -61,7 +61,7 @@ public class UnitsControllerTests
 		var productWithoutChanges = await PutAndGet(productId, creationModel);
 
 		productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
-		productWithoutChanges.ModifiedAt.Should().BeAfter(product.ModifiedAt);
+		productWithoutChanges.ModifiedAt.Should().BeGreaterThan(product.ModifiedAt);
 
 		var changedCreationModel = creationModel with { ParentUnitId = null, Multiplier = null };
 		var productWithChanges = await PutAndGet(productId, changedCreationModel);

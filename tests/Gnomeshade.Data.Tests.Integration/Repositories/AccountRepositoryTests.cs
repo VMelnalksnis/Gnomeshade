@@ -14,6 +14,8 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.TestingHelpers.Data.Fakers;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -104,7 +106,7 @@ public class AccountRepositoryTests : IDisposable
 
 		var disabledAccount = accountFaker.GenerateUnique(account) with
 		{
-			DisabledAt = DateTimeOffset.UtcNow,
+			DisabledAt = SystemClock.Instance.GetCurrentInstant(),
 			DisabledByUserId = TestUser.Id,
 		};
 

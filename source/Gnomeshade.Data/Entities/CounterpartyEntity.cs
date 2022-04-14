@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>
@@ -17,7 +19,7 @@ public sealed record CounterpartyEntity : IOwnableEntity, IModifiableEntity, INa
 	public Guid Id { get; init; }
 
 	/// <inheritdoc />
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
@@ -26,7 +28,7 @@ public sealed record CounterpartyEntity : IOwnableEntity, IModifiableEntity, INa
 	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
-	public DateTimeOffset ModifiedAt { get; set; }
+	public Instant ModifiedAt { get; set; }
 
 	/// <inheritdoc />
 	public Guid ModifiedByUserId { get; set; }

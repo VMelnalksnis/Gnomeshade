@@ -10,6 +10,8 @@ using FluentAssertions;
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionUpsertionViewModel;
@@ -24,7 +26,7 @@ public class TransactionDetailViewModelTests
 	{
 		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
 
-		var reconciledAt = DateTimeOffset.Now;
+		var reconciledAt = DateTime.Now;
 
 		viewModel.Properties.ReconciliationDate = reconciledAt;
 		viewModel.Properties.ReconciliationTime = reconciledAt.TimeOfDay;
@@ -34,6 +36,9 @@ public class TransactionDetailViewModelTests
 		await viewModel.SaveAsync();
 
 		viewModel.ErrorMessage.Should().BeNullOrWhiteSpace();
-		viewModel.Properties.ReconciledAt.Should().Be(reconciledAt);
+		viewModel.Properties.ReconciledAt.Should().BeEquivalentTo(
+			new ZonedDateTime(
+				Instant.FromUtc(reconciledAt.Year, reconciledAt.Month, reconciledAt.Day, reconciledAt.Hour, reconciledAt.Minute),
+				DateTimeZoneProviders.Tzdb.GetSystemDefault()));
 	}
 }

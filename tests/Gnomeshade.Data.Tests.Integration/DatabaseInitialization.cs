@@ -4,14 +4,19 @@
 
 using System.Threading.Tasks;
 
+using Dapper;
+
 using FluentAssertions;
 
+using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Migrations;
 using Gnomeshade.TestingHelpers.Data;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
+
+using NodaTime;
 
 using Npgsql;
 using Npgsql.Logging;
@@ -44,6 +49,8 @@ public class DatabaseInitialization
 		AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<AccountEntity>());
 		NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
 		NpgsqlLogManager.IsParameterLoggingEnabled = true;
+		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
+		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
 
 		TestUser = await _initializer.SetupDatabaseAsync();
 	}

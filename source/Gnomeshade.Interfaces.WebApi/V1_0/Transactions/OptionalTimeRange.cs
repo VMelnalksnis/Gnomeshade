@@ -2,12 +2,13 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
+
+using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
@@ -23,12 +24,12 @@ public sealed record OptionalTimeRange : IValidatableObject
 	/// <summary>
 	/// The start of the date range.
 	/// </summary>
-	public DateTimeOffset? From { get; init; }
+	public Instant? From { get; init; }
 
 	/// <summary>
 	/// The end of the date range.
 	/// </summary>
-	public DateTimeOffset? To { get; init; }
+	public Instant? To { get; init; }
 
 	/// <inheritdoc />
 	public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

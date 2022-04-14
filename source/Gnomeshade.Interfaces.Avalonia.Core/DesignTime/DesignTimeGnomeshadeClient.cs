@@ -18,6 +18,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Tags;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>An implementation of <see cref="IGnomeshadeClient"/> for use during design time.</summary>
@@ -72,7 +74,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var transaction = new Transaction
 		{
 			Id = Guid.Empty,
-			BookedAt = DateTimeOffset.UtcNow,
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 			Description = "Some transaction description",
 		};
 
@@ -118,7 +120,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				CurrencyId = euro.Id,
 				Amount = 500,
 				ProductId = bread.Id,
-				DeliveryDate = DateTimeOffset.Now,
+				DeliveryDate = SystemClock.Instance.GetCurrentInstant(),
 			},
 		};
 
@@ -219,8 +221,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			ValuedAt = transaction.ValuedAt,
 			ReconciledAt = transaction.ReconciledAt,
 			Description = transaction.Description,
-			CreatedAt = DateTimeOffset.UtcNow,
-			ModifiedAt = DateTimeOffset.Now,
+			CreatedAt = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
+			ModifiedAt = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
 		});
 
 		return Task.CompletedTask;

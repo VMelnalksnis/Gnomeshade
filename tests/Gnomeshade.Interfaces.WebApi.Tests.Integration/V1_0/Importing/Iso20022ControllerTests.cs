@@ -48,6 +48,7 @@ public class Iso20022ControllerTests
 			reportResult.TransferReferences.Should().HaveCount(2);
 			reportResult.TransactionReferences.Should().HaveCount(2);
 			reportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(true);
+			reportResult.TransactionReferences.Select(reference => reference.Transaction.ImportedAt).Should().AllSatisfy(instant => instant.Should().NotBeNull());
 		}
 
 		var secondReportResult = await _client.Import(contentStream, _inputFile.Name);

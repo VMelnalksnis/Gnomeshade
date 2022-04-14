@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>
@@ -17,7 +19,7 @@ public sealed record CurrencyEntity : INamedEntity
 	public Guid Id { get; init; }
 
 	/// <inheritdoc />
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <inheritdoc />
 	public string Name { get; set; } = string.Empty;
@@ -60,10 +62,10 @@ public sealed record CurrencyEntity : INamedEntity
 	/// <summary>
 	/// Gets the date from which the currency has been active.
 	/// </summary>
-	public DateTimeOffset? ActiveFrom { get; init; }
+	public Instant? ActiveFrom { get; init; }
 
 	/// <summary>
 	/// Gets the date until which the currency has been/will be active.
 	/// </summary>
-	public DateTimeOffset? ActiveUntil { get; init; }
+	public Instant? ActiveUntil { get; init; }
 }

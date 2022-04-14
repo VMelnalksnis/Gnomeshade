@@ -56,7 +56,7 @@ public class TagsControllerTests
 		await _client.PutTagAsync(tagId, new() { Name = $"{Guid.NewGuid():N}" });
 		var updatedTag = await _client.GetTagAsync(tagId);
 		updatedTag.Name.Should().NotBeEquivalentTo(tag.Name);
-		updatedTag.ModifiedAt.Should().BeAfter(tag.ModifiedAt);
+		updatedTag.ModifiedAt.Should().BeGreaterThan(tag.ModifiedAt);
 
 		await _client.DeleteTagAsync(tagId);
 

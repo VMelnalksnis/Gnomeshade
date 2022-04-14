@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>
@@ -18,7 +20,7 @@ public sealed class OwnershipEntity : IEntity
 	public Guid Id { get; init; }
 
 	/// <inheritdoc/>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>Gets or sets the id of the <see cref="OwnerEntity"/> to which the other entities are linked.</summary>
 	public Guid OwnerId { get; set; }

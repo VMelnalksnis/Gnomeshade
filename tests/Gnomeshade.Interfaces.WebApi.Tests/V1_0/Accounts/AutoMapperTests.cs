@@ -13,6 +13,8 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts;
@@ -72,10 +74,10 @@ public class AutoMapperTests
 		var accountInCurrency = new AccountInCurrencyEntity
 		{
 			Id = Guid.NewGuid(),
-			CreatedAt = DateTimeOffset.Now,
+			CreatedAt = SystemClock.Instance.GetCurrentInstant(),
 			OwnerId = Guid.NewGuid(),
 			CreatedByUserId = Guid.NewGuid(),
-			ModifiedAt = DateTimeOffset.Now,
+			ModifiedAt = SystemClock.Instance.GetCurrentInstant(),
 			ModifiedByUserId = Guid.NewGuid(),
 		};
 
@@ -97,10 +99,10 @@ public class AutoMapperTests
 		var account = new AccountEntity
 		{
 			Id = Guid.NewGuid(),
-			CreatedAt = DateTimeOffset.Now,
+			CreatedAt = SystemClock.Instance.GetCurrentInstant(),
 			OwnerId = Guid.NewGuid(),
 			CreatedByUserId = Guid.NewGuid(),
-			ModifiedAt = DateTimeOffset.Now,
+			ModifiedAt = SystemClock.Instance.GetCurrentInstant(),
 			ModifiedByUserId = Guid.NewGuid(),
 			Name = "Spending",
 			NormalizedName = "SPENDING",
@@ -113,10 +115,10 @@ public class AutoMapperTests
 				new()
 				{
 					Id = Guid.NewGuid(),
-					CreatedAt = DateTimeOffset.Now,
+					CreatedAt = SystemClock.Instance.GetCurrentInstant(),
 					OwnerId = Guid.NewGuid(),
 					CreatedByUserId = Guid.NewGuid(),
-					ModifiedAt = DateTimeOffset.Now,
+					ModifiedAt = SystemClock.Instance.GetCurrentInstant(),
 					ModifiedByUserId = Guid.NewGuid(),
 				},
 			},
@@ -154,7 +156,7 @@ public class AutoMapperTests
 		var currency = new CurrencyEntity
 		{
 			Id = Guid.NewGuid(),
-			CreatedAt = DateTimeOffset.Now,
+			CreatedAt = SystemClock.Instance.GetCurrentInstant(),
 			Name = "Euro",
 			NormalizedName = "EURO",
 			NumericCode = 987,
@@ -163,7 +165,7 @@ public class AutoMapperTests
 			Official = true,
 			Crypto = false,
 			Historical = false,
-			ActiveFrom = new DateTimeOffset(1990, 01, 01, 0, 0, 0, TimeSpan.Zero),
+			ActiveFrom = Instant.FromUtc(1990, 01, 01, 0, 0, 0),
 			ActiveUntil = null,
 		};
 

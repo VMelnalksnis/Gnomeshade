@@ -6,6 +6,8 @@ using System;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models;
 
 /// <summary>A link to an external resource.</summary>
@@ -17,7 +19,7 @@ public sealed record Link
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when the link was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of the link.</summary>
 	public Guid OwnerId { get; init; }
@@ -26,7 +28,7 @@ public sealed record Link
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in the when the link was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user that last modified this link.</summary>
 	public Guid ModifiedByUserId { get; init; }

@@ -14,6 +14,8 @@ using Dapper;
 using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="TransactionEntity"/> repository.</summary>
@@ -63,8 +65,8 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all transactions.</returns>
 	public async Task<List<TransactionEntity>> GetAllAsync(
-		DateTimeOffset from,
-		DateTimeOffset to,
+		Instant from,
+		Instant to,
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{

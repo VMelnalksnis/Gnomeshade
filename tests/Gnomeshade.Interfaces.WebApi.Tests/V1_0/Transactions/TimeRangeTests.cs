@@ -9,6 +9,8 @@ using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
@@ -18,7 +20,7 @@ public class TimeRangeTests
 	[TestCaseSource(typeof(FromOptionalTestCaseSource))]
 	public void FromOptional_ShouldReturnExpected(
 		OptionalTimeRange optionalTimeRange,
-		DateTimeOffset currentTime,
+		Instant currentTime,
 		TimeRange expectedTimeRange)
 	{
 		var timeRange = TimeRange.FromOptional(optionalTimeRange, currentTime);
@@ -29,8 +31,8 @@ public class TimeRangeTests
 	[Test]
 	public void StartCannotBeBeforeEnd()
 	{
-		var start = new DateTimeOffset(2021, 12, 30, 07, 51, 03, TimeSpan.Zero);
-		var end = new DateTimeOffset(2021, 05, 20, 13, 05, 21, TimeSpan.Zero);
+		var start = Instant.FromUtc(2021, 12, 30, 07, 51, 03);
+		var end = Instant.FromUtc(2021, 05, 20, 13, 05, 21);
 
 		FluentActions
 			.Invoking(() => new TimeRange(start, end))
@@ -44,8 +46,8 @@ public class TimeRangeTests
 	[Test]
 	public void Deconstruct_ShouldReturnSameValues()
 	{
-		var expectedStart = DateTimeOffset.Now;
-		var expectedEnd = expectedStart.AddDays(1);
+		var expectedStart = SystemClock.Instance.GetCurrentInstant();
+		var expectedEnd = expectedStart + Duration.FromDays(1);
 		var timeRange = new TimeRange(expectedStart, expectedEnd);
 
 		var (start, end) = timeRange;

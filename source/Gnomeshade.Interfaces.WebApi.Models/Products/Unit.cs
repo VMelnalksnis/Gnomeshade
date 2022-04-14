@@ -6,6 +6,8 @@ using System;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
 /// <summary>A unit of measure.</summary>
@@ -16,7 +18,7 @@ public sealed record Unit
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when the unit was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of the unit.</summary>
 	public Guid OwnerId { get; init; }
@@ -25,7 +27,7 @@ public sealed record Unit
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in the when the unit was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user that last modified this unit.</summary>
 	public Guid ModifiedByUserId { get; init; }

@@ -94,11 +94,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 			return new TransactionOverview(
 				transaction.Id,
-				transaction.BookedAt?.ToLocalTime(),
-				transaction.ValuedAt?.ToLocalTime(),
+				transaction.BookedAt?.ToDateTimeOffset(),
+				transaction.ValuedAt?.ToDateTimeOffset(),
 				transaction.Description,
-				transaction.ImportedAt?.ToLocalTime(),
-				transaction.ReconciledAt?.ToLocalTime(),
+				transaction.ImportedAt?.ToDateTimeOffset(),
+				transaction.ReconciledAt?.ToDateTimeOffset(),
 				transfers,
 				purchases);
 		});
@@ -173,11 +173,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var overview = new TransactionOverview(
 			transaction.Id,
-			transaction.BookedAt?.ToLocalTime(),
-			transaction.ValuedAt?.ToLocalTime(),
+			transaction.BookedAt?.ToDateTimeOffset(),
+			transaction.ValuedAt?.ToDateTimeOffset(),
 			transaction.Description,
-			transaction.ImportedAt?.ToLocalTime(),
-			transaction.ReconciledAt?.ToLocalTime(),
+			transaction.ImportedAt?.ToDateTimeOffset(),
+			transaction.ReconciledAt?.ToDateTimeOffset(),
 			transfers,
 			purchases);
 

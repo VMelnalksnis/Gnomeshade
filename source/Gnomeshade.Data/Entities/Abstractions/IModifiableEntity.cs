@@ -4,6 +4,8 @@
 
 using System;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities.Abstractions;
 
 /// <summary>Represents an entity that can be modified.</summary>
@@ -11,7 +13,7 @@ namespace Gnomeshade.Data.Entities.Abstractions;
 public interface IModifiableEntity : IEntity
 {
 	/// <summary>Gets or sets the timestamp of the last modification of this entity.</summary>
-	DateTimeOffset ModifiedAt { get; set; }
+	Instant ModifiedAt { get; set; }
 
 	/// <summary>Gets or sets the id of the user which last modified this entity.</summary>
 	/// <seealso cref="UserEntity"/>

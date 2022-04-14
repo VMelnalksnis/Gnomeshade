@@ -4,6 +4,8 @@
 
 using System;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 /// <summary>
@@ -17,7 +19,7 @@ public readonly struct TimeRange
 	/// <param name="start">The start of the time range.</param>
 	/// <param name="end">The end of the time range.</param>
 	/// <exception cref="ArgumentException"><paramref name="start"/> is less than <paramref name="end"/>.</exception>
-	public TimeRange(DateTimeOffset start, DateTimeOffset end)
+	public TimeRange(Instant start, Instant end)
 	{
 		if (start > end)
 		{
@@ -31,12 +33,12 @@ public readonly struct TimeRange
 	/// <summary>
 	/// Gets the start of the time range.
 	/// </summary>
-	public DateTimeOffset Start { get; }
+	public Instant Start { get; }
 
 	/// <summary>
 	/// Gets the end of the time range.
 	/// </summary>
-	public DateTimeOffset End { get; }
+	public Instant End { get; }
 
 	/// <summary>
 	/// Creates a new time range from an optional time range with default values based on the current time.
@@ -44,13 +46,13 @@ public readonly struct TimeRange
 	/// <param name="optional">A time range with an unspecified start and/or end.</param>
 	/// <param name="currentTime">The current time from which to derive the default values.</param>
 	/// <returns>A time range with unspecified values set to defaults.</returns>
-	public static TimeRange FromOptional(OptionalTimeRange optional, DateTimeOffset currentTime)
+	public static TimeRange FromOptional(OptionalTimeRange optional, Instant currentTime)
 	{
 		var toDate = optional.To.GetValueOrDefault(currentTime);
-		var defaultFromDate = new DateTimeOffset(toDate.Year, toDate.Month, 01, 00, 00, 00, toDate.Offset);
+		var defaultFromDate = Instant.FromUtc(currentTime.InUtc().Year, currentTime.InUtc().Month, 1, 0, 0, 0);
 		var fromDate = optional.From.GetValueOrDefault(defaultFromDate);
 
-		return new(fromDate.ToUniversalTime(), toDate.ToUniversalTime());
+		return new(fromDate, toDate);
 	}
 
 	/// <summary>
@@ -58,7 +60,7 @@ public readonly struct TimeRange
 	/// </summary>
 	/// <param name="start">The start of the time range.</param>
 	/// <param name="end">The end of the time range.</param>
-	public void Deconstruct(out DateTimeOffset start, out DateTimeOffset end)
+	public void Deconstruct(out Instant start, out Instant end)
 	{
 		start = Start;
 		end = End;

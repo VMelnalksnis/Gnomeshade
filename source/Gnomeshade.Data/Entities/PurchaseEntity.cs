@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents the purchasing of a product or a service.</summary>
@@ -15,7 +17,7 @@ public sealed record PurchaseEntity : IOwnableEntity, IModifiableEntity
 	public Guid Id { get; init; }
 
 	/// <inheritdoc />
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
@@ -24,7 +26,7 @@ public sealed record PurchaseEntity : IOwnableEntity, IModifiableEntity
 	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
-	public DateTimeOffset ModifiedAt { get; set; }
+	public Instant ModifiedAt { get; set; }
 
 	/// <inheritdoc />
 	public Guid ModifiedByUserId { get; set; }
@@ -48,5 +50,5 @@ public sealed record PurchaseEntity : IOwnableEntity, IModifiableEntity
 	public decimal Amount { get; set; }
 
 	/// <summary>Gets or sets the date when the <see cref="ProductId"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate { get; set; }
+	public Instant? DeliveryDate { get; set; }
 }

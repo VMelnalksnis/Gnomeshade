@@ -8,6 +8,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>A transfer between two accounts.</summary>
@@ -19,7 +21,7 @@ public sealed record Transfer
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when the transfer was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of the transfer.</summary>
 	public Guid OwnerId { get; init; }
@@ -28,7 +30,7 @@ public sealed record Transfer
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in the when the transfer was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user that last modified this transfer.</summary>
 	public Guid ModifiedByUserId { get; init; }

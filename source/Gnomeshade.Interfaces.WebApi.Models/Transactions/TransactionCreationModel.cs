@@ -2,10 +2,11 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
+
+using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -15,17 +16,17 @@ public sealed record TransactionCreationModel
 {
 	/// <inheritdoc cref="Transaction.BookedAt"/>
 	[RequiredIfNull(nameof(ValuedAt))]
-	public DateTimeOffset? BookedAt { get; init; }
+	public Instant? BookedAt { get; init; }
 
 	/// <inheritdoc cref="Transaction.ValuedAt"/>
 	[RequiredIfNull(nameof(BookedAt))]
-	public DateTimeOffset? ValuedAt { get; init; }
+	public Instant? ValuedAt { get; init; }
 
 	/// <inheritdoc cref="Transaction.Description"/>
 	public string? Description { get; init; }
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
-	public DateTimeOffset? ReconciledAt { get; init; }
+	public Instant? ReconciledAt { get; init; }
 
 	/// <summary>SHA512 hash of the imported data.</summary>
 	[MinLength(64)]

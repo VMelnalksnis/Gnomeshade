@@ -57,7 +57,7 @@ public class CounterpartiesControllerTests
 		updatedCounterparty
 			.ModifiedAt
 			.Should()
-			.BeAfter(counterparty.ModifiedAt);
+			.BeGreaterThan(counterparty.ModifiedAt);
 	}
 
 	[Test]

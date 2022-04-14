@@ -22,6 +22,8 @@ using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using NodaTime;
+
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
@@ -80,7 +82,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		[FromQuery] OptionalTimeRange timeRange,
 		CancellationToken cancellation)
 	{
-		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, DateTimeOffset.UtcNow);
+		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
 
 		var transactions = await _repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
 		var transactionModels = transactions.Select(MapToModel).ToList();
@@ -98,7 +100,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 			OwnerId = ApplicationUser.Id, // todo
 			CreatedByUserId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
-			ImportedAt = transaction.ImportHash is null ? null : DateTimeOffset.UtcNow,
+			ImportedAt = transaction.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
 			ReconciledByUserId = transaction.ReconciledAt is null ? null : ApplicationUser.Id,
 		};
 
@@ -344,7 +346,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 			OwnerId = user.Id, // todo
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			ImportedAt = creationModel.ImportHash is null ? null : DateTimeOffset.UtcNow,
+			ImportedAt = creationModel.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
 			ReconciledByUserId = creationModel.ReconciledAt is null ? null : user.Id,
 		};
 

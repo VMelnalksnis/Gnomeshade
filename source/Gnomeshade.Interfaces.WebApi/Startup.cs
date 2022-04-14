@@ -7,6 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
+using Dapper;
+
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Elasticsearch;
@@ -14,6 +16,7 @@ using Elastic.Apm.EntityFrameworkCore;
 using Elastic.Apm.SqlClient;
 
 using Gnomeshade.Data;
+using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Repositories;
@@ -31,6 +34,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
 
 using Npgsql;
 using Npgsql.Logging;
@@ -50,6 +56,8 @@ public class Startup
 
 		NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
 		NpgsqlLogManager.IsParameterLoggingEnabled = true;
+		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
+		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
 	}
 
 	/// <summary>Gets the configuration used for configuring services and request pipeline.</summary>
@@ -63,7 +71,15 @@ public class Startup
 
 		services.AddValidatedOptions<JwtOptions>(Configuration);
 
-		services.AddControllers().AddControllersAsServices();
+		services
+			.AddControllers()
+			.AddControllersAsServices()
+			.AddJsonOptions(options =>
+			{
+				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
+			});
+
 		services.AddApiVersioning();
 
 		services.AddIdentityContext();

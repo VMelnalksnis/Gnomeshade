@@ -19,7 +19,7 @@ VALUES
      @ValuedAt,
      @Description,
      @ImportHash,
-     @ImportedAt,
+     CASE WHEN @ImportHash IS NULL THEN NULL ELSE CURRENT_TIMESTAMP END,
      @ReconciledAt,
      @ReconciledByUserId)
 RETURNING id;

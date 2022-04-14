@@ -72,14 +72,14 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		var transaction = await GnomeshadeClient.GetTransactionAsync(_id).ConfigureAwait(false);
 
-		Properties.BookingDate = transaction.BookedAt?.ToLocalTime();
-		Properties.BookingTime = transaction.BookedAt?.ToLocalTime().TimeOfDay;
+		Properties.BookingDate = transaction.BookedAt?.ToDateTimeUtc();
+		Properties.BookingTime = transaction.BookedAt?.ToDateTimeUtc().TimeOfDay;
 
-		Properties.ValueDate = transaction.ValuedAt?.ToLocalTime();
-		Properties.ValueTime = transaction.ValuedAt?.ToLocalTime().TimeOfDay;
+		Properties.ValueDate = transaction.ValuedAt?.ToDateTimeUtc();
+		Properties.ValueTime = transaction.ValuedAt?.ToDateTimeUtc().TimeOfDay;
 
-		Properties.ReconciliationDate = transaction.ReconciledAt?.ToLocalTime();
-		Properties.ReconciliationTime = transaction.ReconciledAt?.ToLocalTime().TimeOfDay;
+		Properties.ReconciliationDate = transaction.ReconciledAt?.ToDateTimeUtc();
+		Properties.ReconciliationTime = transaction.ReconciledAt?.ToDateTimeUtc().TimeOfDay;
 
 		Properties.Description = transaction.Description;
 
@@ -92,9 +92,9 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		var creationModel = new TransactionCreationModel
 		{
-			BookedAt = Properties.BookedAt,
-			ValuedAt = Properties.ValuedAt,
-			ReconciledAt = Properties.ReconciledAt,
+			BookedAt = Properties.BookedAt?.ToInstant(),
+			ValuedAt = Properties.ValuedAt?.ToInstant(),
+			ReconciledAt = Properties.ReconciledAt?.ToInstant(),
 			Description = Properties.Description,
 		};
 

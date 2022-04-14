@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 /// <summary>An account in one or multiple currencies, which belongs to a counterparty.</summary>
@@ -17,7 +19,7 @@ public sealed record Account
 	public Guid Id { get; init; }
 
 	/// <summary>The point in time when this account was created.</summary>
-	public DateTimeOffset CreatedAt { get; init; }
+	public Instant CreatedAt { get; init; }
 
 	/// <summary>The id of the owner of this account.</summary>
 	public Guid OwnerId { get; init; }
@@ -26,7 +28,7 @@ public sealed record Account
 	public Guid CreatedByUserId { get; init; }
 
 	/// <summary>The point in time when this account was last modified.</summary>
-	public DateTimeOffset ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; init; }
 
 	/// <summary>The id of the user which last modified this account.</summary>
 	public Guid ModifiedByUserId { get; init; }
@@ -41,7 +43,7 @@ public sealed record Account
 	public Currency PreferredCurrency { get; init; } = null!;
 
 	/// <summary>The point in time when this account was disabled.</summary>
-	public DateTimeOffset? DisabledAt { get; init; }
+	public Instant? DisabledAt { get; init; }
 
 	/// <summary>The id of the user which disabled this account.</summary>
 	public Guid? DisabledByUserId { get; init; }

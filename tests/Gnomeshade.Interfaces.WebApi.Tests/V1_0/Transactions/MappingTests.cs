@@ -15,6 +15,8 @@ using Gnomeshade.Interfaces.WebApi.V1_0;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
@@ -35,13 +37,14 @@ public class MappingTests
 	{
 		var creationModel = new TransactionCreationModel
 		{
-			BookedAt = new(2021, 05, 12, 01, 02, 03, TimeSpan.FromHours(2)),
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		var transaction = _mapper.Map<TransactionEntity>(creationModel);
 
 		transaction.BookedAt.Should().NotBeNull();
-		transaction.BookedAt!.Value.Offset.Should().Be(TimeSpan.Zero);
+
+		// transaction.BookedAt!.Value.Offset.Should().Be(TimeSpan.Zero);
 	}
 
 	[Test]

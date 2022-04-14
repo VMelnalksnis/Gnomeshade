@@ -14,6 +14,9 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+using NodaTime.Extensions;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Create or update a purchase.</summary>
@@ -26,7 +29,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private Currency? _currency;
 	private Product? _product;
 	private decimal? _amount;
-	private DateTimeOffset? _deliveryDate;
+	private DateTime? _deliveryDate;
 	private TimeSpan? _deliveryTime;
 	private List<Currency> _currencies;
 	private List<Product> _products;
@@ -89,7 +92,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate
+	public DateTime? DeliveryDate
 	{
 		get => _deliveryDate;
 		set => SetAndNotify(ref _deliveryDate, value);
@@ -141,8 +144,8 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
 			Product = Products.Single(product => product.Id == purchase.ProductId);
-			DeliveryDate = purchase.DeliveryDate?.ToLocalTime();
-			DeliveryTime = purchase.DeliveryDate?.ToLocalTime().TimeOfDay;
+			DeliveryDate = purchase.DeliveryDate?.ToDateTimeUtc();
+			DeliveryTime = purchase.DeliveryDate?.ToDateTimeUtc().TimeOfDay;
 		}
 	}
 
@@ -150,8 +153,11 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var deliveryDate = DeliveryDate.HasValue
-			? new DateTimeOffset(DeliveryDate.Value.Date).Add(DeliveryTime.GetValueOrDefault())
-			: default(DateTimeOffset?);
+			? new ZonedDateTime(
+				LocalDateTime.FromDateTime(DeliveryDate.Value.Add(DeliveryTime.GetValueOrDefault())),
+				SystemClock.Instance.InBclSystemDefaultZone().Zone,
+				SystemClock.Instance.InBclSystemDefaultZone().GetCurrentOffsetDateTime().Offset)
+			: default(ZonedDateTime?);
 
 		var purchaseCreation = new PurchaseCreation
 		{
@@ -159,7 +165,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			CurrencyId = Currency!.Id,
 			Amount = Amount,
 			ProductId = Product!.Id,
-			DeliveryDate = deliveryDate,
+			DeliveryDate = deliveryDate?.ToInstant(),
 		};
 
 		var id = _purchaseId ?? Guid.NewGuid(); // todo should this be saved?

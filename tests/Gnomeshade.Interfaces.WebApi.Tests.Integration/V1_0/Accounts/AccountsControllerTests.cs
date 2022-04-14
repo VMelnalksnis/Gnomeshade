@@ -74,7 +74,7 @@ public class AccountsControllerTests
 
 		var updatedAccount = await _client.GetAccountAsync(accountId);
 		updatedAccount.Should().BeEquivalentTo(createdAccount, options => options.Excluding(a => a.ModifiedAt));
-		updatedAccount.ModifiedAt.Should().BeAfter(createdAccount.ModifiedAt);
+		updatedAccount.ModifiedAt.Should().BeGreaterThan(createdAccount.ModifiedAt);
 	}
 
 	[Test]

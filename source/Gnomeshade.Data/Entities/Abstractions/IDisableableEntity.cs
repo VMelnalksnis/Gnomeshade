@@ -4,6 +4,8 @@
 
 using System;
 
+using NodaTime;
+
 namespace Gnomeshade.Data.Entities.Abstractions;
 
 /// <summary>
@@ -14,7 +16,7 @@ public interface IDisableableEntity : IEntity
 	/// <summary>
 	/// Gets or sets the point in time at which this entity was disabled.
 	/// </summary>
-	DateTimeOffset? DisabledAt { get; set; }
+	Instant? DisabledAt { get; set; }
 
 	/// <summary>
 	/// Gets or sets the id of the <see cref="UserEntity"/> which disabled the entity.

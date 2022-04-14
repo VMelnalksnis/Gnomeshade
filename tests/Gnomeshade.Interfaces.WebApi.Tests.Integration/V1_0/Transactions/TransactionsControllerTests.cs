@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 using FluentAssertions.Equivalency;
-using FluentAssertions.Extensions;
 
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -19,6 +18,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
+
+using NodaTime;
 
 using NUnit.Framework;
 
@@ -59,7 +60,7 @@ public class TransactionsControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			ValuedAt = DateTimeOffset.Now,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		var transactionId = Guid.NewGuid();
@@ -81,7 +82,7 @@ public class TransactionsControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			ValuedAt = DateTimeOffset.Now,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -104,7 +105,7 @@ public class TransactionsControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			ValuedAt = DateTimeOffset.Now,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -166,7 +167,7 @@ public class TransactionsControllerTests
 	{
 		var transactionCreationModel = new TransactionCreationModel
 		{
-			ValuedAt = DateTimeOffset.Now,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
@@ -187,12 +188,13 @@ public class TransactionsControllerTests
 		purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
 		purchase.Should().BeEquivalentTo(purchaseCreation);
 
-		var deliveryDate = DateTimeOffset.Now;
+		var deliveryDate = SystemClock.Instance.GetCurrentInstant();
 		purchaseCreation = purchaseCreation with { DeliveryDate = deliveryDate };
 		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
-		(await _client.GetPurchaseAsync(transactionId, purchaseId)).DeliveryDate
-			.Should()
-			.BeCloseTo(deliveryDate.ToUniversalTime(), 100.Milliseconds());
+		var updatedPurchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
+		updatedPurchase.DeliveryDate!.Value.Should().BeInRange(
+			deliveryDate - Duration.FromNanoseconds(1000),
+			deliveryDate + Duration.FromNanoseconds(1000));
 
 		await _client.DeletePurchaseAsync(transactionId, purchaseId);
 		(await _client.GetPurchasesAsync(transactionId)).Should().BeEmpty();
@@ -228,7 +230,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task Links()
 	{
-		var transactionCreation = new TransactionCreationModel { ValuedAt = DateTimeOffset.Now };
+		var transactionCreation = new TransactionCreationModel { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
 		var transactionId = await _client.CreateTransactionAsync(transactionCreation);
 
 		var uri = $"https://localhost/documents/{Guid.NewGuid()}";

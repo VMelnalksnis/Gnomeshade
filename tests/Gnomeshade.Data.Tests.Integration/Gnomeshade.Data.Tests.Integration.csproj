@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
         <PackageReference Include="Npgsql" Version="6.0.3"/>
+        <PackageReference Include="Npgsql.NodaTime" Version="6.0.3"/>
     </ItemGroup>
 
     <ItemGroup>

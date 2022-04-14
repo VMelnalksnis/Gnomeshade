@@ -29,15 +29,15 @@ public class TransactionPropertiesTests
 			false);
 
 		yield return new TestCaseData(
-			new TransactionProperties { BookingDate = DateTimeOffset.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties { BookingDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
 			false);
 
 		yield return new TestCaseData(
-			new TransactionProperties { BookingDate = DateTimeOffset.UtcNow, BookingTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties { BookingDate = DateTime.UtcNow, BookingTime = TimeSpan.FromSeconds(1) },
 			true);
 
 		yield return new TestCaseData(
-			new TransactionProperties { ValueDate = DateTimeOffset.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties { ValueDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
 			true);
 	}
 }
