@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
@@ -30,7 +29,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		string? description,
 		DateTimeOffset? importedAt,
 		DateTimeOffset? reconciledAt,
-		List<TransferOverview> transfers,
+		List<TransferSummary> transfers,
 		List<PurchaseOverview> purchases)
 	{
 		Id = id;
@@ -62,7 +61,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 	public DateTimeOffset? ReconciledAt { get; }
 
 	/// <summary>Gets all transfers of the transaction.</summary>
-	public List<TransferOverview> Transfers { get; }
+	public List<TransferSummary> Transfers { get; }
 
 	/// <summary>Gets all purchases of the transaction.</summary>
 	public List<PurchaseOverview> Purchases { get; }

@@ -107,11 +107,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
+		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var overviewTasks = transactions.Select(async transaction =>
 		{
 			var transfers = (await _gnomeshadeClient.GetTransfersAsync(transaction.Id))
-				.Select(transfer => transfer.ToOverview(accounts))
+				.Select(transfer => transfer.ToSummary(accounts, counterparty))
 				.ToList();
 
 			var purchases = (await _gnomeshadeClient.GetPurchasesAsync(transaction.Id))
@@ -184,13 +185,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
+		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var transfers = _gnomeshadeClient
 			.GetTransfersAsync(transaction.Id)
 			.ConfigureAwait(false)
 			.GetAwaiter()
 			.GetResult()
-			.Select(transfer => transfer.ToOverview(accounts))
+			.Select(transfer => transfer.ToSummary(accounts, counterparty))
 			.ToList();
 
 		var purchases = _gnomeshadeClient.GetPurchasesAsync(transaction.Id)

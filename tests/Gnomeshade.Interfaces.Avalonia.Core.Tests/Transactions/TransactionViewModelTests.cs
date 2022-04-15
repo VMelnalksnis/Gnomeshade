@@ -34,7 +34,7 @@ public class TransactionViewModelTests
 		using (new AssertionScope())
 		{
 			_viewModel.Selected.Should().BeNull();
-			_viewModel.Details.Should().BeNull();
+			_viewModel.Details.CanSave.Should().BeFalse();
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
