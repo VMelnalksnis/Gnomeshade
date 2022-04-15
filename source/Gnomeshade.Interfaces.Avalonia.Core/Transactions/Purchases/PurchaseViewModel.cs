@@ -11,22 +11,27 @@ using System.Threading.Tasks;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Overview of all <see cref="Purchase"/>s of a single <see cref="Transaction"/>.</summary>
 public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, PurchaseUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 
 	private PurchaseUpsertionViewModel _details;
 
 	private PurchaseViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
 		PurchaseUpsertionViewModel details)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
 		_details = details;
 
@@ -51,12 +56,16 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
 	/// <returns>A new instance of the <see cref="PurchaseViewModel"/> class.</returns>
-	public static async Task<PurchaseViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public static async Task<PurchaseViewModel> CreateAsync(
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		Guid transactionId)
 	{
-		var upsertionViewModel = await PurchaseUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
-		var viewModel = new PurchaseViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
+		var upsertionViewModel = await PurchaseUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, transactionId).ConfigureAwait(false);
+		var viewModel = new PurchaseViewModel(gnomeshadeClient, dateTimeZoneProvider, transactionId, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		SetDefaultCurrency(viewModel);
 		return viewModel;
@@ -75,7 +84,9 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
 
-		var overviews = purchases.Select(purchase => purchase.ToOverview(currencies, products));
+		var overviews = purchases
+			.OrderBy(purchase => purchase.CreatedAt)
+			.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider));
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
@@ -109,7 +120,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		if (e.PropertyName is nameof(Selected))
 		{
 			Details = PurchaseUpsertionViewModel
-				.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id)
+				.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, _transactionId, Selected?.Id)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();

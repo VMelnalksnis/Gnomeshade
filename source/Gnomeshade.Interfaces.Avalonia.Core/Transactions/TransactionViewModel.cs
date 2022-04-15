@@ -115,7 +115,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				.ToList();
 
 			var purchases = (await _gnomeshadeClient.GetPurchasesAsync(transaction.Id))
-				.Select(purchase => purchase.ToOverview(currencies, products))
+				.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider))
 				.ToList();
 
 			return new TransactionOverview(
@@ -197,7 +197,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			.ConfigureAwait(false)
 			.GetAwaiter()
 			.GetResult()
-			.Select(purchase => purchase.ToOverview(currencies, products))
+			.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider))
 			.ToList();
 
 		var overview = new TransactionOverview(

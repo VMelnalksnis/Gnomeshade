@@ -57,7 +57,9 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	public override async Task RefreshAsync()
 	{
 		var links = await _gnomeshadeClient.GetTransactionLinksAsync(_transactionId).ConfigureAwait(false);
-		var overviews = links.Select(link => new LinkOverview(link.Id, link.Uri)).ToList();
+		var overviews = links
+			.OrderBy(link => link.CreatedAt)
+			.Select(link => new LinkOverview(link.Id, link.Uri)).ToList();
 
 		var selected = Selected;
 		Rows = new(overviews);

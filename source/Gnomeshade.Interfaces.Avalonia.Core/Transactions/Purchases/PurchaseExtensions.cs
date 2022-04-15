@@ -9,6 +9,8 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 
 internal static class PurchaseExtensions
@@ -16,7 +18,8 @@ internal static class PurchaseExtensions
 	internal static PurchaseOverview ToOverview(
 		this Purchase purchase,
 		IEnumerable<Currency> currencies,
-		IEnumerable<Product> products)
+		IEnumerable<Product> products,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		return new(
 			purchase.Id,
@@ -24,6 +27,6 @@ internal static class PurchaseExtensions
 			currencies.Single(currency => currency.Id == purchase.CurrencyId).AlphabeticCode,
 			products.Single(product => product.Id == purchase.ProductId).Name,
 			purchase.Amount,
-			purchase.DeliveryDate?.ToDateTimeUtc());
+			purchase.DeliveryDate?.InZone(dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset());
 	}
 }

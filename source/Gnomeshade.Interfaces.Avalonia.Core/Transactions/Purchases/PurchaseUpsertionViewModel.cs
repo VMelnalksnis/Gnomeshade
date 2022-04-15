@@ -15,13 +15,13 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using NodaTime;
-using NodaTime.Extensions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Create or update a purchase.</summary>
 public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 {
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 	private readonly Guid? _purchaseId;
 
@@ -29,14 +29,19 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private Currency? _currency;
 	private Product? _product;
 	private decimal? _amount;
-	private DateTime? _deliveryDate;
+	private DateTimeOffset? _deliveryDate;
 	private TimeSpan? _deliveryTime;
 	private List<Currency> _currencies;
 	private List<Product> _products;
 
-	private PurchaseUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? purchaseId)
+	private PurchaseUpsertionViewModel(
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		Guid transactionId,
+		Guid? purchaseId)
 		: base(gnomeshadeClient)
 	{
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
 		_purchaseId = purchaseId;
 		_currencies = new();
@@ -92,7 +97,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
-	public DateTime? DeliveryDate
+	public DateTimeOffset? DeliveryDate
 	{
 		get => _deliveryDate;
 		set => SetAndNotify(ref _deliveryDate, value);
@@ -114,15 +119,17 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
 	/// <param name="id">The id of the purchase to edit.</param>
 	/// <returns>A new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</returns>
 	public static async Task<PurchaseUpsertionViewModel> CreateAsync(
 		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
 		Guid? id = null)
 	{
-		var viewModel = new PurchaseUpsertionViewModel(gnomeshadeClient, transactionId, id);
+		var viewModel = new PurchaseUpsertionViewModel(gnomeshadeClient, dateTimeZoneProvider, transactionId, id);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -139,13 +146,14 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 			Products = await GnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
-			var purchase = await GnomeshadeClient.GetPurchaseAsync(_transactionId, _purchaseId.Value).ConfigureAwait(false);
+			var purchase = await GnomeshadeClient.GetPurchaseAsync(_transactionId, _purchaseId.Value)
+				.ConfigureAwait(false);
 			Price = purchase.Price;
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
 			Product = Products.Single(product => product.Id == purchase.ProductId);
-			DeliveryDate = purchase.DeliveryDate?.ToDateTimeUtc();
-			DeliveryTime = purchase.DeliveryDate?.ToDateTimeUtc().TimeOfDay;
+			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+			DeliveryTime = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
 		}
 	}
 
@@ -153,10 +161,13 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var deliveryDate = DeliveryDate.HasValue
-			? new ZonedDateTime(
-				LocalDateTime.FromDateTime(DeliveryDate.Value.Add(DeliveryTime.GetValueOrDefault())),
-				SystemClock.Instance.InBclSystemDefaultZone().Zone,
-				SystemClock.Instance.InBclSystemDefaultZone().GetCurrentOffsetDateTime().Offset)
+			? new LocalDateTime(
+					DeliveryDate.Value.Year,
+					DeliveryDate.Value.Month,
+					DeliveryDate.Value.Day,
+					DeliveryTime.GetValueOrDefault().Hours,
+					DeliveryTime.GetValueOrDefault().Minutes)
+				.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault())
 			: default(ZonedDateTime?);
 
 		var purchaseCreation = new PurchaseCreation

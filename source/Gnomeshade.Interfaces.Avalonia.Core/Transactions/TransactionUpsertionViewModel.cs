@@ -95,7 +95,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		}
 
 		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
-		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
+		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, id).ConfigureAwait(false);
 		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 
 		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, dateTimeZoneProvider, id, transferViewModel, purchaseViewModel, linkViewModel);
@@ -156,7 +156,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		await RefreshAsync().ConfigureAwait(false);
 
 		Transfers ??= await TransferViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
-		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
+		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider, _id.Value).ConfigureAwait(false);
 		Links ??= await LinkViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 
 		return _id.Value;

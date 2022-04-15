@@ -70,7 +70,9 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		await Task.WhenAll(transfersTask, accountsTask).ConfigureAwait(false);
 
 		var accounts = accountsTask.Result;
-		var overviews = transfersTask.Result.Select(transfer => transfer.ToOverview(accounts));
+		var overviews = transfersTask.Result
+			.OrderBy(transfer => transfer.CreatedAt)
+			.Select(transfer => transfer.ToOverview(accounts));
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;

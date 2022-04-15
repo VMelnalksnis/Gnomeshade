@@ -25,6 +25,8 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 /// <summary>Data needed only during design time.</summary>
 public static class DesignTimeData
 {
+	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
+
 	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
 
 	private static OidcClient OidcClient { get; } = new(new() { Authority = "http://localhost" });
@@ -37,7 +39,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
 	public static MainWindowViewModel MainWindowViewModel { get; } =
-		new(GnomeshadeClient, AuthenticationService, DateTimeZoneProviders.Tzdb);
+		new(GnomeshadeClient, AuthenticationService, DateTimeZoneProvider);
 
 	/// <summary>Gets an instance of <see cref="AccountDetailViewModel"/> for use during design time.</summary>
 	public static AccountDetailViewModel AccountDetailViewModel { get; } =
@@ -102,15 +104,15 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="PurchaseUpsertionViewModel"/> for use during design time.</summary>
 	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel { get; } =
-		PurchaseUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+		PurchaseUpsertionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="PurchaseViewModel"/> for use during design time.</summary>
 	public static PurchaseViewModel PurchaseViewModel { get; } =
-		PurchaseViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+		PurchaseViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		TransactionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProviders.Tzdb).Result;
+		TransactionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =
@@ -118,7 +120,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProviders.Tzdb, Guid.Empty).Result;
+		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =
