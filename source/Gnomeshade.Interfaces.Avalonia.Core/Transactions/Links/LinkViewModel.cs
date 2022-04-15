@@ -59,7 +59,9 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		var links = await _gnomeshadeClient.GetTransactionLinksAsync(_transactionId).ConfigureAwait(false);
 		var overviews = links.Select(link => new LinkOverview(link.Id, link.Uri)).ToList();
 
+		var selected = Selected;
 		Rows = new(overviews);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 	}
 
 	/// <inheritdoc />

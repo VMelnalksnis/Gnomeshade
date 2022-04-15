@@ -131,9 +131,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var overviews = await Task.WhenAll(overviewTasks).ConfigureAwait(false);
 
+		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(overviews);
 		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = selected;
 	}
 
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>

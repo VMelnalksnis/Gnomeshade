@@ -58,6 +58,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var upsertionViewModel = await PurchaseUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
 		var viewModel = new PurchaseViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
+		SetDefaultCurrency(viewModel);
 		return viewModel;
 	}
 
@@ -76,9 +77,13 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 		var overviews = purchases.Select(purchase => purchase.ToOverview(currencies, products));
 
+		var selected = Selected;
+		var sort = DataGridView.SortDescriptions;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
-		Rows = new(overviews); // todo sorting
+		Rows = new(overviews);
 		Rows.CollectionChanged += RowsOnCollectionChanged;
+		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 	}
 
 	/// <inheritdoc />
@@ -88,11 +93,28 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		await RefreshAsync();
 	}
 
+	private static void SetDefaultCurrency(PurchaseViewModel viewModel)
+	{
+		if (viewModel.Rows.Select(overview => overview.CurrencyName).Distinct().Count() != 1)
+		{
+			return;
+		}
+
+		var currencyName = viewModel.Rows.First().CurrencyName;
+		viewModel.Details.Currency = viewModel.Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
+	}
+
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(Selected))
 		{
-			Details = PurchaseUpsertionViewModel.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id).Result;
+			Details = PurchaseUpsertionViewModel
+				.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+
+			SetDefaultCurrency(this);
 		}
 
 		if (e.PropertyName is nameof(Rows))

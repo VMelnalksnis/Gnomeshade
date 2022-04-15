@@ -211,9 +211,20 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (IsTargetAmountReadOnly && e.PropertyName is nameof(SourceAmount))
+		if (!IsTargetAmountReadOnly)
 		{
-			TargetAmount = SourceAmount;
+			return;
+		}
+
+		switch (e.PropertyName)
+		{
+			case nameof(SourceAmount):
+				TargetAmount = SourceAmount;
+				return;
+
+			case nameof(SourceCurrency):
+				TargetCurrency = SourceCurrency;
+				return;
 		}
 	}
 }

@@ -58,6 +58,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		var upsertionViewModel = await TransferUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
 		var viewModel = new TransferViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
+		SetDefaultCurrency(viewModel);
 		return viewModel;
 	}
 
@@ -71,9 +72,13 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		var accounts = accountsTask.Result;
 		var overviews = transfersTask.Result.Select(transfer => transfer.ToOverview(accounts));
 
+		var selected = Selected;
+		var sort = DataGridView.SortDescriptions;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
 		Rows = new(overviews); // todo sorting
 		Rows.CollectionChanged += RowsOnCollectionChanged;
+		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 	}
 
 	/// <inheritdoc />
@@ -83,11 +88,32 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		await RefreshAsync();
 	}
 
+	private static void SetDefaultCurrency(TransferViewModel viewModel)
+	{
+		if (viewModel.Rows.Select(overview => overview.SourceCurrency).Distinct().Count() == 1)
+		{
+			var currencyName = viewModel.Rows.First().SourceCurrency;
+			viewModel.Details.SourceCurrency = viewModel.Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
+		}
+
+		if (viewModel.Rows.Select(overview => overview.TargetCurrency).Distinct().Count() == 1)
+		{
+			var currencyName = viewModel.Rows.First().TargetCurrency;
+			viewModel.Details.TargetCurrency = viewModel.Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
+		}
+	}
+
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(Selected))
 		{
-			Details = TransferUpsertionViewModel.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id).Result;
+			Details = TransferUpsertionViewModel
+				.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+
+			SetDefaultCurrency(this);
 		}
 
 		if (e.PropertyName is nameof(Rows))
