@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Client;
 
 /// <summary>Relative URIs of API endpoints.</summary>
@@ -61,17 +63,6 @@ public static class Routes
 	/// <returns>Relative uri for the specified unit.</returns>
 	public static string UnitIdUri(Guid id) => $"{_unitUri}/{Format(id)}";
 
-	/// <summary>Converts the specified date to a string and encodes it for using within a url.</summary>
-	/// <param name="date">The date to convert.</param>
-	/// <returns>A string representation of the <paramref name="date"/> that can be used in urls.</returns>
-	public static string UrlEncodeDateTimeOffset(DateTimeOffset date)
-	{
-		var value = date.ToString("O", CultureInfo.InvariantCulture);
-		return date.Offset < TimeSpan.Zero
-			? value
-			: value.Replace("+", "%2B");
-	}
-
 	private static string Format(Guid guid) => guid.ToString("N", CultureInfo.InvariantCulture);
 
 	/// <summary>Account routes.</summary>
@@ -100,9 +91,9 @@ public static class Routes
 		/// <param name="from">The point in time from which to select transactions.</param>
 		/// <param name="to">The point in time to which to select transactions.</param>
 		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
-		public static string DateRangeUri(DateTimeOffset? from, DateTimeOffset? to)
+		public static string DateRangeUri(Instant? from, Instant? to)
 		{
-			var keyValues = new Dictionary<DateTimeOffset, string>(2);
+			var keyValues = new Dictionary<Instant, string>(2);
 			if (from.HasValue)
 			{
 				keyValues.Add(from.Value, "from");
@@ -118,7 +109,7 @@ public static class Routes
 				return _uri;
 			}
 
-			var parameters = keyValues.Select(pair => $"{pair.Value}={UrlEncodeDateTimeOffset(pair.Key)}");
+			var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key}");
 			var query = string.Join('&', parameters);
 			return $"{_uri}?{query}";
 		}

@@ -14,18 +14,22 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
 public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel?>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private TransactionUpsertionViewModel? _details;
 
-	private TransactionViewModel(IGnomeshadeClient gnomeshadeClient)
+	private TransactionViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 
 		PropertyChanged += OnPropertyChanged;
 
@@ -60,10 +64,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
-	public static async Task<TransactionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	public static async Task<TransactionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		var viewModel = new TransactionViewModel(gnomeshadeClient);
+		var viewModel = new TransactionViewModel(gnomeshadeClient, dateTimeZoneProvider);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -71,7 +76,27 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task RefreshAsync()
 	{
-		var transactionsTask = _gnomeshadeClient.GetTransactionsAsync(Filter.FromDate, Filter.ToDate);
+		var transactionsTask = _gnomeshadeClient.GetTransactionsAsync(
+			Filter.FromDate is null
+				? null
+				: new ZonedDateTime(
+					Instant.FromUtc(
+						Filter.FromDate.Value.Year,
+						Filter.FromDate.Value.Month,
+						Filter.FromDate.Value.Day,
+						0,
+						0),
+					_dateTimeZoneProvider.GetSystemDefault()).ToInstant(),
+			Filter.ToDate is null
+				? null
+				: new ZonedDateTime(
+					Instant.FromUtc(
+						Filter.ToDate.Value.Year,
+						Filter.ToDate.Value.Month,
+						Filter.ToDate.Value.Day,
+						0,
+						0),
+					_dateTimeZoneProvider.GetSystemDefault()).ToInstant());
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
@@ -94,11 +119,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 			return new TransactionOverview(
 				transaction.Id,
-				transaction.BookedAt?.ToDateTimeOffset(),
-				transaction.ValuedAt?.ToDateTimeOffset(),
+				transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
+				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.Description,
-				transaction.ImportedAt?.ToDateTimeOffset(),
-				transaction.ReconciledAt?.ToDateTimeOffset(),
+				transaction.ImportedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
+				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transfers,
 				purchases);
 		});
@@ -128,7 +153,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		{
 			Details = Selected is null
 				? null
-				: TransactionUpsertionViewModel.CreateAsync(_gnomeshadeClient, Selected.Id).Result;
+				: TransactionUpsertionViewModel.CreateAsync(_gnomeshadeClient, Selected.Id, _dateTimeZoneProvider).Result;
 		}
 	}
 
@@ -173,11 +198,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var overview = new TransactionOverview(
 			transaction.Id,
-			transaction.BookedAt?.ToDateTimeOffset(),
-			transaction.ValuedAt?.ToDateTimeOffset(),
+			transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
+			transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.Description,
-			transaction.ImportedAt?.ToDateTimeOffset(),
-			transaction.ReconciledAt?.ToDateTimeOffset(),
+			transaction.ImportedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
+			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transfers,
 			purchases);
 

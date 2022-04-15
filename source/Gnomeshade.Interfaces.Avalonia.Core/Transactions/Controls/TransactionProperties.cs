@@ -15,16 +15,16 @@ public sealed class TransactionProperties : ViewModelBase
 {
 	private static readonly string[] _isValid = { nameof(IsValid) };
 
-	private DateTime? _bookingDate;
+	private DateTimeOffset? _bookingDate;
 	private TimeSpan? _bookingTime;
-	private DateTime? _valueDate;
+	private DateTimeOffset? _valueDate;
 	private TimeSpan? _valueTime;
-	private DateTime? _reconciliationDate;
+	private DateTimeOffset? _reconciliationDate;
 	private TimeSpan? _reconciliationTime;
 	private string? _description;
 
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
-	public DateTime? BookingDate
+	public DateTimeOffset? BookingDate
 	{
 		get => _bookingDate;
 		set => SetAndNotifyWithGuard(ref _bookingDate, value, nameof(BookingDate), _isValid);
@@ -39,18 +39,17 @@ public sealed class TransactionProperties : ViewModelBase
 
 	/// <inheritdoc cref="Transaction.BookedAt"/>
 	public ZonedDateTime? BookedAt => BookingDate.HasValue
-		? new ZonedDateTime(
-			Instant.FromUtc(
+		? new LocalDateTime(
 				BookingDate.Value.Year,
 				BookingDate.Value.Month,
 				BookingDate.Value.Day,
 				BookingTime.GetValueOrDefault().Hours,
-				BookingTime.GetValueOrDefault().Minutes),
-			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+				BookingTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
 		: null;
 
 	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public DateTime? ValueDate
+	public DateTimeOffset? ValueDate
 	{
 		get => _valueDate;
 		set => SetAndNotifyWithGuard(ref _valueDate, value, nameof(ValueDate), _isValid);
@@ -65,18 +64,17 @@ public sealed class TransactionProperties : ViewModelBase
 
 	/// <inheritdoc cref="Transaction.ValuedAt"/>
 	public ZonedDateTime? ValuedAt => ValueDate.HasValue
-		? new ZonedDateTime(
-			Instant.FromUtc(
+		? new LocalDateTime(
 				ValueDate.Value.Year,
 				ValueDate.Value.Month,
 				ValueDate.Value.Day,
 				ValueTime.GetValueOrDefault().Hours,
-				ValueTime.GetValueOrDefault().Minutes),
-			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+				ValueTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
 		: null;
 
 	/// <summary>Gets or sets the date on which the transaction was reconciled.</summary>
-	public DateTime? ReconciliationDate
+	public DateTimeOffset? ReconciliationDate
 	{
 		get => _reconciliationDate;
 		set => SetAndNotifyWithGuard(ref _reconciliationDate, value, nameof(ReconciliationDate), _isValid);
@@ -91,14 +89,13 @@ public sealed class TransactionProperties : ViewModelBase
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
 	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue
-		? new ZonedDateTime(
-			Instant.FromUtc(
+		? new LocalDateTime(
 				ReconciliationDate.Value.Year,
 				ReconciliationDate.Value.Month,
 				ReconciliationDate.Value.Day,
 				ReconciliationTime.GetValueOrDefault().Hours,
-				ReconciliationTime.GetValueOrDefault().Minutes),
-			DateTimeZoneProviders.Tzdb.GetSystemDefault())
+				ReconciliationTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
 		: null;
 
 	/// <summary>Gets or sets the description of the transaction.</summary>

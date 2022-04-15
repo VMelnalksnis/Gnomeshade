@@ -25,6 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using NodaTime;
+
 using Serilog;
 
 namespace Gnomeshade.Interfaces.Desktop;
@@ -59,6 +61,7 @@ public sealed class App : Application
 
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
+		serviceCollection.AddSingleton(DateTimeZoneProviders.Tzdb);
 		serviceCollection.AddSingleton<OidcClient>(provider =>
 		{
 			var options = provider.GetRequiredService<IOptions<OidcClientOptions>>().Value;

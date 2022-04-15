@@ -13,25 +13,30 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>Create or update a transaction.</summary>
 public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 {
 	private readonly Guid _id;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private TransactionUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		Guid id,
 		TransferViewModel transfers,
 		PurchaseViewModel purchases,
-		LinkViewModel links)
+		LinkViewModel links,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 		: base(gnomeshadeClient)
 	{
 		_id = id;
 		Transfers = transfers;
 		Purchases = purchases;
 		Links = links;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 
 		Properties = new();
 		Properties.PropertyChanged += PropertiesOnPropertyChanged;
@@ -55,14 +60,15 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="id">The id of the transaction to edit.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="TransactionUpsertionViewModel"/> class.</returns>
-	public static async Task<TransactionUpsertionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid id)
+	public static async Task<TransactionUpsertionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid id, IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 
-		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, id, transferViewModel, purchaseViewModel, linkViewModel);
+		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, id, transferViewModel, purchaseViewModel, linkViewModel, dateTimeZoneProvider);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -72,14 +78,14 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		var transaction = await GnomeshadeClient.GetTransactionAsync(_id).ConfigureAwait(false);
 
-		Properties.BookingDate = transaction.BookedAt?.ToDateTimeUtc();
-		Properties.BookingTime = transaction.BookedAt?.ToDateTimeUtc().TimeOfDay;
+		Properties.BookingDate = transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+		Properties.BookingTime = transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
 
-		Properties.ValueDate = transaction.ValuedAt?.ToDateTimeUtc();
-		Properties.ValueTime = transaction.ValuedAt?.ToDateTimeUtc().TimeOfDay;
+		Properties.ValueDate = transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+		Properties.ValueTime = transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
 
-		Properties.ReconciliationDate = transaction.ReconciledAt?.ToDateTimeUtc();
-		Properties.ReconciliationTime = transaction.ReconciledAt?.ToDateTimeUtc().TimeOfDay;
+		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
 
 		Properties.Description = transaction.Description;
 

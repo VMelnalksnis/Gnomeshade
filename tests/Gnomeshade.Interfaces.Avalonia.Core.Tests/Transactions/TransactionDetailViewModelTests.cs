@@ -21,15 +21,17 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 [TestOf(typeof(TransactionUpsertionViewModel))]
 public class TransactionDetailViewModelTests
 {
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider = DateTimeZoneProviders.Tzdb;
+
 	[Test]
 	public async Task SaveAsync_ShouldUpdate()
 	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
+		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty, _dateTimeZoneProvider);
 
-		var reconciledAt = DateTime.Now;
+		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
 
 		viewModel.Properties.ReconciliationDate = reconciledAt;
-		viewModel.Properties.ReconciliationTime = reconciledAt.TimeOfDay;
+		viewModel.Properties.ReconciliationTime = reconciledAt.ToLocalTime().TimeOfDay;
 
 		viewModel.CanSave.Should().BeTrue();
 
@@ -38,7 +40,7 @@ public class TransactionDetailViewModelTests
 		viewModel.ErrorMessage.Should().BeNullOrWhiteSpace();
 		viewModel.Properties.ReconciledAt.Should().BeEquivalentTo(
 			new ZonedDateTime(
-				Instant.FromUtc(reconciledAt.Year, reconciledAt.Month, reconciledAt.Day, reconciledAt.Hour, reconciledAt.Minute),
-				DateTimeZoneProviders.Tzdb.GetSystemDefault()));
+				Instant.FromUtc(2022, 04, 15, 9, 50, 0),
+				_dateTimeZoneProvider.GetSystemDefault()));
 	}
 }

@@ -17,27 +17,31 @@ using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core;
 
-/// <summary>
-/// A container view which manages navigation and the currently active view.
-/// </summary>
+/// <summary>A container view which manages navigation and the currently active view.</summary>
 public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IAuthenticationService _authenticationService;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private ViewModelBase _activeView = null!;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="authenticationService">OAuth2 provider API client.</param>
-	public MainWindowViewModel(IGnomeshadeClient gnomeshadeClient, IAuthenticationService authenticationService)
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public MainWindowViewModel(
+		IGnomeshadeClient gnomeshadeClient,
+		IAuthenticationService authenticationService,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_authenticationService = authenticationService;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 
 		SwitchToLogin();
 	}
@@ -245,7 +249,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToTransactionOverviewAsync()
 	{
-		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient);
+		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider);
 		ActiveView = transactionViewModel;
 	}
 

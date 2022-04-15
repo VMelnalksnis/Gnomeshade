@@ -151,7 +151,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<Transaction>(Transactions.IdUri(id));
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to) =>
+	public Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to) =>
 		GetAsync<List<Transaction>>(Transactions.DateRangeUri(from, to));
 
 	/// <inheritdoc />

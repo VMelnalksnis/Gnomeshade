@@ -235,7 +235,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to)
+	public Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to)
 	{
 		return Task.FromResult(_transactions.ToList());
 	}

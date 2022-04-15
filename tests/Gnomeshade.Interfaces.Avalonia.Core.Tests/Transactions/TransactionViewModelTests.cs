@@ -11,6 +11,8 @@ using FluentAssertions.Execution;
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
@@ -23,7 +25,7 @@ public class TransactionViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = await TransactionViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+		_viewModel = await TransactionViewModel.CreateAsync(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 	}
 
 	[Test]

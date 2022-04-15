@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Client;
 
 /// <summary>Provides typed interface for using the transaction API.</summary>
@@ -35,7 +37,7 @@ public interface ITransactionClient
 	/// <param name="from">The time from which to get transactions.</param>
 	/// <param name="to">The time until which to get transactions.</param>
 	/// <returns>All transactions within the specified time period.</returns>
-	Task<List<Transaction>> GetTransactionsAsync(DateTimeOffset? from, DateTimeOffset? to);
+	Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to);
 
 	/// <summary>Deletes the specified transaction.</summary>
 	/// <param name="id">The id of the transaction to delete.</param>

@@ -18,6 +18,8 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
 using IdentityModel.OidcClient;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 
 /// <summary>Data needed only during design time.</summary>
@@ -34,7 +36,8 @@ public static class DesignTimeData
 #pragma warning disable SA1202
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
-	public static MainWindowViewModel MainWindowViewModel { get; } = new(GnomeshadeClient, AuthenticationService);
+	public static MainWindowViewModel MainWindowViewModel { get; } =
+		new(GnomeshadeClient, AuthenticationService, DateTimeZoneProviders.Tzdb);
 
 	/// <summary>Gets an instance of <see cref="AccountDetailViewModel"/> for use during design time.</summary>
 	public static AccountDetailViewModel AccountDetailViewModel { get; } =
@@ -107,7 +110,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		TransactionViewModel.CreateAsync(GnomeshadeClient).Result;
+		TransactionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProviders.Tzdb).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =
@@ -115,7 +118,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty, DateTimeZoneProviders.Tzdb).Result;
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =
