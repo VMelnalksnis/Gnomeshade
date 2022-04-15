@@ -2,8 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
-
 using AutoMapper;
 
 using Gnomeshade.Data.Entities;
@@ -60,8 +58,5 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<LinkEntity, Link>();
 		options.CreateMap<LinkCreation, Link>();
-
-		options.CreateMap<DateTimeOffset, DateTimeOffset>().ConvertUsing<DateTimeOffsetUtcConverter>();
-		options.CreateMap<DateTimeOffset?, DateTimeOffset?>().ConvertUsing<DateTimeOffsetUtcConverter>();
 	}
 }

@@ -9,13 +9,9 @@ using AutoMapper;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
-using Gnomeshade.Data.Entities;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
 using JetBrains.Annotations;
-
-using NodaTime;
 
 using NUnit.Framework;
 
@@ -23,38 +19,14 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
 
 public class MappingTests
 {
-	private IMapper _mapper = null!;
-
-	[OneTimeSetUp]
-	public void OneTimeSetUp()
-	{
-		var configuration = new MapperConfiguration(options => options.CreateMapsForV1_0());
-		_mapper = configuration.CreateMapper();
-	}
-
-	[Test]
-	public void ShouldCorrectlyMapDateTimeOffsets()
-	{
-		var creationModel = new TransactionCreationModel
-		{
-			BookedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-
-		var transaction = _mapper.Map<TransactionEntity>(creationModel);
-
-		transaction.BookedAt.Should().NotBeNull();
-
-		// transaction.BookedAt!.Value.Offset.Should().Be(TimeSpan.Zero);
-	}
-
 	[Test]
 	public void AutoMapperTests()
 	{
 		var mapper = new MapperConfiguration(options =>
 		{
+			options.CreateMapsForV1_0();
 			options.CreateMap<NullableSource, NullableTarget>();
 			options.CreateMap<NullableSource, NonNullableTarget>();
-			options.AllowNullCollections = true;
 		}).CreateMapper();
 
 		var source = new NullableSource { Bytes = default };
