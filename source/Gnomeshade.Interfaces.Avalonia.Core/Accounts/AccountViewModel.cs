@@ -3,45 +3,41 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Avalonia.Collections;
-using Avalonia.Input;
-
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>Overview of all accounts.</summary>
-public sealed class AccountViewModel : ViewModelBase
+public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, AccountUpsertionViewModel>
 {
-	private AccountOverviewRow? _selectedAccount;
+	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private AccountUpsertionViewModel _details;
 
-	private AccountViewModel(List<Account> accounts, List<Counterparty> counterparties)
+	private AccountViewModel(
+		IGnomeshadeClient gnomeshadeClient,
+		AccountUpsertionViewModel accountUpsertionViewModel)
 	{
-		var accountOverviewRows = accounts.Translate(counterparties).ToList();
-		Accounts = new(accountOverviewRows);
-		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Counterparty);
-		DataGridView.GroupDescriptions.Add(group);
+		_gnomeshadeClient = gnomeshadeClient;
+		_details = accountUpsertionViewModel;
+
+		Details.Upserted += DetailsOnUpserted;
+		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>Raised when a account is selected for viewing its details.</summary>
-	public event EventHandler<AccountSelectedEventArgs>? AccountSelected;
-
-	/// <summary>Gets a grid view of all accounts.</summary>
-	public DataGridCollectionView DataGridView => Accounts;
-
-	/// <summary>Gets a typed collection of accounts in <see cref="DataGridView"/>.</summary>
-	public DataGridItemCollectionView<AccountOverviewRow> Accounts { get; }
-
-	/// <summary>Gets or sets the selected row in <see cref="DataGridView"/>.</summary>
-	public AccountOverviewRow? SelectedAccount
+	/// <inheritdoc />
+	public override AccountUpsertionViewModel Details
 	{
-		get => _selectedAccount;
-		set => SetAndNotify(ref _selectedAccount, value);
+		get => _details;
+		set
+		{
+			Details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			Details.Upserted += DetailsOnUpserted;
+		}
 	}
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="AccountViewModel"/> class.</summary>
@@ -49,19 +45,46 @@ public sealed class AccountViewModel : ViewModelBase
 	/// <returns>A new instance of <see cref="AccountViewModel"/>.</returns>
 	public static async Task<AccountViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
-		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
-		var accounts = await gnomeshadeClient.GetAccountsAsync();
-		return new(accounts, counterparties);
+		var upsertionViewModel = await AccountUpsertionViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
+		var viewModel = new AccountViewModel(gnomeshadeClient, upsertionViewModel);
+		await viewModel.RefreshAsync().ConfigureAwait(false);
+		return viewModel;
 	}
 
-	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="DataGridView"/>.</summary>
-	public void OnDataGridDoubleTapped()
+	/// <inheritdoc />
+	public override async Task RefreshAsync()
 	{
-		if (SelectedAccount is null || AccountSelected is null)
-		{
-			return;
-		}
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
+		var accountOverviewRows = accounts.Translate(counterparties).ToList();
 
-		AccountSelected(this, new(SelectedAccount.Id));
+		var selected = Selected;
+		var sort = DataGridView.SortDescriptions;
+		Rows = new(accountOverviewRows);
+
+		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Counterparty);
+		DataGridView.GroupDescriptions.Add(group);
+		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+	}
+
+	/// <inheritdoc />
+	protected override Task DeleteAsync(AccountOverviewRow row) => throw new NotImplementedException();
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(Selected))
+		{
+			Details = AccountUpsertionViewModel
+				.CreateAsync(_gnomeshadeClient, Selected?.Id)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+	}
+
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }

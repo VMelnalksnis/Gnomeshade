@@ -86,21 +86,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		SwitchToLogin();
 	}
 
-	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountUpsertionViewModel"/>.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task CreateAccountAsync()
-	{
-		if (ActiveView is AccountUpsertionViewModel)
-		{
-			return;
-		}
-
-		var accountDetailViewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient);
-		accountDetailViewModel.Upserted += OnAccountUpserted;
-
-		ActiveView = accountDetailViewModel;
-	}
-
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task MergeCounterpartiesAsync()
@@ -154,7 +139,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
-		accountViewModel.AccountSelected += OnAccountSelected;
 		ActiveView = accountViewModel;
 	}
 
@@ -253,12 +237,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = transactionViewModel;
 	}
 
-	private async Task SwitchToAccountDetailAsync(Guid id)
-	{
-		var accountDetailViewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, id);
-		ActiveView = accountDetailViewModel;
-	}
-
 	private void OnUserLoggedIn(object? sender, EventArgs e)
 	{
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
@@ -287,21 +265,12 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void OnAccountSelected(object? sender, AccountSelectedEventArgs e)
-	{
-		Task.Run(() => SwitchToAccountDetailAsync(e.AccountId)).Wait();
-	}
-
 	private void Unsubscribe(ViewModelBase viewModel)
 	{
 		switch (viewModel)
 		{
 			case AccountUpsertionViewModel accountDetailViewModel:
 				accountDetailViewModel.Upserted -= OnAccountUpserted;
-				break;
-
-			case AccountViewModel accountViewModel:
-				accountViewModel.AccountSelected -= OnAccountSelected;
 				break;
 
 			case LoginViewModel loginViewModel:

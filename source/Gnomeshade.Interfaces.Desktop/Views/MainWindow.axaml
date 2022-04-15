@@ -42,16 +42,13 @@
 				</MenuItem>
 				<MenuItem Header="_Edit" IsVisible="{Binding CanLogOut}">
 					<MenuItem
-						x:Name="CreateAccount" Header="Create _Account"
-						Command="{ReflectionBinding CreateAccountAsync}" />
-					<MenuItem
 						x:Name="MergeCounterparties" Header="_Merge Counterparties"
 						Command="{ReflectionBinding MergeCounterpartiesAsync}" />
 					<MenuItem
 						x:Name="CreateUnit" Header="Create _Unit"
 						Command="{ReflectionBinding CreateUnitAsync}" />
 					<MenuItem
-						x:Name="Accounts" Header="Accounts"
+						x:Name="Accounts" Header="_Accounts"
 						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
 					<MenuItem
 						x:Name="Counterparties" Header="_Counterparties"
