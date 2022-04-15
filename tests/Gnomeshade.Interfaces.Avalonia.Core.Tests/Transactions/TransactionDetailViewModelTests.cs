@@ -26,7 +26,7 @@ public class TransactionDetailViewModelTests
 	[Test]
 	public async Task SaveAsync_ShouldUpdate()
 	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty, _dateTimeZoneProvider);
+		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), _dateTimeZoneProvider, Guid.Empty);
 
 		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
 

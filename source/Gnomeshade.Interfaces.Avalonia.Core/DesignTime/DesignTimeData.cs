@@ -118,7 +118,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty, DateTimeZoneProviders.Tzdb).Result;
+		TransactionUpsertionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProviders.Tzdb, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =

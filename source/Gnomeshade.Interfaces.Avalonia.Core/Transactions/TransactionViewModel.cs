@@ -19,18 +19,23 @@ using NodaTime;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
-public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel?>
+public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private TransactionUpsertionViewModel? _details;
+	private TransactionUpsertionViewModel _details;
 
-	private TransactionViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
+	private TransactionViewModel(
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		TransactionUpsertionViewModel details)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_details = details;
 
+		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
 
 		Filter = new();
@@ -44,21 +49,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	public bool CanRefresh => Filter.IsValid;
 
 	/// <inheritdoc />
-	public override TransactionUpsertionViewModel? Details
+	public override TransactionUpsertionViewModel Details
 	{
 		get => _details;
 		set
 		{
-			if (_details is not null)
-			{
-				_details.Upserted -= DetailsOnUpserted;
-			}
-
+			_details.Upserted -= DetailsOnUpserted;
 			SetAndNotify(ref _details, value);
-			if (_details is not null)
-			{
-				_details.Upserted += DetailsOnUpserted;
-			}
+			_details.Upserted += DetailsOnUpserted;
 		}
 	}
 
@@ -66,9 +64,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
-	public static async Task<TransactionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
+	public static async Task<TransactionViewModel> CreateAsync(
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		var viewModel = new TransactionViewModel(gnomeshadeClient, dateTimeZoneProvider);
+		var upsertionViewModel = await TransactionUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider).ConfigureAwait(false);
+		var viewModel = new TransactionViewModel(gnomeshadeClient, dateTimeZoneProvider, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -151,9 +152,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	{
 		if (e.PropertyName is nameof(Selected))
 		{
-			Details = Selected is null
-				? null
-				: TransactionUpsertionViewModel.CreateAsync(_gnomeshadeClient, Selected.Id, _dateTimeZoneProvider).Result;
+			Details = TransactionUpsertionViewModel
+				.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
 		}
 	}
 
@@ -167,15 +170,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var updatedRow = Rows.Single(row => row.Id == e.Id);
+		var updatedRow = Rows.SingleOrDefault(row => row.Id == e.Id);
 
-		var transactionTask = _gnomeshadeClient.GetTransactionAsync(updatedRow.Id);
+		var transactionTask = _gnomeshadeClient.GetTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
 
-		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter()
-			.GetResult();
+		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter().GetResult();
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
@@ -207,7 +209,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			purchases);
 
 		var sort = DataGridView.SortDescriptions;
-		Rows = new(Rows.Except(new[] { updatedRow }).Append(overview).ToList());
+		Rows = new(Rows.Where(row => row.Id != updatedRow?.Id).Append(overview).ToList());
 		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = overview;
 	}
 }

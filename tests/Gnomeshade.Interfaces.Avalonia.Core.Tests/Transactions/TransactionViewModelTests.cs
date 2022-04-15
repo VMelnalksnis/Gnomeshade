@@ -39,10 +39,10 @@ public class TransactionViewModelTests
 
 		_viewModel.Selected = _viewModel.Rows.First();
 		_viewModel.Details.Should().NotBeNull();
-		_viewModel.Details!.CanSave.Should().BeTrue();
+		_viewModel.Details.CanSave.Should().BeTrue();
 
 		_viewModel.Selected = null;
-		_viewModel.Details.Should().BeNull();
+		_viewModel.Details.CanSave.Should().BeFalse();
 	}
 
 	[Test]
