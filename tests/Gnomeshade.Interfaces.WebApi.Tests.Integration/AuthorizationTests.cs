@@ -9,9 +9,9 @@ using FluentAssertions;
 
 using NUnit.Framework;
 
-namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0;
+namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 
-public class BasicTests
+public class AuthorizationTests
 {
 	[Test]
 	public async Task Get_ShouldReturnUnauthorized()
