@@ -72,7 +72,7 @@ public sealed class WebserverSetup
 	[OneTimeTearDown]
 	public async Task OneTimeTearDownAsync()
 	{
-		await new PostgresInitializer(_configuration, NullLogger<DatabaseMigrator>.Instance).DropDatabaseAsync();
+		await new PostgresInitializer(_configuration, new(NullLogger<DatabaseMigrator>.Instance)).DropDatabaseAsync();
 		await _webApplicationFactory.DisposeAsync();
 	}
 

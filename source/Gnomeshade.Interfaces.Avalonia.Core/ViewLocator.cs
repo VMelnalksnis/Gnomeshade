@@ -17,8 +17,10 @@ namespace Gnomeshade.Interfaces.Avalonia.Core;
 /// <typeparam name="TAssembly">A type from the assembly in which to search for views.</typeparam>
 public sealed class ViewLocator<TAssembly> : IDataTemplate
 {
-	private static readonly Assembly _assembly = typeof(TAssembly).Assembly;
+	// Instantiated only once on application startup
+	// ReSharper disable once StaticMemberInGenericType
 	private static readonly Dictionary<Type, Type> _viewDictionary = new();
+	private static readonly Assembly _assembly = typeof(TAssembly).Assembly;
 
 	/// <inheritdoc />
 	[RequiresUnreferencedCode("Uses System.Assembly.GetCallingAssembly().GetTypes()")]

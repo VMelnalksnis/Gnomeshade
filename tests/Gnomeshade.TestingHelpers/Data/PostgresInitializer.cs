@@ -10,7 +10,6 @@ using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Repositories;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 using Npgsql;
 
@@ -26,9 +25,9 @@ public class PostgresInitializer
 
 	/// <summary>Initializes a new instance of the <see cref="PostgresInitializer"/> class.</summary>
 	/// <param name="configuration">Configuration containing the connection string for the test database.</param>
-	/// <param name="logger">Logger for initializing the test database.</param>
+	/// <param name="databaseMigrator">Migrator for applying database schema changes.</param>
 	/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
-	public PostgresInitializer(IConfiguration configuration, ILogger<DatabaseMigrator> logger)
+	public PostgresInitializer(IConfiguration configuration, DatabaseMigrator databaseMigrator)
 	{
 		ConnectionString = configuration.GetConnectionString(_connectionStringName);
 		var database = new NpgsqlConnectionStringBuilder(ConnectionString).Database;
@@ -40,8 +39,7 @@ public class PostgresInitializer
 		}
 
 		_database = database;
-
-		_databaseMigrator = new(logger);
+		_databaseMigrator = databaseMigrator;
 	}
 
 	/// <summary>Gets the connection string for the integration test database.</summary>

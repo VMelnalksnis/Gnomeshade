@@ -34,7 +34,7 @@ public class DatabaseInitialization
 			.AddEnvironmentVariables()
 			.Build();
 
-	private static readonly PostgresInitializer _initializer = new(_configuration, new NullLogger<DatabaseMigrator>());
+	private static readonly PostgresInitializer _initializer = new(_configuration, new(new NullLogger<DatabaseMigrator>()));
 
 	public static UserEntity TestUser { get; private set; } = null!;
 
