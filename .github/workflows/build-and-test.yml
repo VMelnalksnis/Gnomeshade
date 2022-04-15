@@ -31,6 +31,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
           include-prerelease: true
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -56,6 +57,11 @@ jobs:
         env:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
+
+      - name: resharper
+        uses: VMelnalksnis/resharper-action@v2
+        with:
+          solution: Gnomeshade.sln
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1
