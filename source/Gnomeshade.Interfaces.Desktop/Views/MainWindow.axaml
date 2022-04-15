@@ -29,7 +29,7 @@
 			</ExperimentalAcrylicBorder.Material>
 		</ExperimentalAcrylicBorder>
 
-		<DockPanel>
+		<Grid RowDefinitions="Auto,*">
 			<Menu DockPanel.Dock="Top" FontSize="18">
 				<MenuItem Header="_File">
 					<MenuItem
@@ -57,28 +57,29 @@
 						x:Name="Counterparties" Header="_Counterparties"
 						Command="{ReflectionBinding SwitchToCounterpartiesAsync}" />
 					<MenuItem
-						x:Name="Transactions" Header="Transactions"
+						x:Name="Transactions" Header="_Transactions"
 						Command="{ReflectionBinding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
 						x:Name="Import" Header="_Import"
-						Command="{ReflectionBinding SwitchToImport}"/>
+						Command="{ReflectionBinding SwitchToImport}" />
 					<MenuItem
 						x:Name="CreateTag" Header="Tags"
-						Command="{ReflectionBinding SwitchToTagAsync}"/>
+						Command="{ReflectionBinding SwitchToTagAsync}" />
 					<MenuItem
 						x:Name="Products" Header="_Products"
-						Command="{ReflectionBinding SwitchToProductAsync}"/>
+						Command="{ReflectionBinding SwitchToProductAsync}" />
 					<MenuItem
 						x:Name="Units" Header="_Units"
-						Command="{ReflectionBinding SwitchToUnitAsync}"/>
+						Command="{ReflectionBinding SwitchToUnitAsync}" />
 				</MenuItem>
 			</Menu>
 
 			<UserControl
+				Grid.Row="1"
 				Content="{Binding ActiveView}"
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-				VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
-		</DockPanel>
+				VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+		</Grid>
 	</Panel>
 
 </Window>
