@@ -11,6 +11,8 @@ namespace Gnomeshade.Interfaces.Avalonia.Core;
 
 internal static class AutoCompleteSelectors
 {
+	internal static AutoCompleteSelector<object> Counterparty { get; } = (_, item) => ((Counterparty)item).Name;
+
 	internal static AutoCompleteSelector<object> Currency { get; } = (_, item) => ((Currency)item).AlphabeticCode;
 
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;

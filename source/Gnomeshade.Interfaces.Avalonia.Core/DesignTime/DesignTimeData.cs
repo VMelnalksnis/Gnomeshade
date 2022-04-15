@@ -41,9 +41,9 @@ public static class DesignTimeData
 	public static MainWindowViewModel MainWindowViewModel { get; } =
 		new(GnomeshadeClient, AuthenticationService, DateTimeZoneProvider);
 
-	/// <summary>Gets an instance of <see cref="AccountDetailViewModel"/> for use during design time.</summary>
-	public static AccountDetailViewModel AccountDetailViewModel { get; } =
-		AccountDetailViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+	/// <summary>Gets an instance of <see cref="AccountUpsertionViewModel"/> for use during design time.</summary>
+	public static AccountUpsertionViewModel AccountUpsertionViewModel { get; } =
+		AccountUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="AccountViewModel"/> for use during design time.</summary>
 	public static AccountViewModel AccountViewModel { get; } =

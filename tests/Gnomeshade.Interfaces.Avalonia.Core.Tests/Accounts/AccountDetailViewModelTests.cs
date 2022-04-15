@@ -32,7 +32,7 @@ public class AccountDetailViewModelTests
 	[Test]
 	public async Task CreateAsync_ShouldHaveExpectedInitialValues()
 	{
-		var viewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
+		var viewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
 
 		using (new AssertionScope())
 		{
@@ -43,19 +43,20 @@ public class AccountDetailViewModelTests
 			viewModel.PreferredCurrency.Should().Be(_account.PreferredCurrency);
 
 			viewModel.Currencies.Should().HaveCount(2);
-			viewModel.CanUpdate.Should().BeTrue();
+			viewModel.CanSave.Should().BeTrue();
 		}
 	}
 
 	[Test]
 	public async Task UpdateAccountAsync_ShouldPutAccount()
 	{
-		var viewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
+		var viewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
 		viewModel.Bic = $"{viewModel.Bic}123";
 
 		await FluentActions
-			.Awaiting(() => viewModel.UpdateAccountAsync())
+			.Awaiting(() => viewModel.SaveAsync())
 			.Should()
-			.ThrowExactlyAsync<NotImplementedException>($"{nameof(DesignTimeGnomeshadeClient)} does not implement {nameof(IGnomeshadeClient.PutAccountAsync)}");
+			.NotThrowAsync();
+		viewModel.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 	}
 }

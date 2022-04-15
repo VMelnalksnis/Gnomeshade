@@ -10,15 +10,11 @@ using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Accounts;
 
-/// <summary>
-/// User control for viewing and editing a single account.
-/// </summary>
-public sealed class AccountDetailView : UserControl, IView<AccountDetailViewModel>
+/// <inheritdoc cref="AccountUpsertionViewModel"/>
+public sealed class AccountUpsertionView : UserControl, IView<AccountUpsertionViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountDetailView"/> class.
-	/// </summary>
-	public AccountDetailView()
+	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionView"/> class.</summary>
+	public AccountUpsertionView()
 	{
 		AvaloniaXamlLoader.Load(this);
 	}

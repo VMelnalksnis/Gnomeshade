@@ -86,17 +86,17 @@ public sealed class MainWindowViewModel : ViewModelBase
 		SwitchToLogin();
 	}
 
-	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountDetailViewModel"/>.</summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountUpsertionViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateAccountAsync()
 	{
-		if (ActiveView is AccountDetailViewModel)
+		if (ActiveView is AccountUpsertionViewModel)
 		{
 			return;
 		}
 
-		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient);
-		accountDetailViewModel.AccountCreated += OnAccountCreated;
+		var accountDetailViewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient);
+		accountDetailViewModel.Upserted += OnAccountUpserted;
 
 		ActiveView = accountDetailViewModel;
 	}
@@ -255,7 +255,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToAccountDetailAsync(Guid id)
 	{
-		var accountDetailViewModel = await AccountDetailViewModel.CreateAsync(_gnomeshadeClient, id);
+		var accountDetailViewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, id);
 		ActiveView = accountDetailViewModel;
 	}
 
@@ -264,7 +264,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void OnAccountCreated(object? sender, AccountCreatedEventArgs e)
+	private void OnAccountUpserted(object? sender, UpsertedEventArgs e)
 	{
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
@@ -296,8 +296,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		switch (viewModel)
 		{
-			case AccountDetailViewModel accountDetailViewModel:
-				accountDetailViewModel.AccountCreated -= OnAccountCreated;
+			case AccountUpsertionViewModel accountDetailViewModel:
+				accountDetailViewModel.Upserted -= OnAccountUpserted;
 				break;
 
 			case AccountViewModel accountViewModel:

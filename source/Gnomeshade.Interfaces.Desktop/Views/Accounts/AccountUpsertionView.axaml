@@ -6,10 +6,10 @@
 	xmlns:a="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Accounts;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static dd:DesignTimeData.AccountDetailViewModel}"
-	x:Class="Gnomeshade.Interfaces.Desktop.Views.Accounts.AccountDetailView"
+	d:DataContext="{x:Static dd:DesignTimeData.AccountUpsertionViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Accounts.AccountUpsertionView"
 	x:CompileBindings="True"
-	x:DataType="a:AccountDetailViewModel">
+	x:DataType="a:AccountUpsertionViewModel">
 
 	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
@@ -40,7 +40,7 @@
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock
-						x:DataType="a:AccountDetailViewModel"
+						x:DataType="a:AccountUpsertionViewModel"
 						Text="{Binding Counterparty}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -62,7 +62,7 @@
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock
-						x:DataType="a:AccountDetailViewModel"
+						x:DataType="a:AccountUpsertionViewModel"
 						Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
@@ -108,8 +108,8 @@
 			Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-			IsEnabled="{Binding CanUpdate}"
-			Command="{ReflectionBinding UpdateAccountAsync}">
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
 			Update
 		</Button>
 	</Grid>

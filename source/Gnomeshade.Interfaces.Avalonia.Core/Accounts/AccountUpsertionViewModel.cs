@@ -15,9 +15,9 @@ using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 
 /// <summary>Form for viewing and editing a single account.</summary>
-public sealed class AccountDetailViewModel : ViewModelBase
+public sealed class AccountUpsertionViewModel : UpsertionViewModel
 {
-	private static readonly string[] _canUpdate = { nameof(CanUpdate) };
+	private static readonly string[] _canUpdate = { nameof(CanSave) };
 
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Account? _account;
@@ -29,7 +29,7 @@ public sealed class AccountDetailViewModel : ViewModelBase
 	private string? _iban;
 	private string? _accountNumber;
 
-	private AccountDetailViewModel(
+	private AccountUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		List<Counterparty> counterparties,
 		List<Currency> currencies,
@@ -46,21 +46,16 @@ public sealed class AccountDetailViewModel : ViewModelBase
 		_accountNumber = account.AccountNumber;
 	}
 
-	private AccountDetailViewModel(
+	private AccountUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		List<Counterparty> counterparties,
 		List<Currency> currencies)
+		: base(gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		Counterparties = counterparties;
 		Currencies = currencies;
-
-		CounterpartySelector = (_, item) => ((Counterparty)item).Name;
-		CurrencySelector = (_, item) => ((Currency)item).Name;
 	}
-
-	/// <summary>Raised when a new account has been successfully created.</summary>
-	public event EventHandler<AccountCreatedEventArgs>? AccountCreated;
 
 	/// <inheritdoc cref="Account.Name"/>
 	public string? Name
@@ -70,7 +65,7 @@ public sealed class AccountDetailViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets a delegate for formatting a counterparty in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> CounterpartySelector { get; }
+	public AutoCompleteSelector<object> CounterpartySelector => AutoCompleteSelectors.Counterparty;
 
 	/// <summary>Gets a collection of available currencies.</summary>
 	public List<Counterparty> Counterparties { get; }
@@ -83,7 +78,7 @@ public sealed class AccountDetailViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> CurrencySelector { get; }
+	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
 	/// <summary>Gets a collection of available currencies.</summary>
 	public List<Currency> Currencies { get; }
@@ -116,17 +111,17 @@ public sealed class AccountDetailViewModel : ViewModelBase
 		set => SetAndNotify(ref _accountNumber, value, nameof(AccountNumber));
 	}
 
-	/// <summary>Gets a value indicating whether or not the account can be updated.</summary>
-	public bool CanUpdate =>
+	/// <inheritdoc />
+	public override bool CanSave =>
 		!string.IsNullOrWhiteSpace(Name) &&
 		Counterparty is not null &&
 		PreferredCurrency is not null;
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="AccountDetailViewModel"/> class.</summary>
+	/// <summary>Asynchronously creates a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="id">The id of the account to view.</param>
-	/// <returns>A new instance of the <see cref="AccountDetailViewModel"/> class.</returns>
-	public static async Task<AccountDetailViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? id = null)
+	/// <returns>A new instance of the <see cref="AccountUpsertionViewModel"/> class.</returns>
+	public static async Task<AccountUpsertionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? id = null)
 	{
 		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
 		var currencies = await gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
@@ -139,9 +134,8 @@ public sealed class AccountDetailViewModel : ViewModelBase
 		return new(gnomeshadeClient, counterparties, currencies, account);
 	}
 
-	/// <summary>Updates the selected account with the given values.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task UpdateAccountAsync()
+	/// <inheritdoc />
+	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var currencyIds = new List<Guid>();
 		if (_account is not null)
@@ -166,12 +160,7 @@ public sealed class AccountDetailViewModel : ViewModelBase
 		};
 
 		var id = _account?.Id ?? Guid.NewGuid();
-		await _gnomeshadeClient.PutAccountAsync(id, creationModel);
-		OnAccountCreated(id);
-	}
-
-	private void OnAccountCreated(Guid id)
-	{
-		AccountCreated?.Invoke(this, new(id));
+		await _gnomeshadeClient.PutAccountAsync(id, creationModel).ConfigureAwait(false);
+		return id;
 	}
 }
