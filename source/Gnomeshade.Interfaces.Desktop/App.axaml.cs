@@ -61,7 +61,10 @@ public sealed class App : Application
 
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
-		serviceCollection.AddSingleton(DateTimeZoneProviders.Tzdb);
+		serviceCollection
+			.AddSingleton<IClock>(SystemClock.Instance)
+			.AddSingleton(DateTimeZoneProviders.Tzdb);
+
 		serviceCollection.AddSingleton<OidcClient>(provider =>
 		{
 			var options = provider.GetRequiredService<IOptions<OidcClientOptions>>().Value;

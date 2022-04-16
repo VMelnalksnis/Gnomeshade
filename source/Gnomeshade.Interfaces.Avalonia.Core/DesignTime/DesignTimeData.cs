@@ -25,6 +25,8 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 /// <summary>Data needed only during design time.</summary>
 public static class DesignTimeData
 {
+	private static IClock Clock => SystemClock.Instance;
+
 	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
 
 	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
@@ -39,7 +41,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
 	public static MainWindowViewModel MainWindowViewModel { get; } =
-		new(GnomeshadeClient, AuthenticationService, DateTimeZoneProvider);
+		new(GnomeshadeClient, AuthenticationService, Clock, DateTimeZoneProvider);
 
 	/// <summary>Gets an instance of <see cref="AccountUpsertionViewModel"/> for use during design time.</summary>
 	public static AccountUpsertionViewModel AccountUpsertionViewModel { get; } =
@@ -112,7 +114,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		TransactionViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider).Result;
+		TransactionViewModel.CreateAsync(GnomeshadeClient, Clock, DateTimeZoneProvider).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =

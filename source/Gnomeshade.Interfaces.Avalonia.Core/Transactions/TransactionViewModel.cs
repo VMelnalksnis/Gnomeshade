@@ -29,6 +29,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	private TransactionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		TransactionUpsertionViewModel details)
 	{
@@ -39,7 +40,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
 
-		var toDate = SystemClock.Instance.GetCurrentInstant().InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+		var toDate = clock.GetCurrentInstant().InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
 		Filter = new()
 		{
 			ToDate = toDate,
@@ -69,14 +70,16 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
 	public static async Task<TransactionViewModel> CreateAsync(
 		IGnomeshadeClient gnomeshadeClient,
+		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		var upsertionViewModel = await TransactionUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider).ConfigureAwait(false);
-		var viewModel = new TransactionViewModel(gnomeshadeClient, dateTimeZoneProvider, upsertionViewModel);
+		var viewModel = new TransactionViewModel(gnomeshadeClient, clock, dateTimeZoneProvider, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}

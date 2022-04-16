@@ -26,6 +26,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IAuthenticationService _authenticationService;
+	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private ViewModelBase _activeView = null!;
@@ -33,15 +34,18 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="authenticationService">OAuth2 provider API client.</param>
+	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public MainWindowViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		IAuthenticationService authenticationService,
+		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_authenticationService = authenticationService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_clock = clock;
 
 		SwitchToLogin();
 	}
@@ -233,7 +237,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToTransactionOverviewAsync()
 	{
-		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider);
+		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = transactionViewModel;
 	}
 

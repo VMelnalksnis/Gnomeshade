@@ -25,7 +25,10 @@ public class TransactionViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = await TransactionViewModel.CreateAsync(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
+		_viewModel = await TransactionViewModel.CreateAsync(
+			new DesignTimeGnomeshadeClient(),
+			SystemClock.Instance,
+			DateTimeZoneProviders.Tzdb);
 	}
 
 	[Test]
