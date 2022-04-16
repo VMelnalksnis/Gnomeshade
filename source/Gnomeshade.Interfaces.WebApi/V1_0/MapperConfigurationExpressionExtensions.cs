@@ -46,6 +46,7 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<CounterpartyCreationModel, CounterpartyEntity>();
 
 		options.CreateMap<CurrencyEntity, Currency>();
+		options.CreateMap<Currency, CurrencyEntity>();
 
 		options.CreateMap<ProductEntity, Product>();
 		options.CreateMap<ProductCreationModel, ProductEntity>();
