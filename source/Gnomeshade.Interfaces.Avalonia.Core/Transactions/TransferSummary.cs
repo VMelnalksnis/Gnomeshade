@@ -13,6 +13,7 @@ public sealed class TransferSummary : PropertyChangedBase
 	/// <param name="userAmount">The amount withdrawn from or deposited to the account owned by the user.</param>
 	/// <param name="userAccount">The name of the account owned by the user.</param>
 	/// <param name="direction">A symbol indicating whether <see cref="UserAmount"/> was withdrawn from or deposited into <see cref="UserAccount"/>.</param>
+	/// <param name="userToUser">Whether the transfer is between user accounts.</param>
 	/// <param name="otherAccount">The name of the account not owned by the user.</param>
 	/// <param name="otherCurrency">The currency of <paramref name="otherAmount"/>.</param>
 	/// <param name="otherAmount">The amount withdrawn from or deposited to the account not owned by the user.</param>
@@ -22,6 +23,7 @@ public sealed class TransferSummary : PropertyChangedBase
 		decimal userAmount,
 		string userAccount,
 		string direction,
+		bool userToUser,
 		string otherAccount,
 		string otherCurrency,
 		decimal otherAmount)
@@ -31,6 +33,7 @@ public sealed class TransferSummary : PropertyChangedBase
 		UserAmount = userAmount;
 		UserAccount = userAccount;
 		Direction = direction;
+		UserToUser = userToUser;
 		OtherAccount = otherAccount;
 		OtherCurrency = otherCurrency;
 		OtherAmount = otherAmount;
@@ -50,6 +53,9 @@ public sealed class TransferSummary : PropertyChangedBase
 
 	/// <summary>Gets a symbol indicating whether <see cref="UserAmount"/> was withdrawn from or deposited into <see cref="UserAccount"/>.</summary>
 	public string Direction { get; }
+
+	/// <summary>Gets a value indicating whether the transfer is between user accounts.</summary>
+	public bool UserToUser { get; }
 
 	/// <summary>Gets the name of the account not owned by the user.</summary>
 	public string OtherAccount { get; }

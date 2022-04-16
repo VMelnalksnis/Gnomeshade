@@ -131,4 +131,7 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="LinkViewModel"/> for use during design time.</summary>
 	public static LinkViewModel LinkViewModel { get; } =
 		LinkViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>Gets an instance of <see cref="TransactionSummary"/> for use during design time.</summary>
+	public static TransactionSummary TransactionSummary { get; } = new();
 }

@@ -12,7 +12,7 @@
 	x:DataType="transactions:TransactionViewModel">
 
 	<Grid ColumnDefinitions="Auto,*" RowDefinitions="*">
-		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto, *">
+		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto, *, Auto">
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<UserControl Content="{Binding Filter, Mode=OneWay}" />
 				<Button
@@ -186,18 +186,14 @@
 					</DataGridTemplateColumn>
 				</DataGrid.Columns>
 
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="DoubleTapped" SourceObject="{Binding #DataGrid}">
-						<InvokeCommandAction Command="{ReflectionBinding OnDataGridDoubleTapped}" />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-
 				<DataGrid.Styles>
 					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
 						<Setter Property="Fill" Value="#05769d" />
 					</Style>
 				</DataGrid.Styles>
 			</DataGrid>
+
+			<UserControl Grid.Row="2" Content="{Binding Summary}"/>
 		</Grid>
 
 		<UserControl Grid.Column="1" Content="{Binding Details}" />

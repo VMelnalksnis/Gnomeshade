@@ -7,8 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Avalonia.Input;
-
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
@@ -48,10 +46,15 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		};
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		DataGridView.Filter = Filter.Filter;
+
+		Summary = new();
 	}
 
 	/// <summary>Gets the transaction filter.</summary>
 	public TransactionFilter Filter { get; }
+
+	/// <summary>Gets the summary of displayed transactions.</summary>
+	public TransactionSummary Summary { get; }
 
 	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
 	public bool CanRefresh => Filter.IsValid;
@@ -149,11 +152,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Selected = selected;
 
 		Filter.Accounts = accounts;
-	}
-
-	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>
-	public void OnDataGridDoubleTapped()
-	{
+		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 	}
 
 	/// <inheritdoc />
@@ -190,6 +189,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount))
 		{
 			DataGridView.Refresh();
+			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 		}
 	}
 

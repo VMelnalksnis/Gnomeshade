@@ -46,6 +46,7 @@ internal static class TransferExtensions
 				transfer.SourceAmount,
 				sourceAccount.Name,
 				"→",
+				targetAccount.CounterpartyId == userCounterparty.Id,
 				targetAccount.Name,
 				targetCurrency.AlphabeticCode,
 				transfer.TargetAmount)
@@ -55,6 +56,7 @@ internal static class TransferExtensions
 				transfer.TargetAmount,
 				targetAccount.Name,
 				"←",
+				false,
 				sourceAccount.Name,
 				sourceCurrency.AlphabeticCode,
 				transfer.SourceAmount);
