@@ -3,14 +3,14 @@
     <BkToCstmrAcctRpt>
         <GrpHdr>
             <MsgId>STMT20130710193521</MsgId>
-            <CreDtTm>2001-12-17T09:30:47Z</CreDtTm>
+            <CreDtTm>2001-12-17T09:30:47</CreDtTm>
         </GrpHdr>
         <Rpt>
             <Id>5074322222537</Id>
-            <CreDtTm>2001-12-17T09:30:47Z</CreDtTm>
+            <CreDtTm>2001-12-17T09:30:47</CreDtTm>
             <FrToDt>
-                <FrDtTm>2001-12-17T09:30:47Z</FrDtTm>
-                <ToDtTm>2001-12-17T09:30:47Z</ToDtTm>
+                <FrDtTm>2001-12-17T09:30:47</FrDtTm>
+                <ToDtTm>2001-12-17T09:30:47</ToDtTm>
             </FrToDt>
             <Acct>
                 <Id>

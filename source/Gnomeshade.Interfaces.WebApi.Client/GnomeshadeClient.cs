@@ -260,7 +260,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		var streamContent = new StreamContent(content);
 		streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
 		var multipartContent = new MultipartFormDataContent();
-		multipartContent.Add(streamContent, "formFile", name);
+		multipartContent.Add(streamContent, "Report", name);
+		multipartContent.Add(new StringContent(DateTimeZoneProviders.Tzdb.GetSystemDefault().Id), "TimeZone");
 
 		using var importResponse = await _httpClient.PostAsync(_iso20022, multipartContent);
 		await ThrowIfNotSuccessCode(importResponse);

@@ -72,6 +72,10 @@ public class Startup
 		services.AddValidatedOptions<JwtOptions>(Configuration);
 
 		services
+			.AddSingleton<IClock>(SystemClock.Instance)
+			.AddSingleton(DateTimeZoneProviders.Tzdb);
+
+		services
 			.AddControllers()
 			.AddControllersAsServices()
 			.AddJsonOptions(options =>

@@ -55,6 +55,7 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 	private readonly IDbConnection _dbConnection;
 	private readonly Mapper _mapper;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	/// <summary>Initializes a new instance of the <see cref="Iso20022Controller"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -69,6 +70,7 @@ public sealed class Iso20022Controller : ControllerBase
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	/// <param name="dbConnection">Database connection for managing transactions.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
+	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
 	public Iso20022Controller(
 		ApplicationUserContext applicationUserContext,
 		ILogger<Iso20022Controller> logger,
@@ -81,7 +83,8 @@ public sealed class Iso20022Controller : ControllerBase
 		TransactionUnitOfWork transactionUnitOfWork,
 		AccountUnitOfWork accountUnitOfWork,
 		IDbConnection dbConnection,
-		Mapper mapper)
+		Mapper mapper,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_applicationUserContext = applicationUserContext;
 		_logger = logger;
@@ -94,21 +97,29 @@ public sealed class Iso20022Controller : ControllerBase
 		_accountUnitOfWork = accountUnitOfWork;
 		_dbConnection = dbConnection;
 		_mapper = mapper;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transferRepository = transferRepository;
 	}
 
 	/// <summary>Imports transactions from an ISO 20022 Bank-To-Customer Account Report v02.</summary>
-	/// <param name="formFile">A CAMT.052.001.02 message.</param>
 	/// <returns>Summary of all created or references transactions, accounts and products.</returns>
+	/// <param name="report">The report to import.</param>
 	/// <response code="200">Transactions were successfully imported.</response>
 	[HttpPost]
 	[ProducesResponseType(Status200OK)]
-	public async Task<ActionResult<AccountReportResult>> Import(IFormFile formFile)
+	public async Task<ActionResult<AccountReportResult>> Import([FromForm] Iso20022Report report)
 	{
+		var dateTimeZone = _dateTimeZoneProvider.GetZoneOrNull(report.TimeZone);
+		if (dateTimeZone is null)
+		{
+			ModelState.AddModelError(nameof(Iso20022Report.TimeZone), "Unknown timezone");
+			return BadRequest(ModelState);
+		}
+
 		var user = _applicationUserContext.User;
 		_logger.LogDebug("Resolved user {UserId}", user.Id);
 
-		var accountReport = await ReadReport(formFile);
+		var accountReport = await ReadReport(report.Report);
 		_logger.LogDebug("Reading Account Report {ReportId}", accountReport.Identification);
 
 		if (!_dbConnection.State.HasFlag(ConnectionState.Open))
@@ -118,8 +129,7 @@ public sealed class Iso20022Controller : ControllerBase
 
 		using var dbTransaction = _dbConnection.BeginTransaction();
 
-		var (reportAccount, currency, createdAccount) =
-			await FindAccount(accountReport.Account, user, dbTransaction);
+		var (reportAccount, currency, createdAccount) = await FindAccount(accountReport.Account, user, dbTransaction);
 		_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
 
 		var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
@@ -159,7 +169,8 @@ public sealed class Iso20022Controller : ControllerBase
 							entry,
 							reportAccount,
 							bankAccount,
-							user);
+							user,
+							dateTimeZone);
 
 						if (transaction.Transaction.Id != Guid.Empty)
 						{
@@ -196,7 +207,7 @@ public sealed class Iso20022Controller : ControllerBase
 		}
 	}
 
-	private static Instant GetBookingDate(DateAndDateTimeChoice? dateAndDateTimeChoice)
+	private static Instant GetBookingDate(DateAndDateTimeChoice? dateAndDateTimeChoice, DateTimeZone dateTimeZone)
 	{
 		if (dateAndDateTimeChoice is null)
 		{
@@ -211,11 +222,11 @@ public sealed class Iso20022Controller : ControllerBase
 		if (dateAndDateTimeChoice.DateTime is not null)
 		{
 			var dateTime = dateAndDateTimeChoice.DateTime.Value;
-			return Instant.FromUtc(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, dateTime.Minute, dateTime.Second);
+			return dateTime.InZoneStrictly(dateTimeZone).ToInstant();
 		}
 
-		var (year, month, day) = dateAndDateTimeChoice.Date!.Value;
-		return Instant.FromUtc(year, month, day, 0, 0);
+		var date = dateAndDateTimeChoice.Date!.Value;
+		return date.AtStartOfDayInZone(dateTimeZone).ToInstant();
 	}
 
 	private async Task<AccountReport11> ReadReport(IFormFile formFile)
@@ -348,7 +359,8 @@ public sealed class Iso20022Controller : ControllerBase
 		ReportEntry2 reportEntry,
 		AccountEntity reportAccount,
 		AccountEntity bankAccount,
-		UserEntity user)
+		UserEntity user,
+		DateTimeZone dateTimeZone)
 	{
 		_logger.LogTrace("Parsing transaction {ServicerReference}", reportEntry.AccountServicerReference);
 
@@ -400,7 +412,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var creditDebit = reportEntry.CreditDebitIndicator;
 		_logger.LogTrace("Credit or debit indicator {CreditDebit}", creditDebit);
 
-		var bookingDate = GetBookingDate(reportEntry.BookingDate);
+		var bookingDate = GetBookingDate(reportEntry.BookingDate, dateTimeZone);
 		_logger.LogTrace("Booking date {BookingDate}", bookingDate);
 
 		var description = string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new());

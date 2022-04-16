@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
-        <PackageReference Include="NodaTime" Version="3.0.10"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0"/>
+		<PackageReference Include="NodaTime" Version="3.0.10"/>
+	</ItemGroup>
 
 </Project>
