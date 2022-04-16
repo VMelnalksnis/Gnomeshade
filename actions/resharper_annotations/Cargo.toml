@@ -1,0 +1,9 @@
+[package]
+name = "resharper_annotations"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0.136" }
+serde_derive = { version = "1.0.136" }
+serde-xml-rs = { version = "0.5.1" }
