@@ -18,4 +18,6 @@ internal static class AutoCompleteSelectors
 	internal static AutoCompleteSelector<object> Currency { get; } = (_, item) => ((Currency)item).AlphabeticCode;
 
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;
+
+	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;
 }

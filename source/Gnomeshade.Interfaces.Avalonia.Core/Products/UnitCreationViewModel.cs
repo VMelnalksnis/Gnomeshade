@@ -29,8 +29,6 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 		: base(gnomeshadeClient)
 	{
 		Units = units;
-
-		UnitSelector = (_, item) => ((Unit)item).Name;
 	}
 
 	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Unit existingUnit)
@@ -63,7 +61,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	public List<Unit> Units { get; }
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> UnitSelector { get; }
+	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 
 	/// <summary>Gets or sets a multiplier for converting from this unit to <see cref="ParentUnit"/>.</summary>
 	public decimal? Multiplier

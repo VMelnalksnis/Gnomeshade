@@ -28,8 +28,6 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 		: base(gnomeshadeClient)
 	{
 		Units = units;
-
-		UnitSelector = (_, item) => ((Unit)item).Name;
 	}
 
 	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Product product)
@@ -77,7 +75,7 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	public List<Unit> Units { get; }
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> UnitSelector { get; }
+	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 
 	/// <inheritdoc />
 	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
