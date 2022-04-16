@@ -13,9 +13,11 @@
 
 	<Grid ColumnDefinitions="Auto,*" RowDefinitions="*">
 		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto, *">
-			<StackPanel Orientation="Vertical" Spacing="5">
+			<StackPanel Orientation="Horizontal" Spacing="5">
 				<UserControl Content="{Binding Filter, Mode=OneWay}" />
-				<Button IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
+				<Button
+					VerticalAlignment="Top"
+					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
 					Load transactions
 				</Button>
 			</StackPanel>

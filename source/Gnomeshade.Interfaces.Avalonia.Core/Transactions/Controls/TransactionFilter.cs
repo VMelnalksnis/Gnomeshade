@@ -3,6 +3,12 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Avalonia.Controls;
+
+using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 
@@ -13,6 +19,8 @@ public sealed class TransactionFilter : ViewModelBase
 
 	private DateTimeOffset? _fromDate;
 	private DateTimeOffset? _toDate;
+	private Account? _selectedAccount;
+	private List<Account> _accounts = new();
 
 	/// <summary>Gets or sets the date from which to get transactions.</summary>
 	public DateTimeOffset? FromDate
@@ -30,4 +38,38 @@ public sealed class TransactionFilter : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the current values are valid search parameters.</summary>
 	public bool IsValid => ToDate is null || FromDate is null || ToDate >= FromDate;
+
+	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
+
+	/// <summary>Gets or sets a collection of all active accounts.</summary>
+	public List<Account> Accounts
+	{
+		get => _accounts;
+		set => SetAndNotify(ref _accounts, value);
+	}
+
+	/// <summary>Gets or sets the selected account from <see cref="Accounts"/>.</summary>
+	public Account? SelectedAccount
+	{
+		get => _selectedAccount;
+		set => SetAndNotify(ref _selectedAccount, value);
+	}
+
+	/// <summary>Predicate for determining if an item is suitable for inclusion in the view.</summary>
+	/// <param name="item">The item to check against the filters set in this viewmodel.</param>
+	/// <returns><see langword="true"/> if <paramref name="item"/> matches the filters set in this viewmodel; otherwise <see langword="false"/>.</returns>
+	public bool Filter(object item)
+	{
+		if (item is not TransactionOverview overview)
+		{
+			return false;
+		}
+
+		return
+			SelectedAccount is null ||
+			overview.Transfers.Any(transfer =>
+				transfer.UserAccount == SelectedAccount.Name ||
+				transfer.OtherAccount == SelectedAccount.Name);
+	}
 }

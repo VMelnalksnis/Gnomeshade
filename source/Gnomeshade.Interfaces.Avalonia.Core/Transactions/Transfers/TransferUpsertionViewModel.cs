@@ -45,9 +45,6 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		Accounts = accounts;
 		Currencies = currencies;
 
-		AccountSelector = (_, item) => ((Account)item).Name;
-		CurrencySelector = (_, item) => ((Currency)item).AlphabeticCode;
-
 		PropertyChanged += OnPropertyChanged;
 	}
 
@@ -81,10 +78,10 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	public List<Currency> Currencies { get; }
 
 	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> AccountSelector { get; }
+	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> CurrencySelector { get; }
+	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
 	/// <summary>Gets or sets the source account of the transaction item.</summary>
 	public Account? SourceAccount

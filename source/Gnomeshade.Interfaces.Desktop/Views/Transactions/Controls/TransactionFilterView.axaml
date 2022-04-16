@@ -5,15 +5,37 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:controls="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:design="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.TransactionFilter}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.Controls.TransactionFilterView"
 	x:CompileBindings="True"
 	x:DataType="controls:TransactionFilter">
 
-	<StackPanel Orientation="Horizontal" Spacing="10">
-		<DatePicker SelectedDate="{Binding FromDate, Mode=TwoWay}" />
-		<DatePicker SelectedDate="{Binding ToDate, Mode=TwoWay}" />
-	</StackPanel>
+	<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto">
+
+		<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
+			<DatePicker SelectedDate="{Binding FromDate, Mode=TwoWay}" />
+			<DatePicker SelectedDate="{Binding ToDate, Mode=TwoWay}" />
+		</StackPanel>
+
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
+			<AutoCompleteBox
+				MinWidth="200"
+				x:Name="SourceAccount"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Account"
+				Items="{Binding Accounts}"
+				ItemSelector="{Binding AccountSelector}"
+				SelectedItem="{Binding SelectedAccount, Mode=TwoWay}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="accounts:Account">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+			</AutoCompleteBox>
+		</StackPanel>
+	</Grid>
 
 </UserControl>

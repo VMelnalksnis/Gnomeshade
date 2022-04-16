@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,8 +39,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
 
-		Filter = new();
+		var toDate = SystemClock.Instance.GetCurrentInstant().InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
+		Filter = new()
+		{
+			ToDate = toDate,
+			FromDate = new DateTimeOffset(toDate.Year, toDate.Month, 1, 0, 0, 0, toDate.Offset) - TimeSpan.FromDays(1),
+		};
 		Filter.PropertyChanged += FilterOnPropertyChanged;
+		DataGridView.Filter = Filter.Filter;
 	}
 
 	/// <summary>Gets the transaction filter.</summary>
@@ -137,6 +144,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Rows = new(overviews);
 		DataGridView.SortDescriptions.AddRange(sort);
 		Selected = selected;
+
+		Filter.Accounts = accounts;
 	}
 
 	/// <summary>Handles the <see cref="InputElement.DoubleTapped"/> event for <see cref="OverviewViewModel{TRow,TUpsertion}.DataGridView"/>.</summary>
@@ -161,6 +170,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				.GetAwaiter()
 				.GetResult();
 		}
+
+		if (e.PropertyName is nameof(DataGridView))
+		{
+			DataGridView.Filter = Filter.Filter;
+		}
 	}
 
 	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -168,6 +182,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		if (e.PropertyName is nameof(TransactionFilter.IsValid))
 		{
 			OnPropertyChanged(nameof(CanRefresh));
+		}
+
+		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount))
+		{
+			DataGridView.Refresh();
 		}
 	}
 
