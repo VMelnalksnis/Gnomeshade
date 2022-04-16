@@ -26,11 +26,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
           include-prerelease: true
+
+      - name: Install ReSharper CLI
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install JetBrains.ReSharper.GlobalTools
+          dotnet tool restore
 
       - name: Restore dependencies
         run: dotnet restore
@@ -58,10 +65,13 @@ jobs:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
 
-      - name: resharper
-        uses: VMelnalksnis/resharper-action@v2
+      - name: Inspect code with ReSharper
+        run: dotnet jb inspectcode Gnomeshade.sln -o=report
+
+      - name: Annotate
+        uses: ./actions/resharper_annotations
         with:
-          solution: Gnomeshade.sln
+          report: report
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1
