@@ -1,8 +1,9 @@
 ﻿root = true
 
-[*.cs]
+[*]
 indent_style = tab
 tab_width = 4
+indent_size = tab
 
 insert_final_newline = true
 end_of_line = crlf
@@ -161,8 +162,3 @@ resharper_suggest_var_or_type_simple_types_highlighting = hint
 resharper_web_config_module_not_resolved_highlighting = warning
 resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
-
-[*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,fs,fsi,fsscript,fsx,hlsl,hlsli,hlslinc,master,ml,mli,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
-indent_style = tab
-indent_size = tab
-tab_width = 4
