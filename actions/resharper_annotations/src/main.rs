@@ -38,7 +38,9 @@ fn main() {
         .filter(|i| warning_type_ids.contains(&&i.type_id));
 
     for warning in warnings {
-        println!("::warning file={0},line={1},endLine={1},col=1,endColumn=1,title={2}::{3}", warning.file, warning.line, warning.type_id, warning.message);
+		let filename = warning.file.replace("\\", "/");
+		println!("::warning file={0},line={1},endLine={1},col=1,endColumn=1,title={2}::{3}", warning.file, warning.line, warning.type_id, filename);
+		println!("::warning file={0},line={1},endLine={1},col=1,endColumn=1,title={2}::{3}", filename, warning.line, warning.type_id, warning.message);
     }
 
     let errors: Vec<&Issue> = report.issues.projects
@@ -48,7 +50,9 @@ fn main() {
         .collect();
 
     for error in errors.iter() {
-        println!("::error file={0},line={1},title={2}::{3}", error.file, error.line, error.type_id, error.message);
+		let filename = error.file.replace("\\", "/");
+		println!("::error file={0},line={1},title={2}::{3}", error.file, error.line, error.type_id, filename);
+		println!("::error file={0},line={1},title={2}::{3}", filename, error.line, error.type_id, error.message);
     }
 
     if errors.len() != 0 {
