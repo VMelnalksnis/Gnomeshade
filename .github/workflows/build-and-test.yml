@@ -75,7 +75,7 @@ jobs:
           --properties:Configuration=Release
 
       - name: Annotate
-        uses: ./actions/resharper_annotations
+        uses: VMelnalksnis/resharper-inspect-action@v0.1.0
         with:
           report: report
 
