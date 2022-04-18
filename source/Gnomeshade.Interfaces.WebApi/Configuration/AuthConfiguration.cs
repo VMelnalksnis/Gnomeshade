@@ -20,7 +20,7 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
-	private const string _oAuth2Providers = "OAuth2Providers";
+	private const string _oAuth2Providers = "Oidc";
 
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,
