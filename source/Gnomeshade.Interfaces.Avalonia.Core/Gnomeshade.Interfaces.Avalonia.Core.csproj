@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <IsTrimmable>true</IsTrimmable>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<IsTrimmable>true</IsTrimmable>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.13"/>
-        <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.13"/>
-        <PackageReference Include="IdentityModel.OidcClient" Version="5.0.0"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="0.10.13"/>
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.13"/>
+		<PackageReference Include="IdentityModel.OidcClient" Version="5.0.0"/>
+	</ItemGroup>
 
 </Project>

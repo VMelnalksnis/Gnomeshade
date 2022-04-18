@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Collections;
+
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
@@ -46,6 +48,18 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		};
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		DataGridView.Filter = Filter.Filter;
+		DataGridView.SortDescriptions.Add(
+			new DataGridComparerSortDesctiption(
+				new TransactionOverviewComparer(overview => overview?.BookedAt),
+				ListSortDirection.Descending));
+		DataGridView.SortDescriptions.Add(
+			new DataGridComparerSortDesctiption(
+				new TransactionOverviewComparer(overview => overview?.ValuedAt),
+				ListSortDirection.Descending));
+		DataGridView.SortDescriptions.Add(
+			new DataGridComparerSortDesctiption(
+				new TransactionOverviewComparer(overview => overview?.ReconciledAt),
+				ListSortDirection.Descending));
 
 		Summary = new();
 	}
@@ -81,7 +95,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		var upsertionViewModel = await TransactionUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider).ConfigureAwait(false);
+		var upsertionViewModel = await TransactionUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider)
+			.ConfigureAwait(false);
 		var viewModel = new TransactionViewModel(gnomeshadeClient, clock, dateTimeZoneProvider, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
@@ -202,7 +217,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
 
-		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter().GetResult();
+		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter()
+			.GetResult();
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
