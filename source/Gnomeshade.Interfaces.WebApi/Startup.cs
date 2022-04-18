@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Data;
-using System.IdentityModel.Tokens.Jwt;
 
 using AutoMapper;
 
@@ -24,11 +23,9 @@ using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.Logging;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.OpenApi;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -87,14 +84,7 @@ public class Startup
 		services.AddApiVersioning();
 
 		services.AddIdentityContext();
-
-		services
-			.AddAuthorization(options => options.ConfigurePolicies(Configuration))
-			.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
-			.AddScoped<ApplicationUserContext>()
-			.AddTransient<JwtSecurityTokenHandler>()
-			.AddAuthentication(options => options.SetSchemes())
-			.AddJwtBearerAuthentication(Configuration);
+		services.AddAuthenticationAndAuthorization(Configuration);
 
 		services
 			.AddScoped<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
