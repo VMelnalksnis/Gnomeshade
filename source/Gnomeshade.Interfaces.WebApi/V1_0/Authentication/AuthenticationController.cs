@@ -13,6 +13,7 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
@@ -133,57 +134,6 @@ public sealed class AuthenticationController : ControllerBase
 		}
 
 		return NoContent();
-	}
-
-	/// <summary>Registers or authenticates a user using and OIDC provider.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	[HttpPost]
-	public async Task<ActionResult> SocialRegister()
-	{
-		var providerKeyClaim = User.FindAll(ClaimTypes.NameIdentifier).Single();
-		var existingUser =
-			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-		if (existingUser is not null)
-		{
-			return Ok();
-		}
-
-		var applicationUser = new ApplicationUser
-		{
-			Email = User.FindFirstValue(ClaimTypes.Email),
-			FullName = User.FindFirstValue(ClaimTypes.Name),
-			UserName = User.FindFirstValue("preferred_username"),
-		};
-
-		var userCreationResult = await _userManager.CreateAsync(applicationUser);
-		if (!userCreationResult.Succeeded)
-		{
-			var problemDetails = userCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-			return BadRequest(problemDetails);
-		}
-
-		var userLoginInfo = new UserLoginInfo(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value, "Keycloak");
-		var loginCreationResult = await _userManager.AddLoginAsync(applicationUser, userLoginInfo);
-		if (!loginCreationResult.Succeeded)
-		{
-			var problemDetails = loginCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-			return BadRequest(problemDetails);
-		}
-
-		var identityUser =
-			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-
-		try
-		{
-			await _userUnitOfWork.CreateUserAsync(identityUser);
-		}
-		catch (Exception)
-		{
-			await _userManager.DeleteAsync(identityUser);
-			throw;
-		}
-
-		return StatusCode(Status201Created);
 	}
 
 	/// <summary>Logs out the currently signed in user.</summary>

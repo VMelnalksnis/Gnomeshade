@@ -22,7 +22,6 @@ using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Configuration;
 using Gnomeshade.Interfaces.WebApi.Logging;
 using Gnomeshade.Interfaces.WebApi.V1_0;
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
 using Gnomeshade.Interfaces.WebApi.V1_0.OpenApi;
 
@@ -65,8 +64,6 @@ public class Startup
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddLogging(builder => builder.AddSerilog());
-
-		services.AddValidatedOptions<JwtOptions>(Configuration);
 
 		services
 			.AddSingleton<IClock>(SystemClock.Instance)

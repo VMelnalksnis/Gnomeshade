@@ -23,7 +23,7 @@ public static class Routes
 	internal const string _tagUri = "Tags";
 	internal const string _loginUri = $"{_authenticationUri}/Login";
 	internal const string _logOutUri = $"{_authenticationUri}/Logout";
-	internal const string _socialRegisterUri = $"{_authenticationUri}/SocialRegister";
+	internal const string _socialRegisterUri = "ExternalAuthentication/SocialRegister";
 
 	/// <summary>Gets the relative uri for the specified counterparty.</summary>
 	/// <param name="id">The id of the counterparty.</param>

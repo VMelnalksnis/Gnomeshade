@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,6 +40,7 @@ internal static class AuthConfiguration
 		authenticationSchemes.AddRange(providerNames);
 		if (jwtOptionsDefined)
 		{
+			services.AddValidatedOptions<JwtOptions>(configuration);
 			services.AddTransient<JwtSecurityTokenHandler>();
 		}
 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
+namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 /// <summary>Options for built-in user authentication.</summary>
 public sealed record JwtOptions
