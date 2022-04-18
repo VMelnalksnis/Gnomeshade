@@ -13,16 +13,10 @@
 	x:CompileBindings="True"
 	x:DataType="purchases:PurchaseUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-		<!--Product-->
-		<TextBlock
-			Grid.Column="0" Grid.Row="0"
-			Margin="5"
-			VerticalAlignment="Center"
-			Text="Product:" />
+	<Grid ColumnDefinitions="Auto,2*,*" RowDefinitions="Auto,Auto,Auto,Auto">
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="0"
-			MinWidth="200"
+			Watermark="Product"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Items="{Binding Products}"
@@ -36,22 +30,16 @@
 		</AutoCompleteBox>
 		<TextBox
 			Grid.Column="2" Grid.Row="0"
-			MinWidth="150"
+			Watermark="Amount"
 			Text="{Binding Amount}" />
 
-		<!--Price-->
-		<TextBlock
-			Grid.Column="0" Grid.Row="1"
-			Margin="5"
-			VerticalAlignment="Center"
-			Text="Price:" />
 		<TextBox
 			Grid.Column="1" Grid.Row="1"
-			MinWidth="150"
+			Watermark="Price"
 			Text="{Binding Price}" />
 		<AutoCompleteBox
 			Grid.Column="2" Grid.Row="1"
-			MinWidth="200"
+			Watermark="Currency"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Items="{Binding Currencies}"
@@ -67,22 +55,18 @@
 		<TextBlock
 			Grid.Column="0" Grid.Row="2"
 			Margin="5" VerticalAlignment="Center"
-			Text="Delivery Date:" />
+			Text="Delivered At"/>
 		<StackPanel
 			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"
-			Orientation="Vertical">
-			<DatePicker
-				Margin="5"
-				SelectedDate="{Binding DeliveryDate}" />
-			<TimePicker
-				Margin="5"
-				SelectedTime="{Binding DeliveryTime}" />
+			Orientation="Horizontal">
+			<DatePicker SelectedDate="{Binding DeliveryDate}" />
+			<TimePicker SelectedTime="{Binding DeliveryTime}" />
 		</StackPanel>
 
 		<Button
 			Grid.Column="0" Grid.Row="3"
-			IsEnabled="{Binding CanSave}"
-			Command="{ReflectionBinding SaveAsync}">
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 		<TextBlock
