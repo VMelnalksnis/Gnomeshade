@@ -20,7 +20,7 @@ internal static class ConfigurationExtensions
 {
 	internal static bool GetValidIfDefined<[MeansImplicitUse(Assign, Members)] TOptions>(
 		this IConfiguration configuration,
-		[NotNullWhen(true)] out TOptions? options)
+		[MaybeNullWhen(false)] out TOptions options)
 		where TOptions : notnull
 	{
 		if (!configuration.IsSectionDefined<TOptions>())

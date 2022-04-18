@@ -10,7 +10,6 @@ using System.Linq;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authentication;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -27,64 +26,53 @@ internal static class AuthConfiguration
 		this IServiceCollection services,
 		IConfiguration configuration)
 	{
-		services
-			.AddAuthorization(options => options.ConfigurePolicies(configuration))
-			.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
-			.AddScoped<ApplicationUserContext>()
-			.AddTransient<JwtSecurityTokenHandler>()
-			.AddAuthentication(options => options.SetSchemes())
-			.AddJwtBearerAuthentication(configuration);
+		IdentityModelEventSource.ShowPII = true;
 
-		return services;
-	}
-
-	private static void ConfigurePolicies(
-		this AuthorizationOptions authorizationOptions,
-		IConfiguration configuration)
-	{
+		var jwtOptionsDefined = configuration.GetValidIfDefined<JwtOptions>(out var jwtOptions);
 		var authenticationSchemes = new List<string>();
-		if (configuration.GetChildren().Any(section => section.Key == typeof(JwtOptions).GetSectionName()))
+		if (jwtOptionsDefined)
 		{
 			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 		}
 
-		var oauthProviderNames =
-			configuration
-				.GetSection(_oAuth2Providers)
-				.GetChildren()
-				.Select(section => section.Key);
-		authenticationSchemes.AddRange(oauthProviderNames);
+		var providerSection = configuration.GetSection(_oAuth2Providers);
+		var providerNames = providerSection.GetChildren().Select(section => section.Key).ToList();
 
-		authorizationOptions.DefaultPolicy = new AuthorizationPolicyBuilder()
-			.RequireAuthenticatedUser()
-			.AddAuthenticationSchemes(authenticationSchemes.ToArray())
-			.Build();
+		authenticationSchemes.AddRange(providerNames);
+		if (jwtOptionsDefined)
+		{
+			services.AddTransient<JwtSecurityTokenHandler>();
+		}
 
-		authorizationOptions.AddPolicy(
-			AuthorizeApplicationUserAttribute.PolicyName,
-			builder => builder
-				.AddRequirements(new ApplicationUserRequirement()));
-	}
+		var authenticationBuilder =
+			services
+				.AddAuthorization(options =>
+				{
+					options.DefaultPolicy = new AuthorizationPolicyBuilder()
+						.RequireAuthenticatedUser()
+						.AddAuthenticationSchemes(authenticationSchemes.ToArray())
+						.Build();
 
-	private static void SetSchemes(this AuthenticationOptions authenticationOptions)
-	{
-		authenticationOptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-		authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-		authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-	}
+					options.AddPolicy(
+						AuthorizeApplicationUserAttribute.PolicyName,
+						policy => policy.AddRequirements(new ApplicationUserRequirement()));
+				})
+				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
+				.AddScoped<ApplicationUserContext>()
+				.AddAuthentication(options =>
+				{
+					var defaultScheme = authenticationSchemes.First();
 
-	private static void AddJwtBearerAuthentication(
-		this AuthenticationBuilder authenticationBuilder,
-		IConfiguration configuration)
-	{
-		IdentityModelEventSource.ShowPII = true;
-		if (configuration.GetChildren().Any(section => section.Key == typeof(JwtOptions).GetSectionName()))
+					options.DefaultScheme = defaultScheme;
+					options.DefaultAuthenticateScheme = defaultScheme;
+					options.DefaultChallengeScheme = defaultScheme;
+				});
+
+		if (jwtOptionsDefined)
 		{
 			authenticationBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 			{
-				var jwtOptions = configuration.GetValid<JwtOptions>();
-
-				options.ClaimsIssuer = jwtOptions.ValidIssuer;
+				options.ClaimsIssuer = jwtOptions!.ValidIssuer;
 				options.Audience = jwtOptions.ValidAudience;
 				options.SaveToken = true;
 				options.RequireHttpsMetadata = true;
@@ -102,9 +90,7 @@ internal static class AuthConfiguration
 			});
 		}
 
-		var providerSection = configuration.GetSection(_oAuth2Providers);
-		var providerSectionNames = providerSection.GetChildren().Select(section => section.Key);
-		foreach (var providerName in providerSectionNames)
+		foreach (var providerName in providerNames)
 		{
 			var keycloakOptions = providerSection.GetValid<KeycloakOptions>();
 			authenticationBuilder.AddJwtBearer(providerName, options =>
@@ -127,5 +113,7 @@ internal static class AuthConfiguration
 				};
 			});
 		}
+
+		return services;
 	}
 }
