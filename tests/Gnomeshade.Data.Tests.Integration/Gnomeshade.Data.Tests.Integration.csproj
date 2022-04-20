@@ -11,7 +11,7 @@
         <PackageReference Include="JetBrains.Annotations" Version="2021.3.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
-        <PackageReference Include="Npgsql" Version="6.0.3"/>
+        <PackageReference Include="Npgsql" Version="6.0.4"/>
         <PackageReference Include="Npgsql.NodaTime" Version="6.0.3"/>
     </ItemGroup>
 
