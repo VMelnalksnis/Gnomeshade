@@ -1,78 +1,79 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.0.123"/>
-        <PackageReference Include="dbup-postgresql" Version="4.5.0"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-        <PackageReference Include="NodaTime" Version="3.1.0"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.0.123"/>
+		<PackageReference Include="dbup-postgresql" Version="4.5.0"/>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
+		<PackageReference Include="NodaTime" Version="3.1.0"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Gnomeshade.Core\Gnomeshade.Core.csproj"/>
-        <ProjectReference Include="..\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Gnomeshade.Core\Gnomeshade.Core.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Include="Migrations\00000001_database_extensions.sql"/>
-        <EmbeddedResource Include="Migrations\00000002_create_tables.sql"/>
-        <EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
-        <EmbeddedResource Include="Migrations\00000004_transaction_dates.sql"/>
-        <EmbeddedResource Include="Migrations\00000005_product_sku.sql"/>
-        <EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql"/>
-        <EmbeddedResource Include="Migrations\00000007_transfers.sql"/>
-        <EmbeddedResource Include="Migrations\00000008_purchases.sql"/>
-        <EmbeddedResource Include="Migrations\00000009_links.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Account\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Counterparty\Merge.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Link\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Link\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Link\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Link\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Product\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Purchase\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Purchase\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Purchase\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Purchase\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\RemoveTag.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\AddTag.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Tag\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfer\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Transfer\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Unit\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\Unit\Update.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
-        <EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
-    </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Migrations\00000001_database_extensions.sql"/>
+		<EmbeddedResource Include="Migrations\00000002_create_tables.sql"/>
+		<EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
+		<EmbeddedResource Include="Migrations\00000004_transaction_dates.sql"/>
+		<EmbeddedResource Include="Migrations\00000005_product_sku.sql"/>
+		<EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql"/>
+		<EmbeddedResource Include="Migrations\00000007_transfers.sql"/>
+		<EmbeddedResource Include="Migrations\00000008_purchases.sql"/>
+		<EmbeddedResource Include="Migrations\00000009_links.sql"/>
+		<EmbeddedResource Include="Migrations\00000010_cleanup.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Account\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Merge.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Link\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Link\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Link\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Link\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Product\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\RemoveTag.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\AddTag.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Tag\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Unit\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Unit\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
+	</ItemGroup>
 
 </Project>
