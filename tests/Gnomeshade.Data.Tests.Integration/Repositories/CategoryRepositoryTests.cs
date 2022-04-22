@@ -17,10 +17,10 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public class TagRepositoryTests : IDisposable
+public sealed class CategoryRepositoryTests : IDisposable
 {
 	private IDbConnection _dbConnection = null!;
-	private TagRepository _repository = null!;
+	private CategoryRepository _repository = null!;
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -39,7 +39,7 @@ public class TagRepositoryTests : IDisposable
 	[Test]
 	public async Task AddGet()
 	{
-		var tagFaker = new TagFaker(TestUser.Id);
+		var tagFaker = new CategoryFaker(TestUser.Id);
 		var tag = tagFaker.Generate();
 		var childTag = tagFaker.GenerateUnique(tag);
 
@@ -51,18 +51,6 @@ public class TagRepositoryTests : IDisposable
 			.Which.Id.Should()
 			.Be(tagId);
 
-		var childTagId = await _repository.AddAsync(childTag);
-		await _repository.TagAsync(tagId, childTagId, TestUser.Id);
-
-		(await _repository.GetTaggedAsync(childTagId, TestUser.Id))
-			.Should()
-			.ContainSingle()
-			.Which.Id.Should()
-			.Be(tagId);
-
-		await _repository.UntagAsync(tagId, childTagId, TestUser.Id);
-		(await _repository.GetTaggedAsync(childTagId, TestUser.Id))
-			.Should()
-			.BeEmpty();
+		_ = await _repository.AddAsync(childTag);
 	}
 }

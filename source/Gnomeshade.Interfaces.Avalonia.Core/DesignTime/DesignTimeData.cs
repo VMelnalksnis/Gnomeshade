@@ -6,10 +6,10 @@ using System;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Categories;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
-using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
@@ -77,13 +77,13 @@ public static class DesignTimeData
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
 		UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
 
-	/// <summary>Gets an instance of <see cref="TagCreationViewModel"/> for use during design time.</summary>
-	public static TagCreationViewModel TagCreationViewModel { get; } =
-		TagCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+	/// <summary>Gets an instance of <see cref="CategoryCreationViewModel"/> for use during design time.</summary>
+	public static CategoryCreationViewModel CategoryCreationViewModel { get; } =
+		CategoryCreationViewModel.CreateAsync(GnomeshadeClient).Result;
 
-	/// <summary>Gets an instance of <see cref="TagViewModel"/> for use during design time.</summary>
-	public static TagViewModel TagViewModel { get; } =
-		TagViewModel.CreateAsync(GnomeshadeClient).Result;
+	/// <summary>Gets an instance of <see cref="CategoryViewModel"/> for use during design time.</summary>
+	public static CategoryViewModel CategoryViewModel { get; } =
+		CategoryViewModel.CreateAsync(GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionProperties"/> for use during design time.</summary>
 	public static TransactionProperties TransactionProperties { get; } = new();

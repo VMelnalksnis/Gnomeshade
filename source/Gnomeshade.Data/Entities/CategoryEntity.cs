@@ -11,7 +11,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Keyword for categorizing other entities.</summary>
-public sealed record TagEntity : IOwnableEntity, IModifiableEntity, INamedEntity
+public sealed record CategoryEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	/// <inheritdoc />
 	public Guid Id { get; init; }
@@ -37,6 +37,6 @@ public sealed record TagEntity : IOwnableEntity, IModifiableEntity, INamedEntity
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
-	/// <summary>Gets or sets the description of this product.</summary>
+	/// <summary>Gets or sets the description of this category.</summary>
 	public string? Description { get; set; }
 }

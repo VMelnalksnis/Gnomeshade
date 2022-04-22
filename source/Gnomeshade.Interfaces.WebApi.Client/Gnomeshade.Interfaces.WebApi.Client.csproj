@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4"/>
-        <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4"/>
+		<PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
+	</ItemGroup>
 
 </Project>

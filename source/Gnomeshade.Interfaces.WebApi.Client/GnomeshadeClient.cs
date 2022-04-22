@@ -270,29 +270,19 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Tag>> GetTagsAsync() => GetAsync<List<Tag>>(_tagUri);
+	public Task<List<Category>> GetCategoriesAsync() => GetAsync<List<Category>>(Categories._uri);
 
 	/// <inheritdoc />
-	public Task<Tag> GetTagAsync(Guid id) => GetAsync<Tag>(TagIdUri(id));
+	public Task<Category> GetCategoryAsync(Guid id) => GetAsync<Category>(Categories.IdUri(id));
 
 	/// <inheritdoc />
-	public Task<Guid> CreateTagAsync(TagCreation tag) => PostAsync(_tagUri, tag);
+	public Task<Guid> CreateCategoryAsync(CategoryCreation category) => PostAsync(Categories._uri, category);
 
 	/// <inheritdoc />
-	public Task PutTagAsync(Guid id, TagCreation tag) => PutAsync(TagIdUri(id), tag);
+	public Task PutCategoryAsync(Guid id, CategoryCreation category) => PutAsync(Categories.IdUri(id), category);
 
 	/// <inheritdoc />
-	public Task DeleteTagAsync(Guid id) => DeleteAsync(TagIdUri(id));
-
-	/// <inheritdoc />
-	public Task<List<Tag>> GetTagTagsAsync(Guid id) =>
-		GetAsync<List<Tag>>(TagTagUri(id));
-
-	/// <inheritdoc />
-	public Task TagTagAsync(Guid id, Guid tagId) => PutAsync(TagTagIdUri(id, tagId));
-
-	/// <inheritdoc />
-	public Task UntagTagAsync(Guid id, Guid tagId) => DeleteAsync(TagTagIdUri(id, tagId));
+	public Task DeleteCategoryAsync(Guid id) => DeleteAsync(Categories.IdUri(id));
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{

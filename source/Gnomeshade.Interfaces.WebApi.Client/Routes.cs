@@ -20,7 +20,6 @@ public static class Routes
 	internal const string _iso20022 = "Iso";
 	internal const string _productUri = "Products";
 	internal const string _unitUri = "Units";
-	internal const string _tagUri = "Tags";
 	internal const string _loginUri = $"{_authenticationUri}/Login";
 	internal const string _logOutUri = $"{_authenticationUri}/Logout";
 	internal const string _socialRegisterUri = "ExternalAuthentication/SocialRegister";
@@ -41,22 +40,6 @@ public static class Routes
 	/// <param name="id">The id of the product.</param>
 	/// <returns>Relative uri for a specific account.</returns>
 	public static string ProductIdUri(Guid id) => $"{_productUri}/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the specified tag.</summary>
-	/// <param name="id">The id of the tag.</param>
-	/// <returns>Relative uri for the specified tag.</returns>
-	public static string TagIdUri(Guid id) => $"{_tagUri}/{Format(id)}";
-
-	/// <summary>Gets the relative uri for the tags of the specified tag.</summary>
-	/// <param name="id">The id of the tag.</param>
-	/// <returns>Relative uri for the tags of the specified tag.</returns>
-	public static string TagTagUri(Guid id) => $"{TagIdUri(id)}/{_tagUri}";
-
-	/// <summary>Gets the relative uri for the specified tag tag.</summary>
-	/// <param name="id">The id of the tag.</param>
-	/// <param name="tagId">The id of the tag tag.</param>
-	/// <returns>Relative uri for the specified tag tag.</returns>
-	public static string TagTagIdUri(Guid id, Guid tagId) => $"{TagTagUri(id)}/{Format(tagId)}";
 
 	/// <summary>Gets the relative uri for the specified unit.</summary>
 	/// <param name="id">The id of the unit.</param>
@@ -119,6 +102,13 @@ public static class Routes
 		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
 
 		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
+	}
+
+	internal static class Categories
+	{
+		internal const string _uri = "Categories";
+
+		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
 	}
 
 	internal static class Links

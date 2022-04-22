@@ -99,7 +99,7 @@ public class Startup
 			.AddScoped<CounterpartyRepository>()
 			.AddScoped<LinkRepository>()
 			.AddScoped<AccountUnitOfWork>()
-			.AddScoped<TagRepository>()
+			.AddScoped<CategoryRepository>()
 			.AddScoped<TransactionUnitOfWork>()
 			.AddScoped<UserUnitOfWork>()
 			.AddTransient<Iso20022AccountReportReader>();

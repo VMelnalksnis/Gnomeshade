@@ -51,8 +51,8 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<ProductEntity, Product>();
 		options.CreateMap<ProductCreationModel, ProductEntity>();
 
-		options.CreateMap<TagEntity, Tag>();
-		options.CreateMap<TagCreation, TagEntity>();
+		options.CreateMap<CategoryEntity, Category>();
+		options.CreateMap<CategoryCreation, CategoryEntity>();
 
 		options.CreateMap<UnitEntity, Unit>();
 		options.CreateMap<UnitCreationModel, UnitEntity>();

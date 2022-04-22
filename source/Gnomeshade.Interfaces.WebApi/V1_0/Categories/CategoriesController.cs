@@ -23,62 +23,62 @@ using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
-namespace Gnomeshade.Interfaces.WebApi.V1_0.Tags;
+namespace Gnomeshade.Interfaces.WebApi.V1_0.Categories;
 
-/// <summary>CRUD operations on tags.</summary>
-public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
+/// <summary>CRUD operations on categories.</summary>
+public sealed class CategoriesController : FinanceControllerBase<CategoryEntity, Category>
 {
-	private readonly TagRepository _repository;
+	private readonly CategoryRepository _repository;
 
-	/// <summary>Initializes a new instance of the <see cref="TagsController"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="CategoriesController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="TagEntity"/>.</param>
-	public TagsController(
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="CategoryEntity"/>.</param>
+	public CategoriesController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<TagsController> logger,
-		TagRepository repository)
+		ILogger<CategoriesController> logger,
+		CategoryRepository repository)
 		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 	}
 
-	/// <inheritdoc cref="ITagClient.GetTagsAsync"/>
-	/// <response code="200">Successfully got the tags.</response>
+	/// <inheritdoc cref="ICategoryClient.GetCategoriesAsync"/>
+	/// <response code="200">Successfully got the categories.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
-	public async Task<ActionResult<List<Tag>>> Get(CancellationToken cancellationToken = default)
+	[ProducesResponseType(typeof(List<Category>), Status200OK)]
+	public async Task<ActionResult<List<Category>>> Get(CancellationToken cancellationToken = default)
 	{
 		var tagEntities = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var tags = tagEntities.Select(MapToModel).ToList();
-		return Ok(tags);
+		var categories = tagEntities.Select(MapToModel).ToList();
+		return Ok(categories);
 	}
 
-	/// <inheritdoc cref="ITagClient.GetTagAsync"/>
+	/// <inheritdoc cref="ICategoryClient.GetCategoryAsync"/>
 	/// <response code="200">Successfully got the tag.</response>
 	/// <response code="404">Tag with the specified id does not exist.</response>
 	[HttpGet("{id:guid}")]
-	[ProducesResponseType(typeof(Tag), Status200OK)]
+	[ProducesResponseType(typeof(Category), Status200OK)]
 	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Tag>> Get(Guid id, CancellationToken cancellationToken = default)
+	public async Task<ActionResult<Category>> Get(Guid id, CancellationToken cancellationToken = default)
 	{
 		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
 	}
 
-	/// <inheritdoc cref="ITagClient.PutTagAsync"/>
+	/// <inheritdoc cref="ICategoryClient.PutCategoryAsync"/>
 	/// <response code="201">A new product was created.</response>
 	/// <response code="409">A product with the specified name already exists.</response>
 	[HttpPost]
 	[ProducesResponseType(Status201Created)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Guid>> Post([FromBody] TagCreation tag)
+	public async Task<ActionResult<Guid>> Post([FromBody] CategoryCreation category)
 	{
-		return await CreateTagAsync(tag, ApplicationUser, Guid.NewGuid());
+		return await CreateTagAsync(category, ApplicationUser, Guid.NewGuid());
 	}
 
-	/// <inheritdoc cref="ITagClient.PutTagAsync"/>
+	/// <inheritdoc cref="ICategoryClient.PutCategoryAsync"/>
 	/// <response code="201">A new product was created.</response>
 	/// <response code="204">An existing product was replaced.</response>
 	/// <response code="409">A product with the specified name already exists.</response>
@@ -86,55 +86,24 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 	[ProducesResponseType(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] TagCreation tag)
+	public async Task<ActionResult> Put(Guid id, [FromBody] CategoryCreation category)
 	{
 		var existingTag = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 		return existingTag is null
-			? await CreateTagAsync(tag, ApplicationUser, id)
-			: await UpdateTagAsync(tag, ApplicationUser, id);
+			? await CreateTagAsync(category, ApplicationUser, id)
+			: await UpdateTagAsync(category, ApplicationUser, id);
 	}
 
-	/// <inheritdoc cref="ITagClient.DeleteTagAsync"/>
+	/// <inheritdoc cref="ICategoryClient.DeleteCategoryAsync"/>
 	/// <response code="204">The tag was deleted successfully.</response>
 	[HttpDelete("{id:guid}")]
 	public async Task<StatusCodeResult> Delete(Guid id)
 	{
 		var deletedCount = await _repository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<TagEntity>(id, deletedCount);
+		return DeletedEntity<CategoryEntity>(id, deletedCount);
 	}
 
-	/// <inheritdoc cref="ITagClient.GetTagTagsAsync"/>
-	/// <response code="200">Successfully got the tags.</response>
-	[HttpGet("{id:guid}/Tags")]
-	[ProducesResponseType(typeof(List<Tag>), Status200OK)]
-	public async Task<ActionResult<List<Tag>>> GetTags(Guid id, CancellationToken cancellationToken = default)
-	{
-		var tagEntities = await _repository.GetTagsAsync(id, ApplicationUser.Id, cancellationToken);
-		var tags = tagEntities.Select(MapToModel).ToList();
-		return Ok(tags);
-	}
-
-	/// <inheritdoc cref="ITagClient.TagTagAsync"/>
-	/// <response code="204">The tag was tagged successfully.</response>
-	[HttpPut("{id:guid}/Tags/{tagId:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	public async Task<StatusCodeResult> Tag(Guid id, Guid tagId)
-	{
-		await _repository.TagAsync(id, tagId, ApplicationUser.Id);
-		return NoContent();
-	}
-
-	/// <inheritdoc cref="ITagClient.UntagTagAsync"/>
-	/// <response code="204">The tag was untagged successfully.</response>
-	[HttpDelete("{id:guid}/Tags/{tagId:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	public async Task<StatusCodeResult> Untag(Guid id, Guid tagId)
-	{
-		await _repository.UntagAsync(id, tagId, ApplicationUser.Id);
-		return NoContent();
-	}
-
-	private async Task<ActionResult> CreateTagAsync(TagCreation model, UserEntity user, Guid id)
+	private async Task<ActionResult> CreateTagAsync(CategoryCreation model, UserEntity user, Guid id)
 	{
 		var normalizedName = model.Name.ToUpperInvariant();
 		var conflictingTag = await _repository.FindByNameAsync(normalizedName, user.Id);
@@ -146,7 +115,7 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 				Status409Conflict);
 		}
 
-		var tag = Mapper.Map<TagEntity>(model) with
+		var tag = Mapper.Map<CategoryEntity>(model) with
 		{
 			Id = id,
 			OwnerId = user.Id,
@@ -159,9 +128,9 @@ public sealed class TagsController : FinanceControllerBase<TagEntity, Tag>
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
-	private async Task<NoContentResult> UpdateTagAsync(TagCreation model, UserEntity user, Guid id)
+	private async Task<NoContentResult> UpdateTagAsync(CategoryCreation model, UserEntity user, Guid id)
 	{
-		var tag = Mapper.Map<TagEntity>(model) with
+		var tag = Mapper.Map<CategoryEntity>(model) with
 		{
 			Id = id,
 			OwnerId = user.Id, // todo only works for entities created by the user

@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Tags;
 
 /// <summary>A keyword that can be assigned to other data, for example, transaction items.</summary>
 [PublicAPI]
-public sealed record Tag
+public sealed record Category
 {
 	/// <summary>The id of the tag.</summary>
 	public Guid Id { get; init; }

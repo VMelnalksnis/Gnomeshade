@@ -10,10 +10,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Categories;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
-using Gnomeshade.Interfaces.Avalonia.Core.Tags;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -118,17 +118,17 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = unitCreationViewModel;
 	}
 
-	/// <summary>Switches <see cref="ActiveView"/> to <see cref="TagCreationViewModel"/>.</summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryCreationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToTagAsync()
+	public async Task SwitchToCategoriesAsync()
 	{
-		if (ActiveView is TagViewModel)
+		if (ActiveView is CategoryViewModel)
 		{
 			return;
 		}
 
-		var tagCreationViewModel = await TagViewModel.CreateAsync(_gnomeshadeClient);
-		ActiveView = tagCreationViewModel;
+		var categoryViewModel = await CategoryViewModel.CreateAsync(_gnomeshadeClient);
+		ActiveView = categoryViewModel;
 	}
 
 	/// <summary>

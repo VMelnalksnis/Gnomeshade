@@ -1,29 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
 
-        <UserSecretsId>a8ee8b2c-5151-45b6-ad24-3a3768fb80a5</UserSecretsId>
-    </PropertyGroup>
+		<UserSecretsId>a8ee8b2c-5151-45b6-ad24-3a3768fb80a5</UserSecretsId>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Bogus" Version="34.0.2"/>
-        <PackageReference Include="FluentAssertions.NodaTime" Version="2.0.1"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Bogus" Version="34.0.2"/>
+		<PackageReference Include="FluentAssertions.NodaTime" Version="2.0.1"/>
+		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.4"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
-        <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi\Gnomeshade.Interfaces.WebApi.csproj"/>
-        <ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi\Gnomeshade.Interfaces.WebApi.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Update="V1_0\Importing\BankToCustomerAccountReportV02.xml">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<None Update="V1_0\Importing\BankToCustomerAccountReportV02.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

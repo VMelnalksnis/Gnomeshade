@@ -1,21 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
 
-        <UserSecretsId>d2cd7231-768d-4a4d-94ec-71ff3372aaf1</UserSecretsId>
-    </PropertyGroup>
+		<UserSecretsId>d2cd7231-768d-4a4d-94ec-71ff3372aaf1</UserSecretsId>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Bogus" Version="34.0.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1"/>
-        <PackageReference Include="NodaTime.Bogus" Version="3.0.1"/>
-        <PackageReference Include="Npgsql" Version="6.0.4"/>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Bogus" Version="34.0.2"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1"/>
+		<PackageReference Include="NodaTime.Bogus" Version="3.0.1"/>
+		<PackageReference Include="Npgsql" Version="6.0.4"/>
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
-        <ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
+	</ItemGroup>
 
 </Project>

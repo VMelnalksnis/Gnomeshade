@@ -10,7 +10,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Tags;
 
 /// <summary>Information needed to create a tag.</summary>
 [PublicAPI]
-public sealed class TagCreation
+public sealed class CategoryCreation
 {
 	/// <summary>The name of the tag.</summary>
 	[Required]

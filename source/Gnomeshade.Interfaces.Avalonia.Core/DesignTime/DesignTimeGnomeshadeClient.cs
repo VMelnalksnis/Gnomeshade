@@ -420,29 +420,20 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Tag>> GetTagsAsync()
+	public Task<List<Category>> GetCategoriesAsync()
 	{
-		return Task.FromResult<List<Tag>>(new() { new() { Name = "Foo" }, new() { Name = "Bar" } });
+		return Task.FromResult<List<Category>>(new() { new() { Name = "Foo" }, new() { Name = "Bar" } });
 	}
 
 	/// <inheritdoc />
-	public Task<Tag> GetTagAsync(Guid id) => throw new NotImplementedException();
+	public Task<Category> GetCategoryAsync(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Guid> CreateTagAsync(TagCreation tag) => throw new NotImplementedException();
+	public Task<Guid> CreateCategoryAsync(CategoryCreation category) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task PutTagAsync(Guid id, TagCreation tag) => throw new NotImplementedException();
+	public Task PutCategoryAsync(Guid id, CategoryCreation category) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task DeleteTagAsync(Guid id) => throw new NotImplementedException();
-
-	/// <inheritdoc />
-	public Task<List<Tag>> GetTagTagsAsync(Guid id) => throw new NotImplementedException();
-
-	/// <inheritdoc />
-	public Task TagTagAsync(Guid id, Guid tagId) => throw new NotImplementedException();
-
-	/// <inheritdoc />
-	public Task UntagTagAsync(Guid id, Guid tagId) => throw new NotImplementedException();
+	public Task DeleteCategoryAsync(Guid id) => throw new NotImplementedException();
 }
