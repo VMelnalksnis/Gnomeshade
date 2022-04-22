@@ -6,9 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Categories;
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
-namespace Gnomeshade.Interfaces.Desktop.Views.Categories;
+namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
 /// <summary>Create or update single category.</summary>
 public sealed class CategoryCreationView : UserControl, IView<CategoryCreationViewModel>

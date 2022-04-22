@@ -3,13 +3,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:p="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Products;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:products="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Products;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.ProductViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.Products.ProductView"
 	x:CompileBindings="True"
-	x:DataType="p:ProductViewModel">
+	x:DataType="products:ProductViewModel">
 
 	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
 		<DataGrid
@@ -17,32 +17,38 @@
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			Items="{Binding DataGridView, Mode=TwoWay}"
-			SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+			SelectedItem="{Binding Selected, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="p:ProductRow"
+					x:DataType="products:ProductRow"
 					Header="Name" IsReadOnly="True"
 					Binding="{Binding Name, Mode=OneWay}" />
 			</DataGrid.Columns>
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="p:ProductRow"
+					x:DataType="products:ProductRow"
 					Header="SKU" IsReadOnly="True"
 					Binding="{Binding Sku, Mode=OneWay}" />
 			</DataGrid.Columns>
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="p:ProductRow"
+					x:DataType="products:ProductRow"
 					Header="Description" IsReadOnly="True"
 					Binding="{Binding Description, Mode=OneWay}" />
 			</DataGrid.Columns>
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="p:ProductRow"
+					x:DataType="products:ProductRow"
 					Header="Unit" IsReadOnly="True"
 					Binding="{Binding UnitName, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="products:ProductRow"
+					Header="Category" IsReadOnly="True"
+					Binding="{Binding CategoryName, Mode=OneWay}" />
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>
@@ -54,6 +60,6 @@
 
 		<UserControl
 			Grid.Column="1" Grid.Row="0"
-			Content="{Binding Product, Mode=OneWay}"/>
+			Content="{Binding Details, Mode=OneWay}"/>
 	</Grid>
 </UserControl>

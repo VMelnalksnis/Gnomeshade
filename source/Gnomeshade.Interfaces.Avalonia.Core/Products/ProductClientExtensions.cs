@@ -13,18 +13,22 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 internal static class ProductClientExtensions
 {
-	internal static async Task<IEnumerable<ProductRow>> GetProductRowsAsync(this IProductClient productClient)
+	internal static async Task<IEnumerable<ProductRow>> GetProductRowsAsync(this IGnomeshadeClient gnomeshadeClient)
 	{
-		var products = await productClient.GetProductsAsync().ConfigureAwait(false);
-		return await productClient.GetProductRowsAsync(products).ConfigureAwait(false);
+		var products = await gnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
+		return await gnomeshadeClient.GetProductRowsAsync(products).ConfigureAwait(false);
 	}
 
 	internal static async Task<IEnumerable<ProductRow>> GetProductRowsAsync(
-		this IProductClient productClient,
+		this IGnomeshadeClient gnomeshadeClient,
 		IEnumerable<Product> products)
 	{
-		var unitRows = (await productClient.GetUnitRowsAsync().ConfigureAwait(false)).ToList();
-		return products.Select(product => new ProductRow(product, unitRows));
+		var unitRows = (await gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false)).ToList();
+		var categories = await gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		return products.Select(product => new ProductRow(
+			product,
+			unitRows,
+			categories.SingleOrDefault(category => category.Id == product.CategoryId)?.Name));
 	}
 
 	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)

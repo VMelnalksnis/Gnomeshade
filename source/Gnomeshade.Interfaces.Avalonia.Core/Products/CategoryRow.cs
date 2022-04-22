@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Categories;
+namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Overview of a single category.</summary>
 public sealed class CategoryRow : PropertyChangedBase
@@ -13,11 +13,13 @@ public sealed class CategoryRow : PropertyChangedBase
 	/// <param name="id">The id of the category.</param>
 	/// <param name="name">The name of the category.</param>
 	/// <param name="description">The description of the category.</param>
-	public CategoryRow(Guid id, string name, string? description)
+	/// <param name="categoryName">The name of the category to which the category belongs to.</param>
+	public CategoryRow(Guid id, string name, string? description, string? categoryName)
 	{
 		Id = id;
 		Name = name;
 		Description = description;
+		CategoryName = categoryName;
 	}
 
 	/// <summary>Gets the id of the category.</summary>
@@ -28,4 +30,7 @@ public sealed class CategoryRow : PropertyChangedBase
 
 	/// <summary>Gets the description of the category.</summary>
 	public string? Description { get; }
+
+	/// <summary>Gets the name of the category to which the category belongs to.</summary>
+	public string? CategoryName { get; }
 }

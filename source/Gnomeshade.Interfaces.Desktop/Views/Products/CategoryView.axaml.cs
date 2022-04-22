@@ -6,9 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Categories;
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
-namespace Gnomeshade.Interfaces.Desktop.Views.Categories;
+namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
 /// <summary>An overview of of all categories.</summary>
 public sealed class CategoryView : UserControl, IView<CategoryViewModel>

@@ -34,6 +34,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Purchase> _purchases;
 	private static readonly List<Link> _links;
 	private static readonly List<KeyValuePair<Guid, Guid>> _transactionLinks;
+	private static readonly List<Category> _categories;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -66,8 +67,11 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var gram = new Unit { Id = Guid.NewGuid(), Name = "Gram", ParentUnitId = kilogram.Id, Multiplier = 1000m };
 		_units = new() { kilogram, gram };
 
-		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread" };
-		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk" };
+		var food = new Category { Id = Guid.Empty, Name = "Food" };
+		_categories = new() { food };
+
+		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id };
+		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk", CategoryId = food.Id };
 		_products = new() { bread, milk };
 
 		var transaction = new Transaction
@@ -419,20 +423,54 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Category>> GetCategoriesAsync()
+	public Task<List<Category>> GetCategoriesAsync() => Task.FromResult(_categories.ToList());
+
+	/// <inheritdoc />
+	public Task<Category> GetCategoryAsync(Guid id)
 	{
-		return Task.FromResult<List<Category>>(new() { new() { Name = "Foo" }, new() { Name = "Bar" } });
+		return Task.FromResult(_categories.Single(category => category.Id == id));
 	}
 
 	/// <inheritdoc />
-	public Task<Category> GetCategoryAsync(Guid id) => throw new NotImplementedException();
+	public Task<Guid> CreateCategoryAsync(CategoryCreation category)
+	{
+		var id = Guid.NewGuid();
+		_categories.Add(new()
+		{
+			Id = id,
+			Name = category.Name,
+			Description = category.Description,
+			CategoryId = category.CategoryId,
+		});
+
+		return Task.FromResult(id);
+	}
 
 	/// <inheritdoc />
-	public Task<Guid> CreateCategoryAsync(CategoryCreation category) => throw new NotImplementedException();
+	public Task PutCategoryAsync(Guid id, CategoryCreation category)
+	{
+		var existing = _categories.SingleOrDefault(c => c.Id == id);
+		if (existing is not null)
+		{
+			_categories.Remove(existing);
+		}
+
+		_categories.Add(new()
+		{
+			Id = id,
+			Name = category.Name,
+			Description = category.Description,
+			CategoryId = category.CategoryId,
+		});
+
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
-	public Task PutCategoryAsync(Guid id, CategoryCreation category) => throw new NotImplementedException();
-
-	/// <inheritdoc />
-	public Task DeleteCategoryAsync(Guid id) => throw new NotImplementedException();
+	public Task DeleteCategoryAsync(Guid id)
+	{
+		var category = _categories.Single(c => c.Id == id);
+		_categories.Remove(category);
+		return Task.CompletedTask;
+	}
 }

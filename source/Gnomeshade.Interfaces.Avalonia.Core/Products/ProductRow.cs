@@ -16,13 +16,15 @@ public sealed class ProductRow : PropertyChangedBase
 	/// <summary>Initializes a new instance of the <see cref="ProductRow"/> class.</summary>
 	/// <param name="product">The product this row represents.</param>
 	/// <param name="unitRows">A collection from which to select the unit of this product.</param>
-	public ProductRow(Product product, IEnumerable<UnitRow> unitRows)
+	/// <param name="categoryName">The name of the category of the product.</param>
+	public ProductRow(Product product, IEnumerable<UnitRow> unitRows, string? categoryName)
 	{
 		Id = product.Id;
 		Name = product.Name;
 		Sku = product.Sku;
 		Description = product.Description;
 		UnitName = product.UnitId is null ? null : unitRows.Single(unit => unit.Id == product.UnitId.Value).Name;
+		CategoryName = categoryName;
 	}
 
 	/// <inheritdoc cref="Product.Id"/>
@@ -39,4 +41,7 @@ public sealed class ProductRow : PropertyChangedBase
 
 	/// <summary>Gets the name of the unit of the product.</summary>
 	public string? UnitName { get; }
+
+	/// <summary>Gets the name of the category of the product.</summary>
+	public string? CategoryName { get; }
 }

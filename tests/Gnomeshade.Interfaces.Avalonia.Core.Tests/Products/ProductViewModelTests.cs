@@ -18,30 +18,30 @@ using static Gnomeshade.Interfaces.Avalonia.Core.Products.ProductViewModel;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Products;
 
 [TestOf(typeof(ProductViewModel))]
-public class ProductViewModelTests
+public sealed class ProductViewModelTests
 {
 	[Test]
 	public async Task Product_SaveAsync_ShouldUpdateDataGridView()
 	{
 		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient());
-		viewModel.Products.Should().HaveCount(2);
+		viewModel.Rows.Should().HaveCount(2);
 
 		var newProductName = Guid.NewGuid().ToString("N");
-		viewModel.Product.Name = newProductName;
-		await viewModel.Product.SaveAsync();
+		viewModel.Details.Name = newProductName;
+		await viewModel.Details.SaveAsync();
 
-		viewModel.Products.Should().HaveCount(3).And.ContainSingle(product => product.Name == newProductName);
+		viewModel.Rows.Should().HaveCount(3).And.ContainSingle(product => product.Name == newProductName);
 	}
 
 	[Test]
 	public async Task SelectedProduct_ShouldUpdateProductCreationViewModel()
 	{
 		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient());
-		viewModel.Product.Name.Should().BeNullOrWhiteSpace();
+		viewModel.Details.Name.Should().BeNullOrWhiteSpace();
 
-		var productToSelect = viewModel.Products.First();
-		viewModel.SelectedProduct = productToSelect;
+		var productToSelect = viewModel.Rows.First();
+		viewModel.Selected = productToSelect;
 
-		viewModel.Product.Name.Should().Be(productToSelect.Name);
+		viewModel.Details.Name.Should().Be(productToSelect.Name);
 	}
 }

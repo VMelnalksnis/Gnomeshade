@@ -10,7 +10,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
-using Gnomeshade.Interfaces.Avalonia.Core.Categories;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;

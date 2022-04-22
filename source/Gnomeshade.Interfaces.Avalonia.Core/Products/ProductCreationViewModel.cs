@@ -23,15 +23,17 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	private Unit? _selectedUnit;
 	private string? _sku;
 	private string? _description;
+	private Category? _selectedCategory;
 
-	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, List<Category> categories)
 		: base(gnomeshadeClient)
 	{
 		Units = units;
+		Categories = categories;
 	}
 
-	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Product product)
-		: this(gnomeshadeClient, units)
+	private ProductCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, List<Category> categories, Product product)
+		: this(gnomeshadeClient, units, categories)
 	{
 		_exisingProduct = product;
 
@@ -54,21 +56,28 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	public string? Sku
 	{
 		get => _sku;
-		set => SetAndNotify(ref _sku, value, nameof(Sku));
+		set => SetAndNotify(ref _sku, value);
 	}
 
 	/// <summary>Gets or sets the description of the product.</summary>
 	public string? Description
 	{
 		get => _description;
-		set => SetAndNotify(ref _description, value, nameof(Description));
+		set => SetAndNotify(ref _description, value);
 	}
 
 	/// <summary>Gets or sets the unit in which an amount of this product is measured in.</summary>
 	public Unit? SelectedUnit
 	{
 		get => _selectedUnit;
-		set => SetAndNotify(ref _selectedUnit, value, nameof(SelectedUnit));
+		set => SetAndNotify(ref _selectedUnit, value);
+	}
+
+	/// <summary>Gets or sets the category of this product.</summary>
+	public Category? SelectedCategory
+	{
+		get => _selectedCategory;
+		set => SetAndNotify(ref _selectedCategory, value);
 	}
 
 	/// <summary>Gets a collection of all available units.</summary>
@@ -76,6 +85,12 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
+
+	/// <summary>Gets a collection of all available categories.</summary>
+	public List<Category> Categories { get; }
+
+	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
 
 	/// <inheritdoc />
 	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
@@ -88,14 +103,15 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 		IGnomeshadeClient gnomeshadeClient,
 		Guid? productId = null)
 	{
-		var units = await gnomeshadeClient.GetUnitsAsync();
+		var units = await gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
+		var categories = await gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
 		if (productId is null)
 		{
-			return new(gnomeshadeClient, units);
+			return new(gnomeshadeClient, units, categories);
 		}
 
 		var product = await gnomeshadeClient.GetProductAsync(productId.Value);
-		return new(gnomeshadeClient, units, product);
+		return new(gnomeshadeClient, units, categories, product);
 	}
 
 	/// <inheritdoc />
