@@ -25,4 +25,7 @@ public sealed record ProductCreationModel
 
 	/// <inheritdoc cref="Product.UnitId"/>
 	public Guid? UnitId { get; init; }
+
+	/// <inheritdoc cref="Product.CategoryId"/>
+	public Guid? CategoryId { get; init; }
 }

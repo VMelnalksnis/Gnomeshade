@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 using FluentAssertions.Equivalency;
+using FluentAssertions.Execution;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -47,12 +48,30 @@ public class ProductsControllerTests
 	[Test]
 	public async Task Put()
 	{
-		var creationModel = CreateUniqueProduct() with { Description = "Foo" };
+		var unitId = Guid.NewGuid();
+		var unit = new UnitCreationModel { Name = $"{unitId:N}" };
+		await _client.PutUnitAsync(unitId, unit);
+
+		var categoryId = Guid.NewGuid();
+		var category = new CategoryCreation { Name = $"{categoryId:N}" };
+		await _client.PutCategoryAsync(categoryId, category);
+
+		var creationModel = CreateUniqueProduct() with
+		{
+			Description = "Foo",
+			UnitId = unitId,
+			CategoryId = categoryId,
+		};
 		var productId = Guid.NewGuid();
 		var product = await PutAndGet(productId, creationModel);
 
-		product.Name.Should().Be(creationModel.Name);
-		product.Description.Should().Be(creationModel.Description);
+		using (new AssertionScope())
+		{
+			product.Name.Should().Be(creationModel.Name);
+			product.Description.Should().Be(creationModel.Description);
+			product.UnitId.Should().Be(unitId);
+			product.CategoryId.Should().Be(categoryId);
+		}
 
 		var productWithoutChanges = await PutAndGet(productId, creationModel);
 

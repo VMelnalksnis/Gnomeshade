@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Tags;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Categories;
 

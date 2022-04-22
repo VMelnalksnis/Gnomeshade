@@ -13,7 +13,8 @@ SET modified_at         = DEFAULT,
 	modified_by_user_id = @ModifiedByUserId,
 	name                = @Name,
 	normalized_name     = @NormalizedName,
-	description         = @Description
+	description         = @Description,
+	category_id         = @CategoryId
 FROM c
 WHERE categories.id = c.id
 RETURNING c.id;

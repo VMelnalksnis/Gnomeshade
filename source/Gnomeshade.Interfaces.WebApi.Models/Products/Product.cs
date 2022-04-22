@@ -43,4 +43,7 @@ public sealed record Product
 
 	/// <summary>The id of the unit in which the amounts of this product are expressed.</summary>
 	public Guid? UnitId { get; init; }
+
+	/// <summary>The id of the category of the product.</summary>
+	public Guid? CategoryId { get; init; }
 }

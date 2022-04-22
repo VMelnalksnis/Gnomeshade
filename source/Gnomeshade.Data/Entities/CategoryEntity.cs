@@ -39,4 +39,7 @@ public sealed record CategoryEntity : IOwnableEntity, IModifiableEntity, INamedE
 
 	/// <summary>Gets or sets the description of this category.</summary>
 	public string? Description { get; set; }
+
+	/// <summary>Gets or sets the id of the <see cref="CategoryEntity"/> for the category of this category.</summary>
+	public Guid? CategoryId { get; set; }
 }

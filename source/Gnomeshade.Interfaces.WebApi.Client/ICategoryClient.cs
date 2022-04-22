@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Models.Tags;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
 

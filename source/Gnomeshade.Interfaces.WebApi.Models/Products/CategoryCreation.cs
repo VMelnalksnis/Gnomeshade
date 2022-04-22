@@ -2,20 +2,24 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.WebApi.Models.Tags;
+namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
-/// <summary>Information needed to create a tag.</summary>
+/// <summary>Information needed to create a category.</summary>
 [PublicAPI]
 public sealed class CategoryCreation
 {
-	/// <summary>The name of the tag.</summary>
+	/// <inheritdoc cref="Category.Name"/>
 	[Required]
 	public string Name { get; init; } = null!;
 
-	/// <summary>The description of the tag.</summary>
+	/// <inheritdoc cref="Category.Description"/>
 	public string? Description { get; init; }
+
+	/// <inheritdoc cref="Category.CategoryId"/>
+	public Guid? CategoryId { get; init; }
 }
