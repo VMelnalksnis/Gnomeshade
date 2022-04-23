@@ -70,7 +70,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var food = new Category { Id = Guid.Empty, Name = "Food" };
 		_categories = new() { food };
 
-		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id };
+		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id, UnitId = kilogram.Id };
 		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk", CategoryId = food.Id };
 		_products = new() { bread, milk };
 

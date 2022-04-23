@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,6 +34,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private TimeSpan? _deliveryTime;
 	private List<Currency> _currencies;
 	private List<Product> _products;
+	private string? _unitName;
 
 	private PurchaseUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
@@ -46,6 +48,8 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		_purchaseId = purchaseId;
 		_currencies = new();
 		_products = new();
+
+		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
@@ -94,6 +98,13 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	{
 		get => _amount;
 		set => SetAndNotifyWithGuard(ref _amount, value, nameof(Amount), CanSaveNames);
+	}
+
+	/// <summary>Gets the name of the unit of the <see cref="Product"/>.</summary>
+	public string? UnitName
+	{
+		get => _unitName;
+		private set => SetAndNotify(ref _unitName, value);
 	}
 
 	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
@@ -182,5 +193,15 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		var id = _purchaseId ?? Guid.NewGuid(); // todo should this be saved?
 		await GnomeshadeClient.PutPurchaseAsync(_transactionId, id, purchaseCreation).ConfigureAwait(false);
 		return id;
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(Product))
+		{
+			UnitName = Product?.UnitId is null
+				? null
+				: GnomeshadeClient.GetUnitAsync(Product.UnitId.Value).GetAwaiter().GetResult().Name;
+		}
 	}
 }
