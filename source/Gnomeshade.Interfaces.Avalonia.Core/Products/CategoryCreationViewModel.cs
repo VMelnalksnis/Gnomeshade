@@ -105,6 +105,7 @@ public sealed class CategoryCreationViewModel : UpsertionViewModel
 		{
 			Name = Name!,
 			Description = Description,
+			CategoryId = SelectedCategory?.Id,
 		};
 
 		var categoryId = _originalId ?? await _gnomeshadeClient.CreateCategoryAsync(categoryCreationModel);

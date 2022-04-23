@@ -123,6 +123,7 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 			Sku = Sku,
 			Description = Description,
 			UnitId = SelectedUnit?.Id,
+			CategoryId = SelectedCategory?.Id,
 		};
 
 		var id = _exisingProduct?.Id ?? Guid.NewGuid();

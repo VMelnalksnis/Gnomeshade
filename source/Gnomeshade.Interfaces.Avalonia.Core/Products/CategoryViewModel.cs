@@ -59,7 +59,11 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 			return new CategoryRow(category.Id, category.Name, category.Description, c?.Name);
 		}).ToList();
 
+		var sortDescriptions = DataGridView.SortDescriptions;
 		Rows = new(categoryRows);
+		DataGridView.SortDescriptions.AddRange(sortDescriptions);
+
+		Details = Task.Run(() => CategoryCreationViewModel.CreateAsync(_gnomeshadeClient)).Result;
 	}
 
 	/// <inheritdoc />
@@ -79,17 +83,6 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 
 	private void OnCategoryUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var categories = _gnomeshadeClient.GetCategoriesAsync().Result;
-		var categoryRows = categories.Select(category =>
-		{
-			var c = categories.SingleOrDefault(cc => cc.Id == category.CategoryId);
-			return new CategoryRow(category.Id, category.Name, category.Description, c?.Name);
-		});
-
-		var sortDescriptions = DataGridView.SortDescriptions;
-
-		Rows = new(categoryRows);
-		DataGridView.SortDescriptions.AddRange(sortDescriptions);
-		Details = Task.Run(() => CategoryCreationViewModel.CreateAsync(_gnomeshadeClient)).Result;
+		Task.Run(RefreshAsync).GetAwaiter().GetResult();
 	}
 }
