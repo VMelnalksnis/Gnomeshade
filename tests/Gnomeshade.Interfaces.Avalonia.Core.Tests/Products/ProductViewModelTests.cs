@@ -11,6 +11,8 @@ using FluentAssertions;
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
+using NodaTime;
+
 using NUnit.Framework;
 
 using static Gnomeshade.Interfaces.Avalonia.Core.Products.ProductViewModel;
@@ -23,7 +25,7 @@ public sealed class ProductViewModelTests
 	[Test]
 	public async Task Product_SaveAsync_ShouldUpdateDataGridView()
 	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient());
+		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 		viewModel.Rows.Should().HaveCount(2);
 
 		var newProductName = Guid.NewGuid().ToString("N");
@@ -36,7 +38,7 @@ public sealed class ProductViewModelTests
 	[Test]
 	public async Task SelectedProduct_ShouldUpdateProductCreationViewModel()
 	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient());
+		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 		viewModel.Details.Name.Should().BeNullOrWhiteSpace();
 
 		var productToSelect = viewModel.Rows.First();

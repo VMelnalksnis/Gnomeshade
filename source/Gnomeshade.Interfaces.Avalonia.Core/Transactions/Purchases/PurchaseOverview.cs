@@ -17,6 +17,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 	/// <param name="currencyName">The id of the currency of <see cref="Price"/>.</param>
 	/// <param name="productName">The id of the purchased product.</param>
 	/// <param name="amount">The amount of <see cref="ProductName"/> that was purchased.</param>
+	/// <param name="unitName">The name of the unit in which <see cref="Amount"/> is expressed in.</param>
 	/// <param name="deliveryDate">The date when the <see cref="ProductName"/> was delivered.</param>
 	public PurchaseOverview(
 		Guid id,
@@ -24,6 +25,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		string currencyName,
 		string productName,
 		decimal amount,
+		string? unitName,
 		DateTimeOffset? deliveryDate)
 	{
 		Id = id;
@@ -31,6 +33,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		CurrencyName = currencyName;
 		ProductName = productName;
 		Amount = amount;
+		UnitName = unitName;
 		DeliveryDate = deliveryDate;
 	}
 
@@ -48,6 +51,9 @@ public sealed class PurchaseOverview : PropertyChangedBase
 
 	/// <summary>Gets the amount of <see cref="ProductName"/> that was purchased.</summary>
 	public decimal Amount { get; }
+
+	/// <summary>Gets the name of the unit in which <see cref="Amount"/> is expressed in.</summary>
+	public string? UnitName { get; }
 
 	/// <summary>Gets the date when the <see cref="ProductName"/> was delivered.</summary>
 	public DateTimeOffset? DeliveryDate { get; }

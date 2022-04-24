@@ -35,6 +35,10 @@
 					Binding="{Binding Amount, Mode=OneWay}" />
 				<DataGridTextColumn
 					x:DataType="purchases:PurchaseOverview"
+					Header="Unit" IsReadOnly="True"
+					Binding="{Binding UnitName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
 					Header="Currency" IsReadOnly="True"
 					Binding="{Binding CurrencyName, Mode=OneWay}" />
 				<DataGridTextColumn

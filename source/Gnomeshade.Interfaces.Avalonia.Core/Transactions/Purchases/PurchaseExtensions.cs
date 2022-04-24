@@ -19,14 +19,19 @@ internal static class PurchaseExtensions
 		this Purchase purchase,
 		IEnumerable<Currency> currencies,
 		IEnumerable<Product> products,
+		IEnumerable<Unit> units,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
+		var product = products.Single(product => product.Id == purchase.ProductId);
+		var unit = units.SingleOrDefault(unit => unit.Id == product.UnitId);
+
 		return new(
 			purchase.Id,
 			purchase.Price,
 			currencies.Single(currency => currency.Id == purchase.CurrencyId).AlphabeticCode,
-			products.Single(product => product.Id == purchase.ProductId).Name,
+			product.Name,
 			purchase.Amount,
+			unit?.Name,
 			purchase.DeliveryDate?.InZone(dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset());
 	}
 }

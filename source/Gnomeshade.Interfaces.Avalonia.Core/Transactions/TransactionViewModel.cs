@@ -129,12 +129,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
+		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, currenciesTask, productsTask, unitsTask).ConfigureAwait(false);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
+		var units = unitsTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var overviewTasks = transactions.Select(async transaction =>
@@ -144,7 +146,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				.ToList();
 
 			var purchases = (await _gnomeshadeClient.GetPurchasesAsync(transaction.Id))
-				.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider))
+				.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
 				.ToList();
 
 			return new TransactionOverview(
@@ -216,13 +218,15 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
+		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask).ConfigureAwait(false).GetAwaiter()
+		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask, unitsTask).ConfigureAwait(false).GetAwaiter()
 			.GetResult();
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
+		var units = unitsTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var transfers = _gnomeshadeClient
@@ -237,7 +241,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			.ConfigureAwait(false)
 			.GetAwaiter()
 			.GetResult()
-			.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider))
+			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
 			.ToList();
 
 		var overview = new TransactionOverview(

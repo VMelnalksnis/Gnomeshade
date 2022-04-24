@@ -9,18 +9,22 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Overview and editing of all products.</summary>
 public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCreationViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private ProductCreationViewModel _details;
 
-	private ProductViewModel(IGnomeshadeClient gnomeshadeClient, ProductCreationViewModel productCreationViewModel)
+	private ProductViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider, ProductCreationViewModel productCreationViewModel)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_details = productCreationViewModel;
 
 		Details.Upserted += OnProductUpserted;
@@ -41,11 +45,12 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 
 	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="ProductViewModel"/> class.</returns>
-	public static async Task<ProductViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	public static async Task<ProductViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		var creationViewModel = await ProductCreationViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
-		var viewModel = new ProductViewModel(gnomeshadeClient, creationViewModel);
+		var creationViewModel = await ProductCreationViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider).ConfigureAwait(false);
+		var viewModel = new ProductViewModel(gnomeshadeClient, dateTimeZoneProvider, creationViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -54,7 +59,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 	public override async Task RefreshAsync()
 	{
 		var productRows = (await _gnomeshadeClient.GetProductRowsAsync().ConfigureAwait(false)).ToList();
-		var creationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var creationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider).ConfigureAwait(false);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		Rows = new(productRows);
@@ -73,7 +78,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 			return;
 		}
 
-		Details = Task.Run(() => ProductCreationViewModel.CreateAsync(_gnomeshadeClient, Selected?.Id)).Result;
+		Details = Task.Run(() => ProductCreationViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id)).Result;
 	}
 
 	private void OnProductUpserted(object? sender, UpsertedEventArgs e)

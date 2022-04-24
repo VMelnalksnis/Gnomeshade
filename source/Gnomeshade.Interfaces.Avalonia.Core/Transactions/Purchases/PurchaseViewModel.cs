@@ -79,14 +79,16 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productIds = purchases.Select(purchase => purchase.ProductId);
 		var productsTask = Task.WhenAll(productIds.Select(async id => await _gnomeshadeClient.GetProductAsync(id)));
+		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		await Task.WhenAll(productsTask, currenciesTask).ConfigureAwait(false);
+		await Task.WhenAll(productsTask, currenciesTask, unitsTask).ConfigureAwait(false);
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
+		var units = unitsTask.Result;
 
 		var overviews = purchases
 			.OrderBy(purchase => purchase.CreatedAt)
-			.Select(purchase => purchase.ToOverview(currencies, products, _dateTimeZoneProvider));
+			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;

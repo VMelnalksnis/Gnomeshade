@@ -181,7 +181,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider).ConfigureAwait(false);
 		ActiveView = productViewModel;
 	}
 
