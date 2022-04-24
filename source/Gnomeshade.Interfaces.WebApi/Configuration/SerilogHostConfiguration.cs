@@ -36,7 +36,7 @@ internal static class SerilogHostConfiguration
 	internal static void Configure(HostBuilderContext context, LoggerConfiguration configuration)
 	{
 		configuration
-			.MinimumLevel.Verbose()
+			.ReadFrom.Configuration(context.Configuration)
 			.Enrich.FromLogContext()
 			.Enrich.WithElasticApmCorrelationInfo()
 			.WriteTo.Console();
