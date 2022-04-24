@@ -42,4 +42,29 @@ public interface IProductClient
 	/// <param name="unit">The unit to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task PutUnitAsync(Guid id, UnitCreationModel unit);
+
+	/// <summary>Gets all categories.</summary>
+	/// <returns>A collection with all categories.</returns>
+	Task<List<Category>> GetCategoriesAsync();
+
+	/// <summary>Gets the category with the specified id.</summary>
+	/// <param name="id">The id by which to search for the category.</param>
+	/// <returns>The category with the specified id.</returns>
+	Task<Category> GetCategoryAsync(Guid id);
+
+	/// <summary>Creates a new category.</summary>
+	/// <param name="category">The category to create.</param>
+	/// <returns>The id of the created category.</returns>
+	Task<Guid> CreateCategoryAsync(CategoryCreation category);
+
+	/// <summary>Creates a new category, or replaces and existing one if one exists with the specified id.</summary>
+	/// <param name="id">The id of the category.</param>
+	/// <param name="category">The category to create or update.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutCategoryAsync(Guid id, CategoryCreation category);
+
+	/// <summary>Deletes the specified category.</summary>
+	/// <param name="id">The id of the category to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task DeleteCategoryAsync(Guid id);
 }

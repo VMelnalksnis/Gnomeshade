@@ -44,7 +44,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 		_repository = repository;
 	}
 
-	/// <inheritdoc cref="ICategoryClient.GetCategoriesAsync"/>
+	/// <inheritdoc cref="IProductClient.GetCategoriesAsync"/>
 	/// <response code="200">Successfully got the categories.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Category>), Status200OK)]
@@ -55,7 +55,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 		return Ok(categories);
 	}
 
-	/// <inheritdoc cref="ICategoryClient.GetCategoryAsync"/>
+	/// <inheritdoc cref="IProductClient.GetCategoryAsync"/>
 	/// <response code="200">Successfully got the category.</response>
 	/// <response code="404">Category with the specified id does not exist.</response>
 	[HttpGet("{id:guid}")]
@@ -66,7 +66,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
 	}
 
-	/// <inheritdoc cref="ICategoryClient.PutCategoryAsync"/>
+	/// <inheritdoc cref="IProductClient.PutCategoryAsync"/>
 	/// <response code="201">A new category was created.</response>
 	/// <response code="409">A category with the specified name already exists.</response>
 	[HttpPost]
@@ -77,7 +77,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 		return await CreateCategoryAsync(category, ApplicationUser, Guid.NewGuid());
 	}
 
-	/// <inheritdoc cref="ICategoryClient.PutCategoryAsync"/>
+	/// <inheritdoc cref="IProductClient.PutCategoryAsync"/>
 	/// <response code="201">A new category was created.</response>
 	/// <response code="204">An existing category was replaced.</response>
 	/// <response code="409">A category with the specified name already exists.</response>
@@ -93,7 +93,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 			: await UpdateCategoryAsync(category, ApplicationUser, id);
 	}
 
-	/// <inheritdoc cref="ICategoryClient.DeleteCategoryAsync"/>
+	/// <inheritdoc cref="IProductClient.DeleteCategoryAsync"/>
 	/// <response code="204">The category was deleted successfully.</response>
 	[HttpDelete("{id:guid}")]
 	public async Task<StatusCodeResult> Delete(Guid id)

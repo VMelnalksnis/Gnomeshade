@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
 [TestOf(typeof(CategoriesController))]
 public sealed class CategoriesControllerTests
 {
-	private ICategoryClient _client = null!;
+	private IProductClient _client = null!;
 
 	[SetUp]
 	public async Task SetUpAsync()
