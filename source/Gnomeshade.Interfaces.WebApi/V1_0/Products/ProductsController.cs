@@ -15,6 +15,7 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
@@ -29,20 +30,24 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 public sealed class ProductsController : FinanceControllerBase<ProductEntity, Product>
 {
 	private readonly ProductRepository _repository;
+	private readonly PurchaseRepository _purchaseRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductsController"/> class.</summary>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
+	/// <param name="purchaseRepository">The repository for performing CRUD operations on <see cref="PurchaseEntity"/>.</param>
 	public ProductsController(
-		ProductRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<ProductsController> logger)
+		ILogger<ProductsController> logger,
+		ProductRepository repository,
+		PurchaseRepository purchaseRepository)
 		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
+		_purchaseRepository = purchaseRepository;
 	}
 
 	/// <inheritdoc cref="IProductClient.GetProductAsync"/>
@@ -81,6 +86,25 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		return existingProduct is null
 			? await PutNewProductAsync(product, ApplicationUser, id)
 			: await UpdateExistingProductAsync(product, ApplicationUser, id);
+	}
+
+	/// <inheritdoc cref="IProductClient.GetProductPurchasesAsync"/>
+	/// <response code="200">Successfully got the purchases.</response>
+	/// <response code="404">Product with the specified id does not exist.</response>
+	[HttpGet("{id:guid}/Purchases")]
+	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<List<Purchase>>> Purchases(Guid id, CancellationToken cancellationToken)
+	{
+		var product = await _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
+		if (product is null)
+		{
+			return NotFound();
+		}
+
+		var purchases = await _purchaseRepository.GetAllForProduct(id, ApplicationUser.Id, cancellationToken);
+		var models = purchases.Select(purchase => Mapper.Map<Purchase>(purchase)).ToList();
+		return Ok(models);
 	}
 
 	private async Task<ActionResult> PutNewProductAsync(ProductCreationModel model, UserEntity user, Guid id)

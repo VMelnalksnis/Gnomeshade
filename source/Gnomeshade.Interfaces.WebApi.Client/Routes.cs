@@ -18,7 +18,6 @@ public static class Routes
 	internal const string _counterpartyUri = "Counterparties";
 	internal const string _currencyUri = "Currencies";
 	internal const string _iso20022 = "Iso";
-	internal const string _productUri = "Products";
 	internal const string _unitUri = "Units";
 	internal const string _loginUri = $"{_authenticationUri}/Login";
 	internal const string _logOutUri = $"{_authenticationUri}/Logout";
@@ -35,11 +34,6 @@ public static class Routes
 	/// <returns>Relative uri for merging two counterparties.</returns>
 	public static string CounterpartyMergeUri(Guid targetId, Guid sourceId) =>
 		$"{_counterpartyUri}/{Format(targetId)}/Merge/{Format(sourceId)}";
-
-	/// <summary>Gets the relative uri for the specified product.</summary>
-	/// <param name="id">The id of the product.</param>
-	/// <returns>Relative uri for a specific account.</returns>
-	public static string ProductIdUri(Guid id) => $"{_productUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for the specified unit.</summary>
 	/// <param name="id">The id of the unit.</param>
@@ -102,6 +96,15 @@ public static class Routes
 		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
 
 		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
+	}
+
+	internal static class Products
+	{
+		internal const string Uri = "Products";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string PurchasesUri(Guid id) => $"{IdUri(id)}/Purchases";
 	}
 
 	internal static class Categories

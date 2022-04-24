@@ -49,7 +49,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE purchases.transaction_id = @transactionId AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE purchases.transaction_id = @{nameof(transactionId)} AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -65,5 +65,20 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 		var sql = $"{SelectSql} WHERE purchases.id = @id AND transaction_id = @transactionId AND {_accessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
+	}
+
+	/// <summary>Gets all purchases of the specified product.</summary>
+	/// <param name="productId">The id of the product for which to get all purchases.</param>
+	/// <param name="ownerId">The id of the owner of the purchases.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all purchases of the specified product.</returns>
+	public Task<IEnumerable<PurchaseEntity>> GetAllForProduct(
+		Guid productId,
+		Guid ownerId,
+		CancellationToken cancellationToken)
+	{
+		var sql = $"{SelectSql} WHERE purchases.product_id = @{nameof(productId)} AND {_accessSql}";
+		var command = new CommandDefinition(sql, new { productId, ownerId }, cancellationToken: cancellationToken);
+		return GetEntitiesAsync(command);
 	}
 }

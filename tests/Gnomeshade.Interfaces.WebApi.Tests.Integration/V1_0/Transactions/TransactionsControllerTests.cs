@@ -184,8 +184,10 @@ public class TransactionsControllerTests
 		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
 		var purchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
 		var purchases = await _client.GetPurchasesAsync(transactionId);
+		var productPurchases = await _client.GetProductPurchasesAsync(_productId);
 
 		purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
+		productPurchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
 		purchase.Should().BeEquivalentTo(purchaseCreation);
 
 		var deliveryDate = SystemClock.Instance.GetCurrentInstant();

@@ -20,7 +20,7 @@ using NUnit.Framework;
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Products;
 
 [TestOf(typeof(ProductsController))]
-public class ProductsControllerTests
+public sealed class ProductsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 
@@ -86,6 +86,17 @@ public class ProductsControllerTests
 
 		var anotherCreationModel = CreateUniqueProduct();
 		_ = await PutAndGet(productId, anotherCreationModel);
+	}
+
+	[Test]
+	public async Task Purchases_ShouldReturnNotFound()
+	{
+		(await FluentActions
+				.Awaiting(() => _client.GetProductPurchasesAsync(Guid.NewGuid()))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
 	}
 
 	private static ProductCreationModel CreateUniqueProduct()

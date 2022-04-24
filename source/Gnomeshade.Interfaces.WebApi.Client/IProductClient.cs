@@ -4,9 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
 
@@ -67,4 +69,10 @@ public interface IProductClient
 	/// <param name="id">The id of the category to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteCategoryAsync(Guid id);
+
+	/// <summary>Gets all purchases of the specified product.</summary>
+	/// <param name="id">The id of the product for which to get all the purchases.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All purchases of the specified product.</returns>
+	Task<List<Purchase>> GetProductPurchasesAsync(Guid id, CancellationToken cancellationToken = default);
 }

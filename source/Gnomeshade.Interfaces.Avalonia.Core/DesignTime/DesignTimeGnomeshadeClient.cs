@@ -473,4 +473,11 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_categories.Remove(category);
 		return Task.CompletedTask;
 	}
+
+	/// <inheritdoc />
+	public Task<List<Purchase>> GetProductPurchasesAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var purchases = _purchases.Where(purchase => purchase.ProductId == id).ToList();
+		return Task.FromResult(purchases);
+	}
 }

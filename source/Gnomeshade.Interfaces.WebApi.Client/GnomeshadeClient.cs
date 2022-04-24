@@ -231,11 +231,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync() =>
-		GetAsync<List<Product>>(_productUri);
+		GetAsync<List<Product>>(Products.Uri);
 
 	/// <inheritdoc />
 	public Task<Product> GetProductAsync(Guid id) =>
-		GetAsync<Product>(ProductIdUri(id));
+		GetAsync<Product>(Products.IdUri(id));
 
 	/// <inheritdoc />
 	public Task<Unit> GetUnitAsync(Guid id) =>
@@ -247,7 +247,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task PutProductAsync(Guid id, ProductCreationModel product) =>
-		PutAsync(ProductIdUri(id), product);
+		PutAsync(Products.IdUri(id), product);
 
 	/// <inheritdoc />
 	public Task PutUnitAsync(Guid id, UnitCreationModel unit) =>
@@ -282,6 +282,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task DeleteCategoryAsync(Guid id) => DeleteAsync(Categories.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<Purchase>> GetProductPurchasesAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<List<Purchase>>(Products.PurchasesUri(id), cancellationToken);
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{
