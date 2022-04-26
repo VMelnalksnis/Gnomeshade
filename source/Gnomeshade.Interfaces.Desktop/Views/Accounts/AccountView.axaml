@@ -21,18 +21,34 @@
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
-				<DataGridTextColumn
-					x:DataType="a:AccountOverviewRow"
-					Header="Name" IsReadOnly="True"
-					Binding="{Binding Name, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="a:AccountOverviewRow"
-					Header="Currency" IsReadOnly="True"
-					Binding="{Binding Currency, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="a:AccountOverviewRow"
-					Header="Disabled" IsReadOnly="True"
-					Binding="{Binding Disabled, Mode=OneWay}" />
+				<DataGridTemplateColumn Header="Name" IsReadOnly="True">
+					<DataTemplate x:DataType="a:AccountOverviewRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Name, Mode=OneWay}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Currency" IsReadOnly="True">
+					<DataTemplate x:DataType="a:AccountOverviewRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Currency, Mode=OneWay}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Balance" IsReadOnly="True">
+					<DataTemplate x:DataType="a:AccountOverviewRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Balance, Mode=OneWay, StringFormat=\{0:N2\}}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Disabled" IsReadOnly="True">
+					<DataTemplate x:DataType="a:AccountOverviewRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Disabled, Mode=OneWay}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>

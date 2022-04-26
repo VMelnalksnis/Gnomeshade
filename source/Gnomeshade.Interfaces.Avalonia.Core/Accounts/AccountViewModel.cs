@@ -56,7 +56,9 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	{
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
 		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
-		var accountOverviewRows = accounts.Translate(counterparties).ToList();
+		var balanceTasks = accounts.Select(account => _gnomeshadeClient.GetAccountBalanceAsync(account.Id));
+		var balances = (await Task.WhenAll(balanceTasks)).SelectMany(x => x);
+		var accountOverviewRows = accounts.Translate(counterparties, balances).ToList();
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;

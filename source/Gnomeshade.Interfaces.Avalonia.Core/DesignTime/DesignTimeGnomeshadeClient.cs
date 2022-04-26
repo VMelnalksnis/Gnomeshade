@@ -354,8 +354,21 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var balances = _accounts
+			.Single(account => account.Id == id)
+			.Currencies
+			.Select(c => new Balance
+			{
+				AccountInCurrencyId = c.Id,
+				SourceAmount = _transfers.Where(t => t.SourceAccountId == c.Id).Sum(t => t.SourceAmount),
+				TargetAmount = _transfers.Where(t => t.TargetAccountId == c.Id).Sum(t => t.TargetAmount),
+			})
+			.ToList();
+
+		return Task.FromResult(balances);
+	}
 
 	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync()

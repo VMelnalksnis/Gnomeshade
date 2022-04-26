@@ -13,13 +13,15 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 	/// <param name="id">The id of the account.</param>
 	/// <param name="name">The name of the account.</param>
 	/// <param name="currency">The currency of the account.</param>
+	/// <param name="balance">The balance of the account.</param>
 	/// <param name="disabled">Whether this account is disabled.</param>
 	/// <param name="counterparty">The name of the counterparty of the account.</param>
-	public AccountOverviewRow(Guid id, string name, string currency, bool disabled, string counterparty)
+	public AccountOverviewRow(Guid id, string name, string currency, decimal balance, bool disabled, string counterparty)
 	{
 		Id = id;
 		Name = name;
 		Currency = currency;
+		Balance = balance;
 		Disabled = disabled;
 		Counterparty = counterparty;
 	}
@@ -32,6 +34,9 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 
 	/// <summary>Gets the currency of the account.</summary>
 	public string Currency { get; }
+
+	/// <summary>Gets the balance of the account.</summary>
+	public decimal Balance { get; }
 
 	/// <summary>Gets a value indicating whether this account is disabled.</summary>
 	public bool Disabled { get; }
