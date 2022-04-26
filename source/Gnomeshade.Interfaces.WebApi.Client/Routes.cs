@@ -53,10 +53,9 @@ public static class Routes
 		/// <returns>Relative uri for a specific account.</returns>
 		public static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
 
-		/// <summary>Gets the relative uri for the currencies of the specified account.</summary>
-		/// <param name="id">The id of the account.</param>
-		/// <returns>Relative uri for the currencies of the specified account.</returns>
-		public static string CurrencyUri(Guid id) => $"{_uri}/{Format(id)}/{_currencyUri}";
+		internal static string CurrencyUri(Guid id) => $"{IdUri(id)}/{_currencyUri}";
+
+		internal static string BalanceUri(Guid id) => $"{IdUri(id)}/Balance";
 	}
 
 	/// <summary>Transaction routes.</summary>

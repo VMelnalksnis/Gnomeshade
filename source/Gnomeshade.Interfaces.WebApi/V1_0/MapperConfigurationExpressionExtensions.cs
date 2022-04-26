@@ -58,5 +58,7 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<LinkEntity, Link>();
 		options.CreateMap<LinkCreation, Link>();
+
+		options.CreateMap<BalanceEntity, Balance>();
 	}
 }

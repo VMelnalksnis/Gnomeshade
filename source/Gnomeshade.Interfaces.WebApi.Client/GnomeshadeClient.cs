@@ -230,6 +230,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Currency>>(_currencyUri);
 
 	/// <inheritdoc />
+	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<List<Balance>>(Accounts.BalanceUri(id), cancellationToken);
+
+	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync() =>
 		GetAsync<List<Product>>(Products.Uri);
 

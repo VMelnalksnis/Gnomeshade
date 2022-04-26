@@ -165,6 +165,21 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
+	/// <inheritdoc cref="IAccountClient.GetAccountBalanceAsync"/>
+	[HttpGet("{id:guid}/Balance")]
+	public async Task<ActionResult<List<Balance>>> Balance(Guid id, CancellationToken cancellationToken)
+	{
+		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
+		if (account is null)
+		{
+			return NotFound();
+		}
+
+		var entities = await _repository.GetBalanceAsync(id, ApplicationUser.Id, cancellationToken);
+		var models = entities.Select(entity => Mapper.Map<Balance>(entity)).ToList();
+		return Ok(models);
+	}
+
 	private async Task<ActionResult> PutNewAccountAsync(AccountCreationModel model, UserEntity user, Guid id)
 	{
 		var conflictingResult = await GetConflictResult(model, user);

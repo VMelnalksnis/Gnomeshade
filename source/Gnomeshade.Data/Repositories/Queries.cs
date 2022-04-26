@@ -29,6 +29,8 @@ internal static class Queries
 
 	internal static class Account
 	{
+		internal static string Balance { get; } = Read($"Queries.{nameof(Account)}.Balance.sql");
+
 		internal static string Delete { get; } = Read($"Queries.{nameof(Account)}.Delete.sql");
 
 		internal static string Insert { get; } = Read($"Queries.{nameof(Account)}.Insert.sql");

@@ -354,6 +354,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync()
 	{
 		return Task.FromResult(_products.ToList());

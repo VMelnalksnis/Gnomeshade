@@ -32,6 +32,7 @@
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Account\Balance.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>

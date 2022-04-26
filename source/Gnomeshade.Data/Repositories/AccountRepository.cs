@@ -16,14 +16,10 @@ using Gnomeshade.Data.Repositories.Extensions;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="AccountEntity"/> repository.
-/// </summary>
+/// <summary>Database backed <see cref="AccountEntity"/> repository.</summary>
 public sealed class AccountRepository : NamedRepository<AccountEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public AccountRepository(IDbConnection dbConnection)
 		: base(dbConnection)
@@ -48,9 +44,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <inheritdoc />
 	protected override string NameSql => "WHERE a.normalized_name = @name";
 
-	/// <summary>
-	/// Finds an account with the specified IBAN.
-	/// </summary>
+	/// <summary>Finds an account with the specified IBAN.</summary>
 	/// <param name="iban">The IBAN for which to search for.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -62,9 +56,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>
-	/// Finds an account with the specified BIC.
-	/// </summary>
+	/// <summary>Finds an account with the specified BIC.</summary>
 	/// <param name="bic">The BIC for which to search for.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -76,9 +68,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>
-	/// Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.
-	/// </summary>
+	/// <summary>Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.</summary>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all active accounts.</returns>
@@ -87,6 +77,20 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {_accessSql} ORDER BY a.created_at;";
 		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
+	}
+
+	/// <summary>Gets the sums of all transfers to and from the specified account in all currencies.</summary>
+	/// <param name="id">The id of the account for which to get the balance.</param>
+	/// <param name="ownerId">The id of the owner of the account.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The sums of all transfers to and from the specified account in all currencies.</returns>
+	public Task<IEnumerable<BalanceEntity>> GetBalanceAsync(
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var command = new CommandDefinition(Queries.Account.Balance, new { id, ownerId }, cancellationToken: cancellationToken);
+		return DbConnection.QueryAsync<BalanceEntity>(command);
 	}
 
 	/// <inheritdoc />

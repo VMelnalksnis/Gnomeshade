@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,7 +13,10 @@ using FluentAssertions;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
+
+using NodaTime;
 
 using NUnit.Framework;
 
@@ -105,6 +109,69 @@ public class AccountsControllerTests
 		};
 
 		await _client.PutAccountAsync(Guid.NewGuid(), secondAccount);
+	}
+
+	[Test]
+	public async Task Balance_ShouldReturnExpected()
+	{
+		var firstAccountModel = GetAccountCreationModel(_firstCurrency);
+		var firstAccountId = Guid.NewGuid();
+		await _client.PutAccountAsync(firstAccountId, firstAccountModel);
+		await _client.AddCurrencyToAccountAsync(firstAccountId, new() { CurrencyId = _secondCurrency.Id });
+		var firstAccount = await _client.GetAccountAsync(firstAccountId);
+
+		var secondAccountModel = GetAccountCreationModel(_secondCurrency);
+		var secondAccountId = Guid.NewGuid();
+		await _client.PutAccountAsync(secondAccountId, secondAccountModel);
+		var secondAccount = await _client.GetAccountAsync(secondAccountId);
+
+		var transaction = new TransactionCreationModel
+		{
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
+		};
+		var transactionId = Guid.NewGuid();
+		await _client.PutTransactionAsync(transactionId, transaction);
+
+		var firstTransfer = new TransferCreation
+		{
+			SourceAccountId = firstAccount.Currencies.First().Id,
+			SourceAmount = 5m,
+			TargetAccountId = secondAccount.Currencies.Single().Id,
+			TargetAmount = 7.5m,
+		};
+		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), firstTransfer);
+
+		var secondTransfer = new TransferCreation
+		{
+			SourceAccountId = secondAccount.Currencies.Single().Id,
+			SourceAmount = 15m,
+			TargetAccountId = firstAccount.Currencies.First().Id,
+			TargetAmount = 10m,
+		};
+		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), secondTransfer);
+
+		var thirdTransfer = new TransferCreation
+		{
+			SourceAccountId = secondAccount.Currencies.Single().Id,
+			SourceAmount = 3,
+			TargetAccountId = firstAccount.Currencies.Last().Id,
+			TargetAmount = 3,
+		};
+		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), thirdTransfer);
+
+		var expectedBalances = new List<Balance>
+		{
+			new() { AccountInCurrencyId = firstAccount.Currencies.First().Id, SourceAmount = 5, TargetAmount = 10 },
+			new() { AccountInCurrencyId = firstAccount.Currencies.Last().Id, SourceAmount = 0, TargetAmount = 3 },
+		};
+
+		var firstBalances = await _client.GetAccountBalanceAsync(firstAccountId);
+		firstBalances.Should().BeEquivalentTo(expectedBalances);
+
+		var secondBalances = await _client.GetAccountBalanceAsync(secondAccountId);
+		var balance = secondBalances.Should().ContainSingle().Subject;
+		balance.SourceAmount.Should().Be(18);
+		balance.TargetAmount.Should().Be(7.5m);
 	}
 
 	private AccountCreationModel GetAccountCreationModel(Currency currency)

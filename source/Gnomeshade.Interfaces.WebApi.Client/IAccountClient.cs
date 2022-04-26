@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
@@ -76,4 +77,10 @@ public interface IAccountClient
 	/// <summary>Gets all currencies.</summary>
 	/// <returns>A collection with all currencies.</returns>
 	Task<List<Currency>> GetCurrenciesAsync();
+
+	/// <summary>Gets the current balance of the specified account.</summary>
+	/// <param name="id">The id of the account for which to get the balance for.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>The balance of the specified account.</returns>
+	Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default);
 }
