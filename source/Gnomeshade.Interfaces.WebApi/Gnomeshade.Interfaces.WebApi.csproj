@@ -36,7 +36,7 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
 		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1"/>
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1"/>
-		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.0"/>
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.1"/>
 		<PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0"/>
 		<PackageReference Include="System.IO.FileSystem" Version="4.3.0"/>
 		<PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
