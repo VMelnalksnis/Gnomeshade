@@ -125,43 +125,14 @@ public class AccountsControllerTests
 		await _client.PutAccountAsync(secondAccountId, secondAccountModel);
 		var secondAccount = await _client.GetAccountAsync(secondAccountId);
 
-		var transaction = new TransactionCreationModel
-		{
-			BookedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-		var transactionId = Guid.NewGuid();
-		await _client.PutTransactionAsync(transactionId, transaction);
-
-		var firstTransfer = new TransferCreation
-		{
-			SourceAccountId = firstAccount.Currencies.First().Id,
-			SourceAmount = 5m,
-			TargetAccountId = secondAccount.Currencies.Single().Id,
-			TargetAmount = 7.5m,
-		};
-		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), firstTransfer);
-
-		var secondTransfer = new TransferCreation
-		{
-			SourceAccountId = secondAccount.Currencies.Single().Id,
-			SourceAmount = 15m,
-			TargetAccountId = firstAccount.Currencies.First().Id,
-			TargetAmount = 10m,
-		};
-		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), secondTransfer);
-
-		var thirdTransfer = new TransferCreation
-		{
-			SourceAccountId = secondAccount.Currencies.Single().Id,
-			SourceAmount = 3,
-			TargetAccountId = firstAccount.Currencies.Last().Id,
-			TargetAmount = 3,
-		};
-		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), thirdTransfer);
+		await PutTransactionAndTransfer(firstAccount.Currencies.First(), 5m, secondAccount.Currencies.Single(), 7.5m);
+		await PutTransactionAndTransfer(firstAccount.Currencies.First(), 5m, secondAccount.Currencies.Single(), 7.5m);
+		await PutTransactionAndTransfer(secondAccount.Currencies.Single(), 15m, firstAccount.Currencies.First(), 10m);
+		await PutTransactionAndTransfer(secondAccount.Currencies.Single(), 3m, firstAccount.Currencies.Last(), 3m);
 
 		var expectedBalances = new List<Balance>
 		{
-			new() { AccountInCurrencyId = firstAccount.Currencies.First().Id, SourceAmount = 5, TargetAmount = 10 },
+			new() { AccountInCurrencyId = firstAccount.Currencies.First().Id, SourceAmount = 10, TargetAmount = 10 },
 			new() { AccountInCurrencyId = firstAccount.Currencies.Last().Id, SourceAmount = 0, TargetAmount = 3 },
 		};
 
@@ -171,7 +142,30 @@ public class AccountsControllerTests
 		var secondBalances = await _client.GetAccountBalanceAsync(secondAccountId);
 		var balance = secondBalances.Should().ContainSingle().Subject;
 		balance.SourceAmount.Should().Be(18);
-		balance.TargetAmount.Should().Be(7.5m);
+		balance.TargetAmount.Should().Be(15m);
+	}
+
+	private async Task PutTransactionAndTransfer(
+		AccountInCurrency source,
+		decimal sourceAmount,
+		AccountInCurrency target,
+		decimal targetAmount)
+	{
+		var transaction = new TransactionCreationModel
+		{
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
+		};
+		var transactionId = Guid.NewGuid();
+		await _client.PutTransactionAsync(transactionId, transaction);
+
+		var transfer = new TransferCreation
+		{
+			SourceAccountId = source.Id,
+			SourceAmount = sourceAmount,
+			TargetAccountId = target.Id,
+			TargetAmount = targetAmount,
+		};
+		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), transfer);
 	}
 
 	private AccountCreationModel GetAccountCreationModel(Currency currency)

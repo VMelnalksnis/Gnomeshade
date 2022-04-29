@@ -13,7 +13,7 @@
 				  NULL                             AS TargetAmount
 		   FROM a
 					LEFT JOIN transfers source_transfers ON source_transfers.source_account_id = a.id
-		   UNION
+		   UNION ALL
 		   SELECT a.id                             AS AccountInCurrencyId,
 				  NULL                             AS SourceAmount,
 				  (target_transfers.target_amount) AS TargetAmount
