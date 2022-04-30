@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="a:AccountUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
 			Padding="10 0"
@@ -104,14 +104,54 @@
 			AcceptsReturn="False"
 			x:Name="AccountNumber"
 			Text="{Binding AccountNumber}" />
+		
+		<Button
+			Grid.Column="0" Grid.Row="6"
+			Command="{ReflectionBinding AddAdditionalCurrency}" IsEnabled="{Binding CanAddAdditionalCurrency}">
+			Add Currency
+		</Button>
+		
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="6"
+			MinWidth="300" Margin="5"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			ItemSelector="{Binding CurrencySelector}"
+			Items="{Binding AddableCurrencies}"
+			SelectedItem="{Binding AddableCurrency, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock
+						x:DataType="accounts:Currency"
+						Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		
+		<Button
+			Grid.Column="0" Grid.Row="7"
+			Command="{ReflectionBinding RemoveAdditionalCurrency}" IsEnabled="{Binding CanRemoveAdditionalCurrency}">
+			Remove Currency
+		</Button>
+		
+		<ListBox
+			Grid.Column="1" Grid.Row="7"
+			Items="{Binding AdditionalCurrencies}"
+			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" SelectionMode="Single,Toggle">
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Currency">
+					<TextBlock Text="{Binding Name}"/>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 
 		<Button
-			Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"
+			Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2"
 			Padding="25 5"
 			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}"
 			Command="{ReflectionBinding SaveAsync}">
-			Update
+			Save
 		</Button>
 	</Grid>
 </UserControl>

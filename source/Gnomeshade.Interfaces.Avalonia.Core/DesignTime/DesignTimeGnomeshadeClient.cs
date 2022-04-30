@@ -51,7 +51,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Name = "Cash",
 			CounterpartyId = counterparty.Id,
 			PreferredCurrency = euro,
-			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro } },
+			Currencies = new() { new() { Id = Guid.NewGuid(), Currency = euro }, new() { Id = Guid.NewGuid(), Currency = usd } },
 		};
 		var spending = new Account
 		{
@@ -91,7 +91,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				SourceAmount = 125.35m,
 				SourceAccountId = spending.Currencies.Single().Id,
 				TargetAmount = 125.35m,
-				TargetAccountId = cash.Currencies.Single().Id,
+				TargetAccountId = cash.Currencies.First().Id,
 			},
 			new()
 			{
@@ -100,7 +100,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				SourceAmount = 1.95m,
 				SourceAccountId = spending.Currencies.Single().Id,
 				TargetAmount = 1.95m,
-				TargetAccountId = cash.Currencies.Single().Id,
+				TargetAccountId = cash.Currencies.First().Id,
 			},
 		};
 

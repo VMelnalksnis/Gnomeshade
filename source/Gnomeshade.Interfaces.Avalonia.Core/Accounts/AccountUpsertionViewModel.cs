@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +30,8 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	private string? _bic;
 	private string? _iban;
 	private string? _accountNumber;
+	private Currency? _selectedCurrency;
+	private Currency? _addableCurrency;
 
 	private AccountUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
@@ -44,6 +48,9 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		_bic = account.Bic;
 		_iban = account.Iban;
 		_accountNumber = account.AccountNumber;
+		AdditionalCurrencies = new(currencies.Where(currency =>
+			account.Currencies.Any(c => c.Currency.Id == currency.Id) &&
+			_preferredCurrency?.Id != currency.Id));
 	}
 
 	private AccountUpsertionViewModel(
@@ -55,6 +62,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		_gnomeshadeClient = gnomeshadeClient;
 		Counterparties = counterparties;
 		Currencies = currencies;
+		AdditionalCurrencies.CollectionChanged += AdditionalCurrenciesOnCollectionChanged;
 	}
 
 	/// <inheritdoc cref="Account.Name"/>
@@ -87,7 +95,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	public Currency? PreferredCurrency
 	{
 		get => _preferredCurrency;
-		set => SetAndNotifyWithGuard(ref _preferredCurrency, value, nameof(PreferredCurrency), _canUpdate);
+		set => SetAndNotifyWithGuard(ref _preferredCurrency, value, nameof(PreferredCurrency), nameof(CanSave), nameof(AddableCurrencies));
 	}
 
 	/// <inheritdoc cref="Account.Bic"/>
@@ -110,6 +118,36 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		get => _accountNumber;
 		set => SetAndNotify(ref _accountNumber, value, nameof(AccountNumber));
 	}
+
+	/// <summary>Gets a collection of all currencies in the account except for <see cref="PreferredCurrency"/>.</summary>
+	public ObservableCollection<Currency> AdditionalCurrencies { get; } = new();
+
+	/// <summary>Gets or sets the selected currency from <see cref="AdditionalCurrencies"/>.</summary>
+	public Currency? SelectedCurrency
+	{
+		get => _selectedCurrency;
+		set => SetAndNotifyWithGuard(ref _selectedCurrency, value, nameof(SelectedCurrency), nameof(CanRemoveAdditionalCurrency));
+	}
+
+	/// <summary>Gets a value indicating whether <see cref="RemoveAdditionalCurrency"/> can be called.</summary>
+	public bool CanRemoveAdditionalCurrency => SelectedCurrency is not null;
+
+	/// <summary>Gets a collection of all currencies that can be added as additional currencies.</summary>
+	public List<Currency> AddableCurrencies => Currencies
+		.Where(currency =>
+			AdditionalCurrencies.All(additionalCurrency => additionalCurrency.Id != currency.Id) &&
+			currency.Id != PreferredCurrency?.Id)
+		.ToList();
+
+	/// <summary>Gets or sets the currency to add to <see cref="AdditionalCurrencies"/>.</summary>
+	public Currency? AddableCurrency
+	{
+		get => _addableCurrency;
+		set => SetAndNotifyWithGuard(ref _addableCurrency, value, nameof(AddableCurrency), nameof(CanAddAdditionalCurrency));
+	}
+
+	/// <summary>Gets a value indicating whether <see cref="AddAdditionalCurrency"/> can be called.</summary>
+	public bool CanAddAdditionalCurrency => AddableCurrency is not null;
 
 	/// <inheritdoc />
 	public override bool CanSave =>
@@ -134,15 +172,34 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		return new(gnomeshadeClient, counterparties, currencies, account);
 	}
 
+	/// <summary>Removes <see cref="SelectedCurrency"/> from <see cref="AddableCurrencies"/>.</summary>
+	public void RemoveAdditionalCurrency()
+	{
+		if (SelectedCurrency is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		var currencyToRemove = AdditionalCurrencies.Single(currency => currency.Id == SelectedCurrency.Id);
+		AdditionalCurrencies.Remove(currencyToRemove);
+	}
+
+	/// <summary>Adds <see cref="AddableCurrency"/> to <see cref="AddableCurrencies"/>.</summary>
+	public void AddAdditionalCurrency()
+	{
+		if (AddableCurrency is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		AdditionalCurrencies.Add(AddableCurrency);
+	}
+
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var currencyIds = new List<Guid>();
-		if (_account is not null)
-		{
-			currencyIds.AddRange(_account.Currencies.Select(currency => currency.Currency.Id));
-		}
-
+		currencyIds.AddRange(AdditionalCurrencies.Select(currency => currency.Id));
 		if (!currencyIds.Contains(PreferredCurrency!.Id))
 		{
 			currencyIds.Add(PreferredCurrency.Id);
@@ -161,6 +218,20 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 
 		var id = _account?.Id ?? Guid.NewGuid();
 		await _gnomeshadeClient.PutAccountAsync(id, creationModel).ConfigureAwait(false);
+		if (_account is not null)
+		{
+			var missingCurrencies = currencyIds.Where(currencyId => _account.Currencies.All(c => c.Currency.Id != currencyId));
+			foreach (var missingCurrency in missingCurrencies)
+			{
+				await _gnomeshadeClient.AddCurrencyToAccountAsync(id, new() { CurrencyId = missingCurrency });
+			}
+		}
+
 		return id;
+	}
+
+	private void AdditionalCurrenciesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		OnPropertyChanged(nameof(AddableCurrencies));
 	}
 }
