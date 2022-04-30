@@ -5,6 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:a="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Accounts;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.AccountUpsertionViewModel}"
 	x:Class="Gnomeshade.Interfaces.Desktop.Views.Accounts.AccountUpsertionView"
@@ -40,8 +41,8 @@
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock
-						x:DataType="a:AccountUpsertionViewModel"
-						Text="{Binding Counterparty}" />
+						x:DataType="accounts:Counterparty"
+						Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
@@ -62,7 +63,7 @@
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate>
 					<TextBlock
-						x:DataType="a:AccountUpsertionViewModel"
+						x:DataType="accounts:Currency"
 						Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
