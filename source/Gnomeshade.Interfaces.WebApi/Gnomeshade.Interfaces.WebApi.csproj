@@ -2,7 +2,9 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
 
+	<PropertyGroup Condition="ContinuousIntegrationBuild != true">
 		<UserSecretsId>dede83ba-2690-460f-990c-f4fb3fa99ab9</UserSecretsId>
 	</PropertyGroup>
 
