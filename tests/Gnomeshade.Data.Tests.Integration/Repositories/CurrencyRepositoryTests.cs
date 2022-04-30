@@ -41,7 +41,7 @@ public class CurrencyRepositoryTests : IDisposable
 		var currencies = await _repository.GetAllAsync();
 		var expectedCurrencies = new List<string>
 		{
-			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD",
+			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD", "HRD",
 		};
 		currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
 
