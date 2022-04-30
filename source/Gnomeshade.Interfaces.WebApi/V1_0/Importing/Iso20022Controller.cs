@@ -15,6 +15,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
+using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.Results;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes;
@@ -436,41 +437,67 @@ public sealed class Iso20022Controller : ControllerBase
 		{
 			var name =
 				transactionDetails.RelatedParties.Creditor?.Name ??
-				transactionDetails.RelatedParties.Debtor?.Name ??
-				throw new InvalidOperationException("Could not determine the name of the other account");
+				transactionDetails.RelatedParties.Debtor?.Name;
 
-			var iban =
-				transactionDetails.RelatedParties.CreditorAccount?.Identification.Iban ??
-				transactionDetails.RelatedParties.DebtorAccount?.Identification.Iban;
-
-			otherAccount = new()
+			if (name is not null)
 			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				PreferredCurrencyId = otherCurrency.Id,
-				Name = name,
-				NormalizedName = name.ToUpperInvariant(),
-				Iban = iban,
-				AccountNumber = iban,
-				Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
-			};
+				var iban =
+					transactionDetails.RelatedParties.CreditorAccount?.Identification.Iban ??
+					transactionDetails.RelatedParties.DebtorAccount?.Identification.Iban;
 
-			var id = await _accountUnitOfWork.AddWithCounterpartyAsync(otherAccount, dbTransaction);
+				otherAccount = new()
+				{
+					OwnerId = user.Id,
+					CreatedByUserId = user.Id,
+					ModifiedByUserId = user.Id,
+					PreferredCurrencyId = otherCurrency.Id,
+					Name = name,
+					NormalizedName = name.ToUpperInvariant(),
+					Iban = iban,
+					AccountNumber = iban,
+					Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
+				};
 
-			otherAccount = await _accountRepository.GetByIdAsync(id, user.Id);
-			resultBuilder.AddAccount(otherAccount, true);
+				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(otherAccount, dbTransaction);
+
+				otherAccount = await _accountRepository.GetByIdAsync(id, user.Id);
+				resultBuilder.AddAccount(otherAccount, true);
+			}
+		}
+
+		if (otherAccount is null &&
+			reportEntry.BankTransactionCode.GetStandardCode() is { } standardCode &&
+			BankSubFamilies.Contains(standardCode.SubFamily))
+		{
+			otherAccount = bankAccount;
+			resultBuilder.AddAccount(otherAccount, false);
 		}
 
 		if (otherAccount is null)
 		{
-			_logger.LogTrace("Failed to find other account");
-			throw new();
+			_logger.LogTrace("Failed to find other account, using unidentified");
+			otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified.ToUpperInvariant(), user.Id, dbTransaction) ??
+				throw new ApplicationException($"Failed to find account by reserved name {ReservedNames.Unidentified}");
 		}
 
 		resultBuilder.AddAccount(otherAccount, false);
 
-		var otherAccountCurrency = otherAccount.Currencies.Single(aic => aic.CurrencyId == otherCurrency.Id);
+		_logger.LogInformation("Searching for currency {OtherCurrency} in {Account}", otherCurrency.AlphabeticCode, otherAccount.Name);
+		var otherAccountCurrency = otherAccount.Currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id);
+		if (otherAccountCurrency is null)
+		{
+			otherAccountCurrency = new()
+			{
+				AccountId = otherAccount.Id,
+				CreatedByUserId = user.Id,
+				CurrencyId = otherCurrency.Id,
+				Id = Guid.NewGuid(),
+				OwnerId = user.Id,
+				ModifiedByUserId = user.Id,
+			};
+			var otherId = await _inCurrencyRepository.AddAsync(otherAccountCurrency, dbTransaction);
+			otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(otherId, user.Id, dbTransaction);
+		}
 
 		var transfer = new TransferEntity
 		{
@@ -593,7 +620,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var otherCurrencyCode = amountDetails.InstructedAmount?.Amount.Currency ?? string.Empty;
 		var otherAmount = amountDetails.InstructedAmount!.Amount.Value;
 		var otherCurrency = await _currencyRepository.FindByAlphabeticCodeAsync(otherCurrencyCode);
-		_logger.LogTrace(
+		_logger.LogInformation(
 			"Found other currency {Currency} by code {CurrencyCode}",
 			otherCurrency,
 			otherCurrencyCode);
