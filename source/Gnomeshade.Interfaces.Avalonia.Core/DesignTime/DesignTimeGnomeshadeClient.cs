@@ -348,6 +348,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync()
 	{
 		return Task.FromResult(_currencies.ToList());

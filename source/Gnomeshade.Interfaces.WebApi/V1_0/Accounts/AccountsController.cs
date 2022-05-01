@@ -165,6 +165,30 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
+	/// <inheritdoc cref="IAccountClient.RemoveCurrencyFromAccountAsync"/>
+	/// <response code="204">Currency was successfully removed from account.</response>
+	/// <response code="404">Account or currency with the specified id does not exist.</response>
+	[HttpDelete("{id:guid}/Currencies/{currencyId:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> RemoveCurrency(Guid id, Guid currencyId)
+	{
+		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		if (account is null)
+		{
+			return NotFound();
+		}
+
+		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id);
+		if (currency is null)
+		{
+			return NotFound();
+		}
+
+		_ = await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id);
+		return NoContent();
+	}
+
 	/// <inheritdoc cref="IAccountClient.GetAccountBalanceAsync"/>
 	[HttpGet("{id:guid}/Balance")]
 	public async Task<ActionResult<List<Balance>>> Balance(Guid id, CancellationToken cancellationToken)

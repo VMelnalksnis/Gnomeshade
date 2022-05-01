@@ -226,6 +226,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PostAsync(Accounts.CurrencyUri(id), currency);
 
 	/// <inheritdoc />
+	public Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId) =>
+		DeleteAsync(Accounts.CurrencyIdUri(id, currencyId));
+
+	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync() =>
 		GetAsync<List<Currency>>(_currencyUri);
 

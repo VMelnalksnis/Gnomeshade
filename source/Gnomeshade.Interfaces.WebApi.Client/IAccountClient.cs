@@ -74,6 +74,12 @@ public interface IAccountClient
 	/// <returns>The id of the account to which the currency was added to.</returns>
 	Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency);
 
+	/// <summary>Removes a currency from an existing account.</summary>
+	/// <param name="id">The id of the account from which to remove the currency.</param>
+	/// <param name="currencyId">The id of the account in currency which to remove.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId);
+
 	/// <summary>Gets all currencies.</summary>
 	/// <returns>A collection with all currencies.</returns>
 	Task<List<Currency>> GetCurrenciesAsync();

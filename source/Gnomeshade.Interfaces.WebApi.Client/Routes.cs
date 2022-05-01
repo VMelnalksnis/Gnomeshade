@@ -55,6 +55,8 @@ public static class Routes
 
 		internal static string CurrencyUri(Guid id) => $"{IdUri(id)}/{_currencyUri}";
 
+		internal static string CurrencyIdUri(Guid id, Guid currencyId) => $"{IdUri(id)}/{_currencyUri}/{Format(currencyId)}";
+
 		internal static string BalanceUri(Guid id) => $"{IdUri(id)}/Balance";
 	}
 
