@@ -47,12 +47,12 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <summary>Finds an account with the specified IBAN.</summary>
 	/// <param name="iban">The IBAN for which to search for.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, IDbTransaction dbTransaction)
 	{
 		var sql = $"{SelectSql} WHERE a.iban = @iban AND {_accessSql};";
-		var command = new CommandDefinition(sql, new { iban, ownerId }, cancellationToken: cancellationToken);
+		var command = new CommandDefinition(sql, new { iban, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
 

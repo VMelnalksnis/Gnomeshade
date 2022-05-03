@@ -270,7 +270,7 @@ public sealed class Iso20022Controller : ControllerBase
 			throw new KeyNotFoundException($"Could not find currency by alphabetic code {currencyCode}");
 		}
 
-		var account = await _accountRepository.FindByIbanAsync(iban, user.Id);
+		var account = await _accountRepository.FindByIbanAsync(iban, user.Id, dbTransaction);
 		if (account is not null)
 		{
 			return (account, currency, false);
@@ -424,7 +424,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var (otherCurrency, otherAmount) = await GetOtherAmount(transactionDetails, amount, currency);
 
 		_logger.LogTrace("Searching for other account by {RelatedParties}", transactionDetails.RelatedParties);
-		var otherAccount = await FindOtherAccount(transactionDetails.RelatedParties, user);
+		var otherAccount = await FindOtherAccount(transactionDetails.RelatedParties, user, dbTransaction);
 		_logger.LogTrace("Found other account {OtherAccount}", otherAccount?.Name);
 		if (otherAccount is null)
 		{
@@ -536,36 +536,35 @@ public sealed class Iso20022Controller : ControllerBase
 		return (transaction, transfer);
 	}
 
-	private async Task<AccountEntity?> FindOtherAccount(TransactionParty2? relatedParty, UserEntity user)
+	private async Task<AccountEntity?> FindOtherAccount(
+		TransactionParty2? relatedParty,
+		UserEntity user,
+		IDbTransaction dbTransaction)
 	{
 		if (relatedParty is null)
 		{
 			return null;
 		}
 
-		AccountEntity? otherAccount = null;
+		var iban =
+			relatedParty.CreditorAccount?.Identification.Iban ??
+			relatedParty.DebtorAccount?.Identification.Iban;
+		if (!string.IsNullOrWhiteSpace(iban) &&
+			await _accountRepository.FindByIbanAsync(iban, user.Id, dbTransaction) is { } ibanAccount)
+		{
+			return ibanAccount;
+		}
 
 		var name =
 			relatedParty.Creditor?.Name ??
 			relatedParty.Debtor?.Name;
-		if (!string.IsNullOrWhiteSpace(name))
+		if (!string.IsNullOrWhiteSpace(name) &&
+			await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id, dbTransaction) is { } nameAccount)
 		{
-			otherAccount = await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id);
-			if (otherAccount is not null)
-			{
-				return otherAccount;
-			}
+			return nameAccount;
 		}
 
-		var iban =
-			relatedParty.CreditorAccount?.Identification.Iban ??
-			relatedParty.DebtorAccount?.Identification.Iban;
-		if (!string.IsNullOrWhiteSpace(iban))
-		{
-			otherAccount = await _accountRepository.FindByIbanAsync(iban, user.Id);
-		}
-
-		return otherAccount;
+		return null;
 	}
 
 	private AccountEntity? FindOtherAccount(
