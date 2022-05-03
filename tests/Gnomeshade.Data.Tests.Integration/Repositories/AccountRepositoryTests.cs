@@ -16,6 +16,8 @@ using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using NodaTime;
 
+using Npgsql;
+
 using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -103,6 +105,11 @@ public class AccountRepositoryTests : IDisposable
 
 		getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 		findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
+
+		(await FluentActions.Awaiting(() => _inCurrencyRepository.AddAsync(firstAccountInCurrency))
+			.Should()
+			.ThrowAsync<NpgsqlException>())
+			.Which.Message.Should().Contain("duplicate key value violates unique constraint");
 
 		var disabledAccount = accountFaker.GenerateUnique(account) with
 		{
