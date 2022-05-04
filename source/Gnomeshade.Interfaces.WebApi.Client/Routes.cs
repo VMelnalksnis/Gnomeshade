@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using Microsoft.AspNetCore.WebUtilities;
+
 using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
@@ -138,5 +140,21 @@ public static class Routes
 		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
 
 		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+	}
+
+	internal static class Loans
+	{
+		private const string _path = nameof(Loans);
+
+		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
+
+		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+
+		internal static string CounterpartyUri(Guid counterpartyId)
+		{
+			const string url = $"{Transactions._uri}/{_path}";
+			var parameters = new Dictionary<string, string?> { { nameof(counterpartyId), Format(counterpartyId) } };
+			return QueryHelpers.AddQueryString(url, parameters);
+		}
 	}
 }

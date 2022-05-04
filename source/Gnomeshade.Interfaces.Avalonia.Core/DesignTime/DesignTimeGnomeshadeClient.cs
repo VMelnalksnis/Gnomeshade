@@ -335,6 +335,26 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteLoanAsync(Guid transactionId, Guid id) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));
