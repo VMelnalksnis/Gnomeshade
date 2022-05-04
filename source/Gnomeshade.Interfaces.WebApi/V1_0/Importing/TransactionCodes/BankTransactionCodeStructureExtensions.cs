@@ -8,18 +8,14 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Importing.TransactionCodes;
 
 internal static class BankTransactionCodeStructureExtensions
 {
-	internal static StandardCode? GetStandardCode(this BankTransactionCodeStructure4 bankTransactionCodeStructure)
+	internal static SubFamily? GetStandardCode(this BankTransactionCodeStructure4 bankTransactionCodeStructure)
 	{
 		if (bankTransactionCodeStructure.Domain is null)
 		{
 			return null;
 		}
 
-		var domain = Domain.FromName(bankTransactionCodeStructure.Domain.Code);
-		var family = Family.FromName(bankTransactionCodeStructure.Domain.Family.Code);
 		var subfamily = SubFamily.FromName(bankTransactionCodeStructure.Domain.Family.SubFamilyCode);
-		return new(domain, family, subfamily);
+		return subfamily;
 	}
-
-	internal sealed record StandardCode(Domain Domain, Family Family, SubFamily SubFamily);
 }

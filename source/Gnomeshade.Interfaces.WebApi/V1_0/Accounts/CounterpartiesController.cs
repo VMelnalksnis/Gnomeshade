@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -162,8 +161,7 @@ public sealed class CounterpartiesController : FinanceControllerBase<Counterpart
 			NormalizedName = model.Name!.ToUpperInvariant(),
 		};
 
-		var rows = await _repository.UpdateAsync(counterparty);
-		Debug.Assert(rows > 0, "No rows were changed after update");
+		_ = await _repository.UpdateAsync(counterparty);
 		return NoContent();
 	}
 

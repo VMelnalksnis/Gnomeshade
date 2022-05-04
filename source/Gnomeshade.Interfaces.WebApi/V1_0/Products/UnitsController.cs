@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,8 +118,7 @@ public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
 			ModifiedByUserId = user.Id,
 		};
 
-		var rowCount = await _repository.UpdateAsync(unit);
-		Debug.Assert(rowCount > 0, "No rows were changed after update");
+		_ = await _repository.UpdateAsync(unit);
 		return NoContent();
 	}
 }

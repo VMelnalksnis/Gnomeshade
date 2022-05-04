@@ -4,7 +4,6 @@
 
 using System;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -171,8 +170,6 @@ public sealed class AccountUnitOfWork : IDisposable
 		}
 
 		rows += await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
-
-		Debug.Assert(rows > 0, "No rows were modified when deleting an account.");
 		return rows;
 	}
 
@@ -180,8 +177,6 @@ public sealed class AccountUnitOfWork : IDisposable
 	{
 		account.ModifiedByUserId = modifiedBy.Id;
 		var rows = await _repository.UpdateAsync(account, dbTransaction).ConfigureAwait(false);
-
-		Debug.Assert(rows > 0, "No rows were modified when updating an account.");
 		return rows;
 	}
 }

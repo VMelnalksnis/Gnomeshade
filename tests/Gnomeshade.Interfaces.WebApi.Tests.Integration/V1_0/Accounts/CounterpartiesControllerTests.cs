@@ -50,7 +50,7 @@ public class CounterpartiesControllerTests
 
 		var counterparty = await _gnomeshadeClient.GetCounterpartyAsync(id);
 
-		creationModel = creationModel with { Name = $"{Guid.NewGuid():N}" };
+		creationModel = new() { Name = $"{Guid.NewGuid():N}" };
 		await _gnomeshadeClient.PutCounterpartyAsync(id, creationModel);
 
 		var updatedCounterparty = await _gnomeshadeClient.GetCounterpartyAsync(id);

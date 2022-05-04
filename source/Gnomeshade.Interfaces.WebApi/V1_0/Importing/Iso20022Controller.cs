@@ -466,8 +466,8 @@ public sealed class Iso20022Controller : ControllerBase
 		}
 
 		if (otherAccount is null &&
-			reportEntry.BankTransactionCode.GetStandardCode() is { } standardCode &&
-			BankSubFamilies.Contains(standardCode.SubFamily))
+			reportEntry.BankTransactionCode.GetStandardCode() is { } subFamily &&
+			BankSubFamilies.Contains(subFamily))
 		{
 			otherAccount = bankAccount;
 			resultBuilder.AddAccount(otherAccount, false);
