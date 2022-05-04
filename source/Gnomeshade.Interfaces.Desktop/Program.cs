@@ -43,11 +43,12 @@ internal static class Program
 	[UsedImplicitly]
 	public static AppBuilder BuildAvaloniaApp()
 	{
-#if DEBUG
-		typeof(Product).GetTypeInfo();
-		typeof(Interaction).GetTypeInfo();
-		typeof(EventTriggerBehavior).GetTypeInfo();
-#endif
+		if (Debugger.IsAttached)
+		{
+			typeof(Product).GetTypeInfo();
+			typeof(Interaction).GetTypeInfo();
+			typeof(EventTriggerBehavior).GetTypeInfo();
+		}
 
 		return
 			AppBuilder
