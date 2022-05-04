@@ -31,6 +31,7 @@
 		<EmbeddedResource Include="Migrations\00000012_category_ids.sql"/>
 		<EmbeddedResource Include="Migrations\00000013_hrd.sql"/>
 		<EmbeddedResource Include="Migrations\00000014_account_currency_uniqueness.sql"/>
+		<EmbeddedResource Include="Migrations\00000015_loans.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
@@ -49,6 +50,10 @@
 		<EmbeddedResource Include="Repositories\Queries\Link\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Link\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Link\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Loan\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Loan\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Loan\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Loan\Update.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>

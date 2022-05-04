@@ -34,6 +34,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	private readonly TransactionRepository _repository;
 	private readonly TransferRepository _transferRepository;
 	private readonly PurchaseRepository _purchaseRepository;
+	private readonly LoanRepository _loanRepository;
 	private readonly TransactionUnitOfWork _unitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
@@ -44,6 +45,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
+	/// <param name="loanRepository">Persistence store for <see cref="LoanEntity"/>.</param>
 	public TransactionsController(
 		TransactionRepository repository,
 		ILogger<TransactionsController> logger,
@@ -51,13 +53,15 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		TransferRepository transferRepository,
-		PurchaseRepository purchaseRepository)
+		PurchaseRepository purchaseRepository,
+		LoanRepository loanRepository)
 		: base(applicationUserContext, mapper, logger)
 	{
 		_repository = repository;
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
 		_purchaseRepository = purchaseRepository;
+		_loanRepository = loanRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
@@ -276,8 +280,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		Guid id,
 		CancellationToken cancellationToken)
 	{
-		var purchase =
-			await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		var purchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
 		if (purchase is null)
 		{
 			return NotFound();
@@ -341,7 +344,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
 	public async Task<List<Loan>> GetLoans(Guid transactionId, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var loans = await _loanRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
+		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetCounterpartyLoansAsync"/>
@@ -350,7 +354,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
 	public async Task<List<Loan>> GetCounterpartyLoans(Guid counterpartyId, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var loans = await _loanRepository.GetAllForCounterpartyAsync(counterpartyId, ApplicationUser.Id, cancellationToken);
+		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetLoanAsync"/>
@@ -359,9 +364,12 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpGet("{transactionId:guid}/Loans/{id:guid}")]
 	[ProducesResponseType(typeof(Loan), Status200OK)]
 	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Loan>> GetLoan(Guid transactionId, Guid id, CancellationToken cancellationToken)
+	public async Task<ActionResult> GetLoan(Guid transactionId, Guid id, CancellationToken cancellationToken)
 	{
-		throw new NotImplementedException();
+		var loan = await _loanRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		return loan is null
+			? NotFound()
+			: Ok(Mapper.Map<Loan>(loan));
 	}
 
 	/// <inheritdoc cref="ITransactionClient.PutLoanAsync"/>
@@ -379,7 +387,24 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 			return NotFound();
 		}
 
-		throw new NotImplementedException();
+		var existingLoan = await _loanRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, CancellationToken.None);
+		var entity = Mapper.Map<LoanEntity>(loan) with
+		{
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			OwnerId = ApplicationUser.Id, // todo
+			ModifiedByUserId = ApplicationUser.Id,
+			TransactionId = transactionId,
+		};
+
+		if (existingLoan is null)
+		{
+			await _loanRepository.AddAsync(entity);
+			return CreatedAtAction(nameof(GetLoan), new { transactionId, id }, null);
+		}
+
+		await _loanRepository.UpdateAsync(entity);
+		return NoContent();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.DeleteLoanAsync"/>
@@ -390,7 +415,9 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesStatus404NotFound]
 	public async Task<StatusCodeResult> DeleteLoan(Guid transactionId, Guid id)
 	{
-		throw new NotImplementedException();
+		// todo add transaction id
+		var deletedCount = await _loanRepository.DeleteAsync(id, ApplicationUser.Id);
+		return DeletedEntity<LoanEntity>(id, deletedCount);
 	}
 
 	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(

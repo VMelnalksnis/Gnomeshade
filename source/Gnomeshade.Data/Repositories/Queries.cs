@@ -138,6 +138,17 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Purchase)}.Update.sql");
 	}
 
+	internal static class Loan
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Loan)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Loan)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Loan)}.Select.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Loan)}.Update.sql");
+	}
+
 	internal static class Unit
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Unit)}.Delete.sql");
