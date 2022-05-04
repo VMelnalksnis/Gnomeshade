@@ -32,6 +32,7 @@ public class TransactionsControllerTests
 	private IGnomeshadeClient _secondClient = null!;
 
 	private Counterparty _counterparty = null!;
+	private Counterparty _otherCounterparty = null!;
 	private Account _account1 = null!;
 	private Account _account2 = null!;
 	private Guid _productId;
@@ -43,6 +44,18 @@ public class TransactionsControllerTests
 		_secondClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
 
 		_counterparty = await _client.GetMyCounterpartyAsync();
+		var other = (await _client.GetCounterpartiesAsync())
+			.FirstOrDefault(counterparty => counterparty.Id != _counterparty.Id);
+
+		if (other is null)
+		{
+			var counterpartyCreation = new CounterpartyCreationModel { Name = $"{Guid.NewGuid():N}" };
+			await _client.PutCounterpartyAsync(Guid.NewGuid(), counterpartyCreation);
+			other = (await _client.GetCounterpartiesAsync())
+				.First(counterparty => counterparty.Id != _counterparty.Id);
+		}
+
+		_otherCounterparty = other;
 		var currencies = await _client.GetCurrenciesAsync();
 		var currency1 = currencies.First();
 		var currency2 = currencies.Skip(1).First();
@@ -252,6 +265,78 @@ public class TransactionsControllerTests
 
 		await _client.RemoveLinkFromTransactionAsync(transactionId, linkId);
 		(await _client.GetTransactionLinksAsync(transactionId)).Should().BeEmpty();
+	}
+
+	[Test]
+	public async Task Loans()
+	{
+		var transactionCreationModel = new TransactionCreationModel
+		{
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
+		};
+
+		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var receiver = _counterparty;
+		var issuer = _otherCounterparty;
+
+		var loanId = Guid.NewGuid();
+		var loanCreation = new LoanCreation
+		{
+			IssuingCounterpartyId = issuer.Id,
+			ReceivingCounterpartyId = receiver.Id,
+			CurrencyId = _account1.Currencies.First().Currency.Id,
+			Amount = 1,
+		};
+
+		await _client.PutLoanAsync(transactionId, loanId, loanCreation);
+		var loan = await _client.GetLoanAsync(transactionId, loanId);
+		var loans = await _client.GetLoansAsync(transactionId);
+		var receiverLoans = await _client.GetCounterpartyLoansAsync(receiver.Id);
+		var issuerLoans = await _client.GetCounterpartyLoansAsync(issuer.Id);
+
+		loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+		receiverLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+		issuerLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+		loan.Should().BeEquivalentTo(loanCreation);
+
+		loanCreation = loanCreation with { Amount = 2 };
+		await _client.PutLoanAsync(transactionId, loanId, loanCreation);
+		var updatedLoan = await _client.GetLoanAsync(transactionId, loanId);
+		updatedLoan.Amount.Should().Be(2);
+
+		await _client.DeleteLoanAsync(transactionId, loanId);
+		(await _client.GetLoansAsync(transactionId)).Should().BeEmpty();
+		(await FluentActions
+				.Awaiting(() => _client.GetLoanAsync(transactionId, loanId))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task PutLoan_NonExistentTransaction()
+	{
+		var transactionId = Guid.NewGuid();
+		var counterparties = await _client.GetCounterpartiesAsync();
+		var receiver = await _client.GetMyCounterpartyAsync();
+		var issuer = counterparties.First(counterparty => counterparty.Id != receiver.Id);
+
+		var loanId = Guid.NewGuid();
+		var loanCreation = new LoanCreation
+		{
+			IssuingCounterpartyId = issuer.Id,
+			ReceivingCounterpartyId = receiver.Id,
+			CurrencyId = _account1.Currencies.First().Currency.Id,
+			Amount = 1,
+		};
+
+		(await FluentActions
+				.Awaiting(() => _client.PutLoanAsync(transactionId, loanId, loanCreation))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
 	}
 
 	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(

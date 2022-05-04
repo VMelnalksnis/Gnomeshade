@@ -335,6 +335,64 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		return DeletedEntity<PurchaseEntity>(id, deletedCount);
 	}
 
+	/// <inheritdoc cref="ITransactionClient.GetLoansAsync"/>
+	/// <response code="200">Successfully got all loans.</response>
+	[HttpGet("{transactionId:guid}/Loans")]
+	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
+	public async Task<List<Loan>> GetLoans(Guid transactionId, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetCounterpartyLoansAsync"/>
+	/// <response code="200">Successfully got all loans.</response>
+	[HttpGet("Loans")]
+	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
+	public async Task<List<Loan>> GetCounterpartyLoans(Guid counterpartyId, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetLoanAsync"/>
+	/// <response code="200">Successfully got the loan with the specified id.</response>
+	/// <response code="404">Loan with the specified id does not exist.</response>
+	[HttpGet("{transactionId:guid}/Loans/{id:guid}")]
+	[ProducesResponseType(typeof(Loan), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<Loan>> GetLoan(Guid transactionId, Guid id, CancellationToken cancellationToken)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.PutLoanAsync"/>
+	/// <response code="201">Successfully created a new loan.</response>
+	/// <response code="204">Successfully replaced an existing loan.</response>
+	/// <response code="404">Transaction with the specified id was not found.</response>
+	[HttpPut("{transactionId:guid}/Loans/{id:guid}")]
+	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> PutLoan(Guid transactionId, Guid id, [FromBody] LoanCreation loan)
+	{
+		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		{
+			return NotFound();
+		}
+
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.DeleteLoanAsync"/>
+	/// <response code="204">Successfully deleted loan.</response>
+	/// <response code="404">Loan with the specified id does not exist.</response>
+	[HttpDelete("{transactionId:guid}/Loans/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<StatusCodeResult> DeleteLoan(Guid transactionId, Guid id)
+	{
+		throw new NotImplementedException();
+	}
+
 	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(
 		TransactionCreationModel creationModel,
 		UserEntity user,
