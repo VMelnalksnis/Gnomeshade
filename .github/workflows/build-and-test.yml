@@ -59,7 +59,7 @@ jobs:
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
 
       - name: ReSharper annotations
-        uses: VMelnalksnis/resharper-inspect-action@v0.2.1
+        uses: VMelnalksnis/resharper-inspect-action@v0.2.2
         with:
           solution: Gnomeshade.sln
 
