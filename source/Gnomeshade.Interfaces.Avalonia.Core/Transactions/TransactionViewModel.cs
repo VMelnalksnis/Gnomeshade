@@ -126,16 +126,18 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 						0),
 					_dateTimeZoneProvider.GetSystemDefault()).ToInstant());
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
+		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask).ConfigureAwait(false);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
+		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var overviewTasks = transactions.Select(async transaction =>
 		{
 			var transfers = (await _gnomeshadeClient.GetTransfersAsync(transaction.Id))
-				.Select(transfer => transfer.ToSummary(accounts, counterparty))
+				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 				.ToList();
 
 			return new TransactionOverview(
@@ -157,6 +159,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Selected = selected;
 
 		Filter.Accounts = accounts;
+		Filter.Counterparties = counterparties;
 		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 	}
 
@@ -191,7 +194,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			OnPropertyChanged(nameof(CanRefresh));
 		}
 
-		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount))
+		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount) or nameof(TransactionFilter.SelectedCounterparty))
 		{
 			DataGridView.Refresh();
 			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
@@ -204,10 +207,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var transactionTask = _gnomeshadeClient.GetTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
+		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
-		Task.WhenAll(transactionTask, accountsTask).ConfigureAwait(false).GetAwaiter().GetResult();
+		Task.WhenAll(transactionTask, accountsTask, counterpartiesTask).ConfigureAwait(false).GetAwaiter().GetResult();
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
+		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var transfers = _gnomeshadeClient
@@ -215,7 +220,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			.ConfigureAwait(false)
 			.GetAwaiter()
 			.GetResult()
-			.Select(transfer => transfer.ToSummary(accounts, counterparty))
+			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 			.ToList();
 
 		var overview = new TransactionOverview(

@@ -21,6 +21,8 @@ public sealed class TransactionFilter : ViewModelBase
 	private DateTimeOffset? _toDate;
 	private Account? _selectedAccount;
 	private List<Account> _accounts = new();
+	private List<Counterparty> _counterparties = new();
+	private Counterparty? _selectedCounterparty;
 
 	/// <summary>Gets or sets the date from which to get transactions.</summary>
 	public DateTimeOffset? FromDate
@@ -42,6 +44,9 @@ public sealed class TransactionFilter : ViewModelBase
 	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
 
+	/// <summary>Gets a delegate for formatting an counterparty in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> CounterpartySelector => AutoCompleteSelectors.Counterparty;
+
 	/// <summary>Gets or sets a collection of all active accounts.</summary>
 	public List<Account> Accounts
 	{
@@ -56,6 +61,20 @@ public sealed class TransactionFilter : ViewModelBase
 		set => SetAndNotify(ref _selectedAccount, value);
 	}
 
+	/// <summary>Gets or sets a collection of all counterparties.</summary>
+	public List<Counterparty> Counterparties
+	{
+		get => _counterparties;
+		set => SetAndNotify(ref _counterparties, value);
+	}
+
+	/// <summary>Gets or sets the selected counterparty from <see cref="Counterparties"/>.</summary>
+	public Counterparty? SelectedCounterparty
+	{
+		get => _selectedCounterparty;
+		set => SetAndNotify(ref _selectedCounterparty, value);
+	}
+
 	/// <summary>Predicate for determining if an item is suitable for inclusion in the view.</summary>
 	/// <param name="item">The item to check against the filters set in this viewmodel.</param>
 	/// <returns><see langword="true"/> if <paramref name="item"/> matches the filters set in this viewmodel; otherwise <see langword="false"/>.</returns>
@@ -66,10 +85,19 @@ public sealed class TransactionFilter : ViewModelBase
 			return false;
 		}
 
-		return
-			SelectedAccount is null ||
+		if (SelectedAccount is null && SelectedCounterparty is null)
+		{
+			return true;
+		}
+
+		var matchesAccount = SelectedAccount is null ||
 			overview.Transfers.Any(transfer =>
 				transfer.UserAccount == SelectedAccount.Name ||
 				transfer.OtherAccount == SelectedAccount.Name);
+
+		var matchesCounterparty = SelectedCounterparty is null ||
+			overview.Transfers.Any(transfer => transfer.OtherCounterparty == SelectedCounterparty.Name);
+
+		return matchesAccount && matchesCounterparty;
 	}
 }
