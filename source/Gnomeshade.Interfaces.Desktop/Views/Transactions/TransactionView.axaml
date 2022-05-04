@@ -15,11 +15,14 @@
 		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto, *, Auto">
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<UserControl Content="{Binding Filter, Mode=OneWay}" />
-				<Button
-					VerticalAlignment="Top"
-					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
-					Load transactions
-				</Button>
+				<StackPanel Orientation="Vertical" Spacing="5">
+					<Button IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
+						Load transactions
+					</Button>
+					<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+						Delete Selected
+					</Button>
+				</StackPanel>
 			</StackPanel>
 			<DataGrid
 				Grid.Row="1"
@@ -32,23 +35,13 @@
 				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
 					<DataGridTemplateColumn
-						Header="Booked At" IsReadOnly="True"
-						SortMemberPath="BookedAt" CanUserSort="True">
+						Header="Date" IsReadOnly="True"
+						SortMemberPath="Date" CanUserSort="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<TextBlock
 								HorizontalAlignment="Right" VerticalAlignment="Top"
 								Margin="5 0"
-								Text="{Binding BookedAt, Mode=OneWay, StringFormat=\{0:d\}}" />
-						</DataTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						Header="Valued At" IsReadOnly="True"
-						SortMemberPath="ValuedAt" CanUserSort="True">
-						<DataTemplate DataType="transactions:TransactionOverview">
-							<TextBlock
-								HorizontalAlignment="Right" VerticalAlignment="Top"
-								Margin="5 0"
-								Text="{Binding ValuedAt, Mode=OneWay, StringFormat=\{0:g\}}" />
+								Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
 						</DataTemplate>
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn
@@ -140,7 +133,7 @@
 								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="transactions:TransferSummary">
-										<TextBlock Text="{Binding OtherAccount}" Padding="0 0 5 0" />
+										<TextBlock Text="{Binding DisplayedAccount}" Padding="0 0 5 0" />
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -193,7 +186,7 @@
 				</DataGrid.Styles>
 			</DataGrid>
 
-			<UserControl Grid.Row="2" Content="{Binding Summary}"/>
+			<UserControl Grid.Row="2" Content="{Binding Summary}" />
 		</Grid>
 
 		<UserControl Grid.Column="1" Content="{Binding Details}" />

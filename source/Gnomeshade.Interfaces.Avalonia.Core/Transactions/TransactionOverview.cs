@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
@@ -21,7 +20,6 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <param name="importedAt">The point in time when this transaction was imported.</param>
 	/// <param name="reconciledAt">The point in time when this transaction was reconciled.</param>
 	/// <param name="transfers">All transfers of the transaction.</param>
-	/// <param name="purchases">All purchases of the transaction.</param>
 	public TransactionOverview(
 		Guid id,
 		DateTimeOffset? bookedAt,
@@ -29,8 +27,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		string? description,
 		DateTimeOffset? importedAt,
 		DateTimeOffset? reconciledAt,
-		List<TransferSummary> transfers,
-		List<PurchaseOverview> purchases)
+		List<TransferSummary> transfers)
 	{
 		Id = id;
 		BookedAt = bookedAt;
@@ -39,7 +36,6 @@ public sealed class TransactionOverview : PropertyChangedBase
 		ImportedAt = importedAt;
 		ReconciledAt = reconciledAt;
 		Transfers = transfers;
-		Purchases = purchases;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -50,6 +46,9 @@ public sealed class TransactionOverview : PropertyChangedBase
 
 	/// <summary>Gets the point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
 	public DateTimeOffset? ValuedAt { get; }
+
+	/// <summary>Gets the date of the transaction.</summary>
+	public DateTimeOffset? Date => ValuedAt ?? BookedAt;
 
 	/// <summary>Gets the description of the transaction.</summary>
 	public string? Description { get; }
@@ -62,7 +61,4 @@ public sealed class TransactionOverview : PropertyChangedBase
 
 	/// <summary>Gets all transfers of the transaction.</summary>
 	public List<TransferSummary> Transfers { get; }
-
-	/// <summary>Gets all purchases of the transaction.</summary>
-	public List<PurchaseOverview> Purchases { get; }
 }

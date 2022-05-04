@@ -30,8 +30,11 @@ public class PurchaseViewModelTests
 	}
 
 	[Test]
-	public void SelectingRow_ShouldUpdateDetails()
+	public async Task SelectingRow_ShouldUpdateDetails()
 	{
+		const decimal totalTransferred = 123.95m;
+		const decimal price = 10;
+
 		using (new AssertionScope())
 		{
 			_viewModel.Selected.Should().BeNull();
@@ -45,5 +48,21 @@ public class PurchaseViewModelTests
 
 		_viewModel.Selected = null;
 		_viewModel.Details.CanSave.Should().BeFalse();
+		_viewModel.Details.Currency?.AlphabeticCode.Should().Be("EUR");
+		_viewModel.Details.Price.Should().Be(totalTransferred);
+
+		_viewModel.Details.Price = price;
+		_viewModel.Details.Product = _viewModel.Details.Products.First();
+		_viewModel.Details.Amount = 1;
+		await _viewModel.Details.SaveAsync();
+		_viewModel.Details.ErrorMessage.Should().BeNullOrWhiteSpace();
+		await _viewModel.RefreshAsync();
+
+		_viewModel.Selected = _viewModel.Rows.First();
+		_viewModel.Selected = null;
+
+		_viewModel.Details.CanSave.Should().BeFalse();
+		_viewModel.Details.Currency?.AlphabeticCode.Should().Be("EUR");
+		_viewModel.Details.Price.Should().Be(totalTransferred - price);
 	}
 }

@@ -67,7 +67,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var upsertionViewModel = await PurchaseUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, transactionId).ConfigureAwait(false);
 		var viewModel = new PurchaseViewModel(gnomeshadeClient, dateTimeZoneProvider, transactionId, upsertionViewModel);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
-		SetDefaultCurrency(viewModel);
+		await viewModel.SetDefaultCurrency().ConfigureAwait(false);
 		return viewModel;
 	}
 
@@ -77,7 +77,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var purchases = await _gnomeshadeClient.GetPurchasesAsync(_transactionId).ConfigureAwait(false);
 
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var productIds = purchases.Select(purchase => purchase.ProductId);
+		var productIds = purchases.Select(purchase => purchase.ProductId).Distinct();
 		var productsTask = Task.WhenAll(productIds.Select(async id => await _gnomeshadeClient.GetProductAsync(id)));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
@@ -90,13 +90,11 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 			.OrderBy(purchase => purchase.CreatedAt)
 			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
 
-		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
 		Rows = new(overviews);
 		Rows.CollectionChanged += RowsOnCollectionChanged;
 		DataGridView.SortDescriptions.AddRange(sort);
-		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 	}
 
 	/// <inheritdoc />
@@ -106,15 +104,38 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		await RefreshAsync();
 	}
 
-	private static void SetDefaultCurrency(PurchaseViewModel viewModel)
+	private async Task SetDefaultCurrency()
 	{
-		if (viewModel.Rows.Select(overview => overview.CurrencyName).Distinct().Count() != 1)
+		var currencies = Rows.Select(overview => overview.CurrencyName).Distinct().ToList();
+		if (currencies.Count > 1)
 		{
 			return;
 		}
 
-		var currencyName = viewModel.Rows.First().CurrencyName;
-		viewModel.Details.Currency = viewModel.Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
+		var currencyName = currencies.FirstOrDefault();
+		var transfers = await _gnomeshadeClient.GetTransfersAsync(_transactionId).ConfigureAwait(false);
+		if (string.IsNullOrWhiteSpace(currencyName))
+		{
+			var accounts = (await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false)).SelectMany(account => account.Currencies);
+			var c = transfers
+				.Select(transfer => transfer.SourceAccountId)
+				.Concat(transfers.Select(transfer => transfer.TargetAccountId))
+				.Select(id => accounts.Single(ac => ac.Id == id).Currency.AlphabeticCode)
+				.Distinct()
+				.ToList();
+
+			if (c.Count == 1)
+			{
+				currencyName = c.Single();
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		Details.Currency = Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
+		Details.Price ??= transfers.Sum(transfer => transfer.SourceAmount) - Rows.Sum(row => row.Price);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -127,7 +148,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 				.GetAwaiter()
 				.GetResult();
 
-			SetDefaultCurrency(this);
+			SetDefaultCurrency().ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 
 		if (e.PropertyName is nameof(Rows))

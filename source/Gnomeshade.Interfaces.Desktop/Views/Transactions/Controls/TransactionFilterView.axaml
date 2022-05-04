@@ -21,8 +21,6 @@
 
 		<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
 			<AutoCompleteBox
-				MinWidth="200"
-				x:Name="SourceAccount"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				Watermark="Account"
@@ -31,6 +29,20 @@
 				SelectedItem="{Binding SelectedAccount, Mode=TwoWay}">
 				<AutoCompleteBox.ItemTemplate>
 					<DataTemplate x:DataType="accounts:Account">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+			</AutoCompleteBox>
+			
+			<AutoCompleteBox
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Counterparty"
+				Items="{Binding Counterparties}"
+				ItemSelector="{Binding CounterpartySelector}"
+				SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="accounts:Counterparty">
 						<TextBlock Text="{Binding Name}" />
 					</DataTemplate>
 				</AutoCompleteBox.ItemTemplate>

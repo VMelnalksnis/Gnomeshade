@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
@@ -50,11 +49,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		DataGridView.Filter = Filter.Filter;
 		DataGridView.SortDescriptions.Add(
 			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.BookedAt),
-				ListSortDirection.Descending));
-		DataGridView.SortDescriptions.Add(
-			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.ValuedAt),
+				new TransactionOverviewComparer(overview => overview?.Date),
 				ListSortDirection.Descending));
 		DataGridView.SortDescriptions.Add(
 			new DataGridComparerSortDesctiption(
@@ -127,26 +122,18 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 						0),
 					_dateTimeZoneProvider.GetSystemDefault()).ToInstant());
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var productsTask = _gnomeshadeClient.GetProductsAsync();
-		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
+		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, currenciesTask, productsTask, unitsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask).ConfigureAwait(false);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
-		var currencies = currenciesTask.Result;
-		var products = productsTask.Result;
-		var units = unitsTask.Result;
+		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var overviewTasks = transactions.Select(async transaction =>
 		{
 			var transfers = (await _gnomeshadeClient.GetTransfersAsync(transaction.Id))
-				.Select(transfer => transfer.ToSummary(accounts, counterparty))
-				.ToList();
-
-			var purchases = (await _gnomeshadeClient.GetPurchasesAsync(transaction.Id))
-				.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
+				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 				.ToList();
 
 			return new TransactionOverview(
@@ -156,8 +143,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.Description,
 				transaction.ImportedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
-				transfers,
-				purchases);
+				transfers);
 		});
 
 		var overviews = await Task.WhenAll(overviewTasks).ConfigureAwait(false);
@@ -169,6 +155,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Selected = selected;
 
 		Filter.Accounts = accounts;
+		Filter.Counterparties = counterparties;
 		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 	}
 
@@ -203,7 +190,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			OnPropertyChanged(nameof(CanRefresh));
 		}
 
-		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount))
+		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount) or nameof(TransactionFilter.SelectedCounterparty))
 		{
 			DataGridView.Refresh();
 			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
@@ -216,17 +203,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		var transactionTask = _gnomeshadeClient.GetTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var productsTask = _gnomeshadeClient.GetProductsAsync();
-		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
+		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
-		Task.WhenAll(transactionTask, accountsTask, currenciesTask, productsTask, unitsTask).ConfigureAwait(false).GetAwaiter()
-			.GetResult();
+		Task.WhenAll(transactionTask, accountsTask, counterpartiesTask).ConfigureAwait(false).GetAwaiter().GetResult();
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
-		var currencies = currenciesTask.Result;
-		var products = productsTask.Result;
-		var units = unitsTask.Result;
+		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
 		var transfers = _gnomeshadeClient
@@ -234,14 +216,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			.ConfigureAwait(false)
 			.GetAwaiter()
 			.GetResult()
-			.Select(transfer => transfer.ToSummary(accounts, counterparty))
-			.ToList();
-
-		var purchases = _gnomeshadeClient.GetPurchasesAsync(transaction.Id)
-			.ConfigureAwait(false)
-			.GetAwaiter()
-			.GetResult()
-			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
+			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 			.ToList();
 
 		var overview = new TransactionOverview(
@@ -251,8 +226,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			transaction.Description,
 			transaction.ImportedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
-			transfers,
-			purchases);
+			transfers);
 
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(Rows.Where(row => row.Id != updatedRow?.Id).Append(overview).ToList());

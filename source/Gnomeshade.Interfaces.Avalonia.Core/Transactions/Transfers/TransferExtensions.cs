@@ -32,7 +32,11 @@ internal static class TransferExtensions
 			transfer.InternalReference);
 	}
 
-	internal static TransferSummary ToSummary(this Transfer transfer, List<Account> accounts, Counterparty userCounterparty)
+	internal static TransferSummary ToSummary(
+		this Transfer transfer,
+		List<Account> accounts,
+		IEnumerable<Counterparty> counterparties,
+		Counterparty userCounterparty)
 	{
 		var sourceAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
 		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
@@ -47,6 +51,7 @@ internal static class TransferExtensions
 				sourceAccount.Name,
 				"→",
 				targetAccount.CounterpartyId == userCounterparty.Id,
+				counterparties.Single(counterparty => targetAccount.CounterpartyId == counterparty.Id).Name,
 				targetAccount.Name,
 				targetCurrency.AlphabeticCode,
 				transfer.TargetAmount)
@@ -57,6 +62,7 @@ internal static class TransferExtensions
 				targetAccount.Name,
 				"←",
 				false,
+				counterparties.Single(counterparty => sourceAccount.CounterpartyId == counterparty.Id).Name,
 				sourceAccount.Name,
 				sourceCurrency.AlphabeticCode,
 				transfer.SourceAmount);
