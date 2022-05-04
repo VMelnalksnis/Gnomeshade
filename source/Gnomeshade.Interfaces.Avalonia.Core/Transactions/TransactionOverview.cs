@@ -47,6 +47,9 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <summary>Gets the point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
 	public DateTimeOffset? ValuedAt { get; }
 
+	/// <summary>Gets the date of the transaction.</summary>
+	public DateTimeOffset? Date => ValuedAt ?? BookedAt;
+
 	/// <summary>Gets the description of the transaction.</summary>
 	public string? Description { get; }
 

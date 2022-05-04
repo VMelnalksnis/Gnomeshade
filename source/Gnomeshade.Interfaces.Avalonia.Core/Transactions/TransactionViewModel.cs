@@ -49,11 +49,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		DataGridView.Filter = Filter.Filter;
 		DataGridView.SortDescriptions.Add(
 			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.BookedAt),
-				ListSortDirection.Descending));
-		DataGridView.SortDescriptions.Add(
-			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.ValuedAt),
+				new TransactionOverviewComparer(overview => overview?.Date),
 				ListSortDirection.Descending));
 		DataGridView.SortDescriptions.Add(
 			new DataGridComparerSortDesctiption(
