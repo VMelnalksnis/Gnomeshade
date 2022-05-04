@@ -312,8 +312,23 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase) =>
-		throw new NotImplementedException();
+	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase)
+	{
+		var existingPurchase = _purchases.SingleOrDefault(p => p.Id == id) ?? new Purchase();
+		existingPurchase = existingPurchase with
+		{
+			Id = id,
+			TransactionId = transactionId,
+			ProductId = purchase.ProductId!.Value,
+			Amount = purchase.Amount!.Value,
+			Price = purchase.Price!.Value,
+			CurrencyId = purchase.CurrencyId!.Value,
+			DeliveryDate = purchase.DeliveryDate,
+		};
+		_purchases.Remove(existingPurchase);
+		_purchases.Add(existingPurchase);
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
 	public Task DeletePurchaseAsync(Guid transactionId, Guid id) =>
