@@ -15,11 +15,14 @@
 		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto, *, Auto">
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<UserControl Content="{Binding Filter, Mode=OneWay}" />
-				<Button
-					VerticalAlignment="Top"
-					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
-					Load transactions
-				</Button>
+				<StackPanel Orientation="Vertical" Spacing="5">
+					<Button IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
+						Load transactions
+					</Button>
+					<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+						Delete Selected
+					</Button>
+				</StackPanel>
 			</StackPanel>
 			<DataGrid
 				Grid.Row="1"
@@ -193,7 +196,7 @@
 				</DataGrid.Styles>
 			</DataGrid>
 
-			<UserControl Grid.Row="2" Content="{Binding Summary}"/>
+			<UserControl Grid.Row="2" Content="{Binding Summary}" />
 		</Grid>
 
 		<UserControl Grid.Column="1" Content="{Binding Details}" />
