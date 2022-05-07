@@ -12,7 +12,7 @@
 	x:DataType="transactions:TransactionUpsertionViewModel">
 
 	<ScrollViewer VerticalScrollBarVisibility="Visible" AllowAutoHide="False">
-		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+		<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 			<UserControl Grid.Row="0" Content="{Binding Properties}" />
 
 			<StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="5">
@@ -26,6 +26,7 @@
 			<UserControl Grid.Row="2" Content="{Binding Transfers}" />
 			<UserControl Grid.Row="3" Content="{Binding Purchases}" />
 			<UserControl Grid.Row="4" Content="{Binding Links}" />
+			<UserControl Grid.Row="5" Content="{Binding Loans}" />
 		</Grid>
 	</ScrollViewer>
 </UserControl>

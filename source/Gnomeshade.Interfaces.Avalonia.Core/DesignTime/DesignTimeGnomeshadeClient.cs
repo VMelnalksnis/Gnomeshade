@@ -35,6 +35,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Link> _links;
 	private static readonly List<KeyValuePair<Guid, Guid>> _transactionLinks;
 	private static readonly List<Category> _categories;
+	private static readonly List<Loan> _loans;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -43,7 +44,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_currencies = new() { euro, usd };
 
 		var counterparty = new Counterparty { Id = Guid.Empty, Name = "John Doe" };
-		_counterparties = new() { counterparty };
+		var otherCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Jane Doe" };
+		_counterparties = new() { counterparty, otherCounterparty };
 
 		var cash = new Account
 		{
@@ -137,6 +139,26 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		{
 			new(Guid.Empty, Guid.Empty),
 			new(Guid.Empty, _links.Last().Id),
+		};
+
+		_loans = new()
+		{
+			new()
+			{
+				TransactionId = transaction.Id,
+				IssuingCounterpartyId = counterparty.Id,
+				ReceivingCounterpartyId = otherCounterparty.Id,
+				Amount = 100,
+				CurrencyId = euro.Id,
+			},
+			new()
+			{
+				TransactionId = transaction.Id,
+				IssuingCounterpartyId = counterparty.Id,
+				ReceivingCounterpartyId = otherCounterparty.Id,
+				Amount = -5,
+				CurrencyId = euro.Id,
+			},
 		};
 	}
 
@@ -335,24 +357,59 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default)
+	{
+		var loans = _loans.Where(loan => loan.TransactionId == transactionId).ToList();
+		return Task.FromResult(loans);
+	}
 
 	/// <inheritdoc />
-	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default)
+	{
+		var loans = _loans
+			.Where(loan =>
+				loan.IssuingCounterpartyId == counterpartyId ||
+				loan.ReceivingCounterpartyId == counterpartyId)
+			.ToList();
+		return Task.FromResult(loans);
+	}
 
 	/// <inheritdoc />
-	public Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	{
+		var loan = _loans.Single(loan => loan.TransactionId == transactionId && loan.Id == id);
+		return Task.FromResult(loan);
+	}
 
 	/// <inheritdoc />
-	public Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan) =>
-		throw new NotImplementedException();
+	public Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan)
+	{
+		var existing = _loans.SingleOrDefault(l => l.TransactionId == transactionId && l.Id == id);
+		if (existing is not null)
+		{
+			_loans.Remove(existing);
+		}
+
+		existing ??= new() { TransactionId = transactionId, Id = id };
+		existing = existing with
+		{
+			IssuingCounterpartyId = loan.IssuingCounterpartyId!.Value,
+			ReceivingCounterpartyId = loan.ReceivingCounterpartyId!.Value,
+			Amount = loan.Amount!.Value,
+			CurrencyId = loan.CurrencyId!.Value,
+		};
+
+		_loans.Add(existing);
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
-	public Task DeleteLoanAsync(Guid transactionId, Guid id) =>
-		throw new NotImplementedException();
+	public Task DeleteLoanAsync(Guid transactionId, Guid id)
+	{
+		var loan = _loans.Single(loan => loan.TransactionId == transactionId && loan.Id == id);
+		_loans.Remove(loan);
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)

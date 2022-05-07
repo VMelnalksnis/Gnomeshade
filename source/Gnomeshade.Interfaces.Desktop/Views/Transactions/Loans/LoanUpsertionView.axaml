@@ -1,0 +1,72 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:loans="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.LoanUpsertionViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Transactions.Loans.LoanUpsertionView"
+	x:CompileBindings="True"
+	x:DataType="loans:LoanUpsertionViewModel">
+
+	<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+		<AutoCompleteBox
+			Grid.Column="0" Grid.Row="0"
+			Watermark="Issuing counterparty"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Counterparties}"
+			ItemSelector="{Binding CounterpartySelector}"
+			SelectedItem="{Binding IssuingCounterparty, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Counterparty">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="0"
+			Watermark="Receiving counterparty"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Counterparties}"
+			ItemSelector="{Binding CounterpartySelector}"
+			SelectedItem="{Binding ReceivingCounterparty, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Counterparty">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<TextBox
+			Grid.Column="0" Grid.Row="1"
+			Watermark="Amount"
+			Text="{Binding Amount}" />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="1"
+			Watermark="Currency"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Currencies}"
+			ItemSelector="{Binding CurrencySelector}"
+			SelectedItem="{Binding Currency, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Currency">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+			<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+				Save
+			</Button>
+
+			<TextBlock Text="{Binding ErrorMessage}" />
+		</StackPanel>
+	</Grid>
+</UserControl>

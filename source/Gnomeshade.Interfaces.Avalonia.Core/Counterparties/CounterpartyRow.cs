@@ -13,10 +13,12 @@ public sealed class CounterpartyRow : PropertyChangedBase
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyRow"/> class.</summary>
 	/// <param name="counterparty">The counterparty this row represents.</param>
-	public CounterpartyRow(Counterparty counterparty)
+	/// <param name="loanBalance">The balance of all loans issued to and received from the current user.</param>
+	public CounterpartyRow(Counterparty counterparty, decimal loanBalance)
 	{
 		Id = counterparty.Id;
 		Name = counterparty.Name;
+		LoanBalance = loanBalance;
 	}
 
 	/// <summary>Gets the id of the counterparty.</summary>
@@ -24,4 +26,7 @@ public sealed class CounterpartyRow : PropertyChangedBase
 
 	/// <summary>Gets the name of the counterparty.</summary>
 	public string Name { get; }
+
+	/// <summary>Gets the balance of all loans issued to and received from the current user.</summary>
+	public decimal LoanBalance { get; }
 }

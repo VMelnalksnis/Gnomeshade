@@ -14,7 +14,8 @@ using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Counterparties;
 
-public class CounterpartyMergeViewModelTests
+[TestOf(typeof(CounterpartyMergeViewModel))]
+public sealed class CounterpartyMergeViewModelTests
 {
 	private CounterpartyMergeViewModel _viewModel = null!;
 
@@ -50,5 +51,13 @@ public class CounterpartyMergeViewModelTests
 		_viewModel.SourceCounterparty = _viewModel.SourceCounterparties.First();
 		_viewModel.TargetCounterparty = _viewModel.TargetCounterparties.Single(row => row.Id == _viewModel.SourceCounterparty.Id);
 		_viewModel.CanMerge.Should().BeFalse();
+	}
+
+	[Test]
+	public void CanMerge_SourceAndTargetIsDifferent()
+	{
+		_viewModel.SourceCounterparty = _viewModel.SourceCounterparties.First();
+		_viewModel.TargetCounterparty = _viewModel.TargetCounterparties.First(row => row.Id != _viewModel.SourceCounterparty.Id);
+		_viewModel.CanMerge.Should().BeTrue();
 	}
 }

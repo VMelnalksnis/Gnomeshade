@@ -76,7 +76,24 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 	public static async Task<CounterpartyMergeViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
 		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty)).ToList();
+		var userCounterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
+		var counterpartyRows = counterparties.Select(counterparty =>
+		{
+			var loans = gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
+			var issued = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == counterparty.Id &&
+					loan.ReceivingCounterpartyId == userCounterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			var received = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == userCounterparty.Id &&
+					loan.ReceivingCounterpartyId == counterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			return new CounterpartyRow(counterparty, issued - received);
+		}).ToList();
 		return new(gnomeshadeClient, counterpartyRows);
 	}
 
@@ -93,7 +110,24 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 		await _gnomeshadeClient.MergeCounterpartiesAsync(TargetCounterparty.Id, SourceCounterparty.Id);
 
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty)).ToList();
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
+		var counterpartyRows = counterparties.Select(counterparty =>
+		{
+			var loans = _gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
+			var issued = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == counterparty.Id &&
+					loan.ReceivingCounterpartyId == userCounterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			var received = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == userCounterparty.Id &&
+					loan.ReceivingCounterpartyId == counterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			return new CounterpartyRow(counterparty, issued - received);
+		}).ToList();
 
 		// Preserve the current sorting and selected target, but clear the selected source.
 		var sourceSort = SourceDataGridView.SortDescriptions;

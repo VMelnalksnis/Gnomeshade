@@ -72,7 +72,24 @@ public sealed class CounterpartyViewModel : ViewModelBase
 	public static async Task<CounterpartyViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
 		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty)).ToList();
+		var userCounterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
+		var counterpartyRows = counterparties.Select(counterparty =>
+		{
+			var loans = gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
+			var issued = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == counterparty.Id &&
+					loan.ReceivingCounterpartyId == userCounterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			var received = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == userCounterparty.Id &&
+					loan.ReceivingCounterpartyId == counterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			return new CounterpartyRow(counterparty, issued - received);
+		}).ToList();
 		return new(gnomeshadeClient, counterpartyRows);
 	}
 
@@ -88,7 +105,24 @@ public sealed class CounterpartyViewModel : ViewModelBase
 	private void CounterpartyOnUpserted(object? sender, UpsertedEventArgs e)
 	{
 		var counterparties = Task.Run(() => _gnomeshadeClient.GetCounterpartiesAsync()).Result;
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty));
+		var userCounterparty = _gnomeshadeClient.GetMyCounterpartyAsync().Result;
+		var counterpartyRows = counterparties.Select(counterparty =>
+		{
+			var loans = _gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
+			var issued = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == counterparty.Id &&
+					loan.ReceivingCounterpartyId == userCounterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			var received = loans
+				.Where(loan =>
+					loan.IssuingCounterpartyId == userCounterparty.Id &&
+					loan.ReceivingCounterpartyId == counterparty.Id)
+				.Sum(loan => loan.Amount);
+
+			return new CounterpartyRow(counterparty, issued - received);
+		}).ToList();
 		Counterparties = new(counterpartyRows);
 	}
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Loans;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -25,6 +26,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	private TransferViewModel? _transfers;
 	private PurchaseViewModel? _purchases;
 	private LinkViewModel? _links;
+	private LoanViewModel? _loans;
 
 	private TransactionUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
@@ -43,13 +45,15 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		Guid id,
 		TransferViewModel transfers,
 		PurchaseViewModel purchases,
-		LinkViewModel links)
+		LinkViewModel links,
+		LoanViewModel loans)
 		: this(gnomeshadeClient, dateTimeZoneProvider)
 	{
 		_id = id;
 		Transfers = transfers;
 		Purchases = purchases;
 		Links = links;
+		Loans = loans;
 	}
 
 	/// <summary>Gets the transaction information.</summary>
@@ -76,6 +80,13 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		private set => SetAndNotify(ref _links, value);
 	}
 
+	/// <summary>Gets view model of all loans of this transaction.</summary>
+	public LoanViewModel? Loans
+	{
+		get => _loans;
+		private set => SetAndNotify(ref _loans, value);
+	}
+
 	/// <inheritdoc />
 	public override bool CanSave => Properties.IsValid;
 
@@ -97,8 +108,17 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, id).ConfigureAwait(false);
 		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
+		var loanViewModel = await LoanViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 
-		var viewModel = new TransactionUpsertionViewModel(gnomeshadeClient, dateTimeZoneProvider, id, transferViewModel, purchaseViewModel, linkViewModel);
+		var viewModel = new TransactionUpsertionViewModel(
+			gnomeshadeClient,
+			dateTimeZoneProvider,
+			id,
+			transferViewModel,
+			purchaseViewModel,
+			linkViewModel,
+			loanViewModel);
+
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
@@ -138,6 +158,11 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		{
 			await Links.RefreshAsync().ConfigureAwait(false);
 		}
+
+		if (Loans is not null)
+		{
+			await Loans.RefreshAsync().ConfigureAwait(false);
+		}
 	}
 
 	/// <inheritdoc />
@@ -158,6 +183,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		Transfers ??= await TransferViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider, _id.Value).ConfigureAwait(false);
 		Links ??= await LinkViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
+		Loans ??= await LoanViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 
 		return _id.Value;
 	}

@@ -12,6 +12,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
+using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Loans;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
@@ -130,6 +131,14 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="LinkViewModel"/> for use during design time.</summary>
 	public static LinkViewModel LinkViewModel { get; } =
 		LinkViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>Gets an instance of <see cref="LoanUpsertionViewModel"/> for use during design time.</summary>
+	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
+		LoanUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+
+	/// <summary>Gets an instance of <see cref="LoanViewModel"/> for use during design time.</summary>
+	public static LoanViewModel LoanViewModel { get; } =
+		LoanViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
 
 	/// <summary>Gets an instance of <see cref="TransactionSummary"/> for use during design time.</summary>
 	public static TransactionSummary TransactionSummary { get; } = new();

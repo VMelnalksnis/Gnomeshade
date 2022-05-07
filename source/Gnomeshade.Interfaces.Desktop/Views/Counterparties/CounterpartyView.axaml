@@ -25,6 +25,10 @@
 					x:DataType="c:CounterpartyRow"
 					Header="Name" IsReadOnly="True"
 					Binding="{Binding Name, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="c:CounterpartyRow"
+					Header="Loans" IsReadOnly="True"
+					Binding="{Binding LoanBalance, Mode=OneWay, StringFormat=\{0:N2\}}" />
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>
