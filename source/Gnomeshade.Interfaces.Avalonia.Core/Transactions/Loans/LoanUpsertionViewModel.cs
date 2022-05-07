@@ -119,13 +119,13 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	public override async Task RefreshAsync()
 	{
+		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+
 		if (_id is null)
 		{
 			return;
 		}
-
-		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 
 		var loan = await GnomeshadeClient.GetLoanAsync(_transactionId, _id.Value);
 		IssuingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId);
