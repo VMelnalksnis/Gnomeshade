@@ -13,12 +13,12 @@
 		<PackageReference Include="AutoMapper" Version="11.0.1"/>
 		<PackageReference Include="Elastic.Apm.AspNetCore" Version="1.14.1"/>
 		<PackageReference Include="Elastic.Apm.Elasticsearch" Version="1.14.1"/>
-		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.14.1"/>
+		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.15.0"/>
 		<PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
 		<PackageReference Include="Elastic.Apm.SqlClient" Version="1.14.1"/>
 		<PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
 		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4"/>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.5"/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.4"/>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
