@@ -13,7 +13,7 @@
 		<PackageReference Include="AutoMapper" Version="11.0.1"/>
 		<PackageReference Include="Elastic.Apm.AspNetCore" Version="1.14.1"/>
 		<PackageReference Include="Elastic.Apm.Elasticsearch" Version="1.14.1"/>
-		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.14.1"/>
+		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.15.0"/>
 		<PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
 		<PackageReference Include="Elastic.Apm.SqlClient" Version="1.14.1"/>
 		<PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
