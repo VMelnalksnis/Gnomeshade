@@ -93,6 +93,7 @@ public sealed class CategoryCreationViewModel : UpsertionViewModel
 		if (editedCategory is not null)
 		{
 			categories.Remove(editedCategory);
+			SelectedCategory = categories.SingleOrDefault(category => category.Id == editedCategory.CategoryId);
 		}
 
 		Categories = categories;
