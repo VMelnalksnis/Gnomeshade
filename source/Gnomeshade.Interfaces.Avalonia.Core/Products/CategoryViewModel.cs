@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,11 +17,13 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private CategoryCreationViewModel _category;
+	private ObservableCollection<CategoryNode> _nodes;
 
 	private CategoryViewModel(IGnomeshadeClient gnomeshadeClient, CategoryCreationViewModel categoryCreationViewModel)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_category = categoryCreationViewModel;
+		_nodes = new();
 
 		Details.Upserted += OnCategoryUpserted;
 		PropertyChanged += OnPropertyChanged;
@@ -36,6 +39,13 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 			SetAndNotify(ref _category, value);
 			Details.Upserted += OnCategoryUpserted;
 		}
+	}
+
+	/// <summary>Gets all categories in a hierarchical structure.</summary>
+	public ObservableCollection<CategoryNode> Nodes
+	{
+		get => _nodes;
+		private set => SetAndNotify(ref _nodes, value);
 	}
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="CategoryViewModel"/> class.</summary>
@@ -58,6 +68,9 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 			var c = categories.SingleOrDefault(cc => cc.Id == category.CategoryId);
 			return new CategoryRow(category.Id, category.Name, category.Description, c?.Name);
 		}).ToList();
+
+		var rootNodes = categories.Where(category => category.CategoryId is null).Select(category => CategoryNode.FromCategory(category, categories));
+		Nodes = new(rootNodes);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		Rows = new(categoryRows);

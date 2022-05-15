@@ -13,7 +13,7 @@
 
 	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
 		<DataGrid
-			Grid.Column="0" Grid.Row="0"
+			Grid.Column="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			Items="{Binding DataGridView, Mode=TwoWay}"
@@ -46,8 +46,15 @@
 			</DataGrid.Styles>
 		</DataGrid>
 
-		<UserControl
-			Grid.Column="1" Grid.Row="0"
-			Content="{Binding Details, Mode=OneWay}"/>
+		<Grid Grid.Column="1" RowDefinitions="Auto,*">
+			<UserControl Grid.Row="0" Content="{Binding Details, Mode=OneWay}"/>
+			<TreeView Grid.Row="1" Items="{Binding Nodes}">
+				<TreeView.ItemTemplate>
+					<TreeDataTemplate ItemsSource="{Binding Nodes}">
+						<TextBlock Text="{Binding Name}"/>
+					</TreeDataTemplate>
+				</TreeView.ItemTemplate>
+			</TreeView>
+		</Grid>
 	</Grid>
 </UserControl>
