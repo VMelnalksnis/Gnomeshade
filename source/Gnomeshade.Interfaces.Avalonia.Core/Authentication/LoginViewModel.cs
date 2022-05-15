@@ -10,9 +10,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 
-/// <summary>
-/// Form for authenticating the current user.
-/// </summary>
+/// <summary>Form for authenticating the current user.</summary>
 public sealed class LoginViewModel : ViewModelBase
 {
 	private readonly IAuthenticationService _authenticationService;
@@ -21,70 +19,59 @@ public sealed class LoginViewModel : ViewModelBase
 	private string? _username;
 	private string? _password;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="LoginViewModel"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="LoginViewModel"/> class.</summary>
 	/// <param name="authenticationService">Service for handling authentication.</param>
 	public LoginViewModel(IAuthenticationService authenticationService)
 	{
 		_authenticationService = authenticationService;
 	}
 
-	/// <summary>
-	/// Raised when a user has successfully logged in.
-	/// </summary>
+	/// <summary>Raised when a user has successfully logged in.</summary>
 	public event EventHandler? UserLoggedIn;
 
-	/// <summary>
-	/// Gets or sets the error message to display after a failed log in attempt.
-	/// </summary>
+	/// <summary>Gets or sets the error message to display after a failed log in attempt.</summary>
 	public string? ErrorMessage
 	{
 		get => _errorMessage;
 		set => SetAndNotifyWithGuard(ref _errorMessage, value, nameof(ErrorMessage), nameof(IsErrorMessageVisible));
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether or not the <see cref="ErrorMessage"/> should be visible.
-	/// </summary>
+	/// <summary>Gets a value indicating whether or not the <see cref="ErrorMessage"/> should be visible.</summary>
 	public bool IsErrorMessageVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-	/// <summary>
-	/// Gets or sets the username entered by the user.
-	/// </summary>
+	/// <summary>Gets or sets the username entered by the user.</summary>
 	public string? Username
 	{
 		get => _username;
 		set => SetAndNotifyWithGuard(ref _username, value, nameof(Username), nameof(CanLogIn));
 	}
 
-	/// <summary>
-	/// Gets or sets the password entered by the user.
-	/// </summary>
+	/// <summary>Gets or sets the password entered by the user.</summary>
 	public string? Password
 	{
 		get => _password;
 		set => SetAndNotifyWithGuard(ref _password, value, nameof(Password), nameof(CanLogIn));
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether or not the user can log in.
-	/// </summary>
+	/// <summary>Gets a value indicating whether or not the user can log in.</summary>
 	public bool CanLogIn => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
-	/// <summary>
-	/// Authenticate using an external identity provider.
-	/// </summary>
+	/// <summary>Authenticate using an external identity provider.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AuthenticateExternallyAsync()
 	{
-		await _authenticationService.SocialLogin().ConfigureAwait(false);
-		OnUserLoggedIn();
+		try
+		{
+			await _authenticationService.SocialLogin().ConfigureAwait(false);
+			OnUserLoggedIn();
+		}
+		catch (Exception e)
+		{
+			ErrorMessage = e.Message;
+		}
 	}
 
-	/// <summary>
-	/// Attempts to log in using the specified credentials.
-	/// </summary>
+	/// <summary>Attempts to log in using the specified credentials.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
 	public async Task LogInAsync()

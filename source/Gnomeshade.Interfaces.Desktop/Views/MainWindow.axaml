@@ -68,6 +68,9 @@
 					<MenuItem
 						x:Name="Units" Header="_Units"
 						Command="{ReflectionBinding SwitchToUnitAsync}" />
+					<MenuItem
+						x:Name="CategoryReport" Header="Category Report"
+						Command="{ReflectionBinding SwitchToCategoryReportAsync}" />
 				</MenuItem>
 			</Menu>
 

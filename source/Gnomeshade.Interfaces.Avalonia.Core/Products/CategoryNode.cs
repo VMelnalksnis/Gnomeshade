@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,10 +14,11 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 /// <summary>A hierarchical representation of a <see cref="Category"/>.</summary>
 public sealed class CategoryNode
 {
-	private CategoryNode(ObservableCollection<CategoryNode> nodes, string name)
+	private CategoryNode(ObservableCollection<CategoryNode> nodes, string name, Guid id)
 	{
 		Nodes = nodes;
 		Name = name;
+		Id = id;
 	}
 
 	/// <summary>Gets all categories in this category.</summary>
@@ -25,6 +27,9 @@ public sealed class CategoryNode
 	/// <summary>Gets the name of the category.</summary>
 	public string Name { get; }
 
+	/// <summary>Gets the id of the category.</summary>
+	public Guid Id { get; }
+
 	/// <summary>Initializes a new instance of the <see cref="CategoryNode"/> class.</summary>
 	/// <param name="category">The category for which to create the node.</param>
 	/// <param name="categories">All other categories from which to create child nodes.</param>
@@ -32,6 +37,11 @@ public sealed class CategoryNode
 	public static CategoryNode FromCategory(Category category, List<Category> categories)
 	{
 		var nodes = categories.Where(c => c.CategoryId == category.Id).Select(c => CategoryNode.FromCategory(c, categories));
-		return new(new(nodes), category.Name);
+		return new(new(nodes), category.Name, category.Id);
 	}
+
+	/// <summary>Checks whether this node or any node in <see cref="Nodes"/> has the specified id.</summary>
+	/// <param name="id">The id for which to check.</param>
+	/// <returns><see langword="true"/> if this node or any node in <see cref="Nodes"/> has the <paramref name="id"/>; otherwise <see langword="false"/>.</returns>
+	public bool Contains(Guid id) => Id == id || Nodes.Any(node => node.Contains(id));
 }

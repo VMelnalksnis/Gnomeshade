@@ -13,6 +13,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Interfaces.Avalonia.Core.Reports;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -196,6 +197,19 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 		var unitViewModel = await UnitViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
 		ActiveView = unitViewModel;
+	}
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryReportViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToCategoryReportAsync()
+	{
+		if (ActiveView is CategoryReportViewModel)
+		{
+			return;
+		}
+
+		var viewModel = await CategoryReportViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		ActiveView = viewModel;
 	}
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
