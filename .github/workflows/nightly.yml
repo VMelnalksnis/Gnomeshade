@@ -11,6 +11,7 @@ jobs:
         os: [ windows-latest ]
         runtime: [ win10-x64 ]
         project: [ source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj ]
+        build_number: [ ${GITHUB_RUN_NUMBER} ]
         archive_command: [ "7z a -mx9 -r gnomeshade_desktop_win-x64.zip" ]
         directory: [ source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/win10-x64/publish ]
         artifact: [ "**/win10-x64/publish/gnomeshade_desktop_win-x64.zip" ]
@@ -18,6 +19,7 @@ jobs:
           - os: ubuntu-latest
             runtime: linux-x64
             project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
+            build_number: ${GITHUB_RUN_NUMBER}
             archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
             directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
@@ -25,6 +27,7 @@ jobs:
           - os: ubuntu-latest
             runtime: linux-x64
             project: source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj
+            build_number: ${GITHUB_RUN_NUMBER}
             archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
             directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/linux-x64/publish
             artifact: "**/linux-x64/publish/gnomeshade_desktop_linux-x64.zip"
@@ -52,7 +55,7 @@ jobs:
           --configuration Release
           --self-contained
           -p:PublishSingleFile=true
-          -p:AssemblyVersion=0.1.0.${GITHUB_RUN_NUMBER}
+          -p:AssemblyVersion=0.1.0.${{ matrix.build_number }}
           -p:InformationalVersion=0.1.0-nightly+${{ matrix.runtime }}
           /warnAsError
           /nologo
