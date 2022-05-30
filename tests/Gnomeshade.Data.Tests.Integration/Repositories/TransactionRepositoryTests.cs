@@ -6,13 +6,9 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
-
-using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 

@@ -8,9 +8,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Equivalency;
-
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models;
@@ -20,8 +17,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using NodaTime;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions;
 

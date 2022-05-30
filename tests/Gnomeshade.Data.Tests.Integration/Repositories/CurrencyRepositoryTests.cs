@@ -8,11 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Gnomeshade.Data.Repositories;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 

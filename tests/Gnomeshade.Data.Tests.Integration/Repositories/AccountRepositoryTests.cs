@@ -7,9 +7,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Equivalency;
-
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.TestingHelpers.Data.Fakers;
@@ -17,8 +14,6 @@ using Gnomeshade.TestingHelpers.Data.Fakers;
 using NodaTime;
 
 using Npgsql;
-
-using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 

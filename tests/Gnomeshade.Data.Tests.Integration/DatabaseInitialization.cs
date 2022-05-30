@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using FluentAssertions;
-
 using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Migrations;
@@ -20,8 +18,6 @@ using NodaTime;
 
 using Npgsql;
 using Npgsql.Logging;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Data.Tests.Integration;
 

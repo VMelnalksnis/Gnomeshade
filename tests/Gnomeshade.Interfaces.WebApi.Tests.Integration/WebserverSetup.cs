@@ -19,8 +19,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
-using NUnit.Framework;
-
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 
 [SetUpFixture]

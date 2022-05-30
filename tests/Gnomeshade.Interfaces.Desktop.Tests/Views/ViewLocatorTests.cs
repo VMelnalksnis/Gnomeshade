@@ -6,12 +6,8 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 
-using FluentAssertions;
-
 using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Desktop.Tests.Views;
 

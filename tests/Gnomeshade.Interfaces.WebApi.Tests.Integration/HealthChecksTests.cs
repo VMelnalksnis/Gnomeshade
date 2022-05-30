@@ -5,11 +5,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 

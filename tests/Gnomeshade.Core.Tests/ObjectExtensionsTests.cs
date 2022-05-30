@@ -4,12 +4,7 @@
 
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using JetBrains.Annotations;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Core.Tests;
 

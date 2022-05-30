@@ -5,11 +5,7 @@
 using System;
 using System.Collections;
 
-using FluentAssertions;
-
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions.Controls;
 

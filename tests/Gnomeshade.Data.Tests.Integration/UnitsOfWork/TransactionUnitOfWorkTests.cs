@@ -6,17 +6,12 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Equivalency;
-
 using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.TestingHelpers.Data.Fakers;
 
 using NodaTime;
-
-using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 

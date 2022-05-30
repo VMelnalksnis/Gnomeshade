@@ -6,14 +6,9 @@ using System;
 
 using AutoMapper;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
 using JetBrains.Annotations;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
 

@@ -5,10 +5,6 @@
 using System.Net;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
-using NUnit.Framework;
-
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 
 public class AuthorizationTests

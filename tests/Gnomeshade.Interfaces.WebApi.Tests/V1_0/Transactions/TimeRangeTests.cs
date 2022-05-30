@@ -4,14 +4,9 @@
 
 using System;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 using NodaTime;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
 

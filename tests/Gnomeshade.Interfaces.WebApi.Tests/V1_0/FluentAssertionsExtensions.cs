@@ -5,8 +5,6 @@
 using System;
 using System.Linq.Expressions;
 
-using FluentAssertions.Equivalency;
-
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0;
 
 public static class FluentAssertionsExtensions

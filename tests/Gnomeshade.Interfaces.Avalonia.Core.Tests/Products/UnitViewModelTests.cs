@@ -6,12 +6,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
-
-using NUnit.Framework;
 
 using static Gnomeshade.Interfaces.Avalonia.Core.Products.UnitViewModel;
 

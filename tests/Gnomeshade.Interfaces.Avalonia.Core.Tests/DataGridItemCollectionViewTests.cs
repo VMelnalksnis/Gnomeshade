@@ -8,10 +8,6 @@ using System.Linq;
 
 using Avalonia.Collections;
 
-using FluentAssertions;
-
-using NUnit.Framework;
-
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests;
 
 public class DataGridItemCollectionViewTests

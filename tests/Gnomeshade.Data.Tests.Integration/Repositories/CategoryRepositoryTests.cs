@@ -6,12 +6,8 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.TestingHelpers.Data.Fakers;
-
-using NUnit.Framework;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 

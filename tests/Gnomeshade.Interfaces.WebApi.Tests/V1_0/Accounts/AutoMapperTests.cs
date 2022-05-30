@@ -7,15 +7,11 @@ using System.Linq;
 
 using AutoMapper;
 
-using FluentAssertions;
-
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 
 using NodaTime;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Accounts;
 

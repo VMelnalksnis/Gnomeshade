@@ -5,15 +5,10 @@
 using System;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Accounts;
 

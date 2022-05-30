@@ -8,14 +8,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Accounts;
 

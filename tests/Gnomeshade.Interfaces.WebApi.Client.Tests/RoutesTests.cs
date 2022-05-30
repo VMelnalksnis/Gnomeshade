@@ -4,11 +4,7 @@
 
 using System;
 
-using FluentAssertions;
-
 using NodaTime;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Client.Tests;
 

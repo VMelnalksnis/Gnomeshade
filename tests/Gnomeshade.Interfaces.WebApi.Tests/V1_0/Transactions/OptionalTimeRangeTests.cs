@@ -4,11 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using FluentAssertions;
-
 using Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.V1_0.Transactions;
 

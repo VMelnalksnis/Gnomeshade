@@ -4,10 +4,6 @@
 
 using Avalonia.Controls;
 
-using FluentAssertions;
-
-using NUnit.Framework;
-
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests;
 
 public class ViewLocatorTests

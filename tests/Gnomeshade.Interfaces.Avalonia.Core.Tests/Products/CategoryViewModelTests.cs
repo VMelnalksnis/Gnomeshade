@@ -5,12 +5,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Products;
 

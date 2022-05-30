@@ -4,10 +4,6 @@
 
 using System.Globalization;
 
-using FluentAssertions;
-
-using NUnit.Framework;
-
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests;
 
 public class DataGridTypedGroupDescriptionTests

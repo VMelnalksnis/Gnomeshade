@@ -6,13 +6,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using FluentAssertions;
-using FluentAssertions.Execution;
-
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
-
-using NUnit.Framework;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions.Transfers;
 
