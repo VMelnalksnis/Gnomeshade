@@ -11,7 +11,7 @@
 	<ItemGroup>
 		<PackageReference Include="Ardalis.SmartEnum" Version="2.1.0"/>
 		<PackageReference Include="AutoMapper" Version="11.0.1"/>
-		<PackageReference Include="Elastic.Apm.AspNetCore" Version="1.15.0"/>
+		<PackageReference Include="Elastic.Apm.AspNetCore" Version="1.16.0"/>
 		<PackageReference Include="Elastic.Apm.Elasticsearch" Version="1.15.0"/>
 		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.15.0"/>
 		<PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
