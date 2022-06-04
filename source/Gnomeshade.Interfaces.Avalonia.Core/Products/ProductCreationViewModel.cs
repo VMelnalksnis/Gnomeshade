@@ -146,7 +146,7 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var creationModel = new ProductCreationModel
+		var creationModel = new ProductCreation
 		{
 			Name = Name,
 			Sku = Sku,

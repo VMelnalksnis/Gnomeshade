@@ -60,7 +60,7 @@ public sealed class CounterpartyUpdateViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var counterparty = new CounterpartyCreationModel { Name = Name };
+		var counterparty = new CounterpartyCreation { Name = Name };
 		var id = _originalCounterparty?.Id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutCounterpartyAsync(id, counterparty).ConfigureAwait(false);
 		return id;

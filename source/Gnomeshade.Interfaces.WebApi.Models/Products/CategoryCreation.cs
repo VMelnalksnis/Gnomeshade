@@ -11,7 +11,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
 /// <summary>Information needed to create a category.</summary>
 [PublicAPI]
-public sealed class CategoryCreation
+public sealed record CategoryCreation
 {
 	/// <inheritdoc cref="Category.Name"/>
 	[Required]

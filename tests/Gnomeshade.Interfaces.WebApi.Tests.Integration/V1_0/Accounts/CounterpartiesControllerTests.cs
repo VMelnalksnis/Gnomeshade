@@ -31,7 +31,7 @@ public class CounterpartiesControllerTests
 	public async Task Put_ShouldUpdateExisting()
 	{
 		var id = Guid.NewGuid();
-		var creationModel = new CounterpartyCreationModel { Name = $"{id:N}" };
+		var creationModel = new CounterpartyCreation { Name = $"{id:N}" };
 
 		(await FluentActions
 				.Awaiting(() => _gnomeshadeClient.GetCounterpartyAsync(id))

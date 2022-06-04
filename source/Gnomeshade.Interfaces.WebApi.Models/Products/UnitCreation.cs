@@ -11,7 +11,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
 /// <summary>The information needed to create or update a unit.</summary>
 [PublicAPI]
-public sealed record UnitCreationModel
+public sealed record UnitCreation
 {
 	/// <inheritdoc cref="Unit.Name"/>
 	[Required]

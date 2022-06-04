@@ -7,18 +7,13 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
-/// <summary>
-/// The information needed to add a currency to an account.
-/// </summary>
+/// <summary>The information needed to add a currency to an account.</summary>
 [PublicAPI]
-public sealed record AccountInCurrencyCreationModel
+public sealed record AccountInCurrencyCreation
 {
-	/// <summary>
-	/// The id of the currency to add to an account.
-	/// </summary>
+	/// <summary>The id of the currency to add to an account.</summary>
 	[Required]
 	public Guid? CurrencyId { get; init; }
 }

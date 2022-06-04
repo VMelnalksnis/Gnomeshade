@@ -89,41 +89,37 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	[HttpPost]
 	[ProducesResponseType(typeof(Guid), Status201Created)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Post([FromBody] AccountCreationModel account)
+	public async Task<ActionResult> Post([FromBody] AccountCreation account)
 	{
-		var conflictingResult = await GetConflictResult(account, ApplicationUser);
-		if (conflictingResult is not null)
-		{
-			return conflictingResult;
-		}
-
-		var entity = Mapper.Map<AccountEntity>(account) with
-		{
-			OwnerId = ApplicationUser.Id,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			NormalizedName = account.Name!.ToUpperInvariant(),
-		};
-
-		var id = await _accountUnitOfWork.AddAsync(entity);
-		return CreatedAtAction(nameof(Get), new { id }, id);
+		return await CreateNewAccountAsync(account, ApplicationUser, Guid.NewGuid());
 	}
 
 	/// <inheritdoc cref="IAccountClient.PutAccountAsync"/>
 	/// <response code="201">A new account was created.</response>
 	/// <response code="204">An existing account was replaced.</response>
+	/// <response code="403">An account with the specified id already exists, but you do not have access to it.</response>
 	/// <response code="409">An account with the specified name already exists.</response>
 	[HttpPut("{id:guid}")]
 	[ProducesResponseType(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
+	[ProducesResponseType(Status403Forbidden)]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] AccountCreationModel account)
+	public async Task<ActionResult> Put(Guid id, [FromBody] AccountCreation account)
 	{
+		// todo this checks for READ access, but WRITE is needed
 		var existingAccount = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		if (existingAccount is not null)
+		{
+			return await UpdateExistingAccountAsync(account, ApplicationUser, existingAccount);
+		}
 
-		return existingAccount is null
-			? await PutNewAccountAsync(account, ApplicationUser, id)
-			: await UpdateExistingAccountAsync(account, ApplicationUser, existingAccount);
+		var conflictingAccount = await _repository.FindByIdAsync(id);
+		if (conflictingAccount is null)
+		{
+			return await CreateNewAccountAsync(account, ApplicationUser, id);
+		}
+
+		return Forbid();
 	}
 
 	/// <inheritdoc cref="IAccountClient.AddCurrencyToAccountAsync"/>
@@ -134,7 +130,7 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	[ProducesResponseType(Status201Created)]
 	[ProducesStatus404NotFound]
 	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Guid>> AddCurrency(Guid id, [FromBody] AccountInCurrencyCreationModel currency)
+	public async Task<ActionResult<Guid>> AddCurrency(Guid id, [FromBody] AccountInCurrencyCreation currency)
 	{
 		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
 		if (account is null)
@@ -204,7 +200,7 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		return Ok(models);
 	}
 
-	private async Task<ActionResult> PutNewAccountAsync(AccountCreationModel model, UserEntity user, Guid id)
+	private async Task<ActionResult> CreateNewAccountAsync(AccountCreation model, UserEntity user, Guid id)
 	{
 		var conflictingResult = await GetConflictResult(model, user);
 		if (conflictingResult is not null)
@@ -222,11 +218,11 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		};
 
 		_ = await _accountUnitOfWork.AddAsync(account);
-		return CreatedAtAction(nameof(Get), new { id }, string.Empty);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
 	private async Task<ActionResult> UpdateExistingAccountAsync(
-		AccountCreationModel model,
+		AccountCreation model,
 		UserEntity user,
 		AccountEntity existingAccount)
 	{
@@ -248,7 +244,7 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	}
 
 	private async Task<ActionResult?> GetConflictResult(
-		AccountCreationModel model,
+		AccountCreation model,
 		UserEntity user,
 		Guid? existingAccountId = null)
 	{

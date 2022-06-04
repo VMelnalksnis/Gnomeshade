@@ -27,7 +27,7 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<RegistrationModel, ApplicationUser>();
 		options.CreateMap<ApplicationUser, UserModel>();
 
-		options.CreateMap<TransactionCreationModel, TransactionEntity>();
+		options.CreateMap<TransactionCreation, TransactionEntity>();
 		options.CreateMap<TransactionEntity, Transaction>();
 
 		options.CreateMap<PurchaseCreation, PurchaseEntity>();
@@ -37,25 +37,25 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<TransferEntity, Transfer>();
 
 		options.CreateMap<AccountEntity, Account>();
-		options.CreateMap<AccountCreationModel, AccountEntity>();
+		options.CreateMap<AccountCreation, AccountEntity>();
 
 		options.CreateMap<AccountInCurrencyEntity, AccountInCurrency>();
-		options.CreateMap<AccountInCurrencyCreationModel, AccountInCurrencyEntity>();
+		options.CreateMap<AccountInCurrencyCreation, AccountInCurrencyEntity>();
 
 		options.CreateMap<CounterpartyEntity, Counterparty>();
-		options.CreateMap<CounterpartyCreationModel, CounterpartyEntity>();
+		options.CreateMap<CounterpartyCreation, CounterpartyEntity>();
 
 		options.CreateMap<CurrencyEntity, Currency>();
 		options.CreateMap<Currency, CurrencyEntity>();
 
 		options.CreateMap<ProductEntity, Product>();
-		options.CreateMap<ProductCreationModel, ProductEntity>();
+		options.CreateMap<ProductCreation, ProductEntity>();
 
 		options.CreateMap<CategoryEntity, Category>();
 		options.CreateMap<CategoryCreation, CategoryEntity>();
 
 		options.CreateMap<UnitEntity, Unit>();
-		options.CreateMap<UnitCreationModel, UnitEntity>();
+		options.CreateMap<UnitCreation, UnitEntity>();
 
 		options.CreateMap<LinkEntity, Link>();
 		options.CreateMap<LinkCreation, LinkEntity>();

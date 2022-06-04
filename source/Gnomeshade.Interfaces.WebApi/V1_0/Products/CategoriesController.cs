@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +23,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 /// <summary>CRUD operations on categories.</summary>
-public sealed class CategoriesController : FinanceControllerBase<CategoryEntity, Category>
+public sealed class CategoriesController : CreatableBase<CategoryRepository, CategoryEntity, Category, CategoryCreation>
 {
-	private readonly CategoryRepository _repository;
-
 	/// <summary>Initializes a new instance of the <see cref="CategoriesController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
@@ -39,73 +35,63 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 		Mapper mapper,
 		ILogger<CategoriesController> logger,
 		CategoryRepository repository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IProductClient.GetCategoriesAsync"/>
 	/// <response code="200">Successfully got the categories.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Category>), Status200OK)]
-	public async Task<ActionResult<List<Category>>> Get(CancellationToken cancellationToken = default)
-	{
-		var tagEntities = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var categories = tagEntities.Select(MapToModel).ToList();
-		return Ok(categories);
-	}
+	public override Task<List<Category>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetCategoryAsync"/>
 	/// <response code="200">Successfully got the category.</response>
 	/// <response code="404">Category with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(Category), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Category>> Get(Guid id, CancellationToken cancellationToken = default)
-	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
-	}
+	public override Task<ActionResult<Category>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.PutCategoryAsync"/>
 	/// <response code="201">A new category was created.</response>
 	/// <response code="409">A category with the specified name already exists.</response>
-	[HttpPost]
-	[ProducesResponseType(Status201Created)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Guid>> Post([FromBody] CategoryCreation category)
-	{
-		return await CreateCategoryAsync(category, ApplicationUser, Guid.NewGuid());
-	}
+	public override Task<ActionResult> Post([FromBody] CategoryCreation category) =>
+		base.Post(category);
 
 	/// <inheritdoc cref="IProductClient.PutCategoryAsync"/>
 	/// <response code="201">A new category was created.</response>
 	/// <response code="204">An existing category was replaced.</response>
 	/// <response code="409">A category with the specified name already exists.</response>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] CategoryCreation category)
-	{
-		var existingCategory = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-		return existingCategory is null
-			? await CreateCategoryAsync(category, ApplicationUser, id)
-			: await UpdateCategoryAsync(category, ApplicationUser, id);
-	}
+	public override Task<ActionResult> Put(Guid id, [FromBody] CategoryCreation category) =>
+		base.Put(id, category);
 
 	/// <inheritdoc cref="IProductClient.DeleteCategoryAsync"/>
 	/// <response code="204">The category was deleted successfully.</response>
-	[HttpDelete("{id:guid}")]
-	public async Task<StatusCodeResult> Delete(Guid id)
+	// ReSharper disable once RedundantOverriddenMember
+	public override Task<StatusCodeResult> Delete(Guid id) =>
+		base.Delete(id);
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, CategoryCreation creation, UserEntity user)
 	{
-		var deletedCount = await _repository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<CategoryEntity>(id, deletedCount);
+		var category = Mapper.Map<CategoryEntity>(creation) with
+		{
+			Id = id,
+			OwnerId = user.Id, // todo only works for entities created by the user
+			ModifiedByUserId = user.Id,
+			NormalizedName = creation.Name.ToUpperInvariant(),
+		};
+
+		_ = await Repository.UpdateAsync(category);
+		return NoContent();
 	}
 
-	private async Task<ActionResult> CreateCategoryAsync(CategoryCreation model, UserEntity user, Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, CategoryCreation creation, UserEntity user)
 	{
-		var normalizedName = model.Name.ToUpperInvariant();
-		var conflictingCategory = await _repository.FindByNameAsync(normalizedName, user.Id);
+		var normalizedName = creation.Name.ToUpperInvariant();
+		var conflictingCategory = await Repository.FindByNameAsync(normalizedName, user.Id);
 		if (conflictingCategory is not null)
 		{
 			return Problem(
@@ -114,7 +100,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 				Status409Conflict);
 		}
 
-		var category = Mapper.Map<CategoryEntity>(model) with
+		var category = Mapper.Map<CategoryEntity>(creation) with
 		{
 			Id = id,
 			OwnerId = user.Id,
@@ -123,21 +109,7 @@ public sealed class CategoriesController : FinanceControllerBase<CategoryEntity,
 			NormalizedName = normalizedName,
 		};
 
-		_ = await _repository.AddAsync(category);
+		_ = await Repository.AddAsync(category);
 		return CreatedAtAction(nameof(Get), new { id }, id);
-	}
-
-	private async Task<NoContentResult> UpdateCategoryAsync(CategoryCreation model, UserEntity user, Guid id)
-	{
-		var category = Mapper.Map<CategoryEntity>(model) with
-		{
-			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
-			NormalizedName = model.Name.ToUpperInvariant(),
-			ModifiedByUserId = user.Id,
-		};
-
-		_ = await _repository.UpdateAsync(category);
-		return NoContent();
 	}
 }

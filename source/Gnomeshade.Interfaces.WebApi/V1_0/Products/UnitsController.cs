@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
@@ -26,67 +24,66 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 /// <summary>CRUD operations on unit entity.</summary>
-public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
+public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, Unit, UnitCreation>
 {
-	private readonly UnitRepository _repository;
-
 	/// <summary>Initializes a new instance of the <see cref="UnitsController"/> class.</summary>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
 	public UnitsController(
-		UnitRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<UnitsController> logger)
-		: base(applicationUserContext, mapper, logger)
+		ILogger<UnitsController> logger,
+		UnitRepository repository)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IProductClient.GetUnitAsync"/>
 	/// <response code="200">Unit with the specified id exists.</response>
 	/// <response code="404">Unit with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(Unit), Status200OK)]
-	[ProducesResponseType(typeof(ProblemDetails), Status404NotFound)]
-	public async Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken)
-	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
-	}
+	public override Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetUnitsAsync"/>
 	/// <response code="200">Successfully got all units.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Unit>), Status200OK)]
-	public async Task<ActionResult<List<Unit>>> GetAll(CancellationToken cancellationToken)
-	{
-		var units = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var models = units.Select(MapToModel).ToList();
-		return Ok(models);
-	}
+	public override Task<List<Unit>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.PutUnitAsync"/>
 	/// <response code="201">A new unit was created.</response>
 	/// <response code="204">An existing unit was replaced.</response>
 	/// <response code="409">A unit with the specified name already exists.</response>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody, BindRequired] UnitCreationModel model)
+	public override Task<ActionResult> Put(Guid id, [FromBody, BindRequired] UnitCreation unit) =>
+		base.Put(id, unit);
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		UnitCreation creation,
+		UserEntity user)
 	{
-		var existingUnit = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-		return existingUnit is null
-			? await PutNewUnitAsync(model, ApplicationUser, id)
-			: await UpdateExistingUnitAsync(model, ApplicationUser, id);
+		var unit = Mapper.Map<UnitEntity>(creation) with
+		{
+			Id = id,
+			OwnerId = user.Id, // todo only works for entities created by the user
+			NormalizedName = creation.Name!.ToUpperInvariant(),
+			ModifiedByUserId = user.Id,
+		};
+
+		_ = await Repository.UpdateAsync(unit);
+		return NoContent();
 	}
 
-	private async Task<ActionResult> PutNewUnitAsync(UnitCreationModel model, UserEntity user, Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, UnitCreation creation, UserEntity user)
 	{
-		var normalizedName = model.Name!.ToUpperInvariant();
-		var conflictingUnit = await _repository.FindByNameAsync(normalizedName, user.Id);
+		var normalizedName = creation.Name!.ToUpperInvariant();
+		var conflictingUnit = await Repository.FindByNameAsync(normalizedName, user.Id);
 		if (conflictingUnit is not null)
 		{
 			return Problem(
@@ -95,7 +92,7 @@ public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
 				Status409Conflict);
 		}
 
-		var unit = Mapper.Map<UnitEntity>(model) with
+		var unit = Mapper.Map<UnitEntity>(creation) with
 		{
 			Id = id,
 			OwnerId = user.Id,
@@ -104,21 +101,7 @@ public sealed class UnitsController : FinanceControllerBase<UnitEntity, Unit>
 			NormalizedName = normalizedName,
 		};
 
-		_ = await _repository.AddAsync(unit);
-		return CreatedAtAction(nameof(Get), new { id }, null);
-	}
-
-	private async Task<ActionResult> UpdateExistingUnitAsync(UnitCreationModel model, UserEntity user, Guid id)
-	{
-		var unit = Mapper.Map<UnitEntity>(model) with
-		{
-			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
-			NormalizedName = model.Name!.ToUpperInvariant(),
-			ModifiedByUserId = user.Id,
-		};
-
-		_ = await _repository.UpdateAsync(unit);
-		return NoContent();
+		_ = await Repository.AddAsync(unit);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

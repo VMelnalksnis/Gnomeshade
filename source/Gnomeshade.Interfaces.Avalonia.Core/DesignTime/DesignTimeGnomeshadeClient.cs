@@ -217,22 +217,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<List<Counterparty>> GetCounterpartiesAsync() => Task.FromResult(_counterparties.ToList());
 
 	/// <inheritdoc />
-	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
+	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty) =>
+	public Task PutCounterpartyAsync(Guid id, CounterpartyCreation counterparty) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+	public Task<Guid> CreateTransactionAsync(TransactionCreation transaction) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction)
+	public Task PutTransactionAsync(Guid id, TransactionCreation transaction)
 	{
 		var existingTransaction = _transactions.SingleOrDefault(t => t.Id == id);
 		if (existingTransaction is not null)
@@ -431,13 +431,13 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Guid> CreateAccountAsync(AccountCreationModel account) => throw new NotImplementedException();
+	public Task<Guid> CreateAccountAsync(AccountCreation account) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task PutAccountAsync(Guid id, AccountCreationModel account) => throw new NotImplementedException();
+	public Task PutAccountAsync(Guid id, AccountCreation account) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreation currency) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
@@ -492,7 +492,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task PutProductAsync(Guid id, ProductCreationModel product)
+	public Task PutProductAsync(Guid id, ProductCreation product)
 	{
 		var model = new Product
 		{
@@ -513,7 +513,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task PutUnitAsync(Guid id, UnitCreationModel unit)
+	public Task PutUnitAsync(Guid id, UnitCreation unit)
 	{
 		var model = new Unit
 		{

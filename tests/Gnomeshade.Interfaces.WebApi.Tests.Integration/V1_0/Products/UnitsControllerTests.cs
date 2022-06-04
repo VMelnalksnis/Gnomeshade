@@ -68,7 +68,7 @@ public class UnitsControllerTests
 		_ = await PutAndGet(productId, anotherCreationModel);
 	}
 
-	private static UnitCreationModel CreateUniqueUnit()
+	private static UnitCreation CreateUniqueUnit()
 	{
 		return new() { Name = Guid.NewGuid().ToString("N") };
 	}
@@ -87,9 +87,9 @@ public class UnitsControllerTests
 			.Excluding(model => model.ParentUnitId);
 	}
 
-	private async Task<Unit> PutAndGet(Guid id, UnitCreationModel creationModel)
+	private async Task<Unit> PutAndGet(Guid id, UnitCreation creation)
 	{
-		await _client.PutUnitAsync(id, creationModel);
+		await _client.PutUnitAsync(id, creation);
 		return await _client.GetUnitAsync(id);
 	}
 }

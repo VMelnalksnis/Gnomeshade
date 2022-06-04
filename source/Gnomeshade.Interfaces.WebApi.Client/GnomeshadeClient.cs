@@ -122,11 +122,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Counterparty>>(_counterpartyUri);
 
 	/// <inheritdoc />
-	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty) =>
+	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
 		PostAsync(_counterpartyUri, counterparty);
 
 	/// <inheritdoc />
-	public Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty) =>
+	public Task PutCounterpartyAsync(Guid id, CounterpartyCreation counterparty) =>
 		PutAsync(CounterpartyIdUri(id), counterparty);
 
 	/// <inheritdoc />
@@ -137,11 +137,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc/>
-	public Task<Guid> CreateTransactionAsync(TransactionCreationModel transaction) =>
+	public Task<Guid> CreateTransactionAsync(TransactionCreation transaction) =>
 		PostAsync(Transactions._uri, transaction);
 
 	/// <inheritdoc />
-	public Task PutTransactionAsync(Guid id, TransactionCreationModel transaction) =>
+	public Task PutTransactionAsync(Guid id, TransactionCreation transaction) =>
 		PutAsync(Transactions.IdUri(id), transaction);
 
 	/// <inheritdoc />
@@ -233,15 +233,15 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Account>>(Accounts._uri);
 
 	/// <inheritdoc />
-	public Task<Guid> CreateAccountAsync(AccountCreationModel account) =>
+	public Task<Guid> CreateAccountAsync(AccountCreation account) =>
 		PostAsync(Accounts._uri, account);
 
 	/// <inheritdoc />
-	public Task PutAccountAsync(Guid id, AccountCreationModel account) =>
+	public Task PutAccountAsync(Guid id, AccountCreation account) =>
 		PutAsync(Accounts.IdUri(id), account);
 
 	/// <inheritdoc />
-	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency) =>
+	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreation currency) =>
 		PostAsync(Accounts.CurrencyUri(id), currency);
 
 	/// <inheritdoc />
@@ -273,11 +273,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Unit>>(_unitUri);
 
 	/// <inheritdoc />
-	public Task PutProductAsync(Guid id, ProductCreationModel product) =>
+	public Task PutProductAsync(Guid id, ProductCreation product) =>
 		PutAsync(Products.IdUri(id), product);
 
 	/// <inheritdoc />
-	public Task PutUnitAsync(Guid id, UnitCreationModel unit) =>
+	public Task PutUnitAsync(Guid id, UnitCreation unit) =>
 		PutAsync(UnitIdUri(id), unit);
 
 	/// <inheritdoc />

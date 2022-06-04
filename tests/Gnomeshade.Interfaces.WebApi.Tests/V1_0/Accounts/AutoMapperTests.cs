@@ -28,7 +28,7 @@ public class AutoMapperTests
 	[Test]
 	public void AccountCreationModel()
 	{
-		var creationModel = new AccountCreationModel
+		var creationModel = new AccountCreation
 		{
 			Name = "Spending",
 			CounterpartyId = Guid.NewGuid(),
@@ -44,13 +44,13 @@ public class AutoMapperTests
 			.Should()
 			.BeEquivalentTo(
 				creationModel,
-				options => options.ByMembersExcluding<AccountCreationModel, AccountEntity>(model => model.Currencies));
+				options => options.ByMembersExcluding<AccountCreation, AccountEntity>(model => model.Currencies));
 	}
 
 	[Test]
 	public void AccountInCurrencyCreationModel()
 	{
-		var creationModel = new AccountInCurrencyCreationModel
+		var creationModel = new AccountInCurrencyCreation
 		{
 			CurrencyId = Guid.NewGuid(),
 		};
@@ -61,7 +61,7 @@ public class AutoMapperTests
 			.Should()
 			.BeEquivalentTo(
 				creationModel,
-				options => options.ByMembers<AccountInCurrencyCreationModel, AccountInCurrencyEntity>());
+				options => options.ByMembers<AccountInCurrencyCreation, AccountInCurrencyEntity>());
 	}
 
 	[Test]

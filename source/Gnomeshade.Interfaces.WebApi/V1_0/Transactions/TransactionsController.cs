@@ -29,9 +29,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 
 /// <summary>CRUD operations on transaction entity.</summary>
-public sealed class TransactionsController : FinanceControllerBase<TransactionEntity, Transaction>
+public sealed class TransactionsController : CreatableBase<TransactionRepository, TransactionEntity, Transaction, TransactionCreation>
 {
-	private readonly TransactionRepository _repository;
 	private readonly TransferRepository _transferRepository;
 	private readonly PurchaseRepository _purchaseRepository;
 	private readonly LoanRepository _loanRepository;
@@ -55,9 +54,8 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		TransferRepository transferRepository,
 		PurchaseRepository purchaseRepository,
 		LoanRepository loanRepository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
 		_purchaseRepository = purchaseRepository;
@@ -67,12 +65,10 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(Transaction), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellation)
+	public override Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellationToken)
 	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
+		return base.Get(id, cancellationToken);
 	}
 
 	/// <summary>Gets all transactions.</summary>
@@ -82,48 +78,25 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <response code="200">Successfully got all transactions.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
-	public async Task<ActionResult<List<Transaction>>> GetAll(
+	public async Task<List<Transaction>> GetAll(
 		[FromQuery] OptionalTimeRange timeRange,
 		CancellationToken cancellation)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-
-		var transactions = await _repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
-		var transactionModels = transactions.Select(MapToModel).ToList();
-		return Ok(transactionModels);
+		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
+		return transactions.Select(MapToModel).ToList();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.CreateTransactionAsync"/>
 	/// <response code="201">Transaction was successfully created.</response>
-	[HttpPost]
-	[ProducesResponseType(typeof(Guid), Status201Created)]
-	public async Task<ActionResult<Guid>> Post([FromBody] TransactionCreationModel transaction)
-	{
-		var entity = Mapper.Map<TransactionEntity>(transaction) with
-		{
-			OwnerId = ApplicationUser.Id, // todo
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			ImportedAt = transaction.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
-			ReconciledByUserId = transaction.ReconciledAt is null ? null : ApplicationUser.Id,
-		};
-
-		var transactionId = await _unitOfWork.AddAsync(entity);
-		return CreatedAtAction(nameof(Get), new { id = transactionId }, transactionId);
-	}
+	public override Task<ActionResult> Post([FromBody] TransactionCreation transaction) =>
+		base.Post(transaction);
 
 	/// <inheritdoc cref="ITransactionClient.PutTransactionAsync"/>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	public async Task<ActionResult> Put(Guid id, [FromBody] TransactionCreationModel transaction)
-	{
-		var existingTransaction = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-
-		return existingTransaction is null
-			? await CreateNewTransactionAsync(transaction, ApplicationUser, id)
-			: await UpdateExistingTransactionAsync(transaction, ApplicationUser, existingTransaction);
-	}
+	/// <response code="201">Transaction was successfully created.</response>
+	/// <response code="204">Transaction was successfully updated.</response>
+	public override Task<ActionResult> Put(Guid id, [FromBody] TransactionCreation transaction) =>
+		base.Put(id, transaction);
 
 	/// <inheritdoc cref="ITransactionClient.DeleteTransactionAsync"/>
 	/// <response code="204">Transaction was successfully deleted.</response>
@@ -131,9 +104,9 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpDelete("{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> Delete(Guid id)
+	public override async Task<StatusCodeResult> Delete(Guid id)
 	{
-		var transaction = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(id, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return NotFound();
@@ -149,18 +122,24 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesResponseType(typeof(List<Link>), Status200OK)]
 	public async Task<List<Link>> GetLinks(Guid transactionId, CancellationToken cancellationToken)
 	{
-		var links = await _repository.GetAllLinksAsync(transactionId, ApplicationUser.Id, cancellationToken);
-		var models = links.Select(link => Mapper.Map<Link>(link)).ToList();
-		return models;
+		var links = await Repository.GetAllLinksAsync(transactionId, ApplicationUser.Id, cancellationToken);
+		return links.Select(link => Mapper.Map<Link>(link)).ToList();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.AddLinkToTransactionAsync"/>
 	/// <response code="204">Successfully added link to transaction.</response>
 	[HttpPut("{transactionId:guid}/Links/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
 	public async Task<ActionResult> AddLink(Guid transactionId, Guid id)
 	{
-		await _repository.AddLinkAsync(transactionId, id, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
+		await Repository.AddLinkAsync(transactionId, id, ApplicationUser.Id);
 		return NoContent();
 	}
 
@@ -168,9 +147,16 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	/// <response code="204">Successfully removed link to transaction.</response>
 	[HttpDelete("{transactionId:guid}/Links/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
 	public async Task<ActionResult> RemoveLink(Guid transactionId, Guid id)
 	{
-		await _repository.RemoveLinkAsync(transactionId, id, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
+		await Repository.RemoveLinkAsync(transactionId, id, ApplicationUser.Id);
 		return NoContent();
 	}
 
@@ -183,8 +169,7 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 		CancellationToken cancellationToken)
 	{
 		var transfers = await _transferRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
-		var models = transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
-		return models;
+		return transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
@@ -218,9 +203,12 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutTransfer(Guid transactionId, Guid id, [FromBody] TransferCreation transfer)
 	{
-		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
 		{
-			return NotFound();
+			return await Repository.FindByIdAsync(transactionId) is null
+				? NotFound()
+				: Forbid();
 		}
 
 		var existingTransfer = await _transferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
@@ -249,8 +237,14 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpDelete("{transactionId:guid}/Transfers/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> DeleteTransfer(Guid transactionId, Guid id)
+	public async Task<ActionResult> DeleteTransfer(Guid transactionId, Guid id)
 	{
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
 		// todo add transaction id
 		var deletedCount = await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
 		return DeletedEntity<TransferEntity>(id, deletedCount);
@@ -300,9 +294,12 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutPurchase(Guid transactionId, Guid id, [FromBody] PurchaseCreation purchase)
 	{
-		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
 		{
-			return NotFound();
+			return await Repository.FindByIdAsync(transactionId) is null
+				? NotFound()
+				: Forbid();
 		}
 
 		var existingPurchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
@@ -331,8 +328,14 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpDelete("{transactionId:guid}/Purchases/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> DeletePurchase(Guid transactionId, Guid id)
+	public async Task<ActionResult> DeletePurchase(Guid transactionId, Guid id)
 	{
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
 		// todo add transaction id
 		var deletedCount = await _purchaseRepository.DeleteAsync(id, ApplicationUser.Id);
 		return DeletedEntity<PurchaseEntity>(id, deletedCount);
@@ -382,9 +385,12 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutLoan(Guid transactionId, Guid id, [FromBody] LoanCreation loan)
 	{
-		if (await _repository.FindByIdAsync(transactionId, ApplicationUser.Id) is null)
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
 		{
-			return NotFound();
+			return await Repository.FindByIdAsync(transactionId) is null
+				? NotFound()
+				: Forbid();
 		}
 
 		var existingLoan = await _loanRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, CancellationToken.None);
@@ -413,45 +419,47 @@ public sealed class TransactionsController : FinanceControllerBase<TransactionEn
 	[HttpDelete("{transactionId:guid}/Loans/{id:guid}")]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> DeleteLoan(Guid transactionId, Guid id)
+	public async Task<ActionResult> DeleteLoan(Guid transactionId, Guid id)
 	{
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
 		// todo add transaction id
 		var deletedCount = await _loanRepository.DeleteAsync(id, ApplicationUser.Id);
 		return DeletedEntity<LoanEntity>(id, deletedCount);
 	}
 
-	private async Task<CreatedAtActionResult> CreateNewTransactionAsync(
-		TransactionCreationModel creationModel,
-		UserEntity user,
-		Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, TransactionCreation creation, UserEntity user)
 	{
-		var transaction = Mapper.Map<TransactionEntity>(creationModel) with
+		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id, // todo
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			ImportedAt = creationModel.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
-			ReconciledByUserId = creationModel.ReconciledAt is null ? null : user.Id,
-		};
-
-		var transactionId = await _unitOfWork.AddAsync(transaction);
-		return CreatedAtAction(nameof(Get), new { id = transactionId }, string.Empty);
-	}
-
-	private async Task<NoContentResult> UpdateExistingTransactionAsync(
-		TransactionCreationModel creationModel,
-		UserEntity user,
-		TransactionEntity existingTransaction)
-	{
-		var transaction = Mapper.Map<TransactionEntity>(creationModel) with
-		{
-			Id = existingTransaction.Id,
 			OwnerId = user.Id, // todo only works for entities created by the user
 			ModifiedByUserId = user.Id,
 		};
 
 		_ = await _unitOfWork.UpdateAsync(transaction, user);
 		return NoContent();
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, TransactionCreation creation, UserEntity user)
+	{
+		var transaction = Mapper.Map<TransactionEntity>(creation) with
+		{
+			Id = id,
+			OwnerId = user.Id, // todo
+			CreatedByUserId = user.Id,
+			ModifiedByUserId = user.Id,
+			ImportedAt = creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
+			ReconciledByUserId = creation.ReconciledAt is null ? null : user.Id,
+		};
+
+		var transactionId = await _unitOfWork.AddAsync(transaction);
+		return CreatedAtAction(nameof(Get), new { id = transactionId }, id);
 	}
 }

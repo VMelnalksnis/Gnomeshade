@@ -140,6 +140,17 @@ public abstract class Repository<TEntity> : IDisposable
 		return FindAsync(command);
 	}
 
+	/// <summary>Searches for an entity with the specified id.</summary>
+	/// <param name="id">The id to to search by.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
+	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} {FindSql};";
+		var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
+		return FindAsync(command);
+	}
+
 	/// <summary>Updates an existing entity with the specified id.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>

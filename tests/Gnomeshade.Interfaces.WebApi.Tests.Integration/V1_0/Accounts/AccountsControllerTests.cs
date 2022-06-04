@@ -43,7 +43,7 @@ public class AccountsControllerTests
 
 		var accountId = await _client.CreateAccountAsync(accountCreationModel);
 
-		var newAccountInCurrency = new AccountInCurrencyCreationModel { CurrencyId = _secondCurrency.Id };
+		var newAccountInCurrency = new AccountInCurrencyCreation { CurrencyId = _secondCurrency.Id };
 		var addCurrencyId = await _client.AddCurrencyToAccountAsync(accountId, newAccountInCurrency);
 
 		var account = await _client.GetAccountAsync(accountId);
@@ -147,7 +147,7 @@ public class AccountsControllerTests
 		AccountInCurrency target,
 		decimal targetAmount)
 	{
-		var transaction = new TransactionCreationModel
+		var transaction = new TransactionCreation
 		{
 			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -164,7 +164,7 @@ public class AccountsControllerTests
 		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), transfer);
 	}
 
-	private AccountCreationModel GetAccountCreationModel(Currency currency)
+	private AccountCreation GetAccountCreationModel(Currency currency)
 	{
 		return new()
 		{

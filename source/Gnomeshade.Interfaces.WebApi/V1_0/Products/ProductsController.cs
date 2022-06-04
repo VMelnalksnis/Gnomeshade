@@ -26,9 +26,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Products;
 
 /// <summary>CRUD operations on account entity.</summary>
-public sealed class ProductsController : FinanceControllerBase<ProductEntity, Product>
+public sealed class ProductsController : CreatableBase<ProductRepository, ProductEntity, Product, ProductCreation>
 {
-	private readonly ProductRepository _repository;
 	private readonly PurchaseRepository _purchaseRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductsController"/> class.</summary>
@@ -43,49 +42,31 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		ILogger<ProductsController> logger,
 		ProductRepository repository,
 		PurchaseRepository purchaseRepository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 		_purchaseRepository = purchaseRepository;
 	}
 
 	/// <inheritdoc cref="IProductClient.GetProductAsync"/>
 	/// <response code="200">Successfully got the product.</response>
 	/// <response code="404">Product with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellation)
-	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
-	}
+	[ProducesResponseType(typeof(Product), Status200OK)]
+	public override Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetProductsAsync"/>
 	/// <response code="200">Successfully got all products.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Product>), Status200OK)]
-	public async Task<List<Product>> GetAll(CancellationToken cancellation)
-	{
-		var products = await _repository.GetAllAsync(ApplicationUser.Id, cancellation);
-
-		// ReSharper disable once ConvertClosureToMethodGroup
-		return products.Select(account => MapToModel(account)).ToList();
-	}
+	public override Task<List<Product>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.PutProductAsync"/>
 	/// <response code="201">A new product was created.</response>
 	/// <response code="204">An existing product was replaced.</response>
 	/// <response code="409">A product with the specified name already exists.</response>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] ProductCreationModel product)
-	{
-		var existingProduct = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-		return existingProduct is null
-			? await PutNewProductAsync(product, ApplicationUser, id)
-			: await UpdateExistingProductAsync(product, ApplicationUser, id);
-	}
+	public override Task<ActionResult> Put(Guid id, [FromBody] ProductCreation product) =>
+		base.Put(id, product);
 
 	/// <inheritdoc cref="IProductClient.GetProductPurchasesAsync"/>
 	/// <response code="200">Successfully got the purchases.</response>
@@ -95,7 +76,7 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<List<Purchase>>> Purchases(Guid id, CancellationToken cancellationToken)
 	{
-		var product = await _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
+		var product = await Repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
 		if (product is null)
 		{
 			return NotFound();
@@ -106,10 +87,29 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 		return Ok(models);
 	}
 
-	private async Task<ActionResult> PutNewProductAsync(ProductCreationModel model, UserEntity user, Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		ProductCreation creation,
+		UserEntity user)
 	{
-		var normalizedName = model.Name!.ToUpperInvariant();
-		var conflictingProduct = await _repository.FindByNameAsync(normalizedName, user.Id);
+		var product = Mapper.Map<ProductEntity>(creation) with
+		{
+			Id = id,
+			OwnerId = user.Id, // todo only works for entities created by the user
+			NormalizedName = creation.Name!.ToUpperInvariant(),
+			ModifiedByUserId = user.Id,
+		};
+
+		_ = await Repository.UpdateAsync(product);
+		return NoContent();
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, ProductCreation creation, UserEntity user)
+	{
+		var normalizedName = creation.Name!.ToUpperInvariant();
+		var conflictingProduct = await Repository.FindByNameAsync(normalizedName, user.Id);
 		if (conflictingProduct is not null)
 		{
 			return Problem(
@@ -118,7 +118,7 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 				Status409Conflict);
 		}
 
-		var product = Mapper.Map<ProductEntity>(model) with
+		var product = Mapper.Map<ProductEntity>(creation) with
 		{
 			Id = id,
 			OwnerId = user.Id,
@@ -127,21 +127,7 @@ public sealed class ProductsController : FinanceControllerBase<ProductEntity, Pr
 			NormalizedName = normalizedName,
 		};
 
-		_ = await _repository.AddAsync(product);
-		return CreatedAtAction(nameof(Get), new { id }, string.Empty);
-	}
-
-	private async Task<NoContentResult> UpdateExistingProductAsync(ProductCreationModel model, UserEntity user, Guid id)
-	{
-		var product = Mapper.Map<ProductEntity>(model) with
-		{
-			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
-			NormalizedName = model.Name!.ToUpperInvariant(),
-			ModifiedByUserId = user.Id,
-		};
-
-		_ = await _repository.UpdateAsync(product);
-		return NoContent();
+		_ = await Repository.AddAsync(product);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

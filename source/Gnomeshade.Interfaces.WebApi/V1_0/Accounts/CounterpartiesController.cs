@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,10 +24,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 /// <summary>CRUD operations on account entity.</summary>
-public sealed class CounterpartiesController : FinanceControllerBase<CounterpartyEntity, Counterparty>
+public sealed class CounterpartiesController : CreatableBase<CounterpartyRepository, CounterpartyEntity, Counterparty, CounterpartyCreation>
 {
-	private readonly CounterpartyRepository _repository;
-
 	/// <summary>Initializes a new instance of the <see cref="CounterpartiesController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CounterpartyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -39,21 +36,16 @@ public sealed class CounterpartiesController : FinanceControllerBase<Counterpart
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<CounterpartiesController> logger)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IAccountClient.GetCounterpartyAsync"/>
 	/// <response code="200">Counterparty with the specified id exists.</response>
 	/// <response code="404">Counterparty with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(Counterparty), Status200OK)]
-	[ProducesStatus404NotFound]
-	public Task<ActionResult<Counterparty>> Get(Guid id, CancellationToken cancellationToken)
-	{
-		return Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
-	}
+	public override Task<ActionResult<Counterparty>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IAccountClient.GetMyCounterpartyAsync"/>
 	/// <response code="200">Successfully got the counterparty.</response>
@@ -61,64 +53,30 @@ public sealed class CounterpartiesController : FinanceControllerBase<Counterpart
 	[HttpGet("me")]
 	[ProducesResponseType(typeof(Counterparty), Status200OK)]
 	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
+	public Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 	{
-		return await Find(() => _repository.FindByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken));
+		return Find(() => Repository.FindByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken));
 	}
 
 	/// <inheritdoc cref="IAccountClient.GetCounterpartiesAsync"/>
 	/// <response code="200">Successfully got all counterparties.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Counterparty>), Status200OK)]
-	public async Task<ActionResult<List<Counterparty>>> GetAll(CancellationToken cancellationToken)
-	{
-		var counterparties = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var models = counterparties.Select(party => Mapper.Map<Counterparty>(party)).ToList();
-		return Ok(models);
-	}
+	public override Task<List<Counterparty>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IAccountClient.CreateCounterpartyAsync"/>
 	/// <response code="201">Counterparty was successfully created.</response>
-	[HttpPost]
-	[ProducesResponseType(typeof(Guid), Status201Created)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Guid>> Post([FromBody] CounterpartyCreationModel counterparty)
-	{
-		var conflictResult = await GetConflictResult(counterparty, ApplicationUser);
-		if (conflictResult is not null)
-		{
-			return conflictResult;
-		}
-
-		var entity = Mapper.Map<CounterpartyEntity>(counterparty) with
-		{
-			Id = Guid.NewGuid(),
-			OwnerId = ApplicationUser.Id,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			NormalizedName = counterparty.Name!.ToUpperInvariant(),
-		};
-
-		var id = await _repository.AddAsync(entity);
-		return CreatedAtAction(nameof(Get), new { id }, id);
-	}
+	public override Task<ActionResult> Post([FromBody] CounterpartyCreation counterparty) =>
+		base.Post(counterparty);
 
 	/// <inheritdoc cref="IAccountClient.PutCounterpartyAsync"/>
 	/// <response code="201">A new counterparty was created.</response>
 	/// <response code="204">An existing counterparty was replaced.</response>
+	/// <response code="403">A counterparty with the specified id already exists, but you do not have access to it.</response>
 	/// <response code="409">A counterparty with the specified name already exists.</response>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(typeof(Guid), Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] CounterpartyCreationModel counterparty)
-	{
-		var existingCounterparty = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-
-		return existingCounterparty is null
-			? await CreateCounterpartyAsync(id, counterparty, ApplicationUser)
-			: await UpdateCounterpartyAsync(id, counterparty, ApplicationUser);
-	}
+	public override Task<ActionResult> Put(Guid id, [FromBody] CounterpartyCreation counterparty) =>
+		base.Put(id, counterparty);
 
 	/// <inheritdoc cref="IAccountClient.MergeCounterpartiesAsync"/>
 	/// <response code="204">Counterparties were successfully merged.</response>
@@ -126,50 +84,58 @@ public sealed class CounterpartiesController : FinanceControllerBase<Counterpart
 	[ProducesResponseType(Status204NoContent)]
 	public async Task<ActionResult> Merge(Guid targetId, Guid sourceId)
 	{
-		await _repository.MergeAsync(targetId, sourceId, ApplicationUser.Id);
+		await Repository.MergeAsync(targetId, sourceId, ApplicationUser.Id);
 		return NoContent();
 	}
 
-	private async Task<ActionResult> CreateCounterpartyAsync(Guid id, CounterpartyCreationModel model, UserEntity user)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, CounterpartyCreation creation, UserEntity user)
 	{
-		var conflictResult = await GetConflictResult(model, user);
+		var conflictResult = await GetConflictResult(creation, user, id);
 		if (conflictResult is not null)
 		{
 			return conflictResult;
 		}
 
-		var counterparty = Mapper.Map<CounterpartyEntity>(model) with
+		var counterparty = Mapper.Map<CounterpartyEntity>(creation) with
+		{
+			Id = id,
+			OwnerId = user.Id,
+			ModifiedByUserId = user.Id,
+			NormalizedName = creation.Name!.ToUpperInvariant(),
+		};
+
+		_ = await Repository.UpdateAsync(counterparty);
+		return NoContent();
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, CounterpartyCreation creation, UserEntity user)
+	{
+		var conflictResult = await GetConflictResult(creation, user);
+		if (conflictResult is not null)
+		{
+			return conflictResult;
+		}
+
+		var counterparty = Mapper.Map<CounterpartyEntity>(creation) with
 		{
 			Id = id,
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
+			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
 
-		_ = await _repository.AddAsync(counterparty);
-		return CreatedAtAction(nameof(Get), new { id }, null);
+		_ = await Repository.AddAsync(counterparty);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
-	private async Task<ActionResult> UpdateCounterpartyAsync(Guid id, CounterpartyCreationModel model, UserEntity user)
-	{
-		var counterparty = Mapper.Map<CounterpartyEntity>(model) with
-		{
-			Id = id,
-			OwnerId = user.Id,
-			ModifiedByUserId = user.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
-		};
-
-		_ = await _repository.UpdateAsync(counterparty);
-		return NoContent();
-	}
-
-	private async Task<ActionResult?> GetConflictResult(CounterpartyCreationModel model, UserEntity user)
+	private async Task<ActionResult?> GetConflictResult(CounterpartyCreation model, UserEntity user, Guid? existingId = null)
 	{
 		var normalizedName = model.Name!.ToUpperInvariant();
-		var conflictingCounterparty = await _repository.FindByNameAsync(normalizedName, user.Id);
-		if (conflictingCounterparty is null)
+		var conflictingCounterparty = await Repository.FindByNameAsync(normalizedName, user.Id);
+		if (conflictingCounterparty is null || conflictingCounterparty.Id == existingId)
 		{
 			return null;
 		}

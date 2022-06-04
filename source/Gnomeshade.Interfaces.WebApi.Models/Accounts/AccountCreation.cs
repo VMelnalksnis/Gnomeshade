@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 /// <summary>The information needed to create a new account.</summary>
 [PublicAPI]
-public sealed record AccountCreationModel
+public sealed record AccountCreation
 {
 	/// <inheritdoc cref="Account.Name"/>
 	[Required]
@@ -38,5 +38,5 @@ public sealed record AccountCreationModel
 	/// <inheritdoc cref="Account.Currencies"/>
 	[Required]
 	[MinLength(1)]
-	public List<AccountInCurrencyCreationModel>? Currencies { get; init; }
+	public List<AccountInCurrencyCreation>? Currencies { get; init; }
 }

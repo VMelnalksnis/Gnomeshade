@@ -37,13 +37,13 @@ public interface IProductClient
 	/// <param name="id">The id of the product.</param>
 	/// <param name="product">The product to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutProductAsync(Guid id, ProductCreationModel product);
+	Task PutProductAsync(Guid id, ProductCreation product);
 
 	/// <summary>Creates a new unit or replaces an existing one if one exists with the specified id.</summary>
 	/// <param name="id">The id of the unit.</param>
 	/// <param name="unit">The unit to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutUnitAsync(Guid id, UnitCreationModel unit);
+	Task PutUnitAsync(Guid id, UnitCreation unit);
 
 	/// <summary>Gets all categories.</summary>
 	/// <returns>A collection with all categories.</returns>

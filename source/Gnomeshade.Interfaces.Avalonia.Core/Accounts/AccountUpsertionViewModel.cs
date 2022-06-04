@@ -205,7 +205,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 			currencyIds.Add(PreferredCurrency.Id);
 		}
 
-		var creationModel = new AccountCreationModel
+		var creationModel = new AccountCreation
 		{
 			Name = Name,
 			Bic = Bic,
@@ -213,7 +213,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 			AccountNumber = AccountNumber,
 			PreferredCurrencyId = PreferredCurrency.Id,
 			CounterpartyId = Counterparty!.Id,
-			Currencies = currencyIds.Select(id => new AccountInCurrencyCreationModel { CurrencyId = id }).ToList(),
+			Currencies = currencyIds.Select(id => new AccountInCurrencyCreation { CurrencyId = id }).ToList(),
 		};
 
 		var id = _account?.Id ?? Guid.NewGuid();

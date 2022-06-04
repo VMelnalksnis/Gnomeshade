@@ -9,9 +9,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.TestingHelpers.Models;
 
 using NodaTime;
 
@@ -32,111 +34,171 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Counterparties()
 	{
-		var counterpartyId = await CreateCounterpartyAsync(_client);
+		var counterparty = await CreateCounterpartyAsync(_client);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetCounterpartyAsync(id),
-			counterpartyId);
+		await ShouldBeNotFoundForOthers(client => client.GetCounterpartyAsync(counterparty.Id));
+
+		var counterpartyCreation = new CounterpartyCreation { Name = $"{counterparty.Name}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutCounterpartyAsync(counterparty.Id, counterpartyCreation));
+		await ShouldBeNotFoundForOthers(client => client.GetCounterpartyAsync(counterparty.Id));
 	}
 
 	[Test]
 	public async Task Accounts()
 	{
 		var counterpartyId = await CreateCounterpartyAsync(_client);
-		var accountId = await CreateAccountAsync(_client, counterpartyId);
+		var account = await CreateAccountAsync(_client, counterpartyId.Id);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetAccountAsync(id),
-			accountId);
+		await ShouldBeNotFoundForOthers(client => client.GetAccountAsync(account.Id));
+
+		var accountCreation = account.ToCreation() with { Name = $"{account.Name}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutAccountAsync(account.Id, accountCreation));
+		await ShouldBeNotFoundForOthers(client => client.GetAccountAsync(account.Id));
 	}
 
 	[Test]
 	public async Task Categories()
 	{
-		var categoryId = await CreateCategoryAsync(_client);
+		var category = await CreateCategoryAsync(_client);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetCategoryAsync(id),
-			categoryId);
+		await ShouldBeNotFoundForOthers(client => client.GetCategoryAsync(category.Id));
+
+		var updatedCategory = category.ToCreation() with { Name = $"{category.Name}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutCategoryAsync(category.Id, updatedCategory));
+		await ShouldBeNotFoundForOthers(client => client.GetCategoryAsync(category.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteCategoryAsync(category.Id));
 	}
 
 	[Test]
 	public async Task Units()
 	{
-		var unitId = await CreateUnitAsync(_client);
+		var unit = await CreateUnitAsync(_client);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetUnitAsync(id),
-			unitId);
+		await ShouldBeNotFoundForOthers(client => client.GetUnitAsync(unit.Id));
+
+		var updatedUnit = unit.ToCreation() with { Name = $"{unit.Name}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutUnitAsync(unit.Id, updatedUnit));
+		await ShouldBeNotFoundForOthers(client => client.GetUnitAsync(unit.Id));
 	}
 
 	[Test]
 	public async Task Products()
 	{
-		var unitId = await CreateUnitAsync(_client);
-		var categoryId = await CreateCategoryAsync(_client);
-		var productId = await CreateProductAsync(_client, unitId, categoryId);
+		var unit = await CreateUnitAsync(_client);
+		var category = await CreateCategoryAsync(_client);
+		var product = await CreateProductAsync(_client, unit.Id, category.Id);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetProductAsync(id),
-			productId);
+		await ShouldBeNotFoundForOthers(client => client.GetProductAsync(product.Id));
+
+		var updatedProduct = product.ToCreation() with { Name = $"{category.Name}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutProductAsync(category.Id, updatedProduct));
+		await ShouldBeNotFoundForOthers(client => client.GetProductAsync(product.Id));
 	}
 
 	[Test]
 	public async Task Transactions()
 	{
-		var transactionId = await CreateTransactionAsync(_client);
+		var transaction = await CreateTransactionAsync(_client);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id) => client.GetTransactionAsync(id),
-			transactionId);
+		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
+
+		var updatedTransaction = transaction.ToCreation() with { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
+
+		await ShouldBeForbiddenForOthers(client => client.PutTransactionAsync(transaction.Id, updatedTransaction));
+		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteTransactionAsync(transaction.Id));
 	}
 
 	[Test]
 	public async Task Transfers()
 	{
-		var transactionId = await CreateTransactionAsync(_client);
+		var transaction = await CreateTransactionAsync(_client);
 		var counterpartyId = await CreateCounterpartyAsync(_client);
-		var account1Id = await CreateAccountAsync(_client, counterpartyId);
-		var account2Id = await CreateAccountAsync(_client, counterpartyId);
+		var account1 = await CreateAccountAsync(_client, counterpartyId.Id);
+		var account2 = await CreateAccountAsync(_client, counterpartyId.Id);
 
-		var transferId = await CreateTransferAsync(_client, transactionId, account1Id, account2Id);
+		var transfer = await CreateTransferAsync(_client, transaction.Id, account1.Id, account2.Id);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id, otherId) => client.GetTransferAsync(id, otherId),
-			transactionId,
-			transferId);
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+
+		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transaction.Id, transfer.Id), true);
 	}
 
 	[Test]
 	public async Task Purchases()
 	{
-		var transactionId = await CreateTransactionAsync(_client);
-		var unitId = await CreateUnitAsync(_client);
-		var categoryId = await CreateCategoryAsync(_client);
-		var productId = await CreateProductAsync(_client, unitId, categoryId);
+		var transaction = await CreateTransactionAsync(_client);
+		var unit = await CreateUnitAsync(_client);
+		var category = await CreateCategoryAsync(_client);
+		var product = await CreateProductAsync(_client, unit.Id, category.Id);
 
-		var purchaseId = await CreatePurchaseAsync(_client, transactionId, productId);
+		var purchase = await CreatePurchaseAsync(_client, transaction.Id, product.Id);
 
-		await ShouldReturnNotFoundForOtherUsers(
-			(client, id, otherId) => client.GetPurchaseAsync(id, otherId),
-			transactionId,
-			purchaseId);
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+
+		var updatedTransfer = purchase.ToCreation() with { Amount = purchase.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutPurchaseAsync(transaction.Id, purchase.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeletePurchaseAsync(transaction.Id, purchase.Id), true);
 	}
 
-	private static async Task<Guid> CreateCounterpartyAsync(IAccountClient accountClient)
+	[Test]
+	public async Task Loans()
+	{
+		var transaction = await CreateTransactionAsync(_client);
+		var counterparty1 = await _client.GetMyCounterpartyAsync();
+		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
+
+		var loan = await CreateLoanAsync(_client, transaction.Id, counterparty1.Id, counterparty2.Id);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+
+		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(transaction.Id, loan.Id, updatedLoan));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(transaction.Id, loan.Id), true);
+	}
+
+	[Test]
+	public async Task Links()
+	{
+		var linkId = Guid.NewGuid();
+		await _client.PutLinkAsync(linkId, new() { Uri = new("https://localhost/") });
+		var link = await _client.GetLinkAsync(linkId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
+
+		var updatedLink = new LinkCreation { Uri = new("https://localhost/test") };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLinkAsync(link.Id, updatedLink));
+		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLinkAsync(link.Id), true);
+	}
+
+	private static async Task<Counterparty> CreateCounterpartyAsync(IAccountClient accountClient)
 	{
 		var counterpartyId = Guid.NewGuid();
-		var counterparty = new CounterpartyCreationModel { Name = $"{counterpartyId:N}" };
+		var counterparty = new CounterpartyCreation { Name = $"{counterpartyId:N}" };
 		await accountClient.PutCounterpartyAsync(counterpartyId, counterparty);
-		return counterpartyId;
+		return await accountClient.GetCounterpartyAsync(counterpartyId);
 	}
 
-	private static async Task<Guid> CreateAccountAsync(IAccountClient accountClient, Guid counterpartyId)
+	private static async Task<Account> CreateAccountAsync(IAccountClient accountClient, Guid counterpartyId)
 	{
 		var currency = (await accountClient.GetCurrenciesAsync()).First();
 		var accountId = Guid.NewGuid();
-		var account = new AccountCreationModel
+		var account = new AccountCreation
 		{
 			Name = $"{accountId:N}",
 			CounterpartyId = counterpartyId,
@@ -145,42 +207,42 @@ public sealed class PrivateByDefaultTests
 		};
 
 		await accountClient.PutAccountAsync(accountId, account);
-		return accountId;
+		return await accountClient.GetAccountAsync(accountId);
 	}
 
-	private static async Task<Guid> CreateCategoryAsync(IProductClient productClient)
+	private static async Task<Category> CreateCategoryAsync(IProductClient productClient)
 	{
 		var categoryId = Guid.NewGuid();
 		var category = new CategoryCreation { Name = $"{categoryId:N}" };
 		await productClient.PutCategoryAsync(categoryId, category);
-		return categoryId;
+		return await productClient.GetCategoryAsync(categoryId);
 	}
 
-	private static async Task<Guid> CreateUnitAsync(IProductClient productClient)
+	private static async Task<Unit> CreateUnitAsync(IProductClient productClient)
 	{
 		var unitId = Guid.NewGuid();
-		var unit = new UnitCreationModel { Name = $"{unitId:N}" };
+		var unit = new UnitCreation { Name = $"{unitId:N}" };
 		await productClient.PutUnitAsync(unitId, unit);
-		return unitId;
+		return await productClient.GetUnitAsync(unitId);
 	}
 
-	private static async Task<Guid> CreateProductAsync(IProductClient productClient, Guid unitId, Guid categoryId)
+	private static async Task<Product> CreateProductAsync(IProductClient productClient, Guid unitId, Guid categoryId)
 	{
 		var productId = Guid.NewGuid();
-		var product = new ProductCreationModel { Name = $"{productId:N}", UnitId = unitId, CategoryId = categoryId };
+		var product = new ProductCreation { Name = $"{productId:N}", UnitId = unitId, CategoryId = categoryId };
 		await productClient.PutProductAsync(productId, product);
-		return productId;
+		return await productClient.GetProductAsync(productId);
 	}
 
-	private static async Task<Guid> CreateTransactionAsync(ITransactionClient transactionClient)
+	private static async Task<Transaction> CreateTransactionAsync(ITransactionClient transactionClient)
 	{
 		var transactionId = Guid.NewGuid();
-		var transaction = new TransactionCreationModel { BookedAt = SystemClock.Instance.GetCurrentInstant() };
+		var transaction = new TransactionCreation { BookedAt = SystemClock.Instance.GetCurrentInstant() };
 		await transactionClient.PutTransactionAsync(transactionId, transaction);
-		return transactionId;
+		return await transactionClient.GetTransactionAsync(transactionId);
 	}
 
-	private static async Task<Guid> CreateTransferAsync(
+	private static async Task<Transfer> CreateTransferAsync(
 		IGnomeshadeClient gnomeshadeClient,
 		Guid transactionId,
 		Guid account1Id,
@@ -199,10 +261,10 @@ public sealed class PrivateByDefaultTests
 		};
 
 		await gnomeshadeClient.PutTransferAsync(transactionId, transferId, transfer);
-		return transferId;
+		return await gnomeshadeClient.GetTransferAsync(transactionId, transferId);
 	}
 
-	private static async Task<Guid> CreatePurchaseAsync(
+	private static async Task<Purchase> CreatePurchaseAsync(
 		IGnomeshadeClient gnomeshadeClient,
 		Guid transactionId,
 		Guid productId)
@@ -218,45 +280,71 @@ public sealed class PrivateByDefaultTests
 		};
 
 		await gnomeshadeClient.PutPurchaseAsync(transactionId, purchaseId, purchase);
-		return purchaseId;
+		return await gnomeshadeClient.GetPurchaseAsync(transactionId, purchaseId);
 	}
 
-	private async Task ShouldReturnNotFoundForOtherUsers(Func<IGnomeshadeClient, Guid, Task> func, Guid id)
+	private static async Task<Loan> CreateLoanAsync(
+		IGnomeshadeClient gnomeshadeClient,
+		Guid transactionId,
+		Guid issuingId,
+		Guid receivingId)
 	{
-		using (new AssertionScope())
+		var currency = (await gnomeshadeClient.GetCurrenciesAsync()).First();
+		var loanId = Guid.NewGuid();
+		var purchase = new LoanCreation
 		{
-			await FluentActions
-				.Awaiting(() => func(_client, id))
-				.Should()
-				.NotThrowAsync();
+			CurrencyId = currency.Id,
+			Amount = 1,
+			IssuingCounterpartyId = issuingId,
+			ReceivingCounterpartyId = receivingId,
+		};
 
+		await gnomeshadeClient.PutLoanAsync(transactionId, loanId, purchase);
+		return await gnomeshadeClient.GetLoanAsync(transactionId, loanId);
+	}
+
+	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)
+	{
+		return ShouldReturnStatusCode(func, HttpStatusCode.NotFound, inverted);
+	}
+
+	private Task ShouldBeForbiddenForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)
+	{
+		return ShouldReturnStatusCode(func, HttpStatusCode.Forbidden, inverted);
+	}
+
+	private async Task ShouldReturnStatusCode(
+		Func<IGnomeshadeClient, Task> func,
+		HttpStatusCode statusCode,
+		bool inverted)
+	{
+		if (inverted)
+		{
 			(await FluentActions
-					.Awaiting(() => func(_otherClient, id))
+					.Awaiting(() => func(_otherClient))
 					.Should()
 					.ThrowAsync<HttpRequestException>())
 				.Which.StatusCode.Should()
-				.Be(HttpStatusCode.NotFound);
+				.Be(statusCode);
+
+			await FluentActions
+				.Awaiting(() => func(_client))
+				.Should()
+				.NotThrowAsync();
 		}
-	}
-
-	private async Task ShouldReturnNotFoundForOtherUsers(
-		Func<IGnomeshadeClient, Guid, Guid, Task> func,
-		Guid id,
-		Guid otherId)
-	{
-		using (new AssertionScope())
+		else
 		{
 			await FluentActions
-				.Awaiting(() => func(_client, id, otherId))
+				.Awaiting(() => func(_client))
 				.Should()
 				.NotThrowAsync();
 
 			(await FluentActions
-					.Awaiting(() => func(_otherClient, id, otherId))
+					.Awaiting(() => func(_otherClient))
 					.Should()
 					.ThrowAsync<HttpRequestException>())
 				.Which.StatusCode.Should()
-				.Be(HttpStatusCode.NotFound);
+				.Be(statusCode);
 		}
 	}
 }

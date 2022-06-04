@@ -44,7 +44,7 @@ public class TransactionsControllerTests
 
 		if (other is null)
 		{
-			var counterpartyCreation = new CounterpartyCreationModel { Name = $"{Guid.NewGuid():N}" };
+			var counterpartyCreation = new CounterpartyCreation { Name = $"{Guid.NewGuid():N}" };
 			await _client.PutCounterpartyAsync(Guid.NewGuid(), counterpartyCreation);
 			other = (await _client.GetCounterpartiesAsync())
 				.First(counterparty => counterparty.Id != _counterparty.Id);
@@ -58,7 +58,7 @@ public class TransactionsControllerTests
 		_account1 = await CreateAccountAsync(currency1, _counterparty);
 		_account2 = await CreateAccountAsync(currency2, _counterparty);
 
-		var productCreation = new ProductCreationModel { Name = Guid.NewGuid().ToString("N") };
+		var productCreation = new ProductCreation { Name = Guid.NewGuid().ToString("N") };
 		_productId = Guid.NewGuid();
 		await _client.PutProductAsync(_productId, productCreation);
 	}
@@ -66,7 +66,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task PutTransaction()
 	{
-		var transactionCreationModel = new TransactionCreationModel
+		var transactionCreationModel = new TransactionCreation
 		{
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -88,7 +88,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task GetTransaction_ShouldReturnNotFoundForOtherUsers()
 	{
-		var transactionCreationModel = new TransactionCreationModel
+		var transactionCreationModel = new TransactionCreation
 		{
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -111,7 +111,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task Transfers()
 	{
-		var transactionCreationModel = new TransactionCreationModel
+		var transactionCreationModel = new TransactionCreation
 		{
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -173,7 +173,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task Purchases()
 	{
-		var transactionCreationModel = new TransactionCreationModel
+		var transactionCreationModel = new TransactionCreation
 		{
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -240,7 +240,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task Links()
 	{
-		var transactionCreation = new TransactionCreationModel { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
+		var transactionCreation = new TransactionCreation { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
 		var transactionId = await _client.CreateTransactionAsync(transactionCreation);
 
 		var uri = $"https://localhost/documents/{Guid.NewGuid()}";
@@ -265,7 +265,7 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task Loans()
 	{
-		var transactionCreationModel = new TransactionCreationModel
+		var transactionCreationModel = new TransactionCreation
 		{
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
@@ -344,7 +344,7 @@ public class TransactionsControllerTests
 
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
 	{
-		var creationModel = new AccountCreationModel
+		var creationModel = new AccountCreation
 		{
 			Name = Guid.NewGuid().ToString("N"),
 			CounterpartyId = counterparty.Id,

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,23 +13,18 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models;
-using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-using NodaTime;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.Interfaces.WebApi.V1_0;
 
 /// <summary>CRUD operations on link entity.</summary>
-public sealed class LinksController : FinanceControllerBase<LinkEntity, Link>
+public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, Link, LinkCreation>
 {
-	private readonly LinkRepository _repository;
-
 	/// <summary>Initializes a new instance of the <see cref="LinksController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
@@ -41,72 +35,67 @@ public sealed class LinksController : FinanceControllerBase<LinkEntity, Link>
 		Mapper mapper,
 		ILogger<LinksController> logger,
 		LinkRepository repository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
-		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IGnomeshadeClient.GetLinksAsync"/>
 	/// <response code="200">Successfully got all links.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Link>), Status200OK)]
-	public async Task<List<Link>> GetAll(CancellationToken cancellationToken)
-	{
-		var links = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		var models = links.Select(MapToModel).ToList();
-		return models;
-	}
+	public override Task<List<Link>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IGnomeshadeClient.GetLinkAsync"/>
 	/// <response code="200">Link with the specified id exists.</response>
 	/// <response code="404">Link with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
 	[ProducesResponseType(typeof(Link), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Link>> Get(Guid id, CancellationToken cancellationToken)
-	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
-	}
+	public override Task<ActionResult<Link>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IGnomeshadeClient.PutLinkAsync"/>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult<Link>> Put(Guid id, LinkCreation link, CancellationToken cancellationToken)
-	{
-		var existingLink = await _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
-		var linkToCreate = existingLink ?? new()
-		{
-			Id = id,
-			OwnerId = ApplicationUser.Id,
-			CreatedAt = SystemClock.Instance.GetCurrentInstant(),
-			CreatedByUserId = ApplicationUser.Id,
-		};
-
-		linkToCreate.ModifiedAt = SystemClock.Instance.GetCurrentInstant();
-		linkToCreate.ModifiedByUserId = ApplicationUser.Id;
-		linkToCreate.Uri = link.Uri!.ToString();
-
-		if (existingLink is null)
-		{
-			await _repository.AddAsync(linkToCreate);
-			return CreatedAtAction(nameof(Get), new { id }, null);
-		}
-
-		await _repository.UpdateAsync(linkToCreate);
-		return NoContent();
-	}
+	public override Task<ActionResult> Put(Guid id, LinkCreation link) =>
+		base.Put(id, link);
 
 	/// <inheritdoc cref="IGnomeshadeClient.DeleteLinkAsync"/>
 	/// <response code="204">Link was successfully deleted.</response>
 	/// <response code="404">Link with the specified id does not exist.</response>
-	[HttpDelete("{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<StatusCodeResult> Delete(Guid id)
+	// ReSharper disable once RedundantOverriddenMember
+	public override Task<StatusCodeResult> Delete(Guid id) =>
+		base.Delete(id);
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, LinkCreation creation, UserEntity user)
 	{
-		var rows = await _repository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<Link>(id, rows);
+		var linkToCreate = new LinkEntity
+		{
+			Id = id,
+			OwnerId = user.Id,
+			ModifiedByUserId = user.Id,
+			Uri = creation.Uri!.ToString(),
+		};
+
+		var updatedCount = await Repository.UpdateAsync(linkToCreate);
+		if (updatedCount is not 1)
+		{
+			throw new ApplicationException($"Unexpected update count {updatedCount}");
+		}
+
+		return NoContent();
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, LinkCreation creation, UserEntity user)
+	{
+		var link = new LinkEntity
+		{
+			Id = id,
+			OwnerId = user.Id,
+			CreatedByUserId = user.Id,
+			ModifiedByUserId = user.Id,
+			Uri = creation.Uri!.ToString(),
+		};
+
+		_ = await Repository.AddAsync(link);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

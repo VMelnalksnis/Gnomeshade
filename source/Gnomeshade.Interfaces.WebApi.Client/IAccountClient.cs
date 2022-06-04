@@ -30,13 +30,13 @@ public interface IAccountClient
 	/// <summary>Creates a new counterparty.</summary>
 	/// <param name="counterparty">The counterparty to create.</param>
 	/// <returns>The id of the created counterparty.</returns>
-	Task<Guid> CreateCounterpartyAsync(CounterpartyCreationModel counterparty);
+	Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty);
 
 	/// <summary>Creates a new counterparty, or replaces and existing one if one exists with the specified id.</summary>
 	/// <param name="id">The id of the counterparty.</param>
 	/// <param name="counterparty">The counterparty to create or update.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutCounterpartyAsync(Guid id, CounterpartyCreationModel counterparty);
+	Task PutCounterpartyAsync(Guid id, CounterpartyCreation counterparty);
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty in to which to merge.</param>
@@ -60,19 +60,19 @@ public interface IAccountClient
 	/// <summary>Creates a new account.</summary>
 	/// <param name="account">Information for creating the account.</param>
 	/// <returns>The id of the created account.</returns>
-	Task<Guid> CreateAccountAsync(AccountCreationModel account);
+	Task<Guid> CreateAccountAsync(AccountCreation account);
 
 	/// <summary>Creates a new account or replaces an existing  one, if one exists with the specified id.</summary>
 	/// <param name="id">The id of the account.</param>
 	/// <param name="account">The account to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutAccountAsync(Guid id, AccountCreationModel account);
+	Task PutAccountAsync(Guid id, AccountCreation account);
 
 	/// <summary>Adds a currency to an existing account.</summary>
 	/// <param name="id">The id of the account to which to add the currency.</param>
 	/// <param name="currency">The currency which to add to the account.</param>
 	/// <returns>The id of the account to which the currency was added to.</returns>
-	Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreationModel currency);
+	Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreation currency);
 
 	/// <summary>Removes a currency from an existing account.</summary>
 	/// <param name="id">The id of the account from which to remove the currency.</param>

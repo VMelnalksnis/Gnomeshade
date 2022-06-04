@@ -43,7 +43,7 @@ public sealed class ProductsControllerTests
 	public async Task Put()
 	{
 		var unitId = Guid.NewGuid();
-		var unit = new UnitCreationModel { Name = $"{unitId:N}" };
+		var unit = new UnitCreation { Name = $"{unitId:N}" };
 		await _client.PutUnitAsync(unitId, unit);
 
 		var categoryId = Guid.NewGuid();
@@ -93,7 +93,7 @@ public sealed class ProductsControllerTests
 			.Be(HttpStatusCode.NotFound);
 	}
 
-	private static ProductCreationModel CreateUniqueProduct()
+	private static ProductCreation CreateUniqueProduct()
 	{
 		return new() { Name = Guid.NewGuid().ToString("N") };
 	}
@@ -110,9 +110,9 @@ public sealed class ProductsControllerTests
 		return WithoutModifiedAt(options).Excluding(model => model.Description);
 	}
 
-	private async Task<Product> PutAndGet(Guid id, ProductCreationModel creationModel)
+	private async Task<Product> PutAndGet(Guid id, ProductCreation creation)
 	{
-		await _client.PutProductAsync(id, creationModel);
+		await _client.PutProductAsync(id, creation);
 		return await _client.GetProductAsync(id);
 	}
 }

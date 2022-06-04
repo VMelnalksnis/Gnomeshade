@@ -94,7 +94,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var unit = new UnitCreationModel
+		var unit = new UnitCreation
 		{
 			Name = Name,
 			ParentUnitId = ParentUnit?.Id,

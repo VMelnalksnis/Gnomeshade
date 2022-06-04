@@ -168,7 +168,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var creationModel = new TransactionCreationModel
+		var creationModel = new TransactionCreation
 		{
 			BookedAt = Properties.BookedAt?.ToInstant(),
 			ValuedAt = Properties.ValuedAt?.ToInstant(),
