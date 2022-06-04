@@ -32,7 +32,8 @@ public class OwnerRepositoryTests : IDisposable
 	[Test]
 	public async Task AddAsync_ShouldGenerateGuid()
 	{
-		var id = await _ownerRepository.AddAsync();
+		using var dbTransaction = _dbConnection.BeginTransaction();
+		var id = await _ownerRepository.AddAsync(Guid.NewGuid(), dbTransaction);
 		id.Should().NotBe(Guid.Empty);
 	}
 

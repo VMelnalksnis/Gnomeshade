@@ -12,9 +12,7 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data;
 
-/// <summary>
-/// User related actions spanning multiple entities.
-/// </summary>
+/// <summary>User related actions spanning multiple entities.</summary>
 public sealed class UserUnitOfWork : IDisposable
 {
 	private readonly IDbConnection _dbConnection;
@@ -23,9 +21,7 @@ public sealed class UserUnitOfWork : IDisposable
 	private readonly UserRepository _userRepository;
 	private readonly CounterpartyRepository _counterpartyRepository;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UserUnitOfWork"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="UserUnitOfWork"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	/// <param name="ownerRepository">The repository for managing owners.</param>
 	/// <param name="ownershipRepository">The repository for managing ownerships.</param>
@@ -45,9 +41,7 @@ public sealed class UserUnitOfWork : IDisposable
 		_counterpartyRepository = counterpartyRepository;
 	}
 
-	/// <summary>
-	/// Creates a new application user for the specified identity user.
-	/// </summary>
+	/// <summary>Creates a new application user for the specified identity user.</summary>
 	/// <param name="applicationUser">The identity user for which to create a new application user.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateUserAsync(ApplicationUser applicationUser)
@@ -62,7 +56,7 @@ public sealed class UserUnitOfWork : IDisposable
 		{
 			_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
 			_ = await _ownerRepository.AddAsync(userId, dbTransaction);
-			_ = await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
+			await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
 			var counterparty = new CounterpartyEntity
 			{
 				Id = userId,

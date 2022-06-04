@@ -1,5 +1,4 @@
 ﻿INSERT INTO ownerships
-    (id, owner_id, user_id, access_id)
+	(id, owner_id, user_id, access_id)
 VALUES
-    (@id, @id, @id, @AccessId)
-RETURNING id;
+	(@Id, @OwnerId, @UserId, @AccessId);

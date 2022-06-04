@@ -54,7 +54,10 @@
 		<EmbeddedResource Include="Repositories\Queries\Loan\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Loan\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Loan\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Update.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>

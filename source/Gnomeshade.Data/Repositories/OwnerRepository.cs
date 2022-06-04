@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -14,38 +13,22 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="OwnerEntity"/> repository.
-/// </summary>
+/// <summary>Persistence store of <see cref="OwnerEntity"/>.</summary>
 public sealed class OwnerRepository : IDisposable
 {
-	private const string _insertSql = "INSERT INTO owners VALUES (DEFAULT) RETURNING id";
 	private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@id) RETURNING id;";
 	private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
 
 	private readonly IDbConnection _dbConnection;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="OwnerRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="OwnerRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public OwnerRepository(IDbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}
 
-	/// <summary>
-	/// Adds a new owner.
-	/// </summary>
-	/// <returns>The id of the new entity.</returns>
-	public async Task<Guid> AddAsync()
-	{
-		return await _dbConnection.QuerySingleAsync<Guid>(_insertSql).ConfigureAwait(false);
-	}
-
-	/// <summary>
-	/// Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.
-	/// </summary>
+	/// <summary>Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.</summary>
 	/// <param name="id">The id with which to create the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the new entity.</returns>
@@ -55,15 +38,10 @@ public sealed class OwnerRepository : IDisposable
 		return _dbConnection.QuerySingleAsync<Guid>(command);
 	}
 
-	/// <summary>
-	/// Gets all owners.
-	/// </summary>
+	/// <summary>Gets all owners.</summary>
 	/// <returns>A collection of all owners.</returns>
-	public async Task<List<OwnerEntity>> GetAllAsync()
-	{
-		var entities = await _dbConnection.QueryAsync<OwnerEntity>(_selectSql).ConfigureAwait(false);
-		return entities.ToList();
-	}
+	public Task<IEnumerable<OwnerEntity>> GetAllAsync() =>
+		_dbConnection.QueryAsync<OwnerEntity>(_selectSql);
 
 	/// <inheritdoc/>
 	public void Dispose() => _dbConnection.Dispose();

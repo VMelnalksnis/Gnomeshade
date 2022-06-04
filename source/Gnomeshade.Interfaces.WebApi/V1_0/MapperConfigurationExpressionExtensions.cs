@@ -9,6 +9,7 @@ using Gnomeshade.Data.Identity;
 using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
+using Gnomeshade.Interfaces.WebApi.Models.Owners;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -63,5 +64,10 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<LoanCreation, LoanEntity>();
 
 		options.CreateMap<BalanceEntity, Balance>();
+
+		options.CreateMap<AccessEntity, Access>();
+
+		options.CreateMap<OwnershipEntity, Ownership>();
+		options.CreateMap<OwnershipCreation, OwnershipEntity>();
 	}
 }

@@ -14,7 +14,7 @@ namespace Gnomeshade.Data.Entities;
 /// Link between <see cref="OwnerEntity"/> and the entities which represent the user,
 /// for example <see cref="UserEntity"/>.
 /// </summary>
-public sealed class OwnershipEntity : IEntity
+public sealed record OwnershipEntity : IEntity
 {
 	/// <inheritdoc/>
 	public Guid Id { get; init; }

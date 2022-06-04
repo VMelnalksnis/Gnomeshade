@@ -16,6 +16,7 @@ using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
+using Gnomeshade.Interfaces.WebApi.Models.Owners;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -73,16 +74,14 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, accessToken);
 
-		try
+		using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
+		if (response.IsSuccessStatusCode)
 		{
-			using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
-			response.EnsureSuccessStatusCode();
+			return;
 		}
-		catch (Exception)
-		{
-			_httpClient.DefaultRequestHeaders.Authorization = null;
-			throw;
-		}
+
+		_httpClient.DefaultRequestHeaders.Authorization = null;
+		response.EnsureSuccessStatusCode();
 	}
 
 	/// <inheritdoc />
@@ -315,20 +314,35 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	public Task<List<Purchase>> GetProductPurchasesAsync(Guid id, CancellationToken cancellationToken = default) =>
 		GetAsync<List<Purchase>>(Products.PurchasesUri(id), cancellationToken);
 
+	/// <inheritdoc />
+	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Access>>("Access", cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Ownership>>("Ownerships", cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Owner>>("Owners", cancellationToken);
+
+	/// <inheritdoc />
+	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) =>
+		PutAsync($"Ownerships/{id}", ownership);
+
+	/// <inheritdoc />
+	public Task DeleteOwnershipAsync(Guid id) =>
+		DeleteAsync($"Ownerships/{id}");
+
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{
-		try
+		if (responseMessage.IsSuccessStatusCode)
 		{
-			responseMessage.EnsureSuccessStatusCode();
+			return;
 		}
-		catch (HttpRequestException requestException)
-		{
-			var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-			throw new HttpRequestException(
-				$"Failed with message: {message}",
-				requestException,
-				responseMessage.StatusCode);
-		}
+
+		var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+		throw new HttpRequestException($"Failed with message: {message}", null, responseMessage.StatusCode);
 	}
 
 	private async Task<TResult> GetAsync<TResult>(string requestUri, CancellationToken cancellationToken = default)

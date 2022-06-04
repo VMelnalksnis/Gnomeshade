@@ -14,6 +14,7 @@ using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Authentication;
 using Gnomeshade.Interfaces.WebApi.Models.Importing;
+using Gnomeshade.Interfaces.WebApi.Models.Owners;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
@@ -593,4 +594,19 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var purchases = _purchases.Where(purchase => purchase.ProductId == id).ToList();
 		return Task.FromResult(purchases);
 	}
+
+	/// <inheritdoc />
+	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteOwnershipAsync(Guid id) => throw new NotImplementedException();
 }
