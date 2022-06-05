@@ -24,7 +24,6 @@ namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.V1_0.Transactions;
 public class TransactionsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
-	private IGnomeshadeClient _secondClient = null!;
 
 	private Counterparty _counterparty = null!;
 	private Counterparty _otherCounterparty = null!;
@@ -36,7 +35,6 @@ public class TransactionsControllerTests
 	public async Task SetUpAsync()
 	{
 		_client = await WebserverSetup.CreateAuthorizedClientAsync();
-		_secondClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
 
 		_counterparty = await _client.GetMyCounterpartyAsync();
 		var other = (await _client.GetCounterpartiesAsync())
@@ -83,29 +81,6 @@ public class TransactionsControllerTests
 		var identicalTransaction = await _client.GetTransactionAsync(transactionId);
 
 		transaction.Should().BeEquivalentTo(identicalTransaction, WithoutModifiedAt);
-	}
-
-	[Test]
-	public async Task GetTransaction_ShouldReturnNotFoundForOtherUsers()
-	{
-		var transactionCreationModel = new TransactionCreation
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
-
-		await FluentActions
-			.Awaiting(async () => await _client.GetTransactionAsync(transactionId))
-			.Should()
-			.NotThrowAsync();
-
-		(await FluentActions
-				.Awaiting(async () => await _secondClient.GetTransactionAsync(transactionId))
-				.Should()
-				.ThrowAsync<HttpRequestException>())
-			.Which.StatusCode.Should()
-			.Be(HttpStatusCode.NotFound);
 	}
 
 	[Test]
