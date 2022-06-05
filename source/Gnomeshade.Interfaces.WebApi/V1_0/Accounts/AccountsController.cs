@@ -107,7 +107,7 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	public async Task<ActionResult> Put(Guid id, [FromBody] AccountCreation account)
 	{
 		// todo this checks for READ access, but WRITE is needed
-		var existingAccount = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		var existingAccount = await _repository.FindWriteableByIdAsync(id, ApplicationUser.Id);
 		if (existingAccount is not null)
 		{
 			return await UpdateExistingAccountAsync(account, ApplicationUser, existingAccount);

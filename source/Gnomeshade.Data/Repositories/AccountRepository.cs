@@ -51,7 +51,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE a.iban = @iban AND {_accessSql};";
+		var sql = $"{SelectSql} WHERE a.iban = @iban AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { iban, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -63,7 +63,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.bic = @bic AND {_accessSql};";
+		var sql = $"{SelectSql} WHERE a.bic = @bic AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -74,7 +74,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>A collection of all active accounts.</returns>
 	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {_accessSql} ORDER BY a.created_at;";
+		var sql = $"{SelectSql} WHERE a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {AccessSql} ORDER BY a.created_at;";
 		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}

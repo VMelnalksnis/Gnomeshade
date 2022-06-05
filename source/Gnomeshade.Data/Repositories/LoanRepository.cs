@@ -49,7 +49,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE loans.transaction_id = @{nameof(transactionId)} AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -64,7 +64,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { counterpartyId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -81,7 +81,24 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE loans.id = @id AND transaction_id = @transactionId AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE loans.id = @id AND transaction_id = @transactionId AND {AccessSql}";
+		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
+		return FindAsync(command);
+	}
+
+	/// <summary>Searches for a loan for a specific transaction with the specified id and can be updated.</summary>
+	/// <param name="transactionId">The transaction id for which to get the loan.</param>
+	/// <param name="id">The loan id to search by.</param>
+	/// <param name="ownerId">The id of the owner of the loan.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The loan if one exists and can be updated, otherwise <see langword="null"/>.</returns>
+	public Task<LoanEntity?> FindWriteableByIdAsync(
+		Guid transactionId,
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken)
+	{
+		var sql = $"{SelectSql} WHERE loans.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}

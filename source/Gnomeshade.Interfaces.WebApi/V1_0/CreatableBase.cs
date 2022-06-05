@@ -94,7 +94,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[ProducesStatus409Conflict]
 	public virtual async Task<ActionResult> Put(Guid id, [FromBody] TCreation creation)
 	{
-		var existingEntity = await Repository.FindByIdAsync(id, ApplicationUser.Id);
+		var existingEntity = await Repository.FindWriteableByIdAsync(id, ApplicationUser.Id);
 		if (existingEntity is not null)
 		{
 			return await UpdateExistingAsync(id, creation, ApplicationUser);

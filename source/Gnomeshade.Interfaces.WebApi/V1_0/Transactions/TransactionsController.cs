@@ -192,7 +192,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutTransfer(Guid transactionId, Guid id, [FromBody] TransferCreation transfer)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -200,12 +200,12 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 				: Forbid();
 		}
 
-		var existingTransfer = await _transferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
+		var existingTransfer = await _transferRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id);
 		var entity = Mapper.Map<TransferEntity>(transfer) with
 		{
 			Id = id,
 			CreatedByUserId = ApplicationUser.Id,
-			OwnerId = ApplicationUser.Id, // todo
+			OwnerId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
 			TransactionId = transactionId,
 		};
@@ -228,7 +228,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeleteTransfer(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return NotFound();
@@ -283,7 +283,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutPurchase(Guid transactionId, Guid id, [FromBody] PurchaseCreation purchase)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -291,7 +291,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 				: Forbid();
 		}
 
-		var existingPurchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id);
+		var existingPurchase = await _purchaseRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id);
 		var entity = Mapper.Map<PurchaseEntity>(purchase) with
 		{
 			Id = id,
@@ -319,7 +319,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeletePurchase(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return NotFound();
@@ -374,7 +374,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutLoan(Guid transactionId, Guid id, [FromBody] LoanCreation loan)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -382,7 +382,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 				: Forbid();
 		}
 
-		var existingLoan = await _loanRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, CancellationToken.None);
+		var existingLoan = await _loanRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id, CancellationToken.None);
 		var entity = Mapper.Map<LoanEntity>(loan) with
 		{
 			Id = id,
@@ -410,7 +410,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeleteLoan(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
 			return NotFound();

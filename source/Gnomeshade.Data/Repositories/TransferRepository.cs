@@ -49,7 +49,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE transfers.transaction_id = @transactionId AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE transfers.transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -62,7 +62,20 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE transfers.id = @id AND transaction_id = @transactionId AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE transfers.id = @id AND transaction_id = @transactionId AND {AccessSql}";
+		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
+		return FindAsync(command);
+	}
+
+	/// <summary>Searches for a transfer for a specific transaction with the specified id that can be updated.</summary>
+	/// <param name="transactionId">The transaction id for which to get the transfer.</param>
+	/// <param name="id">The transfer id to search by.</param>
+	/// <param name="ownerId">The id of the owner of the transfer.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>The transfer if one exists and can be updated, otherwise <see langword="null"/>.</returns>
+	public Task<TransferEntity?> FindWriteableByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
+	{
+		var sql = $"{SelectSql} WHERE transfers.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -74,7 +87,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE transfers.bank_reference = @bankReference AND {_accessSql}";
+		var sql = $"{SelectSql} WHERE transfers.bank_reference = @bankReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}

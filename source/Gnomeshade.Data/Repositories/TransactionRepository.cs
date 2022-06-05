@@ -53,7 +53,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {_accessSql};";
+		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -71,7 +71,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		CancellationToken cancellationToken = default)
 	{
 		var sql =
-			$"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {_accessSql} ORDER BY t.valued_at DESC";
+			$"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {AccessSql} ORDER BY t.valued_at DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);
@@ -91,7 +91,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		var sql = $@"{Queries.Link.Select}
          INNER JOIN transaction_links ON transaction_links.link_id = links.id
          WHERE transaction_links.transaction_id = @id
-           AND {_accessSql};";
+           AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return DbConnection.QueryAsync<LinkEntity>(command);
 	}

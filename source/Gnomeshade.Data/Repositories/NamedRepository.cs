@@ -35,7 +35,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {NameSql} AND {_accessSql}";
+		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -48,7 +48,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, IDbTransaction dbTransaction, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {NameSql} AND {_accessSql}";
+		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, dbTransaction, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
