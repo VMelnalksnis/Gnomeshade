@@ -31,6 +31,15 @@ public sealed class OwnerRepository : IDisposable
 
 	/// <summary>Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.</summary>
 	/// <param name="id">The id with which to create the entity.</param>
+	/// <returns>The id of the new entity.</returns>
+	public Task<Guid> AddAsync(Guid id)
+	{
+		var command = new CommandDefinition(_insertWithIdSql, new { id });
+		return _dbConnection.QuerySingleAsync<Guid>(command);
+	}
+
+	/// <summary>Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.</summary>
+	/// <param name="id">The id with which to create the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the new entity.</returns>
 	public Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
@@ -44,6 +53,12 @@ public sealed class OwnerRepository : IDisposable
 	/// <returns>A collection of all owners.</returns>
 	public Task<IEnumerable<OwnerEntity>> GetAllAsync(CancellationToken cancellationToken = default) =>
 		_dbConnection.QueryAsync<OwnerEntity>(new(_selectSql, cancellationToken: cancellationToken));
+
+	/// <summary>Deletes the owner with the specified id.</summary>
+	/// <param name="id">The id of the owner to delete.</param>
+	/// <returns>The number of affected rows.</returns>
+	public Task<int> DeleteAsync(Guid id) =>
+		_dbConnection.ExecuteAsync("DELETE FROM owners WHERE id = @id", new { id });
 
 	/// <inheritdoc/>
 	public void Dispose() => _dbConnection.Dispose();

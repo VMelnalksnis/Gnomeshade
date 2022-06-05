@@ -10,7 +10,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 /// <summary>The information needed to create a new counterparty.</summary>
 [PublicAPI]
-public sealed record CounterpartyCreation
+public sealed record CounterpartyCreation : Creation
 {
 	/// <inheritdoc cref="Counterparty.Name"/>
 	[Required]

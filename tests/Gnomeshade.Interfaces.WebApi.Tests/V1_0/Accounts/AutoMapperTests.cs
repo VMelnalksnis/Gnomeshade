@@ -44,7 +44,9 @@ public class AutoMapperTests
 			.Should()
 			.BeEquivalentTo(
 				creationModel,
-				options => options.ByMembersExcluding<AccountCreation, AccountEntity>(model => model.Currencies));
+				options => options
+					.ByMembersExcluding<AccountCreation, AccountEntity>(model => model.Currencies)
+					.Excluding(model => model.OwnerId));
 	}
 
 	[Test]
@@ -61,7 +63,9 @@ public class AutoMapperTests
 			.Should()
 			.BeEquivalentTo(
 				creationModel,
-				options => options.ByMembers<AccountInCurrencyCreation, AccountInCurrencyEntity>());
+				options => options
+					.ByMembers<AccountInCurrencyCreation, AccountInCurrencyEntity>()
+					.Excluding(model => model.OwnerId));
 	}
 
 	[Test]

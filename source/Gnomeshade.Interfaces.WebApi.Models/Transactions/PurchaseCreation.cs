@@ -14,7 +14,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 /// <summary>Information needed to create a purchase.</summary>
 /// <seealso cref="Purchase"/>
 [PublicAPI]
-public sealed record PurchaseCreation
+public sealed record PurchaseCreation : Creation
 {
 	/// <inheritdoc cref="Purchase.Price"/>
 	[Required]

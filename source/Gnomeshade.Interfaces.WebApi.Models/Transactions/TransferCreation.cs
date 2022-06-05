@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 /// <summary>Information needed to create a transfer.</summary>
 /// <seealso cref="Transfer"/>
 [PublicAPI]
-public sealed record TransferCreation
+public sealed record TransferCreation : Creation
 {
 	/// <inheritdoc cref="Transfer.SourceAmount"/>
 	[Required]

@@ -13,6 +13,7 @@ using AutoMapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.OpenApi;
 using Gnomeshade.Interfaces.WebApi.V1_0.Authorization;
 
@@ -32,7 +33,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	where TRepository : Repository<TEntity>
 	where TEntity : class, IEntity
 	where TModel : class
-	where TCreation : class
+	where TCreation : Creation
 {
 	/// <summary>Initializes a new instance of the <see cref="CreatableBase{TRepository, TEntity, TModel, TCreation}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -80,6 +81,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[ProducesStatus409Conflict]
 	public virtual Task<ActionResult> Post([FromBody] TCreation creation)
 	{
+		creation = creation with { OwnerId = creation.OwnerId ?? ApplicationUser.Id };
 		return CreateNewAsync(Guid.NewGuid(), creation, ApplicationUser);
 	}
 
@@ -94,6 +96,8 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[ProducesStatus409Conflict]
 	public virtual async Task<ActionResult> Put(Guid id, [FromBody] TCreation creation)
 	{
+		creation = creation with { OwnerId = creation.OwnerId ?? ApplicationUser.Id };
+
 		var existingEntity = await Repository.FindWriteableByIdAsync(id, ApplicationUser.Id);
 		if (existingEntity is not null)
 		{

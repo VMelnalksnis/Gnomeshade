@@ -211,11 +211,15 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		var account = Mapper.Map<AccountEntity>(model) with
 		{
 			Id = id,
-			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			NormalizedName = model.Name!.ToUpperInvariant(),
 		};
+
+		if (model.OwnerId is null)
+		{
+			account.OwnerId = user.Id;
+		}
 
 		_ = await _accountUnitOfWork.AddAsync(account);
 		return CreatedAtAction(nameof(Get), new { id }, id);
@@ -235,9 +239,13 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		var account = Mapper.Map<AccountEntity>(model) with
 		{
 			Id = existingAccount.Id,
-			OwnerId = user.Id, // todo only works for entities created by the user
 			NormalizedName = model.Name!.ToUpperInvariant(),
 		};
+
+		if (model.OwnerId is null)
+		{
+			account.OwnerId = user.Id;
+		}
 
 		_ = await _accountUnitOfWork.UpdateAsync(account, user);
 		return NoContent();

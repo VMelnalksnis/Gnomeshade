@@ -96,7 +96,6 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 		var product = Mapper.Map<ProductEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
 			NormalizedName = creation.Name!.ToUpperInvariant(),
 			ModifiedByUserId = user.Id,
 		};
@@ -121,7 +120,6 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 		var product = Mapper.Map<ProductEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			NormalizedName = normalizedName,

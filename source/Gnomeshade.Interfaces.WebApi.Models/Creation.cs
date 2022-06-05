@@ -4,15 +4,11 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 namespace Gnomeshade.Interfaces.WebApi.Models;
 
-/// <summary>Information needed to create a link.</summary>
-/// <seealso cref="Link"/>
-[PublicAPI]
-public sealed record LinkCreation : Creation
+/// <summary>Base class for all resource creation models.</summary>
+public abstract record Creation
 {
-	/// <inheritdoc cref="Link.Uri"/>
-	public Uri? Uri { get; init; }
+	/// <summary>The id of the owner of the resource.</summary>
+	public Guid? OwnerId { get; init; }
 }

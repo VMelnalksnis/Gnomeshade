@@ -110,6 +110,20 @@ public static class Routes
 		internal static string PurchasesUri(Guid id) => $"{IdUri(id)}/Purchases";
 	}
 
+	internal static class Owners
+	{
+		internal const string Uri = "Owners";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+	}
+
+	internal static class Ownerships
+	{
+		internal const string Uri = "Ownerships";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+	}
+
 	internal static class Categories
 	{
 		internal const string _uri = "Categories";

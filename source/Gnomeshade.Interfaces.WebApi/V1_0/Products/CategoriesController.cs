@@ -78,7 +78,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		var category = Mapper.Map<CategoryEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
 			ModifiedByUserId = user.Id,
 			NormalizedName = creation.Name.ToUpperInvariant(),
 		};
@@ -103,7 +102,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		var category = Mapper.Map<CategoryEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			NormalizedName = normalizedName,

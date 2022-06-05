@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -49,5 +50,27 @@ public sealed class OwnersController : FinanceControllerBase<OwnerEntity, Owner>
 	{
 		var owners = await _repository.GetAllAsync(cancellationToken);
 		return owners.Select(MapToModel).ToList();
+	}
+
+	/// <inheritdoc cref="IOwnerClient.PutOwnerAsync"/>
+	[HttpPut("{id:guid}")]
+	public async Task<ActionResult> Put(Guid id)
+	{
+		var existingOwner = (await _repository.GetAllAsync()).SingleOrDefault(owner => owner.Id == id);
+		if (existingOwner is not null)
+		{
+			return NoContent();
+		}
+
+		await _repository.AddAsync(id);
+		return CreatedAtAction(nameof(Get), new { id }, id);
+	}
+
+	/// <inheritdoc cref="IOwnerClient.DeleteOwnerAsync"/>
+	[HttpDelete("{id:guid}")]
+	public async Task<ActionResult> Delete(Guid id)
+	{
+		var deletedCount = await _repository.DeleteAsync(id);
+		return DeletedEntity<OwnerEntity>(id, deletedCount);
 	}
 }

@@ -319,20 +319,28 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<List<Access>>("Access", cancellationToken);
 
 	/// <inheritdoc />
+	public Task DeleteOwnerAsync(Guid id) =>
+		DeleteAsync(Owners.IdUri(id));
+
+	/// <inheritdoc />
 	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync<List<Ownership>>("Ownerships", cancellationToken);
+		GetAsync<List<Ownership>>(Ownerships.Uri, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) =>
-		GetAsync<List<Owner>>("Owners", cancellationToken);
+		GetAsync<List<Owner>>(Owners.Uri, cancellationToken);
+
+	/// <inheritdoc />
+	public Task PutOwnerAsync(Guid id) =>
+		PutAsync(Owners.IdUri(id));
 
 	/// <inheritdoc />
 	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) =>
-		PutAsync($"Ownerships/{id}", ownership);
+		PutAsync(Ownerships.IdUri(id), ownership);
 
 	/// <inheritdoc />
 	public Task DeleteOwnershipAsync(Guid id) =>
-		DeleteAsync($"Ownerships/{id}");
+		DeleteAsync(Ownerships.IdUri(id));
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{

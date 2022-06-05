@@ -10,11 +10,8 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Owners;
 
 /// <summary>Information needed to create an ownership.</summary>
 [PublicAPI]
-public sealed record OwnershipCreation
+public sealed record OwnershipCreation : Creation
 {
-	/// <inheritdoc cref="Ownership.OwnerId"/>
-	public Guid OwnerId { get; init; }
-
 	/// <inheritdoc cref="Ownership.UserId"/>
 	public Guid UserId { get; init; }
 

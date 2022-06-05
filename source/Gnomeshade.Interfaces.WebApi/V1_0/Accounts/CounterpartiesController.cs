@@ -100,7 +100,6 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 		var counterparty = Mapper.Map<CounterpartyEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id,
 			ModifiedByUserId = user.Id,
 			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
@@ -121,7 +120,6 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 		var counterparty = Mapper.Map<CounterpartyEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			NormalizedName = creation.Name!.ToUpperInvariant(),

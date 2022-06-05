@@ -599,10 +599,16 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task DeleteOwnerAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutOwnerAsync(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) => throw new NotImplementedException();

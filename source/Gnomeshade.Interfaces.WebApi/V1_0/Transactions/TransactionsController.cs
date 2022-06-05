@@ -192,6 +192,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutTransfer(Guid transactionId, Guid id, [FromBody] TransferCreation transfer)
 	{
+		transfer = transfer with { OwnerId = transfer.OwnerId ?? ApplicationUser.Id };
+
 		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
@@ -205,7 +207,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		{
 			Id = id,
 			CreatedByUserId = ApplicationUser.Id,
-			OwnerId = ApplicationUser.Id,
 			ModifiedByUserId = ApplicationUser.Id,
 			TransactionId = transactionId,
 		};
@@ -283,6 +284,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutPurchase(Guid transactionId, Guid id, [FromBody] PurchaseCreation purchase)
 	{
+		purchase = purchase with { OwnerId = purchase.OwnerId ?? ApplicationUser.Id };
+
 		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
@@ -296,7 +299,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		{
 			Id = id,
 			CreatedByUserId = ApplicationUser.Id,
-			OwnerId = ApplicationUser.Id, // todo
 			ModifiedByUserId = ApplicationUser.Id,
 			TransactionId = transactionId,
 		};
@@ -374,6 +376,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> PutLoan(Guid transactionId, Guid id, [FromBody] LoanCreation loan)
 	{
+		loan = loan with { OwnerId = loan.OwnerId ?? ApplicationUser.Id };
+
 		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
 		if (transaction is null)
 		{
@@ -387,7 +391,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		{
 			Id = id,
 			CreatedByUserId = ApplicationUser.Id,
-			OwnerId = ApplicationUser.Id, // todo
 			ModifiedByUserId = ApplicationUser.Id,
 			TransactionId = transactionId,
 		};
@@ -427,7 +430,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id, // todo only works for entities created by the user
 			ModifiedByUserId = user.Id,
 		};
 
@@ -441,7 +443,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
 			Id = id,
-			OwnerId = user.Id, // todo
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			ImportedAt = creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),

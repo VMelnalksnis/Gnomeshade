@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Accounts;
 
 /// <summary>The information needed to create a new account.</summary>
 [PublicAPI]
-public sealed record AccountCreation
+public sealed record AccountCreation : Creation
 {
 	/// <inheritdoc cref="Account.Name"/>
 	[Required]

@@ -11,7 +11,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Products;
 
 /// <summary>The information needed to create or update a product.</summary>
 [PublicAPI]
-public sealed record ProductCreation
+public sealed record ProductCreation : Creation
 {
 	/// <inheritdoc cref="Product.Name"/>
 	[Required]

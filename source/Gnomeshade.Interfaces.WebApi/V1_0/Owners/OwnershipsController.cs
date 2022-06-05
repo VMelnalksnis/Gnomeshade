@@ -82,14 +82,7 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 
 	private async Task<ActionResult> CreateNewOwnershipAsync(OwnershipCreation model, Guid id)
 	{
-		var ownership = Mapper.Map<OwnershipEntity>(model) with
-		{
-			Id = id,
-			OwnerId = model.OwnerId,
-			UserId = model.UserId,
-			AccessId = model.AccessId,
-		};
-
+		var ownership = Mapper.Map<OwnershipEntity>(model) with { Id = id };
 		await _repository.AddAsync(ownership);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
@@ -98,14 +91,7 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 		OwnershipCreation model,
 		OwnershipEntity existingOwnership)
 	{
-		var ownership = Mapper.Map<OwnershipEntity>(model) with
-		{
-			Id = existingOwnership.Id,
-			OwnerId = model.OwnerId,
-			UserId = model.UserId,
-			AccessId = model.AccessId,
-		};
-
+		var ownership = Mapper.Map<OwnershipEntity>(model) with { Id = existingOwnership.Id };
 		_ = await _repository.UpdateAsync(ownership);
 		return NoContent();
 	}

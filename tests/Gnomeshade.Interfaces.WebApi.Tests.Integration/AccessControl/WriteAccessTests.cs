@@ -18,11 +18,20 @@ using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.AccessControl;
 
+[TestFixtureSource(typeof(OwnerTestFixtureSource))]
 public sealed class WriteAccessTests
 {
+	private readonly Func<Task<Guid>> _ownerIdFunc;
 	private readonly Guid _writeOwnershipId = Guid.NewGuid();
+
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
+	private Guid? _ownerId;
+
+	public WriteAccessTests(Func<Task<Guid>> ownerIdFunc)
+	{
+		_ownerIdFunc = ownerIdFunc;
+	}
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
@@ -34,15 +43,17 @@ public sealed class WriteAccessTests
 		var otherCounterparty = await _otherClient.GetMyCounterpartyAsync();
 		var accesses = await _client.GetAccessesAsync();
 		var writeAccess = accesses.Single(access => access.Name == "Write");
-		var owners = await _client.GetOwnersAsync();
-		var deleteOwnership = new OwnershipCreation
+		var ownerId = await _ownerIdFunc();
+		var writeOwnership = new OwnershipCreation
 		{
 			AccessId = writeAccess.Id,
-			OwnerId = owners.Single(owner => owner.Id == counterparty.OwnerId).Id,
+			OwnerId = ownerId,
 			UserId = otherCounterparty.OwnerId,
 		};
 
-		await _client.PutOwnershipAsync(_writeOwnershipId, deleteOwnership);
+		await _client.PutOwnershipAsync(_writeOwnershipId, writeOwnership);
+
+		_ownerId = ownerId == counterparty.OwnerId ? null : ownerId;
 	}
 
 	[OneTimeTearDown]
@@ -54,7 +65,7 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Counterparties()
 	{
-		var counterparty = await _client.CreateCounterpartyAsync();
+		var counterparty = await _client.CreateCounterpartyAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetCounterpartyAsync(counterparty.Id));
 
@@ -70,8 +81,8 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Accounts()
 	{
-		var counterpartyId = await _client.CreateCounterpartyAsync();
-		var account = await _client.CreateAccountAsync(counterpartyId.Id);
+		var counterpartyId = await _client.CreateCounterpartyAsync(_ownerId);
+		var account = await _client.CreateAccountAsync(counterpartyId.Id, _ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetAccountAsync(account.Id));
 
@@ -87,7 +98,7 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Categories()
 	{
-		var category = await _client.CreateCategoryAsync();
+		var category = await _client.CreateCategoryAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetCategoryAsync(category.Id));
 
@@ -103,7 +114,7 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Units()
 	{
-		var unit = await _client.CreateUnitAsync();
+		var unit = await _client.CreateUnitAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetUnitAsync(unit.Id));
 
@@ -119,9 +130,9 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Products()
 	{
-		var unit = await _client.CreateUnitAsync();
-		var category = await _client.CreateCategoryAsync();
-		var product = await _client.CreateProductAsync(unit.Id, category.Id);
+		var unit = await _client.CreateUnitAsync(_ownerId);
+		var category = await _client.CreateCategoryAsync(_ownerId);
+		var product = await _client.CreateProductAsync(unit.Id, category.Id, _ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetProductAsync(product.Id));
 
@@ -137,7 +148,7 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Transactions()
 	{
-		var transaction = await _client.CreateTransactionAsync();
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 
@@ -153,12 +164,12 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Transfers()
 	{
-		var transaction = await _client.CreateTransactionAsync();
-		var counterpartyId = await _client.CreateCounterpartyAsync();
-		var account1 = await _client.CreateAccountAsync(counterpartyId.Id);
-		var account2 = await _client.CreateAccountAsync(counterpartyId.Id);
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterpartyId = await _client.CreateCounterpartyAsync(_ownerId);
+		var account1 = await _client.CreateAccountAsync(counterpartyId.Id, _ownerId);
+		var account2 = await _client.CreateAccountAsync(counterpartyId.Id, _ownerId);
 
-		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id);
+		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
 
@@ -175,12 +186,12 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Purchases()
 	{
-		var transaction = await _client.CreateTransactionAsync();
-		var unit = await _client.CreateUnitAsync();
-		var category = await _client.CreateCategoryAsync();
-		var product = await _client.CreateProductAsync(unit.Id, category.Id);
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var unit = await _client.CreateUnitAsync(_ownerId);
+		var category = await _client.CreateCategoryAsync(_ownerId);
+		var product = await _client.CreateProductAsync(unit.Id, category.Id, _ownerId);
 
-		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id);
+		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id, _ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
 
@@ -197,11 +208,11 @@ public sealed class WriteAccessTests
 	[Test]
 	public async Task Loans()
 	{
-		var transaction = await _client.CreateTransactionAsync();
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
 		var counterparty1 = await _client.GetMyCounterpartyAsync();
 		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
 
-		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id);
+		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
 
@@ -219,7 +230,7 @@ public sealed class WriteAccessTests
 	public async Task Links()
 	{
 		var linkId = Guid.NewGuid();
-		await _client.PutLinkAsync(linkId, new() { Uri = new("https://localhost/") });
+		await _client.PutLinkAsync(linkId, new() { Uri = new("https://localhost/"), OwnerId = _ownerId });
 		var link = await _client.GetLinkAsync(linkId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));

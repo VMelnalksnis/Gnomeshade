@@ -69,7 +69,7 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 		var linkToCreate = new LinkEntity
 		{
 			Id = id,
-			OwnerId = user.Id,
+			OwnerId = creation.OwnerId!.Value,
 			ModifiedByUserId = user.Id,
 			Uri = creation.Uri!.ToString(),
 		};
@@ -89,7 +89,7 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 		var link = new LinkEntity
 		{
 			Id = id,
-			OwnerId = user.Id,
+			OwnerId = creation.OwnerId!.Value,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			Uri = creation.Uri!.ToString(),

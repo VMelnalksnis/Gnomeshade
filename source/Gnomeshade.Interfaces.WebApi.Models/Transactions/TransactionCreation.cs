@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>Information needed in order to create a transaction.</summary>
 [PublicAPI]
-public sealed record TransactionCreation
+public sealed record TransactionCreation : Creation
 {
 	/// <inheritdoc cref="Transaction.BookedAt"/>
 	[RequiredIfNull(nameof(ValuedAt))]

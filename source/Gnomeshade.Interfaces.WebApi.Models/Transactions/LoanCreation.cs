@@ -9,7 +9,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>Information needed to create a loan.</summary>
 /// <seealso cref="Loan"/>
-public sealed record LoanCreation
+public sealed record LoanCreation : Creation
 {
 	/// <inheritdoc cref="Loan.IssuingCounterpartyId"/>
 	[Required]

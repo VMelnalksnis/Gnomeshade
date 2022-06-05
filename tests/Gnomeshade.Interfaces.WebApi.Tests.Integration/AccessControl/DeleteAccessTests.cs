@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models;
 using Gnomeshade.Interfaces.WebApi.Models.Owners;
 using Gnomeshade.TestingHelpers.Models;
 
@@ -16,12 +17,20 @@ using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration.AccessControl;
 
+[TestFixtureSource(typeof(OwnerTestFixtureSource))]
 public sealed class DeleteAccessTests
 {
+	private readonly Func<Task<Guid>> _ownerIdFunc;
 	private readonly Guid _deleteOwnershipId = Guid.NewGuid();
 
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
+	private Guid? _ownerId;
+
+	public DeleteAccessTests(Func<Task<Guid>> ownerIdFunc)
+	{
+		_ownerIdFunc = ownerIdFunc;
+	}
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
@@ -33,15 +42,17 @@ public sealed class DeleteAccessTests
 		var otherCounterparty = await _otherClient.GetMyCounterpartyAsync();
 		var accesses = await _client.GetAccessesAsync();
 		var deleteAccess = accesses.Single(access => access.Name == "Delete");
-		var owners = await _client.GetOwnersAsync();
+		var ownerId = await _ownerIdFunc();
 		var deleteOwnership = new OwnershipCreation
 		{
 			AccessId = deleteAccess.Id,
-			OwnerId = owners.Single(owner => owner.Id == counterparty.OwnerId).Id,
+			OwnerId = ownerId,
 			UserId = otherCounterparty.OwnerId,
 		};
 
 		await _client.PutOwnershipAsync(_deleteOwnershipId, deleteOwnership);
+
+		_ownerId = ownerId == counterparty.OwnerId ? null : ownerId;
 	}
 
 	[OneTimeTearDown]
@@ -53,7 +64,7 @@ public sealed class DeleteAccessTests
 	[Test]
 	public async Task Categories()
 	{
-		var category = await _client.CreateCategoryAsync();
+		var category = await _client.CreateCategoryAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetCategoryAsync(category.Id));
 
@@ -78,7 +89,7 @@ public sealed class DeleteAccessTests
 	[Test]
 	public async Task Transactions()
 	{
-		var transaction = await _client.CreateTransactionAsync();
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 
@@ -94,6 +105,122 @@ public sealed class DeleteAccessTests
 
 		(await FluentActions
 				.Awaiting(() => _client.GetTransactionAsync(transaction.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Transfers()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty = await _client.CreateCounterpartyAsync(_ownerId);
+		var account1 = await _client.CreateAccountAsync(counterparty.Id, _ownerId);
+		var account2 = await _client.CreateAccountAsync(counterparty.Id, _ownerId);
+
+		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+
+		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
+
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeleteTransferAsync(transaction.Id, transfer.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetTransferAsync(transaction.Id, transfer.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Purchases()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var unit = await _client.CreateUnitAsync();
+		var category = await _client.CreateCategoryAsync(_ownerId);
+		var product = await _client.CreateProductAsync(unit.Id, category.Id, _ownerId);
+
+		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id, _ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+
+		var updatedTransfer = purchase.ToCreation() with { Amount = purchase.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutPurchaseAsync(transaction.Id, purchase.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeletePurchaseAsync(transaction.Id, purchase.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetPurchaseAsync(transaction.Id, purchase.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Loans()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty1 = await _client.GetMyCounterpartyAsync();
+		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
+
+		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+
+		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(transaction.Id, loan.Id, updatedLoan));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeleteLoanAsync(transaction.Id, loan.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetLoanAsync(transaction.Id, loan.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task Links()
+	{
+		var linkId = Guid.NewGuid();
+		await _client.PutLinkAsync(linkId, new() { Uri = new("https://localhost/"), OwnerId = _ownerId });
+		var link = await _client.GetLinkAsync(linkId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
+
+		var updatedLink = new LinkCreation { Uri = new("https://localhost/test") };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLinkAsync(link.Id, updatedLink));
+		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeleteLinkAsync(link.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetLinkAsync(link.Id))
 				.Should()
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

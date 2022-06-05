@@ -107,7 +107,7 @@ public class TransactionsControllerTests
 		var transfers = await _client.GetTransfersAsync(transactionId);
 
 		transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
-		transfer.Should().BeEquivalentTo(transferCreation);
+		transfer.Should().BeEquivalentTo(transferCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		var bankReference = $"{Guid.NewGuid():N}";
 		transferCreation = transferCreation with { BankReference = bankReference };
@@ -171,7 +171,7 @@ public class TransactionsControllerTests
 
 		purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
 		productPurchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
-		purchase.Should().BeEquivalentTo(purchaseCreation);
+		purchase.Should().BeEquivalentTo(purchaseCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		var deliveryDate = SystemClock.Instance.GetCurrentInstant();
 		purchaseCreation = purchaseCreation with { DeliveryDate = deliveryDate };
@@ -267,7 +267,7 @@ public class TransactionsControllerTests
 		loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 		receiverLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 		issuerLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
-		loan.Should().BeEquivalentTo(loanCreation);
+		loan.Should().BeEquivalentTo(loanCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		loanCreation = loanCreation with { Amount = 2 };
 		await _client.PutLoanAsync(transactionId, loanId, loanCreation);
