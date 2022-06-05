@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
 		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
 	</ItemGroup>
 

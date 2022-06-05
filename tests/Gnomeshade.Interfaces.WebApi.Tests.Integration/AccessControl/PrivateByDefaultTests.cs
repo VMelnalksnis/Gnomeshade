@@ -34,7 +34,7 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Counterparties()
 	{
-		var counterparty = await CreateCounterpartyAsync(_client);
+		var counterparty = await _client.CreateCounterpartyAsync();
 
 		await ShouldBeNotFoundForOthers(client => client.GetCounterpartyAsync(counterparty.Id));
 
@@ -47,7 +47,7 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Accounts()
 	{
-		var counterpartyId = await CreateCounterpartyAsync(_client);
+		var counterpartyId = await _client.CreateCounterpartyAsync();
 		var account = await CreateAccountAsync(_client, counterpartyId.Id);
 
 		await ShouldBeNotFoundForOthers(client => client.GetAccountAsync(account.Id));
@@ -61,7 +61,7 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Categories()
 	{
-		var category = await CreateCategoryAsync(_client);
+		var category = await _client.CreateCategoryAsync();
 
 		await ShouldBeNotFoundForOthers(client => client.GetCategoryAsync(category.Id));
 
@@ -89,7 +89,7 @@ public sealed class PrivateByDefaultTests
 	public async Task Products()
 	{
 		var unit = await CreateUnitAsync(_client);
-		var category = await CreateCategoryAsync(_client);
+		var category = await _client.CreateCategoryAsync();
 		var product = await CreateProductAsync(_client, unit.Id, category.Id);
 
 		await ShouldBeNotFoundForOthers(client => client.GetProductAsync(product.Id));
@@ -103,7 +103,7 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Transactions()
 	{
-		var transaction = await CreateTransactionAsync(_client);
+		var transaction = await _client.CreateTransactionAsync();
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 
@@ -117,8 +117,8 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Transfers()
 	{
-		var transaction = await CreateTransactionAsync(_client);
-		var counterpartyId = await CreateCounterpartyAsync(_client);
+		var transaction = await _client.CreateTransactionAsync();
+		var counterpartyId = await _client.CreateCounterpartyAsync();
 		var account1 = await CreateAccountAsync(_client, counterpartyId.Id);
 		var account2 = await CreateAccountAsync(_client, counterpartyId.Id);
 
@@ -136,9 +136,9 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Purchases()
 	{
-		var transaction = await CreateTransactionAsync(_client);
+		var transaction = await _client.CreateTransactionAsync();
 		var unit = await CreateUnitAsync(_client);
-		var category = await CreateCategoryAsync(_client);
+		var category = await _client.CreateCategoryAsync();
 		var product = await CreateProductAsync(_client, unit.Id, category.Id);
 
 		var purchase = await CreatePurchaseAsync(_client, transaction.Id, product.Id);
@@ -155,7 +155,7 @@ public sealed class PrivateByDefaultTests
 	[Test]
 	public async Task Loans()
 	{
-		var transaction = await CreateTransactionAsync(_client);
+		var transaction = await _client.CreateTransactionAsync();
 		var counterparty1 = await _client.GetMyCounterpartyAsync();
 		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
 
@@ -186,14 +186,6 @@ public sealed class PrivateByDefaultTests
 		await ShouldBeNotFoundForOthers(client => client.DeleteLinkAsync(link.Id), true);
 	}
 
-	private static async Task<Counterparty> CreateCounterpartyAsync(IAccountClient accountClient)
-	{
-		var counterpartyId = Guid.NewGuid();
-		var counterparty = new CounterpartyCreation { Name = $"{counterpartyId:N}" };
-		await accountClient.PutCounterpartyAsync(counterpartyId, counterparty);
-		return await accountClient.GetCounterpartyAsync(counterpartyId);
-	}
-
 	private static async Task<Account> CreateAccountAsync(IAccountClient accountClient, Guid counterpartyId)
 	{
 		var currency = (await accountClient.GetCurrenciesAsync()).First();
@@ -210,14 +202,6 @@ public sealed class PrivateByDefaultTests
 		return await accountClient.GetAccountAsync(accountId);
 	}
 
-	private static async Task<Category> CreateCategoryAsync(IProductClient productClient)
-	{
-		var categoryId = Guid.NewGuid();
-		var category = new CategoryCreation { Name = $"{categoryId:N}" };
-		await productClient.PutCategoryAsync(categoryId, category);
-		return await productClient.GetCategoryAsync(categoryId);
-	}
-
 	private static async Task<Unit> CreateUnitAsync(IProductClient productClient)
 	{
 		var unitId = Guid.NewGuid();
@@ -232,14 +216,6 @@ public sealed class PrivateByDefaultTests
 		var product = new ProductCreation { Name = $"{productId:N}", UnitId = unitId, CategoryId = categoryId };
 		await productClient.PutProductAsync(productId, product);
 		return await productClient.GetProductAsync(productId);
-	}
-
-	private static async Task<Transaction> CreateTransactionAsync(ITransactionClient transactionClient)
-	{
-		var transactionId = Guid.NewGuid();
-		var transaction = new TransactionCreation { BookedAt = SystemClock.Instance.GetCurrentInstant() };
-		await transactionClient.PutTransactionAsync(transactionId, transaction);
-		return await transactionClient.GetTransactionAsync(transactionId);
 	}
 
 	private static async Task<Transfer> CreateTransferAsync(

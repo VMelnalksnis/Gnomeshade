@@ -69,5 +69,7 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<OwnershipEntity, Ownership>();
 		options.CreateMap<OwnershipCreation, OwnershipEntity>();
+
+		options.CreateMap<OwnerEntity, Owner>();
 	}
 }

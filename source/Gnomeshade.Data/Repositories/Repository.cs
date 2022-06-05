@@ -187,7 +187,7 @@ public abstract class Repository<TEntity> : IDisposable
 	protected async Task<TEntity?> FindAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
-		return entities.SingleOrDefault();
+		return entities.DistinctBy(entity => entity.Id).SingleOrDefault();
 	}
 
 	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>
@@ -197,7 +197,7 @@ public abstract class Repository<TEntity> : IDisposable
 	protected async Task<TEntity> GetAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
-		return entities.Single();
+		return entities.DistinctBy(entity => entity.Id).Single();
 	}
 
 	private void Dispose(bool disposing)

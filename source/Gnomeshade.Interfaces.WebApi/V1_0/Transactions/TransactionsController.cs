@@ -101,20 +101,9 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.DeleteTransactionAsync"/>
 	/// <response code="204">Transaction was successfully deleted.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
-	[HttpDelete("{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public override async Task<StatusCodeResult> Delete(Guid id)
-	{
-		var transaction = await Repository.FindByIdAsync(id, ApplicationUser.Id);
-		if (transaction is null)
-		{
-			return NotFound();
-		}
-
-		_ = await _unitOfWork.DeleteAsync(transaction, ApplicationUser.Id);
-		return NoContent();
-	}
+	// ReSharper disable once RedundantOverriddenMember
+	public override Task<StatusCodeResult> Delete(Guid id) =>
+		base.Delete(id);
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionLinksAsync"/>
 	/// <response code="200">Successfully got all links.</response>

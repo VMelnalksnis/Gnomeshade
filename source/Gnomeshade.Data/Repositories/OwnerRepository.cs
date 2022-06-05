@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -39,9 +40,10 @@ public sealed class OwnerRepository : IDisposable
 	}
 
 	/// <summary>Gets all owners.</summary>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all owners.</returns>
-	public Task<IEnumerable<OwnerEntity>> GetAllAsync() =>
-		_dbConnection.QueryAsync<OwnerEntity>(_selectSql);
+	public Task<IEnumerable<OwnerEntity>> GetAllAsync(CancellationToken cancellationToken = default) =>
+		_dbConnection.QueryAsync<OwnerEntity>(new(_selectSql, cancellationToken: cancellationToken));
 
 	/// <inheritdoc/>
 	public void Dispose() => _dbConnection.Dispose();
