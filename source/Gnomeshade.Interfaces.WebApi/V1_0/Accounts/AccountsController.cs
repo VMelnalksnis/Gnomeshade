@@ -27,27 +27,27 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.Interfaces.WebApi.V1_0.Accounts;
 
 /// <summary>CRUD operations on account entity.</summary>
-public sealed class AccountsController : FinanceControllerBase<AccountEntity, Account>
+public sealed class AccountsController : CreatableBase<AccountRepository, AccountEntity, Account, AccountCreation>
 {
 	private readonly AccountRepository _repository;
 	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountsController"/> class.</summary>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
-	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
+	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
+	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	public AccountsController(
-		AccountRepository repository,
-		AccountInCurrencyRepository inCurrencyRepository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<AccountsController> logger,
+		AccountRepository repository,
+		AccountInCurrencyRepository inCurrencyRepository,
 		AccountUnitOfWork accountUnitOfWork)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper, logger, repository)
 	{
 		_repository = repository;
 		_inCurrencyRepository = inCurrencyRepository;
@@ -57,12 +57,9 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	/// <inheritdoc cref="IAccountClient.GetAccountAsync"/>
 	/// <response code="200">Successfully got the account.</response>
 	/// <response code="404">Account with the specified id does not exist.</response>
-	[HttpGet("{id:guid}")]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellation)
-	{
-		return await Find(() => _repository.FindByIdAsync(id, ApplicationUser.Id, cancellation));
-	}
+	[ProducesResponseType(typeof(Account), Status200OK)]
+	public override Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <summary>Gets all accounts.</summary>
 	/// <param name="onlyActive">Whether to get only active accounts.</param>
@@ -70,7 +67,8 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 	/// <returns>A collection of all accounts.</returns>
 	/// <response code="200">Successfully got all accounts.</response>
 	[HttpGet]
-	public async Task<ActionResult<IEnumerable<Account>>> GetAll(
+	[ProducesResponseType(typeof(List<Account>), Status200OK)]
+	public async Task<IEnumerable<Account>> GetAll(
 		[FromQuery, DefaultValue(true)] bool onlyActive,
 		CancellationToken cancellationToken)
 	{
@@ -78,49 +76,22 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 			? await _repository.GetAllActiveAsync(ApplicationUser.Id, cancellationToken)
 			: await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
 
-		// ReSharper disable once ConvertClosureToMethodGroup
-		var models = accounts.Select(account => MapToModel(account)).ToList();
-		return Ok(models);
+		return accounts.Select(MapToModel).ToList();
 	}
 
 	/// <inheritdoc cref="IAccountClient.CreateAccountAsync"/>
 	/// <response code="201">A new account was created.</response>
 	/// <response code="409">An account with the specified name already exists.</response>
-	[HttpPost]
-	[ProducesResponseType(typeof(Guid), Status201Created)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Post([FromBody] AccountCreation account)
-	{
-		return await CreateNewAccountAsync(account, ApplicationUser, Guid.NewGuid());
-	}
+	public override Task<ActionResult> Post([FromBody] AccountCreation account) =>
+		base.Post(account);
 
 	/// <inheritdoc cref="IAccountClient.PutAccountAsync"/>
 	/// <response code="201">A new account was created.</response>
 	/// <response code="204">An existing account was replaced.</response>
 	/// <response code="403">An account with the specified id already exists, but you do not have access to it.</response>
 	/// <response code="409">An account with the specified name already exists.</response>
-	[HttpPut("{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesResponseType(Status403Forbidden)]
-	[ProducesStatus409Conflict]
-	public async Task<ActionResult> Put(Guid id, [FromBody] AccountCreation account)
-	{
-		// todo this checks for READ access, but WRITE is needed
-		var existingAccount = await _repository.FindWriteableByIdAsync(id, ApplicationUser.Id);
-		if (existingAccount is not null)
-		{
-			return await UpdateExistingAccountAsync(account, ApplicationUser, existingAccount);
-		}
-
-		var conflictingAccount = await _repository.FindByIdAsync(id);
-		if (conflictingAccount is null)
-		{
-			return await CreateNewAccountAsync(account, ApplicationUser, id);
-		}
-
-		return Forbid();
-	}
+	public override Task<ActionResult> Put(Guid id, [FromBody] AccountCreation account) =>
+		base.Put(id, account);
 
 	/// <inheritdoc cref="IAccountClient.AddCurrencyToAccountAsync"/>
 	/// <response code="201">Currency was successfully added.</response>
@@ -200,55 +171,44 @@ public sealed class AccountsController : FinanceControllerBase<AccountEntity, Ac
 		return Ok(models);
 	}
 
-	private async Task<ActionResult> CreateNewAccountAsync(AccountCreation model, UserEntity user, Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, AccountCreation creation, UserEntity user)
 	{
-		var conflictingResult = await GetConflictResult(model, user);
+		var conflictingResult = await GetConflictResult(creation, user, id);
 		if (conflictingResult is not null)
 		{
 			return conflictingResult;
 		}
 
-		var account = Mapper.Map<AccountEntity>(model) with
+		var account = Mapper.Map<AccountEntity>(creation) with
+		{
+			Id = id,
+			NormalizedName = creation.Name!.ToUpperInvariant(),
+		};
+
+		_ = await _accountUnitOfWork.UpdateAsync(account, user);
+		return NoContent();
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, AccountCreation creation, UserEntity user)
+	{
+		var conflictingResult = await GetConflictResult(creation, user);
+		if (conflictingResult is not null)
+		{
+			return conflictingResult;
+		}
+
+		var account = Mapper.Map<AccountEntity>(creation) with
 		{
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
+			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
-
-		if (model.OwnerId is null)
-		{
-			account.OwnerId = user.Id;
-		}
 
 		_ = await _accountUnitOfWork.AddAsync(account);
 		return CreatedAtAction(nameof(Get), new { id }, id);
-	}
-
-	private async Task<ActionResult> UpdateExistingAccountAsync(
-		AccountCreation model,
-		UserEntity user,
-		AccountEntity existingAccount)
-	{
-		var conflictingResult = await GetConflictResult(model, user, existingAccount.Id);
-		if (conflictingResult is not null)
-		{
-			return conflictingResult;
-		}
-
-		var account = Mapper.Map<AccountEntity>(model) with
-		{
-			Id = existingAccount.Id,
-			NormalizedName = model.Name!.ToUpperInvariant(),
-		};
-
-		if (model.OwnerId is null)
-		{
-			account.OwnerId = user.Id;
-		}
-
-		_ = await _accountUnitOfWork.UpdateAsync(account, user);
-		return NoContent();
 	}
 
 	private async Task<ActionResult?> GetConflictResult(
