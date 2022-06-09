@@ -60,7 +60,7 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var categories = await _gnomeshadeClient.GetCategoriesAsync();
 		var categoryRows = categories.Select(category =>
@@ -83,7 +83,7 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 	protected override async Task DeleteAsync(CategoryRow row)
 	{
 		await _gnomeshadeClient.DeleteCategoryAsync(row.Id).ConfigureAwait(false);
-		await RefreshAsync().ConfigureAwait(false);
+		await Refresh().ConfigureAwait(false);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -96,6 +96,6 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 
 	private void OnCategoryUpserted(object? sender, UpsertedEventArgs e)
 	{
-		Task.Run(RefreshAsync).GetAwaiter().GetResult();
+		Task.Run(Refresh).GetAwaiter().GetResult();
 	}
 }

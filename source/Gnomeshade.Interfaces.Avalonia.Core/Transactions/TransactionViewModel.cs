@@ -98,7 +98,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var transactionsTask = _gnomeshadeClient.GetTransactionsAsync(
 			Filter.FromDate is null

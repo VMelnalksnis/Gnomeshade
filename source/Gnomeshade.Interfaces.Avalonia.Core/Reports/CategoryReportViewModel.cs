@@ -74,8 +74,45 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		return viewModel;
 	}
 
+	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the next year.</summary>
+	public void NextYear()
+	{
+		var maxYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
+			.Max(values => values.DateTime).Year;
+		_currentYear ??= maxYear;
+		if (_currentYear != maxYear)
+		{
+			_currentYear++;
+		}
+
+		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
+		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
+	}
+
+	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the previous year.</summary>
+	public void PreviousYear()
+	{
+		var minYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
+			.Min(values => values.DateTime).Year;
+		_currentYear ??= minYear;
+		if (_currentYear != minYear)
+		{
+			_currentYear--;
+		}
+
+		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
+		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
+	}
+
+	/// <summary>Clear limits for first axis from <see cref="XAxes"/>.</summary>
+	public void Clear()
+	{
+		XAxes[0].MinLimit = null;
+		XAxes[0].MaxLimit = null;
+	}
+
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var allTransactions = await _gnomeshadeClient.GetTransactionsAsync(Instant.MinValue, Instant.MaxValue)
 			.ConfigureAwait(false);
@@ -192,43 +229,6 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			.ToList();
 
 		Series = purchasesWithCategories;
-	}
-
-	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the next year.</summary>
-	public void NextYear()
-	{
-		var maxYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
-			.Max(values => values.DateTime).Year;
-		_currentYear ??= maxYear;
-		if (_currentYear != maxYear)
-		{
-			_currentYear++;
-		}
-
-		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
-		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
-	}
-
-	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the previous year.</summary>
-	public void PreviousYear()
-	{
-		var minYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
-			.Min(values => values.DateTime).Year;
-		_currentYear ??= minYear;
-		if (_currentYear != minYear)
-		{
-			_currentYear--;
-		}
-
-		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
-		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
-	}
-
-	/// <summary>Clear limits for first axis from <see cref="XAxes"/>.</summary>
-	public void Clear()
-	{
-		XAxes[0].MinLimit = null;
-		XAxes[0].MaxLimit = null;
 	}
 
 	private static List<LocalDate> Split(ZonedDateTime from, ZonedDateTime to)

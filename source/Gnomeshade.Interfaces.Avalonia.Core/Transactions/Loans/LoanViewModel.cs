@@ -50,7 +50,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var loans = await _gnomeshadeClient.GetLoansAsync(_transactionId).ConfigureAwait(false);
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);

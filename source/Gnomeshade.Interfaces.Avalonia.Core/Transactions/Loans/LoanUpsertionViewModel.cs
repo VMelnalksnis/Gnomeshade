@@ -117,7 +117,7 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
 		Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);

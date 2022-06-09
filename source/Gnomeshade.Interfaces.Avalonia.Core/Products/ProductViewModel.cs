@@ -56,7 +56,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var productRows = (await _gnomeshadeClient.GetProductRowsAsync().ConfigureAwait(false)).ToList();
 		var creationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider).ConfigureAwait(false);
@@ -83,6 +83,6 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 
 	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
-		Task.Run(RefreshAsync).GetAwaiter().GetResult();
+		Task.Run(Refresh).GetAwaiter().GetResult();
 	}
 }

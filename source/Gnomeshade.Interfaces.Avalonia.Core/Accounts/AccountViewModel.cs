@@ -52,7 +52,7 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
 		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
@@ -87,6 +87,6 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 
 	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		Refresh().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }

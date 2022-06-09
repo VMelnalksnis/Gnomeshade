@@ -86,7 +86,7 @@ public sealed class CategoryCreationViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var categories = await _gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
 		var editedCategory = categories.SingleOrDefault(category => category.Id == _originalId);

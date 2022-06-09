@@ -124,7 +124,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		if (_id is null)
 		{

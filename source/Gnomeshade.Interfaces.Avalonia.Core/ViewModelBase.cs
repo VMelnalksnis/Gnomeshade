@@ -9,7 +9,25 @@ namespace Gnomeshade.Interfaces.Avalonia.Core;
 /// <summary>Base class for all view models.</summary>
 public abstract class ViewModelBase : PropertyChangedBase
 {
+	private bool _isBusy;
+
+	/// <summary>Gets or sets a value indicating whether the viewmodel busy.</summary>
+	public bool IsBusy
+	{
+		get => _isBusy;
+		protected set => SetAndNotify(ref _isBusy, value, nameof(IsBusy));
+	}
+
 	/// <summary>Refreshes all data loaded from API.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public virtual Task RefreshAsync() => Task.CompletedTask;
+	public async Task RefreshAsync()
+	{
+		IsBusy = true;
+		await Refresh();
+		IsBusy = false;
+	}
+
+	/// <summary>Refreshes all data loaded from API.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	protected virtual Task Refresh() => Task.CompletedTask;
 }

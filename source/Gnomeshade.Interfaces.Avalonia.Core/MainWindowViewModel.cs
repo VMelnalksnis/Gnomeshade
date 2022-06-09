@@ -3,10 +3,12 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
@@ -29,7 +31,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private ViewModelBase _activeView = null!;
+	private ViewModelBase _activeView;
+	private Cursor _cursor;
 
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
@@ -46,7 +49,11 @@ public sealed class MainWindowViewModel : ViewModelBase
 		_authenticationService = authenticationService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_clock = clock;
+		_activeView = new LoginViewModel(_authenticationService);
 
+		_cursor = Cursor.Default;
+
+		PropertyChanged += OnPropertyChanged;
 		SwitchToLogin();
 	}
 
@@ -71,6 +78,13 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 			SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
 		}
+	}
+
+	/// <summary>Gets or sets the current cursor.</summary>
+	public Cursor Cursor
+	{
+		get => _cursor;
+		set => SetAndNotify(ref _cursor, value);
 	}
 
 	private ViewModelBase? PreviousView { get; set; }
@@ -182,7 +196,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider).ConfigureAwait(false);
+		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider)
+			.ConfigureAwait(false);
 		ActiveView = productViewModel;
 	}
 
@@ -208,8 +223,10 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
+		Cursor = new(StandardCursorType.Wait);
 		var viewModel = await CategoryReportViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = viewModel;
+		Cursor = Cursor.Default;
 	}
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
@@ -250,7 +267,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private async Task SwitchToTransactionOverviewAsync()
 	{
-		var transactionViewModel = await TransactionViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		var transactionViewModel =
+			await TransactionViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = transactionViewModel;
 	}
 
@@ -301,6 +319,26 @@ public sealed class MainWindowViewModel : ViewModelBase
 			case UnitCreationViewModel unitCreationViewModel:
 				unitCreationViewModel.Upserted -= OnUnitUpserted;
 				break;
+		}
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(ActiveView))
+		{
+			ActiveView.PropertyChanged += ActiveViewOnPropertyChanged;
+		}
+		else if (e.PropertyName is nameof(IsBusy))
+		{
+			Cursor = IsBusy ? new(StandardCursorType.Wait) : Cursor.Default;
+		}
+	}
+
+	private void ActiveViewOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(IsBusy))
+		{
+			IsBusy = ActiveView.IsBusy;
 		}
 	}
 }

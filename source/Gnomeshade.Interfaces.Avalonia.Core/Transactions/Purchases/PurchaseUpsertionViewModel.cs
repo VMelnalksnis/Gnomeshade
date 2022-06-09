@@ -146,7 +146,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		if (_purchaseId is null)
 		{

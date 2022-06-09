@@ -72,7 +72,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var purchases = await _gnomeshadeClient.GetPurchasesAsync(_transactionId).ConfigureAwait(false);
 
@@ -101,7 +101,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	protected override async Task DeleteAsync(PurchaseOverview row)
 	{
 		await _gnomeshadeClient.DeletePurchaseAsync(_transactionId, row.Id).ConfigureAwait(false);
-		await RefreshAsync();
+		await Refresh();
 	}
 
 	private async Task SetDefaultCurrency()
@@ -164,6 +164,6 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		Refresh().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }

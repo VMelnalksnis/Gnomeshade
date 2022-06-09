@@ -63,7 +63,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var transfersTask = _gnomeshadeClient.GetTransfersAsync(_transactionId);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();

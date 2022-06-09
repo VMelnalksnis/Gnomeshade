@@ -62,11 +62,14 @@ public sealed class LoginViewModel : ViewModelBase
 	{
 		try
 		{
+			IsBusy = true;
 			await _authenticationService.SocialLogin().ConfigureAwait(false);
+			IsBusy = false;
 			OnUserLoggedIn();
 		}
 		catch (Exception e)
 		{
+			IsBusy = false;
 			ErrorMessage = e.Message;
 		}
 	}

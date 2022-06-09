@@ -54,7 +54,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	}
 
 	/// <inheritdoc />
-	public override async Task RefreshAsync()
+	protected override async Task Refresh()
 	{
 		var links = await _gnomeshadeClient.GetTransactionLinksAsync(_transactionId).ConfigureAwait(false);
 		var overviews = links
@@ -70,7 +70,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	protected override async Task DeleteAsync(LinkOverview row)
 	{
 		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id).ConfigureAwait(false);
-		await RefreshAsync().ConfigureAwait(false);
+		await Refresh().ConfigureAwait(false);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -83,6 +83,6 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 
 	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		Refresh().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }
