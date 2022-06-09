@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
@@ -80,39 +82,37 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
 		var user = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 		var transactions = allTransactions
-			.Where(t =>
+			.Select(transaction =>
 			{
-				var transfers = _gnomeshadeClient.GetTransfersAsync(t.Id).ConfigureAwait(false).GetAwaiter()
-					.GetResult();
-				var sum = transfers
-					.Select(transfer =>
+				var transfers = _gnomeshadeClient.GetTransfersAsync(transaction.Id).ConfigureAwait(false).GetAwaiter().GetResult();
+				var transferSum = transfers.Sum(transfer =>
+				{
+					var sourceAccount =
+						accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.SourceAccountId));
+					var targetAccount =
+						accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.TargetAccountId));
+					if (sourceAccount.CounterpartyId == user.Id && targetAccount.CounterpartyId == user.Id)
 					{
-						var sourceAccount =
-							accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.SourceAccountId));
-						var targetAccount =
-							accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.TargetAccountId));
-						if (sourceAccount.CounterpartyId == user.Id && targetAccount.CounterpartyId == user.Id)
-						{
-							return 0;
-						}
+						return 0;
+					}
 
-						return sourceAccount.CounterpartyId == user.Id ? transfer.SourceAmount : -transfer.TargetAmount;
-					})
-					.Sum();
+					return sourceAccount.CounterpartyId == user.Id ? transfer.SourceAmount : -transfer.TargetAmount;
+				});
 
-				return sum > 0;
+				return (transaction, transfers, transferSum);
 			})
+			.Where(tuple => tuple.transferSum > 0)
 			.ToList();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
 		var minDate =
 			new ZonedDateTime(
-				transactions.MinOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
+				transactions.MinOrDefault(tuple => tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, currentTime),
 				timeZone);
 		var maxDate =
 			new ZonedDateTime(
-				transactions.MaxOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
+				transactions.MaxOrDefault(tuple => tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, currentTime),
 				timeZone);
 		var splits = Split(minDate, maxDate);
 
@@ -131,11 +131,33 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		var categories = await _gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
 		var nodes = categories.Where(c => c.CategoryId is null)
 			.Select(category => CategoryNode.FromCategory(category, categories)).ToList();
-		var purchases = transactions
-			.Select(transaction => (_gnomeshadeClient.GetPurchasesAsync(transaction.Id),
-				new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone)))
-			.Select(task => (task.Item1.Result, task.Item2))
-			.SelectMany(tuple => tuple.Result.Select(purchase => (purchase, tuple.Item2)))
+
+		var data = transactions
+			.Select(tuple =>
+			{
+				var purchases = _gnomeshadeClient
+					.GetPurchasesAsync(tuple.transaction.Id)
+					.ConfigureAwait(false)
+					.GetAwaiter()
+					.GetResult();
+
+				var date = new ZonedDateTime(tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, timeZone);
+				var purchaseSum = purchases.Sum(purchase => purchase.Price);
+				return (tuple.transaction, tuple.transfers, tuple.transferSum, purchases, purchaseSum, date);
+			})
+			.ToList();
+
+		var purchases = data
+			.SelectMany(tuple => tuple.purchases.Select(purchase => (purchase, tuple.date)))
+			.ToList();
+
+		var uncategorizedTransfers = data
+			.Where(tuple => tuple.transferSum > tuple.purchaseSum)
+			.Select(tuple =>
+			{
+				var purchase = new Purchase { Price = tuple.transferSum - tuple.purchaseSum };
+				return (purchase, tuple.date, category: default(Category));
+			})
 			.ToList();
 
 		var purchasesWithCategories = purchases
@@ -148,8 +170,9 @@ public sealed class CategoryReportViewModel : ViewModelBase
 
 				var node = category is null ? null : nodes.Single(node => node.Contains(category.Id));
 				category = node is null ? category : categories.Single(c => c.Id == node.Id);
-				return (purchase.purchase, purchase.Item2, product, category);
+				return (purchase.purchase, purchase.date, category);
 			})
+			.Concat(uncategorizedTransfers)
 			.GroupBy(tuple => tuple.category)
 			.Select(categoryGrouping => new StackedColumnSeries<DateTimePoint>
 			{
@@ -157,7 +180,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 					.Select(split => new DateTimePoint(
 						split.ToDateTimeUnspecified(),
 						(double?)categoryGrouping
-							.Where(grouping => grouping.Item2.Year == split.Year && grouping.Item2.Month == split.Month)
+							.Where(grouping => grouping.date.Year == split.Year && grouping.date.Month == split.Month)
 							.Sum(grouping => grouping.purchase.Price))),
 				Stroke = null,
 				DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
