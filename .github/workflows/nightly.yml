@@ -12,19 +12,16 @@ jobs:
         runtime: [ win10-x64 ]
         project: [ Gnomeshade.Interfaces.Desktop ]
         publish_script: [ "deployment/publish.ps1" ]
-        artifact: [ "**/win10-x64/publish/Gnomeshade.Interfaces.Desktop_win10-x64.zip" ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.WebApi
             publish_script: deployment/publish.sh
-            artifact: "**/linux-x64/publish/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
 
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.Desktop
             publish_script: deployment/publish.sh
-            artifact: "**/linux-x64/publish/Gnomeshade.Interfaces.Desktop_linux-x64.zip"
 
     name: Build
     runs-on: ${{ matrix.os }}
@@ -44,11 +41,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
 
       - name: Publish project
+        id: publish
         run: >
           ${{ matrix.publish_script }}
           "${{ matrix.project }}"
           "${{ matrix.runtime }}"
-          "0.1.0"
           "${{ github.run_number }}"
           "-nightly"
 
@@ -58,4 +55,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
           rm: false
-          files: ${{ matrix.artifact }}
+          files: ${{ publish.artifact }}
