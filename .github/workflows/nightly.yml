@@ -49,7 +49,7 @@ jobs:
           "${{ matrix.project }}"
           "${{ matrix.runtime }}"
           "0.1.0"
-          "${{ env.GITHUB_RUN_NUMBER }}"
+          "${{ github.run_number }}"
           "-nightly"
 
       - name: Upload artifact to releases
