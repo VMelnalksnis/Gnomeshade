@@ -46,10 +46,10 @@ jobs:
       - name: Publish project
         run: >
           ${{ matrix.publish_script }}
-          ${{ matrix.project }}
-          ${{ matrix.runtime }}
-          0.1.0
-          $Env:GITHUB_RUN_NUMBER
+          "${{ matrix.project }}"
+          "${{ matrix.runtime }}"
+          "0.1.0"
+          "${{ env.GITHUB_RUN_NUMBER }}"
           "-nightly"
 
       - name: Upload artifact to releases
