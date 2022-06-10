@@ -223,10 +223,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		Cursor = new(StandardCursorType.Wait);
-		var viewModel = await CategoryReportViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		var viewModel = new CategoryReportViewModel(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = viewModel;
-		Cursor = Cursor.Default;
+		await viewModel.RefreshAsync();
 	}
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()

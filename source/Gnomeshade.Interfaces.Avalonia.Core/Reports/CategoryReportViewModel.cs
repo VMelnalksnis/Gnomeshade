@@ -33,7 +33,11 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	private List<ICartesianAxis> _xAxes;
 	private int? _currentYear;
 
-	private CategoryReportViewModel(
+	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="clock">Clock which can provide the current instant.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public CategoryReportViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
@@ -114,42 +118,21 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var allTransactions = await _gnomeshadeClient.GetTransactionsAsync(Instant.MinValue, Instant.MaxValue)
-			.ConfigureAwait(false);
-		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
-		var user = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
+		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue).ConfigureAwait(false);
 		var transactions = allTransactions
-			.Select(transaction =>
-			{
-				var transfers = _gnomeshadeClient.GetTransfersAsync(transaction.Id).ConfigureAwait(false).GetAwaiter().GetResult();
-				var transferSum = transfers.Sum(transfer =>
-				{
-					var sourceAccount =
-						accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.SourceAccountId));
-					var targetAccount =
-						accounts.Single(a => a.Currencies.Any(aic => aic.Id == transfer.TargetAccountId));
-					if (sourceAccount.CounterpartyId == user.Id && targetAccount.CounterpartyId == user.Id)
-					{
-						return 0;
-					}
-
-					return sourceAccount.CounterpartyId == user.Id ? transfer.SourceAmount : -transfer.TargetAmount;
-				});
-
-				return (transaction, transfers, transferSum);
-			})
-			.Where(tuple => tuple.transferSum > 0)
+			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
+			.Where(transaction => transaction.TransferBalance > 0)
 			.ToList();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
 		var minDate =
 			new ZonedDateTime(
-				transactions.MinOrDefault(tuple => tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, currentTime),
+				transactions.MinOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
 				timeZone);
 		var maxDate =
 			new ZonedDateTime(
-				transactions.MaxOrDefault(tuple => tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, currentTime),
+				transactions.MaxOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
 				timeZone);
 		var splits = Split(minDate, maxDate);
 
@@ -170,29 +153,22 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			.Select(category => CategoryNode.FromCategory(category, categories)).ToList();
 
 		var data = transactions
-			.Select(tuple =>
+			.Select(transaction =>
 			{
-				var purchases = _gnomeshadeClient
-					.GetPurchasesAsync(tuple.transaction.Id)
-					.ConfigureAwait(false)
-					.GetAwaiter()
-					.GetResult();
-
-				var date = new ZonedDateTime(tuple.transaction.ValuedAt ?? tuple.transaction.BookedAt!.Value, timeZone);
-				var purchaseSum = purchases.Sum(purchase => purchase.Price);
-				return (tuple.transaction, tuple.transfers, tuple.transferSum, purchases, purchaseSum, date);
+				var date = new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone);
+				return (transaction, date);
 			})
 			.ToList();
 
 		var purchases = data
-			.SelectMany(tuple => tuple.purchases.Select(purchase => (purchase, tuple.date)))
+			.SelectMany(tuple => tuple.transaction.Purchases.Select(purchase => (purchase, tuple.date)))
 			.ToList();
 
 		var uncategorizedTransfers = data
-			.Where(tuple => tuple.transferSum > tuple.purchaseSum)
+			.Where(tuple => tuple.transaction.TransferBalance > tuple.transaction.PurchaseTotal)
 			.Select(tuple =>
 			{
-				var purchase = new Purchase { Price = tuple.transferSum - tuple.purchaseSum };
+				var purchase = new Purchase { Price = tuple.transaction.TransferBalance - tuple.transaction.PurchaseTotal };
 				return (purchase, tuple.date, category: default(Category));
 			})
 			.ToList();

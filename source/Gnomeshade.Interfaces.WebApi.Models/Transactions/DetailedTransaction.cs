@@ -32,4 +32,22 @@ public sealed record DetailedTransaction : Transaction
 
 	/// <summary>All the links attached to the transaction.</summary>
 	public List<Link> Links { get; init; } = null!;
+
+	/// <summary>Creates a new instance of <see cref="DetailedTransaction"/> from a <see cref="Transaction"/>.</summary>
+	/// <param name="transaction">The transaction from which to copy values.</param>
+	/// <returns>A detailed transaction with all the properties from the transaction.</returns>
+	public static DetailedTransaction FromTransaction(Transaction transaction) => new()
+	{
+		Id = transaction.Id,
+		OwnerId = transaction.OwnerId,
+		CreatedAt = transaction.CreatedAt,
+		CreatedByUserId = transaction.CreatedByUserId,
+		ModifiedAt = transaction.ModifiedAt,
+		ModifiedByUserId = transaction.ModifiedByUserId,
+		BookedAt = transaction.BookedAt,
+		ValuedAt = transaction.ValuedAt,
+		Description = transaction.Description,
+		ImportedAt = transaction.ImportedAt,
+		ReconciledAt = transaction.ReconciledAt,
+	};
 }

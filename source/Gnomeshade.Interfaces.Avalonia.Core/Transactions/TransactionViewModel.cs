@@ -100,7 +100,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transactionsTask = _gnomeshadeClient.GetTransactionsAsync(
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(
 			Filter.FromDate is null
 				? null
 				: new ZonedDateTime(
@@ -130,9 +130,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
-		var overviewTasks = transactions.Select(async transaction =>
+		var overviews = transactions.Select(transaction =>
 		{
-			var transfers = (await _gnomeshadeClient.GetTransfersAsync(transaction.Id))
+			var transfers = transaction.Transfers
 				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 				.ToList();
 
@@ -142,9 +142,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transfers);
-		});
-
-		var overviews = await Task.WhenAll(overviewTasks).ConfigureAwait(false);
+		}).ToList();
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
