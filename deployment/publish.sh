@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 dotnet publish \
 ./source/"$1"/"$1".csproj \
 --runtime "$2" \

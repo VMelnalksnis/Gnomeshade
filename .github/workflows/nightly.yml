@@ -17,7 +17,7 @@ jobs:
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.WebApi
-            archive_command: deployment/publish.sh
+            publish_script: deployment/publish.sh
             artifact: "**/linux-x64/publish/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
 
           - os: ubuntu-latest
