@@ -65,13 +65,26 @@ public static class Routes
 	/// <summary>Transaction routes.</summary>
 	public static class Transactions
 	{
-		internal const string _uri = "Transactions";
+		internal const string Uri = "Transactions";
+		private const string _detailedUri = $"{Uri}/Details";
 
 		/// <summary>Gets the relative uri for all transactions within the specified period.</summary>
 		/// <param name="from">The point in time from which to select transactions.</param>
 		/// <param name="to">The point in time to which to select transactions.</param>
 		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
-		public static string DateRangeUri(Instant? from, Instant? to)
+		public static string DateRangeUri(Instant? from, Instant? to) => DateRangeUri(Uri, from, to);
+
+		internal static string DetailedDateRangeUri(Instant? from, Instant? to) => DateRangeUri(_detailedUri, from, to);
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string DetailedIdUri(Guid id) => $"{Uri}/{Format(id)}/Details";
+
+		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
+
+		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
+
+		private static string DateRangeUri(string baseUri, Instant? from, Instant? to)
 		{
 			var keyValues = new Dictionary<Instant, string>(2);
 			if (from.HasValue)
@@ -86,19 +99,13 @@ public static class Routes
 
 			if (!keyValues.Any())
 			{
-				return _uri;
+				return baseUri;
 			}
 
 			var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key}");
 			var query = string.Join('&', parameters);
-			return $"{_uri}?{query}";
+			return $"{baseUri}?{query}";
 		}
-
-		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
-
-		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
-
-		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
 	}
 
 	internal static class Products
@@ -166,7 +173,7 @@ public static class Routes
 
 		internal static string CounterpartyUri(Guid counterpartyId)
 		{
-			const string url = $"{Transactions._uri}/{_path}";
+			const string url = $"{Transactions.Uri}/{_path}";
 			var parameters = new Dictionary<string, string?> { { nameof(counterpartyId), Format(counterpartyId) } };
 			return QueryHelpers.AddQueryString(url, parameters);
 		}

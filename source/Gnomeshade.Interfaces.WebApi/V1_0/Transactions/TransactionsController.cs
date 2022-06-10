@@ -35,6 +35,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	private readonly PurchaseRepository _purchaseRepository;
 	private readonly LoanRepository _loanRepository;
 	private readonly TransactionUnitOfWork _unitOfWork;
+	private readonly CounterpartyRepository _counterpartyRepository;
+	private readonly AccountRepository _accountRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
@@ -45,6 +47,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
 	/// <param name="loanRepository">Persistence store for <see cref="LoanEntity"/>.</param>
+	/// <param name="counterpartyRepository">Persistence store for <see cref="CounterpartyEntity"/>.</param>
+	/// <param name="accountRepository">Persistence store for <see cref="AccountEntity"/>.</param>
 	public TransactionsController(
 		TransactionRepository repository,
 		ILogger<TransactionsController> logger,
@@ -53,22 +57,43 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		Mapper mapper,
 		TransferRepository transferRepository,
 		PurchaseRepository purchaseRepository,
-		LoanRepository loanRepository)
+		LoanRepository loanRepository,
+		CounterpartyRepository counterpartyRepository,
+		AccountRepository accountRepository)
 		: base(applicationUserContext, mapper, logger, repository)
 	{
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
 		_purchaseRepository = purchaseRepository;
 		_loanRepository = loanRepository;
+		_counterpartyRepository = counterpartyRepository;
+		_accountRepository = accountRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
 	[ProducesResponseType(typeof(Transaction), Status200OK)]
-	public override Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellationToken)
+	public override Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
+
+	/// <inheritdoc cref="ITransactionClient.GetDetailedTransactionAsync"/>
+	/// <response code="200">Transaction with the specified id exists.</response>
+	/// <response code="404">Transaction with the specified id does not exist.</response>
+	[HttpGet("{id:guid}/Details")]
+	[ProducesResponseType(typeof(DetailedTransaction), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
 	{
-		return base.Get(id, cancellationToken);
+		var transaction = await Repository.FindByIdAsync(id, cancellationToken);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
+		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
+		var detailedTransaction = await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken);
+		return Ok(detailedTransaction);
 	}
 
 	/// <summary>Gets all transactions.</summary>
@@ -85,6 +110,29 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
 		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
 		return transactions.Select(MapToModel).ToList();
+	}
+
+	/// <summary>Gets all transactions.</summary>
+	/// <param name="timeRange">A time range for filtering transactions.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
+	/// <response code="200">Successfully got all transactions.</response>
+	[HttpGet("Details")]
+	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
+	public async Task<List<DetailedTransaction>> GetAllDetailed(
+		[FromQuery] OptionalTimeRange timeRange,
+		CancellationToken cancellationToken)
+	{
+		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
+		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
+
+		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
+		var detailedTransactions = transactions
+			.Select(async transaction => await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken))
+			.Select(task => task.Result)
+			.ToList();
+
+		return detailedTransactions;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.CreateTransactionAsync"/>
@@ -425,7 +473,10 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, TransactionCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		TransactionCreation creation,
+		UserEntity user)
 	{
 		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
@@ -451,5 +502,52 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 
 		var transactionId = await _unitOfWork.AddAsync(transaction);
 		return CreatedAtAction(nameof(Get), new { id = transactionId }, id);
+	}
+
+	private async Task<List<Guid>> GetUserAccountsInCurrencyIds(CancellationToken cancellationToken)
+	{
+		var userCounterparty = await _counterpartyRepository.GetByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken);
+		var accounts = await _accountRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		return accounts
+			.Where(account => account.CounterpartyId == userCounterparty.Id)
+			.SelectMany(account => account.Currencies)
+			.Select(entity => entity.Id)
+			.ToList();
+	}
+
+	private async Task<DetailedTransaction> ToDetailed(TransactionEntity transaction, List<Guid> userAccountsInCurrencyIds, CancellationToken cancellationToken)
+	{
+		var id = transaction.Id;
+		var transfers = await GetTransfers(id, cancellationToken);
+		var transferBalance = transfers.Sum(transfer =>
+		{
+			var sourceIsUser = userAccountsInCurrencyIds.Contains(transfer.SourceAccountId);
+			var targetIsUser = userAccountsInCurrencyIds.Contains(transfer.TargetAccountId);
+			return (sourceIsUser, targetIsUser) switch
+			{
+				(true, true) => 0,
+				(true, false) => -transfer.SourceAmount,
+				(false, true) => transfer.TargetAmount,
+				_ => 0,
+			};
+		});
+
+		var purchases = await GetPurchases(id, cancellationToken);
+		var purchaseTotal = purchases.Sum(purchase => purchase.Price);
+		var loans = await GetLoans(id, cancellationToken);
+		var loanTotal = loans.Sum(loan => loan.Amount);
+
+		var links = await GetLinks(id, cancellationToken);
+
+		return Mapper.Map<DetailedTransaction>(transaction) with
+		{
+			Transfers = transfers,
+			TransferBalance = transferBalance,
+			Purchases = purchases,
+			PurchaseTotal = purchaseTotal,
+			Loans = loans,
+			LoanTotal = loanTotal,
+			Links = links,
+		};
 	}
 }

@@ -12,7 +12,7 @@ namespace Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
 /// <summary>A financial transaction during which funds can be transferred between multiple accounts.</summary>
 [PublicAPI]
-public sealed record Transaction
+public record Transaction
 {
 	/// <summary>The id of the transaction.</summary>
 	public Guid Id { get; init; }

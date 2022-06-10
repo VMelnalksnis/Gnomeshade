@@ -72,6 +72,11 @@ public class TransactionsControllerTests
 		var transactionId = Guid.NewGuid();
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
 		var transaction = await _client.GetTransactionAsync(transactionId);
+		var transactions = await _client.GetTransactionsAsync(null, null);
+		var detailedTransactions = await _client.GetDetailedTransactionsAsync(null, null);
+
+		transactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
+		detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
 
 		transactionCreationModel = transactionCreationModel with
 		{
@@ -105,8 +110,10 @@ public class TransactionsControllerTests
 		await _client.PutTransferAsync(transactionId, transferId, transferCreation);
 		var transfer = await _client.GetTransferAsync(transactionId, transferId);
 		var transfers = await _client.GetTransfersAsync(transactionId);
+		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
 
 		transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
+		detailedTransaction.Transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
 		transfer.Should().BeEquivalentTo(transferCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		var bankReference = $"{Guid.NewGuid():N}";
@@ -168,9 +175,11 @@ public class TransactionsControllerTests
 		var purchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
 		var purchases = await _client.GetPurchasesAsync(transactionId);
 		var productPurchases = await _client.GetProductPurchasesAsync(_productId);
+		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
 
 		purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
 		productPurchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
+		detailedTransaction.Purchases.Should().ContainSingle().Which.Should().BeEquivalentTo(purchase);
 		purchase.Should().BeEquivalentTo(purchaseCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		var deliveryDate = SystemClock.Instance.GetCurrentInstant();
@@ -229,9 +238,11 @@ public class TransactionsControllerTests
 		var link = (await _client.GetTransactionLinksAsync(transactionId))
 			.Should()
 			.ContainSingle().Subject;
+		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
 
 		link.Id.Should().Be(linkId);
 		link.Uri.Should().Be(uri);
+		detailedTransaction.Links.Should().ContainSingle().Which.Should().BeEquivalentTo(link);
 
 		await _client.RemoveLinkFromTransactionAsync(transactionId, linkId);
 		(await _client.GetTransactionLinksAsync(transactionId)).Should().BeEmpty();
@@ -263,10 +274,12 @@ public class TransactionsControllerTests
 		var loans = await _client.GetLoansAsync(transactionId);
 		var receiverLoans = await _client.GetCounterpartyLoansAsync(receiver.Id);
 		var issuerLoans = await _client.GetCounterpartyLoansAsync(issuer.Id);
+		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
 
 		loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 		receiverLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 		issuerLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+		detailedTransaction.Loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 		loan.Should().BeEquivalentTo(loanCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		loanCreation = loanCreation with { Amount = 2 };
