@@ -11,23 +11,20 @@ jobs:
         os: [ windows-latest ]
         runtime: [ win10-x64 ]
         project: [ Gnomeshade.Interfaces.Desktop ]
-        archive_command: [ "" ]
-        directory: [ "" ]
+        publish_script: [ "deployment/publish.ps1" ]
         artifact: [ "**/win10-x64/publish/Gnomeshade.Interfaces.Desktop_win10-x64.zip" ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
-            project: source/Gnomeshade.Interfaces.WebApi/Gnomeshade.Interfaces.WebApi.csproj
-            archive_command: zip -r -9 gnomeshade_linux-x64.zip . -x \*.json
-            directory: source/Gnomeshade.Interfaces.WebApi/bin/Release/net6.0/linux-x64/publish
-            artifact: "**/linux-x64/publish/gnomeshade_linux-x64.zip"
+            project: Gnomeshade.Interfaces.WebApi
+            archive_command: deployment/publish.sh
+            artifact: "**/linux-x64/publish/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
 
           - os: ubuntu-latest
             runtime: linux-x64
-            project: source/Gnomeshade.Interfaces.Desktop/Gnomeshade.Interfaces.Desktop.csproj
-            archive_command: zip -r -9 gnomeshade_desktop_linux-x64.zip .
-            directory: source/Gnomeshade.Interfaces.Desktop/bin/Release/net6.0/linux-x64/publish
-            artifact: "**/linux-x64/publish/gnomeshade_desktop_linux-x64.zip"
+            project: Gnomeshade.Interfaces.Desktop
+            publish_script: deployment/publish.sh
+            artifact: "**/linux-x64/publish/Gnomeshade.Interfaces.Desktop_linux-x64.zip"
 
     name: Build
     runs-on: ${{ matrix.os }}
@@ -44,34 +41,13 @@ jobs:
           dotnet-version: 6.0.203
 
       - name: Publish project
-        if: matrix.os == 'ubuntu-latest'
         run: >
-          dotnet
-          publish
+          ${{ matrix.publish_script }}
           ${{ matrix.project }}
-          --runtime ${{ matrix.runtime }}
-          --configuration Release
-          --self-contained
-          -p:PublishSingleFile=true
-          -p:AssemblyVersion=0.1.0.${GITHUB_RUN_NUMBER}
-          -p:InformationalVersion=0.1.0-nightly+${{ matrix.runtime }}
-          /warnAsError
-          /nologo
-
-      - name: Publish project
-        if: matrix.os == 'windows-latest'
-        run: >
-          deployment/publish.ps1
-          -Project ${{ matrix.project }}
-          -Runtime ${{ matrix.runtime }}
-          -Version 0.1.0
-          -Tag nightly
-          -RunNumber $Env:GITHUB_RUN_NUMBER
-
-      - name: Archive published artifacts
-        if: matrix.os == 'ubuntu-latest'
-        run: ${{ matrix.archive_command }}
-        working-directory: ${{ matrix.directory }}
+          ${{ matrix.runtime }}
+          0.1.0
+          $Env:GITHUB_RUN_NUMBER
+          "-nightly"
 
       - name: Upload artifact to releases
         uses: pyTooling/Actions/releaser/composite@main

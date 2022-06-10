@@ -1,18 +1,19 @@
 ﻿param (
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, Position = 0)]
     [System.String]
     $Project,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, Position = 1)]
     [System.String]
     $Runtime,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, Position = 2)]
     [System.String]
     $Version,
-    [System.String]
-    $Tag,
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, Position = 3)]
     [System.Int32]
-    $RunNumber
+    $RunNumber,
+    [Parameter(Position = 4)]
+    [System.String]
+    $Tag
 )
 
 $dotnetArgs = @()
