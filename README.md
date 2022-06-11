@@ -4,7 +4,7 @@
 
 # Gnomeshade
 
-A free, open source and self-hosted personal finance manager
+A free, open source and self-hosted personal finance manager with native client applications and Oauth2/OIDC support.
 
 ## License
 
