@@ -60,9 +60,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
+        id: download
         with:
           path: artifacts
 
+      - name: 'Echo download path'
+        run: echo ${{ steps.download.outputs.download-path }}
+        
       - name: Create release
         uses: softprops/action-gh-release@v0.1.14
         with:
@@ -70,5 +74,6 @@ jobs:
           prerelease: false
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
+          fail_on_unmatched_files: true
           files: |
-            artifacts/*.zip
+            ${{ steps.download.outputs.download-path }}/**/*.zip
