@@ -168,7 +168,6 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		{
 			Details = TransactionUpsertionViewModel
 				.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id)
-				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
 		}
