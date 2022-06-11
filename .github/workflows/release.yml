@@ -1,0 +1,70 @@
+name: Nightly Release
+
+on:
+  push:
+    tags: [ v*.*.* ]
+
+jobs:
+  create-release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          draft: true
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+  
+  build:
+    needs: create-release
+    strategy:
+      matrix:
+        os: [ windows-latest ]
+        runtime: [ win10-x64 ]
+        project: [ Gnomeshade.Interfaces.Desktop ]
+        publish_script: [ "deployment/publish.ps1" ]
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+            project: Gnomeshade.Interfaces.WebApi
+            publish_script: deployment/publish.sh
+
+          - os: ubuntu-latest
+            runtime: linux-x64
+            project: Gnomeshade.Interfaces.Desktop
+            publish_script: deployment/publish.sh
+
+    name: Build
+    runs-on: ${{ matrix.os }}
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.203
+
+      - run: chmod +x ${{ matrix.publish_script }}
+        if: matrix.os == 'ubuntu-latest'
+
+      - name: Publish project
+        id: publish
+        run: >
+          ${{ matrix.publish_script }}
+          "${{ matrix.project }}"
+          "${{ matrix.runtime }}"
+          "${{ github.run_number }}"
+
+      - name: Upload artifact to releases
+        uses: pyTooling/Actions/releaser/composite@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          rm: false
+          files: ${{ steps.publish.outputs.artifact }}
