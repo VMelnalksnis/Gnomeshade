@@ -1,31 +1,33 @@
 <Project>
-    <PropertyGroup>
-        <Nullable>enable</Nullable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/VMelnalksnis/Gnomeshade</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
 
-        <Copyright>Valters Melnalksnis</Copyright>
-        <Product>Gnomeshade</Product>
-    </PropertyGroup>
+		<Copyright>Valters Melnalksnis</Copyright>
+		<Product>Gnomeshade</Product>
 
-    <ItemGroup>
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="DotNet.ReproducibleBuilds.Isolated" Version="1.1.1"/>
-    </ItemGroup>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
-            <Link>stylecop.json</Link>
-        </AdditionalFiles>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="DotNet.ReproducibleBuilds.Isolated" Version="1.1.1"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
+			<Link>stylecop.json</Link>
+		</AdditionalFiles>
+	</ItemGroup>
 </Project>
