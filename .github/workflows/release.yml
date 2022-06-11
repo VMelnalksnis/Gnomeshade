@@ -1,40 +1,35 @@
-name: Nightly Release
+name: Release
 
 on:
   push:
     tags: [ v*.*.* ]
 
 jobs:
-  create-release:
-    name: Create release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create release
-        uses: softprops/action-gh-release@v0.1.14
-        with:
-          draft: true
-          prerelease: false
-          tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
-  
   build:
-    needs: create-release
     strategy:
       matrix:
         os: [ windows-latest ]
         runtime: [ win10-x64 ]
         project: [ Gnomeshade.Interfaces.Desktop ]
         publish_script: [ "deployment/publish.ps1" ]
+        artifact: [ a ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.WebApi
             publish_script: deployment/publish.sh
+            artifact: [ b ]
 
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.Desktop
             publish_script: deployment/publish.sh
+            artifact: [ c ]
+
+    outputs:
+      artifact1: ${{ steps.artifact-name.outputs.a }}
+      artifact2: ${{ steps.artifact-name.outputs.b }}
+      artifact3: ${{ steps.artifact-name.outputs.c }}
 
     name: Build
     runs-on: ${{ matrix.os }}
@@ -61,10 +56,39 @@ jobs:
           "${{ matrix.runtime }}"
           "${{ github.run_number }}"
 
-      - name: Upload artifact to releases
-        uses: pyTooling/Actions/releaser/composite@main
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          rm: false
-          files: ${{ steps.publish.outputs.artifact }}
+          name: ${{ steps.publish.outputs.artifact-name }}
+          path: ${{ steps.publish.outputs.artifact }}
+
+      - name: Set artifact output
+        id: artifact-name
+        run: echo '::set-output name={{ matrix.artifact }}::${{ steps.publish.outputs.artifact-name }}'
+
+  create-release:
+    name: Create release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.one.outputs.artifact1 }}
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.one.outputs.artifact2 }}
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.one.outputs.artifact3 }}
+
+      - name: Create release
+        uses: softprops/action-gh-release@v0.1.14
+        with:
+          draft: true
+          prerelease: false
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            *.zip

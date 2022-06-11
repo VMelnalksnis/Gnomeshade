@@ -35,4 +35,5 @@ Push-Location $publish_dir
 & 7z a -mx9 -r -w $archive_name
 Pop-Location
 
+echo "::set-output name=artifact-name::$archive_name"
 echo "::set-output name=artifact::$publish_dir\$archive_name"

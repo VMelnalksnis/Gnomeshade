@@ -18,4 +18,5 @@ pushd "$publish_dir" || exit
 zip -r -9 "$archive_name" .
 popd || exit
 
+echo "::set-output name=artifact-name::$archive_name"
 echo "::set-output name=artifact::$publish_dir/$archive_name"
