@@ -11,25 +11,17 @@ jobs:
         os: [ windows-latest ]
         runtime: [ win10-x64 ]
         project: [ Gnomeshade.Interfaces.Desktop ]
-        publish_script: [ "deployment/publish.ps1" ]
-        artifact: [ a ]
+        publish_script: [ deployment/publish.ps1 ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.WebApi
             publish_script: deployment/publish.sh
-            artifact: [ b ]
 
           - os: ubuntu-latest
             runtime: linux-x64
             project: Gnomeshade.Interfaces.Desktop
             publish_script: deployment/publish.sh
-            artifact: [ c ]
-
-    outputs:
-      artifact1: ${{ steps.artifact-name.outputs.a }}
-      artifact2: ${{ steps.artifact-name.outputs.b }}
-      artifact3: ${{ steps.artifact-name.outputs.c }}
 
     name: Build
     runs-on: ${{ matrix.os }}
@@ -62,10 +54,6 @@ jobs:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
 
-      - name: Set artifact output
-        id: artifact-name
-        run: echo '::set-output name={{ matrix.artifact }}::${{ steps.publish.outputs.artifact-name }}'
-
   create-release:
     name: Create release
     needs: build
@@ -73,15 +61,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: ${{ needs.one.outputs.artifact1 }}
-          
-      - uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.one.outputs.artifact2 }}
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: ${{ needs.one.outputs.artifact3 }}
+          path: artifacts
 
       - name: Create release
         uses: softprops/action-gh-release@v0.1.14
@@ -91,4 +71,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           files: |
-            *.zip
+            artifacts/*.zip
