@@ -23,7 +23,7 @@ public abstract class ViewModelBase : PropertyChangedBase
 	public async Task RefreshAsync()
 	{
 		IsBusy = true;
-		await Refresh();
+		await Refresh().ConfigureAwait(false);
 		IsBusy = false;
 	}
 

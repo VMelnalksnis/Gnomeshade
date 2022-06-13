@@ -119,7 +119,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 			linkViewModel,
 			loanViewModel);
 
-		await viewModel.RefreshAsync();
+		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
 	}
 
@@ -146,22 +146,22 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 		if (Transfers is not null)
 		{
-			await Transfers.RefreshAsync();
+			await Transfers.RefreshAsync().ConfigureAwait(false);
 		}
 
 		if (Purchases is not null)
 		{
-			await Purchases.RefreshAsync();
+			await Purchases.RefreshAsync().ConfigureAwait(false);
 		}
 
 		if (Links is not null)
 		{
-			await Links.RefreshAsync();
+			await Links.RefreshAsync().ConfigureAwait(false);
 		}
 
 		if (Loans is not null)
 		{
-			await Loans.RefreshAsync();
+			await Loans.RefreshAsync().ConfigureAwait(false);
 		}
 	}
 

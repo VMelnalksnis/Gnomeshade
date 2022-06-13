@@ -138,17 +138,20 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		Details.Price ??= transfers.Sum(transfer => transfer.SourceAmount) - Rows.Sum(row => row.Price);
 	}
 
-	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(Selected))
 		{
-			Details = await PurchaseUpsertionViewModel.CreateAsync(
-				_gnomeshadeClient,
-				_dateTimeZoneProvider,
-				_transactionId,
-				Selected?.Id);
+			Details = PurchaseUpsertionViewModel.CreateAsync(
+					_gnomeshadeClient,
+					_dateTimeZoneProvider,
+					_transactionId,
+					Selected?.Id)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
 
-			await SetDefaultCurrency();
+			SetDefaultCurrency().ConfigureAwait(false).GetAwaiter().GetResult();
 		}
 
 		if (e.PropertyName is nameof(Rows))
@@ -162,8 +165,8 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		OnPropertyChanged(nameof(Total));
 	}
 
-	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		await RefreshAsync();
+		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 }
