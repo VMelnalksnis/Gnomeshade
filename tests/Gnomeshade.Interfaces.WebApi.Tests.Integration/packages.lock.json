@@ -451,6 +451,11 @@
           "System.Text.Encodings.Web": "4.5.0"
         }
       },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg=="
+      },
       "Microsoft.Build.Tasks.Git": {
         "type": "Transitive",
         "resolved": "1.1.1",
@@ -683,6 +688,17 @@
           "Microsoft.Extensions.FileProviders.Abstractions": "6.0.0"
         }
       },
+      "Microsoft.Extensions.Http": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "15+pa2G0bAMHbHewaQIdr/y6ag2H3yh4rd9hTXavtWDzQBkvpe2RMqFg8BxDpcQWssmjmBApGPcw93QRz6YcMg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0"
+        }
+      },
       "Microsoft.Extensions.Identity.Core": {
         "type": "Transitive",
         "resolved": "6.0.6",
@@ -808,6 +824,16 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0",
           "Microsoft.Extensions.Primitives": "6.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options.DataAnnotations": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "Fvs4plZYQT/iF/JsYwP/pppQRvQC211enBjCoIu/355M+aunlzSyzN/n3wPibyY76794MFLkLVT47JCBc3porg==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "System.ComponentModel.Annotations": "5.0.0"
         }
       },
       "Microsoft.Extensions.Primitives": {
@@ -1273,6 +1299,11 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "System.ComponentModel.Annotations": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
       "System.Configuration.ConfigurationManager": {
         "type": "Transitive",
         "resolved": "4.5.0",
@@ -1443,6 +1474,14 @@
           "System.Resources.ResourceManager": "4.0.1",
           "System.Runtime": "4.1.0",
           "System.Runtime.Extensions": "4.1.0"
+        }
+      },
+      "System.Linq.Async": {
+        "type": "Transitive",
+        "resolved": "6.0.1",
+        "contentHash": "0YhHcaroWpQ9UCot3Pizah7ryAzQhNvobLMSxeDIGmnXfkQn8u5owvpOH0K6EVB+z9L7u6Cc4W17Br/+jyttEQ==",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "6.0.0"
         }
       },
       "System.Linq.Expressions": {
@@ -1857,6 +1896,28 @@
           "NodaTime": "3.1.0"
         }
       },
+      "VMelnalksnis.NordigenDotNet": {
+        "type": "Transitive",
+        "resolved": "0.4.0",
+        "contentHash": "7Xh8k8AFj/fHGsD8+EWL7ag5p2tZxoQSEtLfEkSW4OgWCCYwAT04XR9PQwoiaFLSfmtJeyqbgaykCMScLWeUzw==",
+        "dependencies": {
+          "NodaTime": "3.1.0",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+        }
+      },
+      "VMelnalksnis.NordigenDotNet.DependencyInjection": {
+        "type": "Transitive",
+        "resolved": "0.4.0",
+        "contentHash": "Jlr1jh20CU7rYdRtAyvWqFmwhzCqy3s37d9S1g1WQO1OiXd7wQCj6Z01qbZpipubS50khSe2BDMbf2wlZjnKOw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Http": "6.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
+          "VMelnalksnis.NordigenDotNet": "0.4.0"
+        }
+      },
       "gnomeshade.core": {
         "type": "Project",
         "dependencies": {
@@ -1924,11 +1985,14 @@
           "System.Diagnostics.Tracing": "4.3.0",
           "System.IO.FileSystem": "4.3.0",
           "System.IO.FileSystem.Primitives": "4.3.0",
+          "System.Linq.Async": "6.0.1",
           "System.Net.NameResolution": "4.3.0",
           "System.Net.Primitives": "4.3.1",
           "System.Runtime.Handles": "4.3.0",
           "System.Runtime.InteropServices": "4.3.0",
-          "VMelnalksnis.ISO20022DotNet": "0.2.2"
+          "VMelnalksnis.ISO20022DotNet": "0.2.2",
+          "VMelnalksnis.NordigenDotNet": "0.4.0",
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.4.0"
         }
       },
       "gnomeshade.interfaces.webapi.client": {

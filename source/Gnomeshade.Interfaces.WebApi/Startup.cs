@@ -39,6 +39,8 @@ using Npgsql.Logging;
 
 using Serilog;
 
+using VMelnalksnis.NordigenDotNet.DependencyInjection;
+
 namespace Gnomeshade.Interfaces.WebApi;
 
 /// <summary>Configures services and HTTP request pipeline.</summary>
@@ -122,6 +124,7 @@ public class Startup
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 
 		services.AddHealthChecks();
+		services.AddNordigenDotNet(Configuration);
 	}
 
 	/// <summary>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</summary>

@@ -42,11 +42,14 @@
 		<PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0"/>
 		<PackageReference Include="System.IO.FileSystem" Version="4.3.0"/>
 		<PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
+		<PackageReference Include="System.Linq.Async" Version="6.0.1"/>
 		<PackageReference Include="System.Net.NameResolution" Version="4.3.0"/>
 		<PackageReference Include="System.Net.Primitives" Version="4.3.1"/>
 		<PackageReference Include="System.Runtime.Handles" Version="4.3.0"/>
 		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0"/>
 		<PackageReference Include="VMelnalksnis.ISO20022DotNet" Version="0.2.2"/>
+		<PackageReference Include="VMelnalksnis.NordigenDotNet" Version="0.4.0"/>
+		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="0.4.0"/>
 	</ItemGroup>
 
 	<ItemGroup>
