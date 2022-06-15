@@ -186,10 +186,10 @@
       },
       "Elastic.Apm.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "1.16.0",
-        "contentHash": "UFRDQS4vMD09wOM38pkdvoxOIZwtHSDESv2CIz1zLWH5LSkwyXPx/QeAE3Wb8T4I+nuqRZiDcf4YG2h4oTquxg==",
+        "resolved": "1.16.1",
+        "contentHash": "pSVHj2EZABlsGGHgly2eErqP4kY7HK43slK55xWdJtaII8b3J3QaBrk/faUYrch5fRZnew5R6LWwUSIf1+rGaA==",
         "dependencies": {
-          "Elastic.Apm": "1.16.0"
+          "Elastic.Apm": "1.16.1"
         }
       },
       "Elastic.Apm.Extensions.Hosting": {
@@ -223,10 +223,10 @@
       },
       "Elastic.Apm.SqlClient": {
         "type": "Transitive",
-        "resolved": "1.16.0",
-        "contentHash": "BFvmM26BOYElFsqNyxKlGn5Dz452ewBI22qLlVsd6FOenGG9I0eHhehdCP23w/Nh9+f1ZzTKWl5beQvIkxsqIw==",
+        "resolved": "1.16.1",
+        "contentHash": "nGzOQ/MebUbQQCFSx8QRKa53wVbbFBmY/ELb1ak0o5+PISBqJ9w1pZRpBOICwX4jqw+PjK0H3BLYDQTCIVs5lg==",
         "dependencies": {
-          "Elastic.Apm": "1.16.0"
+          "Elastic.Apm": "1.16.1"
         }
       },
       "Elastic.CommonSchema": {
@@ -301,8 +301,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "6.0.5",
-        "contentHash": "E+/t8R6peNEWM+O6A2J3b7wzZzX6oAaKmphHA4Y1EDyjPtdabYnBsIqyG3eKoBKdIRmeR7xuds+F1aUN0i1DrQ==",
+        "resolved": "6.0.6",
+        "contentHash": "lrfPEeisa0xCmZKKQIKxuks37aGE6jgGqDq1ikZDwNLWfIt2/ajOQpHMSE6a5uLjEVqkChKpXpvA7ZvfIKvdzA==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
@@ -1894,9 +1894,9 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Elastic.Apm.AspNetCore": "1.16.1",
           "Elastic.Apm.Elasticsearch": "1.16.1",
-          "Elastic.Apm.EntityFrameworkCore": "1.16.0",
+          "Elastic.Apm.EntityFrameworkCore": "1.16.1",
           "Elastic.Apm.SerilogEnricher": "1.5.3",
-          "Elastic.Apm.SqlClient": "1.16.0",
+          "Elastic.Apm.SqlClient": "1.16.1",
           "Elastic.CommonSchema.Serilog": "1.5.3",
           "Gnomeshade.Core": "1.0.0",
           "Gnomeshade.Data": "1.0.0",
@@ -1904,7 +1904,7 @@
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.5",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.6",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.5",
           "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
@@ -1937,7 +1937,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.5",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.6",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
