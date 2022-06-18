@@ -70,13 +70,44 @@ jobs:
           ConnectionStrings:FinanceDb: "Server = localhost; Database = gnomeshade_tests; Port = 5432; User Id = postgres; Password = postgres;"
           ConnectionStrings:IdentityDb: "Server = localhost; Database = gnomeshade_tests_identity; Port = 5432; User Id = postgres; Password = postgres;"
 
-      - name: ReSharper annotations
-        uses: VMelnalksnis/resharper-inspect-action@v0.2.2
-        with:
-          solution: Gnomeshade.sln
-
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
+
+  resharper:
+    name: Resharper
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2.1.0
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
+
+      - name: ReSharper annotations
+        uses: VMelnalksnis/resharper-inspect-action@v0.2.2
+        with:
+          solution: Gnomeshade.sln
+          resharper-version: 2022.1.2
