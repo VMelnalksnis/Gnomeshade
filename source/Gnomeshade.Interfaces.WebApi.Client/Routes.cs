@@ -178,4 +178,13 @@ public static class Routes
 			return QueryHelpers.AddQueryString(url, parameters);
 		}
 	}
+
+	internal static class Nordigen
+	{
+		private const string _path = nameof(Nordigen);
+
+		internal static string Institutions(string country) => $"{_path}/?countryCode={country}";
+
+		internal static string Import(string id, string timeZone) => $"{_path}/{id}/?timeZone={timeZone}";
+	}
 }

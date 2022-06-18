@@ -307,6 +307,20 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<string>> GetInstitutionsAsync(string countryCode, CancellationToken cancellationToken = default) =>
+		GetAsync<List<string>>(Nordigen.Institutions(countryCode), cancellationToken);
+
+	/// <inheritdoc />
+	public async Task<List<AccountReportResult>> ImportAsync(string id)
+	{
+		var timeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
+		using var importResponse = await _httpClient.PostAsync(Nordigen.Import(id, timeZone), null);
+		await ThrowIfNotSuccessCode(importResponse);
+
+		return (await importResponse.Content.ReadFromJsonAsync<List<AccountReportResult>>(_jsonSerializerOptions))!;
+	}
+
+	/// <inheritdoc />
 	public Task<List<Category>> GetCategoriesAsync() => GetAsync<List<Category>>(Categories._uri);
 
 	/// <inheritdoc />
