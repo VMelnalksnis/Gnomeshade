@@ -59,12 +59,12 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <summary>Finds an account with the specified BIC.</summary>
 	/// <param name="bic">The BIC for which to search for.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, IDbTransaction dbTransaction)
 	{
 		var sql = $"{SelectSql} WHERE a.bic = @bic AND {AccessSql};";
-		var command = new CommandDefinition(sql, new { bic, ownerId }, cancellationToken: cancellationToken);
+		var command = new CommandDefinition(sql, new { bic, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
 

@@ -327,7 +327,7 @@ public sealed class Iso20022Controller : ControllerBase
 		if (!string.IsNullOrWhiteSpace(bic))
 		{
 			_logger.LogTrace("Searching for bank account by BIC {Bic}", bic);
-			bankAccount = await _accountRepository.FindByBicAsync(bic, user.Id);
+			bankAccount = await _accountRepository.FindByBicAsync(bic, user.Id, dbTransaction);
 			if (bankAccount is not null)
 			{
 				_logger.LogDebug("Matched bank account to {Bic}", bic);
