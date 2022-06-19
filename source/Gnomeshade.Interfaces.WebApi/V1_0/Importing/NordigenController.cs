@@ -368,7 +368,7 @@ public sealed class NordigenController : ControllerBase
 			return (existingTransaction, existingTransfer);
 		}
 
-		var amount = bookedTransaction.TransactionAmount.Amount;
+		var amount = Math.Abs(bookedTransaction.TransactionAmount.Amount);
 		_logger.LogTrace("Report entry amount {Amount}", amount);
 
 		var currencyCode = bookedTransaction.TransactionAmount.Currency;
