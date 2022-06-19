@@ -32,6 +32,7 @@
 		<EmbeddedResource Include="Migrations\00000013_hrd.sql"/>
 		<EmbeddedResource Include="Migrations\00000014_account_currency_uniqueness.sql"/>
 		<EmbeddedResource Include="Migrations\00000015_loans.sql"/>
+		<EmbeddedResource Include="Migrations\00000016_name_uniqueness.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
