@@ -14,7 +14,6 @@ SET modified_at           = DEFAULT,
     booked_at             = @BookedAt,
     valued_at             = @ValuedAt,
     description           = @Description,
-    import_hash           = @ImportHash,
     imported_at           = @ImportedAt,
     reconciled_at         = @ReconciledAt,
     reconciled_by_user_id = @ReconciledByUserId

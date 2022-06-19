@@ -7,7 +7,6 @@
        t.booked_at             BookedAt,
        t.valued_at             ValuedAt,
        t.description,
-       t.import_hash           ImportHash,
        t.imported_at           ImportedAt,
        t.reconciled_at         ReconciledAt,
        t.reconciled_by_user_id ReconciledByUserId

@@ -59,6 +59,7 @@ public sealed class NordigenController : ControllerBase
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 	private readonly Mapper _mapper;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
+	private readonly IClock _clock;
 
 	/// <summary>Initializes a new instance of the <see cref="NordigenController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -74,6 +75,7 @@ public sealed class NordigenController : ControllerBase
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
+	/// <param name="clock">A clock that provides access to the current time.</param>
 	public NordigenController(
 		ApplicationUserContext applicationUserContext,
 		ILogger<NordigenController> logger,
@@ -87,7 +89,8 @@ public sealed class NordigenController : ControllerBase
 		TransactionUnitOfWork transactionUnitOfWork,
 		AccountUnitOfWork accountUnitOfWork,
 		Mapper mapper,
-		IDateTimeZoneProvider dateTimeZoneProvider)
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		IClock clock)
 	{
 		_applicationUserContext = applicationUserContext;
 		_logger = logger;
@@ -102,6 +105,7 @@ public sealed class NordigenController : ControllerBase
 		_accountUnitOfWork = accountUnitOfWork;
 		_mapper = mapper;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_clock = clock;
 	}
 
 	/// <inheritdoc cref="IImportClient.GetInstitutionsAsync"/>
@@ -527,6 +531,7 @@ public sealed class NordigenController : ControllerBase
 			ModifiedByUserId = user.Id,
 			BookedAt = bookingDate,
 			Description = description,
+			ImportedAt = _clock.GetCurrentInstant(),
 		};
 
 		return (transaction, transfer);

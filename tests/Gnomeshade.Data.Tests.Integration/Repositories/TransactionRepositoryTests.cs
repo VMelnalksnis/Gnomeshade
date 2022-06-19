@@ -6,8 +6,6 @@ using System;
 using System.Data;
 using System.Threading.Tasks;
 
-using Gnomeshade.Core;
-using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -38,16 +36,6 @@ public class TransactionRepositoryTests : IDisposable
 	{
 		var id = Guid.NewGuid();
 		var transaction = await _repository.FindByIdAsync(id, TestUser.Id);
-		transaction.Should().BeNull();
-	}
-
-	[Test]
-	public async Task FindByImportHashAsync_ShouldReturnNullIfDoesNotExist()
-	{
-		var importHash = await new TransactionEntity().GetHashAsync();
-		var dbTransaction = _dbConnection.BeginTransaction();
-		var transaction = await _repository.FindByImportHashAsync(importHash, TestUser.Id, dbTransaction);
-		dbTransaction.Commit();
 		transaction.Should().BeNull();
 	}
 }

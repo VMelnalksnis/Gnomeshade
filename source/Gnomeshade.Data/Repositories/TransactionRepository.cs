@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 using Dapper;
 
-using Gnomeshade.Core;
 using Gnomeshade.Data.Entities;
 
 using NodaTime;
@@ -42,21 +41,6 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE t.id = @id";
-
-	/// <summary>Searches for a transaction with the specified import hash using the specified database transaction.</summary>
-	/// <param name="importHash">The <see cref="Sha512Value"/> of the transaction import source data.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The <see cref="TransactionEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransactionEntity?> FindByImportHashAsync(
-		byte[] importHash,
-		Guid ownerId,
-		IDbTransaction dbTransaction)
-	{
-		var sql = $"{SelectSql} WHERE t.import_hash = @importHash AND {AccessSql};";
-		var command = new CommandDefinition(sql, new { importHash, ownerId }, dbTransaction);
-		return FindAsync(command);
-	}
 
 	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
 	/// <param name="from">The start of the time range.</param>

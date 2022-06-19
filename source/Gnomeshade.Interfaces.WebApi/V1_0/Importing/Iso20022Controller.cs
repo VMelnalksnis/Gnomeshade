@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Gnomeshade.Core;
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
@@ -57,6 +56,7 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly IDbConnection _dbConnection;
 	private readonly Mapper _mapper;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
+	private readonly IClock _clock;
 
 	/// <summary>Initializes a new instance of the <see cref="Iso20022Controller"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
@@ -72,6 +72,7 @@ public sealed class Iso20022Controller : ControllerBase
 	/// <param name="dbConnection">Database connection for managing transactions.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
+	/// <param name="clock">A clock that provides access to the current time.</param>
 	public Iso20022Controller(
 		ApplicationUserContext applicationUserContext,
 		ILogger<Iso20022Controller> logger,
@@ -85,7 +86,8 @@ public sealed class Iso20022Controller : ControllerBase
 		AccountUnitOfWork accountUnitOfWork,
 		IDbConnection dbConnection,
 		Mapper mapper,
-		IDateTimeZoneProvider dateTimeZoneProvider)
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		IClock clock)
 	{
 		_applicationUserContext = applicationUserContext;
 		_logger = logger;
@@ -99,6 +101,7 @@ public sealed class Iso20022Controller : ControllerBase
 		_dbConnection = dbConnection;
 		_mapper = mapper;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_clock = clock;
 		_transferRepository = transferRepository;
 	}
 
@@ -376,7 +379,6 @@ public sealed class Iso20022Controller : ControllerBase
 		var existingTransfer = string.IsNullOrWhiteSpace(bankReference)
 			? null
 			: await _transferRepository.FindByBankReferenceAsync(bankReference, user.Id, dbTransaction);
-		var importHash = await reportEntry.GetHashAsync();
 		if (existingTransfer is not null)
 		{
 			var existingTransaction = await _transactionRepository.GetByIdAsync(existingTransfer.TransactionId, user.Id, dbTransaction);
@@ -529,7 +531,7 @@ public sealed class Iso20022Controller : ControllerBase
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			BookedAt = bookingDate,
-			ImportHash = importHash,
+			ImportedAt = _clock.GetCurrentInstant(),
 			Description = description,
 		};
 

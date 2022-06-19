@@ -43,9 +43,6 @@ public sealed record TransactionEntity : IOwnableEntity, IModifiableEntity
 	/// <summary>Gets or sets the point in time when this transaction was imported.</summary>
 	public Instant? ImportedAt { get; set; }
 
-	/// <summary>Gets or sets a hash value of the import source information.</summary>
-	public byte[]? ImportHash { get; set; }
-
 	/// <summary>Gets or sets the point in time when this transaction was reconciled.</summary>
 	public Instant? ReconciledAt { get; set; }
 
