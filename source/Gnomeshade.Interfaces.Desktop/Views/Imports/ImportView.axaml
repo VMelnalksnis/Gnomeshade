@@ -12,21 +12,34 @@
 	x:DataType="imports:ImportViewModel">
 
 	<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,*,*">
-		<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+		<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Spacing="10">
+			<TextBox
+				VerticalAlignment="Center"
+				Text="{Binding Country}" AcceptsReturn="False"/>
+			<AutoCompleteBox
+				Watermark="Institution"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+				Items="{Binding Institutions}"
+				SelectedItem="{Binding SelectedInstitution}" />
 			<TextBlock
-				MinWidth="100" HorizontalAlignment="Left"
+				MinWidth="100" HorizontalAlignment="Left" VerticalAlignment="Center"
 				Text="Filepath:" />
 			<TextBlock
 				x:Name="Path"
+				VerticalAlignment="Center"
 				Text="{Binding FilePath, Mode=TwoWay}" />
 		</StackPanel>
 
 		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
+				Command="{ReflectionBinding RefreshAsync}">
+				Refresh
+			</Button>
+			<Button
+				MinWidth="100" HorizontalContentAlignment="Center"
 				Click="SelectFile_OnClick">
 				Select File
-
 				<Interaction.Behaviors>
 					<FocusOnAttachedToVisualTreeBehavior />
 				</Interaction.Behaviors>
@@ -35,7 +48,7 @@
 				MinWidth="100" HorizontalContentAlignment="Center"
 				IsEnabled="{Binding CanImport}"
 				Command="{ReflectionBinding ImportAsync}">
-				Import File
+				Import
 			</Button>
 		</StackPanel>
 	</Grid>

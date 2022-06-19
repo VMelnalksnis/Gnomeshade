@@ -59,7 +59,7 @@
 						Command="{ReflectionBinding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
 						x:Name="Import" Header="_Import"
-						Command="{ReflectionBinding SwitchToImport}" />
+						Command="{ReflectionBinding SwitchToImportAsync}" />
 					<MenuItem
 						x:Name="CreateTag" Header="Categories"
 						Command="{ReflectionBinding SwitchToCategoriesAsync}" />

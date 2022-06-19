@@ -554,8 +554,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<AccountReportResult> Import(Stream content, string name) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<string>> GetInstitutionsAsync(string countryCode, CancellationToken cancellationToken = default) =>
-		throw new NotImplementedException();
+	public Task<List<string>> GetInstitutionsAsync(string countryCode, CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(new List<string> { "SANDBOXFINANCE_SFIN0000" });
+	}
 
 	/// <inheritdoc />
 	public Task<List<AccountReportResult>> ImportAsync(string id) => throw new NotImplementedException();

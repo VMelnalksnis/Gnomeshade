@@ -173,10 +173,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = counterpartyViewModel;
 	}
 
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.
-	/// </summary>
-	public void SwitchToImport()
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToImportAsync()
 	{
 		if (ActiveView is ImportViewModel)
 		{
@@ -184,6 +183,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var importViewModel = new ImportViewModel(_gnomeshadeClient);
+		await importViewModel.RefreshAsync().ConfigureAwait(false);
 		ActiveView = importViewModel;
 	}
 
