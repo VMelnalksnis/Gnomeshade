@@ -1918,18 +1918,11 @@
           "VMelnalksnis.NordigenDotNet": "0.4.0"
         }
       },
-      "gnomeshade.core": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1"
-        }
-      },
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Core": "1.0.0",
           "Gnomeshade.Data.Identity": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
           "NodaTime": "3.1.0",
@@ -1959,7 +1952,6 @@
           "Elastic.Apm.SerilogEnricher": "1.5.3",
           "Elastic.Apm.SqlClient": "1.16.1",
           "Elastic.CommonSchema.Serilog": "1.5.3",
-          "Gnomeshade.Core": "1.0.0",
           "Gnomeshade.Data": "1.0.0",
           "Gnomeshade.Data.Identity": "1.0.0",
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",

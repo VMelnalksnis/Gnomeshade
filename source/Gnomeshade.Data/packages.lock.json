@@ -726,12 +726,6 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "gnomeshade.core": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1"
-        }
-      },
       "gnomeshade.data.identity": {
         "type": "Project",
         "dependencies": {

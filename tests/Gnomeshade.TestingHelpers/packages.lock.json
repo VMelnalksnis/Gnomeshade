@@ -1213,18 +1213,11 @@
           "System.Xml.ReaderWriter": "4.0.11"
         }
       },
-      "gnomeshade.core": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1"
-        }
-      },
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Core": "1.0.0",
           "Gnomeshade.Data.Identity": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
           "NodaTime": "3.1.0",
