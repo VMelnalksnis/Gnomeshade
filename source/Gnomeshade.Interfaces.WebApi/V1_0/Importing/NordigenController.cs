@@ -117,7 +117,7 @@ public sealed class NordigenController : ControllerBase
 	}
 
 	/// <inheritdoc cref="IImportClient.ImportAsync"/>
-	[HttpPost("id")]
+	[HttpPost("{id}")]
 	public async Task<ActionResult> Import(string id, [Required] string timeZone)
 	{
 		if (_dbConnection.State is not ConnectionState.Open)
