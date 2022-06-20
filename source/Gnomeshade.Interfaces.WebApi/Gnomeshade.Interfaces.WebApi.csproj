@@ -48,7 +48,7 @@
 		<PackageReference Include="System.Runtime.Handles" Version="4.3.0"/>
 		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0"/>
 		<PackageReference Include="VMelnalksnis.ISO20022DotNet" Version="0.2.2"/>
-		<PackageReference Include="VMelnalksnis.NordigenDotNet" Version="0.4.0"/>
+		<PackageReference Include="VMelnalksnis.NordigenDotNet" Version="0.4.3"/>
 		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="0.4.0"/>
 	</ItemGroup>
 
