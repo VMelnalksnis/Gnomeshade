@@ -1057,21 +1057,21 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "6.0.4",
-        "contentHash": "SJMlOmFHr32oOzVXeHmarGaBKkhi0wHVN/rzuu2tUSJ4Qx2AkHCpr9R/DhLWwDiklqgzFU++9wkFyGJxbx/zzg==",
+        "resolved": "6.0.5",
+        "contentHash": "a11H5/b5yNTuFN0Ycjvb920oI6vQHadt6KhEMmcC7DfvsSHH8Z3wBam+CHmyWcfDxJJaxamcdBb8XA3BvqS4Kw==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Transitive",
-        "resolved": "6.0.4",
-        "contentHash": "fzgRmBd3nAFvKt/L70sJfFWAdobtwDEeOzOzruJq9og97O8/5B96inQOAgOpYyaUjPYpS4ZS5/bxm3vnOJ0+pQ==",
+        "resolved": "6.0.5",
+        "contentHash": "1eAaz5CwwZbATraqYyYsG2tMWZM1ydyLmQVpFGTzkUUKB/sAL5QWB0IfjSxOjiIDp5JY1WoFndkcaGMEcexVXg==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "6.0.4",
-          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.4",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.4",
-          "Npgsql": "6.0.4"
+          "Microsoft.EntityFrameworkCore": "6.0.5",
+          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.5",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.5",
+          "Npgsql": "6.0.5"
         }
       },
       "Npgsql.NodaTime": {
@@ -1937,7 +1937,7 @@
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.6",
           "Microsoft.Extensions.Identity.Stores": "6.0.6",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4"
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.5"
         }
       },
       "gnomeshade.interfaces.webapi": {
@@ -1965,8 +1965,8 @@
           "Microsoft.IO.RecyclableMemoryStream": "2.2.0",
           "NodaTime": "3.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
-          "Npgsql": "6.0.4",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
+          "Npgsql": "6.0.5",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.5",
           "Npgsql.NodaTime": "6.0.4",
           "Serilog": "2.11.0",
           "Serilog.AspNetCore": "5.0.0",
@@ -2020,7 +2020,7 @@
           "NUnit": "3.13.3",
           "NUnit3TestAdapter": "4.2.1",
           "NodaTime.Bogus": "3.0.1",
-          "Npgsql": "6.0.4"
+          "Npgsql": "6.0.5"
         }
       }
     }
