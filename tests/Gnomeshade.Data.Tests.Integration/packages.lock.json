@@ -90,12 +90,12 @@
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[6.0.4, )",
-        "resolved": "6.0.4",
-        "contentHash": "kk3DtqlIFupk9P6ccONJdUzATHrjkgfUQj0XVQhpTNzpof1jjFuiBSR1TSCNReSGulZ9Q8TQDby1WM3yEwnUgg==",
+        "requested": "[6.0.5, )",
+        "resolved": "6.0.5",
+        "contentHash": "7rF+at3dd2tmVLqQq94Iv/OUT9m+MM0k8qNyNUquWpFWHZ9sCV9Ju4gZvY5V8M8sEJjk5ePZsr4qpk18A4fX+g==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.4"
+          "Npgsql": "6.0.5"
         }
       },
       "NUnit": {
