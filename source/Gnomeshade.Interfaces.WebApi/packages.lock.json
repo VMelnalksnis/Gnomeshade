@@ -206,12 +206,12 @@
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[6.0.4, )",
-        "resolved": "6.0.4",
-        "contentHash": "kk3DtqlIFupk9P6ccONJdUzATHrjkgfUQj0XVQhpTNzpof1jjFuiBSR1TSCNReSGulZ9Q8TQDby1WM3yEwnUgg==",
+        "requested": "[6.0.5, )",
+        "resolved": "6.0.5",
+        "contentHash": "7rF+at3dd2tmVLqQq94Iv/OUT9m+MM0k8qNyNUquWpFWHZ9sCV9Ju4gZvY5V8M8sEJjk5ePZsr4qpk18A4fX+g==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.4"
+          "Npgsql": "6.0.5"
         }
       },
       "Serilog": {
@@ -407,9 +407,9 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Direct",
-        "requested": "[0.4.0, )",
-        "resolved": "0.4.0",
-        "contentHash": "7Xh8k8AFj/fHGsD8+EWL7ag5p2tZxoQSEtLfEkSW4OgWCCYwAT04XR9PQwoiaFLSfmtJeyqbgaykCMScLWeUzw==",
+        "requested": "[0.4.3, )",
+        "resolved": "0.4.3",
+        "contentHash": "7jH7KMCAq5pddCaRrV+vnUl1hI6fvaFbJuAxLZ3IVfyhil9NUjej3miZcKjpAKf6G2LM1rNC4pt8vsz158taNA==",
         "dependencies": {
           "NodaTime": "3.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
@@ -417,16 +417,16 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "Direct",
-        "requested": "[0.4.0, )",
-        "resolved": "0.4.0",
-        "contentHash": "Jlr1jh20CU7rYdRtAyvWqFmwhzCqy3s37d9S1g1WQO1OiXd7wQCj6Z01qbZpipubS50khSe2BDMbf2wlZjnKOw==",
+        "requested": "[0.4.3, )",
+        "resolved": "0.4.3",
+        "contentHash": "qQ1iLdapypzvMD2aQiCRQAhGLazBWOlS185hNzeDIwNi9LoXanE26VhfHlIpjTShIlAO0RLG+UlzAcHdzEtOlw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "VMelnalksnis.NordigenDotNet": "0.4.0"
+          "VMelnalksnis.NordigenDotNet": "0.4.3"
         }
       },
       "Dapper": {

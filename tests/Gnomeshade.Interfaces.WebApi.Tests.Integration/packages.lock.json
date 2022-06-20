@@ -1076,11 +1076,11 @@
       },
       "Npgsql.NodaTime": {
         "type": "Transitive",
-        "resolved": "6.0.4",
-        "contentHash": "kk3DtqlIFupk9P6ccONJdUzATHrjkgfUQj0XVQhpTNzpof1jjFuiBSR1TSCNReSGulZ9Q8TQDby1WM3yEwnUgg==",
+        "resolved": "6.0.5",
+        "contentHash": "7rF+at3dd2tmVLqQq94Iv/OUT9m+MM0k8qNyNUquWpFWHZ9sCV9Ju4gZvY5V8M8sEJjk5ePZsr4qpk18A4fX+g==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.4"
+          "Npgsql": "6.0.5"
         }
       },
       "NuGet.Frameworks": {
@@ -1898,8 +1898,8 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "0.4.0",
-        "contentHash": "7Xh8k8AFj/fHGsD8+EWL7ag5p2tZxoQSEtLfEkSW4OgWCCYwAT04XR9PQwoiaFLSfmtJeyqbgaykCMScLWeUzw==",
+        "resolved": "0.4.3",
+        "contentHash": "7jH7KMCAq5pddCaRrV+vnUl1hI6fvaFbJuAxLZ3IVfyhil9NUjej3miZcKjpAKf6G2LM1rNC4pt8vsz158taNA==",
         "dependencies": {
           "NodaTime": "3.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
@@ -1907,15 +1907,15 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "Transitive",
-        "resolved": "0.4.0",
-        "contentHash": "Jlr1jh20CU7rYdRtAyvWqFmwhzCqy3s37d9S1g1WQO1OiXd7wQCj6Z01qbZpipubS50khSe2BDMbf2wlZjnKOw==",
+        "resolved": "0.4.3",
+        "contentHash": "qQ1iLdapypzvMD2aQiCRQAhGLazBWOlS185hNzeDIwNi9LoXanE26VhfHlIpjTShIlAO0RLG+UlzAcHdzEtOlw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "VMelnalksnis.NordigenDotNet": "0.4.0"
+          "VMelnalksnis.NordigenDotNet": "0.4.3"
         }
       },
       "gnomeshade.data": {
@@ -1967,7 +1967,7 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
           "Npgsql": "6.0.5",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.5",
-          "Npgsql.NodaTime": "6.0.4",
+          "Npgsql.NodaTime": "6.0.5",
           "Serilog": "2.11.0",
           "Serilog.AspNetCore": "5.0.0",
           "Serilog.Sinks.Console": "4.0.1",
@@ -1983,8 +1983,8 @@
           "System.Runtime.Handles": "4.3.0",
           "System.Runtime.InteropServices": "4.3.0",
           "VMelnalksnis.ISO20022DotNet": "0.2.2",
-          "VMelnalksnis.NordigenDotNet": "0.4.0",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.4.0"
+          "VMelnalksnis.NordigenDotNet": "0.4.3",
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.4.3"
         }
       },
       "gnomeshade.interfaces.webapi.client": {
