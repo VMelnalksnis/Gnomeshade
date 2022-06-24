@@ -23,8 +23,8 @@ echo "Section: misc" >>$control_path || exit
 echo "Priority: optional" >>$control_path || exit
 echo "Architecture: amd64" >>$control_path || exit
 echo "Maintainer: $maintainer" >>$control_path || exit
-echo "Description: Gnomeshade server" >>$control_path || exit
-echo " The Gnomeshade personal finance tracker server" >>$control_path || exit
+echo "Description: The Gnomeshade server" >>$control_path || exit
+echo " Personal finance tracker server" >>$control_path || exit
 echo "Homepage: https://gnomeshade.org" >>$control_path || exit
 
 mkdir -p gnomeshade/etc/opt/gnomeshade || exit
