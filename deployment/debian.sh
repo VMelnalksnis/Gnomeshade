@@ -50,4 +50,4 @@ gzip -n --best changelog || exit
 mv changelog.gz $changelog_path || exit
 
 dpkg-deb --root-owner-group --build gnomeshade || exit
-lintian --supress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt gnomeshade.deb || exit
+lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt gnomeshade.deb || exit
