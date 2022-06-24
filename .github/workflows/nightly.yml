@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Gnomeshade.Interfaces.WebApi_linux-x64.deb
-          path: "/**/*.deb"
+          path: "**/*.deb"
   
   create-release:
     name: Create release
