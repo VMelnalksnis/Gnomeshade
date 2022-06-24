@@ -22,8 +22,8 @@ echo "Section: misc" >>$control_path || exit
 echo "Priority: optional" >>$control_path || exit
 echo "Architecture: all" >>$control_path || exit
 echo "Maintainer: $maintainer" >>$control_path || exit
-echo "Description: " >>$control_path || exit
-echo "" >>$control_path || exit
+echo "Description: Placeholder" >>$control_path || exit
+echo " Placeholder" >>$control_path || exit
 echo "Homepage: https://gnomeshade.org" >>$control_path || exit
 
 mkdir -p gnomeshade/etc/opt/gnomeshade || exit
