@@ -18,18 +18,21 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <param name="valuedAt">The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</param>
 	/// <param name="reconciledAt">The point in time when this transaction was reconciled.</param>
 	/// <param name="transfers">All transfers of the transaction.</param>
+	/// <param name="purchases">All purchases of the transaction.</param>
 	public TransactionOverview(
 		Guid id,
 		DateTimeOffset? bookedAt,
 		DateTimeOffset? valuedAt,
 		DateTimeOffset? reconciledAt,
-		List<TransferSummary> transfers)
+		List<TransferSummary> transfers,
+		List<Purchase> purchases)
 	{
 		Id = id;
 		BookedAt = bookedAt;
 		ValuedAt = valuedAt;
 		ReconciledAt = reconciledAt;
 		Transfers = transfers;
+		Purchases = purchases;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -49,4 +52,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 
 	/// <summary>Gets all transfers of the transaction.</summary>
 	public List<TransferSummary> Transfers { get; }
+
+	/// <summary>Gets all purchases of the transaction.</summary>
+	public List<Purchase> Purchases { get; }
 }

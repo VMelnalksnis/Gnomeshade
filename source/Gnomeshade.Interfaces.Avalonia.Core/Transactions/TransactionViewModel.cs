@@ -123,8 +123,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 					_dateTimeZoneProvider.GetSystemDefault()).ToInstant());
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
+		var productsTask = _gnomeshadeClient.GetProductsAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask).ConfigureAwait(false);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
@@ -141,7 +142,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
-				transfers);
+				transfers,
+				transaction.Purchases);
 		}).ToList();
 
 		var selected = Selected;
@@ -152,6 +154,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		Filter.Accounts = accounts;
 		Filter.Counterparties = counterparties;
+		Filter.Products = productsTask.Result;
 		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 	}
 
@@ -186,7 +189,13 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			OnPropertyChanged(nameof(CanRefresh));
 		}
 
-		if (e.PropertyName is nameof(TransactionFilter.SelectedAccount) or nameof(TransactionFilter.SelectedCounterparty))
+		if (e.PropertyName is
+			nameof(TransactionFilter.SelectedAccount) or
+			nameof(TransactionFilter.InvertAccount) or
+			nameof(TransactionFilter.SelectedCounterparty) or
+			nameof(TransactionFilter.InvertCounterparty) or
+			nameof(TransactionFilter.SelectedProduct) or
+			nameof(TransactionFilter.InvertProduct))
 		{
 			DataGridView.Refresh();
 			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
@@ -197,7 +206,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	{
 		var updatedRow = Rows.SingleOrDefault(row => row.Id == e.Id);
 
-		var transactionTask = _gnomeshadeClient.GetTransactionAsync(e.Id);
+		var transactionTask = _gnomeshadeClient.GetDetailedTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
@@ -207,11 +216,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var counterparties = counterpartiesTask.Result;
 		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
-		var transfers = _gnomeshadeClient
-			.GetTransfersAsync(transaction.Id)
-			.ConfigureAwait(false)
-			.GetAwaiter()
-			.GetResult()
+		var transfers = transaction
+			.Transfers
 			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 			.ToList();
 
@@ -220,7 +226,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
-			transfers);
+			transfers,
+			transaction.Purchases);
 
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(Rows.Where(row => row.Id != updatedRow?.Id).Append(overview).ToList());

@@ -133,14 +133,19 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value).ConfigureAwait(false);
 
-		Properties.BookingDate = transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-		Properties.BookingTime = transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
+		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 
-		Properties.ValueDate = transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-		Properties.ValueTime = transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
+		Properties.BookingDate = transaction.BookedAt?.InZone(defaultZone).ToDateTimeOffset();
+		Properties.BookingTime = transaction.BookedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
 
-		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
+		Properties.ValueDate = transaction.ValuedAt?.InZone(defaultZone).ToDateTimeOffset();
+		Properties.ValueTime = transaction.ValuedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+
+		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset();
+		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+
+		Properties.ImportDate = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset();
+		Properties.ImportTime = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
 
 		Properties.Description = transaction.Description;
 

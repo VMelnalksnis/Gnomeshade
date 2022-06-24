@@ -21,6 +21,8 @@ public sealed class TransactionProperties : ViewModelBase
 	private TimeSpan? _valueTime;
 	private DateTimeOffset? _reconciliationDate;
 	private TimeSpan? _reconciliationTime;
+	private DateTimeOffset? _importDate;
+	private TimeSpan? _importTime;
 	private string? _description;
 
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
@@ -97,6 +99,23 @@ public sealed class TransactionProperties : ViewModelBase
 				ReconciliationTime.GetValueOrDefault().Minutes)
 			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
 		: null;
+
+	/// <summary>Gets or sets the date on which the transaction was imported.</summary>
+	public DateTimeOffset? ImportDate
+	{
+		get => _importDate;
+		set => SetAndNotifyWithGuard(ref _importDate, value, nameof(ImportDate), nameof(IsImported));
+	}
+
+	/// <summary>Gets or sets the time when the transaction was imported.</summary>
+	public TimeSpan? ImportTime
+	{
+		get => _importTime;
+		set => SetAndNotify(ref _importTime, value);
+	}
+
+	/// <summary>Gets a value indicating whether the transaction was imported.</summary>
+	public bool IsImported => ImportDate is not null;
 
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	public string? Description
