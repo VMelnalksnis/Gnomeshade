@@ -28,7 +28,7 @@ echo "Homepage: https://gnomeshade.org" >>$control_path || exit
 
 mkdir -p gnomeshade/etc/opt/gnomeshade || exit
 mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
-cat /etc/opt/gnomeshade/appsettings.json >>gnomeshade/DEBIAN/conffiles || exit
+echo "/etc/opt/gnomeshade/appsettings.json" >>gnomeshade/DEBIAN/conffiles || exit
 
 echo "Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/" >>$copyright_path || exit
 echo "Upstream-Name: gnomeshade" >>$copyright_path || exit
