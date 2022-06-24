@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		codecov.yml = codecov.yml
 		version = version
+		CONTRIBUTING.md = CONTRIBUTING.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.WebApi.Tests", "tests\Gnomeshade.Interfaces.WebApi.Tests\Gnomeshade.Interfaces.WebApi.Tests.csproj", "{0C052464-F71A-4005-A531-C6D6B4FF09A4}"
@@ -47,6 +48,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{C40963A1-CFE1-4CF8-BAC3-3F3B0A87B7D0}"
 	ProjectSection(SolutionItems) = preProject
 		.github\dependabot.yml = .github\dependabot.yml
+		.github\pull_request_template.md = .github\pull_request_template.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{07BD57C5-18C3-4C1E-8555-878350D0686F}"
@@ -61,6 +63,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Avalonia.Core.Tests", "tests\Gnomeshade.Interfaces.Avalonia.Core.Tests\Gnomeshade.Interfaces.Avalonia.Core.Tests.csproj", "{EACC6CF9-1097-4C31-914E-C21155D4FF07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop.Tests", "tests\Gnomeshade.Interfaces.Desktop.Tests\Gnomeshade.Interfaces.Desktop.Tests.csproj", "{D30778D9-A8F3-480E-8070-F1BAE8331A0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEMPLATE", "{F38BE682-DC57-4090-99A3-C913DB95F109}"
+	ProjectSection(SolutionItems) = preProject
+		.github\ISSUE_TEMPLATE\bug_report.md = .github\ISSUE_TEMPLATE\bug_report.md
+		.github\ISSUE_TEMPLATE\feature_request.md = .github\ISSUE_TEMPLATE\feature_request.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +146,7 @@ Global
 		{07BD57C5-18C3-4C1E-8555-878350D0686F} = {C40963A1-CFE1-4CF8-BAC3-3F3B0A87B7D0}
 		{EACC6CF9-1097-4C31-914E-C21155D4FF07} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 		{D30778D9-A8F3-480E-8070-F1BAE8331A0A} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
+		{F38BE682-DC57-4090-99A3-C913DB95F109} = {C40963A1-CFE1-4CF8-BAC3-3F3B0A87B7D0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}

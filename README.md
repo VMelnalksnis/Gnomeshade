@@ -26,11 +26,15 @@ The latest release can be found [here](https://github.com/VMelnalksnis/Gnomeshad
 Currently the client settings file must be edited manually [#82](https://github.com/VMelnalksnis/Gnomeshade/issues/82).
 An example of the configuration file can be found [here](source/Gnomeshade.Interfaces.Desktop/appsettings.json).
 
+## Contributing
+
+Instructions for contributing can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
-This work [is licensed](LICENSE.txt)
-under the [GNU Affero General Public License v3.0 or later](https://www.gnu.org/licenses/agpl-3.0.html).
+This work [is licensed](LICENSE.txt) under the
+[GNU Affero General Public License v3.0 or later](https://www.gnu.org/licenses/agpl-3.0.html).
 
 ## Contact
 
-You can contact me at [valters.melnalksnis@outlook.com](mailto:valters.melnalksnis@outlook.com).
+You can contact me at [valters.melnalksnis@gnomeshade.org](mailto:valters.melnalksnis@gnomeshade.org).
