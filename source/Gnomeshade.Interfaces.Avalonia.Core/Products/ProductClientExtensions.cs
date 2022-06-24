@@ -28,7 +28,7 @@ internal static class ProductClientExtensions
 		return products.Select(product => new ProductRow(
 			product,
 			unitRows,
-			categories.SingleOrDefault(category => category.Id == product.CategoryId)?.Name));
+			categories.SingleOrDefault(category => category.Id == product.CategoryId)));
 	}
 
 	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)

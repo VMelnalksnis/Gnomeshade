@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
+using Gnomeshade.TestingHelpers.Models;
 
 using NodaTime;
 
@@ -22,7 +23,8 @@ public class TransactionDetailViewModelTests
 	[Test]
 	public async Task SaveAsync_ShouldUpdate()
 	{
-		var viewModel = await CreateAsync(new DesignTimeGnomeshadeClient(), _dateTimeZoneProvider, Guid.Empty);
+		var client = new DesignTimeGnomeshadeClient();
+		var viewModel = await CreateAsync(client, _dateTimeZoneProvider, Guid.Empty);
 
 		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
 
@@ -38,5 +40,9 @@ public class TransactionDetailViewModelTests
 			new ZonedDateTime(
 				Instant.FromUtc(2022, 04, 15, 9, 50, 0),
 				_dateTimeZoneProvider.GetSystemDefault()));
+
+		var transaction = await client.GetTransactionAsync(Guid.Empty);
+		var creation = transaction.ToCreation() with { ReconciledAt = null };
+		await client.PutTransactionAsync(Guid.Empty, creation);
 	}
 }

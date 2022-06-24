@@ -11,9 +11,13 @@
 	x:CompileBindings="True"
 	x:DataType="products:ProductViewModel">
 
-	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
-		<DataGrid
+	<Grid ColumnDefinitions="Auto,*,*" RowDefinitions="*">
+		<UserControl
 			Grid.Column="0" Grid.Row="0"
+			Content="{Binding Filter, Mode=OneWay}"/>
+		
+		<DataGrid
+			Grid.Column="1" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			Items="{Binding DataGridView, Mode=TwoWay}"
@@ -59,7 +63,7 @@
 		</DataGrid>
 
 		<UserControl
-			Grid.Column="1" Grid.Row="0"
+			Grid.Column="2" Grid.Row="0"
 			Content="{Binding Details, Mode=OneWay}"/>
 	</Grid>
 </UserControl>

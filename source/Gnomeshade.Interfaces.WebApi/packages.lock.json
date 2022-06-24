@@ -405,28 +405,18 @@
           "NodaTime": "3.1.0"
         }
       },
-      "VMelnalksnis.NordigenDotNet": {
-        "type": "Direct",
-        "requested": "[0.4.3, )",
-        "resolved": "0.4.3",
-        "contentHash": "7jH7KMCAq5pddCaRrV+vnUl1hI6fvaFbJuAxLZ3IVfyhil9NUjej3miZcKjpAKf6G2LM1rNC4pt8vsz158taNA==",
-        "dependencies": {
-          "NodaTime": "3.1.0",
-          "NodaTime.Serialization.SystemTextJson": "1.0.0"
-        }
-      },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "Direct",
-        "requested": "[0.4.3, )",
-        "resolved": "0.4.3",
-        "contentHash": "qQ1iLdapypzvMD2aQiCRQAhGLazBWOlS185hNzeDIwNi9LoXanE26VhfHlIpjTShIlAO0RLG+UlzAcHdzEtOlw==",
+        "requested": "[0.5.0, )",
+        "resolved": "0.5.0",
+        "contentHash": "0S8TKVkaXXrTW2vkb1Z+CQHcti99LK3xDPaQcC+1fu7PUFRK+RO8HyxdeeeGwaxbWIcGY5avuHCEOeQwITFYzQ==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "VMelnalksnis.NordigenDotNet": "0.4.3"
+          "VMelnalksnis.NordigenDotNet": "0.5.0"
         }
       },
       "Dapper": {
@@ -1428,6 +1418,15 @@
           "Microsoft.NETCore.Platforms": "1.0.1",
           "Microsoft.NETCore.Targets": "1.0.1",
           "System.Runtime": "4.1.0"
+        }
+      },
+      "VMelnalksnis.NordigenDotNet": {
+        "type": "Transitive",
+        "resolved": "0.5.0",
+        "contentHash": "SRz4lF9DQwWdQsEUq0KEFMc3Q0pBMTu7owD8FCsfM46q9gusxUHlbj98ATe0ZvT5L/NbFwi9TZRfP8eKBn6gsQ==",
+        "dependencies": {
+          "NodaTime": "3.1.0",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
       "gnomeshade.data": {

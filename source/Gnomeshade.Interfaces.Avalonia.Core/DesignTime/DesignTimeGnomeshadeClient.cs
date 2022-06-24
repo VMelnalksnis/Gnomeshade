@@ -261,7 +261,17 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public async Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		var transaction = await GetTransactionAsync(id);
+		return DetailedTransaction.FromTransaction(transaction) with
+		{
+			Transfers = await GetTransfersAsync(transaction.Id, cancellationToken),
+			Purchases = await GetPurchasesAsync(transaction.Id, cancellationToken),
+			Loans = await GetLoansAsync(transaction.Id, cancellationToken),
+			Links = await GetTransactionLinksAsync(transaction.Id, cancellationToken),
+		};
+	}
 
 	/// <inheritdoc />
 	public Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to)
@@ -272,13 +282,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(Instant? from, Instant? to, CancellationToken cancellationToken = default)
 	{
-		var transactions = _transactions.Select(transaction => DetailedTransaction.FromTransaction(transaction) with
-		{
-			Transfers = GetTransfersAsync(transaction.Id, cancellationToken).Result,
-			Purchases = GetPurchasesAsync(transaction.Id, cancellationToken).Result,
-			Loans = GetLoansAsync(transaction.Id, cancellationToken).Result,
-			Links = GetTransactionLinksAsync(transaction.Id, cancellationToken).Result,
-		}).ToList();
+		var transactions = _transactions
+			.Select(transaction => GetDetailedTransactionAsync(transaction.Id, cancellationToken))
+			.Select(task => task.Result)
+			.ToList();
 
 		return Task.FromResult(transactions);
 	}

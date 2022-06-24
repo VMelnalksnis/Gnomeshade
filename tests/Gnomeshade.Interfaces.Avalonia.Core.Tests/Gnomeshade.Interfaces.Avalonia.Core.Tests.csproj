@@ -6,6 +6,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.Avalonia.Core\Gnomeshade.Interfaces.Avalonia.Core.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>

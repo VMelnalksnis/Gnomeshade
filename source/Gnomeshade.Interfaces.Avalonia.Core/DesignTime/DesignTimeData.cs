@@ -147,4 +147,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionSummary"/> for use during design time.</summary>
 	public static TransactionSummary TransactionSummary { get; } = new();
+
+	/// <summary>Gets an instance of <see cref="ProductFilter"/> for use during design time.</summary>
+	public static ProductFilter ProductFilter { get; } = new();
 }

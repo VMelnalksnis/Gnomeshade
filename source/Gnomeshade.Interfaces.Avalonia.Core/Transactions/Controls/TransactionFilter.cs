@@ -14,7 +14,7 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Values for filtering transactions.</summary>
-public sealed class TransactionFilter : ViewModelBase
+public sealed class TransactionFilter : FilterBase<TransactionOverview>
 {
 	private static readonly string[] _isValidNames = { nameof(IsValid) };
 
@@ -119,16 +119,9 @@ public sealed class TransactionFilter : ViewModelBase
 		set => SetAndNotify(ref _invertProduct, value);
 	}
 
-	/// <summary>Predicate for determining if an item is suitable for inclusion in the view.</summary>
-	/// <param name="item">The item to check against the filters set in this viewmodel.</param>
-	/// <returns><see langword="true"/> if <paramref name="item"/> matches the filters set in this viewmodel; otherwise <see langword="false"/>.</returns>
-	public bool Filter(object item)
+	/// <inheritdoc />
+	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (item is not TransactionOverview overview)
-		{
-			return false;
-		}
-
 		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null)
 		{
 			return true;

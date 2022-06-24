@@ -27,6 +27,9 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_details = productCreationViewModel;
 
+		Filter = new();
+
+		Filter.PropertyChanged += FilterOnPropertyChanged;
 		Details.Upserted += OnProductUpserted;
 		PropertyChanged += OnPropertyChanged;
 	}
@@ -42,6 +45,9 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 			Details.Upserted += OnProductUpserted;
 		}
 	}
+
+	/// <summary>Gets the product filter.</summary>
+	public ProductFilter Filter { get; }
 
 	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
@@ -64,8 +70,12 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 		var sortDescriptions = DataGridView.SortDescriptions;
 		Rows = new(productRows);
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
+		DataGridView.Filter = Filter.Filter;
 
 		Details = creationViewModel;
+
+		Filter.Units = await _gnomeshadeClient.GetUnitsAsync();
+		Filter.Categories = await _gnomeshadeClient.GetCategoriesAsync();
 	}
 
 	/// <inheritdoc />
@@ -84,5 +94,13 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
 		Task.Run(Refresh).GetAwaiter().GetResult();
+	}
+
+	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(ProductFilter.SelectedUnit) or nameof(ProductFilter.SelectedCategory))
+		{
+			DataGridView.Refresh();
+		}
 	}
 }

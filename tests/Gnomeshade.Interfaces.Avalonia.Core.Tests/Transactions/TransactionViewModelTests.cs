@@ -75,16 +75,4 @@ public class TransactionViewModelTests
 
 		canDeleteChanged.Should().BeTrue();
 	}
-
-	// todo currently testing against static data, test order matters for deleting
-	[Test]
-	public async Task X_DeleteSelectedAsync_ShouldDeleteSelectedTransactions()
-	{
-		var transactionToDelete = _viewModel.Rows.First();
-		_viewModel.Selected = transactionToDelete;
-
-		await _viewModel.DeleteSelectedAsync();
-
-		_viewModel.Rows.Should().BeEmpty();
-	}
 }
