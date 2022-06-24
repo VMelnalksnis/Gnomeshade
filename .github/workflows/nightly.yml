@@ -11,7 +11,7 @@ jobs:
         os: [ windows-latest ]
         runtime: [ win10-x64 ]
         project: [ Gnomeshade.Interfaces.Desktop ]
-        publish_script: [ "deployment/publish.ps1" ]
+        publish_script: [ deployment/publish.ps1 ]
         include:
           - os: ubuntu-latest
             runtime: linux-x64
@@ -57,10 +57,50 @@ jobs:
           "${{ github.run_number }}"
           "-nightly"
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.publish.outputs.artifact-name }}
+          path: ${{ steps.publish.outputs.artifact }}
+  
+  build-deb:
+    name: Build debian package
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: Gnomeshade.Interfaces.WebApi_linux-x64.zip
+
+      - name: Build debian package
+        run: >
+          deployment/debian.sh
+          "${{ steps.download.outputs.download-path }}"
+          "${{ github.run_number }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Gnomeshade.Interfaces.WebApi_linux-x64.deb
+          path: "/**/*.deb"
+  
+  create-release:
+    name: Create release
+    needs: build-deb
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          path: artifacts
+
       - name: Upload artifact to releases
         uses: pyTooling/Actions/releaser/composite@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
           rm: false
-          files: ${{ steps.publish.outputs.artifact }}
+          files: |
+            ${{ steps.download.outputs.download-path }}/**/*.zip
+            ${{ steps.download.outputs.download-path }}/**/*.deb

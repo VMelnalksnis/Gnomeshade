@@ -62,9 +62,31 @@ jobs:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
 
+  build-deb:
+    name: Build debian package
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: Gnomeshade.Interfaces.WebApi_linux-x64.zip
+
+      - name: Build debian package
+        run: >
+          deployment/debian.sh
+          "${{ steps.download.outputs.download-path }}"
+          "${{ github.run_number }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Gnomeshade.Interfaces.WebApi_linux-x64.deb
+          path: "/**/*.deb"
+  
   create-release:
     name: Create release
-    needs: build
+    needs: build-deb
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
@@ -72,9 +94,6 @@ jobs:
         with:
           path: artifacts
 
-      - name: 'Echo download path'
-        run: echo ${{ steps.download.outputs.download-path }}
-        
       - name: Create release
         uses: softprops/action-gh-release@v0.1.14
         with:
@@ -85,3 +104,4 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             ${{ steps.download.outputs.download-path }}/**/*.zip
+            ${{ steps.download.outputs.download-path }}/**/*.deb
