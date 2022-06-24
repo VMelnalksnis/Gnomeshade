@@ -14,16 +14,17 @@ time="Fri, 24 Jun 2022 19:28:01 +0200"
 
 mkdir -p gnomeshade/opt/gnomeshade || exit
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade || exit
+chmod +x opt/gnomeshade/Gnomeshade.Interfaces.WebApi || exit
 
 mkdir -p gnomeshade/DEBIAN || exit
 echo "Package: gnomeshade" >>$control_path || exit
 echo "Version: $full_version" >>$control_path || exit
 echo "Section: misc" >>$control_path || exit
 echo "Priority: optional" >>$control_path || exit
-echo "Architecture: all" >>$control_path || exit
+echo "Architecture: amd64" >>$control_path || exit
 echo "Maintainer: $maintainer" >>$control_path || exit
-echo "Description: Placeholder" >>$control_path || exit
-echo " Placeholder" >>$control_path || exit
+echo "Description: Gnomeshade server" >>$control_path || exit
+echo " The Gnomeshade personal finance tracker server" >>$control_path || exit
 echo "Homepage: https://gnomeshade.org" >>$control_path || exit
 
 mkdir -p gnomeshade/etc/opt/gnomeshade || exit
