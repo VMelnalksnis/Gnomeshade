@@ -12,6 +12,7 @@ maintainer_email="valters.melnalksnis@gnomeshade.org"
 maintainer="Valters Melnalksnis <$maintainer_email>"
 time="Fri, 24 Jun 2022 19:28:01 +0200"
 
+mkdir -p gnomeshade/opt/gnomeshade || exit
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade || exit
 
 mkdir -p gnomeshade/DEBIAN || exit
@@ -25,11 +26,9 @@ echo "Description: " >>$control_path || exit
 echo "" >>$control_path || exit
 echo "Homepage: https://gnomeshade.org" >>$control_path || exit
 
+mkdir -p gnomeshade/etc/opt/gnomeshade || exit
 mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
 cat /etc/opt/gnomeshade/appsettings.json >>gnomeshade/DEBIAN/conffiles || exit
-
-mkdir -p gnomeshade/etc/opt/gnomeshade || exit
-mkdir -p gnomeshade/opt/gnomeshade || exit
 
 echo "Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/" >>$copyright_path || exit
 echo "Upstream-Name: gnomeshade" >>$copyright_path || exit
