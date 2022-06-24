@@ -65,12 +65,15 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transfersTask = _gnomeshadeClient.GetTransfersAsync(_transactionId);
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		await Task.WhenAll(transfersTask, accountsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask).ConfigureAwait(false);
 
 		var accounts = accountsTask.Result;
-		var overviews = transfersTask.Result
+		var transaction = transactionsTask.Result;
+		IsReadOnly = transaction.Reconciled;
+
+		var overviews = transaction.Transfers
 			.OrderBy(transfer => transfer.CreatedAt)
 			.Select(transfer => transfer.ToOverview(accounts));
 

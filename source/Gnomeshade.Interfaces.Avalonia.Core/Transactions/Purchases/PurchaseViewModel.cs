@@ -74,10 +74,10 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var purchases = await _gnomeshadeClient.GetPurchasesAsync(_transactionId).ConfigureAwait(false);
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
 
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var productIds = purchases.Select(purchase => purchase.ProductId).Distinct();
+		var productIds = transaction.Purchases.Select(purchase => purchase.ProductId).Distinct();
 		var productsTask = Task.WhenAll(productIds.Select(async id => await _gnomeshadeClient.GetProductAsync(id)));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
@@ -86,11 +86,12 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var products = productsTask.Result;
 		var units = unitsTask.Result;
 
-		var overviews = purchases
+		var overviews = transaction.Purchases
 			.OrderBy(purchase => purchase.CreatedAt)
 			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
 
 		var sort = DataGridView.SortDescriptions;
+		IsReadOnly = transaction.Reconciled;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
 		Rows = new(overviews);
 		Rows.CollectionChanged += RowsOnCollectionChanged;

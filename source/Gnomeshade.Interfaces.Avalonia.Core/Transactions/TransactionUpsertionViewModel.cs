@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Controls;
@@ -106,7 +107,8 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		}
 
 		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
-		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, id).ConfigureAwait(false);
+		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, id)
+			.ConfigureAwait(false);
 		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 		var loanViewModel = await LoanViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
 
@@ -143,6 +145,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset();
 		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+		Properties.Reconciled = transaction.Reconciled;
 
 		Properties.ImportDate = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset();
 		Properties.ImportTime = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
@@ -162,11 +165,19 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		if (Links is not null)
 		{
 			await Links.RefreshAsync().ConfigureAwait(false);
+			if (transaction.Reconciled && !Links.Rows.Any())
+			{
+				Links = null;
+			}
 		}
 
 		if (Loans is not null)
 		{
 			await Loans.RefreshAsync().ConfigureAwait(false);
+			if (transaction.Reconciled && !Loans.Rows.Any())
+			{
+				Loans = null;
+			}
 		}
 	}
 
@@ -186,7 +197,8 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		await RefreshAsync().ConfigureAwait(false);
 
 		Transfers ??= await TransferViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
-		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider, _id.Value).ConfigureAwait(false);
+		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider, _id.Value)
+			.ConfigureAwait(false);
 		Links ??= await LinkViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 		Loans ??= await LoanViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 

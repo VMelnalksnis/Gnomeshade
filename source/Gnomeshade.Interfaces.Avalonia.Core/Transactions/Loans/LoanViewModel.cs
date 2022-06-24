@@ -52,10 +52,10 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var loans = await _gnomeshadeClient.GetLoansAsync(_transactionId).ConfigureAwait(false);
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
 		var currencies = await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
-		var overviews = loans
+		var overviews = transaction.Loans
 			.Select(loan => new LoanOverview(
 				loan.Id,
 				counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId).Name,
@@ -64,6 +64,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 				currencies.Single(currency => currency.Id == loan.CurrencyId).AlphabeticCode))
 			.ToList();
 
+		IsReadOnly = transaction.Reconciled;
 		Rows = new(overviews);
 	}
 

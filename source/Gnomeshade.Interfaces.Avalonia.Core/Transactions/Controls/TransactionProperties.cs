@@ -24,6 +24,7 @@ public sealed class TransactionProperties : ViewModelBase
 	private DateTimeOffset? _importDate;
 	private TimeSpan? _importTime;
 	private string? _description;
+	private bool _reconciled;
 
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
 	public DateTimeOffset? BookingDate
@@ -89,6 +90,13 @@ public sealed class TransactionProperties : ViewModelBase
 		set => SetAndNotifyWithGuard(ref _reconciliationTime, value, nameof(ReconciliationTime), _isValid);
 	}
 
+	/// <summary>Gets or sets a value indicating whether the transaction is reconciled.</summary>
+	public bool Reconciled
+	{
+		get => _reconciled;
+		set => SetAndNotifyWithGuard(ref _reconciled, value, nameof(Reconciled), _isValid);
+	}
+
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
 	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue
 		? new LocalDateTime(
@@ -126,6 +134,7 @@ public sealed class TransactionProperties : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>
 	public bool IsValid =>
+		!Reconciled &&
 		((BookingDate.HasValue && BookingTime.HasValue) ||
 		(ValueDate.HasValue && ValueTime.HasValue)) &&
 		((ReconciledAt is null && ReconciliationTime is null) || ReconciledAt is not null);

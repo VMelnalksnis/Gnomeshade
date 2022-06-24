@@ -56,12 +56,14 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var links = await _gnomeshadeClient.GetTransactionLinksAsync(_transactionId).ConfigureAwait(false);
-		var overviews = links
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
+		var overviews = transaction.Links
 			.OrderBy(link => link.CreatedAt)
 			.Select(link => new LinkOverview(link.Id, link.Uri)).ToList();
 
 		var selected = Selected;
+
+		IsReadOnly = transaction.Reconciled;
 		Rows = new(overviews);
 		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 	}

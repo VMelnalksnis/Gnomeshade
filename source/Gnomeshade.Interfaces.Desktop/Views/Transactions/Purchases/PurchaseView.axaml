@@ -58,13 +58,13 @@
 			</DataGrid.Styles>
 		</DataGrid>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel Orientation="Horizontal" IsVisible="{Binding !IsReadOnly}">
 			<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
 				Delete Selected
 			</Button>
 		</StackPanel>
 
-		<UserControl Content="{Binding Details}" />
+		<UserControl IsVisible="{Binding !IsReadOnly}" Content="{Binding Details}" />
 
 	</StackPanel>
 
