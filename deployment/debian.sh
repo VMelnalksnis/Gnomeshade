@@ -7,7 +7,7 @@ version=$(cat version)
 full_version="$version.$2"
 control_path="gnomeshade/DEBIAN/control"
 copyright_path="gnomeshade/usr/share/doc/gnomeshade/copyright"
-changelog_path="usr/share/doc/gnomeshade/changelog.gz"
+changelog_path="gnomeshade/usr/share/doc/gnomeshade/changelog.gz"
 maintainer_email="valters.melnalksnis@gnomeshade.org"
 maintainer="Valters Melnalksnis <$maintainer_email>"
 time="Fri, 24 Jun 2022 19:28:01 +0200"
@@ -30,6 +30,7 @@ mkdir -p gnomeshade/etc/opt/gnomeshade || exit
 mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
 echo "/etc/opt/gnomeshade/appsettings.json" >>gnomeshade/DEBIAN/conffiles || exit
 
+mkdir -p gnomeshade/usr/share/doc/gnomeshade || exit
 echo "Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/" >>$copyright_path || exit
 echo "Upstream-Name: gnomeshade" >>$copyright_path || exit
 echo "Upstream-Contact: $maintainer_email" >>$copyright_path || exit
