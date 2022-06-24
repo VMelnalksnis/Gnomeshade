@@ -78,7 +78,7 @@ jobs:
       - name: Build debian package
         run: >
           deployment/debian.sh
-          "${{ steps.download.outputs.download-path }}"
+          "${{ steps.download.outputs.download-path }}/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
           "${{ github.run_number }}"
 
       - name: Upload artifact
