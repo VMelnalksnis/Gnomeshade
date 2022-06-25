@@ -28,13 +28,9 @@ mkdir -p gnomeshade/usr/share/doc/gnomeshade || exit
 export MAINTAINER_EMAIL=$maintainer_email || exit
 envsubst <deployment/debian/copyright >gnomeshade/usr/share/doc/gnomeshade/copyright || exit
 
-export TIME=$time
+export CHANGELOG_TIME=$time
 envsubst <deployment/debian/changelog >changelog || exit
-echo "gnomeshade ($full_version) stable; urgency=low" >>changelog || exit
-echo "" >>changelog || exit
-echo "  * Placeholder" >>changelog || exit
-echo "" >>changelog || exit
-echo " -- $maintainer  $time" >>changelog || exit
+cat changelog || exit
 
 gzip -n --best changelog || exit
 mv changelog.gz $changelog_path || exit
