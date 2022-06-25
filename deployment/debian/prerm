@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl stop gnomeshade.service || exit
+systemctl disable gnomeshade.service || exit

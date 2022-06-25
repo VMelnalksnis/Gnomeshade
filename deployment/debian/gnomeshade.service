@@ -1,0 +1,19 @@
+[Unit]
+Description=Gnomeshade
+
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/etc/opt/gnomeshade
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+ExecStart=/opt/gnomeshade/Gnomeshade.Interfaces.WebApi
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+User=gnomeshade
+Group=gnomeshade
+
+[Install]
+WantedBy=multi-user.target

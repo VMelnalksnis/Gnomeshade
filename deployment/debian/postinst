@@ -1,0 +1,9 @@
+#!/bin/bash
+
+adduser --system gnomeshade || exit
+
+chown gnomeshade /etc/opt/gnomeshade --recursive || exit
+chown gnomeshade /opt/gnomeshade --recursive || exit
+
+systemctl daemon-reload || exit
+systemctl enable gnomeshade.service || exit

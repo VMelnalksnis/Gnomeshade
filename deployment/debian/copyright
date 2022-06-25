@@ -1,0 +1,8 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: gnomeshade
+Upstream-Contact: ${MAINTAINER_EMAIL}
+Source: https://github.com/VMelnalksnis/Gnomeshade
+
+Files: *
+Copyright: 2021 ${MAINTAINER}
+License: APGL-3.0-or-later

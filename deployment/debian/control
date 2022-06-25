@@ -1,0 +1,9 @@
+Package: gnomeshade
+Version: ${FULL_VERSION}
+Section: misc
+Priority: optional
+Architecture: amd64
+Maintainer: ${MAINTAINER}
+Description: The Gnomeshade server
+ Personal finance tracker server
+Homepage: https://gnomeshade.org
