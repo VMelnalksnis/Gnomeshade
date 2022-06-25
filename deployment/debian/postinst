@@ -1,6 +1,6 @@
 #!/bin/bash
 
-adduser --system --no-create-home --disabled-login --shell=/bin/false gnomeshade || exit
+adduser --system --no-create-home --home /nonexistent --disabled-login --shell=/bin/false gnomeshade || exit
 
 chown gnomeshade /etc/opt/gnomeshade --recursive || exit
 chown gnomeshade /opt/gnomeshade --recursive || exit
