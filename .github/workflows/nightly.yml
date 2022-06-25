@@ -4,36 +4,22 @@ on:
   push:
     branches: [ master ]
 
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
 jobs:
-  build:
+  build-windows:
+    name: Build for Windows
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-latest ]
-        runtime: [ win10-x64 ]
-        project: [ Gnomeshade.Interfaces.Desktop ]
-        publish_script: [ deployment/publish.ps1 ]
-        include:
-          - os: ubuntu-latest
-            runtime: linux-x64
-            project: Gnomeshade.Interfaces.WebApi
-            publish_script: deployment/publish.sh
-
-          - os: ubuntu-latest
-            runtime: linux-x64
-            project: Gnomeshade.Interfaces.Desktop
-            publish_script: deployment/publish.sh
-
-    name: Build
-    runs-on: ${{ matrix.os }}
-    env:
-      DOTNET_NOLOGO: true
-      DOTNET_CLI_TELEMETRY_OPTOUT: true
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+        project:
+          - Gnomeshade.Interfaces.Desktop
     steps:
       - uses: actions/checkout@v2
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.203
 
@@ -41,19 +27,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ matrix.runtime }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-win10-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.runtime }}-nuget-
-
-      - run: chmod +x ${{ matrix.publish_script }}
-        if: matrix.os == 'ubuntu-latest'
+            ${{ runner.os }}-win10-x64-nuget-
 
       - name: Publish project
         id: publish
         run: >
-          ${{ matrix.publish_script }}
+          deployment/publish.ps1
           "${{ matrix.project }}"
-          "${{ matrix.runtime }}"
+          "win10-x64"
           "${{ github.run_number }}"
           "-nightly"
 
@@ -62,14 +45,49 @@ jobs:
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
-  
-  build-deb:
-    name: Build debian package
-    needs: build
+  build-linux:
+    strategy:
+      matrix:
+        project:
+          - Gnomeshade.Interfaces.Desktop
+          - Gnomeshade.Interfaces.WebApi
+    name: Build for Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-          
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.203
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-linux-x64-nuget-
+
+      - name: Publish project
+        id: publish
+        run: >
+          deployment/publish.sh
+          "${{ matrix.project }}"
+          "linux-x64"
+          "${{ github.run_number }}"
+          "-nightly"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.publish.outputs.artifact-name }}
+          path: ${{ steps.publish.outputs.artifact }}
+  
+  build-deb:
+    name: Build debian package
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v3
         id: download
         with:
@@ -84,15 +102,17 @@ jobs:
           "${{ steps.download.outputs.download-path }}/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
           "${{ github.run_number }}"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: Gnomeshade.Interfaces.WebApi_linux-x64.deb
           path: "**/*.deb"
   
   create-release:
     name: Create release
-    needs: build-deb
+    needs:
+      - build-windows
+      - build-linux
+      - build-deb
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
@@ -100,12 +120,12 @@ jobs:
         with:
           path: artifacts
 
-      - name: Upload artifact to releases
+      - name: Upload artifact to nightly release
         uses: pyTooling/Actions/releaser/composite@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
-          rm: false
+          rm: true
           files: |
             ${{ steps.download.outputs.download-path }}/**/*.zip
             ${{ steps.download.outputs.download-path }}/**/*.deb
