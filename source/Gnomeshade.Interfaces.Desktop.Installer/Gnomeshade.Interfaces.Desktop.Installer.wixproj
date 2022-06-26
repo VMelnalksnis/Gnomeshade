@@ -45,11 +45,7 @@
 	</Target>
 
 	<Target Name="BeforeBuild">
-		<PropertyGroup>
-			<BuildNumber>$([System.Environment]::GetEnvironmentVariable('BUILD_NUMBER', System.EnvironmentVariableTarget.User))</BuildNumber>
-			<BuildTag>$([System.Environment]::GetEnvironmentVariable('BUILD_TAG', System.EnvironmentVariableTarget.User))</BuildTag>
-		</PropertyGroup>
-		<Exec Command="powershell.exe deployment\publish.ps1 Gnomeshade.Interfaces.Desktop win10-x64 $(BuildNumber) $(BuildTag)"
+		<Exec Command="powershell.exe deployment\publish.ps1 Gnomeshade.Interfaces.Desktop win10-x64 $(BUILD_NUMBER) $(BUILD_TAG)"
 			  WorkingDirectory="..\..\" ConsoleToMSBuild="true"/>
 	</Target>
 	<Target Name="AfterBuild"/>
