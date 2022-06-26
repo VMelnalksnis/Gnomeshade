@@ -129,3 +129,4 @@ jobs:
           files: |
             ${{ steps.download.outputs.download-path }}/**/*.zip
             ${{ steps.download.outputs.download-path }}/**/*.deb
+            ${{ steps.download.outputs.download-path }}/**/*.msi
