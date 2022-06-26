@@ -9,12 +9,12 @@ $archive_name = "${Project}.msi"
 
 $dotnetArgs = @()
 $dotnetArgs = $dotnetArgs + "build"
-$dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.csproj"
-$dotnetArgs = $dotnetArgs + "--configuration" + "Release"
+$dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.wixproj"
+$dotnetArgs = $dotnetArgs + "-property:Configuration=Release"
 $dotnetArgs = $dotnetArgs + "/warnAsError"
 $dotnetArgs = $dotnetArgs + "/nologo"
 
-& dotnet $dotnetArgs
+& msbuild $dotnetArgs
 
-Write-Output "::set-output name=artifact-name::$Project"
+Write-Output "::set-output name=artifact-name::$archive_name"
 Write-Output "::set-output name=artifact::$publish_dir\$archive_name"
