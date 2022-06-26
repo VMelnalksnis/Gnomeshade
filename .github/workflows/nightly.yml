@@ -32,6 +32,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-win10-x64-nuget-
 
+      - run: $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
+
       - name: Publish project
         id: publish
         run: deployment/build.ps1 ${{ matrix.project }}
