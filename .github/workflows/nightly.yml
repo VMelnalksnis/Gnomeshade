@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         project:
-          - Gnomeshade.Interfaces.Desktop
+          - Gnomeshade.Interfaces.Desktop.Installer
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
@@ -33,15 +33,12 @@ jobs:
 
       - name: Publish project
         id: publish
-        run: >
-          deployment/publish.ps1
-          "${{ matrix.project }}"
-          "win10-x64"
-          "${{ github.run_number }}"
-          "-nightly"
+        run: deployment/build.ps1 ${{ matrix.project }}
+        env:
+          BUILD_NUMBER: ${{ github.run_number }}
+          BUILD_TAG: -nightly
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}

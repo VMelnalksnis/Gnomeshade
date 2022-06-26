@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?define Name = "Gnomeshade" ?>
+<?define Description = "Gnomeshade desktop client" ?>
+<?define Manufacturer = "Valters Melnalksnis" ?>
+<?define Version = "!(bind.fileVersion.Gnomeshade.Interfaces.Desktop.exe)" ?>
+<?define UpgradeCode = "{7bf2e236-d07d-4622-b190-7424bf463ecd}" ?>
+<?define CabName = "Gnomeshade.cab" ?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+	<!--Variable for Sample Application Directory-->
+	<?define BuildDir=$(var.Gnomeshade.Interfaces.Desktop.TargetDir)win10-x64\publish\?>
+
+
+	<Product Id="*" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
+			 Version="$(var.Version)" Language="1033">
+
+		<!--Setup or Installer with properties-->
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"
+				 Description="$(var.Name)" Manufacturer="$(var.Manufacturer)"/>
+
+		<!--Application logo-->
+		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Interfaces.Desktop.TargetDir)Assets\avalonia-logo.ico"/>
+
+		<!--Application logo for Control Panel-->
+		<Property Id="ARPPRODUCTICON" Value="Logo.ico"/>
+
+		<!--Embed Cabinet into single msi file-->
+		<Media Id="1" Cabinet="$(var.CabName)" EmbedCab="yes"/>
+
+		<!-- Allow upgrades and prevent downgrades -->
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed."/>
+
+		<!--Main Feature for this Setup which can be found in Fragment Tag with ComponentGroupRef Id-->
+		<Feature Id="ProductFeature" Title="$(var.Name)" Level="1">
+			<ComponentGroupRef Id="ProductComponents"/>
+			<ComponentRef Id="ApplicationShortcut"/>
+			<ComponentRef Id="ComponentDesktopShortcut"/>
+		</Feature>
+	</Product>
+
+	<!--Fragment with details of installation directory-->
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="LocalAppDataFolder">
+				<!-- Create a folder inside Company Name folder with Product Name-->
+				<Directory Id="INSTALLFOLDER" Name="$(var.Name)">
+					<Directory Id="DesktopFolder" Name="DesktopFolder"/>
+				</Directory>
+			</Directory>
+			<!--Create application folder in Program Menu-->
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="$(var.Name)"/>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<!--Main Feature Fragment with Sample application executable-->
+	<Fragment>
+		<!--ComponentGroup refering to install component in INSTALLFOLDER Directory-->
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="aspnetcorev2_inprocess.dll" Guid="*">
+				<File Id="aspnetcorev2_inprocess.dll" Name="aspnetcorev2_inprocess.dll"
+					  Source="$(var.BuildDir)aspnetcorev2_inprocess.dll"/>
+				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
+				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
+			</Component>
+
+			<Component Id="av_libglesv2.dll" Guid="*">
+				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
+			</Component>
+
+			<Component Id="Gnomeshade.Interfaces.Desktop.exe" Guid="*">
+				<File Id="Gnomeshade.Interfaces.Desktop.exe" Name="Gnomeshade.Interfaces.Desktop.exe"
+					  Source="$(var.BuildDir)Gnomeshade.Interfaces.Desktop.exe"/>
+			</Component>
+
+			<Component Id="libHarfBuzzSharp.dll" Guid="*">
+				<File Id="libHarfBuzzSharp.dll" Name="libHarfBuzzSharp.dll"
+					  Source="$(var.BuildDir)libHarfBuzzSharp.dll"/>
+			</Component>
+
+			<Component Id="libSkiaSharp.dll" Guid="*">
+				<File Id="libSkiaSharp.dll" Name="libSkiaSharp.dll" Source="$(var.BuildDir)libSkiaSharp.dll"/>
+			</Component>
+
+			<Component Id="appsettings.json" Guid="*">
+				<File Id="appsettings.json" Name="appsettings.json" Source="$(var.BuildDir)appsettings.json"/>
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+	<Fragment>
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<!--Create application shortcut in Program Menu-->
+			<Component Id="ApplicationShortcut" Guid="*">
+				<Shortcut Id="ApplicationStartMenuShortcut"
+						  Name="$(var.Name)"
+						  Description="$(var.Description)"
+						  Icon="Logo.ico"
+						  Target="[#Gnomeshade.Interfaces.Desktop.exe]"
+						  WorkingDirectory="INSTALLFOLDER"/>
+				<!--Remove application shortcut from Program Menu on uninstall-->
+				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+				<!--Create application registry entry-->
+				<RegistryValue Root="HKCU" Key="Software\Microsoft\$(var.Name)" Name="installed"
+							   Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+
+	<Fragment>
+		<!--Desktop Shortcut-->
+		<DirectoryRef Id="DesktopFolder">
+			<Component Id="ComponentDesktopShortcut" Guid="*">
+				<Shortcut Id="AppDesktopShortcut"
+						  Name="$(var.Name)"
+						  Description="$(var.Description)"
+						  Target="[INSTALLFOLDER]Gnomeshade.Interfaces.Desktop.exe"
+						  Icon="Logo.ico"/>
+				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\$(var.Name)"
+							   Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+</Wix>
