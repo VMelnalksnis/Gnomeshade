@@ -84,7 +84,7 @@
 				<File Id="libSkiaSharp.dll" Name="libSkiaSharp.dll" Source="$(var.BuildDir)libSkiaSharp.dll"/>
 			</Component>
 
-			<Component Id="appsettings.json" Guid="*">
+			<Component Permanent="yes" Id="appsettings.json" Guid="db183c7a-94fb-443d-8ac4-99931fedd0c7">
 				<File Id="appsettings.json" Name="appsettings.json" Source="$(var.BuildDir)appsettings.json"/>
 			</Component>
 		</ComponentGroup>
