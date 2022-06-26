@@ -44,6 +44,7 @@ public sealed class App : Application
 	{
 		var configuration = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json", true)
+			.AddJsonFile("appsettings.user.json", true)
 			.AddUserSecrets<App>()
 			.Build();
 

@@ -28,6 +28,8 @@ An `.msi` installer is provided for the windows client application.
 Currently the client settings file must be edited manually [#82](https://github.com/VMelnalksnis/Gnomeshade/issues/82),
 and can be found in the installation directory (`%LocalAppData%/Gnomeshade`).
 An example of the configuration file can be found [here](source/Gnomeshade.Interfaces.Desktop/appsettings.json).
+The appsettings.json file should not be edited directly,
+but an appsettings.user.json file should be created.
 
 ## Contributing
 
