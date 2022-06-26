@@ -8,7 +8,8 @@
 		<SchemaVersion>2.0</SchemaVersion>
 		<OutputName>Gnomeshade.Interfaces.Desktop.Installer</OutputName>
 		<OutputType>Package</OutputType>
-		<NoWarn>ICE38</NoWarn>
+		<SuppressIces>ICE38</SuppressIces>
+		<SuppressSpecificWarnings>0204</SuppressSpecificWarnings>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

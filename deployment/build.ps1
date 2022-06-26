@@ -10,7 +10,6 @@ $archive_name = "${Project}.msi"
 $dotnetArgs = @()
 $dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.wixproj"
 $dotnetArgs = $dotnetArgs + "-property:Configuration=Release"
-$dotnetArgs = $dotnetArgs + "/warnAsError"
 $dotnetArgs = $dotnetArgs + "/nologo"
 
 & msbuild $dotnetArgs
