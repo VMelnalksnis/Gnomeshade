@@ -115,7 +115,7 @@ jobs:
           path: "**/*.deb"
   
   update-nightly:
-    name: Create release
+    name: Update nightly release
     needs:
       - build-windows
       - build-linux
