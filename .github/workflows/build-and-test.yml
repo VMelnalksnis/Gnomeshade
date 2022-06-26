@@ -36,8 +36,6 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - run: $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
-
       - name: Cache NuGet packages
         uses: actions/cache@v3
         with:
