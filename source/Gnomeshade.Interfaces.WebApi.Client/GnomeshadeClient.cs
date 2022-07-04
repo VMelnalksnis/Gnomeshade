@@ -23,7 +23,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using NodaTime;
-using NodaTime.Serialization.SystemTextJson;
 
 using static Gnomeshade.Interfaces.WebApi.Client.Routes;
 
@@ -32,18 +31,19 @@ namespace Gnomeshade.Interfaces.WebApi.Client;
 /// <inheritdoc cref="IGnomeshadeClient"/>
 public sealed class GnomeshadeClient : IGnomeshadeClient
 {
-	private readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web);
+	private readonly JsonSerializerOptions _jsonSerializerOptions;
 	private readonly HttpClient _httpClient;
 
 	/// <summary>Initializes a new instance of the <see cref="GnomeshadeClient"/> class.</summary>
 	/// <param name="httpClient">The HTTP client to use for requests.</param>
-	public GnomeshadeClient(HttpClient httpClient)
+	/// <param name="gnomeshadeJsonSerializerOptions">Gnomeshade specific instance of <see cref="JsonSerializerOptions"/>.</param>
+	public GnomeshadeClient(HttpClient httpClient, GnomeshadeJsonSerializerOptions gnomeshadeJsonSerializerOptions)
 	{
 		_httpClient = httpClient;
 		_httpClient.DefaultRequestHeaders.Accept.Clear();
 		_httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
 
-		_jsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+		_jsonSerializerOptions = gnomeshadeJsonSerializerOptions.Options;
 	}
 
 	/// <inheritdoc/>
@@ -70,17 +70,9 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public async Task SocialRegister(string accessToken)
+	public async Task SocialRegister()
 	{
-		_httpClient.DefaultRequestHeaders.Authorization = new(JwtBearerDefaults.AuthenticationScheme, accessToken);
-
 		using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
-		if (response.IsSuccessStatusCode)
-		{
-			return;
-		}
-
-		_httpClient.DefaultRequestHeaders.Authorization = null;
 		response.EnsureSuccessStatusCode();
 	}
 

@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
+using NodaTime;
+
 namespace Gnomeshade.Interfaces.WebApi.Tests.Integration;
 
 [SetUpFixture]
@@ -45,7 +47,7 @@ public sealed class WebserverSetup
 	{
 		var httpClient = CreateHttpClient();
 		httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
-		return new(httpClient);
+		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
 	}
 
 	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);

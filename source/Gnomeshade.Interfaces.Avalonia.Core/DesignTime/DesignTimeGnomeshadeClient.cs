@@ -167,7 +167,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task SocialRegister(string accessToken) => throw new NotImplementedException();
+	public Task SocialRegister() => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task LogOutAsync() => throw new NotImplementedException();

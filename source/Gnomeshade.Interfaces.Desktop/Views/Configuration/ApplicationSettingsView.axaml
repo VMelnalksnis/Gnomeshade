@@ -1,0 +1,29 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	xmlns:configuration="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Configuration;assembly=Gnomeshade.Interfaces.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="300"
+	d:DataContext="{x:Static dd:DesignTimeData.ApplicationSettingsViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Configuration.ApplicationSettingsView"
+	x:CompileBindings="True"
+	x:DataType="configuration:ApplicationSettingsViewModel">
+
+	<Grid ColumnDefinitions="*,auto,auto,*"
+	      RowDefinitions="auto,auto,auto,auto,auto,*">
+
+		<TextBox Grid.Row="0" Grid.Column="0" Watermark="Base address" Text="{Binding BaseAddress}" />
+
+		<TextBox Grid.Row="1" Grid.Column="0" Watermark="OIDC Authority" Text="{Binding OidcAuthority}" />
+		<TextBox Grid.Row="2" Grid.Column="0" Watermark="OIDC Client Id" Text="{Binding OidcClientId}" />
+		<TextBox Grid.Row="3" Grid.Column="0" Watermark="OIDC Client Secret" Text="{Binding OidcClientSecret}" />
+
+		<Button
+			Grid.Row="4" Grid.Column="0"
+			IsEnabled="{Binding IsValid^}" Command="{ReflectionBinding UpdateConfiguration}">
+			Save
+		</Button>
+	</Grid>
+</UserControl>

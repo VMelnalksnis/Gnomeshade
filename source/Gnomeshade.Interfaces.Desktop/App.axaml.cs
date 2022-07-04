@@ -12,7 +12,7 @@ using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Interfaces.Avalonia.Core;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
-using Gnomeshade.Interfaces.Desktop.Configuration;
+using Gnomeshade.Interfaces.Avalonia.Core.Configuration;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 
@@ -37,60 +37,62 @@ public sealed class App : Application
 {
 	private readonly IServiceProvider _serviceProvider;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="App"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
 	public App()
 	{
 		var configuration = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json", true)
-			.AddJsonFile("appsettings.user.json", true)
-			.AddUserSecrets<App>()
+			.AddJsonFile(UserConfigurationWriter.Filepath, true, true)
 			.Build();
 
 		var serviceCollection = new ServiceCollection();
 		serviceCollection
-			.AddOptions<OidcClientOptions>()
-			.Bind(configuration.GetSection("Oidc"))
-			.ValidateDataAnnotations()
-			.ValidateOnStart();
+			.AddOptions<UserConfiguration>()
+			.Bind(configuration);
+		serviceCollection
+			.AddOptions<OidcOptions>()
+			.Bind(configuration.GetSection(nameof(UserConfiguration.Oidc)))
+			.ValidateDataAnnotations();
 		serviceCollection
 			.AddOptions<GnomeshadeOptions>()
-			.Bind(configuration.GetSection(GnomeshadeOptions._sectionName))
-			.ValidateDataAnnotations()
-			.ValidateOnStart();
+			.Bind(configuration.GetSection(nameof(UserConfiguration.Gnomeshade)))
+			.ValidateDataAnnotations();
 
+		serviceCollection
+			.AddSingleton<UserConfigurationWriter>()
+			.AddSingleton<UserConfigurationValidator>();
 		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb);
 
-		serviceCollection.AddSingleton<OidcClient>(provider =>
+		serviceCollection.AddTransient<OidcClient>(provider =>
 		{
-			var options = provider.GetRequiredService<IOptions<OidcClientOptions>>().Value;
+			var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue.ToOidcClientOptions();
 			var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
 			options.Browser = new SystemBrowser(options.RedirectUri);
 			options.HttpClientFactory = _ => provider.GetRequiredService<HttpClient>();
 			options.LoggerFactory = loggerFactory;
 			return new(options);
 		});
+
 		serviceCollection.AddHttpClient();
-		serviceCollection.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>(nameof(GnomeshadeClient), (provider, client) =>
-		{
-			var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
-			client.BaseAddress = gnomeshadeOptions.Value.BaseAddress;
-			client.DefaultRequestVersion = HttpVersion.Version30;
-		});
+		serviceCollection
+			.AddSingleton<GnomeshadeTokenCache>()
+			.AddSingleton<GnomeshadeJsonSerializerOptions>()
+			.AddTransient<TokenDelegatingHandler>()
+			.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
+			{
+				var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
+				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress) { Path = "api/v1.0/" };
+				client.BaseAddress = uriBuilder.Uri;
+				client.DefaultRequestVersion = HttpVersion.Version30;
+			})
+			.AddHttpMessageHandler<TokenDelegatingHandler>();
 
 		serviceCollection
-			.AddSingleton<IGnomeshadeClient, GnomeshadeClient>(provider =>
-			{
-				var httpClientFactory = provider.GetRequiredService<IHttpClientFactory>();
-				var httpClient = httpClientFactory.CreateClient(nameof(GnomeshadeClient));
-				return new(httpClient);
-			})
-			.AddSingleton<IAuthenticationService, AuthenticationService>()
+			.AddTransient<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<MainWindowViewModel>();
 
 		_serviceProvider = serviceCollection.BuildServiceProvider();

@@ -12,12 +12,16 @@ using Avalonia.Input;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Configuration;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.Avalonia.Core.Reports;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 using Gnomeshade.Interfaces.WebApi.Client;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using NodaTime;
 
@@ -26,35 +30,40 @@ namespace Gnomeshade.Interfaces.Avalonia.Core;
 /// <summary>A container view which manages navigation and the currently active view.</summary>
 public sealed class MainWindowViewModel : ViewModelBase
 {
-	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly IAuthenticationService _authenticationService;
+	private readonly IServiceProvider _serviceProvider;
+	private readonly IOptions<UserConfiguration> _userConfiguration;
+	private readonly UserConfigurationWriter _userConfigurationWriter;
+	private readonly UserConfigurationValidator _validator;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private ViewModelBase _activeView;
+	private ViewModelBase _activeView = null!;
 	private Cursor _cursor;
 
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="authenticationService">OAuth2 provider API client.</param>
-	/// <param name="clock">Clock which can provide the current instant.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	public MainWindowViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		IAuthenticationService authenticationService,
-		IClock clock,
-		IDateTimeZoneProvider dateTimeZoneProvider)
+	/// <param name="serviceProvider">Dependency injection service provider.</param>
+	public MainWindowViewModel(IServiceProvider serviceProvider)
 	{
-		_gnomeshadeClient = gnomeshadeClient;
-		_authenticationService = authenticationService;
-		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_clock = clock;
-		_activeView = new LoginViewModel(_authenticationService);
+		_serviceProvider = serviceProvider;
+
+		_userConfiguration = serviceProvider.GetRequiredService<IOptions<UserConfiguration>>();
+		_userConfigurationWriter = serviceProvider.GetRequiredService<UserConfigurationWriter>();
+		_dateTimeZoneProvider = serviceProvider.GetRequiredService<IDateTimeZoneProvider>();
+		_clock = serviceProvider.GetRequiredService<IClock>();
 
 		_cursor = Cursor.Default;
 
 		PropertyChanged += OnPropertyChanged;
-		SwitchToLogin();
+
+		_validator = serviceProvider.GetRequiredService<UserConfigurationValidator>();
+		if (!_validator.IsValid(_userConfiguration.Value).ConfigureAwait(false).GetAwaiter().GetResult())
+		{
+			SwitchToSetup();
+		}
+		else
+		{
+			SwitchToLogin();
+		}
 	}
 
 	/// <summary>
@@ -94,13 +103,12 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// </summary>
 	public static void Exit() => GetApplicationLifetime().Shutdown();
 
-	/// <summary>
-	/// Logs out the current user.
-	/// </summary>
+	/// <summary>Logs out the current user.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task LogOut()
 	{
-		await _authenticationService.Logout().ConfigureAwait(false);
+		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
+		await authenticationService.Logout().ConfigureAwait(false);
 		SwitchToLogin();
 	}
 
@@ -113,7 +121,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var counterpartyMergeViewModel = await CounterpartyMergeViewModel.CreateAsync(_gnomeshadeClient);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var counterpartyMergeViewModel = await CounterpartyMergeViewModel.CreateAsync(gnomeshadeClient);
 		ActiveView = counterpartyMergeViewModel;
 	}
 
@@ -126,7 +135,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(gnomeshadeClient);
 		unitCreationViewModel.Upserted += OnUnitUpserted;
 
 		ActiveView = unitCreationViewModel;
@@ -141,7 +151,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var categoryViewModel = await CategoryViewModel.CreateAsync(_gnomeshadeClient);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var categoryViewModel = await CategoryViewModel.CreateAsync(gnomeshadeClient);
 		ActiveView = categoryViewModel;
 	}
 
@@ -156,7 +167,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var accountViewModel = await AccountViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var accountViewModel = await AccountViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
 		ActiveView = accountViewModel;
 	}
 
@@ -169,7 +181,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var counterpartyViewModel = await CounterpartyViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var counterpartyViewModel = await CounterpartyViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
 		ActiveView = counterpartyViewModel;
 	}
 
@@ -182,7 +195,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var importViewModel = new ImportViewModel(_gnomeshadeClient);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var importViewModel = new ImportViewModel(gnomeshadeClient);
 		await importViewModel.RefreshAsync().ConfigureAwait(false);
 		ActiveView = importViewModel;
 	}
@@ -196,7 +210,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var productViewModel = await ProductViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider)
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var productViewModel = await ProductViewModel.CreateAsync(gnomeshadeClient, _dateTimeZoneProvider)
 			.ConfigureAwait(false);
 		ActiveView = productViewModel;
 	}
@@ -210,7 +225,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var unitViewModel = await UnitViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var unitViewModel = await UnitViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
 		ActiveView = unitViewModel;
 	}
 
@@ -223,7 +239,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		var viewModel = new CategoryReportViewModel(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var viewModel = new CategoryReportViewModel(gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = viewModel;
 		await viewModel.RefreshAsync();
 	}
@@ -258,16 +275,31 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private void SwitchToLogin()
 	{
-		var loginViewModel = new LoginViewModel(_authenticationService);
+		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
+		var loginViewModel = new LoginViewModel(authenticationService);
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 
 		ActiveView = loginViewModel;
 	}
 
+	private void SwitchToSetup()
+	{
+		var initialSetupViewModel = new ApplicationSettingsViewModel(_userConfiguration, _userConfigurationWriter, _validator);
+		initialSetupViewModel.Updated += InitialSetupViewModelOnUpdated;
+
+		ActiveView = initialSetupViewModel;
+	}
+
+	private void InitialSetupViewModelOnUpdated(object? sender, EventArgs e)
+	{
+		SwitchToLogin();
+	}
+
 	private async Task SwitchToTransactionOverviewAsync()
 	{
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
 		var transactionViewModel =
-			await TransactionViewModel.CreateAsync(_gnomeshadeClient, _clock, _dateTimeZoneProvider);
+			await TransactionViewModel.CreateAsync(gnomeshadeClient, _clock, _dateTimeZoneProvider);
 		ActiveView = transactionViewModel;
 	}
 

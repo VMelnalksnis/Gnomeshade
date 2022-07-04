@@ -3,9 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Interfaces.Avalonia.Core.Configuration;
 using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 using Gnomeshade.Interfaces.Avalonia.Core.Imports;
 using Gnomeshade.Interfaces.Avalonia.Core.Products;
@@ -17,7 +19,8 @@ using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Loans;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Transfers;
 
-using IdentityModel.OidcClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using NodaTime;
 
@@ -30,19 +33,17 @@ public static class DesignTimeData
 
 	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
 
-	private static DesignTimeGnomeshadeClient GnomeshadeClient { get; } = new();
-
-	private static OidcClient OidcClient { get; } = new(new() { Authority = "http://localhost" });
+	private static DesignTimeGnomeshadeClient GnomeshadeClient => new();
 
 	private static IAuthenticationService AuthenticationService { get; } =
-		new AuthenticationService(GnomeshadeClient, OidcClient);
+		new AuthenticationService(GnomeshadeClient);
 
 	// Static member order is important due to initialization order
 #pragma warning disable SA1202
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
 	public static MainWindowViewModel MainWindowViewModel { get; } =
-		new(GnomeshadeClient, AuthenticationService, Clock, DateTimeZoneProvider);
+		new(GetServiceProvider());
 
 	/// <summary>Gets an instance of <see cref="AccountUpsertionViewModel"/> for use during design time.</summary>
 	public static AccountUpsertionViewModel AccountUpsertionViewModel { get; } =
@@ -150,4 +151,35 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="ProductFilter"/> for use during design time.</summary>
 	public static ProductFilter ProductFilter { get; } = new();
+
+	/// <summary>Gets an instance of <see cref="ApplicationSettingsViewModel"/> for use during design time.</summary>
+	public static ApplicationSettingsViewModel ApplicationSettingsViewModel { get; } =
+		GetServiceProvider().GetRequiredService<ApplicationSettingsViewModel>();
+
+	[UnconditionalSuppressMessage(
+		"Trimming",
+		"IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+		Justification = "Configuration can be safely trimmed if it is not referenced")]
+	private static IServiceProvider GetServiceProvider()
+	{
+		var serviceCollection = new ServiceCollection();
+		var configuration = new ConfigurationBuilder()
+			.AddEnvironmentVariables()
+			.Build();
+
+		serviceCollection
+			.AddOptions<UserConfiguration>()
+			.Bind(configuration);
+
+		serviceCollection
+			.AddSingleton<IConfiguration>(configuration)
+			.AddSingleton<UserConfigurationWriter>()
+			.AddSingleton<IClock>(SystemClock.Instance)
+			.AddSingleton(DateTimeZoneProviders.Tzdb)
+			.AddSingleton<UserConfigurationValidator>()
+			.AddTransient<ApplicationSettingsViewModel>()
+			.AddHttpClient();
+
+		return serviceCollection.BuildServiceProvider();
+	}
 }
