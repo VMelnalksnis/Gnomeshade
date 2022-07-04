@@ -32,4 +32,7 @@ public sealed record TransactionCreation : Creation
 	[MinLength(64)]
 	[MaxLength(64)]
 	public byte[]? ImportHash { get; init; }
+
+	/// <inheritdoc cref="Transaction.ImportedAt"/>
+	public Instant? ImportedAt { get; init; }
 }

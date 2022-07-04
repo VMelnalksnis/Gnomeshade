@@ -496,7 +496,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			ImportedAt = creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant(),
+			ImportedAt = creation.ImportedAt ?? (creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant()),
 			ReconciledByUserId = creation.ReconciledAt is null ? null : user.Id,
 		};
 

@@ -122,8 +122,19 @@ public sealed class TransactionProperties : ViewModelBase
 		set => SetAndNotify(ref _importTime, value);
 	}
 
+	/// <inheritdoc cref="Transaction.ReconciledAt"/>
+	public ZonedDateTime? ImportedAt => ImportDate.HasValue
+		? new LocalDateTime(
+				ImportDate.Value.Year,
+				ImportDate.Value.Month,
+				ImportDate.Value.Day,
+				ImportTime.GetValueOrDefault().Hours,
+				ImportTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
+		: null;
+
 	/// <summary>Gets a value indicating whether the transaction was imported.</summary>
-	public bool IsImported => ImportDate is not null;
+	public bool IsImported => ImportedAt is not null;
 
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	public string? Description

@@ -189,6 +189,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 			BookedAt = Properties.BookedAt?.ToInstant(),
 			ValuedAt = Properties.ValuedAt?.ToInstant(),
 			ReconciledAt = Properties.ReconciledAt?.ToInstant(),
+			ImportedAt = Properties.ImportedAt?.ToInstant(),
 			Description = Properties.Description,
 		};
 
