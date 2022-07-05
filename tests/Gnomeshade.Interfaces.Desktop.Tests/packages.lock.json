@@ -100,11 +100,11 @@
       },
       "Avalonia.Controls.DataGrid": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "a0A0RcZU1FSCUxKHkYP49df9HjlvU9gdS+DqF6VR7zc3TYbaFwLHF0pg5fsjkW/FMgzUfO70NX/WwpDeu6celg==",
+        "resolved": "0.10.16",
+        "contentHash": "CNBFwvvkkeX1ZMzLqlUGKpIpoajMaconTAXKZ42M63kUuhJjWfdDxsgnc7ksBO+Vbt7CkquH3vYWOk/x7XevNg==",
         "dependencies": {
-          "Avalonia": "0.10.15",
-          "Avalonia.Remote.Protocol": "0.10.15",
+          "Avalonia": "0.10.16",
+          "Avalonia.Remote.Protocol": "0.10.16",
           "JetBrains.Annotations": "10.3.0",
           "System.Reactive": "5.0.0"
         }
@@ -123,11 +123,11 @@
       },
       "Avalonia.Diagnostics": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "s3TSl7vmMXv3EzJPzsa69PshiPp9ajoMeVGP9FAfYopR6iuq60MxikEZTscjhsJ+BySCALXN83F1Gwz8o3oGJA==",
+        "resolved": "0.10.16",
+        "contentHash": "KXAhtk6x4TlBS5xWW7Cr7K/KhJJ1G+F7VSIjykoma/R+7AhqEeJ8qwf1vPEMFFglUIlaKH9NBFNogAszzcMfSw==",
         "dependencies": {
-          "Avalonia": "0.10.15",
-          "Avalonia.Controls.DataGrid": "0.10.15",
+          "Avalonia": "0.10.16",
+          "Avalonia.Controls.DataGrid": "0.10.16",
           "Microsoft.CodeAnalysis.CSharp.Scripting": "3.4.0",
           "System.Reactive": "5.0.0"
         }
@@ -1226,7 +1226,7 @@
         "dependencies": {
           "Avalonia": "0.10.16",
           "Avalonia.Desktop": "0.10.16",
-          "Avalonia.Diagnostics": "0.10.15",
+          "Avalonia.Diagnostics": "0.10.16",
           "Avalonia.Xaml.Behaviors": "0.10.15",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.Avalonia.Core": "1.0.0",
