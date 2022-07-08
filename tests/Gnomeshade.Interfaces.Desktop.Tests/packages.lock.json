@@ -191,27 +191,27 @@
       },
       "Avalonia.Xaml.Behaviors": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "jbxlCjdIa49tSYsYfo54NJcngzhSXpvhs+pWymQjqfKcWBS6yT4CLK6U/nyquYT1XlHdyXJCi/M/R2Xn+rtI7Q==",
+        "resolved": "0.10.15.1",
+        "contentHash": "QFMImg5dkNvrUJFqT+NtlkEtUl2wB6kVX/EVDm/oKYT+t5kwBV5t3hKvqFELlPPqlhloVz9Ruhgcq32tLYzq1g==",
         "dependencies": {
           "Avalonia": "0.10.15",
-          "Avalonia.Xaml.Interactions": "0.10.15",
-          "Avalonia.Xaml.Interactivity": "0.10.15"
+          "Avalonia.Xaml.Interactions": "0.10.15.1",
+          "Avalonia.Xaml.Interactivity": "0.10.15.1"
         }
       },
       "Avalonia.Xaml.Interactions": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "7580+UOzU8vVVJ1qH2BS+lKtJLToO1cezy29FhDGuFwVuPN8M3aYkq6LlAD5NBo2xkeaOHm7/JqTTyWbVJLOKA==",
+        "resolved": "0.10.15.1",
+        "contentHash": "y3GAEVhBFz+eNI0OGdpxq6A9Dt4cReBDpP7gCLVLGASAonhTPONXWNWLbIGsX4l1p872mwzktxBt3qlbdbLqOw==",
         "dependencies": {
           "Avalonia": "0.10.15",
-          "Avalonia.Xaml.Interactivity": "0.10.15"
+          "Avalonia.Xaml.Interactivity": "0.10.15.1"
         }
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "FO6Ob/fsSK02chQNB79BouAjB9o7qBg1cCcQDjhCQzRc04yE998+cpfMFpkL9ODbnUW1YcDTSKDTW0ZjTX4asQ==",
+        "resolved": "0.10.15.1",
+        "contentHash": "yujEdYcJyH6A05EEX+H9j3Mkl8dRw6veUXU9vFFiJNxRGLerNpykTj43No0GFq3SHv7t83LcxCzNP7wC9hz4nw==",
         "dependencies": {
           "Avalonia": "0.10.15"
         }
@@ -1214,7 +1214,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia": "0.10.16",
-          "Avalonia.Controls.DataGrid": "0.10.15",
+          "Avalonia.Controls.DataGrid": "0.10.16",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
           "IdentityModel.OidcClient": "5.0.0",
@@ -1227,7 +1227,7 @@
           "Avalonia": "0.10.16",
           "Avalonia.Desktop": "0.10.16",
           "Avalonia.Diagnostics": "0.10.16",
-          "Avalonia.Xaml.Behaviors": "0.10.15",
+          "Avalonia.Xaml.Behaviors": "0.10.15.1",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.Avalonia.Core": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
