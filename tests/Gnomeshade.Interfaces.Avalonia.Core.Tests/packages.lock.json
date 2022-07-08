@@ -81,10 +81,10 @@
       },
       "Avalonia": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "nB8EAIzOWuPZ18Vms4kD1xH3XPPGziUe9rAtft1O5T6zgn1kAbHgnEfz/15XJC6eY5PBQtWb8Nzp7Gj4CCXBSA==",
+        "resolved": "0.10.16",
+        "contentHash": "RwY5g/f76LwZB6MRgyn5W040POZNTruijuJbS+Y/He6N7Mv7d7inGFtV9HGthNfj2Wx8JBFi8aKbMTUF8BCoBQ==",
         "dependencies": {
-          "Avalonia.Remote.Protocol": "0.10.15",
+          "Avalonia.Remote.Protocol": "0.10.16",
           "JetBrains.Annotations": "10.3.0",
           "System.ComponentModel.Annotations": "4.5.0",
           "System.Memory": "4.5.3",
@@ -151,8 +151,8 @@
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "0.10.15",
-        "contentHash": "ryFwukmpAhbd/O6ajXOygVElvXT7ZfeGdDJxqPlFSOjFrAdUwdBgeqG4VbqgdRYWKE38IaEWyXlMQqWvEpnV1w=="
+        "resolved": "0.10.16",
+        "contentHash": "rsYj0JMtpa9HmxAZ02vSJDPsXN0rwD9TP9RJ55dzVm28Ti74PoT6tuzWKObaFZX6ItpTmu097UAF2Cg0deLcUQ=="
       },
       "Avalonia.Skia": {
         "type": "Transitive",
@@ -1561,7 +1561,7 @@
       "gnomeshade.interfaces.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "0.10.15",
+          "Avalonia": "0.10.16",
           "Avalonia.Controls.DataGrid": "0.10.15",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
