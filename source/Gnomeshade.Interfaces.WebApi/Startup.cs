@@ -20,6 +20,7 @@ using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Interfaces.WebApi.Configuration;
+using Gnomeshade.Interfaces.WebApi.HealthChecks;
 using Gnomeshade.Interfaces.WebApi.Logging;
 using Gnomeshade.Interfaces.WebApi.V1_0;
 using Gnomeshade.Interfaces.WebApi.V1_0.Importing;
@@ -123,7 +124,7 @@ public class Startup
 			.AddTransient<DatabaseMigrator>()
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 
-		services.AddHealthChecks();
+		services.AddGnomeshadeHealthChecks();
 		services.AddNordigenDotNet(Configuration);
 	}
 

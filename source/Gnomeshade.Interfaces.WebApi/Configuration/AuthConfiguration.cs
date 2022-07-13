@@ -19,7 +19,7 @@ namespace Gnomeshade.Interfaces.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
-	private const string _oAuth2Providers = "Oidc";
+	internal const string OidcProviderSectionName = "Oidc";
 
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,
@@ -34,7 +34,7 @@ internal static class AuthConfiguration
 			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 		}
 
-		var providerSection = configuration.GetSection(_oAuth2Providers);
+		var providerSection = configuration.GetSection(OidcProviderSectionName);
 		var providerNames = providerSection.GetChildren().Select(section => section.Key).ToList();
 
 		authenticationSchemes.AddRange(providerNames);
