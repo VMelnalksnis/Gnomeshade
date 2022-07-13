@@ -44,13 +44,13 @@
       },
       "Avalonia.Xaml.Behaviors": {
         "type": "Direct",
-        "requested": "[0.10.15.1, )",
-        "resolved": "0.10.15.1",
-        "contentHash": "QFMImg5dkNvrUJFqT+NtlkEtUl2wB6kVX/EVDm/oKYT+t5kwBV5t3hKvqFELlPPqlhloVz9Ruhgcq32tLYzq1g==",
+        "requested": "[0.10.16, )",
+        "resolved": "0.10.16",
+        "contentHash": "BKwCkXu7OReop18MfFYOMkScJVbYWrXPy5JAEIGQE7+8g271gB7YAkBOIMWUHSII2HNUzuSwvUMsmrFTNpG4CQ==",
         "dependencies": {
-          "Avalonia": "0.10.15",
-          "Avalonia.Xaml.Interactions": "0.10.15.1",
-          "Avalonia.Xaml.Interactivity": "0.10.15.1"
+          "Avalonia": "0.10.16",
+          "Avalonia.Xaml.Interactions": "0.10.16",
+          "Avalonia.Xaml.Interactivity": "0.10.16"
         }
       },
       "DotNet.ReproducibleBuilds": {
@@ -85,9 +85,9 @@
       },
       "Serilog.Extensions.Hosting": {
         "type": "Direct",
-        "requested": "[4.2.0, )",
-        "resolved": "4.2.0",
-        "contentHash": "gT2keceCmPQR9EX0VpXQZvUgELdfE7yqJ7MOxBhm3WLCblcvRgswEOOTgok/DHObbM15A3V/DtF3VdVDQPIZzQ==",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "Dea1bCvizIhPWwv/a9JdQRSrOyqE0L8XCtvq7BkBeM/cqlvZRqPKPyo7XqvrC80LG6Owb8fw1UiGeifOqM0cIw==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.8",
           "Microsoft.Extensions.Hosting.Abstractions": "3.1.8",
@@ -189,19 +189,19 @@
       },
       "Avalonia.Xaml.Interactions": {
         "type": "Transitive",
-        "resolved": "0.10.15.1",
-        "contentHash": "y3GAEVhBFz+eNI0OGdpxq6A9Dt4cReBDpP7gCLVLGASAonhTPONXWNWLbIGsX4l1p872mwzktxBt3qlbdbLqOw==",
+        "resolved": "0.10.16",
+        "contentHash": "6gARRIj8SbAdz6h61+KUyyYMRh+xeLtLfCxz8Vm7P9szdZWDiPDR7B7VTgGRX6ANtHwXB/MJwTDNWc0Fp3pUBg==",
         "dependencies": {
-          "Avalonia": "0.10.15",
-          "Avalonia.Xaml.Interactivity": "0.10.15.1"
+          "Avalonia": "0.10.16",
+          "Avalonia.Xaml.Interactivity": "0.10.16"
         }
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "Transitive",
-        "resolved": "0.10.15.1",
-        "contentHash": "yujEdYcJyH6A05EEX+H9j3Mkl8dRw6veUXU9vFFiJNxRGLerNpykTj43No0GFq3SHv7t83LcxCzNP7wC9hz4nw==",
+        "resolved": "0.10.16",
+        "contentHash": "7jWhRqO/f4oSA9WQGva7Oxqt39CHrAHW/TlWwUZai7+cN+/Jl7JLAdciJXKZdJttd+oFNkwN5XNw8SgGp8oexA==",
         "dependencies": {
-          "Avalonia": "0.10.15"
+          "Avalonia": "0.10.16"
         }
       },
       "HarfBuzzSharp": {
@@ -279,8 +279,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "6.0.6",
-        "contentHash": "lrfPEeisa0xCmZKKQIKxuks37aGE6jgGqDq1ikZDwNLWfIt2/ajOQpHMSE6a5uLjEVqkChKpXpvA7ZvfIKvdzA==",
+        "resolved": "6.0.7",
+        "contentHash": "gO4G2lp4//xoLsxuJ01BwQjaY5yuRzY+8UWXONDcz0dBBFeKSU10mIFWVae928DQCb9FuMgptWI1MpMkj3EbjQ==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
@@ -725,7 +725,7 @@
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.0",
           "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.6",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.7",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },

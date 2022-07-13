@@ -91,8 +91,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "6.0.6",
-        "contentHash": "lrfPEeisa0xCmZKKQIKxuks37aGE6jgGqDq1ikZDwNLWfIt2/ajOQpHMSE6a5uLjEVqkChKpXpvA7ZvfIKvdzA==",
+        "resolved": "6.0.7",
+        "contentHash": "gO4G2lp4//xoLsxuJ01BwQjaY5yuRzY+8UWXONDcz0dBBFeKSU10mIFWVae928DQCb9FuMgptWI1MpMkj3EbjQ==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
@@ -792,7 +792,7 @@
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.0",
           "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.6",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.7",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
