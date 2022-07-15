@@ -35,7 +35,10 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 		}
 		else if (_tokenCache.IsAccessExpired)
 		{
-			var refreshTokenResult = await _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken).ConfigureAwait(false);
+			var refreshTokenResult = await Task
+				.Run(() => _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken), cancellationToken)
+				.ConfigureAwait(false);
+
 			_tokenCache.SetAccessToken(refreshTokenResult.AccessToken, refreshTokenResult.ExpiresIn);
 		}
 
@@ -54,7 +57,10 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 
 	private async Task CreateNewToken(CancellationToken cancellationToken)
 	{
-		var loginResult = await _oidcClient.LoginAsync(new(), cancellationToken).ConfigureAwait(false);
+		var loginResult = await Task
+			.Run(() => _oidcClient.LoginAsync(new(), cancellationToken), cancellationToken)
+			.ConfigureAwait(false);
+
 		_tokenCache.SetRefreshToken(loginResult.RefreshToken, loginResult.AccessToken, loginResult.AccessTokenExpiration);
 	}
 }
