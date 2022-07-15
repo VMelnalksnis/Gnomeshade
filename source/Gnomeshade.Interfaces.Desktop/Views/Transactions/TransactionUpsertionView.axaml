@@ -19,7 +19,13 @@
 				<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 					Save
 				</Button>
-
+				
+				<Button 
+					IsVisible="{Binding Transfers.IsReadOnly, FallbackValue=false}"
+					Command="{ReflectionBinding Edit}">
+					Edit
+				</Button>
+				
 				<TextBlock Text="{Binding ErrorMessage}" />
 			</StackPanel>
 

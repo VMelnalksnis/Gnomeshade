@@ -125,6 +125,35 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		return viewModel;
 	}
 
+	/// <summary>Removed reconciled status from a transaction.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task Edit()
+	{
+		if (_id is null)
+		{
+			return;
+		}
+
+		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value).ConfigureAwait(false);
+		if (!transaction.Reconciled)
+		{
+			return;
+		}
+
+		var creation = new TransactionCreation
+		{
+			BookedAt = transaction.BookedAt,
+			Description = transaction.Description,
+			ImportedAt = transaction.ImportedAt,
+			OwnerId = transaction.OwnerId,
+			ReconciledAt = null,
+			ValuedAt = transaction.ValuedAt,
+		};
+
+		await GnomeshadeClient.PutTransactionAsync(_id.Value, creation).ConfigureAwait(false);
+		await RefreshAsync().ConfigureAwait(false);
+	}
+
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
