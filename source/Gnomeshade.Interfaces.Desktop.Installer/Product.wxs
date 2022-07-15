@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+<?define ProductId = "{f1c09410-0950-4e4b-96ac-2d6782748a42}" ?>
 <?define Name = "Gnomeshade" ?>
 <?define Description = "Gnomeshade desktop client" ?>
 <?define Manufacturer = "Valters Melnalksnis" ?>
@@ -11,9 +12,8 @@
 	<!--Variable for Sample Application Directory-->
 	<?define BuildDir=$(var.Gnomeshade.Interfaces.Desktop.TargetDir)win10-x64\publish\?>
 
-
-	<Product Id="*" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
-			 Version="$(var.Version)" Language="1033">
+	<Product Id="$(var.ProductId)" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)"
+			 UpgradeCode="$(var.UpgradeCode)" Version="$(var.Version)" Language="1033">
 
 		<!--Setup or Installer with properties-->
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"
