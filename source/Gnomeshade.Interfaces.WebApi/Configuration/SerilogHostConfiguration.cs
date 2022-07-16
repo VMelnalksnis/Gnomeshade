@@ -71,7 +71,7 @@ internal static class SerilogHostConfiguration
 		configuration
 			.WriteTo.Elasticsearch(new(options.Nodes)
 			{
-				AutoRegisterTemplate = true,
+				AutoRegisterTemplate = false,
 				AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
 				CustomFormatter = new EcsTextFormatter(ecsConfiguration),
 				EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog,
