@@ -39,7 +39,7 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 				.Run(() => _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken), cancellationToken)
 				.ConfigureAwait(false);
 
-			_tokenCache.SetAccessToken(refreshTokenResult.AccessToken, refreshTokenResult.ExpiresIn);
+			_tokenCache.SetRefreshToken(refreshTokenResult.RefreshToken, refreshTokenResult.AccessToken, refreshTokenResult.AccessTokenExpiration);
 		}
 
 		request.Headers.Authorization = new("Bearer", _tokenCache.Access);

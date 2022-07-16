@@ -39,11 +39,4 @@ public sealed class GnomeshadeTokenCache
 		var currentInstant = _clock.GetCurrentInstant();
 		AccessExpiresAt = currentInstant + ((accessExpires.ToInstant() - currentInstant) / 2);
 	}
-
-	internal void SetAccessToken(string accessToken, int accessExpires)
-	{
-		Access = accessToken;
-		var currentInstant = _clock.GetCurrentInstant();
-		AccessExpiresAt = currentInstant + Duration.FromSeconds(accessExpires / 2);
-	}
 }
