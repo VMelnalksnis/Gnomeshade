@@ -46,6 +46,8 @@ internal static class SerilogHostConfiguration
 			return;
 		}
 
+		Log.Debug("Configuring Elasticsearch logging");
+
 		var ecsConfiguration = new EcsTextFormatterConfiguration();
 		if (context.Configuration
 				.GetChildren()
@@ -54,6 +56,8 @@ internal static class SerilogHostConfiguration
 				.Any(section => section.Key == "ServiceName") ??
 			false)
 		{
+			Log.Debug("Configuring ECS formatter service name");
+
 			(ecsConfiguration as IEcsTextFormatterConfiguration).MapCustom = (@base, _) =>
 			{
 				var serviceName = context.Configuration.GetValue<string>("ElasticApm:ServiceName");
@@ -63,6 +67,7 @@ internal static class SerilogHostConfiguration
 			};
 		}
 
+		Log.Debug("Adding Elasticsearch sink");
 		configuration
 			.WriteTo.Elasticsearch(new(options.Nodes)
 			{
@@ -77,6 +82,8 @@ internal static class SerilogHostConfiguration
 				BatchAction = ElasticOpType.Create,
 				ModifyConnectionSettings = connection =>
 				{
+					Log.Debug("Modifying Elasticsearch connection settings");
+
 					connection.BasicAuthentication(options.Username, options.Password);
 					connection.MemoryStreamFactory(RecyclableMemoryStreamFactory.Default);
 					if (options.CertificateFilePath is null)
@@ -84,6 +91,7 @@ internal static class SerilogHostConfiguration
 						return connection;
 					}
 
+					Log.Debug("Configuring Elasticsearch connection certificates");
 					var clientCertificate = X509Certificate2.CreateFromPemFile(options.CertificateFilePath, options.KeyFilePath);
 					connection.ClientCertificates(new(new X509Certificate[] { clientCertificate }));
 					connection.ServerCertificateValidationCallback((_, certificate, chain, _) =>
@@ -157,8 +165,11 @@ internal static class SerilogHostConfiguration
 						return true;
 					});
 
+					Log.Debug("Finished modifying Elasticsearch connection settings");
 					return connection;
 				},
 			});
+
+		Log.Debug("Finished configuring Elasticsearch logging");
 	}
 }
