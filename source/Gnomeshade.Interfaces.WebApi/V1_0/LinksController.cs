@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,6 +67,12 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 	/// <inheritdoc />
 	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, LinkCreation creation, UserEntity user)
 	{
+		var conflictResult = await GetConflictResult(creation, user);
+		if (conflictResult is not null)
+		{
+			return conflictResult;
+		}
+
 		var linkToCreate = new LinkEntity
 		{
 			Id = id,
@@ -86,6 +93,12 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 	/// <inheritdoc />
 	protected override async Task<ActionResult> CreateNewAsync(Guid id, LinkCreation creation, UserEntity user)
 	{
+		var conflictResult = await GetConflictResult(creation, user);
+		if (conflictResult is not null)
+		{
+			return conflictResult;
+		}
+
 		var link = new LinkEntity
 		{
 			Id = id,
@@ -97,5 +110,20 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 
 		_ = await Repository.AddAsync(link);
 		return CreatedAtAction(nameof(Get), new { id }, id);
+	}
+
+	private async Task<ActionResult?> GetConflictResult(LinkCreation creation, UserEntity user, Guid? existingId = null)
+	{
+		var links = await Repository.GetAllAsync(user.Id);
+		var conflictingLink = links.FirstOrDefault(link => link.Uri == creation.Uri?.ToString());
+		if (conflictingLink is null || conflictingLink.Id == existingId)
+		{
+			return null;
+		}
+
+		return Problem(
+			"Link with the specified URI already exists",
+			Url.Action(nameof(Get), new { conflictingLink.Id }),
+			Status409Conflict);
 	}
 }
