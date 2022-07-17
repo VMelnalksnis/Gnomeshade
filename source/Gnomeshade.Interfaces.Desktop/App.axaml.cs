@@ -46,22 +46,12 @@ public sealed class App : Application
 			.Build();
 
 		var serviceCollection = new ServiceCollection();
-		serviceCollection
-			.AddOptions<UserConfiguration>()
-			.Bind(configuration);
-		serviceCollection
-			.AddOptions<OidcOptions>()
-			.Bind(configuration.GetSection(nameof(UserConfiguration.Oidc)))
-			.ValidateDataAnnotations();
-		serviceCollection
-			.AddOptions<GnomeshadeOptions>()
-			.Bind(configuration.GetSection(nameof(UserConfiguration.Gnomeshade)))
-			.ValidateDataAnnotations();
+		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
 		serviceCollection
+			.AddGnomeshadeOptions(configuration)
 			.AddSingleton<UserConfigurationWriter>()
 			.AddSingleton<UserConfigurationValidator>();
-		serviceCollection.AddLogging(builder => builder.AddSerilog());
 
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)

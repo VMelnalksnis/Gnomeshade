@@ -2,6 +2,11 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
+
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>copyused</TrimMode>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="ContinuousIntegrationBuild != true">
