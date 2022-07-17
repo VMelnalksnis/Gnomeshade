@@ -149,16 +149,14 @@ public sealed class NordigenController : ControllerBase
 			var user = _applicationUserContext.User;
 			var results = new List<AccountReportResult>();
 
-			var data = accounts
-				.Select(async account =>
-				{
-					var details = await _nordigenClient.Accounts.GetDetails(account.Id);
-					var transactions = await _nordigenClient.Accounts.GetTransactions(account.Id);
-					return (account, details, transactions);
-				})
-				.Select(task => task.Result)
-				.ToList();
+			var dataTasks = accounts.Select(async account =>
+			{
+				var details = await _nordigenClient.Accounts.GetDetails(account.Id);
+				var transactions = await _nordigenClient.Accounts.GetTransactions(account.Id);
+				return (account, details, transactions);
+			});
 
+			var data = await Task.WhenAll(dataTasks);
 			foreach (var (account, details, transactions) in data)
 			{
 				var (reportAccount, currency, createdAccount) =
