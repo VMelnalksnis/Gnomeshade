@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.WebApi.Client;
@@ -63,9 +64,19 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var linkCreation = new LinkCreation { Uri = new(UriValue!) };
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutLinkAsync(_id.Value, linkCreation).ConfigureAwait(false);
+		var links = await GnomeshadeClient.GetLinksAsync().ConfigureAwait(false);
+		var existingLink = links.SingleOrDefault(link => StringComparer.InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
+		if (existingLink is not null)
+		{
+			_id = existingLink.Id;
+		}
+		else
+		{
+			var linkCreation = new LinkCreation { Uri = new(UriValue!) };
+			_id ??= Guid.NewGuid();
+			await GnomeshadeClient.PutLinkAsync(_id.Value, linkCreation).ConfigureAwait(false);
+		}
+
 		await GnomeshadeClient.AddLinkToTransactionAsync(_transactionId, _id.Value).ConfigureAwait(false);
 		return _id.Value;
 	}
