@@ -1472,7 +1472,6 @@
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.0",
           "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.7",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },

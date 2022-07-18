@@ -20,8 +20,6 @@ using Gnomeshade.Interfaces.WebApi.Models.Owners;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
 using Gnomeshade.Interfaces.WebApi.Models.Transactions;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using NodaTime;
 
 using static Gnomeshade.Interfaces.WebApi.Client.Routes;
@@ -55,8 +53,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 			if (response.IsSuccessStatusCode)
 			{
 				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions).ConfigureAwait(false);
-				_httpClient.DefaultRequestHeaders.Authorization =
-					new(JwtBearerDefaults.AuthenticationScheme, loginResponse!.Token);
+				_httpClient.DefaultRequestHeaders.Authorization = new("Bearer", loginResponse!.Token);
 				return new SuccessfulLogin(loginResponse);
 			}
 

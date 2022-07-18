@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-using Microsoft.AspNetCore.WebUtilities;
-
 using NodaTime;
 
 namespace Gnomeshade.Interfaces.WebApi.Client;
@@ -174,8 +172,7 @@ public static class Routes
 		internal static string CounterpartyUri(Guid counterpartyId)
 		{
 			const string url = $"{Transactions.Uri}/{_path}";
-			var parameters = new Dictionary<string, string?> { { nameof(counterpartyId), Format(counterpartyId) } };
-			return QueryHelpers.AddQueryString(url, parameters);
+			return $"{url}?counterpartyId={Format(counterpartyId)}";
 		}
 	}
 
