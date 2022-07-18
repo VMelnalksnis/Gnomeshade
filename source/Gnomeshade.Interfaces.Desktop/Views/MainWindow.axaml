@@ -44,36 +44,42 @@
 						x:Name="Exit" Header="E_xit"
 						Command="{ReflectionBinding Exit}" />
 				</MenuItem>
-				<MenuItem Header="_Edit" IsVisible="{Binding CanLogOut}">
+				<MenuItem Header="A_ccounts" IsVisible="{Binding CanLogOut}">
+					<MenuItem
+						x:Name="Accounts" Header="_Overview"
+						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
+					<MenuItem
+						x:Name="Counterparties" Header="Co_unterparties"
+						Command="{ReflectionBinding SwitchToCounterpartiesAsync}" />
 					<MenuItem
 						x:Name="MergeCounterparties" Header="_Merge Counterparties"
 						Command="{ReflectionBinding MergeCounterpartiesAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Transactions" IsVisible="{Binding CanLogOut}">
 					<MenuItem
-						x:Name="CreateUnit" Header="Create _Unit"
-						Command="{ReflectionBinding CreateUnitAsync}" />
-					<MenuItem
-						x:Name="Accounts" Header="_Accounts"
-						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
-					<MenuItem
-						x:Name="Counterparties" Header="_Counterparties"
-						Command="{ReflectionBinding SwitchToCounterpartiesAsync}" />
-					<MenuItem
-						x:Name="Transactions" Header="_Transactions"
+						x:Name="Transactions" Header="_Overview"
 						Command="{ReflectionBinding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
 						x:Name="Import" Header="_Import"
 						Command="{ReflectionBinding SwitchToImportAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Products" IsVisible="{Binding CanLogOut}">
 					<MenuItem
-						x:Name="CreateTag" Header="Categories"
-						Command="{ReflectionBinding SwitchToCategoriesAsync}" />
-					<MenuItem
-						x:Name="Products" Header="_Products"
+						x:Name="Products" Header="_Overview"
 						Command="{ReflectionBinding SwitchToProductAsync}" />
+					<MenuItem
+						x:Name="CreateUnit" Header="Create Unit"
+						Command="{ReflectionBinding CreateUnitAsync}" />
+					<MenuItem
+						x:Name="CreateTag" Header="Cate_gories"
+						Command="{ReflectionBinding SwitchToCategoriesAsync}" />
 					<MenuItem
 						x:Name="Units" Header="_Units"
 						Command="{ReflectionBinding SwitchToUnitAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Reports" IsVisible="{Binding CanLogOut}">
 					<MenuItem
-						x:Name="CategoryReport" Header="Category Report"
+						x:Name="CategoryReport" Header="Cate_gories"
 						Command="{ReflectionBinding SwitchToCategoryReportAsync}" />
 				</MenuItem>
 			</Menu>
