@@ -59,13 +59,6 @@
 	<Fragment>
 		<!--ComponentGroup refering to install component in INSTALLFOLDER Directory-->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<Component Id="aspnetcorev2_inprocess.dll" Guid="*">
-				<File Id="aspnetcorev2_inprocess.dll" Name="aspnetcorev2_inprocess.dll"
-					  Source="$(var.BuildDir)aspnetcorev2_inprocess.dll"/>
-				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
-				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
-			</Component>
-
 			<Component Id="av_libglesv2.dll" Guid="*">
 				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
 			</Component>
