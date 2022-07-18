@@ -66,6 +66,9 @@
 			<Component Id="Gnomeshade.Interfaces.Desktop.exe" Guid="*">
 				<File Id="Gnomeshade.Interfaces.Desktop.exe" Name="Gnomeshade.Interfaces.Desktop.exe"
 					  Source="$(var.BuildDir)Gnomeshade.Interfaces.Desktop.exe"/>
+				
+				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
+				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
 			</Component>
 
 			<Component Id="libHarfBuzzSharp.dll" Guid="*">
