@@ -22,22 +22,26 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private TransactionUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public TransactionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = new(_gnomeshadeClient, _dateTimeZoneProvider, null);
+		_details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
@@ -86,7 +90,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
+		Details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync().ConfigureAwait(false);
 	}
 

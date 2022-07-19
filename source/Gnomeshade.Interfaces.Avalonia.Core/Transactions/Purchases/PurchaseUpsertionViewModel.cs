@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Interfaces.Avalonia.Core.Products;
 using Gnomeshade.Interfaces.WebApi.Client;
 using Gnomeshade.Interfaces.WebApi.Models.Accounts;
 using Gnomeshade.Interfaces.WebApi.Models.Products;
@@ -22,6 +23,7 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 /// <summary>Create or update a purchase.</summary>
 public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 {
+	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 	private readonly Guid? _id;
@@ -38,16 +40,19 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
 	/// <param name="id">The id of the purchase to edit.</param>
 	public PurchaseUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
 		Guid? id)
 		: base(gnomeshadeClient)
 	{
+		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
 		_id = id;
@@ -132,6 +137,21 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		Currency is not null &&
 		Product is not null &&
 		Amount is not null;
+
+	/// <summary>Shows a modal dialog for creating a new product.</summary>
+	/// <param name="window">The current window.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task ShowNewProductDialog(Window window)
+	{
+		var viewModel = await ProductCreationViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider);
+		await _dialogService.ShowDialog(window, viewModel, dialog =>
+		{
+			dialog.Title = "Create product";
+			viewModel.Upserted += (_, _) => dialog.Close();
+		});
+
+		await RefreshAsync();
+	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()

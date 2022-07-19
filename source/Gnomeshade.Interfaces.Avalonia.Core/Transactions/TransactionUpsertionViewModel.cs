@@ -22,6 +22,7 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions;
 /// <summary>Create or update a transaction.</summary>
 public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 {
+	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private Guid? _id;
 	private TransferViewModel? _transfers;
@@ -31,14 +32,17 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="id">The id of the transaction to edit.</param>
 	public TransactionUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
 		: base(gnomeshadeClient)
 	{
+		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_id = id;
 		Properties = new();
@@ -137,7 +141,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		Properties.Description = transaction.Description;
 
 		Transfers ??= new(GnomeshadeClient, _id.Value);
-		Purchases ??= new(GnomeshadeClient, _dateTimeZoneProvider, _id.Value);
+		Purchases ??= new(GnomeshadeClient, _dialogService, _dateTimeZoneProvider, _id.Value);
 		Links ??= new(GnomeshadeClient, _id.Value);
 		Loans ??= new(GnomeshadeClient, _id.Value);
 

@@ -298,7 +298,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 	private async Task SwitchToTransactionOverviewAsync()
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var transactionViewModel = new TransactionViewModel(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		var dialogService = _serviceProvider.GetRequiredService<IDialogService>();
+		var transactionViewModel = new TransactionViewModel(gnomeshadeClient, dialogService, _clock, _dateTimeZoneProvider);
 		ActiveView = transactionViewModel;
 		await transactionViewModel.RefreshAsync();
 	}

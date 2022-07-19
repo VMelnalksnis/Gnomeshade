@@ -20,7 +20,7 @@ public class TransactionViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new DesignTimeGnomeshadeClient(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
+		_viewModel = new(new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
 		await _viewModel.RefreshAsync();
 	}
 

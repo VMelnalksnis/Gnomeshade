@@ -19,6 +19,7 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
 public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, PurchaseUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 
@@ -26,17 +27,20 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
 	public PurchaseViewModel(
 		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = new(gnomeshadeClient, dateTimeZoneProvider, transactionId, null);
+		_details = new(gnomeshadeClient, _dialogService, dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -60,7 +64,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, _transactionId, Selected?.Id);
+		Details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync().ConfigureAwait(false);
 		await SetDefaultCurrency().ConfigureAwait(false);
 	}

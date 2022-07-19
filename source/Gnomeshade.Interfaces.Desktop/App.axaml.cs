@@ -83,6 +83,8 @@ public sealed class App : Application
 
 		serviceCollection
 			.AddTransient<IAuthenticationService, AuthenticationService>()
+			.AddSingleton<ViewLocator<App>>()
+			.AddSingleton<IDialogService, DialogService>()
 			.AddSingleton<MainWindowViewModel>();
 
 		_serviceProvider = serviceCollection.BuildServiceProvider();
