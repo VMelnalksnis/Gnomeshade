@@ -19,17 +19,15 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	private Guid? _id;
 	private string? _uriValue;
 
-	private LinkUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	/// <summary>Initializes a new instance of the <see cref="LinkUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">The strongly typed API client.</param>
+	/// <param name="transactionId">The id of the transaction to which to add the link.</param>
+	/// <param name="id">The id of the link to update.</param>
+	public LinkUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
 		: base(gnomeshadeClient)
 	{
 		_transactionId = transactionId;
-	}
-
-	private LinkUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Link link)
-		: this(gnomeshadeClient, transactionId)
-	{
-		_id = link.Id;
-		UriValue = link.Uri;
+		_id = id;
 	}
 
 	/// <summary>Gets or sets the link value.</summary>
@@ -42,23 +40,16 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	public override bool CanSave => Uri.IsWellFormedUriString(UriValue, UriKind.Absolute);
 
-	/// <summary>Initializes a new instance of the <see cref="LinkUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">The strongly typed API client.</param>
-	/// <param name="transactionId">The id of the transaction to which to add the link.</param>
-	/// <param name="id">The id of the link to update.</param>
-	/// <returns>A new instance of the <see cref="LinkUpsertionViewModel"/> class.</returns>
-	public static async Task<LinkUpsertionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		Guid? id = null)
+	/// <inheritdoc />
+	protected override async Task Refresh()
 	{
-		if (id is null)
+		if (_id is null)
 		{
-			return new(gnomeshadeClient, transactionId);
+			return;
 		}
 
-		var link = await gnomeshadeClient.GetLinkAsync(id.Value).ConfigureAwait(false);
-		return new(gnomeshadeClient, transactionId, link);
+		var link = await GnomeshadeClient.GetLinkAsync(_id.Value).ConfigureAwait(false);
+		UriValue = link.Uri;
 	}
 
 	/// <inheritdoc />

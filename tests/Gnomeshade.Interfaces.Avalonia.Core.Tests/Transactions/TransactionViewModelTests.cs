@@ -20,14 +20,12 @@ public class TransactionViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = await TransactionViewModel.CreateAsync(
-			new DesignTimeGnomeshadeClient(),
-			SystemClock.Instance,
-			DateTimeZoneProviders.Tzdb);
+		_viewModel = new(new DesignTimeGnomeshadeClient(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
+		await _viewModel.RefreshAsync();
 	}
 
 	[Test]
-	public void Details_ShouldBeUpdatedBySelected()
+	public async Task Details_ShouldBeUpdatedBySelected()
 	{
 		using (new AssertionScope())
 		{
@@ -36,10 +34,14 @@ public class TransactionViewModelTests
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
+
 		_viewModel.Details.Should().NotBeNull();
 		_viewModel.Details.CanSave.Should().BeTrue();
 
 		_viewModel.Selected = null;
+		await _viewModel.UpdateSelection();
+
 		_viewModel.Details.CanSave.Should().BeFalse();
 	}
 
@@ -50,17 +52,18 @@ public class TransactionViewModelTests
 	}
 
 	[Test]
-	public void CanDelete_ShouldBeFalseWhenNoneSelected()
+	public async Task CanDelete_ShouldBeFalseWhenNoneSelected()
 	{
 		_viewModel.CanDelete.Should().BeFalse();
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
 
 		_viewModel.CanDelete.Should().BeTrue();
 	}
 
 	[Test]
-	public void CanDelete_ShouldBeNotifiedOfChange()
+	public async Task CanDelete_ShouldBeNotifiedOfChange()
 	{
 		var canDeleteChanged = false;
 		_viewModel.PropertyChanged += (_, args) =>
@@ -72,6 +75,7 @@ public class TransactionViewModelTests
 		};
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
 
 		canDeleteChanged.Should().BeTrue();
 	}

@@ -19,11 +19,12 @@ public class TransferViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = await TransferViewModel.CreateAsync(new DesignTimeGnomeshadeClient(), Guid.Empty);
+		_viewModel = new(new DesignTimeGnomeshadeClient(), Guid.Empty);
+		await _viewModel.RefreshAsync();
 	}
 
 	[Test]
-	public void SelectingRow_ShouldUpdateDetails()
+	public async Task SelectingRow_ShouldUpdateDetails()
 	{
 		using (new AssertionScope())
 		{
@@ -33,10 +34,12 @@ public class TransferViewModelTests
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
 		_viewModel.Details.Should().NotBeNull();
 		_viewModel.Details.CanSave.Should().BeTrue();
 
 		_viewModel.Selected = null;
+		await _viewModel.UpdateSelection();
 		_viewModel.Details.CanSave.Should().BeFalse();
 	}
 }

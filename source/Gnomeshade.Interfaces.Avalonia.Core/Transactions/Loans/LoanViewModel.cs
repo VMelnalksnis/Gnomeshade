@@ -18,11 +18,14 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	private readonly Guid _transactionId;
 	private LoanUpsertionViewModel _details;
 
-	private LoanViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, LoanUpsertionViewModel details)
+	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="transactionId">The transaction for which to create a loan overview.</param>
+	public LoanViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = details;
+		_details = new(gnomeshadeClient, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 	}
@@ -43,10 +46,16 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	/// <returns>A new instance of the <see cref="LoanViewModel"/> class.</returns>
 	public static async Task<LoanViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
 	{
-		var upsertionViewModel = await LoanUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
-		var viewModel = new LoanViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
+		var viewModel = new LoanViewModel(gnomeshadeClient, transactionId);
 		await viewModel.RefreshAsync().ConfigureAwait(false);
 		return viewModel;
+	}
+
+	/// <inheritdoc />
+	public override async Task UpdateSelection()
+	{
+		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		await Details.RefreshAsync().ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />

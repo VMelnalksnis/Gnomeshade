@@ -26,15 +26,18 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	private TransactionUpsertionViewModel _details;
 
-	private TransactionViewModel(
+	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="clock">Clock which can provide the current instant.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public TransactionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		TransactionUpsertionViewModel details)
+		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = details;
+		_details = new(_gnomeshadeClient, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
@@ -80,21 +83,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		}
 	}
 
-	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="clock">Clock which can provide the current instant.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <returns>A new instance of the <see cref="TransactionViewModel"/> class.</returns>
-	public static async Task<TransactionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		IClock clock,
-		IDateTimeZoneProvider dateTimeZoneProvider)
+	/// <inheritdoc />
+	public override async Task UpdateSelection()
 	{
-		var upsertionViewModel = await TransactionUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider)
-			.ConfigureAwait(false);
-		var viewModel = new TransactionViewModel(gnomeshadeClient, clock, dateTimeZoneProvider, upsertionViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
+		await Details.RefreshAsync().ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
@@ -167,15 +160,6 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = TransactionUpsertionViewModel
-				.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-		}
-
 		if (e.PropertyName is nameof(DataGridView))
 		{
 			DataGridView.Filter = Filter.Filter;

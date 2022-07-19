@@ -24,7 +24,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
-	private readonly Guid? _purchaseId;
+	private readonly Guid? _id;
 
 	private decimal? _price;
 	private Currency? _currency;
@@ -36,16 +36,21 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private List<Product> _products;
 	private string? _unitName;
 
-	private PurchaseUpsertionViewModel(
+	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
+	/// <param name="id">The id of the purchase to edit.</param>
+	public PurchaseUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
-		Guid? purchaseId)
+		Guid? id)
 		: base(gnomeshadeClient)
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_purchaseId = purchaseId;
+		_id = id;
 		_currencies = new();
 		_products = new();
 
@@ -128,27 +133,10 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		Product is not null &&
 		Amount is not null;
 
-	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
-	/// <param name="id">The id of the purchase to edit.</param>
-	/// <returns>A new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</returns>
-	public static async Task<PurchaseUpsertionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid transactionId,
-		Guid? id = null)
-	{
-		var viewModel = new PurchaseUpsertionViewModel(gnomeshadeClient, dateTimeZoneProvider, transactionId, id);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
-	}
-
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		if (_purchaseId is null)
+		if (_id is null)
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 			Products = await GnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
@@ -157,8 +145,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 			Products = await GnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
-			var purchase = await GnomeshadeClient.GetPurchaseAsync(_transactionId, _purchaseId.Value)
-				.ConfigureAwait(false);
+			var purchase = await GnomeshadeClient.GetPurchaseAsync(_transactionId, _id.Value).ConfigureAwait(false);
 			Price = purchase.Price;
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
@@ -190,7 +177,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			DeliveryDate = deliveryDate?.ToInstant(),
 		};
 
-		var id = _purchaseId ?? Guid.NewGuid(); // todo should this be saved?
+		var id = _id ?? Guid.NewGuid(); // todo should this be saved?
 		await GnomeshadeClient.PutPurchaseAsync(_transactionId, id, purchaseCreation).ConfigureAwait(false);
 		return id;
 	}

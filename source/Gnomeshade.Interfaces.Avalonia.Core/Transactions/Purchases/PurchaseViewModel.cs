@@ -24,16 +24,19 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	private PurchaseUpsertionViewModel _details;
 
-	private PurchaseViewModel(
+	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
+	public PurchaseViewModel(
 		IGnomeshadeClient gnomeshadeClient,
 		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid transactionId,
-		PurchaseUpsertionViewModel details)
+		Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = details;
+		_details = new(gnomeshadeClient, dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -54,21 +57,12 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	/// <summary>Gets the total purchased amount.</summary>
 	public decimal Total => Rows.Select(overview => overview.Price).Sum();
 
-	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
-	/// <returns>A new instance of the <see cref="PurchaseViewModel"/> class.</returns>
-	public static async Task<PurchaseViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid transactionId)
+	/// <inheritdoc />
+	public override async Task UpdateSelection()
 	{
-		var upsertionViewModel = await PurchaseUpsertionViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, transactionId).ConfigureAwait(false);
-		var viewModel = new PurchaseViewModel(gnomeshadeClient, dateTimeZoneProvider, transactionId, upsertionViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		await viewModel.SetDefaultCurrency().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, _transactionId, Selected?.Id);
+		await Details.RefreshAsync().ConfigureAwait(false);
+		SetDefaultCurrency().ConfigureAwait(false).GetAwaiter().GetResult();
 	}
 
 	/// <inheritdoc />
@@ -141,20 +135,6 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = PurchaseUpsertionViewModel.CreateAsync(
-					_gnomeshadeClient,
-					_dateTimeZoneProvider,
-					_transactionId,
-					Selected?.Id)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-
-			SetDefaultCurrency().ConfigureAwait(false).GetAwaiter().GetResult();
-		}
-
 		if (e.PropertyName is nameof(Rows))
 		{
 			OnPropertyChanged(nameof(Total));

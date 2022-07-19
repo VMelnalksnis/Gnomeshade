@@ -23,7 +23,7 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 
 	private DataGridItemCollectionView<TRow> _rows = new(Array.Empty<TRow>());
 	private TRow? _selected;
-	private bool _isReadOnly;
+	private bool _isReadOnly = true;
 
 	/// <summary>Gets the grid view of all <see cref="Rows"/>.</summary>
 	public DataGridCollectionView DataGridView => Rows;
@@ -66,6 +66,10 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 
 		await DeleteAsync(Selected);
 	}
+
+	/// <summary>Called when <see cref="Selected"/> has been updated.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public virtual Task UpdateSelection() => Task.CompletedTask;
 
 	/// <summary>Deletes the specified row.</summary>
 	/// <param name="row">The row to delete.</param>

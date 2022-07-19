@@ -29,32 +29,21 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	private LinkViewModel? _links;
 	private LoanViewModel? _loans;
 
-	private TransactionUpsertionViewModel(
+	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	/// <param name="id">The id of the transaction to edit.</param>
+	public TransactionUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider)
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		Guid? id)
 		: base(gnomeshadeClient)
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-
-		Properties = new();
-		Properties.PropertyChanged += PropertiesOnPropertyChanged;
-	}
-
-	private TransactionUpsertionViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid id,
-		TransferViewModel transfers,
-		PurchaseViewModel purchases,
-		LinkViewModel links,
-		LoanViewModel loans)
-		: this(gnomeshadeClient, dateTimeZoneProvider)
-	{
 		_id = id;
-		Transfers = transfers;
-		Purchases = purchases;
-		Links = links;
-		Loans = loans;
+		Properties = new();
+
+		Properties.PropertyChanged += PropertiesOnPropertyChanged;
 	}
 
 	/// <summary>Gets the transaction information.</summary>
@@ -90,40 +79,6 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 	/// <inheritdoc />
 	public override bool CanSave => Properties.IsValid;
-
-	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <param name="transactionId">The id of the transaction to edit.</param>
-	/// <returns>A new instance of the <see cref="TransactionUpsertionViewModel"/> class.</returns>
-	public static async Task<TransactionUpsertionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid? transactionId = null)
-	{
-		if (transactionId is not { } id)
-		{
-			return new(gnomeshadeClient, dateTimeZoneProvider);
-		}
-
-		var transferViewModel = await TransferViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
-		var purchaseViewModel = await PurchaseViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider, id)
-			.ConfigureAwait(false);
-		var linkViewModel = await LinkViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
-		var loanViewModel = await LoanViewModel.CreateAsync(gnomeshadeClient, id).ConfigureAwait(false);
-
-		var viewModel = new TransactionUpsertionViewModel(
-			gnomeshadeClient,
-			dateTimeZoneProvider,
-			id,
-			transferViewModel,
-			purchaseViewModel,
-			linkViewModel,
-			loanViewModel);
-
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
-	}
 
 	/// <summary>Removed reconciled status from a transaction.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -181,32 +136,31 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
-		if (Transfers is not null)
+		Transfers ??= new(GnomeshadeClient, _id.Value);
+		Purchases ??= new(GnomeshadeClient, _dateTimeZoneProvider, _id.Value);
+		Links ??= new(GnomeshadeClient, _id.Value);
+		Loans ??= new(GnomeshadeClient, _id.Value);
+
+		await Task.WhenAll(
+				Transfers.RefreshAsync(),
+				Purchases.RefreshAsync(),
+				Links.RefreshAsync(),
+				Loans.RefreshAsync())
+			.ConfigureAwait(false);
+
+		if (!transaction.Reconciled)
 		{
-			await Transfers.RefreshAsync().ConfigureAwait(false);
+			return;
 		}
 
-		if (Purchases is not null)
+		if (!Links.Rows.Any())
 		{
-			await Purchases.RefreshAsync().ConfigureAwait(false);
+			Links = null;
 		}
 
-		if (Links is not null)
+		if (!Loans.Rows.Any())
 		{
-			await Links.RefreshAsync().ConfigureAwait(false);
-			if (transaction.Reconciled && !Links.Rows.Any())
-			{
-				Links = null;
-			}
-		}
-
-		if (Loans is not null)
-		{
-			await Loans.RefreshAsync().ConfigureAwait(false);
-			if (transaction.Reconciled && !Loans.Rows.Any())
-			{
-				Loans = null;
-			}
+			Loans = null;
 		}
 	}
 
@@ -225,12 +179,6 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		_id ??= Guid.NewGuid();
 		await GnomeshadeClient.PutTransactionAsync(_id.Value, creationModel).ConfigureAwait(false);
 		await RefreshAsync().ConfigureAwait(false);
-
-		Transfers ??= await TransferViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
-		Purchases ??= await PurchaseViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider, _id.Value)
-			.ConfigureAwait(false);
-		Links ??= await LinkViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
-		Loans ??= await LoanViewModel.CreateAsync(GnomeshadeClient, _id.Value).ConfigureAwait(false);
 
 		return _id.Value;
 	}

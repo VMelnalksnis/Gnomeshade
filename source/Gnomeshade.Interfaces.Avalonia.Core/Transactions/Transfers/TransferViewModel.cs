@@ -21,14 +21,14 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 
 	private TransferUpsertionViewModel _details;
 
-	private TransferViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		TransferUpsertionViewModel details)
+	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
+	public TransferViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = details;
+		_details = new(gnomeshadeClient, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -49,17 +49,12 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		}
 	}
 
-	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
-	/// <returns>A new instance of the <see cref="TransferViewModel"/> class.</returns>
-	public static async Task<TransferViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	/// <inheritdoc />
+	public override async Task UpdateSelection()
 	{
-		var upsertionViewModel = await TransferUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
-		var viewModel = new TransferViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		SetDefaultCurrency(viewModel);
-		return viewModel;
+		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		await Details.RefreshAsync().ConfigureAwait(false);
+		SetDefaultCurrency(this);
 	}
 
 	/// <inheritdoc />
@@ -110,17 +105,6 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = TransferUpsertionViewModel
-				.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-
-			SetDefaultCurrency(this);
-		}
-
 		if (e.PropertyName is nameof(Rows))
 		{
 			OnPropertyChanged(nameof(Total));

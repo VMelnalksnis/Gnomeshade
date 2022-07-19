@@ -68,6 +68,12 @@
 					<Setter Property="Fill" Value="#05769d" />
 				</Style>
 			</DataGrid.Styles>
+				
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
 		</DataGrid>
 
 		<StackPanel Orientation="Horizontal" IsVisible="{Binding !IsReadOnly}">

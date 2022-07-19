@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,13 +18,15 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 
 	private LinkUpsertionViewModel _details;
 
-	private LinkViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, LinkUpsertionViewModel details)
+	/// <summary>Initializes a new instance of the <see cref="LinkViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="transactionId">The transaction for which to create a link overview.</param>
+	public LinkViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = details;
+		_details = new(gnomeshadeClient, transactionId, null);
 
-		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
 	}
 
@@ -41,16 +42,11 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		}
 	}
 
-	/// <summary>Initializes a new instance of the <see cref="LinkViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="transactionId">The transaction for which to create a link overview.</param>
-	/// <returns>A new instance of the <see cref="LinkViewModel"/> class.</returns>
-	public static async Task<LinkViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	/// <inheritdoc />
+	public override async Task UpdateSelection()
 	{
-		var upsertionViewModel = await LinkUpsertionViewModel.CreateAsync(gnomeshadeClient, transactionId).ConfigureAwait(false);
-		var viewModel = new LinkViewModel(gnomeshadeClient, transactionId, upsertionViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		await Details.RefreshAsync().ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
@@ -73,14 +69,6 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	{
 		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id).ConfigureAwait(false);
 		await Refresh().ConfigureAwait(false);
-	}
-
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = LinkUpsertionViewModel.CreateAsync(_gnomeshadeClient, _transactionId, Selected?.Id).GetAwaiter().GetResult();
-		}
 	}
 
 	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)

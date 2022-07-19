@@ -21,7 +21,8 @@ public sealed class LinkUpsertionViewModelTests
 
 		for (var i = 0; i < 2; i++)
 		{
-			var viewModel = await LinkUpsertionViewModel.CreateAsync(client, Guid.Empty);
+			var viewModel = new LinkUpsertionViewModel(client, Guid.Empty, null);
+			await viewModel.RefreshAsync();
 
 			viewModel.UriValue = linkValue;
 			await viewModel.SaveAsync();

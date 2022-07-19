@@ -11,8 +11,6 @@ using Gnomeshade.TestingHelpers.Models;
 
 using NodaTime;
 
-using static Gnomeshade.Interfaces.Avalonia.Core.Transactions.TransactionUpsertionViewModel;
-
 namespace Gnomeshade.Interfaces.Avalonia.Core.Tests.Transactions;
 
 [TestOf(typeof(TransactionUpsertionViewModel))]
@@ -24,7 +22,8 @@ public class TransactionDetailViewModelTests
 	public async Task SaveAsync_ShouldUpdate()
 	{
 		var client = new DesignTimeGnomeshadeClient();
-		var viewModel = await CreateAsync(client, _dateTimeZoneProvider, Guid.Empty);
+		var viewModel = new TransactionUpsertionViewModel(client, _dateTimeZoneProvider, Guid.Empty);
+		await viewModel.RefreshAsync();
 
 		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
 

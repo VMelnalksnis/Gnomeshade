@@ -28,7 +28,11 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	private decimal? _amount;
 	private Currency? _currency;
 
-	private LoanUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+	/// <summary>Initializes a new instance of the <see cref="LoanUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="transactionId">The id of the transaction to which to add the loan.</param>
+	/// <param name="id">The id of the loan to edit.</param>
+	public LoanUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
 		: base(gnomeshadeClient)
 	{
 		_transactionId = transactionId;
@@ -100,21 +104,6 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 		IssuingCounterparty.Id != ReceivingCounterparty.Id &&
 		Amount is not null &&
 		Currency is not null;
-
-	/// <summary>Initializes a new instance of the <see cref="LoanUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="transactionId">The id of the transaction to which to add the loan.</param>
-	/// <param name="loanId">The id of the loan to edit.</param>
-	/// <returns>A new instance of the <see cref="LoanUpsertionViewModel"/> class.</returns>
-	public static async Task<LoanUpsertionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		Guid? loanId = null)
-	{
-		var viewModel = new LoanUpsertionViewModel(gnomeshadeClient, transactionId, loanId);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
-	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()

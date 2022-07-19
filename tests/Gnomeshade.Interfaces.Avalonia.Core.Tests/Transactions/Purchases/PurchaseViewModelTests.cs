@@ -21,7 +21,8 @@ public class PurchaseViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = await PurchaseViewModel.CreateAsync(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb, Guid.Empty);
+		_viewModel = new(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb, Guid.Empty);
+		await _viewModel.RefreshAsync();
 	}
 
 	[Test]
@@ -38,10 +39,12 @@ public class PurchaseViewModelTests
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
 		_viewModel.Details.Should().NotBeNull();
 		_viewModel.Details.CanSave.Should().BeTrue();
 
 		_viewModel.Selected = null;
+		await _viewModel.UpdateSelection();
 		_viewModel.Details.CanSave.Should().BeFalse();
 		_viewModel.Details.Currency?.AlphabeticCode.Should().Be("EUR");
 		_viewModel.Details.Price.Should().Be(totalTransferred);
@@ -54,7 +57,9 @@ public class PurchaseViewModelTests
 		await _viewModel.RefreshAsync();
 
 		_viewModel.Selected = _viewModel.Rows.First();
+		await _viewModel.UpdateSelection();
 		_viewModel.Selected = null;
+		await _viewModel.UpdateSelection();
 
 		_viewModel.Details.CanSave.Should().BeFalse();
 		_viewModel.Details.Currency?.AlphabeticCode.Should().Be("EUR");

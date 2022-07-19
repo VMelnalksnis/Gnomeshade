@@ -22,7 +22,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	private static readonly string[] _targetAmountNames = CanSaveNames.Append(nameof(IsTargetAmountReadOnly)).ToArray();
 
 	private readonly Guid _transactionId;
-	private readonly Transfer? _transfer;
+	private readonly Guid? _id;
 
 	private decimal? _sourceAmount;
 	private Account? _sourceAccount;
@@ -33,49 +33,38 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	private string? _bankReference;
 	private string? _externalReference;
 	private string? _internalReference;
+	private List<Account> _accounts;
+	private List<Currency> _currencies;
 
-	private TransferUpsertionViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		List<Account> accounts,
-		List<Currency> currencies)
+	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
+	/// <param name="id">The id of the transfer to edit.</param>
+	public TransferUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
 		: base(gnomeshadeClient)
 	{
 		_transactionId = transactionId;
-		Accounts = accounts;
-		Currencies = currencies;
+		_id = id;
+
+		_accounts = new();
+		_currencies = new();
 
 		PropertyChanged += OnPropertyChanged;
 	}
 
-	private TransferUpsertionViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		List<Account> accounts,
-		List<Currency> currencies,
-		Transfer transfer)
-		: this(gnomeshadeClient, transactionId, accounts, currencies)
+	/// <summary>Gets a collection of all active accounts.</summary>
+	public List<Account> Accounts
 	{
-		_transfer = transfer;
-
-		SourceAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
-		SourceAmount = transfer.SourceAmount;
-		SourceCurrency = SourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
-
-		TargetAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
-		TargetAmount = transfer.TargetAmount;
-		TargetCurrency = TargetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
-
-		BankReference = transfer.BankReference;
-		ExternalReference = transfer.ExternalReference;
-		InternalReference = transfer.InternalReference;
+		get => _accounts;
+		private set => SetAndNotify(ref _accounts, value);
 	}
 
-	/// <summary>Gets a collection of all active accounts.</summary>
-	public List<Account> Accounts { get; }
-
 	/// <summary>Gets a collection of all currencies.</summary>
-	public List<Currency> Currencies { get; }
+	public List<Currency> Currencies
+	{
+		get => _currencies;
+		private set => SetAndNotify(ref _currencies, value);
+	}
 
 	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
@@ -158,33 +147,35 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		TargetAccount is not null &&
 		TargetCurrency is not null;
 
-	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
-	/// <param name="id">The id of the transfer to edit.</param>
-	/// <returns>A new instance of the <see cref="TransferUpsertionViewModel"/> class.</returns>
-	public static async Task<TransferUpsertionViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		Guid transactionId,
-		Guid? id = null)
+	/// <inheritdoc />
+	protected override async Task Refresh()
 	{
-		if (id is null)
-		{
-			var accountsTask = gnomeshadeClient.GetAccountsAsync();
-			var currenciesTask = gnomeshadeClient.GetCurrenciesAsync();
+		var accountsTask = GnomeshadeClient.GetAccountsAsync();
+		var currenciesTask = GnomeshadeClient.GetCurrenciesAsync();
 
-			await Task.WhenAll(accountsTask, currenciesTask).ConfigureAwait(false);
-			return new(gnomeshadeClient, transactionId, accountsTask.Result, currenciesTask.Result);
-		}
-		else
-		{
-			var accountsTask = gnomeshadeClient.GetAccountsAsync();
-			var currenciesTask = gnomeshadeClient.GetCurrenciesAsync();
-			var transferTask = gnomeshadeClient.GetTransferAsync(transactionId, id.Value);
+		await Task.WhenAll(accountsTask, currenciesTask).ConfigureAwait(false);
 
-			await Task.WhenAll(accountsTask, currenciesTask, transferTask).ConfigureAwait(false);
-			return new(gnomeshadeClient, transactionId, accountsTask.Result, currenciesTask.Result, transferTask.Result);
+		Accounts = accountsTask.Result;
+		Currencies = currenciesTask.Result;
+
+		if (_id is null)
+		{
+			return;
 		}
+
+		var transfer = await GnomeshadeClient.GetTransferAsync(_transactionId, _id.Value).ConfigureAwait(false);
+
+		SourceAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
+		SourceAmount = transfer.SourceAmount;
+		SourceCurrency = SourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
+
+		TargetAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
+		TargetAmount = transfer.TargetAmount;
+		TargetCurrency = TargetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
+
+		BankReference = transfer.BankReference;
+		ExternalReference = transfer.ExternalReference;
+		InternalReference = transfer.InternalReference;
 	}
 
 	/// <inheritdoc />
@@ -201,7 +192,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 			InternalReference = InternalReference,
 		};
 
-		var id = _transfer?.Id ?? Guid.NewGuid();
+		var id = _id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutTransferAsync(_transactionId, id, transferCreation).ConfigureAwait(false);
 		return id;
 	}
