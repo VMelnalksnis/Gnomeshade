@@ -146,6 +146,10 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 		Details.Currency = Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
 		Details.Price ??= transfers.Sum(transfer => transfer.SourceAmount) - Rows.Sum(row => row.Price);
+
+		var deliveryDate = Rows.Select(purchase => purchase.DeliveryDate).LastOrDefault(date => date is not null);
+		Details.DeliveryDate = deliveryDate?.Date;
+		Details.DeliveryTime = deliveryDate?.TimeOfDay;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
