@@ -62,7 +62,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	{
 		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync().ConfigureAwait(false);
-		SetDefaultCurrency().ConfigureAwait(false).GetAwaiter().GetResult();
+		await SetDefaultCurrency().ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
@@ -85,11 +85,20 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
 
 		var sort = DataGridView.SortDescriptions;
+		var selected = Selected;
+
 		IsReadOnly = transaction.Reconciled;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
 		Rows = new(overviews);
 		Rows.CollectionChanged += RowsOnCollectionChanged;
 		DataGridView.SortDescriptions.AddRange(sort);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+
+		if (Selected is null)
+		{
+			await Details.RefreshAsync().ConfigureAwait(false);
+			await SetDefaultCurrency().ConfigureAwait(false);
+		}
 	}
 
 	/// <inheritdoc />
@@ -111,7 +120,9 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var transfers = await _gnomeshadeClient.GetTransfersAsync(_transactionId).ConfigureAwait(false);
 		if (string.IsNullOrWhiteSpace(currencyName))
 		{
-			var accounts = (await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false)).SelectMany(account => account.Currencies);
+			var accounts =
+				(await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false)).SelectMany(account =>
+					account.Currencies);
 			var c = transfers
 				.Select(transfer => transfer.SourceAccountId)
 				.Concat(transfers.Select(transfer => transfer.TargetAccountId))
