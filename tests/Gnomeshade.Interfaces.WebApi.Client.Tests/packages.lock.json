@@ -82,8 +82,8 @@
       },
       "IdentityModel.OidcClient": {
         "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "4KTG0+M3UBxr0UraGo8MfqEGT9MeMDtaBvPyZccmwW+JH+UG3psW5IVITKgobpgWmK+OKoE2FQQ4XBlaLfyCyw==",
+        "resolved": "5.0.1",
+        "contentHash": "kLrv5o5uQ9gfEt7F6k+K6ffsZJg5AaH8ldTo7ilSNO0SL89RrFhRbq9yyWOixHqv5k1w14Hxfwp5jwWTQSZwHA==",
         "dependencies": {
           "IdentityModel": "5.2.0",
           "Microsoft.Extensions.Logging": "6.0.0"
@@ -745,7 +745,7 @@
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
-          "IdentityModel.OidcClient": "5.0.0",
+          "IdentityModel.OidcClient": "5.0.1",
           "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
