@@ -1246,10 +1246,10 @@
       },
       "Swashbuckle.AspNetCore.Annotations": {
         "type": "Transitive",
-        "resolved": "6.3.2",
-        "contentHash": "tMIMg22MdxA6ms0Gj4p5HYNQSfhgmRCUMA0/u4uOZ/VE+gPqb0O0m8tRxMRWmQBV2/CPyxxBFR4pRsUlOk+eqg==",
+        "resolved": "6.4.0",
+        "contentHash": "frMa+jf9YVpCiMN+mFehfEdgQ7QEqLrhNssNmPwAgfXbdLwedQiVpBpoq+20dImdeNbN7RgY12soH2DvEzSaqw==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.3.2"
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.4.0"
         }
       },
       "Swashbuckle.AspNetCore.Swagger": {
@@ -1987,7 +1987,7 @@
           "Serilog.Sinks.Console": "4.0.1",
           "Serilog.Sinks.Elasticsearch": "8.4.1",
           "Swashbuckle.AspNetCore": "6.4.0",
-          "Swashbuckle.AspNetCore.Annotations": "6.3.2",
+          "Swashbuckle.AspNetCore.Annotations": "6.4.0",
           "System.Diagnostics.Tracing": "4.3.0",
           "System.IO.FileSystem": "4.3.0",
           "System.IO.FileSystem.Primitives": "4.3.0",

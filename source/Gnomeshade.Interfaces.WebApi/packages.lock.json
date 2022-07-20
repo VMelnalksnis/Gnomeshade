@@ -285,11 +285,11 @@
       },
       "Swashbuckle.AspNetCore.Annotations": {
         "type": "Direct",
-        "requested": "[6.3.2, )",
-        "resolved": "6.3.2",
-        "contentHash": "tMIMg22MdxA6ms0Gj4p5HYNQSfhgmRCUMA0/u4uOZ/VE+gPqb0O0m8tRxMRWmQBV2/CPyxxBFR4pRsUlOk+eqg==",
+        "requested": "[6.4.0, )",
+        "resolved": "6.4.0",
+        "contentHash": "frMa+jf9YVpCiMN+mFehfEdgQ7QEqLrhNssNmPwAgfXbdLwedQiVpBpoq+20dImdeNbN7RgY12soH2DvEzSaqw==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.3.2"
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.4.0"
         }
       },
       "System.Diagnostics.Tracing": {
