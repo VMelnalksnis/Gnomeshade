@@ -21,7 +21,8 @@ public sealed class CounterpartyViewModelTests
 	public async Task SetUp()
 	{
 		_gnomeshadeClient = new DesignTimeGnomeshadeClient();
-		_viewModel = await CounterpartyViewModel.CreateAsync(_gnomeshadeClient);
+		_viewModel = new(_gnomeshadeClient);
+		await _viewModel.RefreshAsync();
 	}
 
 	[Test]
@@ -29,7 +30,7 @@ public sealed class CounterpartyViewModelTests
 	{
 		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		_viewModel.Counterparties.Single(row => row.Id == userCounterparty.Id).LoanBalance.Should().Be(0);
+		_viewModel.Rows.Single(row => row.Id == userCounterparty.Id).LoanBalance.Should().Be(0);
 	}
 
 	[Test]
@@ -37,6 +38,6 @@ public sealed class CounterpartyViewModelTests
 	{
 		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		_viewModel.Counterparties.Single(row => row.Id != userCounterparty.Id).LoanBalance.Should().Be(-95);
+		_viewModel.Rows.Single(row => row.Id != userCounterparty.Id).LoanBalance.Should().Be(-95);
 	}
 }

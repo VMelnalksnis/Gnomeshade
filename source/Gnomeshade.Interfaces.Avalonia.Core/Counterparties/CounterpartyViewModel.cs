@@ -2,127 +2,87 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.ComponentModel;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Avalonia.Collections;
 
 using Gnomeshade.Interfaces.WebApi.Client;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 /// <summary>List of all counterparties.</summary>
-public sealed class CounterpartyViewModel : ViewModelBase
+public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, CounterpartyUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
-	private CounterpartyRow? _selectedCounterparty;
-	private CounterpartyUpsertionViewModel? _counterparty;
-	private DataGridItemCollectionView<CounterpartyRow> _counterparties;
+	private CounterpartyUpsertionViewModel _details;
 
-	private CounterpartyViewModel(IGnomeshadeClient gnomeshadeClient, List<CounterpartyRow> counterpartyRows)
+	/// <summary>Initializes a new instance of the <see cref="CounterpartyViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	public CounterpartyViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_counterparties = new(counterpartyRows);
+		_details = new(gnomeshadeClient, null);
 
-		PropertyChanged += OnPropertyChanged;
+		_details.Upserted += DetailsOnUpserted;
 	}
 
-	/// <summary>Gets a grid view of all counterparties.</summary>
-	public DataGridCollectionView DataGridView => Counterparties;
-
-	/// <summary>Gets a typed collection of accounts in <see cref="DataGridView"/>.</summary>
-	public DataGridItemCollectionView<CounterpartyRow> Counterparties
+	/// <inheritdoc />
+	public override CounterpartyUpsertionViewModel Details
 	{
-		get => _counterparties;
-		private set => SetAndNotifyWithGuard(ref _counterparties, value, nameof(Counterparties), nameof(DataGridView));
-	}
-
-	/// <summary>Gets or sets the selected counterparty.</summary>
-	public CounterpartyRow? SelectedCounterparty
-	{
-		get => _selectedCounterparty;
-		set => SetAndNotifyWithGuard(ref _selectedCounterparty, value, nameof(SelectedCounterparty), nameof(Counterparty));
-	}
-
-	/// <summary>Gets the counterparty update view model.</summary>
-	public CounterpartyUpsertionViewModel? Counterparty
-	{
-		get => _counterparty;
-		private set
+		get => _details;
+		set
 		{
-			if (Counterparty is not null)
-			{
-				Counterparty.Upserted -= CounterpartyOnUpserted;
-			}
-
-			SetAndNotify(ref _counterparty, value);
-			if (Counterparty is not null)
-			{
-				Counterparty.Upserted += CounterpartyOnUpserted;
-			}
+			Details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			Details.Upserted += DetailsOnUpserted;
 		}
 	}
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="CounterpartyViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <returns>A new instance of <see cref="CounterpartyViewModel"/>.</returns>
-	public static async Task<CounterpartyViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	/// <inheritdoc />
+	public override Task UpdateSelection()
 	{
-		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
-		var userCounterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
-		var counterpartyRows = counterparties.Select(counterparty =>
+		Details = new(_gnomeshadeClient, Selected?.Id);
+		return Details.RefreshAsync();
+	}
+
+	/// <inheritdoc />
+	protected override async Task Refresh()
+	{
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
+
+		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
+		Rows = new(counterpartyRows);
+
+		foreach (var row in Rows)
 		{
-			var loans = gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
+			var loans = await _gnomeshadeClient.GetCounterpartyLoansAsync(row.Id).ConfigureAwait(false);
 			var issued = loans
 				.Where(loan =>
-					loan.IssuingCounterpartyId == counterparty.Id &&
+					loan.IssuingCounterpartyId == row.Id &&
 					loan.ReceivingCounterpartyId == userCounterparty.Id)
 				.Sum(loan => loan.Amount);
 
 			var received = loans
 				.Where(loan =>
 					loan.IssuingCounterpartyId == userCounterparty.Id &&
-					loan.ReceivingCounterpartyId == counterparty.Id)
+					loan.ReceivingCounterpartyId == row.Id)
 				.Sum(loan => loan.Amount);
 
-			return new CounterpartyRow(counterparty, issued - received);
-		}).ToList();
-		return new(gnomeshadeClient, counterpartyRows);
-	}
-
-	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName is nameof(SelectedCounterparty))
-		{
-			Counterparty = new(_gnomeshadeClient, SelectedCounterparty?.Id);
-			await Counterparty.RefreshAsync();
+			row.LoanBalance = issued - received;
 		}
 	}
 
-	private void CounterpartyOnUpserted(object? sender, UpsertedEventArgs e)
+	/// <inheritdoc />
+	protected override Task DeleteAsync(CounterpartyRow row)
 	{
-		var counterparties = Task.Run(() => _gnomeshadeClient.GetCounterpartiesAsync()).Result;
-		var userCounterparty = _gnomeshadeClient.GetMyCounterpartyAsync().Result;
-		var counterpartyRows = counterparties.Select(counterparty =>
-		{
-			var loans = _gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
-			var issued = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == counterparty.Id &&
-					loan.ReceivingCounterpartyId == userCounterparty.Id)
-				.Sum(loan => loan.Amount);
+		const string message = "Deleting counterparties is not yet supported";
+		throw new NotSupportedException(message);
+	}
 
-			var received = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == userCounterparty.Id &&
-					loan.ReceivingCounterpartyId == counterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			return new CounterpartyRow(counterparty, issued - received);
-		}).ToList();
-		Counterparties = new(counterpartyRows);
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		await RefreshAsync();
 	}
 }

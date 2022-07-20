@@ -182,8 +182,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var counterpartyViewModel = await CounterpartyViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
+		var counterpartyViewModel = new CounterpartyViewModel(gnomeshadeClient);
 		ActiveView = counterpartyViewModel;
+		await ActiveView.RefreshAsync();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.</summary>

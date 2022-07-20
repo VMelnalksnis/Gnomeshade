@@ -11,6 +11,8 @@ namespace Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 /// <summary>Single row in counterparty overview.</summary>
 public sealed class CounterpartyRow : PropertyChangedBase
 {
+	private decimal _loanBalance;
+
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyRow"/> class.</summary>
 	/// <param name="counterparty">The counterparty this row represents.</param>
 	/// <param name="loanBalance">The balance of all loans issued to and received from the current user.</param>
@@ -27,6 +29,10 @@ public sealed class CounterpartyRow : PropertyChangedBase
 	/// <summary>Gets the name of the counterparty.</summary>
 	public string Name { get; }
 
-	/// <summary>Gets the balance of all loans issued to and received from the current user.</summary>
-	public decimal LoanBalance { get; }
+	/// <summary>Gets or sets the balance of all loans issued to and received from the current user.</summary>
+	public decimal LoanBalance
+	{
+		get => _loanBalance;
+		set => SetAndNotify(ref _loanBalance, value);
+	}
 }
