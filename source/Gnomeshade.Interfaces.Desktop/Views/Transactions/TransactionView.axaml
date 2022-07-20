@@ -19,7 +19,7 @@
 				<Button
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
-					Load transactions
+					Refresh
 				</Button>
 				<Button
 					Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
@@ -190,10 +190,10 @@
 						<Setter Property="Fill" Value="#05769d" />
 					</Style>
 				</DataGrid.Styles>
-				
+
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-						<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
+						<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
 					</EventTriggerBehavior>
 				</Interaction.Behaviors>
 			</DataGrid>

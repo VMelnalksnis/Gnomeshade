@@ -67,12 +67,14 @@
 			Grid.Column="0" Grid.Row="2"
 			Margin="5" VerticalAlignment="Center"
 			Text="Delivered At" />
-		<StackPanel
-			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3"
-			Orientation="Horizontal">
-			<DatePicker SelectedDate="{Binding DeliveryDate}" />
-			<TimePicker SelectedTime="{Binding DeliveryTime}" />
-		</StackPanel>
+		<TextBox
+			Grid.Column="1" Grid.Row="2"
+			Text="{Binding DeliveryDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2"
+			Text="{Binding DeliveryTime, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
 
 		<Button
 			Grid.Column="0" Grid.Row="3"

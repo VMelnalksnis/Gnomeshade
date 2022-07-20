@@ -122,7 +122,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =
-		new() { FromDate = DateTimeOffset.Now, ToDate = DateTimeOffset.Now };
+		new() { FromDate = new DateTimeOffset(new(DateTime.Now.Month, DateTime.Now.Month, 1)), ToDate = DateTimeOffset.Now };
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =

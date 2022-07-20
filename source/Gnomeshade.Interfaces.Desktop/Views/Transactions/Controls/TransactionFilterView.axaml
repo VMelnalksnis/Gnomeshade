@@ -15,8 +15,12 @@
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 
-		<DatePicker Header="From" SelectedDate="{Binding FromDate, Mode=TwoWay}" />
-		<DatePicker Header="To" SelectedDate="{Binding ToDate, Mode=TwoWay}" />
+		<TextBox
+			Text="{Binding FromDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="From" />
+		<TextBox
+			Text="{Binding ToDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="To" />
 
 		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />

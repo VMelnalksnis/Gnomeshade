@@ -13,4 +13,8 @@
 		<FluentTheme Mode="Dark" />
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml" />
 	</Application.Styles>
+
+	<Application.Resources>
+		<core:DateTimeConverter x:Key="DateTimeConverter" />
+	</Application.Resources>
 </Application>
