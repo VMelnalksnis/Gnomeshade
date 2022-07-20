@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<title>Gnomeshade authentication result</title>
+	<style>
+		body {
+			margin: 40px auto;
+			line-height: 1.6;
+			font-size: 18px;
+			color: #444;
+			padding: 0 10px;
+		}
+
+		h1, h2, h3 {
+			line-height: 1.2;
+		}
+
+		* {
+			text-align: center;
+		}
+	</style>
+</head>
+<body onload=close_window()>
+<header>
+	<h1>External authentication completed successfully</h1>
+</header>
+
+<h3>You can now return to the application</h3>
+<p id="auto_close" hidden>This page will close automatically</p>
+
+<script>
+	var auto_close_delay = 2000;
+
+	function close_window() {
+		document.getElementById("auto_close").hidden = false;
+
+		setTimeout(function () {
+			window.close();
+		}, auto_close_delay);
+	}
+</script>
+</body>

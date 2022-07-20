@@ -6,6 +6,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,6 +49,7 @@ public sealed class SystemBrowser : IBrowser
 			// todo need to add timeout for waiting for redirect
 			var httpContext = await httpListener.GetContextAsync().ConfigureAwait(false);
 			var result = await HandeRequest(httpContext).ConfigureAwait(false);
+			httpContext.Response.Close();
 
 			return string.IsNullOrWhiteSpace(result)
 				? new() { ResultType = UnknownError, Error = "Empty response." }
@@ -113,10 +116,20 @@ public sealed class SystemBrowser : IBrowser
 	{
 		context.Response.StatusCode = (int)OK;
 		context.Response.ContentType = "text/html";
-		var streamWriter = new StreamWriter(context.Response.OutputStream);
-		await using (streamWriter.ConfigureAwait(false))
+
+		const string resourceName = "SuccessfulResponsePage.html";
+		var contentStream = Assembly
+			.GetExecutingAssembly()
+			.GetManifestResourceStream(typeof(SystemBrowser), resourceName);
+
+		if (contentStream is null)
 		{
-			await streamWriter.WriteAsync("<h1>You can now return to the application.</h1>").ConfigureAwait(false);
+			throw new MissingManifestResourceException(resourceName);
+		}
+
+		await using (contentStream.ConfigureAwait(false))
+		{
+			await contentStream.CopyToAsync(context.Response.OutputStream).ConfigureAwait(false);
 		}
 	}
 }
