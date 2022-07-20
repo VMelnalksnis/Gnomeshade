@@ -15,5 +15,5 @@ public sealed record GnomeshadeOptions
 {
 	/// <summary>Gets or sets the gnomeshade API base address.</summary>
 	[Required]
-	public Uri BaseAddress { get; set; } = null!;
+	public Uri? BaseAddress { get; set; }
 }

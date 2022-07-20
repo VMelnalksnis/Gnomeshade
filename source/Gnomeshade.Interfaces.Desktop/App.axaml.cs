@@ -75,7 +75,7 @@ public sealed class App : Application
 			.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
 			{
 				var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
-				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress) { Path = "api/v1.0/" };
+				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress!) { Path = "api/v1.0/" };
 				client.BaseAddress = uriBuilder.Uri;
 				client.DefaultRequestVersion = HttpVersion.Version30;
 			})

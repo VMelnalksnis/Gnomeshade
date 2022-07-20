@@ -14,7 +14,7 @@ public sealed class OidcOptions
 {
 	/// <inheritdoc cref="OidcClientOptions.Authority"/>
 	[Required]
-	public Uri Authority { get; set; } = null!;
+	public Uri? Authority { get; set; }
 
 	/// <inheritdoc cref="OidcClientOptions.ClientId"/>
 	[Required]
