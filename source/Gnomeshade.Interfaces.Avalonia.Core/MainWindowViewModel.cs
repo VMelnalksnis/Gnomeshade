@@ -122,8 +122,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var counterpartyMergeViewModel = await CounterpartyMergeViewModel.CreateAsync(gnomeshadeClient);
+		var counterpartyMergeViewModel = new CounterpartyMergeViewModel(gnomeshadeClient);
 		ActiveView = counterpartyMergeViewModel;
+		await counterpartyMergeViewModel.RefreshAsync();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
@@ -198,8 +199,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
 		var importViewModel = new ImportViewModel(gnomeshadeClient);
-		await importViewModel.RefreshAsync().ConfigureAwait(false);
 		ActiveView = importViewModel;
+		await importViewModel.RefreshAsync();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>

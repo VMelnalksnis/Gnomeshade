@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,11 +22,13 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 	private CounterpartyRow? _sourceCounterparty;
 	private CounterpartyRow? _targetCounterparty;
 
-	private CounterpartyMergeViewModel(IGnomeshadeClient gnomeshadeClient, List<CounterpartyRow> counterpartyRows)
+	/// <summary>Initializes a new instance of the <see cref="CounterpartyMergeViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	public CounterpartyMergeViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_sourceCounterparties = new(counterpartyRows);
-		_targetCounterparties = new(counterpartyRows);
+		_sourceCounterparties = new(Array.Empty<CounterpartyRow>());
+		_targetCounterparties = new(Array.Empty<CounterpartyRow>());
 	}
 
 	/// <summary>Gets a grid view of all counterparties that can be merged.</summary>
@@ -70,33 +71,6 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 		TargetCounterparty is not null &&
 		SourceCounterparty.Id != TargetCounterparty.Id;
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="CounterpartyMergeViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <returns>A new instance of <see cref="CounterpartyMergeViewModel"/>.</returns>
-	public static async Task<CounterpartyMergeViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
-	{
-		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync();
-		var userCounterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
-		var counterpartyRows = counterparties.Select(counterparty =>
-		{
-			var loans = gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
-			var issued = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == counterparty.Id &&
-					loan.ReceivingCounterpartyId == userCounterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			var received = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == userCounterparty.Id &&
-					loan.ReceivingCounterpartyId == counterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			return new CounterpartyRow(counterparty, issued - received);
-		}).ToList();
-		return new(gnomeshadeClient, counterpartyRows);
-	}
-
 	/// <summary>Merges <see cref="SourceCounterparty"/> into <see cref="TargetCounterparty"/>.</summary>
 	/// <exception cref="InvalidOperationException">One of the counterparties is not selected.</exception>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -107,27 +81,15 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
-		await _gnomeshadeClient.MergeCounterpartiesAsync(TargetCounterparty.Id, SourceCounterparty.Id);
+		await _gnomeshadeClient.MergeCounterpartiesAsync(TargetCounterparty.Id, SourceCounterparty.Id).ConfigureAwait(false);
+		await RefreshAsync();
+	}
 
+	/// <inheritdoc />
+	protected override async Task Refresh()
+	{
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
-		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
-		var counterpartyRows = counterparties.Select(counterparty =>
-		{
-			var loans = _gnomeshadeClient.GetCounterpartyLoansAsync(counterparty.Id).Result;
-			var issued = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == counterparty.Id &&
-					loan.ReceivingCounterpartyId == userCounterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			var received = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == userCounterparty.Id &&
-					loan.ReceivingCounterpartyId == counterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			return new CounterpartyRow(counterparty, issued - received);
-		}).ToList();
+		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
 
 		// Preserve the current sorting and selected target, but clear the selected source.
 		var sourceSort = SourceDataGridView.SortDescriptions;
@@ -140,6 +102,6 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 
 		TargetCounterparties = new(counterpartyRows);
 		TargetDataGridView.SortDescriptions.AddRange(targetSort);
-		TargetCounterparty = TargetCounterparties.Single(counterparty => counterparty.Id == targetCounterparty.Id);
+		TargetCounterparty = TargetCounterparties.SingleOrDefault(counterparty => counterparty.Id == targetCounterparty?.Id);
 	}
 }
