@@ -144,7 +144,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	public async Task ShowNewProductDialog(Window window)
 	{
 		var viewModel = new ProductUpsertionViewModel(GnomeshadeClient, _dateTimeZoneProvider, null);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
+		await viewModel.RefreshAsync();
 
 		await _dialogService.ShowDialog(window, viewModel, dialog =>
 		{
