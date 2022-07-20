@@ -28,6 +28,37 @@ public sealed class DialogService : IDialogService
 	public Task ShowDialog<TViewModel>(Window owner, TViewModel viewModel, Action<Window> dialogAction)
 		where TViewModel : ViewModelBase
 	{
+		var dialogWindow = CreateDialog(viewModel, dialogAction);
+		return dialogWindow.ShowDialog(owner);
+	}
+
+	/// <inheritdoc />
+	public Task<TResult?> ShowDialog<TViewModel, TResult>(
+		Window owner,
+		TViewModel viewModel,
+		Action<Window> dialogAction)
+		where TViewModel : ViewModelBase
+		where TResult : class
+	{
+		var dialogWindow = CreateDialog(viewModel, dialogAction);
+		return dialogWindow.ShowDialog<TResult?>(owner);
+	}
+
+	/// <inheritdoc />
+	public Task<TResult?> ShowDialogValue<TViewModel, TResult>(
+		Window owner,
+		TViewModel viewModel,
+		Action<Window> dialogAction)
+		where TViewModel : ViewModelBase
+		where TResult : struct
+	{
+		var dialogWindow = CreateDialog(viewModel, dialogAction);
+		return dialogWindow.ShowDialog<TResult?>(owner);
+	}
+
+	private Window CreateDialog<TViewModel>(TViewModel viewModel, Action<Window> dialogAction)
+		where TViewModel : ViewModelBase
+	{
 		var viewControl = _viewLocator.Build(viewModel);
 		viewControl.DataContext = viewModel;
 
@@ -42,6 +73,6 @@ public sealed class DialogService : IDialogService
 		}
 
 		dialogAction(dialog);
-		return dialog.ShowDialog(owner);
+		return dialog;
 	}
 }

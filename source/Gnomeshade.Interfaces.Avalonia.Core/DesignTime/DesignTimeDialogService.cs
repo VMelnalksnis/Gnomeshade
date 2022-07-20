@@ -18,4 +18,26 @@ public sealed class DesignTimeDialogService : IDialogService
 	{
 		return Task.CompletedTask;
 	}
+
+	/// <inheritdoc />
+	public Task<TResult?> ShowDialog<TViewModel, TResult>(
+		Window owner,
+		TViewModel viewModel,
+		Action<Window> dialogAction)
+		where TViewModel : ViewModelBase
+		where TResult : class
+	{
+		return Task.FromResult<TResult?>(default);
+	}
+
+	/// <inheritdoc />
+	public Task<TResult?> ShowDialogValue<TViewModel, TResult>(
+		Window owner,
+		TViewModel viewModel,
+		Action<Window> dialogAction)
+		where TViewModel : ViewModelBase
+		where TResult : struct
+	{
+		return Task.FromResult<TResult?>(default);
+	}
 }

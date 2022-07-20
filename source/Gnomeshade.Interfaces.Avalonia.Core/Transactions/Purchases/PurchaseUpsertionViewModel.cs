@@ -146,13 +146,19 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		var viewModel = new ProductUpsertionViewModel(GnomeshadeClient, _dateTimeZoneProvider, null);
 		await viewModel.RefreshAsync();
 
-		await _dialogService.ShowDialog(window, viewModel, dialog =>
+		var result = await _dialogService.ShowDialogValue<ProductUpsertionViewModel, Guid>(window, viewModel, dialog =>
 		{
 			dialog.Title = "Create product";
-			viewModel.Upserted += (_, _) => dialog.Close();
+			viewModel.Upserted += (_, args) => dialog.Close(args.Id);
 		});
 
 		await RefreshAsync();
+		if (result is not { } createdId)
+		{
+			return;
+		}
+
+		Product = Products.SingleOrDefault(product => product.Id == createdId);
 	}
 
 	/// <inheritdoc />
