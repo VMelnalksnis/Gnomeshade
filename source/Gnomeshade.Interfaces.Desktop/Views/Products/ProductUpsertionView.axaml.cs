@@ -10,11 +10,11 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
-/// <summary>Create or update a single product.</summary>
-public sealed class ProductCreationView : UserControl, IView<ProductCreationViewModel>
+/// <inheritdoc cref="ProductUpsertionViewModel"/>
+public sealed class ProductUpsertionView : UserControl, IView<ProductUpsertionViewModel>
 {
-	/// <summary>Initializes a new instance of the <see cref="ProductCreationView"/> class.</summary>
-	public ProductCreationView()
+	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionView"/> class.</summary>
+	public ProductUpsertionView()
 	{
 		AvaloniaXamlLoader.Load(this);
 	}

@@ -8,10 +8,10 @@
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:purchases="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	x:Class="Gnomeshade.Interfaces.Desktop.Views.Products.ProductCreationView"
-	d:DataContext="{x:Static dd:DesignTimeData.ProductCreationViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Products.ProductUpsertionView"
+	d:DataContext="{x:Static dd:DesignTimeData.ProductUpsertionViewModel}"
 	x:CompileBindings="True"
-	x:DataType="p:ProductCreationViewModel">
+	x:DataType="p:ProductUpsertionViewModel">
 
 	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
 		<TextBox

@@ -212,9 +212,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var productViewModel = await ProductViewModel.CreateAsync(gnomeshadeClient, _dateTimeZoneProvider)
-			.ConfigureAwait(false);
+		var productViewModel = new ProductViewModel(gnomeshadeClient, _dateTimeZoneProvider);
 		ActiveView = productViewModel;
+		await ActiveView.RefreshAsync();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitViewModel"/>.</summary>
@@ -345,7 +345,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 				loginViewModel.UserLoggedIn -= OnUserLoggedIn;
 				break;
 
-			case ProductCreationViewModel productCreationViewModel:
+			case ProductUpsertionViewModel productCreationViewModel:
 				productCreationViewModel.Upserted -= OnProductUpserted;
 				break;
 

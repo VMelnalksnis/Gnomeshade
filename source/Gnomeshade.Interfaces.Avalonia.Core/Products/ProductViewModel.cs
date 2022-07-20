@@ -14,28 +14,30 @@ using NodaTime;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Overview and editing of all products.</summary>
-public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCreationViewModel>
+public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private ProductCreationViewModel _details;
+	private ProductUpsertionViewModel _details;
 
-	private ProductViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider, ProductCreationViewModel productCreationViewModel)
+	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public ProductViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = productCreationViewModel;
+		_details = new(_gnomeshadeClient, _dateTimeZoneProvider, null);
 
 		Filter = new();
 
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		Details.Upserted += OnProductUpserted;
-		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <inheritdoc />
-	public override ProductCreationViewModel Details
+	public override ProductUpsertionViewModel Details
 	{
 		get => _details;
 		set
@@ -49,30 +51,28 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 	/// <summary>Gets the product filter.</summary>
 	public ProductFilter Filter { get; }
 
-	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <returns>A new instance of the <see cref="ProductViewModel"/> class.</returns>
-	public static async Task<ProductViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
+	/// <inheritdoc />
+	public override Task UpdateSelection()
 	{
-		var creationViewModel = await ProductCreationViewModel.CreateAsync(gnomeshadeClient, dateTimeZoneProvider).ConfigureAwait(false);
-		var viewModel = new ProductViewModel(gnomeshadeClient, dateTimeZoneProvider, creationViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
+		return Details.RefreshAsync();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
 		var productRows = (await _gnomeshadeClient.GetProductRowsAsync().ConfigureAwait(false)).ToList();
-		var creationViewModel = await ProductCreationViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider).ConfigureAwait(false);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
+		var selected = Selected;
 		Rows = new(productRows);
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
 		DataGridView.Filter = Filter.Filter;
-
-		Details = creationViewModel;
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+		if (Selected is null)
+		{
+			await Details.RefreshAsync();
+		}
 
 		Filter.Units = await _gnomeshadeClient.GetUnitsAsync();
 		Filter.Categories = await _gnomeshadeClient.GetCategoriesAsync();
@@ -81,19 +81,9 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductCrea
 	/// <inheritdoc />
 	protected override Task DeleteAsync(ProductRow row) => throw new NotImplementedException();
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
-		if (e.PropertyName is not nameof(Selected))
-		{
-			return;
-		}
-
-		Details = Task.Run(() => ProductCreationViewModel.CreateAsync(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id)).Result;
-	}
-
-	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
-	{
-		Task.Run(Refresh).GetAwaiter().GetResult();
+		await RefreshAsync();
 	}
 
 	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -18,47 +18,36 @@ using NodaTime;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Form for creating a single new product.</summary>
-public sealed class ProductCreationViewModel : UpsertionViewModel
+public sealed class ProductUpsertionViewModel : UpsertionViewModel
 {
-	private readonly Product? _exisingProduct;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	private Guid? _id;
 	private string? _name;
 	private Unit? _selectedUnit;
 	private string? _sku;
 	private string? _description;
 	private Category? _selectedCategory;
+	private List<Unit> _units;
+	private List<Category> _categories;
+	private List<PurchaseOverview> _purchases;
 
-	private ProductCreationViewModel(
+	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	/// <param name="id">The id of the product to edit.</param>
+	public ProductUpsertionViewModel(
 		IGnomeshadeClient gnomeshadeClient,
-		List<Unit> units,
-		List<Category> categories,
-		List<PurchaseOverview> purchases)
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		Guid? id)
 		: base(gnomeshadeClient)
 	{
-		Units = units;
-		Categories = categories;
-		Purchases = purchases;
-	}
+		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_id = id;
 
-	private ProductCreationViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		List<Unit> units,
-		List<Category> categories,
-		Product product,
-		List<PurchaseOverview> purchases)
-		: this(gnomeshadeClient, units, categories, purchases)
-	{
-		_exisingProduct = product;
-
-		Name = _exisingProduct.Name;
-		Sku = _exisingProduct.Sku;
-		Description = _exisingProduct.Description;
-		SelectedUnit = _exisingProduct.UnitId is null
-			? null
-			: Units.Single(unit => unit.Id == _exisingProduct.UnitId.Value);
-		SelectedCategory = _exisingProduct.CategoryId is null
-			? null
-			: Categories.SingleOrDefault(category => category.Id == _exisingProduct.CategoryId.Value);
+		_units = new();
+		_categories = new();
+		_purchases = new();
 	}
 
 	/// <summary>Gets or sets the name of the product.</summary>
@@ -97,50 +86,69 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 	}
 
 	/// <summary>Gets a collection of all available units.</summary>
-	public List<Unit> Units { get; }
+	public List<Unit> Units
+	{
+		get => _units;
+		private set => SetAndNotify(ref _units, value);
+	}
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 
 	/// <summary>Gets a collection of all available categories.</summary>
-	public List<Category> Categories { get; }
+	public List<Category> Categories
+	{
+		get => _categories;
+		private set => SetAndNotify(ref _categories, value);
+	}
 
 	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
 
 	/// <summary>Gets all purchases of this product.</summary>
-	public List<PurchaseOverview> Purchases { get; }
+	public List<PurchaseOverview> Purchases
+	{
+		get => _purchases;
+		private set => SetAndNotify(ref _purchases, value);
+	}
 
 	/// <inheritdoc />
 	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
-	/// <summary>Initializes a new instance of the <see cref="ProductCreationViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <param name="productId">The id of the product to edit.</param>
-	/// <returns>A new instance of the <see cref="ProductCreationViewModel"/> class.</returns>
-	public static async Task<ProductCreationViewModel> CreateAsync(
-		IGnomeshadeClient gnomeshadeClient,
-		IDateTimeZoneProvider dateTimeZoneProvider,
-		Guid? productId = null)
+	/// <inheritdoc />
+	protected override async Task Refresh()
 	{
-		var units = await gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
-		var categories = await gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
-		if (productId is null)
+		var units = await GnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
+		var categories = await GnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+
+		Units = units;
+		Categories = categories;
+		if (_id is not { } productId)
 		{
-			return new(gnomeshadeClient, units, categories, new());
+			Purchases = new();
+			return;
 		}
 
-		var product = await gnomeshadeClient.GetProductAsync(productId.Value);
+		var product = await GnomeshadeClient.GetProductAsync(productId);
 
-		var purchases = await gnomeshadeClient.GetProductPurchasesAsync(productId.Value).ConfigureAwait(false);
-		var currencies = await gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		Name = product.Name;
+		Sku = product.Sku;
+		Description = product.Description;
+		SelectedUnit = product.UnitId is null
+			? null
+			: Units.Single(unit => unit.Id == product.UnitId.Value);
+		SelectedCategory = product.CategoryId is null
+			? null
+			: Categories.SingleOrDefault(category => category.Id == product.CategoryId.Value);
+
+		var purchases = await GnomeshadeClient.GetProductPurchasesAsync(productId).ConfigureAwait(false);
+		var currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 		var products = new[] { product };
 		var overviews = purchases
-			.Select(purchase => purchase.ToOverview(currencies, products, units, dateTimeZoneProvider))
+			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
 			.ToList();
 
-		return new(gnomeshadeClient, units, categories, product, overviews);
+		Purchases = overviews;
 	}
 
 	/// <inheritdoc />
@@ -155,8 +163,8 @@ public sealed class ProductCreationViewModel : UpsertionViewModel
 			CategoryId = SelectedCategory?.Id,
 		};
 
-		var id = _exisingProduct?.Id ?? Guid.NewGuid();
-		await GnomeshadeClient.PutProductAsync(id, creationModel).ConfigureAwait(false);
-		return id;
+		_id ??= Guid.NewGuid();
+		await GnomeshadeClient.PutProductAsync(_id.Value, creationModel).ConfigureAwait(false);
+		return _id.Value;
 	}
 }

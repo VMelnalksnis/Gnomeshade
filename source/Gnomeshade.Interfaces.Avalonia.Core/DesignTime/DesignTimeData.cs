@@ -73,9 +73,9 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="LoginViewModel"/> for use during design time.</summary>
 	public static LoginViewModel LoginViewModel { get; } = new(AuthenticationService);
 
-	/// <summary>Gets an instance of <see cref="ProductCreationViewModel"/> for use during design time.</summary>
-	public static ProductCreationViewModel ProductCreationViewModel { get; } =
-		ProductCreationViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider).Result;
+	/// <summary>Gets an instance of <see cref="ProductUpsertionViewModel"/> for use during design time.</summary>
+	public static ProductUpsertionViewModel ProductUpsertionViewModel { get; } =
+		InitializeViewModel(new ProductUpsertionViewModel(GnomeshadeClient, DateTimeZoneProvider, null));
 
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
@@ -94,7 +94,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="ProductViewModel"/> for use during design time.</summary>
 	public static ProductViewModel ProductViewModel { get; } =
-		ProductViewModel.CreateAsync(GnomeshadeClient, DateTimeZoneProvider).Result;
+		InitializeViewModel<ProductViewModel, ProductRow, ProductUpsertionViewModel>(new(GnomeshadeClient, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="UnitViewModel"/> for use during design time.</summary>
 	public static UnitViewModel UnitViewModel { get; } =

@@ -10,7 +10,7 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
-/// <summary>An overview of of all products.</summary>
+/// <inheritdoc cref="ProductViewModel"/>
 public sealed class ProductView : UserControl, IView<ProductViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="ProductView"/> class.</summary>

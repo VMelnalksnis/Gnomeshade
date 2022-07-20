@@ -143,7 +143,9 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ShowNewProductDialog(Window window)
 	{
-		var viewModel = await ProductCreationViewModel.CreateAsync(GnomeshadeClient, _dateTimeZoneProvider);
+		var viewModel = new ProductUpsertionViewModel(GnomeshadeClient, _dateTimeZoneProvider, null);
+		await viewModel.RefreshAsync().ConfigureAwait(false);
+
 		await _dialogService.ShowDialog(window, viewModel, dialog =>
 		{
 			dialog.Title = "Create product";
