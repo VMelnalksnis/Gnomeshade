@@ -15,25 +15,23 @@ using Gnomeshade.Interfaces.WebApi.Models.Products;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>Creating or updating an existing category.</summary>
-public sealed class CategoryCreationViewModel : UpsertionViewModel
+public sealed class CategoryUpsertionViewModel : UpsertionViewModel
 {
-	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly Guid? _originalId;
-
+	private Guid? _id;
 	private string? _name;
 	private string? _description;
 	private Category? _selectedCategory;
 	private List<Category> _categories;
 
-	private CategoryCreationViewModel(IGnomeshadeClient gnomeshadeClient, Category? category = null)
+	/// <summary>Initializes a new instance of the <see cref="CategoryUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">API client for getting category data.</param>
+	/// <param name="id">The id of the category to edit.</param>
+	public CategoryUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid? id)
 		: base(gnomeshadeClient)
 	{
-		_categories = new();
-		_gnomeshadeClient = gnomeshadeClient;
-		_originalId = category?.Id;
+		_id = id;
 
-		_name = category?.Name;
-		_description = category?.Description;
+		_categories = new();
 	}
 
 	/// <summary>Gets or sets the name of the category.</summary>
@@ -70,29 +68,16 @@ public sealed class CategoryCreationViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="CategoryCreationViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">API client for getting category data.</param>
-	/// <param name="originalId">The id of the category to edit.</param>
-	/// <returns>A new instance of the <see cref="CategoryCreationViewModel"/> class.</returns>
-	public static async Task<CategoryCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? originalId = null)
-	{
-		var category = originalId is null
-			? null
-			: await gnomeshadeClient.GetCategoryAsync(originalId.Value);
-
-		var viewModel = new CategoryCreationViewModel(gnomeshadeClient, category);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
-	}
-
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var categories = await _gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
-		var editedCategory = categories.SingleOrDefault(category => category.Id == _originalId);
+		var categories = await GnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		var editedCategory = categories.SingleOrDefault(category => category.Id == _id);
 		if (editedCategory is not null)
 		{
 			categories.Remove(editedCategory);
+			Name = editedCategory.Name;
+			Description = editedCategory.Description;
 			SelectedCategory = categories.SingleOrDefault(category => category.Id == editedCategory.CategoryId);
 		}
 
@@ -109,12 +94,8 @@ public sealed class CategoryCreationViewModel : UpsertionViewModel
 			CategoryId = SelectedCategory?.Id,
 		};
 
-		var categoryId = _originalId ?? await _gnomeshadeClient.CreateCategoryAsync(categoryCreationModel);
-		if (_originalId is not null)
-		{
-			await _gnomeshadeClient.PutCategoryAsync(categoryId, categoryCreationModel);
-		}
-
-		return categoryId;
+		_id ??= Guid.NewGuid();
+		await GnomeshadeClient.PutCategoryAsync(_id.Value, categoryCreationModel).ConfigureAwait(false);
+		return _id.Value;
 	}
 }

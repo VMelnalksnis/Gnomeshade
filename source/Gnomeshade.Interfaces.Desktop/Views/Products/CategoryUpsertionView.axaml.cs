@@ -10,11 +10,11 @@ using Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
-/// <summary>Create or update single category.</summary>
-public sealed class CategoryCreationView : UserControl, IView<CategoryCreationViewModel>
+/// <inheritdoc cref="CategoryUpsertionViewModel"/>
+public sealed class CategoryUpsertionView : UserControl, IView<CategoryUpsertionViewModel>
 {
-	/// <summary>Initializes a new instance of the <see cref="CategoryCreationView"/> class.</summary>
-	public CategoryCreationView()
+	/// <summary>Initializes a new instance of the <see cref="CategoryUpsertionView"/> class.</summary>
+	public CategoryUpsertionView()
 	{
 		AvaloniaXamlLoader.Load(this);
 	}

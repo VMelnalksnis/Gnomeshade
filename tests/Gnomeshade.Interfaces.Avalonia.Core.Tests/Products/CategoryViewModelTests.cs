@@ -16,7 +16,8 @@ public sealed class CategoryViewModelTests
 	[Test]
 	public async Task Test()
 	{
-		var viewModel = await CategoryViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+		var viewModel = new CategoryViewModel(new DesignTimeGnomeshadeClient());
+		await viewModel.RefreshAsync();
 
 		viewModel.Details.CanSave.Should().BeFalse();
 		viewModel.Selected.Should().BeNull();
@@ -24,6 +25,7 @@ public sealed class CategoryViewModelTests
 
 		var rowToSelect = viewModel.Rows.First();
 		viewModel.Selected = rowToSelect;
+		await viewModel.UpdateSelection();
 
 		viewModel.Details.CanSave.Should().BeTrue();
 

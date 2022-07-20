@@ -81,13 +81,13 @@ public static class DesignTimeData
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
 		UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
 
-	/// <summary>Gets an instance of <see cref="CategoryCreationViewModel"/> for use during design time.</summary>
-	public static CategoryCreationViewModel CategoryCreationViewModel { get; } =
-		CategoryCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+	/// <summary>Gets an instance of <see cref="CategoryUpsertionViewModel"/> for use during design time.</summary>
+	public static CategoryUpsertionViewModel CategoryUpsertionViewModel { get; } =
+		InitializeViewModel(new CategoryUpsertionViewModel(GnomeshadeClient, null));
 
 	/// <summary>Gets an instance of <see cref="CategoryViewModel"/> for use during design time.</summary>
 	public static CategoryViewModel CategoryViewModel { get; } =
-		CategoryViewModel.CreateAsync(GnomeshadeClient).Result;
+		InitializeViewModel<CategoryViewModel, CategoryRow, CategoryUpsertionViewModel>(new(GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="TransactionProperties"/> for use during design time.</summary>
 	public static TransactionProperties TransactionProperties { get; } = new();

@@ -142,7 +142,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = unitCreationViewModel;
 	}
 
-	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryCreationViewModel"/>.</summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task SwitchToCategoriesAsync()
 	{
@@ -152,8 +152,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var categoryViewModel = await CategoryViewModel.CreateAsync(gnomeshadeClient);
+		var categoryViewModel = new CategoryViewModel(gnomeshadeClient);
 		ActiveView = categoryViewModel;
+		await ActiveView.RefreshAsync();
 	}
 
 	/// <summary>

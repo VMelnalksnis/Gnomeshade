@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,31 +11,32 @@ using Gnomeshade.Interfaces.WebApi.Client;
 namespace Gnomeshade.Interfaces.Avalonia.Core.Products;
 
 /// <summary>An overview of all categories.</summary>
-public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryCreationViewModel>
+public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
-	private CategoryCreationViewModel _category;
+	private CategoryUpsertionViewModel _details;
 	private ObservableCollection<CategoryNode> _nodes;
 
-	private CategoryViewModel(IGnomeshadeClient gnomeshadeClient, CategoryCreationViewModel categoryCreationViewModel)
+	/// <summary>Initializes a new instance of the <see cref="CategoryViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	public CategoryViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_category = categoryCreationViewModel;
+		_details = new(_gnomeshadeClient, null);
 		_nodes = new();
 
 		Details.Upserted += OnCategoryUpserted;
-		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <inheritdoc />
-	public override CategoryCreationViewModel Details
+	public override CategoryUpsertionViewModel Details
 	{
-		get => _category;
+		get => _details;
 		set
 		{
 			Details.Upserted -= OnCategoryUpserted;
-			SetAndNotify(ref _category, value);
+			SetAndNotify(ref _details, value);
 			Details.Upserted += OnCategoryUpserted;
 		}
 	}
@@ -48,15 +48,11 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 		private set => SetAndNotify(ref _nodes, value);
 	}
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="CategoryViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">API client for getting category data.</param>
-	/// <returns>A new instance of the <see cref="CategoryViewModel"/> class.</returns>
-	public static async Task<CategoryViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	/// <inheritdoc />
+	public override Task UpdateSelection()
 	{
-		var creationViewModel = await CategoryCreationViewModel.CreateAsync(gnomeshadeClient);
-		var viewModel = new CategoryViewModel(gnomeshadeClient, creationViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, Selected?.Id);
+		return Details.RefreshAsync();
 	}
 
 	/// <inheritdoc />
@@ -73,29 +69,26 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryC
 		Nodes = new(rootNodes);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
+		var selected = Selected;
 		Rows = new(categoryRows);
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
+		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
 
-		Details = Task.Run(() => CategoryCreationViewModel.CreateAsync(_gnomeshadeClient)).Result;
+		if (Details.Categories.Count is 0)
+		{
+			await Details.RefreshAsync();
+		}
 	}
 
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(CategoryRow row)
 	{
 		await _gnomeshadeClient.DeleteCategoryAsync(row.Id).ConfigureAwait(false);
-		await Refresh().ConfigureAwait(false);
+		await RefreshAsync();
 	}
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void OnCategoryUpserted(object? sender, UpsertedEventArgs e)
 	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = Task.Run(() => CategoryCreationViewModel.CreateAsync(_gnomeshadeClient, Selected?.Id)).Result;
-		}
-	}
-
-	private void OnCategoryUpserted(object? sender, UpsertedEventArgs e)
-	{
-		Task.Run(Refresh).GetAwaiter().GetResult();
+		await RefreshAsync();
 	}
 }
