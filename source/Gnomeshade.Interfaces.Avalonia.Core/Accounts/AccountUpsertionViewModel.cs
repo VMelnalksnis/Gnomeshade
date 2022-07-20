@@ -21,9 +21,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 {
 	private static readonly string[] _canUpdate = { nameof(CanSave) };
 
-	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly Account? _account;
-
+	private Guid? _id;
 	private string? _name;
 	private Counterparty? _counterparty;
 	private Currency? _preferredCurrency;
@@ -32,36 +30,21 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	private string? _accountNumber;
 	private Currency? _selectedCurrency;
 	private Currency? _addableCurrency;
+	private List<Counterparty> _counterparties;
+	private List<Currency> _currencies;
 
-	private AccountUpsertionViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		List<Counterparty> counterparties,
-		List<Currency> currencies,
-		Account account)
-		: this(gnomeshadeClient, counterparties, currencies)
-	{
-		_account = account;
-
-		_counterparty = Counterparties.Single(counterparty => counterparty.Id == account.CounterpartyId);
-		_preferredCurrency = account.PreferredCurrency;
-		_name = account.Name;
-		_bic = account.Bic;
-		_iban = account.Iban;
-		_accountNumber = account.AccountNumber;
-		AdditionalCurrencies = new(currencies.Where(currency =>
-			account.Currencies.Any(c => c.Currency.Id == currency.Id) &&
-			_preferredCurrency?.Id != currency.Id));
-	}
-
-	private AccountUpsertionViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		List<Counterparty> counterparties,
-		List<Currency> currencies)
+	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
+	/// <param name="id">The id of the account to view.</param>
+	public AccountUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid? id)
 		: base(gnomeshadeClient)
 	{
-		_gnomeshadeClient = gnomeshadeClient;
-		Counterparties = counterparties;
-		Currencies = currencies;
+		_id = id;
+
+		_counterparties = new();
+		_currencies = new();
+		AdditionalCurrencies = new();
+
 		AdditionalCurrencies.CollectionChanged += AdditionalCurrenciesOnCollectionChanged;
 	}
 
@@ -76,7 +59,11 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	public AutoCompleteSelector<object> CounterpartySelector => AutoCompleteSelectors.Counterparty;
 
 	/// <summary>Gets a collection of available currencies.</summary>
-	public List<Counterparty> Counterparties { get; }
+	public List<Counterparty> Counterparties
+	{
+		get => _counterparties;
+		private set => SetAndNotify(ref _counterparties, value);
+	}
 
 	/// <summary>Gets or sets the preferred current of the account.</summary>
 	public Counterparty? Counterparty
@@ -89,7 +76,11 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
 	/// <summary>Gets a collection of available currencies.</summary>
-	public List<Currency> Currencies { get; }
+	public List<Currency> Currencies
+	{
+		get => _currencies;
+		private set => SetAndNotify(ref _currencies, value);
+	}
 
 	/// <inheritdoc cref="Account.PreferredCurrency"/>
 	public Currency? PreferredCurrency
@@ -120,7 +111,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <summary>Gets a collection of all currencies in the account except for <see cref="PreferredCurrency"/>.</summary>
-	public ObservableCollection<Currency> AdditionalCurrencies { get; } = new();
+	public ObservableCollection<Currency> AdditionalCurrencies { get; }
 
 	/// <summary>Gets or sets the selected currency from <see cref="AdditionalCurrencies"/>.</summary>
 	public Currency? SelectedCurrency
@@ -155,23 +146,6 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		Counterparty is not null &&
 		PreferredCurrency is not null;
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
-	/// <param name="id">The id of the account to view.</param>
-	/// <returns>A new instance of the <see cref="AccountUpsertionViewModel"/> class.</returns>
-	public static async Task<AccountUpsertionViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? id = null)
-	{
-		var counterparties = await gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		var currencies = await gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
-		if (id is null)
-		{
-			return new(gnomeshadeClient, counterparties, currencies);
-		}
-
-		var account = await gnomeshadeClient.GetAccountAsync(id.Value).ConfigureAwait(false);
-		return new(gnomeshadeClient, counterparties, currencies, account);
-	}
-
 	/// <summary>Removes <see cref="SelectedCurrency"/> from <see cref="AddableCurrencies"/>.</summary>
 	public void RemoveAdditionalCurrency()
 	{
@@ -196,6 +170,40 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	}
 
 	/// <inheritdoc />
+	protected override async Task Refresh()
+	{
+		var counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
+		var currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+
+		Counterparties = counterparties;
+		Currencies = currencies;
+
+		if (_id is not { } id)
+		{
+			return;
+		}
+
+		var account = await GnomeshadeClient.GetAccountAsync(id).ConfigureAwait(false);
+
+		Counterparty = Counterparties.Single(counterparty => counterparty.Id == account.CounterpartyId);
+		PreferredCurrency = account.PreferredCurrency;
+		Name = account.Name;
+		Bic = account.Bic;
+		Iban = account.Iban;
+		AccountNumber = account.AccountNumber;
+
+		AdditionalCurrencies.Clear();
+		var additionalCurrencies = currencies.Where(currency =>
+			account.Currencies.Any(c => c.Currency.Id == currency.Id) &&
+			_preferredCurrency?.Id != currency.Id);
+
+		foreach (var currency in additionalCurrencies)
+		{
+			AdditionalCurrencies.Add(currency);
+		}
+	}
+
+	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var currencyIds = new List<Guid>();
@@ -216,18 +224,23 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 			Currencies = currencyIds.Select(id => new AccountInCurrencyCreation { CurrencyId = id }).ToList(),
 		};
 
-		var id = _account?.Id ?? Guid.NewGuid();
-		await _gnomeshadeClient.PutAccountAsync(id, creationModel).ConfigureAwait(false);
-		if (_account is not null)
+		var newAccount = _id is null;
+		_id ??= Guid.NewGuid();
+		await GnomeshadeClient.PutAccountAsync(_id.Value, creationModel).ConfigureAwait(false);
+		if (newAccount)
 		{
-			var missingCurrencies = currencyIds.Where(currencyId => _account.Currencies.All(c => c.Currency.Id != currencyId));
-			foreach (var missingCurrency in missingCurrencies)
-			{
-				await _gnomeshadeClient.AddCurrencyToAccountAsync(id, new() { CurrencyId = missingCurrency });
-			}
+			return _id.Value;
 		}
 
-		return id;
+		var account = await GnomeshadeClient.GetAccountAsync(_id.Value);
+		var missingCurrencies =
+			currencyIds.Where(currencyId => account.Currencies.All(c => c.Currency.Id != currencyId));
+		foreach (var missingCurrency in missingCurrencies)
+		{
+			await GnomeshadeClient.AddCurrencyToAccountAsync(_id.Value, new() { CurrencyId = missingCurrency });
+		}
+
+		return _id.Value;
 	}
 
 	private void AdditionalCurrenciesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

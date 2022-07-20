@@ -157,9 +157,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		await ActiveView.RefreshAsync();
 	}
 
-	/// <summary>
-	/// Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.
-	/// </summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task SwitchToAccountOverviewAsync()
 	{
@@ -169,8 +167,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var accountViewModel = await AccountViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
+		var accountViewModel = new AccountViewModel(gnomeshadeClient);
 		ActiveView = accountViewModel;
+		await ActiveView.RefreshAsync();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyViewModel"/>.</summary>

@@ -14,7 +14,8 @@ public class AccountViewModelTests
 	[Test]
 	public async Task DataGridView_ShouldBeGrouped()
 	{
-		var viewModel = await AccountViewModel.CreateAsync(new DesignTimeGnomeshadeClient());
+		var viewModel = new AccountViewModel(new DesignTimeGnomeshadeClient());
+		await viewModel.RefreshAsync();
 
 		viewModel.DataGridView.Groups.Should().ContainSingle();
 	}

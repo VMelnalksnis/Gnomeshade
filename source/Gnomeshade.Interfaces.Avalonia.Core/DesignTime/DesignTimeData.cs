@@ -49,11 +49,11 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="AccountUpsertionViewModel"/> for use during design time.</summary>
 	public static AccountUpsertionViewModel AccountUpsertionViewModel { get; } =
-		AccountUpsertionViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+		InitializeViewModel(new AccountUpsertionViewModel(GnomeshadeClient, null));
 
 	/// <summary>Gets an instance of <see cref="AccountViewModel"/> for use during design time.</summary>
 	public static AccountViewModel AccountViewModel { get; } =
-		AccountViewModel.CreateAsync(GnomeshadeClient).Result;
+		InitializeViewModel<AccountViewModel, AccountOverviewRow, AccountUpsertionViewModel>(new(GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="CounterpartyViewModel"/> for use during design time.</summary>
 	public static CounterpartyViewModel CounterpartyViewModel { get; } =

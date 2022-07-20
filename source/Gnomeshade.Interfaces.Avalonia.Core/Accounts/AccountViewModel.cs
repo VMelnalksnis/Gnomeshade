@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,15 +16,14 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private AccountUpsertionViewModel _details;
 
-	private AccountViewModel(
-		IGnomeshadeClient gnomeshadeClient,
-		AccountUpsertionViewModel accountUpsertionViewModel)
+	/// <summary>Initializes a new instance of the <see cref="AccountViewModel"/> class.</summary>
+	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	public AccountViewModel(IGnomeshadeClient gnomeshadeClient)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_details = accountUpsertionViewModel;
+		_details = new(_gnomeshadeClient, null);
 
 		Details.Upserted += DetailsOnUpserted;
-		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <inheritdoc />
@@ -40,25 +38,19 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 		}
 	}
 
-	/// <summary>Asynchronously creates a new instance of the <see cref="AccountViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <returns>A new instance of <see cref="AccountViewModel"/>.</returns>
-	public static async Task<AccountViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	/// <inheritdoc />
+	public override Task UpdateSelection()
 	{
-		var upsertionViewModel = await AccountUpsertionViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
-		var viewModel = new AccountViewModel(gnomeshadeClient, upsertionViewModel);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
+		Details = new(_gnomeshadeClient, Selected?.Id);
+		return Details.RefreshAsync();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		var accounts = await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false);
-		var balanceTasks = accounts.Select(account => _gnomeshadeClient.GetAccountBalanceAsync(account.Id));
-		var balances = (await Task.WhenAll(balanceTasks)).SelectMany(x => x);
-		var accountOverviewRows = accounts.Translate(counterparties, balances).ToList();
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var accounts = await _gnomeshadeClient.GetAccountsAsync();
+		var accountOverviewRows = accounts.Translate(counterparties).ToList();
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
@@ -67,26 +59,28 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Counterparty);
 		DataGridView.GroupDescriptions.Add(group);
 		DataGridView.SortDescriptions.AddRange(sort);
+
 		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+
+		if (Details.Counterparties.Count is 0)
+		{
+			await Details.RefreshAsync();
+		}
+
+		foreach (var row in Rows)
+		{
+			var balances = await _gnomeshadeClient.GetAccountBalanceAsync(row.Id);
+			var balance = balances.SingleOrDefault(balance => balance.AccountInCurrencyId == row.InCurrencyId);
+			var sum = balance is null ? 0 : balance.TargetAmount - balance.SourceAmount;
+			row.Balance = sum;
+		}
 	}
 
 	/// <inheritdoc />
 	protected override Task DeleteAsync(AccountOverviewRow row) => throw new NotImplementedException();
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		if (e.PropertyName is nameof(Selected))
-		{
-			Details = AccountUpsertionViewModel
-				.CreateAsync(_gnomeshadeClient, Selected?.Id)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-		}
-	}
-
-	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
-	{
-		Refresh().ConfigureAwait(false).GetAwaiter().GetResult();
+		await RefreshAsync();
 	}
 }

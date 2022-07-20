@@ -17,23 +17,21 @@ internal static class AccountExtensions
 	[Pure]
 	public static IEnumerable<AccountOverviewRow> Translate(
 		this IEnumerable<Account> accounts,
-		List<Counterparty> counterparties,
-		IEnumerable<Balance> balances)
+		List<Counterparty> counterparties)
 	{
 		return accounts
 			.SelectMany(account => account.Currencies.Select(inCurrency => (account, inCurrency)))
 			.Select(tuple =>
 			{
 				var counterparty = counterparties.Single(c => c.Id == tuple.account.CounterpartyId);
-				var balance = balances.SingleOrDefault(balance => balance.AccountInCurrencyId == tuple.inCurrency.Id);
-				var sum = balance is null ? 0 : balance.TargetAmount - balance.SourceAmount;
 				return new AccountOverviewRow(
 					tuple.account.Id,
 					tuple.account.Name,
 					tuple.inCurrency.Currency.AlphabeticCode,
-					sum,
+					0,
 					tuple.inCurrency.Disabled,
-					counterparty.Name);
+					counterparty.Name,
+					tuple.inCurrency.Id);
 			});
 	}
 }

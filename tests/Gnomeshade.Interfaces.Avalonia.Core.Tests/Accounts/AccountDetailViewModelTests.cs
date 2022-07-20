@@ -27,7 +27,8 @@ public class AccountDetailViewModelTests
 	[Test]
 	public async Task CreateAsync_ShouldHaveExpectedInitialValues()
 	{
-		var viewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
+		var viewModel = new AccountUpsertionViewModel(_gnomeshadeClient, _account.Id);
+		await viewModel.RefreshAsync();
 
 		using (new AssertionScope())
 		{
@@ -45,7 +46,8 @@ public class AccountDetailViewModelTests
 	[Test]
 	public async Task UpdateAccountAsync_ShouldPutAccount()
 	{
-		var viewModel = await AccountUpsertionViewModel.CreateAsync(_gnomeshadeClient, _account.Id);
+		var viewModel = new AccountUpsertionViewModel(_gnomeshadeClient, _account.Id);
+		await viewModel.RefreshAsync();
 		viewModel.Bic = $"{viewModel.Bic}123";
 
 		await FluentActions
