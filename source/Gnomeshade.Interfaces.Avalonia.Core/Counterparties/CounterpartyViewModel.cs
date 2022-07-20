@@ -19,7 +19,7 @@ public sealed class CounterpartyViewModel : ViewModelBase
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private CounterpartyRow? _selectedCounterparty;
-	private CounterpartyUpdateViewModel? _counterparty;
+	private CounterpartyUpsertionViewModel? _counterparty;
 	private DataGridItemCollectionView<CounterpartyRow> _counterparties;
 
 	private CounterpartyViewModel(IGnomeshadeClient gnomeshadeClient, List<CounterpartyRow> counterpartyRows)
@@ -48,7 +48,7 @@ public sealed class CounterpartyViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets the counterparty update view model.</summary>
-	public CounterpartyUpdateViewModel? Counterparty
+	public CounterpartyUpsertionViewModel? Counterparty
 	{
 		get => _counterparty;
 		private set
@@ -93,12 +93,12 @@ public sealed class CounterpartyViewModel : ViewModelBase
 		return new(gnomeshadeClient, counterpartyRows);
 	}
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(SelectedCounterparty))
 		{
-			Counterparty = Task.Run(() =>
-				CounterpartyUpdateViewModel.CreateAsync(_gnomeshadeClient, SelectedCounterparty?.Id)).Result;
+			Counterparty = new(_gnomeshadeClient, SelectedCounterparty?.Id);
+			await Counterparty.RefreshAsync();
 		}
 	}
 

@@ -6,14 +6,14 @@
 	xmlns:c="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.Counterparties;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Interfaces.Avalonia.Core.DesignTime;assembly=Gnomeshade.Interfaces.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static dd:DesignTimeData.CounterpartyUpdateViewModel}"
-	x:Class="Gnomeshade.Interfaces.Desktop.Views.Counterparties.CounterpartyUpdateView"
+	d:DataContext="{x:Static dd:DesignTimeData.CounterpartyUpsertionViewModel}"
+	x:Class="Gnomeshade.Interfaces.Desktop.Views.Counterparties.CounterpartyUpsertionView"
 	x:CompileBindings="True"
-	x:DataType="c:CounterpartyUpdateViewModel">
+	x:DataType="c:CounterpartyUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 		<TextBox Text="{Binding Name}" />
-		<TextBlock Text="{Binding ErrorMessage}"/>
+		<TextBlock Text="{Binding ErrorMessage}" />
 		<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>

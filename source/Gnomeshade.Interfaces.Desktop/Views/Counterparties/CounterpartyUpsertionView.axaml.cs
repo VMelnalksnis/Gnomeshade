@@ -10,11 +10,11 @@ using Gnomeshade.Interfaces.Avalonia.Core.Counterparties;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Counterparties;
 
-/// <summary>An overview of of all accounts.</summary>
-public sealed class CounterpartyUpdateView : UserControl, IView<CounterpartyUpdateViewModel>
+/// <inheritdoc cref="CounterpartyUpsertionViewModel"/>
+public sealed class CounterpartyUpsertionView : UserControl, IView<CounterpartyUpsertionViewModel>
 {
-	/// <summary>Initializes a new instance of the <see cref="CounterpartyUpdateView"/> class.</summary>
-	public CounterpartyUpdateView()
+	/// <summary>Initializes a new instance of the <see cref="CounterpartyUpsertionView"/> class.</summary>
+	public CounterpartyUpsertionView()
 	{
 		AvaloniaXamlLoader.Load(this);
 	}
