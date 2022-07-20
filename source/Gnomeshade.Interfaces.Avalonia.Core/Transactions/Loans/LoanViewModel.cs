@@ -40,17 +40,6 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	/// <summary>Gets the total loaned amount.</summary>
 	public decimal Total => Rows.Select(overview => overview.Amount).Sum();
 
-	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="transactionId">The transaction for which to create a loan overview.</param>
-	/// <returns>A new instance of the <see cref="LoanViewModel"/> class.</returns>
-	public static async Task<LoanViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
-	{
-		var viewModel = new LoanViewModel(gnomeshadeClient, transactionId);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
-		return viewModel;
-	}
-
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{

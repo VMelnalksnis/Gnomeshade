@@ -4,7 +4,6 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 using Gnomeshade.Interfaces.Avalonia.Core.Accounts;
 using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
@@ -102,95 +101,48 @@ public static class DesignTimeData
 		UnitViewModel.CreateAsync(GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
-	public static TransferUpsertionViewModel TransferUpsertionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new TransferUpsertionViewModel(GnomeshadeClient, Guid.Empty, null);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
+		InitializeViewModel(new TransferUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="TransferViewModel"/> for use during design time.</summary>
-	public static TransferViewModel TransferViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new TransferViewModel(GnomeshadeClient, Guid.Empty);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			await viewModel.Details.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static TransferViewModel TransferViewModel { get; } =
+		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="PurchaseUpsertionViewModel"/> for use during design time.</summary>
-	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new PurchaseUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel { get; } =
+		InitializeViewModel(new PurchaseUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="PurchaseViewModel"/> for use during design time.</summary>
-	public static PurchaseViewModel PurchaseViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new PurchaseViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			await viewModel.Details.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static PurchaseViewModel PurchaseViewModel { get; } =
+		InitializeViewModel<PurchaseViewModel, PurchaseOverview, PurchaseUpsertionViewModel>(new(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
-	public static TransactionViewModel TransactionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new TransactionViewModel(GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static TransactionViewModel TransactionViewModel { get; } =
+		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } =
 		new() { FromDate = DateTimeOffset.Now, ToDate = DateTimeOffset.Now };
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
-	public static TransactionUpsertionViewModel TransactionUpsertionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new TransactionUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
+		InitializeViewModel(new TransactionUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
-	public static LinkUpsertionViewModel LinkUpsertionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new LinkUpsertionViewModel(GnomeshadeClient, Guid.Empty, null);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =
+		InitializeViewModel(new LinkUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="LinkViewModel"/> for use during design time.</summary>
-	public static LinkViewModel LinkViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new LinkViewModel(GnomeshadeClient, Guid.Empty);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static LinkViewModel LinkViewModel { get; } =
+		InitializeViewModel<LinkViewModel, LinkOverview, LinkUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LoanUpsertionViewModel"/> for use during design time.</summary>
-	public static LoanUpsertionViewModel LoanUpsertionViewModel =>
-		Task.Run(async () =>
-		{
-			var viewModel = new LoanUpsertionViewModel(GnomeshadeClient, Guid.Empty, null);
-			await viewModel.RefreshAsync().ConfigureAwait(false);
-			return viewModel;
-		}).Result;
+	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
+		InitializeViewModel(new LoanUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="LoanViewModel"/> for use during design time.</summary>
 	public static LoanViewModel LoanViewModel { get; } =
-		LoanViewModel.CreateAsync(GnomeshadeClient, Guid.Empty).Result;
+		InitializeViewModel<LoanViewModel, LoanOverview, LoanUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="CategoryReportViewModel"/> for use during design time.</summary>
 	public static CategoryReportViewModel CategoryReportViewModel { get; } =
@@ -232,5 +184,22 @@ public static class DesignTimeData
 			.AddHttpClient();
 
 		return serviceCollection.BuildServiceProvider();
+	}
+
+	private static TViewModel InitializeViewModel<TViewModel>(TViewModel viewModel)
+		where TViewModel : ViewModelBase
+	{
+		viewModel.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		return viewModel;
+	}
+
+	private static TOverviewViewModel InitializeViewModel<TOverviewViewModel, TRow, TUpsertion>(TOverviewViewModel viewModel)
+		where TOverviewViewModel : OverviewViewModel<TRow, TUpsertion>
+		where TRow : PropertyChangedBase
+		where TUpsertion : UpsertionViewModel?
+	{
+		viewModel.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		viewModel.Details?.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		return viewModel;
 	}
 }
