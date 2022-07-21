@@ -191,29 +191,29 @@
       },
       "Avalonia.Xaml.Behaviors": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "BKwCkXu7OReop18MfFYOMkScJVbYWrXPy5JAEIGQE7+8g271gB7YAkBOIMWUHSII2HNUzuSwvUMsmrFTNpG4CQ==",
+        "resolved": "0.10.17",
+        "contentHash": "p+DyB6ZFrLVvT++X2PFw+tHVlgh0z8WQqzW4x2uyqv2NmZ+KSQqvOc7H/ceDJBWFVfi+lLlhELQON8L5CVa0gg==",
         "dependencies": {
-          "Avalonia": "0.10.16",
-          "Avalonia.Xaml.Interactions": "0.10.16",
-          "Avalonia.Xaml.Interactivity": "0.10.16"
+          "Avalonia": "0.10.17",
+          "Avalonia.Xaml.Interactions": "0.10.17",
+          "Avalonia.Xaml.Interactivity": "0.10.17"
         }
       },
       "Avalonia.Xaml.Interactions": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "6gARRIj8SbAdz6h61+KUyyYMRh+xeLtLfCxz8Vm7P9szdZWDiPDR7B7VTgGRX6ANtHwXB/MJwTDNWc0Fp3pUBg==",
+        "resolved": "0.10.17",
+        "contentHash": "CYTIua75TNI9/jJVSiofq2BMDVEB8z2ugzrchyGm9pNmv3tNusY7I9okOsNlnY/gFtCljl5xi9XaqStiTykMoQ==",
         "dependencies": {
-          "Avalonia": "0.10.16",
-          "Avalonia.Xaml.Interactivity": "0.10.16"
+          "Avalonia": "0.10.17",
+          "Avalonia.Xaml.Interactivity": "0.10.17"
         }
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "7jWhRqO/f4oSA9WQGva7Oxqt39CHrAHW/TlWwUZai7+cN+/Jl7JLAdciJXKZdJttd+oFNkwN5XNw8SgGp8oexA==",
+        "resolved": "0.10.17",
+        "contentHash": "e8ZTYjfbzDxEsyCnvnHid5B4LtghRgjKeA9gdSRe1Ux1GfHnzHBQx+Hgu51AVg++hO1R2uJ8LVGQlbYQ1AjVjA==",
         "dependencies": {
-          "Avalonia": "0.10.16"
+          "Avalonia": "0.10.17"
         }
       },
       "Castle.Core": {
@@ -1295,7 +1295,7 @@
           "Avalonia": "0.10.17",
           "Avalonia.Desktop": "0.10.17",
           "Avalonia.Diagnostics": "0.10.17",
-          "Avalonia.Xaml.Behaviors": "0.10.16",
+          "Avalonia.Xaml.Behaviors": "0.10.17",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.Avalonia.Core": "1.0.0",
           "JetBrains.Annotations": "2022.1.0",
