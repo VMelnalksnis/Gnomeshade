@@ -3,8 +3,10 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
@@ -38,5 +40,6 @@ public sealed record AccountCreation : Creation
 	/// <inheritdoc cref="Account.Currencies"/>
 	[Required]
 	[MinLength(1)]
+	[UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = $"Implements {nameof(ICollection)}")]
 	public List<AccountInCurrencyCreation>? Currencies { get; init; }
 }
