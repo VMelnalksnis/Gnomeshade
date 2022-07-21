@@ -10,6 +10,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores"/>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+		<PackageReference Include="System.Text.Encodings.Web"/>
 	</ItemGroup>
 
 </Project>
