@@ -100,11 +100,11 @@
       },
       "Avalonia.Controls.DataGrid": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "CNBFwvvkkeX1ZMzLqlUGKpIpoajMaconTAXKZ42M63kUuhJjWfdDxsgnc7ksBO+Vbt7CkquH3vYWOk/x7XevNg==",
+        "resolved": "0.10.17",
+        "contentHash": "GuT4qXwHuzHepGuC880ErLKQLUh2BwBfBPpGAXdaDzBdiXXc+F8KS6xeS9Gxlbnt7sWE3aRiWYzVqy7l/ryy4w==",
         "dependencies": {
-          "Avalonia": "0.10.16",
-          "Avalonia.Remote.Protocol": "0.10.16",
+          "Avalonia": "0.10.17",
+          "Avalonia.Remote.Protocol": "0.10.17",
           "JetBrains.Annotations": "10.3.0",
           "System.Reactive": "5.0.0"
         }
@@ -1552,7 +1552,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia": "0.10.17",
-          "Avalonia.Controls.DataGrid": "0.10.16",
+          "Avalonia.Controls.DataGrid": "0.10.17",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
