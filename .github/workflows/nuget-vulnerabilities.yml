@@ -1,0 +1,48 @@
+name: NuGet vulnerabilities
+
+on:
+  schedule:
+    - cron: "0 0 * * 1-5"
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  nuget-vulnerabilities:
+    name: NuGet vulnerabilities
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - uses: actions/setup-dotnet@v2.1.0
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.0.4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-linux-x64-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Check vulnerable packages
+        id: packages
+        run: |
+          packages=$(dotnet list package --include-transitive --vulnerable)
+          echo "PACKAGES<<EOF" >> $GITHUB_ENV
+          echo "$packages" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Found vulnerable packages
+        run: exit 1 
+        if: ${{ contains(env.PACKAGES, 'has the following vulnerable packages') }}
