@@ -111,14 +111,14 @@
       },
       "Avalonia.Desktop": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "YUCDzunhSIEq1GMxQwxyjGRsC1Je00KYTdztyxOBvGXXVJdza6LtodusykKv/1GFUwCCGR88+ewWTEnW14kosw==",
+        "resolved": "0.10.17",
+        "contentHash": "SQD5E1Cq0OJ3GKE03Wz0a13P+O2gOObo7iVcQRTVnzIbJYUK5XXithpye9hUjgxilUkz5GoOvq6HWJVHyvSSuQ==",
         "dependencies": {
-          "Avalonia": "0.10.16",
-          "Avalonia.Native": "0.10.16",
-          "Avalonia.Skia": "0.10.16",
-          "Avalonia.Win32": "0.10.16",
-          "Avalonia.X11": "0.10.16"
+          "Avalonia": "0.10.17",
+          "Avalonia.Native": "0.10.17",
+          "Avalonia.Skia": "0.10.17",
+          "Avalonia.Win32": "0.10.17",
+          "Avalonia.X11": "0.10.17"
         }
       },
       "Avalonia.Diagnostics": {
@@ -134,19 +134,19 @@
       },
       "Avalonia.FreeDesktop": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "kwYCwiESKQsQ10rAlaFf9STP5qBqADxNsuLRnmFJbEbCWbAnrPpXliubu62nV2/QdEpJQa6e5VWpoSG9O+7czQ==",
+        "resolved": "0.10.17",
+        "contentHash": "bRPXvykaj2R+KmQBGd5Bq59EwlUZm6Jx0mvF+90zFrUkC21BPBnbKYQvTfo6OiZrkluCQkItWCpntg5OvpJ73Q==",
         "dependencies": {
-          "Avalonia": "0.10.16",
+          "Avalonia": "0.10.17",
           "Tmds.DBus": "0.9.0"
         }
       },
       "Avalonia.Native": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "eDPZrfz0GvPkgAOpaKoYUf+8kAYpFE/qDuQRyrzKcY27kK3g0rKoI/Kl061NAmgkWATMwwet2kmbjKXdrDjnNQ==",
+        "resolved": "0.10.17",
+        "contentHash": "/DZb/okw/gZYW1NLrZN25bozIqeYnmlx7Vmqr/WxCLGbC1cB8tRFxkcIB2/g057AFnvZzBpSpq0c71x/zkIEAw==",
         "dependencies": {
-          "Avalonia": "0.10.16"
+          "Avalonia": "0.10.17"
         }
       },
       "Avalonia.Remote.Protocol": {
@@ -156,10 +156,10 @@
       },
       "Avalonia.Skia": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "lkTVVVIa/mPYKIBM5XWrPqrP0XwRbNlCgM5QthbJY0JJ9Q9XhJkTRve1bcNzTOFr5uQDiEfqCfk1TGFTlLTPrA==",
+        "resolved": "0.10.17",
+        "contentHash": "fOodApZ5eZp6Yoq6asZ0on8J0hJ2jp4nWhrXDaf9TzFe6c6QpNIKQvg0IlDbWZQqFSjsdIpkLzJ6p1ky+ufFRQ==",
         "dependencies": {
-          "Avalonia": "0.10.16",
+          "Avalonia": "0.10.17",
           "HarfBuzzSharp": "2.8.2-preview.178",
           "HarfBuzzSharp.NativeAssets.Linux": "2.8.2-preview.178",
           "HarfBuzzSharp.NativeAssets.WebAssembly": "2.8.2-preview.178",
@@ -170,10 +170,10 @@
       },
       "Avalonia.Win32": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "yNOe6UyMHUpyqybz4+vVbdH0K7EVZxPB8TBFsYAB4MTJUCJJDN9q81HEllJr51JXnbOYP0vJ8GGdVqaN3YXunw==",
+        "resolved": "0.10.17",
+        "contentHash": "hDBM1lcKRaBRHIgRGCakeS78nUwd/HvzcaGjaKHOzzyXv6nrKgbY+wOaepCjes9A6md/+7M+SnTxv+q03JLs3g==",
         "dependencies": {
-          "Avalonia": "0.10.16",
+          "Avalonia": "0.10.17",
           "Avalonia.Angle.Windows.Natives": "2.1.0.2020091801",
           "System.Drawing.Common": "4.5.0",
           "System.Numerics.Vectors": "4.5.0"
@@ -181,12 +181,12 @@
       },
       "Avalonia.X11": {
         "type": "Transitive",
-        "resolved": "0.10.16",
-        "contentHash": "xuexNagjYvSuSOhVfHXKLsP5AytNXZ/ddcNRpOgXe7DzM7KZl/IBrNG+etUKLSxjz8/mMFTt7/BoKeYR7EtZ9g==",
+        "resolved": "0.10.17",
+        "contentHash": "zYAVvBQL7o4Qyf7i4GBfTDiIpxSdaYugFUe2aVeWvbiD9MLoSQQ6ObD9HLx1nG9OKRet/A3hp0w2q8fABtY/ag==",
         "dependencies": {
-          "Avalonia": "0.10.16",
-          "Avalonia.FreeDesktop": "0.10.16",
-          "Avalonia.Skia": "0.10.16"
+          "Avalonia": "0.10.17",
+          "Avalonia.FreeDesktop": "0.10.17",
+          "Avalonia.Skia": "0.10.17"
         }
       },
       "Avalonia.Xaml.Behaviors": {
@@ -1293,7 +1293,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia": "0.10.17",
-          "Avalonia.Desktop": "0.10.16",
+          "Avalonia.Desktop": "0.10.17",
           "Avalonia.Diagnostics": "0.10.16",
           "Avalonia.Xaml.Behaviors": "0.10.16",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
