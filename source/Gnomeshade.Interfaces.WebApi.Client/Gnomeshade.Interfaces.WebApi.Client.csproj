@@ -6,9 +6,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IdentityModel.OidcClient" Version="5.0.1"/>
-		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-		<PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0"/>
+		<PackageReference Include="IdentityModel.OidcClient"/>
+		<PackageReference Include="JetBrains.Annotations"/>
+		<PackageReference Include="NodaTime.Serialization.SystemTextJson"/>
 	</ItemGroup>
 
 	<ItemGroup>

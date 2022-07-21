@@ -13,46 +13,46 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ardalis.SmartEnum" Version="2.1.0"/>
-		<PackageReference Include="AutoMapper" Version="11.0.1"/>
-		<PackageReference Include="Elastic.Apm.AspNetCore" Version="1.16.1"/>
-		<PackageReference Include="Elastic.Apm.Elasticsearch" Version="1.16.1"/>
-		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" Version="1.16.1"/>
-		<PackageReference Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
-		<PackageReference Include="Elastic.Apm.SqlClient" Version="1.16.1"/>
-		<PackageReference Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
-		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.7"/>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7">
+		<PackageReference Include="Ardalis.SmartEnum"/>
+		<PackageReference Include="AutoMapper"/>
+		<PackageReference Include="Elastic.Apm.AspNetCore"/>
+		<PackageReference Include="Elastic.Apm.Elasticsearch"/>
+		<PackageReference Include="Elastic.Apm.EntityFrameworkCore"/>
+		<PackageReference Include="Elastic.Apm.SerilogEnricher"/>
+		<PackageReference Include="Elastic.Apm.SqlClient"/>
+		<PackageReference Include="Elastic.CommonSchema.Serilog"/>
+		<PackageReference Include="JetBrains.Annotations"/>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning"/>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer"/>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0"/>
-		<PackageReference Include="NodaTime" Version="3.1.0"/>
-		<PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0"/>
-		<PackageReference Include="Npgsql" Version="6.0.5"/>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5"/>
-		<PackageReference Include="Npgsql.NodaTime" Version="6.0.5"/>
-		<PackageReference Include="Serilog" Version="2.11.0"/>
-		<PackageReference Include="Serilog.AspNetCore" Version="6.0.1"/>
-		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
-		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1"/>
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.4.0"/>
-		<PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0"/>
-		<PackageReference Include="System.IO.FileSystem" Version="4.3.0"/>
-		<PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
-		<PackageReference Include="System.Linq.Async" Version="6.0.1"/>
-		<PackageReference Include="System.Net.NameResolution" Version="4.3.0"/>
-		<PackageReference Include="System.Net.Primitives" Version="4.3.1"/>
-		<PackageReference Include="System.Runtime.Handles" Version="4.3.0"/>
-		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0"/>
-		<PackageReference Include="VMelnalksnis.ISO20022DotNet" Version="0.3.0"/>
-		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="0.5.0"/>
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream"/>
+		<PackageReference Include="NodaTime"/>
+		<PackageReference Include="NodaTime.Serialization.SystemTextJson"/>
+		<PackageReference Include="Npgsql"/>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+		<PackageReference Include="Npgsql.NodaTime"/>
+		<PackageReference Include="Serilog"/>
+		<PackageReference Include="Serilog.AspNetCore"/>
+		<PackageReference Include="Serilog.Sinks.Console"/>
+		<PackageReference Include="Serilog.Sinks.Elasticsearch"/>
+		<PackageReference Include="Swashbuckle.AspNetCore"/>
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations"/>
+		<PackageReference Include="System.Diagnostics.Tracing"/>
+		<PackageReference Include="System.IO.FileSystem"/>
+		<PackageReference Include="System.IO.FileSystem.Primitives"/>
+		<PackageReference Include="System.Linq.Async"/>
+		<PackageReference Include="System.Net.NameResolution"/>
+		<PackageReference Include="System.Net.Primitives"/>
+		<PackageReference Include="System.Runtime.Handles"/>
+		<PackageReference Include="System.Runtime.InteropServices"/>
+		<PackageReference Include="VMelnalksnis.ISO20022DotNet"/>
+		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection"/>
 	</ItemGroup>
 
 	<ItemGroup>

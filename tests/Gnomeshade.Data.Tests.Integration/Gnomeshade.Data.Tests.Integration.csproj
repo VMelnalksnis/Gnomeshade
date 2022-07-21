@@ -9,12 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bogus" Version="34.0.2"/>
-		<PackageReference Include="JetBrains.Annotations" Version="2022.1.0"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1"/>
-		<PackageReference Include="Npgsql" Version="6.0.5"/>
-		<PackageReference Include="Npgsql.NodaTime" Version="6.0.5"/>
+		<PackageReference Include="Bogus"/>
+		<PackageReference Include="JetBrains.Annotations"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+		<PackageReference Include="Npgsql"/>
+		<PackageReference Include="Npgsql.NodaTime"/>
 	</ItemGroup>
 
 	<ItemGroup>
