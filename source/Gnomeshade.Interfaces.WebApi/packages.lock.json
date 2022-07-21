@@ -97,12 +97,6 @@
           "Serilog": "2.9.0"
         }
       },
-      "JetBrains.Annotations": {
-        "type": "Direct",
-        "requested": "[2022.1.0, )",
-        "resolved": "2022.1.0",
-        "contentHash": "ASfpoFJxiRsC9Xc4TWuPM41Zb/gl64xwfMOhnOZ3RnVWGYIZchjpWQV5zshJgoc/ZxVtgjaF7b577lURj7E6ig=="
-      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Direct",
         "requested": "[6.0.7, )",
@@ -157,12 +151,6 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Design": "6.0.7"
         }
-      },
-      "Microsoft.IO.RecyclableMemoryStream": {
-        "type": "Direct",
-        "requested": "[2.2.0, )",
-        "resolved": "2.2.0",
-        "contentHash": "uyjY/cqomw1irT4L7lDeg4sJ36MsjHg3wKqpGrBAdzvZaxo85yMF+sAA9RIzTV92fDxuUzjqksMqA0+SNMkMgA=="
       },
       "NodaTime": {
         "type": "Direct",
@@ -1357,7 +1345,6 @@
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Data.Identity": "1.0.0",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime": "3.1.0",
           "dbup-postgresql": "4.5.0"
         }
@@ -1366,7 +1353,6 @@
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.7",
           "Microsoft.Extensions.Identity.Stores": "6.0.7",
@@ -1379,7 +1365,6 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
@@ -1417,6 +1402,12 @@
           "IdentityModel": "5.2.0",
           "Microsoft.Extensions.Logging": "6.0.0"
         }
+      },
+      "JetBrains.Annotations": {
+        "type": "CentralTransitive",
+        "requested": "[2022.1.0, )",
+        "resolved": "2022.1.0",
+        "contentHash": "ASfpoFJxiRsC9Xc4TWuPM41Zb/gl64xwfMOhnOZ3RnVWGYIZchjpWQV5zshJgoc/ZxVtgjaF7b577lURj7E6ig=="
       },
       "Microsoft.AspNetCore.Http.Features": {
         "type": "CentralTransitive",

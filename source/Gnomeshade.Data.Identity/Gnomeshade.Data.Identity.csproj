@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations"/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity"/>
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores"/>

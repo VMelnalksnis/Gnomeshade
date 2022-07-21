@@ -820,7 +820,6 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },

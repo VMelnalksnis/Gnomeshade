@@ -1050,7 +1050,6 @@
           "Avalonia.Xaml.Behaviors": "0.10.17",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.Avalonia.Core": "1.0.0",
-          "JetBrains.Annotations": "2022.1.0",
           "Microsoft.Extensions.Configuration.Json": "6.0.0",
           "Serilog": "2.11.0",
           "Serilog.Extensions.Hosting": "5.0.1",
@@ -1063,7 +1062,6 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },

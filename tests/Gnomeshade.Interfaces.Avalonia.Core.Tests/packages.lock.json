@@ -45,16 +45,6 @@
           "Microsoft.TestPlatform.TestHost": "17.2.0"
         }
       },
-      "Moq": {
-        "type": "Direct",
-        "requested": "[4.18.1, )",
-        "resolved": "4.18.1",
-        "contentHash": "MmZIKNyvn8VrivSaqA8tqy5DmwUievC9zsuNTrcb00oY4IeGq6fXT5BQK329lZ05/tyi5vp30AWe9fl0d2PZQg==",
-        "dependencies": {
-          "Castle.Core": "5.0.0",
-          "System.Threading.Tasks.Extensions": "4.5.4"
-        }
-      },
       "NUnit": {
         "type": "Direct",
         "requested": "[3.13.3, )",
@@ -137,14 +127,6 @@
           "Avalonia": "0.10.0",
           "Avalonia.FreeDesktop": "0.10.0",
           "Avalonia.Skia": "0.10.0"
-        }
-      },
-      "Castle.Core": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "edc8jjyXqzzy8jFdhs36FZdwmlDDTgqPb2Zy1Q5F/f2uAc88bu/VS/0Tpvgupmpl9zJOvOo5ZizVANb0ltN1NQ==",
-        "dependencies": {
-          "System.Diagnostics.EventLog": "6.0.0"
         }
       },
       "dbup-core": {
@@ -797,11 +779,6 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "System.Diagnostics.EventLog": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw=="
-      },
       "System.Diagnostics.Tools": {
         "type": "Transitive",
         "resolved": "4.0.1",
@@ -1190,8 +1167,8 @@
       },
       "System.Threading.Tasks.Extensions": {
         "type": "Transitive",
-        "resolved": "4.5.4",
-        "contentHash": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg=="
+        "resolved": "4.5.3",
+        "contentHash": "+MvhNtcvIbqmhANyKu91jQnvIRVSTiaOiFNfKWwXGHG48YAb4I/TyH8spsySiPYla7gKal5ZnF3teJqZAximyQ=="
       },
       "System.ValueTuple": {
         "type": "Transitive",
@@ -1254,7 +1231,6 @@
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Data.Identity": "1.0.0",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime": "3.1.0",
           "dbup-postgresql": "4.5.0"
         }
@@ -1263,7 +1239,6 @@
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.7",
           "Microsoft.Extensions.Identity.Stores": "6.0.7",
@@ -1293,7 +1268,6 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },

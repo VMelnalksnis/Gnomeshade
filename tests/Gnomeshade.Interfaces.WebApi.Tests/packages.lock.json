@@ -1265,7 +1265,6 @@
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Data.Identity": "1.0.0",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime": "3.1.0",
           "dbup-postgresql": "4.5.0"
         }
@@ -1274,7 +1273,6 @@
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.7",
           "Microsoft.Extensions.Identity.Stores": "6.0.7",
@@ -1297,13 +1295,11 @@
           "Gnomeshade.Data.Identity": "1.0.0",
           "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
-          "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.7",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.7",
           "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
-          "Microsoft.IO.RecyclableMemoryStream": "2.2.0",
           "NodaTime": "3.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
           "Npgsql": "6.0.5",
@@ -1333,7 +1329,6 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.1",
-          "JetBrains.Annotations": "2022.1.0",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
@@ -1563,12 +1558,6 @@
           "Microsoft.Extensions.Options": "6.0.0",
           "System.ComponentModel.Annotations": "5.0.0"
         }
-      },
-      "Microsoft.IO.RecyclableMemoryStream": {
-        "type": "CentralTransitive",
-        "requested": "[2.2.0, )",
-        "resolved": "2.2.0",
-        "contentHash": "uyjY/cqomw1irT4L7lDeg4sJ36MsjHg3wKqpGrBAdzvZaxo85yMF+sAA9RIzTV92fDxuUzjqksMqA0+SNMkMgA=="
       },
       "NodaTime": {
         "type": "CentralTransitive",

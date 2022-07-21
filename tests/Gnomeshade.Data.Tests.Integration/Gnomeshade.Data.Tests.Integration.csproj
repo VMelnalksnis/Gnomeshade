@@ -10,7 +10,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Bogus"/>
-		<PackageReference Include="JetBrains.Annotations"/>
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
 		<PackageReference Include="Npgsql"/>

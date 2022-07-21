@@ -7,7 +7,6 @@
 	<ItemGroup>
 		<PackageReference Include="Dapper"/>
 		<PackageReference Include="dbup-postgresql"/>
-		<PackageReference Include="JetBrains.Annotations"/>
 		<PackageReference Include="NodaTime"/>
 	</ItemGroup>
 

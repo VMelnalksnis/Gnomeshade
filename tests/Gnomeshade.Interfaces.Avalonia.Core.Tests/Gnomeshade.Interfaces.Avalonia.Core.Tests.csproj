@@ -9,8 +9,4 @@
 		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Moq"/>
-	</ItemGroup>
-
 </Project>

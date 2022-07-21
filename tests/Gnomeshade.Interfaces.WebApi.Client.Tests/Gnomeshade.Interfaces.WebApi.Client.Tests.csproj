@@ -5,10 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations"/>
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
 	</ItemGroup>
 
