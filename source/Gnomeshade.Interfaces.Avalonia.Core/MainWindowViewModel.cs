@@ -37,7 +37,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private ViewModelBase _activeView = null!;
+	private ViewModelBase? _activeView;
 	private Cursor _cursor;
 
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
@@ -56,25 +56,17 @@ public sealed class MainWindowViewModel : ViewModelBase
 		PropertyChanged += OnPropertyChanged;
 
 		_validator = serviceProvider.GetRequiredService<UserConfigurationValidator>();
-		if (!_validator.IsValid(_userConfiguration.Value).ConfigureAwait(false).GetAwaiter().GetResult())
-		{
-			SwitchToSetup();
-		}
-		else
-		{
-			SwitchToLogin();
-		}
 	}
 
 	/// <summary>
 	/// Gets a value indicating whether it's possible to log out.
 	/// </summary>
-	public bool CanLogOut => ActiveView is not LoginViewModel;
+	public bool CanLogOut => ActiveView is not null and not LoginViewModel;
 
 	/// <summary>
 	/// Gets or sets the currently active view.
 	/// </summary>
-	public ViewModelBase ActiveView
+	public ViewModelBase? ActiveView
 	{
 		get => _activeView;
 		set
@@ -98,10 +90,32 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private ViewModelBase? PreviousView { get; set; }
 
-	/// <summary>
-	/// Safely stops the application.
-	/// </summary>
+	/// <summary>Safely stops the application.</summary>
 	public static void Exit() => GetApplicationLifetime().Shutdown();
+
+	/// <summary>Asynchronously initializes <see cref="ActiveView"/> after the window is displayed.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task InitializeActiveViewAsync()
+	{
+		if (ActiveView is not null)
+		{
+			return;
+		}
+
+		IsBusy = true;
+		var isValid = await _validator.IsValid(_userConfiguration.Value).ConfigureAwait(false);
+
+		if (isValid)
+		{
+			SwitchToLogin();
+		}
+		else
+		{
+			SwitchToSetup();
+		}
+
+		IsBusy = false;
+	}
 
 	/// <summary>Logs out the current user.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -334,7 +348,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		Task.Run(SwitchToTransactionOverviewAsync).Wait();
 	}
 
-	private void Unsubscribe(ViewModelBase viewModel)
+	private void Unsubscribe(ViewModelBase? viewModel)
 	{
 		switch (viewModel)
 		{
@@ -358,7 +372,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(ActiveView))
+		if (e.PropertyName is nameof(ActiveView) && ActiveView is not null)
 		{
 			ActiveView.PropertyChanged += ActiveViewOnPropertyChanged;
 		}
@@ -372,7 +386,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		if (e.PropertyName is nameof(IsBusy))
 		{
-			IsBusy = ActiveView.IsBusy;
+			IsBusy = ActiveView?.IsBusy ?? false;
 		}
 	}
 }

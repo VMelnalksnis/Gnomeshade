@@ -92,4 +92,10 @@
 		</Grid>
 	</Panel>
 
+	<Interaction.Behaviors>
+		<EventTriggerBehavior EventName="Activated" SourceObject="{Binding $parent[Window]}">
+			<InvokeCommandAction Command="{ReflectionBinding InitializeActiveViewAsync}" />
+		</EventTriggerBehavior>
+	</Interaction.Behaviors>
+	
 </Window>
