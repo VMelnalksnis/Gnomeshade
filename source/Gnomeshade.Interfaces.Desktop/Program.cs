@@ -63,6 +63,7 @@ internal static class Program
 		Log.Logger = new LoggerConfiguration()
 			.Enrich.FromLogContext()
 			.WriteTo.Trace()
+			.WriteTo.File("bootstrap_log")
 			.MinimumLevel.Debug()
 			.CreateBootstrapLogger();
 	}
