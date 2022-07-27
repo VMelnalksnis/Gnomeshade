@@ -126,7 +126,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
-		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
 
 		var overviews = transactions.Select(transaction =>
 		{
@@ -190,19 +190,19 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		}
 	}
 
-	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var updatedRow = Rows.SingleOrDefault(row => row.Id == e.Id);
+		var updatedOverview = Rows.SingleOrDefault(overview => overview.Id == e.Id);
 
 		var transactionTask = _gnomeshadeClient.GetDetailedTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 
-		Task.WhenAll(transactionTask, accountsTask, counterpartiesTask).ConfigureAwait(false).GetAwaiter().GetResult();
+		await Task.WhenAll(transactionTask, accountsTask, counterpartiesTask);
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
-		var counterparty = _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var transfers = transaction
 			.Transfers
@@ -218,7 +218,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			transaction.Purchases);
 
 		var sort = DataGridView.SortDescriptions;
-		Rows = new(Rows.Where(row => row.Id != updatedRow?.Id).Append(overview).ToList());
+		Rows = new(Rows.Where(row => row.Id != updatedOverview?.Id).Append(overview).ToList());
 		DataGridView.SortDescriptions.AddRange(sort);
 		Selected = overview;
 	}

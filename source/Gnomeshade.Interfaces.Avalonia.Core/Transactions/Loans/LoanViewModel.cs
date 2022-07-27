@@ -62,8 +62,15 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 				currencies.Single(currency => currency.Id == loan.CurrencyId).AlphabeticCode))
 			.ToList();
 
+		var selected = Selected;
 		IsReadOnly = transaction.Reconciled;
 		Rows = new(overviews);
+		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
+
+		if (Selected is null)
+		{
+			await Details.RefreshAsync().ConfigureAwait(false);
+		}
 	}
 
 	/// <inheritdoc />

@@ -165,8 +165,8 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		OnPropertyChanged(nameof(Total));
 	}
 
-	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		await RefreshAsync().ConfigureAwait(false);
 	}
 }

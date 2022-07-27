@@ -79,6 +79,11 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		Rows.CollectionChanged += RowsOnCollectionChanged;
 		DataGridView.SortDescriptions.AddRange(sort);
 		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+
+		if (Selected is null)
+		{
+			await Details.RefreshAsync().ConfigureAwait(false);
+		}
 	}
 
 	/// <inheritdoc />
@@ -116,8 +121,8 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		OnPropertyChanged(nameof(Total));
 	}
 
-	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		await RefreshAsync().ConfigureAwait(false);
 	}
 }

@@ -71,8 +71,8 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		await Refresh().ConfigureAwait(false);
 	}
 
-	private void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		Refresh().ConfigureAwait(false).GetAwaiter().GetResult();
+		await RefreshAsync().ConfigureAwait(false);
 	}
 }

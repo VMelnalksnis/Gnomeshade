@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
@@ -85,15 +86,16 @@ public sealed class UnitViewModel : ViewModelBase
 		Unit = Task.Run(() => UnitCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedUnit?.Id)).Result;
 	}
 
-	private void OnUnitUpserted(object? sender, UpsertedEventArgs e)
+	private async void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var unitRowsTask = Task.Run(() => _gnomeshadeClient.GetUnitRowsAsync());
-		var unitCreationTask = Task.Run(() => UnitCreationViewModel.CreateAsync(_gnomeshadeClient));
+		var unitRowsTask = _gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false);
+		var unitCreationTask = UnitCreationViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
-		Units = new(unitRowsTask.GetAwaiter().GetResult());
+		var units = (await unitRowsTask).ToList();
+		Units = new(units);
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
 
-		Unit = unitCreationTask.GetAwaiter().GetResult();
+		Unit = await unitCreationTask;
 	}
 }

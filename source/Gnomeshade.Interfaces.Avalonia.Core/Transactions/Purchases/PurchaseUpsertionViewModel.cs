@@ -210,13 +210,13 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		return id;
 	}
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(Product))
 		{
 			UnitName = Product?.UnitId is null
 				? null
-				: GnomeshadeClient.GetUnitAsync(Product.UnitId.Value).GetAwaiter().GetResult().Name;
+				: (await GnomeshadeClient.GetUnitAsync(Product.UnitId.Value)).Name;
 		}
 	}
 }
