@@ -6,6 +6,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.Interfaces.WebApi.Client;
+
 using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.Interfaces.Avalonia.Core.Configuration;

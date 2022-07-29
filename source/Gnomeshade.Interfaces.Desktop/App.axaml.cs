@@ -3,8 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -35,7 +36,16 @@ namespace Gnomeshade.Interfaces.Desktop;
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 public sealed class App : Application
 {
+	private static readonly ProductInfoHeaderValue _userAgent;
+
 	private readonly IServiceProvider _serviceProvider;
+
+	static App()
+	{
+		var assemblyName = typeof(App).Assembly.GetName();
+		var assemblyShortName = assemblyName.Name ?? assemblyName.FullName.Split(',').First();
+		_userAgent = new(assemblyShortName, assemblyName.Version?.ToString());
+	}
 
 	/// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
 	public App()
@@ -51,7 +61,7 @@ public sealed class App : Application
 		serviceCollection
 			.AddGnomeshadeOptions(configuration)
 			.AddSingleton<UserConfigurationWriter>()
-			.AddSingleton<UserConfigurationValidator>();
+			.AddHttpClient<UserConfigurationValidator>(client => client.DefaultRequestHeaders.UserAgent.Add(_userAgent));
 
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
@@ -67,19 +77,7 @@ public sealed class App : Application
 			return new(options);
 		});
 
-		serviceCollection.AddHttpClient();
-		serviceCollection
-			.AddSingleton<GnomeshadeTokenCache>()
-			.AddSingleton<GnomeshadeJsonSerializerOptions>()
-			.AddTransient<TokenDelegatingHandler>()
-			.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
-			{
-				var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
-				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress!) { Path = "api/v1.0/" };
-				client.BaseAddress = uriBuilder.Uri;
-				client.DefaultRequestVersion = HttpVersion.Version30;
-			})
-			.AddHttpMessageHandler<TokenDelegatingHandler>();
+		serviceCollection.AddGnomeshadeClient(configuration);
 
 		serviceCollection
 			.AddTransient<IAuthenticationService, AuthenticationService>()

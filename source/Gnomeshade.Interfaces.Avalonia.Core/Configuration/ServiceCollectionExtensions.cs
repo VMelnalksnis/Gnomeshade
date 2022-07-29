@@ -30,11 +30,6 @@ public static class ServiceCollectionExtensions
 			.Bind(configuration.GetSection(nameof(UserConfiguration.Oidc)))
 			.ValidateDataAnnotations();
 
-		serviceCollection
-			.AddOptions<GnomeshadeOptions>()
-			.Bind(configuration.GetSection(nameof(UserConfiguration.Gnomeshade)))
-			.ValidateDataAnnotations();
-
 		return serviceCollection;
 	}
 }

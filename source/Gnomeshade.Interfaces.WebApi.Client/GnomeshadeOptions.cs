@@ -7,12 +7,14 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-namespace Gnomeshade.Interfaces.Avalonia.Core.Configuration;
+namespace Gnomeshade.Interfaces.WebApi.Client;
 
 /// <summary>Settings for accessing gnomeshade API.</summary>
 [UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
 public sealed record GnomeshadeOptions
 {
+	internal const string SectionName = "Gnomeshade";
+
 	/// <summary>Gets or sets the gnomeshade API base address.</summary>
 	[Required]
 	public Uri? BaseAddress { get; set; }
