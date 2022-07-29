@@ -9,6 +9,7 @@ using AutoMapper;
 using Dapper;
 
 using Elastic.Apm.AspNetCore;
+using Elastic.Apm.AspNetCore.DiagnosticListener;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
@@ -47,20 +48,19 @@ namespace Gnomeshade.Interfaces.WebApi;
 /// <summary>Configures services and HTTP request pipeline.</summary>
 public class Startup
 {
+	private readonly IConfiguration _configuration;
+
 	/// <summary>Initializes a new instance of the <see cref="Startup"/> class.</summary>
 	/// <param name="configuration">Configuration for configuring services and request pipeline.</param>
 	public Startup(IConfiguration configuration)
 	{
-		Configuration = configuration;
+		_configuration = configuration;
 
 		NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
 		NpgsqlLogManager.IsParameterLoggingEnabled = true;
 		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
 		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
 	}
-
-	/// <summary>Gets the configuration used for configuring services and request pipeline.</summary>
-	public IConfiguration Configuration { get; }
 
 	/// <summary>This method gets called by the runtime. Use this method to add services to the container.</summary>
 	/// <param name="services">Service collection to which to add services to.</param>
@@ -84,10 +84,10 @@ public class Startup
 		services.AddApiVersioning();
 
 		services.AddIdentityContext();
-		services.AddAuthenticationAndAuthorization(Configuration);
+		services.AddAuthenticationAndAuthorization(_configuration);
 
 		services
-			.AddScoped<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("FinanceDb")))
+			.AddScoped<IDbConnection>(_ => new NpgsqlConnection(_configuration.GetConnectionString("FinanceDb")))
 			.AddScoped<OwnerRepository>()
 			.AddScoped<OwnershipRepository>()
 			.AddScoped<TransactionRepository>()
@@ -125,7 +125,7 @@ public class Startup
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 
 		services.AddGnomeshadeHealthChecks();
-		services.AddNordigenDotNet(Configuration);
+		services.AddNordigenDotNet(_configuration);
 	}
 
 	/// <summary>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</summary>
@@ -134,7 +134,8 @@ public class Startup
 	public void Configure(IApplicationBuilder application, IWebHostEnvironment environment)
 	{
 		application.UseElasticApm(
-			Configuration,
+			_configuration,
+			new AspNetCoreDiagnosticSubscriber(),
 			new HttpDiagnosticsSubscriber(),
 			new EfCoreDiagnosticsSubscriber(),
 			new SqlClientDiagnosticSubscriber(),
