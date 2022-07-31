@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version = version
 		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.WebApi.Tests", "tests\Gnomeshade.Interfaces.WebApi.Tests\Gnomeshade.Interfaces.WebApi.Tests.csproj", "{0C052464-F71A-4005-A531-C6D6B4FF09A4}"
