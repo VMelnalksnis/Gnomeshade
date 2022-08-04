@@ -159,10 +159,31 @@ public sealed class ReadAccessTests
 
 		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
 
-		await ShouldBeForbiddenForOthers(
-			client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
 		await ShouldReturnTheSame(client => client.GetTransferAsync(transaction.Id, transfer.Id));
 		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transaction.Id, transfer.Id), true);
+	}
+
+	[Test]
+	public async Task PendingTransfers()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty = await _client.CreateCounterpartyAsync(_ownerId);
+		var account = await _client.CreateAccountAsync(counterparty.Id, _ownerId);
+
+		var pendingTransfer = await _client.CreatePendingTransferAsync(transaction.Id, account.Id, counterparty.Id, _ownerId);
+
+		await ShouldReturnTheSame(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+
+		var account1 = await _client.CreateAccountAsync(counterparty.Id);
+		var account2 = await _client.CreateAccountAsync(counterparty.Id);
+		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
+
+		var updatedTransfer = pendingTransfer.ToCreation() with { TransferId = transfer.Id };
+
+		await ShouldBeForbiddenForOthers(client => client.PutPendingTransferAsync(transaction.Id, pendingTransfer.Id, updatedTransfer));
+		await ShouldReturnTheSame(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeletePendingTransferAsync(transaction.Id, pendingTransfer.Id), true);
 	}
 
 	[Test]

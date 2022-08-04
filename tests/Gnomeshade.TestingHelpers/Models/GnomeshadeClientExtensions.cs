@@ -119,6 +119,28 @@ public static class GnomeshadeClientExtensions
 		return await gnomeshadeClient.GetTransferAsync(transactionId, transferId);
 	}
 
+	public static async Task<PendingTransfer> CreatePendingTransferAsync(
+		this IGnomeshadeClient gnomeshadeClient,
+		Guid transactionId,
+		Guid accountId,
+		Guid counterpartyId,
+		Guid? ownerId = null)
+	{
+		var account = await gnomeshadeClient.GetAccountAsync(accountId);
+
+		var transferId = Guid.NewGuid();
+		var transfer = new PendingTransferCreation
+		{
+			SourceAccountId = account.Currencies.First().Id,
+			SourceAmount = 10.5m,
+			TargetCounterpartyId = counterpartyId,
+			OwnerId = ownerId,
+		};
+
+		await gnomeshadeClient.PutPendingTransferAsync(transactionId, transferId, transfer);
+		return await gnomeshadeClient.GetPendingTransferAsync(transactionId, transferId);
+	}
+
 	public static async Task<Purchase> CreatePurchaseAsync(
 		this IGnomeshadeClient gnomeshadeClient,
 		Guid transactionId,

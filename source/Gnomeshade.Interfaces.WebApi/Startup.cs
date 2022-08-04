@@ -93,6 +93,7 @@ public class Startup
 			.AddScoped<TransactionRepository>()
 			.AddScoped<PurchaseRepository>()
 			.AddScoped<TransferRepository>()
+			.AddScoped<PendingTransferRepository>()
 			.AddScoped<LoanRepository>()
 			.AddScoped<UserRepository>()
 			.AddScoped<AccountRepository>()

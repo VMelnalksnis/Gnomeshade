@@ -140,7 +140,7 @@ public sealed class TransactionProperties : ViewModelBase
 	public string? Description
 	{
 		get => _description;
-		set => SetAndNotify(ref _description, value, nameof(Description));
+		set => SetAndNotify(ref _description, value);
 	}
 
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>

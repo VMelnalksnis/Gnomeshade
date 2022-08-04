@@ -32,6 +32,7 @@ namespace Gnomeshade.Interfaces.WebApi.V1_0.Transactions;
 public sealed class TransactionsController : CreatableBase<TransactionRepository, TransactionEntity, Transaction, TransactionCreation>
 {
 	private readonly TransferRepository _transferRepository;
+	private readonly PendingTransferRepository _pendingTransferRepository;
 	private readonly PurchaseRepository _purchaseRepository;
 	private readonly LoanRepository _loanRepository;
 	private readonly TransactionUnitOfWork _unitOfWork;
@@ -45,6 +46,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
+	/// <param name="pendingTransferRepository">Persistence store for <see cref="PendingTransferRepository"/>.</param>
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
 	/// <param name="loanRepository">Persistence store for <see cref="LoanEntity"/>.</param>
 	/// <param name="counterpartyRepository">Persistence store for <see cref="CounterpartyEntity"/>.</param>
@@ -56,6 +58,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		TransferRepository transferRepository,
+		PendingTransferRepository pendingTransferRepository,
 		PurchaseRepository purchaseRepository,
 		LoanRepository loanRepository,
 		CounterpartyRepository counterpartyRepository,
@@ -64,6 +67,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
+		_pendingTransferRepository = pendingTransferRepository;
 		_purchaseRepository = purchaseRepository;
 		_loanRepository = loanRepository;
 		_counterpartyRepository = counterpartyRepository;
@@ -286,6 +290,97 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		// todo add transaction id
 		var deletedCount = await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
 		return DeletedEntity<TransferEntity>(id, deletedCount);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetPendingTransfersAsync"/>
+	/// <response code="200">Successfully got all pending transfers.</response>
+	[HttpGet("{transactionId:guid}/PendingTransfers")]
+	[ProducesResponseType(typeof(List<PendingTransfer>), Status200OK)]
+	public async Task<List<PendingTransfer>> GetPendingTransfers(
+		Guid transactionId,
+		CancellationToken cancellationToken)
+	{
+		var transfers = await _pendingTransferRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
+		return transfers.Select(transfer => Mapper.Map<PendingTransfer>(transfer)).ToList();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.GetPendingTransferAsync"/>
+	/// <response code="200">Successfully got the pending transfer with the specified id.</response>
+	/// <response code="404">Pending transfer with the specified id does not exist.</response>
+	[HttpGet("{transactionId:guid}/PendingTransfers/{id:guid}")]
+	[ProducesResponseType(typeof(PendingTransfer), Status200OK)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult<PendingTransfer>> GetPendingTransfer(
+		Guid transactionId,
+		Guid id,
+		CancellationToken cancellationToken)
+	{
+		var transfer = await _pendingTransferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
+		if (transfer is null)
+		{
+			return NotFound();
+		}
+
+		var model = Mapper.Map<PendingTransfer>(transfer);
+		return Ok(model);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.PutPendingTransferAsync"/>
+	/// <response code="201">Successfully created a new pending transfer.</response>
+	/// <response code="204">Successfully replaced an existing pending transfer.</response>
+	/// <response code="404">Transaction with the specified id was not found.</response>
+	[HttpPut("{transactionId:guid}/PendingTransfers/{id:guid}")]
+	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> PutPendingTransfer(Guid transactionId, Guid id, [FromBody] PendingTransferCreation transfer)
+	{
+		transfer = transfer with { OwnerId = transfer.OwnerId ?? ApplicationUser.Id };
+
+		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return await Repository.FindByIdAsync(transactionId) is null
+				? NotFound()
+				: Forbid();
+		}
+
+		var existingTransfer = await _pendingTransferRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id);
+		var entity = Mapper.Map<PendingTransferEntity>(transfer) with
+		{
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			ModifiedByUserId = ApplicationUser.Id,
+			TransactionId = transactionId,
+		};
+
+		if (existingTransfer is null)
+		{
+			await _pendingTransferRepository.AddAsync(entity);
+			return CreatedAtAction(nameof(GetTransfer), new { transactionId, id }, null);
+		}
+
+		await _pendingTransferRepository.UpdateAsync(entity);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.DeletePendingTransferAsync"/>
+	/// <response code="204">Successfully deleted pending transfer.</response>
+	/// <response code="404">Pending transfer with the specified id does not exist.</response>
+	[HttpDelete("{transactionId:guid}/PendingTransfers/{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	public async Task<ActionResult> DeletePendingTransfer(Guid transactionId, Guid id)
+	{
+		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
+		if (transaction is null)
+		{
+			return NotFound();
+		}
+
+		// todo add transaction id
+		var deletedCount = await _pendingTransferRepository.DeleteAsync(id, ApplicationUser.Id);
+		return DeletedEntity<PendingTransferEntity>(id, deletedCount);
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync"/>

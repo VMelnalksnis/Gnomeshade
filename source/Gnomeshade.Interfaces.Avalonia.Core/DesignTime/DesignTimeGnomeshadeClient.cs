@@ -437,6 +437,18 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<PendingTransfer>> GetPendingTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PendingTransfer> GetPendingTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPendingTransferAsync(Guid transactionId, Guid id, PendingTransferCreation transfer) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePendingTransferAsync(Guid transactionId, Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));

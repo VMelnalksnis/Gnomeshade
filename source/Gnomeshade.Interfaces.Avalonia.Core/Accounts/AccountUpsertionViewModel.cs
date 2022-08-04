@@ -93,21 +93,21 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	public string? Bic
 	{
 		get => _bic;
-		set => SetAndNotify(ref _bic, value, nameof(Bic));
+		set => SetAndNotify(ref _bic, value);
 	}
 
 	/// <inheritdoc cref="Account.Iban"/>
 	public string? Iban
 	{
 		get => _iban;
-		set => SetAndNotify(ref _iban, value, nameof(Iban));
+		set => SetAndNotify(ref _iban, value);
 	}
 
 	/// <inheritdoc cref="Account.AccountNumber"/>
 	public string? AccountNumber
 	{
 		get => _accountNumber;
-		set => SetAndNotify(ref _accountNumber, value, nameof(AccountNumber));
+		set => SetAndNotify(ref _accountNumber, value);
 	}
 
 	/// <summary>Gets a collection of all currencies in the account except for <see cref="PreferredCurrency"/>.</summary>

@@ -161,4 +161,30 @@ public interface ITransactionClient
 	/// <param name="id">The id of the loan to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteLoanAsync(Guid transactionId, Guid id);
+
+	/// <summary>Gets all pending transfers for the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get all the pending transfers.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All pending transfers for the specified transaction.</returns>
+	Task<List<PendingTransfer>> GetPendingTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default);
+
+	/// <summary>Gets the specified pending transfer.</summary>
+	/// <param name="transactionId">The id of transaction of which the pending transfer is a part of.</param>
+	/// <param name="id">The id of the pending transfer to get.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>The pending transfer with the specified id.</returns>
+	Task<PendingTransfer> GetPendingTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default);
+
+	/// <summary>Creates a new pending transfer or replaces an existing one, if one exists with the specified id.</summary>
+	/// <param name="transactionId">The id of the transaction to which to add a new pending transfer.</param>
+	/// <param name="id">The id of the pending transfer.</param>
+	/// <param name="transfer">The pending transfer to create or replace.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutPendingTransferAsync(Guid transactionId, Guid id, PendingTransferCreation transfer);
+
+	/// <summary>Deletes the specified pending transfer.</summary>
+	/// <param name="transactionId">The id of the transaction of the pending transfer.</param>
+	/// <param name="id">The id of the pending transfer to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task DeletePendingTransferAsync(Guid transactionId, Guid id);
 }

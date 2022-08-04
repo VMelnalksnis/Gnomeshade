@@ -37,6 +37,9 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<TransferCreation, TransferEntity>();
 		options.CreateMap<TransferEntity, Transfer>();
 
+		options.CreateMap<PendingTransferCreation, PendingTransferEntity>();
+		options.CreateMap<PendingTransferEntity, PendingTransfer>();
+
 		options.CreateMap<AccountEntity, Account>();
 		options.CreateMap<AccountCreation, AccountEntity>();
 

@@ -142,6 +142,39 @@ public sealed class DeleteAccessTests
 	}
 
 	[Test]
+	public async Task PendingTransfers()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty = await _client.CreateCounterpartyAsync(_ownerId);
+		var account = await _client.CreateAccountAsync(counterparty.Id, _ownerId);
+
+		var pendingTransfer = await _client.CreatePendingTransferAsync(transaction.Id, account.Id, counterparty.Id, _ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+
+		var account1 = await _client.CreateAccountAsync(counterparty.Id);
+		var account2 = await _client.CreateAccountAsync(counterparty.Id);
+		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
+
+		var updatedTransfer = pendingTransfer.ToCreation() with { TransferId = transfer.Id };
+
+		await ShouldBeForbiddenForOthers(client => client.PutPendingTransferAsync(transaction.Id, pendingTransfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeletePendingTransferAsync(transaction.Id, pendingTransfer.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
 	public async Task Purchases()
 	{
 		var transaction = await _client.CreateTransactionAsync(_ownerId);

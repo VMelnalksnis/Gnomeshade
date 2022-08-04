@@ -32,6 +32,7 @@
 		<EmbeddedResource Include="Migrations\00000014_account_currency_uniqueness.sql"/>
 		<EmbeddedResource Include="Migrations\00000015_loans.sql"/>
 		<EmbeddedResource Include="Migrations\00000016_name_uniqueness.sql"/>
+		<EmbeddedResource Include="Migrations\00000017_pending_transfers.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
@@ -85,6 +86,14 @@
 		<EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
+		<None Remove="Repositories\Queries\PendingTransfer\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\PendingTransfer\Delete.sql"/>
+		<None Remove="Repositories\Queries\PendingTransfer\Insert.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\PendingTransfer\Insert.sql"/>
+		<None Remove="Repositories\Queries\PendingTransfer\Select.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\PendingTransfer\Select.sql"/>
+		<None Remove="Repositories\Queries\PendingTransfer\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\PendingTransfer\Update.sql"/>
 	</ItemGroup>
 
 </Project>

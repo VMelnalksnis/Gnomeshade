@@ -118,21 +118,21 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	public string? BankReference
 	{
 		get => _bankReference;
-		set => SetAndNotify(ref _bankReference, value, nameof(BankReference));
+		set => SetAndNotify(ref _bankReference, value);
 	}
 
 	/// <summary>Gets or sets the external reference of the transaction item.</summary>
 	public string? ExternalReference
 	{
 		get => _externalReference;
-		set => SetAndNotify(ref _externalReference, value, nameof(ExternalReference));
+		set => SetAndNotify(ref _externalReference, value);
 	}
 
 	/// <summary>Gets or sets the internal reference of the transaction item.</summary>
 	public string? InternalReference
 	{
 		get => _internalReference;
-		set => SetAndNotify(ref _internalReference, value, nameof(InternalReference));
+		set => SetAndNotify(ref _internalReference, value);
 	}
 
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>

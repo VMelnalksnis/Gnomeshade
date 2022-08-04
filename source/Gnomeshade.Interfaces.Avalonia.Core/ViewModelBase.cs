@@ -15,7 +15,7 @@ public abstract class ViewModelBase : PropertyChangedBase
 	public bool IsBusy
 	{
 		get => _isBusy;
-		protected set => SetAndNotify(ref _isBusy, value, nameof(IsBusy));
+		protected set => SetAndNotify(ref _isBusy, value);
 	}
 
 	/// <summary>Refreshes all data loaded from API.</summary>

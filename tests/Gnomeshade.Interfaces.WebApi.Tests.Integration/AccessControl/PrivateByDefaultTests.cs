@@ -131,6 +131,28 @@ public sealed class PrivateByDefaultTests
 	}
 
 	[Test]
+	public async Task PendingTransfers()
+	{
+		var transaction = await _client.CreateTransactionAsync();
+		var counterparty = await _client.CreateCounterpartyAsync();
+		var account = await _client.CreateAccountAsync(counterparty.Id);
+
+		var pendingTransfer = await _client.CreatePendingTransferAsync(transaction.Id, account.Id, counterparty.Id);
+
+		await ShouldBeNotFoundForOthers(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+
+		var account1 = await _client.CreateAccountAsync(counterparty.Id);
+		var account2 = await _client.CreateAccountAsync(counterparty.Id);
+		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id);
+
+		var updatedTransfer = pendingTransfer.ToCreation() with { TransferId = transfer.Id };
+
+		await ShouldBeForbiddenForOthers(client => client.PutPendingTransferAsync(transaction.Id, pendingTransfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPendingTransferAsync(transaction.Id, pendingTransfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeletePendingTransferAsync(transaction.Id, pendingTransfer.Id), true);
+	}
+
+	[Test]
 	public async Task Purchases()
 	{
 		var transaction = await _client.CreateTransactionAsync();
