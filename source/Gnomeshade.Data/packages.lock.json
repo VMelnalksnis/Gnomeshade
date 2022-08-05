@@ -651,7 +651,7 @@
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.7",
           "Microsoft.Extensions.Identity.Stores": "6.0.7",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.5",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
           "System.Text.Encodings.Web": "6.0.0"
         }
       },
@@ -716,22 +716,22 @@
       "Npgsql": {
         "type": "CentralTransitive",
         "requested": "[6.0.6, )",
-        "resolved": "6.0.5",
-        "contentHash": "a11H5/b5yNTuFN0Ycjvb920oI6vQHadt6KhEMmcC7DfvsSHH8Z3wBam+CHmyWcfDxJJaxamcdBb8XA3BvqS4Kw==",
+        "resolved": "6.0.6",
+        "contentHash": "IIwnoJp0sFkhAydT/KKe/0NhlJKhYPIrXSE95AuU/2dqHNI9alxvjClJSGL+QE8NGqq1SFn+NenxVtm/JYsrJg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "CentralTransitive",
-        "requested": "[6.0.5, )",
-        "resolved": "6.0.5",
-        "contentHash": "1eAaz5CwwZbATraqYyYsG2tMWZM1ydyLmQVpFGTzkUUKB/sAL5QWB0IfjSxOjiIDp5JY1WoFndkcaGMEcexVXg==",
+        "requested": "[6.0.6, )",
+        "resolved": "6.0.6",
+        "contentHash": "e1RVE6xtKDsWcCvBpXnbbHfY2p2/9l6cO/FpXvP3QqvRSCcWoabC22sr8wdWPRxex0a128Pq678Jo5XiIMcrxw==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "6.0.5",
-          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.5",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.5",
-          "Npgsql": "6.0.5"
+          "Microsoft.EntityFrameworkCore": "6.0.7",
+          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.7",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.7",
+          "Npgsql": "6.0.6"
         }
       },
       "System.Text.Encodings.Web": {
