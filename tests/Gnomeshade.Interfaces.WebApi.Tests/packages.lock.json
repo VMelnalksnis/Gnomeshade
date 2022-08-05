@@ -1077,7 +1077,7 @@
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
-          "IdentityModel.OidcClient": "5.0.1",
+          "IdentityModel.OidcClient": "5.0.2",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
@@ -1191,9 +1191,9 @@
       },
       "IdentityModel.OidcClient": {
         "type": "CentralTransitive",
-        "requested": "[5.0.1, )",
-        "resolved": "5.0.1",
-        "contentHash": "kLrv5o5uQ9gfEt7F6k+K6ffsZJg5AaH8ldTo7ilSNO0SL89RrFhRbq9yyWOixHqv5k1w14Hxfwp5jwWTQSZwHA==",
+        "requested": "[5.0.2, )",
+        "resolved": "5.0.2",
+        "contentHash": "oOB0ZqNHkXOWqKYR9Wi9rT3owfcXaQLCVckZW3xWHahOhL9wAFdlxZhdZszYQyFVgo6pXfRy5LAdaeeTHEp/GQ==",
         "dependencies": {
           "IdentityModel": "5.2.0",
           "Microsoft.Extensions.Logging": "6.0.0"
