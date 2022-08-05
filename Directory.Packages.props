@@ -49,7 +49,7 @@
 		<PackageVersion Include="NodaTime.Bogus" Version="3.0.1"/>
 		<PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0"/>
 		<PackageVersion Include="Npgsql" Version="6.0.5"/>
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5"/>
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6"/>
 		<PackageVersion Include="Npgsql.NodaTime" Version="6.0.5"/>
 		<PackageVersion Include="NUnit" Version="3.13.3"/>
 		<PackageVersion Include="NUnit3TestAdapter" Version="4.2.1"/>
