@@ -194,12 +194,12 @@
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[6.0.5, )",
-        "resolved": "6.0.5",
-        "contentHash": "7rF+at3dd2tmVLqQq94Iv/OUT9m+MM0k8qNyNUquWpFWHZ9sCV9Ju4gZvY5V8M8sEJjk5ePZsr4qpk18A4fX+g==",
+        "requested": "[6.0.6, )",
+        "resolved": "6.0.6",
+        "contentHash": "UoSvRBWBHvTxqMzR4ucsNyRcqOaL/oieVM9NkeoNaviyvVMDgMohDu82vQ3/rx3S0TzB3Oeglg+2Ygd/U+06aw==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.5"
+          "Npgsql": "6.0.6"
         }
       },
       "Serilog": {

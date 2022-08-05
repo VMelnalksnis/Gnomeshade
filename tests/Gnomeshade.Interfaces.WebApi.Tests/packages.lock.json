@@ -1053,7 +1053,7 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
           "Npgsql": "6.0.6",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
-          "Npgsql.NodaTime": "6.0.5",
+          "Npgsql.NodaTime": "6.0.6",
           "Serilog": "2.11.0",
           "Serilog.AspNetCore": "6.0.1",
           "Serilog.Sinks.Console": "4.0.1",
@@ -1376,12 +1376,12 @@
       },
       "Npgsql.NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[6.0.5, )",
-        "resolved": "6.0.5",
-        "contentHash": "7rF+at3dd2tmVLqQq94Iv/OUT9m+MM0k8qNyNUquWpFWHZ9sCV9Ju4gZvY5V8M8sEJjk5ePZsr4qpk18A4fX+g==",
+        "requested": "[6.0.6, )",
+        "resolved": "6.0.6",
+        "contentHash": "UoSvRBWBHvTxqMzR4ucsNyRcqOaL/oieVM9NkeoNaviyvVMDgMohDu82vQ3/rx3S0TzB3Oeglg+2Ygd/U+06aw==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.5"
+          "Npgsql": "6.0.6"
         }
       },
       "Serilog": {
