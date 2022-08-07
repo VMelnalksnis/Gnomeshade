@@ -4,8 +4,8 @@
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Products;
 
 namespace Gnomeshade.Avalonia.Core;
 

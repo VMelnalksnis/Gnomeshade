@@ -5,9 +5,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

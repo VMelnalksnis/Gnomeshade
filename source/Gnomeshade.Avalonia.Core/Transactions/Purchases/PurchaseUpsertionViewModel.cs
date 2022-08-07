@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core.Products;
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

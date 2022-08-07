@@ -6,8 +6,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Links;
 

@@ -4,7 +4,7 @@
 
 using System;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Avalonia.Core.Counterparties;
 

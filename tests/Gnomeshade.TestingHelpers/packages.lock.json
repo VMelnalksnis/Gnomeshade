@@ -803,11 +803,11 @@
           "System.Text.Encodings.Web": "6.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.client": {
+      "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
+          "Gnomeshade.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.2",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
@@ -818,7 +818,7 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.models": {
+      "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",

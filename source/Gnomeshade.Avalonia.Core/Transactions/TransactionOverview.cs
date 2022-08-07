@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Avalonia.Core.Transactions;
 

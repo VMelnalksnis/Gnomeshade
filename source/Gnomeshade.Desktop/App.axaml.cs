@@ -15,7 +15,7 @@ using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Desktop.Views;
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.WebApi.Client;
 
 using IdentityModel.OidcClient;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.WebApi.Client;
 
 namespace Gnomeshade.Avalonia.Core.Counterparties;
 

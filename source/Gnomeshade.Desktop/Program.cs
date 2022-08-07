@@ -11,7 +11,7 @@ using Avalonia.Logging;
 using Avalonia.Xaml.Interactions.Core;
 using Avalonia.Xaml.Interactivity;
 
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Products;
 
 using JetBrains.Annotations;
 

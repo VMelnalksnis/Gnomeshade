@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.WebApi.Client;
 
 namespace Gnomeshade.Avalonia.Core;
 

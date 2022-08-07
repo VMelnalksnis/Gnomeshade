@@ -18,7 +18,7 @@ using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.WebApi.Client;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

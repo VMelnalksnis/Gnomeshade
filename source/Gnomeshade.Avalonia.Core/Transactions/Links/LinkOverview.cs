@@ -5,7 +5,7 @@
 using System;
 
 using Gnomeshade.Avalonia.Core.Authentication;
-using Gnomeshade.Interfaces.WebApi.Models;
+using Gnomeshade.WebApi.Models;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Links;
 

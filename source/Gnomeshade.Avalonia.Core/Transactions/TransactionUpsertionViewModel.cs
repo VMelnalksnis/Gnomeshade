@@ -12,8 +12,8 @@ using Gnomeshade.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
 using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

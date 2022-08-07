@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Accounts;
 
 namespace Gnomeshade.Avalonia.Core.Accounts;
 

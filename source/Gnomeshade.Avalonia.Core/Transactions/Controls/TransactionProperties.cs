@@ -4,7 +4,7 @@
 
 using System;
 
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

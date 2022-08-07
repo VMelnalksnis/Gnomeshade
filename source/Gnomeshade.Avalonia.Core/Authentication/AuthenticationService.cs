@@ -4,8 +4,8 @@
 
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Authentication;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Authentication;
 
 namespace Gnomeshade.Avalonia.Core.Authentication;
 

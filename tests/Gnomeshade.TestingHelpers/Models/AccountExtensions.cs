@@ -4,7 +4,7 @@
 
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Accounts;
 
 namespace Gnomeshade.TestingHelpers.Models;
 

@@ -5,17 +5,17 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Data", "source\Gnomeshade.Data\Gnomeshade.Data.csproj", "{BE777AD1-BB50-49C2-8B32-07AFCB0F96F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebApi", "source\Gnomeshade.Interfaces.WebApi\Gnomeshade.Interfaces.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi", "source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj", "{BA9C19F6-C252-4041-B869-F909F3EE7FB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Data.Tests.Integration", "tests\Gnomeshade.Data.Tests.Integration\Gnomeshade.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Data.Identity", "source\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebApi.Client", "source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi.Client", "source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebApi.Client.Tests", "tests\Gnomeshade.Interfaces.WebApi.Client.Tests\Gnomeshade.Interfaces.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi.Client.Tests", "tests\Gnomeshade.WebApi.Client.Tests\Gnomeshade.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebApi.Tests.Integration", "tests\Gnomeshade.Interfaces.WebApi.Tests.Integration\Gnomeshade.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi.Tests.Integration", "tests\Gnomeshade.WebApi.Tests.Integration\Gnomeshade.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop", "source\Gnomeshade.Desktop\Gnomeshade.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
 EndProject
@@ -36,9 +36,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.WebApi.Tests", "tests\Gnomeshade.Interfaces.WebApi.Tests\Gnomeshade.Interfaces.WebApi.Tests.csproj", "{0C052464-F71A-4005-A531-C6D6B4FF09A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests", "tests\Gnomeshade.WebApi.Tests\Gnomeshade.WebApi.Tests.csproj", "{0C052464-F71A-4005-A531-C6D6B4FF09A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.WebApi.Models", "source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj", "{B85DA2DF-B5A6-46D9-991C-2701EB866A88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Models", "source\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj", "{B85DA2DF-B5A6-46D9-991C-2701EB866A88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}"
 ProjectSection(SolutionItems) = preProject

@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Products;
 
 namespace Gnomeshade.Avalonia.Core.Products;
 

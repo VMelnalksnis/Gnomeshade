@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Products;
 
 namespace Gnomeshade.Avalonia.Core.Products;
 

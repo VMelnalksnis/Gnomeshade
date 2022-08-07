@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Products;
 
 namespace Gnomeshade.Avalonia.Core.Products;
 

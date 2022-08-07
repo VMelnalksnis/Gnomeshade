@@ -8,8 +8,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

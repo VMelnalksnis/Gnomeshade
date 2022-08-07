@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Counterparties;
 using Gnomeshade.Avalonia.Core.DesignTime;
-using Gnomeshade.Interfaces.WebApi.Client;
+using Gnomeshade.WebApi.Client;
 
 namespace Gnomeshade.Avalonia.Core.Tests.Counterparties;
 

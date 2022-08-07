@@ -889,7 +889,7 @@
           "Avalonia": "0.10.17",
           "Avalonia.Controls.DataGrid": "0.10.17",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
+          "Gnomeshade.WebApi.Client": "1.0.0",
           "IdentityModel.OidcClient": "5.0.2",
           "LiveChartsCore.SkiaSharpView.Avalonia": "2.0.0-beta.330",
           "Microsoft.Extensions.Configuration": "6.0.1",
@@ -900,11 +900,11 @@
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.client": {
+      "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
+          "Gnomeshade.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.2",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
@@ -915,7 +915,7 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.models": {
+      "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",

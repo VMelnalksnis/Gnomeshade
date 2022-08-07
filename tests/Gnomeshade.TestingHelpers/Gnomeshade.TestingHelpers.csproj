@@ -9,16 +9,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bogus"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration"/>
-		<PackageReference Include="NodaTime.Bogus"/>
-		<PackageReference Include="Npgsql"/>
+		<PackageReference Include="Bogus" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="NodaTime.Bogus" />
+		<PackageReference Include="Npgsql" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Client\Gnomeshade.Interfaces.WebApi.Client.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.Interfaces.WebApi.Models\Gnomeshade.Interfaces.WebApi.Models.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
 	</ItemGroup>
 
 </Project>

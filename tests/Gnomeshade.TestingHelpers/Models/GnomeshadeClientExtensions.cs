@@ -6,10 +6,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Interfaces.WebApi.Client;
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Products;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 

@@ -846,11 +846,29 @@
           "System.Text.Encodings.Web": "6.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.client": {
+      "gnomeshade.testinghelpers": {
+        "type": "Project",
+        "dependencies": {
+          "Bogus": "34.0.2",
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "FluentAssertions": "6.7.0",
+          "Gnomeshade.Data": "1.0.0",
+          "Gnomeshade.WebApi.Client": "1.0.0",
+          "Gnomeshade.WebApi.Models": "1.0.0",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.NET.Test.Sdk": "17.2.0",
+          "NUnit": "3.13.3",
+          "NUnit3TestAdapter": "4.2.1",
+          "Newtonsoft.Json": "13.0.1",
+          "NodaTime.Bogus": "3.0.1",
+          "Npgsql": "6.0.6"
+        }
+      },
+      "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
+          "Gnomeshade.WebApi.Models": "1.0.0",
           "IdentityModel.OidcClient": "5.0.2",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
@@ -861,31 +879,13 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
-      "gnomeshade.interfaces.webapi.models": {
+      "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Http.Features": "5.0.17",
           "NodaTime": "3.1.0"
-        }
-      },
-      "gnomeshade.testinghelpers": {
-        "type": "Project",
-        "dependencies": {
-          "Bogus": "34.0.2",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "FluentAssertions": "6.7.0",
-          "Gnomeshade.Data": "1.0.0",
-          "Gnomeshade.Interfaces.WebApi.Client": "1.0.0",
-          "Gnomeshade.Interfaces.WebApi.Models": "1.0.0",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.NET.Test.Sdk": "17.2.0",
-          "NUnit": "3.13.3",
-          "NUnit3TestAdapter": "4.2.1",
-          "Newtonsoft.Json": "13.0.1",
-          "NodaTime.Bogus": "3.0.1",
-          "Npgsql": "6.0.6"
         }
       },
       "Dapper": {

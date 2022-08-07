@@ -5,8 +5,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
-using Gnomeshade.Interfaces.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 

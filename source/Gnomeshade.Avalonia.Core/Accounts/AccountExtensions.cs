@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Gnomeshade.Interfaces.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Accounts;
 
 using JetBrains.Annotations;
 
