@@ -6,7 +6,7 @@
 		<ProductVersion>3.10</ProductVersion>
 		<ProjectGuid>fed9416f-f622-4120-85bc-8e5b183c89a1</ProjectGuid>
 		<SchemaVersion>2.0</SchemaVersion>
-		<OutputName>Gnomeshade.Interfaces.Desktop.Installer</OutputName>
+		<OutputName>Gnomeshade.Desktop.Installer</OutputName>
 		<OutputType>Package</OutputType>
 		<SuppressIces>ICE38</SuppressIces>
 		<SuppressSpecificWarnings>0204</SuppressSpecificWarnings>
@@ -45,7 +45,7 @@
 	</Target>
 
 	<Target Name="BeforeBuild">
-		<Exec Command="powershell.exe deployment\publish.ps1 Gnomeshade.Interfaces.Desktop win10-x64 $(BUILD_NUMBER) '$(BUILD_TAG)'" WorkingDirectory="..\..\" ConsoleToMSBuild="true" />
+		<Exec Command="powershell.exe deployment\publish.ps1 Gnomeshade.Desktop win10-x64 $(BUILD_NUMBER) '$(BUILD_TAG)'" WorkingDirectory="..\..\" ConsoleToMSBuild="true" />
 	</Target>
 	<Target Name="AfterBuild" />
 </Project>

@@ -3,14 +3,14 @@
 <?define Name = "Gnomeshade" ?>
 <?define Description = "Gnomeshade desktop client" ?>
 <?define Manufacturer = "Valters Melnalksnis" ?>
-<?define Version = "!(bind.fileVersion.Gnomeshade.Interfaces.Desktop.exe)" ?>
+<?define Version = "!(bind.fileVersion.Gnomeshade.Desktop.exe)" ?>
 <?define UpgradeCode = "{7bf2e236-d07d-4622-b190-7424bf463ecd}" ?>
 <?define CabName = "Gnomeshade.cab" ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
 	<!--Variable for Sample Application Directory-->
-	<?define BuildDir=$(var.Gnomeshade.Interfaces.Desktop.TargetDir)win10-x64\publish\?>
+	<?define BuildDir=$(var.Gnomeshade.Desktop.TargetDir)win10-x64\publish\?>
 
 	<Product Id="$(var.ProductId)" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)"
 			 UpgradeCode="$(var.UpgradeCode)" Version="$(var.Version)" Language="1033">
@@ -20,7 +20,7 @@
 				 Description="$(var.Name)" Manufacturer="$(var.Manufacturer)"/>
 
 		<!--Application logo-->
-		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Interfaces.Desktop.TargetDir)Assets\avalonia-logo.ico"/>
+		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Desktop.TargetDir)Assets\avalonia-logo.ico"/>
 
 		<!--Application logo for Control Panel-->
 		<Property Id="ARPPRODUCTICON" Value="Logo.ico"/>
@@ -63,9 +63,9 @@
 				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
 			</Component>
 
-			<Component Id="Gnomeshade.Interfaces.Desktop.exe" Guid="*">
-				<File Id="Gnomeshade.Interfaces.Desktop.exe" Name="Gnomeshade.Interfaces.Desktop.exe"
-					  Source="$(var.BuildDir)Gnomeshade.Interfaces.Desktop.exe"/>
+			<Component Id="Gnomeshade.Desktop.exe" Guid="*">
+				<File Id="Gnomeshade.Desktop.exe" Name="Gnomeshade.Desktop.exe"
+					  Source="$(var.BuildDir)Gnomeshade.Desktop.exe"/>
 				
 				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
 				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
@@ -94,7 +94,7 @@
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
 						  Icon="Logo.ico"
-						  Target="[#Gnomeshade.Interfaces.Desktop.exe]"
+						  Target="[#Gnomeshade.Desktop.exe]"
 						  WorkingDirectory="INSTALLFOLDER"/>
 				<!--Remove application shortcut from Program Menu on uninstall-->
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
@@ -112,7 +112,7 @@
 				<Shortcut Id="AppDesktopShortcut"
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
-						  Target="[INSTALLFOLDER]Gnomeshade.Interfaces.Desktop.exe"
+						  Target="[INSTALLFOLDER]Gnomeshade.Desktop.exe"
 						  Icon="Logo.ico"/>
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
 				<RegistryValue Root="HKCU" Key="Software\$(var.Name)"

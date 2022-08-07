@@ -10,7 +10,7 @@ time="Fri, 24 Jun 2022 19:28:01 +0200"
 
 mkdir -p gnomeshade/opt/gnomeshade || exit
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade || exit
-chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.Interfaces.WebApi || exit
+chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
 
 mkdir -p gnomeshade/DEBIAN || exit
 cp deployment/debian/postinst gnomeshade/DEBIAN/postinst || exit

@@ -12,7 +12,7 @@ using Gnomeshade.WebApi.Models.Authentication;
 
 namespace Gnomeshade.WebApi.Client;
 
-/// <summary>Provides typed interface for using the API provided by the Interfaces.WebApi project.</summary>
+/// <summary>Provides typed interface for using the API provided by the WebApi project.</summary>
 public interface IGnomeshadeClient : IAccountClient, IProductClient, ITransactionClient, IImportClient, IOwnerClient
 {
 	/// <summary>Log in using the specified credentials.</summary>

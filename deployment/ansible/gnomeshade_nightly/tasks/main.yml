@@ -31,7 +31,7 @@
 - name: Rename executable
   become: true
   copy:
-    src: '{{ gnomeshade_install_directory }}/Gnomeshade.Interfaces.WebApi'
+    src: '{{ gnomeshade_install_directory }}/Gnomeshade.WebApi'
     dest: '{{ gnomeshade_install_filepath }}'
     remote_src: yes
     owner: '{{ gnomeshade_user }}'
@@ -43,7 +43,7 @@
 - name: Remove original executable
   become: true
   file:
-    path: '{{ gnomeshade_install_directory }}/Gnomeshade.Interfaces.WebApi'
+    path: '{{ gnomeshade_install_directory }}/Gnomeshade.WebApi'
     state: absent
 
 - name: Create configuration

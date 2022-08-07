@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         project:
-          - Gnomeshade.Interfaces.Desktop.Installer
+          - Gnomeshade.Desktop.Installer
     steps:
       - uses: actions/checkout@v3.0.2
       - uses: actions/setup-dotnet@v2.1.0
@@ -51,8 +51,8 @@ jobs:
     strategy:
       matrix:
         project:
-          - Gnomeshade.Interfaces.Desktop
-          - Gnomeshade.Interfaces.WebApi
+          - Gnomeshade.Desktop
+          - Gnomeshade.WebApi
     name: Build for Linux
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +94,7 @@ jobs:
       - uses: actions/download-artifact@v3.0.0
         id: download
         with:
-          name: Gnomeshade.Interfaces.WebApi_linux-x64.zip
+          name: Gnomeshade.WebApi_linux-x64.zip
 
       - name: Install lintian
         run: sudo apt update && sudo apt install lintian
@@ -102,12 +102,12 @@ jobs:
       - name: Build debian package
         run: >
           deployment/debian.sh
-          "${{ steps.download.outputs.download-path }}/Gnomeshade.Interfaces.WebApi_linux-x64.zip"
+          "${{ steps.download.outputs.download-path }}/Gnomeshade.WebApi_linux-x64.zip"
           "${{ github.run_number }}"
 
       - uses: actions/upload-artifact@v3.0.0
         with:
-          name: Gnomeshade.Interfaces.WebApi_linux-x64.deb
+          name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
   
   update-nightly:
