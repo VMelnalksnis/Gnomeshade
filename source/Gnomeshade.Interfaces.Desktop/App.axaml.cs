@@ -11,9 +11,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
-using Gnomeshade.Interfaces.Avalonia.Core.Configuration;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Authentication;
+using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Interfaces.Desktop.Views;
 using Gnomeshade.Interfaces.WebApi.Client;
 

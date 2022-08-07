@@ -9,8 +9,8 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Imports;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Imports;
 
 using JetBrains.Annotations;
 

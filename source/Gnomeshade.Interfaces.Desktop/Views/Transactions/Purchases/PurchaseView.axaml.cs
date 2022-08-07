@@ -5,8 +5,8 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Purchases;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Transactions.Purchases;
 

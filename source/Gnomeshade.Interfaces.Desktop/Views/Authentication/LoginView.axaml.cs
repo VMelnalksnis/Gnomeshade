@@ -5,8 +5,8 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Authentication;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Authentication;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Authentication;
 

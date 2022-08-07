@@ -61,9 +61,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\nuget-vulnerabilities.yml = .github\workflows\nuget-vulnerabilities.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Avalonia.Core", "source\Gnomeshade.Interfaces.Avalonia.Core\Gnomeshade.Interfaces.Avalonia.Core.csproj", "{9B9585C9-1A8D-434B-BAFC-A8C0AA04F3CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Avalonia.Core", "source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj", "{9B9585C9-1A8D-434B-BAFC-A8C0AA04F3CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Avalonia.Core.Tests", "tests\Gnomeshade.Interfaces.Avalonia.Core.Tests\Gnomeshade.Interfaces.Avalonia.Core.Tests.csproj", "{EACC6CF9-1097-4C31-914E-C21155D4FF07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Avalonia.Core.Tests", "tests\Gnomeshade.Avalonia.Core.Tests\Gnomeshade.Avalonia.Core.Tests.csproj", "{EACC6CF9-1097-4C31-914E-C21155D4FF07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop.Tests", "tests\Gnomeshade.Interfaces.Desktop.Tests\Gnomeshade.Interfaces.Desktop.Tests.csproj", "{D30778D9-A8F3-480E-8070-F1BAE8331A0A}"
 EndProject

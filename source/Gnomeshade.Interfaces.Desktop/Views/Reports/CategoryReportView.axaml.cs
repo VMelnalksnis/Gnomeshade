@@ -5,8 +5,8 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Reports;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Reports;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Reports;
 

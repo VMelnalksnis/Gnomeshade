@@ -899,7 +899,7 @@
           "System.Security.Principal.Windows": "4.7.0"
         }
       },
-      "gnomeshade.interfaces.avalonia.core": {
+      "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
           "Avalonia": "0.10.17",
@@ -924,7 +924,7 @@
           "Avalonia.Diagnostics": "0.10.17",
           "Avalonia.Xaml.Behaviors": "0.10.17",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Interfaces.Avalonia.Core": "1.0.0",
+          "Gnomeshade.Avalonia.Core": "1.0.0",
           "Microsoft.Extensions.Configuration.Json": "6.0.0",
           "Serilog": "2.11.0",
           "Serilog.Extensions.Hosting": "5.0.1",

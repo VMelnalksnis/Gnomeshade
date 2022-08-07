@@ -883,7 +883,7 @@
           "System.Security.Principal.Windows": "4.7.0"
         }
       },
-      "gnomeshade.interfaces.avalonia.core": {
+      "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
           "Avalonia": "0.10.17",

@@ -11,8 +11,8 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Platform;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.DesignTime;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.DesignTime;
 
 using Moq;
 

@@ -5,8 +5,8 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Transactions.Links;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Transactions.Links;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Transactions.Links;
 

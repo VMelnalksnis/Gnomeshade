@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
+using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Interfaces.Desktop.Views;
 
 namespace Gnomeshade.Interfaces.Desktop;

@@ -14,23 +14,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia"/>
-		<PackageReference Include="Avalonia.Desktop"/>
-		<PackageReference Include="Avalonia.Diagnostics"/>
-		<PackageReference Include="Avalonia.Xaml.Behaviors"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
-		<PackageReference Include="Serilog"/>
-		<PackageReference Include="Serilog.Extensions.Hosting"/>
-		<PackageReference Include="Serilog.Sinks.File"/>
-		<PackageReference Include="Serilog.Sinks.Trace"/>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Desktop" />
+		<PackageReference Include="Avalonia.Diagnostics" />
+		<PackageReference Include="Avalonia.Xaml.Behaviors" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.Extensions.Hosting" />
+		<PackageReference Include="Serilog.Sinks.File" />
+		<PackageReference Include="Serilog.Sinks.Trace" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.Interfaces.Avalonia.Core\Gnomeshade.Interfaces.Avalonia.Core.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<AvaloniaResource Include="Assets\**"/>
+		<AvaloniaResource Include="Assets\**" />
 
 		<Content Include="appsettings.json">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>

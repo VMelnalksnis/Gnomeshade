@@ -5,8 +5,8 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-using Gnomeshade.Interfaces.Avalonia.Core;
-using Gnomeshade.Interfaces.Avalonia.Core.Products;
+using Gnomeshade.Avalonia.Core;
+using Gnomeshade.Avalonia.Core.Products;
 
 namespace Gnomeshade.Interfaces.Desktop.Views.Products;
 
