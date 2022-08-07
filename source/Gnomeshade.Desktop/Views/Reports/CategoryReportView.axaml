@@ -1,0 +1,26 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.CategoryReportViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Reports.CategoryReportView"
+	x:CompileBindings="True"
+	x:DataType="reports:CategoryReportViewModel">
+
+	<Grid RowDefinitions="Auto,*">
+		<StackPanel Grid.Row="0" Orientation="Horizontal">
+			<Button IsEnabled="{Binding !IsBusy}" Command="{ReflectionBinding PreviousYear}">Previous Year</Button>
+			<Button IsEnabled="{Binding !IsBusy}" Command="{ReflectionBinding NextYear}">Next Year</Button>
+			<Button IsEnabled="{Binding !IsBusy}" Command="{ReflectionBinding Clear}">Clear</Button>
+		</StackPanel>
+
+		<liveChartsCore:CartesianChart
+			Grid.Row="1" Series="{Binding Series}" XAxes="{Binding XAxes}"
+			LegendPosition="Bottom" TooltipPosition="Right" EasingFunction="{x:Null}" />
+	</Grid>
+</UserControl>

@@ -1,0 +1,22 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:t="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Controls;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionSummary}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Controls.TransactionSummaryView"
+	x:CompileBindings="True"
+	x:DataType="t:TransactionSummary">
+
+	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto">
+		<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Received: " />
+		<TextBlock Grid.Column="1" Padding="0 0 10 0" Text="{Binding Received, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Withdrawn: " />
+		<TextBlock Grid.Column="3" Padding="0 0 10 0" Text="{Binding Withdrawn, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		<TextBlock Grid.Column="4" VerticalAlignment="Center" Text="Total: " />
+		<TextBlock Grid.Column="5" Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+	</Grid>
+</UserControl>

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Interfaces.WebApi.Tests.Integration", "tests\Gnomeshade.Interfaces.WebApi.Tests.Integration\Gnomeshade.Interfaces.WebApi.Tests.Integration.csproj", "{B6757CB9-998B-499F-8042-8A59E2B92577}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop", "source\Gnomeshade.Interfaces.Desktop\Gnomeshade.Interfaces.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop", "source\Gnomeshade.Desktop\Gnomeshade.Desktop.csproj", "{D2ED2F80-3638-405E-BAA0-2788A47D853D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C52AFE6B-B740-4816-A01E-EC68430FC918}"
 	ProjectSection(SolutionItems) = preProject
@@ -65,7 +65,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Avalonia.Core", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Avalonia.Core.Tests", "tests\Gnomeshade.Avalonia.Core.Tests\Gnomeshade.Avalonia.Core.Tests.csproj", "{EACC6CF9-1097-4C31-914E-C21155D4FF07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop.Tests", "tests\Gnomeshade.Interfaces.Desktop.Tests\Gnomeshade.Interfaces.Desktop.Tests.csproj", "{D30778D9-A8F3-480E-8070-F1BAE8331A0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop.Tests", "tests\Gnomeshade.Desktop.Tests\Gnomeshade.Desktop.Tests.csproj", "{D30778D9-A8F3-480E-8070-F1BAE8331A0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEMPLATE", "{F38BE682-DC57-4090-99A3-C913DB95F109}"
 	ProjectSection(SolutionItems) = preProject
@@ -73,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 		.github\ISSUE_TEMPLATE\feature_request.md = .github\ISSUE_TEMPLATE\feature_request.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Interfaces.Desktop.Installer", "source\Gnomeshade.Interfaces.Desktop.Installer\Gnomeshade.Interfaces.Desktop.Installer.wixproj", "{FED9416F-F622-4120-85BC-8E5B183C89A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop.Installer", "source\Gnomeshade.Desktop.Installer\Gnomeshade.Desktop.Installer.wixproj", "{FED9416F-F622-4120-85BC-8E5B183C89A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

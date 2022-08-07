@@ -1,0 +1,77 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:p="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.UnitCreationViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Products.UnitCreationView"
+	x:CompileBindings="True"
+	x:DataType="p:UnitCreationViewModel">
+
+	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+		<TextBlock
+			Grid.Column="0" Grid.Row="0"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="Name:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="0"
+			MinWidth="300" Margin="5"
+			AcceptsReturn="False"
+			Text="{Binding Name}">
+
+			<Interaction.Behaviors>
+				<FocusOnAttachedToVisualTreeBehavior />
+			</Interaction.Behaviors>
+		</TextBox>
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="2"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="Parent unit: " />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="2"
+			MinWidth="300" Margin="5"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			ItemSelector="{Binding UnitSelector}"
+			Items="{Binding Units}"
+			SelectedItem="{Binding ParentUnit, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="mp:Unit">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="3"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="Multiplier:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="3"
+			MinWidth="300" Margin="5"
+			AcceptsReturn="False"
+			Text="{Binding  Multiplier}" />
+
+		<Button
+			Grid.Column="0" Grid.Row="4"
+			Padding="25 5"
+			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
+		<TextBlock
+			Grid.Column="1" Grid.Row="4"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="{Binding ErrorMessage}" />
+	</Grid>
+</UserControl>

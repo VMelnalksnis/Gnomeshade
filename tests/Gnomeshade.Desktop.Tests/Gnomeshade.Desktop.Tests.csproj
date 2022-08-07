@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\source\Gnomeshade.Desktop\Gnomeshade.Desktop.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Moq" />
+	</ItemGroup>
+
+</Project>

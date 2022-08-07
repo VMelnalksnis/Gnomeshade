@@ -1,0 +1,72 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:t="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Controls;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionProperties}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Controls.TransactionPropertiesView"
+	x:CompileBindings="True"
+	x:DataType="t:TransactionProperties">
+
+	<Grid ColumnDefinitions="Auto,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+		<TextBlock
+			Grid.Column="0" Grid.Row="0"
+			Margin="10 0" VerticalAlignment="Center"
+			Text="Booked at" />
+		<TextBox
+			Grid.Column="1" Grid.Row="0" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding BookingDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="0" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding BookingTime, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="1" IsEnabled="{Binding !Reconciled}"
+			Margin="10 0" VerticalAlignment="Center"
+			Text="Valued at" />
+		<TextBox
+			Grid.Column="1" Grid.Row="1" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding ValueDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="1" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding ValueTime, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="2"
+			Margin="10 0" VerticalAlignment="Center"
+			Text="Reconciled at" />
+		<TextBox
+			Grid.Column="1" Grid.Row="2" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding ReconciliationDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="2" IsEnabled="{Binding !Reconciled}"
+			Text="{Binding ReconciliationTime, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="3" IsVisible="{Binding IsImported}"
+			Margin="10 0" VerticalAlignment="Center"
+			Text="Imported at" />
+		<TextBox
+			Grid.Column="1" Grid.Row="3" IsVisible="{Binding IsImported}" IsEnabled="False"
+			Text="{Binding ImportDate, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="3" IsVisible="{Binding IsImported}" IsEnabled="False"
+			Text="{Binding ImportTime, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
+
+		<TextBox
+			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding !Reconciled}"
+			Watermark="Description" AcceptsReturn="True"
+			Text="{Binding Description}" />
+	</Grid>
+</UserControl>

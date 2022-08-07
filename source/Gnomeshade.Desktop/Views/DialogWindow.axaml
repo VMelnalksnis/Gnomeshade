@@ -1,0 +1,24 @@
+<Window
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="Gnomeshade.Desktop.Views.DialogWindow"
+	Icon="/Assets/avalonia-logo.ico"
+	FontFamily="/Assets/Inconsolata-Regular.ttf"
+
+	WindowStartupLocation="CenterScreen"
+	ExtendClientAreaToDecorationsHint="False"
+
+	x:CompileBindings="True">
+
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Black"
+					TintOpacity="1"
+					MaterialOpacity="0.65" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+	</Panel>
+</Window>

@@ -1,0 +1,110 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mp="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:p="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	x:Class="Gnomeshade.Desktop.Views.Products.ProductUpsertionView"
+	d:DataContext="{x:Static dd:DesignTimeData.ProductUpsertionViewModel}"
+	x:CompileBindings="True"
+	x:DataType="p:ProductUpsertionViewModel">
+
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
+		<TextBox
+			Grid.Row="0"
+			Watermark="Name" Text="{Binding Name}">
+
+			<Interaction.Behaviors>
+				<FocusOnAttachedToVisualTreeBehavior />
+			</Interaction.Behaviors>
+		</TextBox>
+
+		<TextBox
+			Grid.Row="1"
+			Watermark="SKU:" Text="{Binding Sku}" />
+
+		<TextBox
+			Grid.Row="2"
+			AcceptsReturn="True"
+			Watermark="Description" Text="{Binding Description}" />
+
+		<AutoCompleteBox
+			Grid.Row="3"
+			Watermark="Unit"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+			ItemSelector="{Binding UnitSelector}" Items="{Binding Units}"
+			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
+
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="mp:Unit">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<AutoCompleteBox
+			Grid.Row="4"
+			Watermark="Category"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+			ItemSelector="{Binding CategorySelector}" Items="{Binding Categories}"
+			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="mp:Category">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<Button
+			Grid.Row="5"
+			Padding="25 5"
+			HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
+		<TextBlock
+			Grid.Row="6"
+			VerticalAlignment="Center" Text="{Binding ErrorMessage}" />
+
+		<DataGrid
+			Grid.Row="7"
+			x:Name="DataGrid"
+			Items="{Binding Purchases, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Unit" IsReadOnly="True"
+					Binding="{Binding UnitName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding CurrencyName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Price" IsReadOnly="True"
+					Binding="{Binding Price, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Delivery" IsReadOnly="True"
+					Binding="{Binding DeliveryDate, Mode=OneWay, StringFormat=\{0:g\}}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+		</DataGrid>
+	</Grid>
+</UserControl>

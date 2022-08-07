@@ -1,0 +1,101 @@
+<Window
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.MainWindowViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.MainWindow"
+	Icon="/Assets/avalonia-logo.ico"
+	Title="Gnomeshade"
+	FontFamily="/Assets/Inconsolata-Regular.ttf"
+
+	WindowStartupLocation="CenterScreen"
+	ExtendClientAreaToDecorationsHint="False"
+
+	x:CompileBindings="True"
+	x:DataType="core:MainWindowViewModel"
+	Cursor="{Binding Cursor}">
+
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Black"
+					TintOpacity="1"
+					MaterialOpacity="0.65" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+
+		<Grid RowDefinitions="Auto,*">
+			<Menu DockPanel.Dock="Top" FontSize="18">
+				<MenuItem Header="_File">
+					<MenuItem
+						x:Name="Logout" Header="_Logout"
+						IsEnabled="{Binding CanLogOut}"
+						Command="{ReflectionBinding LogOut}" />
+					<MenuItem
+						x:Name="Settings" Header="_Settings"
+						Command="{ReflectionBinding SwitchToSetup}" />
+					<MenuItem
+						x:Name="Exit" Header="E_xit"
+						Command="{ReflectionBinding Exit}" />
+				</MenuItem>
+				<MenuItem Header="A_ccounts" IsVisible="{Binding CanLogOut}">
+					<MenuItem
+						x:Name="Accounts" Header="_Overview"
+						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
+					<MenuItem
+						x:Name="Counterparties" Header="Co_unterparties"
+						Command="{ReflectionBinding SwitchToCounterpartiesAsync}" />
+					<MenuItem
+						x:Name="MergeCounterparties" Header="_Merge Counterparties"
+						Command="{ReflectionBinding MergeCounterpartiesAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Transactions" IsVisible="{Binding CanLogOut}">
+					<MenuItem
+						x:Name="Transactions" Header="_Overview"
+						Command="{ReflectionBinding SwitchToTransactionOverviewAsync}" />
+					<MenuItem
+						x:Name="Import" Header="_Import"
+						Command="{ReflectionBinding SwitchToImportAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Products" IsVisible="{Binding CanLogOut}">
+					<MenuItem
+						x:Name="Products" Header="_Overview"
+						Command="{ReflectionBinding SwitchToProductAsync}" />
+					<MenuItem
+						x:Name="CreateUnit" Header="Create Unit"
+						Command="{ReflectionBinding CreateUnitAsync}" />
+					<MenuItem
+						x:Name="CreateTag" Header="Cate_gories"
+						Command="{ReflectionBinding SwitchToCategoriesAsync}" />
+					<MenuItem
+						x:Name="Units" Header="_Units"
+						Command="{ReflectionBinding SwitchToUnitAsync}" />
+				</MenuItem>
+				<MenuItem Header="_Reports" IsVisible="{Binding CanLogOut}">
+					<MenuItem
+						x:Name="CategoryReport" Header="Cate_gories"
+						Command="{ReflectionBinding SwitchToCategoryReportAsync}" />
+				</MenuItem>
+			</Menu>
+
+			<UserControl
+				Grid.Row="1"
+				Content="{Binding ActiveView}"
+				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+				VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+		</Grid>
+	</Panel>
+
+	<Interaction.Behaviors>
+		<EventTriggerBehavior EventName="Activated" SourceObject="{Binding $parent[Window]}">
+			<InvokeCommandAction Command="{ReflectionBinding InitializeActiveViewAsync}" />
+		</EventTriggerBehavior>
+	</Interaction.Behaviors>
+	
+</Window>

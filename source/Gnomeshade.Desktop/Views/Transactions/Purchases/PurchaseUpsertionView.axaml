@@ -1,0 +1,89 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:products="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Products;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	xmlns:accounts="clr-namespace:Gnomeshade.Interfaces.WebApi.Models.Accounts;assembly=Gnomeshade.Interfaces.WebApi.Models"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.PurchaseUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Purchases.PurchaseUpsertionView"
+	x:CompileBindings="True"
+	x:DataType="purchases:PurchaseUpsertionViewModel">
+
+	<Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="0"
+			Watermark="Product"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Products}"
+			ItemSelector="{Binding ProductSelector}"
+			SelectedItem="{Binding Product, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="products:Product">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+		<TextBox
+			Grid.Column="2" Grid.Row="0"
+			Watermark="Amount"
+			Text="{Binding Amount}" />
+		<TextBlock
+			Grid.Column="3" Grid.Row="0"
+			Margin="5 0" VerticalAlignment="Center" HorizontalAlignment="Center"
+			Text="{Binding UnitName}" />
+
+		<Button
+			Grid.Column="4" Grid.Row="0"
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			Command="{ReflectionBinding ShowNewProductDialog}" CommandParameter="{Binding $parent[Window]}">
+			+
+		</Button>
+
+		<TextBox
+			Grid.Column="1" Grid.Row="1"
+			Watermark="Price"
+			Text="{Binding Price}" />
+		<AutoCompleteBox
+			Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2"
+			Watermark="Currency"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Items="{Binding Currencies}"
+			ItemSelector="{Binding CurrencySelector}"
+			SelectedItem="{Binding Currency, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Currency">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="2"
+			Margin="5" VerticalAlignment="Center"
+			Text="Delivered At" />
+		<TextBox
+			Grid.Column="1" Grid.Row="2"
+			Text="{Binding DeliveryDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2"
+			Text="{Binding DeliveryTime, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
+			Watermark="Time" />
+
+		<Button
+			Grid.Column="0" Grid.Row="3"
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
+		<TextBlock
+			Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"
+			Text="{Binding ErrorMessage}" />
+	</Grid>
+</UserControl>

@@ -1,0 +1,77 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.PurchaseViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Purchases.PurchaseView"
+	x:CompileBindings="True"
+	x:DataType="purchases:PurchaseViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<TextBlock Text="Total purchased:" />
+			<TextBlock Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		</StackPanel>
+
+		<DataGrid
+			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Product" IsReadOnly="True"
+					Binding="{Binding ProductName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Unit" IsReadOnly="True"
+					Binding="{Binding UnitName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding CurrencyName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Price" IsReadOnly="True"
+					Binding="{Binding Price, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Delivery" IsReadOnly="True"
+					Binding="{Binding DeliveryDate, Mode=OneWay, StringFormat=\{0:g\}}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+				
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<StackPanel Orientation="Horizontal" IsVisible="{Binding !IsReadOnly}">
+			<Button IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<UserControl IsVisible="{Binding !IsReadOnly}" Content="{Binding Details}" />
+
+	</StackPanel>
+
+</UserControl>
