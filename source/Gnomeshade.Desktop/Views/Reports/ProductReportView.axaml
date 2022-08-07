@@ -1,0 +1,44 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.ProductReportViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Reports.ProductReportView"
+	x:CompileBindings="True"
+	x:DataType="reports:ProductReportViewModel">
+
+	<Grid RowDefinitions="Auto,*">
+		<StackPanel Grid.Row="0" Orientation="Horizontal">
+			<AutoCompleteBox
+				x:Name="Product"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Product"
+				Items="{Binding Products}"
+				ItemSelector="{Binding ProductSelector}"
+				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="products:Product">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
+						<InvokeCommandAction Command="{ReflectionBinding RefreshAsync}" />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+			</AutoCompleteBox>
+		</StackPanel>
+
+		<liveChartsCore:CartesianChart
+			Grid.Row="1" Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+			LegendPosition="Bottom" TooltipPosition="Right" EasingFunction="{x:Null}" />
+	</Grid>
+</UserControl>

@@ -261,6 +261,21 @@ public sealed class MainWindowViewModel : ViewModelBase
 		await viewModel.RefreshAsync();
 	}
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductReportViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task SwitchToProductReportAsync()
+	{
+		if (ActiveView is ProductReportViewModel)
+		{
+			return;
+		}
+
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var viewModel = new ProductReportViewModel(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		ActiveView = viewModel;
+		await viewModel.RefreshAsync();
+	}
+
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
 	{
 		if (Application.Current is null)

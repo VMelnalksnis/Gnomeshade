@@ -134,7 +134,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			new ZonedDateTime(
 				transactions.MaxOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
 				timeZone);
-		var splits = Split(minDate, maxDate);
+		var splits = minDate.SplitByMonthUntil(maxDate);
 
 		XAxes = new()
 		{
@@ -205,18 +205,5 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			.ToList();
 
 		Series = purchasesWithCategories;
-	}
-
-	private static List<LocalDate> Split(ZonedDateTime from, ZonedDateTime to)
-	{
-		var currentDate = new LocalDate(from.Year, from.Month, 1);
-		var dates = new List<LocalDate>();
-		while (currentDate.Year < to.Year || (currentDate.Year == to.Year && currentDate.Month <= to.Month))
-		{
-			dates.Add(currentDate);
-			currentDate += Period.FromMonths(1);
-		}
-
-		return dates;
 	}
 }
