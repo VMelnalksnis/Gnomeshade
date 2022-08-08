@@ -126,14 +126,13 @@ public sealed class CategoryReportViewModel : ViewModelBase
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
-		var minDate =
-			new ZonedDateTime(
-				transactions.MinOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
-				timeZone);
-		var maxDate =
-			new ZonedDateTime(
-				transactions.MaxOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
-				timeZone);
+		var dates = transactions
+			.Select(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value)
+			.DefaultIfEmpty(currentTime)
+			.ToList();
+
+		var minDate = new ZonedDateTime(dates.Min(), timeZone);
+		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = minDate.SplitByMonthUntil(maxDate);
 
 		XAxes = new()

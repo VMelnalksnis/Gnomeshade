@@ -2,9 +2,10 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Gnomeshade.WebApi.Models.Products;
 
 using NodaTime;
 
@@ -12,30 +13,6 @@ namespace Gnomeshade.Avalonia.Core.Reports;
 
 internal static class CollectionExtensions
 {
-	internal static TResult? MinOrDefault<TSource, TResult>(
-		this IReadOnlyCollection<TSource> source,
-		Func<TSource, TResult> selector,
-		TResult? defaultResult = default)
-	{
-		return source.Any() ? source.Min(selector) : defaultResult;
-	}
-
-	internal static TResult? MaxOrDefault<TSource, TResult>(
-		this IReadOnlyCollection<TSource> source,
-		Func<TSource, TResult> selector,
-		TResult? defaultResult = default)
-	{
-		return source.Any() ? source.Max(selector) : defaultResult;
-	}
-
-	internal static decimal AverageOrDefault<TSource>(
-		this IReadOnlyCollection<TSource> source,
-		Func<TSource, decimal> selector,
-		decimal defaultResult = 0)
-	{
-		return source.Any() ? source.Average(selector) : defaultResult;
-	}
-
 	internal static List<LocalDate> SplitByMonthUntil(this ZonedDateTime from, ZonedDateTime to)
 	{
 		var currentDate = new LocalDate(from.Year, from.Month, 1);
@@ -47,5 +24,22 @@ internal static class CollectionExtensions
 		}
 
 		return dates;
+	}
+
+	internal static Unit? GetBaseUnit(this Unit unit, List<Unit> units, out decimal ratio)
+	{
+		ratio = 1;
+		if (unit.ParentUnitId is null)
+		{
+			return null;
+		}
+
+		while (unit.ParentUnitId is not null)
+		{
+			ratio /= unit.Multiplier ?? 1;
+			unit = units.Single(u => u.Id == unit.ParentUnitId);
+		}
+
+		return unit;
 	}
 }

@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Avalonia.Core.Reports.Aggregates;
+using Gnomeshade.Avalonia.Core.Reports.Calculations;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
@@ -30,9 +33,11 @@ public sealed class ProductReportViewModel : ViewModelBase
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private List<Product> _products;
 	private Product? _selectedProduct;
-	private List<StackedColumnSeries<DateTimePoint>> _series;
+	private List<ColumnSeries<DateTimePoint>> _series;
 	private List<ICartesianAxis> _xAxes;
 	private List<ICartesianAxis> _yAxes;
+	private IAggregateFunction? _selectedAggregate;
+	private ICalculationFunction? _calculationFunction;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductReportViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
@@ -47,6 +52,12 @@ public sealed class ProductReportViewModel : ViewModelBase
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 
+		Aggregates = new() { new Average(), new Maximum(), new Minimum(), new Median(), new Sum() };
+		Calculators = new() { new RelativePricePerUnit(), new PricePerUnit(), new TotalPrice(), new RelativeTotalPrice() };
+
+		_selectedAggregate = Aggregates.First();
+		_calculationFunction = Calculators.First();
+
 		_products = new();
 		_xAxes = new();
 		_series = new();
@@ -55,6 +66,12 @@ public sealed class ProductReportViewModel : ViewModelBase
 
 	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
+
+	/// <summary>Gets a delegate for formatting an aggregate function in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> AggregateSelector => (_, item) => ((IAggregateFunction)item).Name;
+
+	/// <summary>Gets a delegate for formatting a calculation function in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> CalculatorSelector => (_, item) => ((ICalculationFunction)item).Name;
 
 	/// <summary>Gets all available products for <see cref="SelectedProduct"/>.</summary>
 	public List<Product> Products
@@ -70,8 +87,28 @@ public sealed class ProductReportViewModel : ViewModelBase
 		set => SetAndNotify(ref _selectedProduct, value);
 	}
 
+	/// <summary>Gets all available aggregate functions.</summary>
+	public List<IAggregateFunction> Aggregates { get; }
+
+	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
+	public IAggregateFunction? SelectedAggregate
+	{
+		get => _selectedAggregate;
+		set => SetAndNotify(ref _selectedAggregate, value);
+	}
+
+	/// <summary>Gets all available aggregate functions.</summary>
+	public List<ICalculationFunction> Calculators { get; }
+
+	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
+	public ICalculationFunction? SelectedCalculator
+	{
+		get => _calculationFunction;
+		set => SetAndNotify(ref _calculationFunction, value);
+	}
+
 	/// <summary>Gets the data series of average price of <see cref="SelectedProduct"/>.</summary>
-	public List<StackedColumnSeries<DateTimePoint>> Series
+	public List<ColumnSeries<DateTimePoint>> Series
 	{
 		get => _series;
 		private set => SetAndNotify(ref _series, value);
@@ -91,30 +128,80 @@ public sealed class ProductReportViewModel : ViewModelBase
 		private set => SetAndNotify(ref _yAxes, value);
 	}
 
-	/// <inheritdoc />
-	protected override async Task Refresh()
+	/// <summary>Adds the <see cref="SelectedProduct"/> to <see cref="Series"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UpdateSelectedProduct()
 	{
-		var products = await _gnomeshadeClient.GetProductsAsync();
-
-		Products = products;
-		if (SelectedProduct is null)
+		await RefreshAsync(); // Need await so that SelectedProduct updates
+		if (SelectedProduct is null || SelectedAggregate is null || SelectedCalculator is null)
 		{
 			return;
 		}
 
-		var detailedTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue);
+		IsBusy = true;
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue);
+		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
+
+		await Task.WhenAll(transactionsTask, unitsTask);
+
+		var detailedTransactions = transactionsTask.Result;
+		var units = unitsTask.Result;
+		AddSeriesForProduct(SelectedProduct, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
+		IsBusy = false;
+	}
+
+	/// <summary>Updates all <see cref="Series"/> with the current value of <see cref="SelectedAggregate"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UpdateSelectedAggregate()
+	{
+		await RefreshAsync(); // Need await so that Aggregate updates
+		if (SelectedAggregate is null || SelectedCalculator is null || !Series.Any())
+		{
+			return;
+		}
+
+		IsBusy = true;
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue);
+		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
+
+		var currentProductNames = Series.Select(series => series.Name).ToList();
+		var products = Products.Where(product => currentProductNames.Contains(product.Name));
+
+		await Task.WhenAll(transactionsTask, unitsTask);
+		var detailedTransactions = transactionsTask.Result;
+		var units = unitsTask.Result;
+
+		Series = new();
+		foreach (var product in products)
+		{
+			AddSeriesForProduct(product, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
+		}
+
+		IsBusy = false;
+	}
+
+	/// <inheritdoc />
+	protected override async Task Refresh()
+	{
+		var products = await _gnomeshadeClient.GetProductsAsync();
+		Products = products;
+	}
+
+	private void AddSeriesForProduct(Product productToAdd, IAggregateFunction aggregate, ICalculationFunction calculationFunction, List<DetailedTransaction> detailedTransactions, List<Unit> units)
+	{
 		var transactions = detailedTransactions
-			.Where(transaction => transaction.Purchases.Any(purchase => purchase.ProductId == SelectedProduct.Id))
+			.Where(transaction => transaction.Purchases.Any(purchase => purchase.ProductId == productToAdd.Id))
 			.ToList();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
-		var minDate = new ZonedDateTime(
-			transactions.MinOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
-			timeZone);
-		var maxDate = new ZonedDateTime(
-			transactions.MaxOrDefault(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value, currentTime),
-			timeZone);
+		var dates = transactions
+			.Select(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value)
+			.DefaultIfEmpty(currentTime)
+			.ToList();
+
+		var minDate = new ZonedDateTime(dates.Min(), timeZone);
+		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = minDate.SplitByMonthUntil(maxDate);
 
 		XAxes = new()
@@ -130,33 +217,45 @@ public sealed class ProductReportViewModel : ViewModelBase
 
 		YAxes = new() { new Axis { MinLimit = 0 } };
 
-		var purchases = transactions
+		var values = transactions
 			.SelectMany(transaction =>
 			{
 				var date = new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone);
 				return transaction.Purchases
-					.Where(purchase => purchase.ProductId == SelectedProduct.Id)
-					.Select(purchase => (purchase, date));
+					.Where(purchase => purchase.ProductId == productToAdd.Id)
+					.Select(purchase =>
+					{
+						var product = Products.Single(product => product.Id == purchase.ProductId);
+						if (product.UnitId is null)
+						{
+							return new CalculableValue(purchase, date, null, 1m);
+						}
+
+						var unit = units.Single(unit => unit.Id == product.UnitId).GetBaseUnit(units, out var multiplier);
+						return new(purchase, date, unit, multiplier);
+					});
 			}).ToList();
 
-		Series = new()
-		{
+		var dateTimePoints = splits.Select(split => new DateTimePoint(
+				split.ToDateTimeUnspecified(),
+				(double?)aggregate.Aggregate(values
+					.Where(value => value.Date.Year == split.Year && value.Date.Month == split.Month)
+					.ToList()
+					.DefaultIfEmpty(new(new() { Price = 0, Amount = 1 }, default, default, 1m))
+					.Select(calculationFunction.Calculate))))
+			.ToList();
+
+		Series.Add(
 			new()
 			{
-				Values = splits.Select(split => new DateTimePoint(
-					split.ToDateTimeUnspecified(),
-					(double?)purchases
-						.Where(purchase => purchase.date.Year == split.Year && purchase.date.Month == split.Month)
-						.ToList()
-						.AverageOrDefault(purchase => purchase.purchase.Price))),
+				Values = calculationFunction.Update(dateTimePoints),
 				Stroke = null,
 				DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
 				DataLabelsSize = 12,
 				DataLabelsPosition = DataLabelsPosition.Middle,
-				Name = SelectedProduct?.Name,
+				Name = productToAdd.Name,
 				EasingFunction = null,
 				DataLabelsFormatter = point => point.Model?.Value?.ToString("N2") ?? string.Empty,
-			},
-		};
+			});
 	}
 }

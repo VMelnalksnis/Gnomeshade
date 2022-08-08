@@ -7,6 +7,8 @@
 	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
 	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
+	xmlns:aggregates="clr-namespace:Gnomeshade.Avalonia.Core.Reports.Aggregates;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:calculations="clr-namespace:Gnomeshade.Avalonia.Core.Reports.Calculations;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.ProductReportViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Reports.ProductReportView"
@@ -22,7 +24,8 @@
 				Watermark="Product"
 				Items="{Binding Products}"
 				ItemSelector="{Binding ProductSelector}"
-				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}">
+				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}">
 				<AutoCompleteBox.ItemTemplate>
 					<DataTemplate x:DataType="products:Product">
 						<TextBlock Text="{Binding Name}" />
@@ -31,7 +34,51 @@
 
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
-						<InvokeCommandAction Command="{ReflectionBinding RefreshAsync}" />
+						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedProduct}" />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+			</AutoCompleteBox>
+			
+			<AutoCompleteBox
+				x:Name="Aggregate"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Product"
+				Items="{Binding Aggregates}"
+				ItemSelector="{Binding AggregateSelector}"
+				SelectedItem="{Binding SelectedAggregate, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="aggregates:IAggregateFunction">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
+						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+			</AutoCompleteBox>
+			
+			<AutoCompleteBox
+				x:Name="Calculator"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Product"
+				Items="{Binding Calculators}"
+				ItemSelector="{Binding CalculatorSelector}"
+				SelectedItem="{Binding SelectedCalculator, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="calculations:ICalculationFunction">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Calculator}">
+						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
 					</EventTriggerBehavior>
 				</Interaction.Behaviors>
 			</AutoCompleteBox>
