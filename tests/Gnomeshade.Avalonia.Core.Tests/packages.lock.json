@@ -235,15 +235,15 @@
       },
       "Microsoft.AspNetCore.Cryptography.Internal": {
         "type": "Transitive",
-        "resolved": "6.0.7",
-        "contentHash": "BYqRUiLXtOfKNUj2Pt5kdvrKkVTgUAZvEL4kuBPMrczNtLq7z4zZH2nXXYD/h353ZHV0r1+jkl1PXrlxfIPYyg=="
+        "resolved": "6.0.8",
+        "contentHash": "W7IAX1zk131s1B4D/MdrOBVPD2+bUd+qHF6bGhzH47lilpDuo0wRLxzn8LKoGFsVwbMUJNfmWtxR3EXLLwbe/g=="
       },
       "Microsoft.AspNetCore.Cryptography.KeyDerivation": {
         "type": "Transitive",
-        "resolved": "6.0.7",
-        "contentHash": "iKQgXepVT2n98sheTQWhr/1EEzVspsVZKVL9GYhb8AIXw7J9fnJ2sLkS10SvwXlH9TP9vP3zOnOdW72O6g5lFg==",
+        "resolved": "6.0.8",
+        "contentHash": "eDRPXA6l9iMiDjKlrKsMS9Up+7LSkVLyHY6FY8R1W1ej004ZA/roe9feQztS9e/VcI5F3p/00V/dvmjfr2ZOjQ==",
         "dependencies": {
-          "Microsoft.AspNetCore.Cryptography.Internal": "6.0.7"
+          "Microsoft.AspNetCore.Cryptography.Internal": "6.0.8"
         }
       },
       "Microsoft.AspNetCore.DataProtection": {
@@ -487,10 +487,10 @@
       },
       "Microsoft.Extensions.Identity.Core": {
         "type": "Transitive",
-        "resolved": "6.0.7",
-        "contentHash": "UDCKCQ+byNzbowlZwp+VWd02LbqNAtRNKK43xTxprdMkbfUonoMBTCtOnpW86pmVnNZo8SxclOxmOsX5heuAgA==",
+        "resolved": "6.0.8",
+        "contentHash": "eX1vkbMLahI0hXmncrZL7UB+2tlrFgL0CuAuz6cjDlvytD3/CEdNe3CJj7FjL7130fWSypnzE5WIIgziyqQFHQ==",
         "dependencies": {
-          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "6.0.7",
+          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "6.0.8",
           "Microsoft.Extensions.Logging": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0"
         }
@@ -1026,7 +1026,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
-          "Microsoft.Extensions.Identity.Stores": "6.0.7",
+          "Microsoft.Extensions.Identity.Stores": "6.0.8",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
           "System.Text.Encodings.Web": "6.0.0"
         }
@@ -1247,12 +1247,12 @@
       },
       "Microsoft.Extensions.Identity.Stores": {
         "type": "CentralTransitive",
-        "requested": "[6.0.7, )",
-        "resolved": "6.0.7",
-        "contentHash": "/I+jLCCQvR+1LabnhQzc3HvJwkpHFpxk0+rW4SoB21s98YCsfdighh5/G3QJk9vLqHlIZYGxLn6pb4SEfXesDg==",
+        "requested": "[6.0.8, )",
+        "resolved": "6.0.8",
+        "contentHash": "rvSqpHdPDYEns6qjfaG+6GqnrVYFICVbcuC1vJSVSW9DyxhfKdn0mD/sp1ZRp41x5au6iRr5c4Cm5CTP8I8grA==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Identity.Core": "6.0.7",
+          "Microsoft.Extensions.Identity.Core": "6.0.8",
           "Microsoft.Extensions.Logging": "6.0.0"
         }
       },

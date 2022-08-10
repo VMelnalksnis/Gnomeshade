@@ -1216,7 +1216,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
-          "Microsoft.Extensions.Identity.Stores": "6.0.7",
+          "Microsoft.Extensions.Identity.Stores": "6.0.8",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
           "System.Text.Encodings.Web": "6.0.0"
         }
@@ -1525,7 +1525,7 @@
       },
       "Microsoft.Extensions.Identity.Stores": {
         "type": "CentralTransitive",
-        "requested": "[6.0.7, )",
+        "requested": "[6.0.8, )",
         "resolved": "6.0.8",
         "contentHash": "rvSqpHdPDYEns6qjfaG+6GqnrVYFICVbcuC1vJSVSW9DyxhfKdn0mD/sp1ZRp41x5au6iRr5c4Cm5CTP8I8grA==",
         "dependencies": {
