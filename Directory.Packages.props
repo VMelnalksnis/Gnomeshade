@@ -23,7 +23,7 @@
 		<PackageVersion Include="FluentAssertions.NodaTime" Version="2.0.1"/>
 		<PackageVersion Include="IdentityModel.OidcClient" Version="5.0.2"/>
 		<PackageVersion Include="JetBrains.Annotations" Version="2022.1.0"/>
-		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.330"/>
+		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.350"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
