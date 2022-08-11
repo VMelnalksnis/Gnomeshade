@@ -90,7 +90,9 @@ public class AutoMapperTests
 				options => options
 					.ByMembersExcluding<AccountInCurrencyEntity, AccountInCurrency>(
 						inCurrency => inCurrency.CurrencyId,
-						inCurrency => inCurrency.AccountId));
+						inCurrency => inCurrency.AccountId,
+						inCurrency => inCurrency.DeletedAt,
+						inCurrency => inCurrency.DeletedByUserId));
 	}
 
 	[Test]
@@ -134,7 +136,9 @@ public class AutoMapperTests
 					.ByMembersExcluding<AccountEntity, Account>(
 						a => a.NormalizedName,
 						a => a.PreferredCurrencyId,
-						a => a.Currencies));
+						a => a.Currencies,
+						a => a.DeletedAt,
+						a => a.DeletedByUserId));
 
 		accountModel
 			.Currencies
@@ -147,7 +151,9 @@ public class AutoMapperTests
 				options => options
 					.ByMembersExcluding<AccountInCurrencyEntity, AccountInCurrency>(
 						inCurrency => inCurrency.CurrencyId,
-						inCurrency => inCurrency.AccountId));
+						inCurrency => inCurrency.AccountId,
+						inCurrency => inCurrency.DeletedAt,
+						inCurrency => inCurrency.DeletedByUserId));
 	}
 
 	[Test]
@@ -175,6 +181,10 @@ public class AutoMapperTests
 			.Should()
 			.BeEquivalentTo(
 				currency,
-				options => options.ByMembersExcluding<CurrencyEntity, Currency>(c => c.NormalizedName));
+				options => options.ByMembersExcluding<CurrencyEntity, Currency>(
+					c => c.NormalizedName,
+					c => c.DeletedAt,
+					c => c.DeletedByUserId,
+					c => c.CreatedByUserId));
 	}
 }

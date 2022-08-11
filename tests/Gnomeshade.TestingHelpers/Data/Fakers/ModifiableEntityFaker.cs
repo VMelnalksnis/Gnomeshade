@@ -12,7 +12,7 @@ using Gnomeshade.Data.Entities.Abstractions;
 namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
 public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
-	where TEntity : class, IModifiableEntity, IOwnableEntity
+	where TEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	protected ModifiableEntityFaker(Guid userId)
 	{

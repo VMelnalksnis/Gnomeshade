@@ -8,9 +8,7 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-/// <summary>
-/// Generates fake <see cref="AccountInCurrencyEntity"/> objects.
-/// </summary>
+/// <summary>Generates fake <see cref="AccountInCurrencyEntity"/> objects.</summary>
 public sealed class AccountInCurrencyFaker : ModifiableEntityFaker<AccountInCurrencyEntity>
 {
 	/// <summary>
@@ -24,9 +22,7 @@ public sealed class AccountInCurrencyFaker : ModifiableEntityFaker<AccountInCurr
 	{
 	}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountInCurrencyFaker"/> class with the specified relationship ids.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountInCurrencyFaker"/> class with the specified relationship ids.</summary>
 	/// <param name="userId">The id of the <see cref="UserEntity"/> which created this account.</param>
 	/// <param name="accountId">The id of the <see cref="AccountEntity"/> to which the currency is added to.</param>
 	/// <param name="currencyId">The id of the <see cref="CurrencyEntity"/> added to the account.</param>

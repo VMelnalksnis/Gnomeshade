@@ -11,19 +11,10 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Keyword for categorizing other entities.</summary>
-public sealed record CategoryEntity : IOwnableEntity, IModifiableEntity, INamedEntity
+public sealed record CategoryEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -29,7 +30,7 @@ public sealed class OwnerRepository : IDisposable
 		_dbConnection = dbConnection;
 	}
 
-	/// <summary>Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.</summary>
+	/// <summary>Adds a new owner with the specified <see cref="Entity.Id"/>.</summary>
 	/// <param name="id">The id with which to create the entity.</param>
 	/// <returns>The id of the new entity.</returns>
 	public Task<Guid> AddAsync(Guid id)
@@ -38,7 +39,7 @@ public sealed class OwnerRepository : IDisposable
 		return _dbConnection.QuerySingleAsync<Guid>(command);
 	}
 
-	/// <summary>Adds a new owner with the specified <see cref="OwnerEntity.Id"/>.</summary>
+	/// <summary>Adds a new owner with the specified <see cref="Entity.Id"/>.</summary>
 	/// <param name="id">The id with which to create the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the new entity.</returns>

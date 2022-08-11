@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Entities.Abstractions;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -56,7 +57,7 @@ public sealed class OwnershipRepository : IDisposable
 	}
 
 	/// <summary>
-	/// Adds the default <see cref="OwnershipEntity"/>, where the <see cref="OwnershipEntity.Id"/>,
+	/// Adds the default <see cref="OwnershipEntity"/>, where the <see cref="Entity.Id"/>,
 	/// <see cref="OwnershipEntity.OwnerId"/> and <see cref="OwnershipEntity.UserId"/> is the id of the user.
 	/// </summary>
 	/// <param name="id">Id of the user.</param>

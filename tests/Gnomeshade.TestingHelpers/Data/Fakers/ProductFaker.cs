@@ -8,23 +8,17 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-/// <summary>
-/// Generates fake <see cref="ProductEntity"/> objects.
-/// </summary>
+/// <summary>Generates fake <see cref="ProductEntity"/> objects.</summary>
 public sealed class ProductFaker : ModifiableEntityFaker<ProductEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ProductFaker"/> class with the specified relationships.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ProductFaker"/> class with the specified relationships.</summary>
 	/// <param name="user">The user which created this product.</param>
 	public ProductFaker(UserEntity user)
 		: this(user.Id)
 	{
 	}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ProductFaker"/> class with the specified relationship ids.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ProductFaker"/> class with the specified relationship ids.</summary>
 	/// <param name="userId">The id of the <see cref="UserEntity"/> which created this product.</param>
 	public ProductFaker(Guid userId)
 		: base(userId)

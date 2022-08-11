@@ -8,14 +8,10 @@ using Gnomeshade.Data.Entities;
 
 namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
-/// <summary>
-/// Generates fake <see cref="AccountEntity"/> objects.
-/// </summary>
+/// <summary>Generates fake <see cref="AccountEntity"/> objects.</summary>
 public sealed class AccountFaker : NamedEntityFaker<AccountEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountFaker"/> class with the specified relationships.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountFaker"/> class with the specified relationships.</summary>
 	/// <param name="user">The user which created the account.</param>
 	/// <param name="counterparty">The counterparty to which this account belongs to.</param>
 	/// <param name="currency">The preferred currency.</param>
@@ -24,9 +20,7 @@ public sealed class AccountFaker : NamedEntityFaker<AccountEntity>
 	{
 	}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountFaker"/> class with the specified relationship ids.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountFaker"/> class with the specified relationship ids.</summary>
 	/// <param name="userId">The id of the <see cref="UserEntity"/> which created the account.</param>
 	/// <param name="counterpartyId">The id of the <see cref="CounterpartyEntity"/> to which this account belongs to.</param>
 	/// <param name="currencyId">The id of the preferred <see cref="CurrencyEntity"/>.</param>

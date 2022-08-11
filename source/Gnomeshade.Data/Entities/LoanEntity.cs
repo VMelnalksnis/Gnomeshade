@@ -11,19 +11,10 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>An amount that was loaned or payed back as a part of a transaction.</summary>
-public sealed record LoanEntity : IOwnableEntity, IModifiableEntity
+public sealed record LoanEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }

@@ -6,22 +6,14 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-using NodaTime;
-
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>
 /// Link between <see cref="OwnerEntity"/> and the entities which represent the user,
 /// for example <see cref="UserEntity"/>.
 /// </summary>
-public sealed record OwnershipEntity : IEntity
+public sealed record OwnershipEntity : Entity
 {
-	/// <inheritdoc/>
-	public Guid Id { get; init; }
-
-	/// <inheritdoc/>
-	public Instant CreatedAt { get; init; }
-
 	/// <summary>Gets or sets the id of the <see cref="OwnerEntity"/> to which the other entities are linked.</summary>
 	public Guid OwnerId { get; set; }
 

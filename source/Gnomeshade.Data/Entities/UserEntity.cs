@@ -10,25 +10,15 @@ using NodaTime;
 
 namespace Gnomeshade.Data.Entities;
 
-/// <summary>
-/// A user within the context of this application.
-/// </summary>
-public sealed record UserEntity : IModifiableEntity
+/// <summary>A user within the context of this application.</summary>
+public sealed record UserEntity : Entity, IModifiableEntity
 {
-	/// <inheritdoc/>
-	public Guid Id { get; init; }
-
-	/// <inheritdoc/>
-	public Instant CreatedAt { get; init; }
-
 	/// <inheritdoc/>
 	public Instant ModifiedAt { get; set; }
 
 	/// <inheritdoc/>
 	public Guid ModifiedByUserId { get; set; }
 
-	/// <summary>
-	/// Gets or sets the id of the <see cref="CounterpartyEntity"/> which represents this user in transactions.
-	/// </summary>
+	/// <summary>Gets or sets the id of the <see cref="CounterpartyEntity"/> which represents this user in transactions.</summary>
 	public Guid CounterpartyId { get; set; }
 }

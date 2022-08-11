@@ -11,19 +11,10 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents a link to an external resource.</summary>
-public sealed record LinkEntity : IOwnableEntity, IModifiableEntity
+public sealed record LinkEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }

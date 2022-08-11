@@ -2,40 +2,26 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
-
 using Gnomeshade.Data.Entities.Abstractions;
 
 using NodaTime;
 
 namespace Gnomeshade.Data.Entities;
 
-/// <summary>
-/// Represents an ISO 4217 currency.
-/// </summary>
-public sealed record CurrencyEntity : INamedEntity
+/// <summary>Represents an ISO 4217 currency.</summary>
+public sealed record CurrencyEntity : Entity, INamedEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
+	public string Name { get; set; } = null!;
 
 	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
+	public string NormalizedName { get; set; } = null!;
 
-	/// <inheritdoc />
-	public string Name { get; set; } = string.Empty;
-
-	/// <inheritdoc />
-	public string NormalizedName { get; set; } = string.Empty;
-
-	/// <summary>
-	/// Gets the ISO 4217 three-digit numeric code.
-	/// </summary>
+	/// <summary>Gets the ISO 4217 three-digit numeric code.</summary>
 	public short NumericCode { get; init; }
 
-	/// <summary>
-	/// Gets the ISO 4217 three-character alphabetic code.
-	/// </summary>
-	public string AlphabeticCode { get; init; } = string.Empty;
+	/// <summary>Gets the ISO 4217 three-character alphabetic code.</summary>
+	public string AlphabeticCode { get; init; } = null!;
 
 	/// <summary>
 	/// Gets the base 10 ratio of the minor unit to the currency.
@@ -44,28 +30,18 @@ public sealed record CurrencyEntity : INamedEntity
 	/// </summary>
 	public byte MinorUnit { get; init; }
 
-	/// <summary>
-	/// Gets a value indicating whether or not the currency is officially recognized in ISO 4217.
-	/// </summary>
+	/// <summary>Gets a value indicating whether or not the currency is officially recognized in ISO 4217.</summary>
 	public bool Official { get; init; }
 
-	/// <summary>
-	/// Gets a value indicating whether or not the currency is a cryptocurrency.
-	/// </summary>
+	/// <summary>Gets a value indicating whether or not the currency is a cryptocurrency.</summary>
 	public bool Crypto { get; init; }
 
-	/// <summary>
-	/// Gets a value indicating whether or not the currency is no longer active.
-	/// </summary>
+	/// <summary>Gets a value indicating whether or not the currency is no longer active.</summary>
 	public bool Historical { get; init; }
 
-	/// <summary>
-	/// Gets the date from which the currency has been active.
-	/// </summary>
+	/// <summary>Gets the date from which the currency has been active.</summary>
 	public Instant? ActiveFrom { get; init; }
 
-	/// <summary>
-	/// Gets the date until which the currency has been/will be active.
-	/// </summary>
+	/// <summary>Gets the date until which the currency has been/will be active.</summary>
 	public Instant? ActiveUntil { get; init; }
 }

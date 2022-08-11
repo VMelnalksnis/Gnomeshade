@@ -11,19 +11,10 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents the purchasing of a product or a service.</summary>
-public sealed record PurchaseEntity : IOwnableEntity, IModifiableEntity
+public sealed record PurchaseEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }

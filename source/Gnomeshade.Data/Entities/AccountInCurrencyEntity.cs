@@ -11,19 +11,10 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents a single currency of an <see cref="AccountEntity"/>.</summary>
-public sealed record AccountInCurrencyEntity : IOwnableEntity, IModifiableEntity, IDisableableEntity
+public sealed record AccountInCurrencyEntity : Entity, IOwnableEntity, IModifiableEntity, IDisableableEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }

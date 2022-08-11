@@ -13,8 +13,4 @@ public interface IOwnableEntity : IEntity
 	/// <seealso cref="OwnerEntity"/>
 	/// <seealso cref="OwnershipEntity"/>
 	public Guid OwnerId { get; set; }
-
-	/// <summary>Gets the id of the user which created this entity.</summary>
-	/// <seealso cref="UserEntity"/>
-	public Guid CreatedByUserId { get; init; }
 }

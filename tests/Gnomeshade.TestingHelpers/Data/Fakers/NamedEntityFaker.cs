@@ -9,16 +9,14 @@ using Gnomeshade.Data.Entities.Abstractions;
 namespace Gnomeshade.TestingHelpers.Data.Fakers;
 
 public abstract class NamedEntityFaker<TEntity> : ModifiableEntityFaker<TEntity>
-	where TEntity : class, IModifiableEntity, IOwnableEntity, INamedEntity
+	where TEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	protected NamedEntityFaker(Guid userId)
 		: base(userId)
 	{
 	}
 
-	/// <summary>
-	/// Generates an entity unique from <paramref name="entity"/>.
-	/// </summary>
+	/// <summary>Generates an entity unique from <paramref name="entity"/>.</summary>
 	/// <param name="entity">An entity against which to compare for uniqueness.</param>
 	/// <param name="attemptCount">The number of times to try to generate a unique entity.</param>
 	/// <returns>A fake fake entity unique from <paramref name="entity"/>.</returns>

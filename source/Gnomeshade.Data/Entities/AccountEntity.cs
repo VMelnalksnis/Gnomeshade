@@ -13,26 +13,11 @@ using NodaTime;
 
 namespace Gnomeshade.Data.Entities;
 
-/// <summary>
-/// Represents an account which can hold funds one or more currencies.
-/// </summary>
-public sealed record AccountEntity :
-	IOwnableEntity,
-	IModifiableEntity,
-	INamedEntity,
-	IDisableableEntity
+/// <summary>Represents an account which can hold funds one or more currencies.</summary>
+public sealed record AccountEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity, IDisableableEntity
 {
 	/// <inheritdoc />
-	public Guid Id { get; init; }
-
-	/// <inheritdoc />
-	public Instant CreatedAt { get; init; }
-
-	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc />
-	public Guid CreatedByUserId { get; init; }
 
 	/// <inheritdoc />
 	public Instant ModifiedAt { get; set; }
@@ -46,19 +31,13 @@ public sealed record AccountEntity :
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
-	/// <summary>
-	/// Gets or sets the id of the <see cref="CounterpartyEntity"/> to which this account belongs to.
-	/// </summary>
+	/// <summary>Gets or sets the id of the <see cref="CounterpartyEntity"/> to which this account belongs to.</summary>
 	public Guid CounterpartyId { get; set; }
 
-	/// <summary>
-	/// Gets or sets the id of the preferred <see cref="AccountInCurrencyEntity"/>.
-	/// </summary>
+	/// <summary>Gets or sets the id of the preferred <see cref="AccountInCurrencyEntity"/>.</summary>
 	public Guid PreferredCurrencyId { get; set; }
 
-	/// <summary>
-	/// Gets or sets the preferred currency.
-	/// </summary>
+	/// <summary>Gets or sets the preferred currency.</summary>
 	public CurrencyEntity PreferredCurrency { get; set; } = null!;
 
 	/// <inheritdoc />
@@ -67,29 +46,19 @@ public sealed record AccountEntity :
 	/// <inheritdoc />
 	public Guid? DisabledByUserId { get; set; }
 
-	/// <summary>
-	/// Gets or sets the Business Identifier Code (BIC).
-	/// </summary>
+	/// <summary>Gets or sets the Business Identifier Code (BIC).</summary>
 	public string? Bic { get; set; }
 
-	/// <summary>
-	/// Gets or sets the International Bank Account Number (IBAN).
-	/// </summary>
+	/// <summary>Gets or sets the International Bank Account Number (IBAN).</summary>
 	public string? Iban { get; set; }
 
-	/// <summary>
-	/// Gets or sets the account number, which does not follow standards such as IBAN.
-	/// </summary>
+	/// <summary>Gets or sets the account number, which does not follow standards such as IBAN.</summary>
 	public string? AccountNumber { get; set; }
 
-	/// <summary>
-	/// Gets or sets the currencies used in this account.
-	/// </summary>
+	/// <summary>Gets or sets the currencies used in this account.</summary>
 	public List<AccountInCurrencyEntity> Currencies { get; set; } = null!;
 
-	/// <summary>
-	/// Initializes an account from a grouping of currencies.
-	/// </summary>
+	/// <summary>Initializes an account from a grouping of currencies.</summary>
 	/// <param name="grouping">A grouping of currencies by account.</param>
 	/// <returns>An account with initialized <see cref="Currencies"/>.</returns>
 	public static AccountEntity FromGrouping(IGrouping<Guid, OneToOne<AccountEntity, AccountInCurrencyEntity>> grouping)
