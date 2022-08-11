@@ -180,11 +180,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 			return conflictingResult;
 		}
 
-		var account = Mapper.Map<AccountEntity>(creation) with
-		{
-			Id = id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
-		};
+		var account = Mapper.Map<AccountEntity>(creation) with { Id = id };
 
 		_ = await _accountUnitOfWork.UpdateAsync(account, user);
 		return NoContent();
@@ -204,7 +200,6 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
 
 		_ = await _accountUnitOfWork.AddAsync(account);

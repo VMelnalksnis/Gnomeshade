@@ -34,5 +34,5 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	protected override string FindSql => "WHERE c.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.normalized_name = @name";
+	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
 }

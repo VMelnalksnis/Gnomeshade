@@ -12,7 +12,7 @@ UPDATE accounts
 SET modified_at           = DEFAULT,
     modified_by_user_id   = @ModifiedByUserId,
     name                  = @Name,
-    normalized_name       = @NormalizedName,
+    normalized_name       = upper(@Name),
     counterparty_id       = @CounterpartyId,
     preferred_currency_id = @PreferredCurrencyId,
     disabled_at           = @DisabledAt,

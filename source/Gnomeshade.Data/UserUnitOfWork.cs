@@ -64,7 +64,6 @@ public sealed class UserUnitOfWork : IDisposable
 				CreatedByUserId = userId,
 				ModifiedByUserId = userId,
 				Name = fullName,
-				NormalizedName = fullName.ToUpperInvariant(),
 			};
 			var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
 			user.CounterpartyId = counterpartyId;

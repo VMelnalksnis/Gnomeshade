@@ -96,7 +96,6 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 		var product = Mapper.Map<ProductEntity>(creation) with
 		{
 			Id = id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
 			ModifiedByUserId = user.Id,
 		};
 
@@ -107,8 +106,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	/// <inheritdoc />
 	protected override async Task<ActionResult> CreateNewAsync(Guid id, ProductCreation creation, UserEntity user)
 	{
-		var normalizedName = creation.Name!.ToUpperInvariant();
-		var conflictingProduct = await Repository.FindByNameAsync(normalizedName, user.Id);
+		var conflictingProduct = await Repository.FindByNameAsync(creation.Name!, user.Id);
 		if (conflictingProduct is not null)
 		{
 			return Problem(
@@ -122,7 +120,6 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = normalizedName,
 		};
 
 		_ = await Repository.AddAsync(product);

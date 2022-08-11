@@ -34,5 +34,5 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	protected override string FindSql => "WHERE u.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE u.normalized_name = @name";
+	protected override string NameSql => "WHERE u.normalized_name = upper(@name)";
 }

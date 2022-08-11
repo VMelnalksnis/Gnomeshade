@@ -34,5 +34,5 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	protected override string FindSql => "WHERE p.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE p.normalized_name = @name";
+	protected override string NameSql => "WHERE p.normalized_name = upper(@name)";
 }

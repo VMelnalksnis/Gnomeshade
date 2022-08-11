@@ -101,7 +101,6 @@ public sealed class AccountUnitOfWork : IDisposable
 			CreatedByUserId = account.CreatedByUserId,
 			ModifiedByUserId = account.ModifiedByUserId,
 			Name = account.Name,
-			NormalizedName = account.NormalizedName,
 		};
 
 		var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);

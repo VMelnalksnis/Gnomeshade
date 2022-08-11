@@ -12,7 +12,7 @@ UPDATE counterparties
 SET modified_at         = DEFAULT,
     modified_by_user_id = @ModifiedByUserId,
     name                = @Name,
-    normalized_name     = @NormalizedName
+    normalized_name     = upper(@Name)
 FROM c
 WHERE counterparties.id = c.id
 RETURNING c.id;

@@ -70,7 +70,6 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 		var unit = Mapper.Map<UnitEntity>(creation) with
 		{
 			Id = id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
 			ModifiedByUserId = user.Id,
 		};
 
@@ -81,8 +80,7 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 	/// <inheritdoc />
 	protected override async Task<ActionResult> CreateNewAsync(Guid id, UnitCreation creation, UserEntity user)
 	{
-		var normalizedName = creation.Name!.ToUpperInvariant();
-		var conflictingUnit = await Repository.FindByNameAsync(normalizedName, user.Id);
+		var conflictingUnit = await Repository.FindByNameAsync(creation.Name!, user.Id);
 		if (conflictingUnit is not null)
 		{
 			return Problem(
@@ -96,7 +94,6 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = normalizedName,
 		};
 
 		_ = await Repository.AddAsync(unit);

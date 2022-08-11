@@ -38,7 +38,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	protected override string FindSql => "WHERE c.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.normalized_name = @name";
+	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>

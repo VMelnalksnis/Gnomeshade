@@ -12,7 +12,7 @@ UPDATE categories
 SET modified_at         = DEFAULT,
 	modified_by_user_id = @ModifiedByUserId,
 	name                = @Name,
-	normalized_name     = @NormalizedName,
+	normalized_name     = upper(@Name),
 	description         = @Description,
 	category_id         = @CategoryId
 FROM c

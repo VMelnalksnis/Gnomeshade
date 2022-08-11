@@ -79,7 +79,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		{
 			Id = id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = creation.Name.ToUpperInvariant(),
 		};
 
 		_ = await Repository.UpdateAsync(category);
@@ -89,8 +88,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	/// <inheritdoc />
 	protected override async Task<ActionResult> CreateNewAsync(Guid id, CategoryCreation creation, UserEntity user)
 	{
-		var normalizedName = creation.Name.ToUpperInvariant();
-		var conflictingCategory = await Repository.FindByNameAsync(normalizedName, user.Id);
+		var conflictingCategory = await Repository.FindByNameAsync(creation.Name, user.Id);
 		if (conflictingCategory is not null)
 		{
 			return Problem(
@@ -104,7 +102,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = normalizedName,
 		};
 
 		_ = await Repository.AddAsync(category);

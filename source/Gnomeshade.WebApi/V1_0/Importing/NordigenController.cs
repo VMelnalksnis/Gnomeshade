@@ -262,7 +262,6 @@ public sealed class NordigenController : ControllerBase
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			Name = iban,
-			NormalizedName = iban.ToUpperInvariant(),
 			CounterpartyId = user.CounterpartyId,
 			PreferredCurrencyId = currency.Id,
 			Iban = iban,
@@ -283,7 +282,7 @@ public sealed class NordigenController : ControllerBase
 	{
 		AccountEntity? bankAccount = null!;
 
-		var bankName = institution.Name.ToUpperInvariant();
+		var bankName = institution.Name;
 		if (!string.IsNullOrWhiteSpace(bankName))
 		{
 			_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
@@ -315,7 +314,6 @@ public sealed class NordigenController : ControllerBase
 				ModifiedByUserId = user.Id,
 				PreferredCurrencyId = currency.Id,
 				Name = institution.Name,
-				NormalizedName = institution.Name.ToUpperInvariant(),
 				Bic = bic,
 				Currencies = new() { new() { CurrencyId = currency.Id } },
 			};
@@ -425,7 +423,6 @@ public sealed class NordigenController : ControllerBase
 					ModifiedByUserId = user.Id,
 					PreferredCurrencyId = otherCurrency.Id,
 					Name = name,
-					NormalizedName = name.ToUpperInvariant(),
 					Iban = iban,
 					AccountNumber = iban,
 					Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
@@ -447,10 +444,7 @@ public sealed class NordigenController : ControllerBase
 		if (otherAccount is null)
 		{
 			_logger.LogTrace("Failed to find other account, using unidentified");
-			otherAccount = await _accountRepository.FindByNameAsync(
-				ReservedNames.Unidentified.ToUpperInvariant(),
-				user.Id,
-				dbTransaction);
+			otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified, user.Id, dbTransaction);
 
 			if (otherAccount is null)
 			{
@@ -461,16 +455,12 @@ public sealed class NordigenController : ControllerBase
 					ModifiedByUserId = user.Id,
 					OwnerId = user.Id,
 					Name = ReservedNames.Unidentified,
-					NormalizedName = ReservedNames.Unidentified.ToUpperInvariant(),
 					PreferredCurrencyId = currency.Id,
 					Currencies = new() { new() { CurrencyId = currency.Id } },
 				};
 
 				await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
-				otherAccount = await _accountRepository.FindByNameAsync(
-					ReservedNames.Unidentified.ToUpperInvariant(),
-					user.Id,
-					dbTransaction);
+				otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified, user.Id, dbTransaction);
 			}
 		}
 
@@ -551,7 +541,7 @@ public sealed class NordigenController : ControllerBase
 		var name =
 			bookedTransaction.CreditorName ??
 			bookedTransaction.DebtorName;
-		if (!string.IsNullOrWhiteSpace(name) && await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id, dbTransaction) is { } nameAccount)
+		if (!string.IsNullOrWhiteSpace(name) && await _accountRepository.FindByNameAsync(name, user.Id, dbTransaction) is { } nameAccount)
 		{
 			return nameAccount;
 		}

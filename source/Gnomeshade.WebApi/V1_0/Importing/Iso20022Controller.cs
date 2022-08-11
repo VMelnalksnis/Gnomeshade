@@ -285,7 +285,6 @@ public sealed class Iso20022Controller : ControllerBase
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			Name = iban,
-			NormalizedName = iban.ToUpperInvariant(),
 			CounterpartyId = user.CounterpartyId,
 			PreferredCurrencyId = currency.Id,
 			Iban = iban,
@@ -312,7 +311,7 @@ public sealed class Iso20022Controller : ControllerBase
 		AccountEntity? bankAccount = null!;
 
 		var institutionIdentification = identification.FinancialInstitutionIdentification;
-		var bankName = institutionIdentification.Name?.ToUpperInvariant();
+		var bankName = institutionIdentification.Name;
 		if (!string.IsNullOrWhiteSpace(bankName))
 		{
 			_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
@@ -326,7 +325,7 @@ public sealed class Iso20022Controller : ControllerBase
 			// todo create new account based on name
 		}
 
-		var bic = institutionIdentification.Bic?.ToUpperInvariant();
+		var bic = institutionIdentification.Bic;
 		if (!string.IsNullOrWhiteSpace(bic))
 		{
 			_logger.LogTrace("Searching for bank account by BIC {Bic}", bic);
@@ -344,7 +343,6 @@ public sealed class Iso20022Controller : ControllerBase
 				ModifiedByUserId = user.Id,
 				PreferredCurrencyId = currency.Id,
 				Name = bic,
-				NormalizedName = bic,
 				Bic = bic,
 				Currencies = new() { new() { CurrencyId = currency.Id } },
 			};
@@ -454,7 +452,6 @@ public sealed class Iso20022Controller : ControllerBase
 					ModifiedByUserId = user.Id,
 					PreferredCurrencyId = otherCurrency.Id,
 					Name = name,
-					NormalizedName = name.ToUpperInvariant(),
 					Iban = iban,
 					AccountNumber = iban,
 					Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
@@ -478,7 +475,7 @@ public sealed class Iso20022Controller : ControllerBase
 		if (otherAccount is null)
 		{
 			_logger.LogTrace("Failed to find other account, using unidentified");
-			otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified.ToUpperInvariant(), user.Id, dbTransaction) ??
+			otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified, user.Id, dbTransaction) ??
 				throw new ApplicationException($"Failed to find account by reserved name {ReservedNames.Unidentified}");
 		}
 
@@ -561,7 +558,7 @@ public sealed class Iso20022Controller : ControllerBase
 			relatedParty.Creditor?.Name ??
 			relatedParty.Debtor?.Name;
 		if (!string.IsNullOrWhiteSpace(name) &&
-			await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id, dbTransaction) is { } nameAccount)
+			await _accountRepository.FindByNameAsync(name, user.Id, dbTransaction) is { } nameAccount)
 		{
 			return nameAccount;
 		}

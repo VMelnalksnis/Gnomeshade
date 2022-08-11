@@ -42,7 +42,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	protected override string UpdateSql => Queries.Account.Update;
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE a.normalized_name = @name";
+	protected override string NameSql => "WHERE a.normalized_name = upper(@name)";
 
 	/// <summary>Finds an account with the specified IBAN.</summary>
 	/// <param name="iban">The IBAN for which to search for.</param>

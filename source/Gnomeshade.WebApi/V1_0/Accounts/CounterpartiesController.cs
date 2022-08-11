@@ -101,7 +101,6 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 		{
 			Id = id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
 
 		_ = await Repository.UpdateAsync(counterparty);
@@ -122,7 +121,6 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			NormalizedName = creation.Name!.ToUpperInvariant(),
 		};
 
 		_ = await Repository.AddAsync(counterparty);
@@ -131,8 +129,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 
 	private async Task<ActionResult?> GetConflictResult(CounterpartyCreation model, UserEntity user, Guid? existingId = null)
 	{
-		var normalizedName = model.Name!.ToUpperInvariant();
-		var conflictingCounterparty = await Repository.FindByNameAsync(normalizedName, user.Id);
+		var conflictingCounterparty = await Repository.FindByNameAsync(model.Name!, user.Id);
 		if (conflictingCounterparty is null || conflictingCounterparty.Id == existingId)
 		{
 			return null;

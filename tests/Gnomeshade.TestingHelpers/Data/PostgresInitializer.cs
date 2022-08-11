@@ -93,7 +93,6 @@ public class PostgresInitializer
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			Name = "Test counterparty",
-			NormalizedName = "TEST COUNTERPARTY",
 		};
 
 		var counterpartyId = await new CounterpartyRepository(sqlConnection).AddAsync(counterparty, transaction);

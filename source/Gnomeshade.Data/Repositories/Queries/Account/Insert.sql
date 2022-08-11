@@ -18,7 +18,7 @@ VALUES
      @CreatedByUserId,
      @ModifiedByUserId,
      @Name,
-     @NormalizedName,
+     upper(@Name),
      @CounterpartyId,
      @PreferredCurrencyId,
      @DisabledAt,
