@@ -6,7 +6,7 @@ using System;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers;
+namespace Gnomeshade.Data.Tests.Integration.Fakers;
 
 public sealed class CounterpartyFaker : NamedEntityFaker<CounterpartyEntity>
 {

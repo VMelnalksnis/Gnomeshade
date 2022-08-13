@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -9,15 +10,15 @@ using System.Threading.Tasks;
 
 using Bogus;
 
-using Gnomeshade.Data.Migrations;
-using Gnomeshade.TestingHelpers;
-using Gnomeshade.TestingHelpers.Data;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
+using DotNet.Testcontainers.Containers;
+
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -28,15 +29,45 @@ public sealed class WebserverSetup
 {
 	private static readonly IConfiguration _configuration;
 
+	private static readonly PostgreSqlTestcontainer _postgreSqlTestcontainer =
+		new TestcontainersBuilder<PostgreSqlTestcontainer>()
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration
+			{
+				Database = "gnomeshade-test",
+				Username = "gnomeshade",
+				Password = "foobar",
+			})
+			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+			.Build();
+
+	private static readonly PostgreSqlTestcontainer _postgreSqlTestIdentitycontainer =
+		new TestcontainersBuilder<PostgreSqlTestcontainer>()
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration
+			{
+				Database = "gnomeshade-identity-test",
+				Username = "gnomeshade",
+				Password = "foobar",
+			})
+			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+			.Build();
+
 	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
 	private static Login _login = null!;
 	private static Login _secondLogin = null!;
 
 	static WebserverSetup()
 	{
+		Task.WhenAll(_postgreSqlTestcontainer.StartAsync(), _postgreSqlTestIdentitycontainer.StartAsync())
+			.GetAwaiter()
+			.GetResult();
+
 		_configuration =
 			new ConfigurationBuilder()
-				.AddUserSecrets<WebserverSetup>(true, true)
+				.AddInMemoryCollection(new Dictionary<string, string>
+				{
+					{ "ConnectionStrings:FinanceDb", _postgreSqlTestcontainer.ConnectionString },
+					{ "ConnectionStrings:IdentityDb", _postgreSqlTestIdentitycontainer.ConnectionString },
+				})
 				.AddEnvironmentVariables()
 				.Build();
 	}
@@ -58,7 +89,7 @@ public sealed class WebserverSetup
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
 	{
-		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_configuration.GetConnectionString("FinanceDb"));
+		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_configuration);
 		var client = _webApplicationFactory.CreateClient();
 		var registrationFaker = new Faker<RegistrationModel>()
 			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
@@ -73,7 +104,6 @@ public sealed class WebserverSetup
 	[OneTimeTearDown]
 	public async Task OneTimeTearDownAsync()
 	{
-		await new PostgresInitializer(_configuration, new(NullLogger<DatabaseMigrator>.Instance)).DropDatabaseAsync();
 		await _webApplicationFactory.DisposeAsync();
 	}
 

@@ -2,8 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Collections.Generic;
-
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -14,12 +12,11 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 
 public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Startup>
 {
-	private readonly string _connectionString;
+	private readonly IConfiguration _configuration;
 
-	public GnomeshadeWebApplicationFactory(string connectionString)
+	public GnomeshadeWebApplicationFactory(IConfiguration configuration)
 	{
-		_connectionString = connectionString;
-
+		_configuration = configuration;
 		Log.Logger = new LoggerConfiguration()
 			.MinimumLevel.Verbose()
 			.Enrich.FromLogContext()
@@ -33,15 +30,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 	protected override IHost CreateHost(IHostBuilder builder)
 	{
 		builder.UseSerilog();
-		builder.ConfigureAppConfiguration((_, configurationBuilder) =>
-		{
-			configurationBuilder.AddUserSecrets<GnomeshadeWebApplicationFactory>(true, true);
-			configurationBuilder.AddInMemoryCollection(new Dictionary<string, string>
-			{
-				{ "ConnectionStrings:FinanceDb", _connectionString },
-			});
-		});
-
+		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddConfiguration(_configuration));
 		return base.CreateHost(builder);
 	}
 }

@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 
 using Npgsql;
 
-namespace Gnomeshade.TestingHelpers.Data;
+namespace Gnomeshade.Data.Tests.Integration;
 
 /// <summary>Postgres database initializer for integration testing.</summary>
 public class PostgresInitializer
@@ -22,6 +22,7 @@ public class PostgresInitializer
 
 	private readonly string _database;
 	private readonly DatabaseMigrator _databaseMigrator;
+	private readonly string _connectionString;
 
 	/// <summary>Initializes a new instance of the <see cref="PostgresInitializer"/> class.</summary>
 	/// <param name="configuration">Configuration containing the connection string for the test database.</param>
@@ -29,8 +30,8 @@ public class PostgresInitializer
 	/// <exception cref="ArgumentException">The connection string does not specify the initial database.</exception>
 	public PostgresInitializer(IConfiguration configuration, DatabaseMigrator databaseMigrator)
 	{
-		ConnectionString = configuration.GetConnectionString(_connectionStringName);
-		var database = new NpgsqlConnectionStringBuilder(ConnectionString).Database;
+		_connectionString = configuration.GetConnectionString(_connectionStringName);
+		var database = new NpgsqlConnectionStringBuilder(_connectionString).Database;
 		if (string.IsNullOrWhiteSpace(database))
 		{
 			throw new ArgumentException(
@@ -42,14 +43,11 @@ public class PostgresInitializer
 		_databaseMigrator = databaseMigrator;
 	}
 
-	/// <summary>Gets the connection string for the integration test database.</summary>
-	public string ConnectionString { get; }
-
 	/// <summary>Creates a new open connection to the integration test database.</summary>
 	/// <returns>An open database connection.</returns>
 	public async Task<NpgsqlConnection> CreateConnectionAsync()
 	{
-		var sqlConnection = new NpgsqlConnection(ConnectionString);
+		var sqlConnection = new NpgsqlConnection(_connectionString);
 		await sqlConnection.OpenAsync().ConfigureAwait(false);
 		return sqlConnection;
 	}
@@ -58,7 +56,7 @@ public class PostgresInitializer
 	/// <returns>A valid user for testing.</returns>
 	public async Task<UserEntity> SetupDatabaseAsync()
 	{
-		var connectionString = new NpgsqlConnectionStringBuilder(ConnectionString)
+		var connectionString = new NpgsqlConnectionStringBuilder(_connectionString)
 		{
 			Database = "postgres",
 			IncludeErrorDetail = true,
@@ -72,7 +70,7 @@ public class PostgresInitializer
 		await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 
 		await sqlConnection.ChangeDatabaseAsync(_database).ConfigureAwait(false);
-		_databaseMigrator.Migrate(ConnectionString);
+		_databaseMigrator.Migrate(_connectionString);
 
 		await using var transaction = await sqlConnection.BeginTransactionAsync().ConfigureAwait(false);
 
@@ -101,26 +99,5 @@ public class PostgresInitializer
 		await transaction.CommitAsync().ConfigureAwait(false);
 
 		return user;
-	}
-
-	/// <summary>Drops the integration test database.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DropDatabaseAsync()
-	{
-		NpgsqlConnection.ClearAllPools();
-
-		await using var sqlConnection = new NpgsqlConnection(ConnectionString);
-		await sqlConnection.OpenAsync().ConfigureAwait(false);
-		await sqlConnection.ChangeDatabaseAsync("postgres").ConfigureAwait(false);
-
-		var clearConnections = sqlConnection.CreateCommand();
-		clearConnections.CommandText =
-			$"REVOKE CONNECT ON DATABASE \"{_database}\" FROM public;" +
-			$"SELECT pid, pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{_database}' AND pid <> pg_backend_pid();";
-		await clearConnections.ExecuteNonQueryAsync().ConfigureAwait(false);
-
-		var createDatabase = sqlConnection.CreateCommand();
-		createDatabase.CommandText = $"DROP DATABASE IF EXISTS \"{_database}\";";
-		await createDatabase.ExecuteNonQueryAsync().ConfigureAwait(false);
 	}
 }

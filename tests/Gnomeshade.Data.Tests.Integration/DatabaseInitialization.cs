@@ -2,14 +2,18 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Dapper;
 
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
+using DotNet.Testcontainers.Containers;
+
 using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Migrations;
-using Gnomeshade.TestingHelpers.Data;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -24,13 +28,33 @@ namespace Gnomeshade.Data.Tests.Integration;
 [SetUpFixture]
 public class DatabaseInitialization
 {
-	private static readonly IConfiguration _configuration =
-		new ConfigurationBuilder()
-			.AddUserSecrets<DatabaseInitialization>(true, true)
+	private static readonly PostgreSqlTestcontainer _postgreSqlTestcontainer;
+	private static readonly PostgresInitializer _initializer;
+
+	static DatabaseInitialization()
+	{
+		_postgreSqlTestcontainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration
+			{
+				Database = "gnomeshade-test",
+				Username = "gnomeshade",
+				Password = "foobar",
+			})
+			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+			.Build();
+
+		_postgreSqlTestcontainer.StartAsync().GetAwaiter().GetResult();
+
+		IConfiguration configuration = new ConfigurationBuilder()
+			.AddInMemoryCollection(new Dictionary<string, string>
+			{
+				{ "ConnectionStrings:FinanceDb", _postgreSqlTestcontainer.ConnectionString },
+			})
 			.AddEnvironmentVariables()
 			.Build();
 
-	private static readonly PostgresInitializer _initializer = new(_configuration, new(new NullLogger<DatabaseMigrator>()));
+		_initializer = new(configuration, new(new NullLogger<DatabaseMigrator>()));
+	}
 
 	public static UserEntity TestUser { get; private set; } = null!;
 
@@ -54,6 +78,6 @@ public class DatabaseInitialization
 	[OneTimeTearDown]
 	public static async Task DropDatabaseAsync()
 	{
-		await _initializer.DropDatabaseAsync();
+		await _postgreSqlTestcontainer.StopAsync();
 	}
 }

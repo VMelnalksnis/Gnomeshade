@@ -6,7 +6,7 @@ using System;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers;
+namespace Gnomeshade.Data.Tests.Integration.Fakers;
 
 public abstract class NamedEntityFaker<TEntity> : ModifiableEntityFaker<TEntity>
 	where TEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity

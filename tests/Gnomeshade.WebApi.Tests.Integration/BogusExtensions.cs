@@ -7,11 +7,11 @@ using System.Text;
 
 using Bogus.DataSets;
 
-namespace Gnomeshade.TestingHelpers;
+namespace Gnomeshade.WebApi.Tests.Integration;
 
-public static class BogusExtensions
+internal static class BogusExtensions
 {
-	public static string Password(this Internet internet, int minLength, int maxLength)
+	internal static string Password(this Internet internet, int minLength, int maxLength)
 	{
 		var randomizer = internet.Random;
 		var stringBuilder = new StringBuilder(maxLength)

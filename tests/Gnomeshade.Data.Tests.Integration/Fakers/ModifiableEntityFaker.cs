@@ -9,7 +9,7 @@ using Bogus;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
-namespace Gnomeshade.TestingHelpers.Data.Fakers;
+namespace Gnomeshade.Data.Tests.Integration.Fakers;
 
 public abstract class ModifiableEntityFaker<TEntity> : Faker<TEntity>
 	where TEntity : Entity, IOwnableEntity, IModifiableEntity
