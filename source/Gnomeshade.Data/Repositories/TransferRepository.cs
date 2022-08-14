@@ -25,7 +25,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Transfer.Delete;
+	protected override string DeleteSql => "CALL delete_transfer(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Transfer.Insert;
@@ -37,7 +37,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	protected override string UpdateSql => Queries.Transfer.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE transfers.id = @id";
+	protected override string FindSql => "WHERE transfers.deleted_at IS NULL AND transfers.id = @id";
 
 	/// <summary>Gets all transfers of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the transfers.</param>
@@ -49,7 +49,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE transfers.transaction_id = @transactionId AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -62,7 +62,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE transfers.id = @id AND transaction_id = @transactionId AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.id = @id AND transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -75,7 +75,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <returns>The transfer if one exists and can be updated, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindWriteableByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE transfers.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
+		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -87,7 +87,7 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE transfers.bank_reference = @bankReference AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.bank_reference = @bankReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}

@@ -49,6 +49,9 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <summary>Gets the SQL query for updating entities.</summary>
 	protected abstract string UpdateSql { get; }
 
+	/// <summary>Gets the SQL for filtering out deleted rows.</summary>
+	protected virtual string NotDeleted => "deleted_at IS NULL";
+
 	/// <summary>Adds a new entity.</summary>
 	/// <param name="entity">The entity to add.</param>
 	/// <returns>The id of the created entity.</returns>
@@ -68,7 +71,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task<int> DeleteAsync(Guid id, Guid ownerId)
+	public Task DeleteAsync(Guid id, Guid ownerId)
 	{
 		return DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId });
 	}
@@ -78,7 +81,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task<int> DeleteAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
+	public Task DeleteAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 	{
 		var command = new CommandDefinition(DeleteSql, new { id, ownerId }, dbTransaction);
 		return DbConnection.ExecuteAsync(command);
@@ -90,7 +93,7 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <returns>A collection of all entities.</returns>
 	public Task<IEnumerable<TEntity>> GetAllAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var command = new CommandDefinition($"{SelectSql} WHERE {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
+		var command = new CommandDefinition($"{SelectSql} WHERE {NotDeleted} AND {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
 
@@ -121,35 +124,16 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <summary>Searches for an entity with the specified id.</summary>
 	/// <param name="id">The id to to search by.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="accessLevel">The access level to check.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<TEntity?> FindByIdAsync(
+		Guid id,
+		Guid ownerId,
+		AccessLevel accessLevel = AccessLevel.Read,
+		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
-	}
-
-	/// <summary>Searches for an entity with the specified id and that can be updated.</summary>
-	/// <param name="id">The id to to search by.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The entity if one exists and can be updated, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindWriteableByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
-	{
-		var sql = $"{SelectSql} {FindSql} AND {WriteAccessSql}";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
-	}
-
-	/// <summary>Searches for an entity with the specified id and that can be deleted.</summary>
-	/// <param name="id">The id to to search by.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The entity if one exists and can be deleted, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindDeletableByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
-	{
-		var sql = $"{SelectSql} {FindSql} AND {DeleteAccessSql}";
+		var sql = GetAccessSql(accessLevel);
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -158,10 +142,11 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <param name="id">The id to to search by.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
+	/// <param name="accessLevel">The access level to check.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
+	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction, AccessLevel accessLevel = AccessLevel.Read)
 	{
-		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
+		var sql = GetAccessSql(accessLevel);
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -180,13 +165,13 @@ public abstract class Repository<TEntity> : IDisposable
 	/// <summary>Updates an existing entity with the specified id.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task<int> UpdateAsync(TEntity entity) => DbConnection.ExecuteAsync(UpdateSql, entity);
+	public Task UpdateAsync(TEntity entity) => DbConnection.ExecuteAsync(UpdateSql, entity);
 
 	/// <summary>Updates an existing entity with the specified id using the specified database transaction.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task<int> UpdateAsync(TEntity entity, IDbTransaction dbTransaction)
+	public Task UpdateAsync(TEntity entity, IDbTransaction dbTransaction)
 	{
 		return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
 	}
@@ -225,6 +210,14 @@ public abstract class Repository<TEntity> : IDisposable
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return entities.DistinctBy(entity => entity.Id).Single();
 	}
+
+	private string GetAccessSql(AccessLevel accessLevel) => accessLevel switch
+	{
+		AccessLevel.Read => $"{SelectSql} {FindSql} AND {AccessSql}",
+		AccessLevel.Write => $"{SelectSql} {FindSql} AND {WriteAccessSql}",
+		AccessLevel.Delete => $"{SelectSql} {FindSql} AND {DeleteAccessSql}",
+		_ => throw new ArgumentOutOfRangeException(nameof(accessLevel), accessLevel, null),
+	};
 
 	private void Dispose(bool disposing)
 	{

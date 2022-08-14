@@ -31,8 +31,6 @@ internal static class Queries
 	{
 		internal static string Balance { get; } = Read($"Queries.{nameof(Account)}.Balance.sql");
 
-		internal static string Delete { get; } = Read($"Queries.{nameof(Account)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Account)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Account)}.Select.sql");
@@ -42,8 +40,6 @@ internal static class Queries
 
 	internal static class AccountInCurrency
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Select.sql");
@@ -51,8 +47,6 @@ internal static class Queries
 
 	internal static class Counterparty
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Counterparty)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Counterparty)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Counterparty)}.Select.sql");
@@ -80,8 +74,6 @@ internal static class Queries
 
 	internal static class Link
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Link)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Link)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Link)}.Select.sql");
@@ -91,8 +83,6 @@ internal static class Queries
 
 	internal static class Product
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Product)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Product)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Product)}.Select.sql");
@@ -102,8 +92,6 @@ internal static class Queries
 
 	internal static class Category
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Category)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Category)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Category)}.Select.sql");
@@ -113,8 +101,6 @@ internal static class Queries
 
 	internal static class Transaction
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Transaction)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Transaction)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Transaction)}.Select.sql");
@@ -124,8 +110,6 @@ internal static class Queries
 
 	internal static class Transfer
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Transfer)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Transfer)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Transfer)}.Select.sql");
@@ -135,8 +119,6 @@ internal static class Queries
 
 	internal static class Purchase
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Purchase)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Purchase)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Purchase)}.Select.sql");
@@ -146,8 +128,6 @@ internal static class Queries
 
 	internal static class Loan
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Loan)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Loan)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Loan)}.Select.sql");
@@ -157,8 +137,6 @@ internal static class Queries
 
 	internal static class Unit
 	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Unit)}.Delete.sql");
-
 		internal static string Insert { get; } = Read($"Queries.{nameof(Unit)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Unit)}.Select.sql");

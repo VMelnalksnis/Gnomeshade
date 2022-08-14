@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,12 +32,14 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="LinkEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public LinksController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<LinksController> logger,
-		LinkRepository repository)
-		: base(applicationUserContext, mapper, logger, repository)
+		LinkRepository repository,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}
 
@@ -81,12 +84,7 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 			Uri = creation.Uri!.ToString(),
 		};
 
-		var updatedCount = await Repository.UpdateAsync(linkToCreate);
-		if (updatedCount is not 1)
-		{
-			throw new ApplicationException($"Unexpected update count {updatedCount}");
-		}
-
+		await Repository.UpdateAsync(linkToCreate);
 		return NoContent();
 	}
 

@@ -65,15 +65,14 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <summary>Deletes the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <returns>The number of affected rows.</returns>
-	public async Task<int> DeleteAsync(TransactionEntity transaction, Guid ownerId)
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId)
 	{
 		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 		try
 		{
-			var rows = await DeleteAsync(transaction, ownerId, dbTransaction);
+			await DeleteAsync(transaction, ownerId, dbTransaction);
 			dbTransaction.Commit();
-			return rows;
 		}
 		catch (Exception)
 		{
@@ -86,12 +85,10 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <param name="transaction">The transaction to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The number of affected rows.</returns>
-	public async Task<int> DeleteAsync(TransactionEntity transaction, Guid ownerId, IDbTransaction dbTransaction)
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var rows = 0;
-		rows += await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
-		return rows;
+		await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
 	}
 
 	/// <summary>
@@ -99,16 +96,15 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// </summary>
 	/// <param name="transaction">The transaction to update.</param>
 	/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
-	/// <returns>The number of affected rows.</returns>
-	public async Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
 	{
 		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
 
 		try
 		{
-			var rows = await UpdateAsync(transaction, modifiedBy, dbTransaction);
+			await UpdateAsync(transaction, modifiedBy, dbTransaction);
 			dbTransaction.Commit();
-			return rows;
 		}
 		catch (Exception)
 		{
@@ -121,12 +117,11 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <param name="transaction">The transaction to update.</param>
 	/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The number of affected rows.</returns>
-	public async Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, IDbTransaction dbTransaction)
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, IDbTransaction dbTransaction)
 	{
 		transaction.ModifiedByUserId = modifiedBy.Id;
-		var rows = await _repository.UpdateAsync(transaction, dbTransaction).ConfigureAwait(false);
-		return rows;
+		return _repository.UpdateAsync(transaction, dbTransaction);
 	}
 
 	/// <inheritdoc />

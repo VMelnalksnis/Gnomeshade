@@ -25,7 +25,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Loan.Delete;
+	protected override string DeleteSql => "CALL delete_loan(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Loan.Insert;
@@ -37,7 +37,10 @@ public sealed class LoanRepository : Repository<LoanEntity>
 	protected override string UpdateSql => Queries.Loan.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE loans.id = @id";
+	protected override string NotDeleted => "loans.deleted_at IS NULL";
+
+	/// <inheritdoc />
+	protected override string FindSql => "WHERE loans.deleted_at IS NULL AND loans.id = @id";
 
 	/// <summary>Gets all loans of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the loans.</param>
@@ -49,7 +52,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -64,7 +67,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { counterpartyId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -81,7 +84,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE loans.id = @id AND transaction_id = @transactionId AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.id = @id AND transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -98,7 +101,7 @@ public sealed class LoanRepository : Repository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE loans.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
+		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}

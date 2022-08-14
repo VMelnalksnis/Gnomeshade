@@ -23,7 +23,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Counterparty.Delete;
+	protected override string DeleteSql => "CALL delete_counterparty(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Counterparty.Insert;
@@ -35,10 +35,13 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	protected override string UpdateSql => Queries.Counterparty.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE c.id = @id";
+	protected override string FindSql => "WHERE c.deleted_at IS NULL AND c.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
+	protected override string NotDeleted => "c.deleted_at IS NULL";
+
+	/// <inheritdoc />
+	protected override string NameSql => "WHERE c.deleted_at IS NULL AND c.normalized_name = upper(@name)";
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>

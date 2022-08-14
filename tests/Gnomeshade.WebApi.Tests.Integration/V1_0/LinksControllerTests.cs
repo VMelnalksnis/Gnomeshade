@@ -20,11 +20,7 @@ public class LinksControllerTests
 	{
 		var client = await WebserverSetup.CreateAuthorizedClientAsync();
 
-		var linkCreation = new LinkCreation
-		{
-			Uri = new("https://localhost/documents/1"),
-		};
-
+		var linkCreation = new LinkCreation { Uri = new("https://localhost/documents/1") };
 		var id = Guid.NewGuid();
 		await client.PutLinkAsync(id, linkCreation);
 
@@ -43,5 +39,29 @@ public class LinksControllerTests
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+	}
+
+	[Test]
+	public async Task UniqueConstraint()
+	{
+		var client = await WebserverSetup.CreateAuthorizedClientAsync();
+
+		var id = Guid.NewGuid();
+		var linkCreation = new LinkCreation { Uri = new($"https://localhost/documents/{id:N}") };
+		await client.PutLinkAsync(id, linkCreation);
+
+		(await FluentActions
+				.Awaiting(() => client.PutLinkAsync(Guid.NewGuid(), linkCreation))
+				.Should()
+				.ThrowExactlyAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.Conflict, $"{nameof(Link.Uri)} is unique");
+
+		await client.DeleteLinkAsync(id);
+
+		await FluentActions
+			.Awaiting(() => client.PutLinkAsync(Guid.NewGuid(), linkCreation))
+			.Should()
+			.NotThrowAsync("unique constraint should ignore deleted links");
 	}
 }

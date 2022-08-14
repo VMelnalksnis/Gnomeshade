@@ -54,7 +54,7 @@ public class ProductRepositoryTests : IDisposable
 		allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
 		var productToUpdate = getProduct with { Sku = "123", Description = "Foo" };
-		(await _repository.UpdateAsync(productToUpdate)).Should().Be(1);
+		await _repository.UpdateAsync(productToUpdate);
 		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
 
 		using (new AssertionScope())

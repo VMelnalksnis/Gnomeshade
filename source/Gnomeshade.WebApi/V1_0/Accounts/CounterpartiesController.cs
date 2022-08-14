@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,12 +32,14 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public CounterpartiesController(
 		CounterpartyRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<CounterpartiesController> logger)
-		: base(applicationUserContext, mapper, logger, repository)
+		ILogger<CounterpartiesController> logger,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}
 
@@ -55,7 +58,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	[ProducesStatus404NotFound]
 	public Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 	{
-		return Find(() => Repository.FindByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken));
+		return Find(() => Repository.FindByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, AccessLevel.Read, cancellationToken));
 	}
 
 	/// <inheritdoc cref="IAccountClient.GetCounterpartiesAsync"/>
@@ -103,7 +106,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.UpdateAsync(counterparty);
+		await Repository.UpdateAsync(counterparty);
 		return NoContent();
 	}
 

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,19 +36,28 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	where TModel : class
 	where TCreation : Creation
 {
+	private readonly IDbConnection _dbConnection;
+
 	/// <summary>Initializes a new instance of the <see cref="CreatableBase{TRepository, TEntity, TModel, TCreation}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <typeparamref name="TEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	protected CreatableBase(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<CreatableBase<TRepository, TEntity, TModel, TCreation>> logger,
-		TRepository repository)
+		TRepository repository,
+		IDbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger)
 	{
 		Repository = repository;
+		_dbConnection = dbConnection;
+		if (_dbConnection.State is not ConnectionState.Open)
+		{
+			_dbConnection.Open();
+		}
 	}
 
 	/// <summary>Gets the repository from managing <typeparamref name="TEntity"/>.</summary>
@@ -70,7 +80,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[ProducesStatus404NotFound]
 	public virtual Task<ActionResult<TModel>> Get(Guid id, CancellationToken cancellationToken)
 	{
-		return Find(() => Repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken));
+		return Find(() => Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Read, cancellationToken));
 	}
 
 	/// <summary>Creates a new entity.</summary>
@@ -98,7 +108,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	{
 		creation = creation with { OwnerId = creation.OwnerId ?? ApplicationUser.Id };
 
-		var existingEntity = await Repository.FindWriteableByIdAsync(id, ApplicationUser.Id);
+		var existingEntity = await Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Write);
 		if (existingEntity is not null)
 		{
 			return await UpdateExistingAsync(id, creation, ApplicationUser);
@@ -119,8 +129,25 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[HttpDelete("{id:guid}")]
 	public virtual async Task<StatusCodeResult> Delete(Guid id)
 	{
-		var deletedCount = await Repository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<CategoryEntity>(id, deletedCount);
+		var dbTransaction = _dbConnection.BeginTransaction();
+
+		try
+		{
+			var existing = await Repository.FindByIdAsync(id, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
+			if (existing is null)
+			{
+				return NotFound();
+			}
+
+			await Repository.DeleteAsync(id, ApplicationUser.Id, dbTransaction);
+			dbTransaction.Commit();
+			return NoContent();
+		}
+		catch (Exception)
+		{
+			dbTransaction.Rollback();
+			throw;
+		}
 	}
 
 	/// <summary>Updates an existing <typeparamref name="TEntity"/> with details from <paramref name="creation"/>.</summary>

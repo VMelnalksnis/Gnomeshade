@@ -28,7 +28,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Transaction.Delete;
+	protected override string DeleteSql => "CALL delete_transaction(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Transaction.Insert;
@@ -40,7 +40,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	protected override string UpdateSql => Queries.Transaction.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE t.id = @id";
+	protected override string FindSql => "WHERE t.deleted_at IS NULL AND t.id = @id";
 
 	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
 	/// <param name="from">The start of the time range.</param>
@@ -55,7 +55,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		CancellationToken cancellationToken = default)
 	{
 		var sql =
-			$"{SelectSql} WHERE (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {AccessSql} ORDER BY t.valued_at DESC";
+			$"{SelectSql} WHERE t.deleted_at IS NULL AND (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {AccessSql} ORDER BY t.valued_at DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 
 		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);

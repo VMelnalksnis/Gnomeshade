@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,12 +32,14 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public UnitsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<UnitsController> logger,
-		UnitRepository repository)
-		: base(applicationUserContext, mapper, logger, repository)
+		UnitRepository repository,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}
 
@@ -62,10 +65,7 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 		base.Put(id, unit);
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(
-		Guid id,
-		UnitCreation creation,
-		UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, UnitCreation creation, UserEntity user)
 	{
 		var unit = Mapper.Map<UnitEntity>(creation) with
 		{
@@ -73,7 +73,7 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.UpdateAsync(unit);
+		await Repository.UpdateAsync(unit);
 		return NoContent();
 	}
 

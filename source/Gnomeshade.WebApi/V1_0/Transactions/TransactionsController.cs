@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,6 +50,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="loanRepository">Persistence store for <see cref="LoanEntity"/>.</param>
 	/// <param name="counterpartyRepository">Persistence store for <see cref="CounterpartyEntity"/>.</param>
 	/// <param name="accountRepository">Persistence store for <see cref="AccountEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public TransactionsController(
 		TransactionRepository repository,
 		ILogger<TransactionsController> logger,
@@ -59,8 +61,9 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		PurchaseRepository purchaseRepository,
 		LoanRepository loanRepository,
 		CounterpartyRepository counterpartyRepository,
-		AccountRepository accountRepository)
-		: base(applicationUserContext, mapper, logger, repository)
+		AccountRepository accountRepository,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
@@ -242,7 +245,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		transfer = transfer with { OwnerId = transfer.OwnerId ?? ApplicationUser.Id };
 
-		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -277,15 +280,15 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeleteTransfer(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
 		// todo add transaction id
-		var deletedCount = await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<TransferEntity>(id, deletedCount);
+		await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
+		return NoContent();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync"/>
@@ -334,7 +337,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		purchase = purchase with { OwnerId = purchase.OwnerId ?? ApplicationUser.Id };
 
-		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -369,15 +372,15 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeletePurchase(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
 		// todo add transaction id
-		var deletedCount = await _purchaseRepository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<PurchaseEntity>(id, deletedCount);
+		await _purchaseRepository.DeleteAsync(id, ApplicationUser.Id);
+		return NoContent();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetLoansAsync"/>
@@ -426,7 +429,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		loan = loan with { OwnerId = loan.OwnerId ?? ApplicationUser.Id };
 
-		var transaction = await Repository.FindWriteableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
 		if (transaction is null)
 		{
 			return await Repository.FindByIdAsync(transactionId) is null
@@ -461,15 +464,15 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> DeleteLoan(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindDeletableByIdAsync(transactionId, ApplicationUser.Id);
+		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
 		// todo add transaction id
-		var deletedCount = await _loanRepository.DeleteAsync(id, ApplicationUser.Id);
-		return DeletedEntity<LoanEntity>(id, deletedCount);
+		await _loanRepository.DeleteAsync(id, ApplicationUser.Id);
+		return NoContent();
 	}
 
 	/// <inheritdoc />
@@ -484,7 +487,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await _unitOfWork.UpdateAsync(transaction, user);
+		await _unitOfWork.UpdateAsync(transaction, user);
 		return NoContent();
 	}
 

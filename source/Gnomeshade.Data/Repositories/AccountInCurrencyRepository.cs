@@ -24,7 +24,7 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.AccountInCurrency.Delete;
+	protected override string DeleteSql => "CALL delete_account_in_currency(@Id, @OwnerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.AccountInCurrency.Insert;
@@ -36,5 +36,8 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	protected override string UpdateSql => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE a.id = @id";
+	protected override string FindSql => "WHERE a.deleted_at IS NULL AND a.id = @id";
+
+	/// <inheritdoc />
+	protected override string NotDeleted => "a.deleted_at IS NULL";
 }

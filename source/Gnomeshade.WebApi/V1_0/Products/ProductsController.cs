@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,13 +37,15 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="purchaseRepository">The repository for performing CRUD operations on <see cref="PurchaseEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public ProductsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<ProductsController> logger,
 		ProductRepository repository,
-		PurchaseRepository purchaseRepository)
-		: base(applicationUserContext, mapper, logger, repository)
+		PurchaseRepository purchaseRepository,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 		_purchaseRepository = purchaseRepository;
 	}
@@ -76,7 +79,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<List<Purchase>>> Purchases(Guid id, CancellationToken cancellationToken)
 	{
-		var product = await Repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
+		var product = await Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Read, cancellationToken);
 		if (product is null)
 		{
 			return NotFound();
@@ -99,7 +102,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.UpdateAsync(product);
+		await Repository.UpdateAsync(product);
 		return NoContent();
 	}
 

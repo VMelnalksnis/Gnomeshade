@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,14 +41,16 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public AccountsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<AccountsController> logger,
 		AccountRepository repository,
 		AccountInCurrencyRepository inCurrencyRepository,
-		AccountUnitOfWork accountUnitOfWork)
-		: base(applicationUserContext, mapper, logger, repository)
+		AccountUnitOfWork accountUnitOfWork,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 		_repository = repository;
 		_inCurrencyRepository = inCurrencyRepository;
@@ -152,7 +155,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 			return NotFound();
 		}
 
-		_ = await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id);
+		await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id);
 		return NoContent();
 	}
 
@@ -160,7 +163,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[HttpGet("{id:guid}/Balance")]
 	public async Task<ActionResult<List<Balance>>> Balance(Guid id, CancellationToken cancellationToken)
 	{
-		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, cancellationToken);
+		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Read, cancellationToken);
 		if (account is null)
 		{
 			return NotFound();
@@ -182,7 +185,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 
 		var account = Mapper.Map<AccountEntity>(creation) with { Id = id };
 
-		_ = await _accountUnitOfWork.UpdateAsync(account, user);
+		await _accountUnitOfWork.UpdateAsync(account, user);
 		return NoContent();
 	}
 

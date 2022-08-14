@@ -25,7 +25,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Purchase.Delete;
+	protected override string DeleteSql => "CALL delete_purchase(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Purchase.Insert;
@@ -37,7 +37,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 	protected override string UpdateSql => Queries.Purchase.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE purchases.id = @id";
+	protected override string FindSql => "WHERE purchases.deleted_at IS NULL AND purchases.id = @id";
 
 	/// <summary>Gets all purchases of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the purchases.</param>
@@ -49,7 +49,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -62,7 +62,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 	/// <returns>The purchase if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<PurchaseEntity?> FindByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE purchases.id = @id AND transaction_id = @transactionId AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.id = @id AND transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -75,7 +75,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 	/// <returns>The purchase if one exists and can be updated, otherwise <see langword="null"/>.</returns>
 	public Task<PurchaseEntity?> FindWriteableByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE purchases.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
+		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -90,7 +90,7 @@ public sealed class PurchaseRepository : Repository<PurchaseEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
-		var sql = $"{SelectSql} WHERE purchases.product_id = @{nameof(productId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.product_id = @{nameof(productId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { productId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}

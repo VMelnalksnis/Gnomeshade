@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,12 +31,14 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CategoryEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public CategoriesController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<CategoriesController> logger,
-		CategoryRepository repository)
-		: base(applicationUserContext, mapper, logger, repository)
+		CategoryRepository repository,
+		IDbConnection dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}
 
@@ -81,7 +84,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.UpdateAsync(category);
+		await Repository.UpdateAsync(category);
 		return NoContent();
 	}
 

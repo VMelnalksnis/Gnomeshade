@@ -19,7 +19,7 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => Queries.Category.Delete;
+	protected override string DeleteSql => "CALL delete_category(@id, @ownerId);";
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Category.Insert;
@@ -31,8 +31,11 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	protected override string UpdateSql => Queries.Category.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE c.id = @id";
+	protected override string FindSql => "WHERE c.deleted_at IS NULL AND c.id = @id";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
+	protected override string NotDeleted => "c.deleted_at IS NULL";
+
+	/// <inheritdoc />
+	protected override string NameSql => "WHERE c.deleted_at IS NULL AND c.normalized_name = upper(@name)";
 }
