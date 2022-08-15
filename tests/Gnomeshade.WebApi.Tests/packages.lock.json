@@ -1000,10 +1000,10 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "0.5.0",
-        "contentHash": "SRz4lF9DQwWdQsEUq0KEFMc3Q0pBMTu7owD8FCsfM46q9gusxUHlbj98ATe0ZvT5L/NbFwi9TZRfP8eKBn6gsQ==",
+        "resolved": "0.5.1",
+        "contentHash": "jjnJ9WFd8pSekUZ2CrwY/qoWUdFGYWNWc7kLzzj4AkcO3b9LlEC24yrDniBnWlLsblxG31foe3Q905mwLiLciw==",
         "dependencies": {
-          "NodaTime": "3.1.0",
+          "NodaTime": "3.1.1",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
@@ -1069,7 +1069,7 @@
           "System.Runtime.Handles": "4.3.0",
           "System.Runtime.InteropServices": "4.3.0",
           "VMelnalksnis.ISO20022DotNet": "0.3.1",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.5.0"
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.5.1"
         }
       },
       "gnomeshade.webapi.client": {
@@ -1599,16 +1599,16 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[0.5.0, )",
-        "resolved": "0.5.0",
-        "contentHash": "0S8TKVkaXXrTW2vkb1Z+CQHcti99LK3xDPaQcC+1fu7PUFRK+RO8HyxdeeeGwaxbWIcGY5avuHCEOeQwITFYzQ==",
+        "requested": "[0.5.1, )",
+        "resolved": "0.5.1",
+        "contentHash": "ONavH4KbZBmcFd5vQ6JxoDbyyg9etX7djyrrSjuEueV1WtR5UcigSHs+nLEfAk6x3nkGJeqq4Tm5YmkLTHuFcQ==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "VMelnalksnis.NordigenDotNet": "0.5.0"
+          "VMelnalksnis.NordigenDotNet": "0.5.1"
         }
       }
     }
