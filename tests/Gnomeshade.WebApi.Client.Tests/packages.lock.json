@@ -289,7 +289,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "NodaTime": "3.1.0"
+          "NodaTime": "3.1.1"
         }
       },
       "IdentityModel.OidcClient": {
@@ -382,9 +382,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "x5IqJNff9ITRaw83P8IbdudB1tpMDbTqdeVlppBx346ywmLj2ZhE+kf7GJfkCks1piJazxDr2+0EYKc7l1K2WA==",
+        "requested": "[3.1.1, )",
+        "resolved": "3.1.1",
+        "contentHash": "zb6CryKtfiosfxgn5rREHj8VNPgZMsQDuCH2GyBZIh7YzBQUqQz7SnJg+TbLWtZ9h6Us752ROAb+wlDtd44Khw==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
