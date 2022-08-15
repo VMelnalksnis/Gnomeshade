@@ -40,6 +40,7 @@
 		<Button
 			Grid.Column="4" Grid.Row="0"
 			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			IsVisible="{Binding Product, Converter={x:Static ObjectConverters.IsNull}}"
 			Command="{ReflectionBinding ShowNewProductDialog}" CommandParameter="{Binding $parent[Window]}">
 			+
 		</Button>
