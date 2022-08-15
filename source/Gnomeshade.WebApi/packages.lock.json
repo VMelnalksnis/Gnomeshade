@@ -386,11 +386,11 @@
       },
       "VMelnalksnis.ISO20022DotNet": {
         "type": "Direct",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "8IMSzP8znhqb+6d646sDMHpwdG7isrwUg7BO8xbhsCOBVf2ElYvzVlp3eKc+mFlU1lY5bSbAG0pn/p2QfJ/nfQ==",
+        "requested": "[0.3.1, )",
+        "resolved": "0.3.1",
+        "contentHash": "0Po33XbracoQH/GBBJLTSuDfZWmTRs7tQL2nqqFFyuY7zyVgxbL41MTy9dDDg17RSrYtQJlP3Egl85doBzOiEQ==",
         "dependencies": {
-          "NodaTime": "3.1.0"
+          "NodaTime": "3.1.1"
         }
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
