@@ -4,6 +4,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -12,29 +13,26 @@ using Gnomeshade.WebApi.V1_0.Importing;
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Importing;
 
 [TestOf(typeof(Iso20022Controller))]
-public class Iso20022ControllerTests
+public sealed class Iso20022ControllerTests
 {
+	private const string _fileName = "BankToCustomerAccountReportV02.xml";
+
 	private IGnomeshadeClient _client = null!;
-	private FileInfo _inputFile = null!;
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
 	{
 		_client = await WebserverSetup.CreateAuthorizedClientAsync();
-
-		var filePath = Path.Combine(
-			TestContext.CurrentContext.TestDirectory,
-			"V1_0/Importing/",
-			"BankToCustomerAccountReportV02.xml");
-
-		_inputFile = new(filePath);
 	}
 
 	[Test]
 	public async Task Import_ShouldReturnExpected()
 	{
-		await using var contentStream = _inputFile.OpenRead();
-		var reportResult = await _client.Import(contentStream, _inputFile.Name);
+		await using var contentStream = Assembly
+			.GetExecutingAssembly()
+			.GetManifestResourceStream(typeof(Iso20022ControllerTests), _fileName)!;
+
+		var reportResult = await _client.Import(contentStream, _fileName);
 
 		using (new AssertionScope())
 		{
@@ -46,7 +44,8 @@ public class Iso20022ControllerTests
 			reportResult.TransactionReferences.Select(reference => reference.Transaction.ImportedAt).Should().AllSatisfy(instant => instant.Should().NotBeNull());
 		}
 
-		var secondReportResult = await _client.Import(contentStream, _inputFile.Name);
+		contentStream.Seek(0, SeekOrigin.Begin);
+		var secondReportResult = await _client.Import(contentStream, _fileName);
 
 		secondReportResult.TransactionReferences.Select(reference => reference.Created).Should().AllBeEquivalentTo(false);
 	}

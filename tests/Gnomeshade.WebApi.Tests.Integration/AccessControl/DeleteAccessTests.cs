@@ -8,6 +8,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
@@ -84,6 +86,8 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<CategoryEntity>(category.Id, _otherClient);
 	}
 
 	[Test]
@@ -109,6 +113,8 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<TransactionEntity>(transaction.Id, _otherClient);
 	}
 
 	[Test]
@@ -125,8 +131,7 @@ public sealed class DeleteAccessTests
 
 		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
 
-		await ShouldBeForbiddenForOthers(
-			client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
 		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
 
 		await FluentActions
@@ -140,6 +145,8 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<TransferEntity>(transfer.Id, _otherClient);
 	}
 
 	[Test]
@@ -171,6 +178,8 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<PurchaseEntity>(purchase.Id, _otherClient);
 	}
 
 	[Test]
@@ -200,6 +209,8 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<LoanEntity>(loan.Id, _otherClient);
 	}
 
 	[Test]
@@ -227,6 +238,22 @@ public sealed class DeleteAccessTests
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<LinkEntity>(link.Id, _otherClient);
+	}
+
+	private static async Task ShouldBeDeletedWithClient<TEntity>(Guid id, IGnomeshadeClient client)
+		where TEntity : Entity
+	{
+		using var scope = WebserverSetup.CreateScope();
+		var deletedEntity = await WebserverSetup.GetEntityRepository(scope).FindByIdAsync<TEntity>(id);
+		var userId = (await client.GetMyCounterpartyAsync()).CreatedByUserId;
+
+		using (new AssertionScope())
+		{
+			deletedEntity.DeletedAt.Should().NotBeNull();
+			deletedEntity.DeletedByUserId.Should().Be(userId);
+		}
 	}
 
 	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)

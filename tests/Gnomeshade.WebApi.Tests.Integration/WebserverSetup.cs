@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -19,6 +20,7 @@ using Gnomeshade.WebApi.Models.Authentication;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using NodaTime;
 
@@ -27,10 +29,28 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 [SetUpFixture]
 public sealed class WebserverSetup
 {
-	private static readonly IConfiguration _configuration;
+	private static readonly List<TestcontainerDatabase> _containers = new();
 
-	private static readonly PostgreSqlTestcontainer _postgreSqlTestcontainer =
-		new TestcontainersBuilder<PostgreSqlTestcontainer>()
+	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
+	private static Login _login = null!;
+	private static Login _secondLogin = null!;
+
+	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateDefaultClient();
+
+	public static GnomeshadeClient CreateUnauthorizedClient()
+	{
+		var httpClient = CreateHttpClient();
+		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
+	}
+
+	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
+
+	public static Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() => CreateAuthorizedClientAsync(_secondLogin);
+
+	[OneTimeSetUp]
+	public async Task OneTimeSetUpAsync()
+	{
+		var databaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
 			.WithDatabase(new PostgreSqlTestcontainerConfiguration
 			{
 				Database = "gnomeshade-test",
@@ -40,56 +60,34 @@ public sealed class WebserverSetup
 			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
 			.Build();
 
-	private static readonly PostgreSqlTestcontainer _postgreSqlTestIdentitycontainer =
-		new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration
-			{
-				Database = "gnomeshade-identity-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
+		var identityDatabaseContainer =
+			new TestcontainersBuilder<PostgreSqlTestcontainer>()
+				.WithDatabase(new PostgreSqlTestcontainerConfiguration
+				{
+					Database = "gnomeshade-identity-test",
+					Username = "gnomeshade",
+					Password = "foobar",
+				})
+				.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+				.Build();
 
-	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
-	private static Login _login = null!;
-	private static Login _secondLogin = null!;
+		_containers.Add(databaseContainer);
+		_containers.Add(identityDatabaseContainer);
 
-	static WebserverSetup()
-	{
-		Task.WhenAll(_postgreSqlTestcontainer.StartAsync(), _postgreSqlTestIdentitycontainer.StartAsync())
-			.GetAwaiter()
-			.GetResult();
+		await Task.WhenAll(_containers.Select(container => container.StartAsync()));
 
-		_configuration =
+		var configuration =
 			new ConfigurationBuilder()
 				.AddInMemoryCollection(new Dictionary<string, string>
 				{
-					{ "ConnectionStrings:FinanceDb", _postgreSqlTestcontainer.ConnectionString },
-					{ "ConnectionStrings:IdentityDb", _postgreSqlTestIdentitycontainer.ConnectionString },
+					{ "ConnectionStrings:FinanceDb", databaseContainer.ConnectionString },
+					{ "ConnectionStrings:IdentityDb", identityDatabaseContainer.ConnectionString },
 				})
 				.AddEnvironmentVariables()
 				.Build();
-	}
 
-	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateClient();
+		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration);
 
-	public static GnomeshadeClient CreateUnauthorizedClient()
-	{
-		var httpClient = CreateHttpClient();
-		httpClient.BaseAddress = new("https://localhost:5001/api/v1.0/");
-		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
-	}
-
-	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
-
-	public static Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() =>
-		CreateAuthorizedClientAsync(_secondLogin);
-
-	[OneTimeSetUp]
-	public async Task OneTimeSetUpAsync()
-	{
-		_webApplicationFactory = new GnomeshadeWebApplicationFactory(_configuration);
 		var client = _webApplicationFactory.CreateClient();
 		var registrationFaker = new Faker<RegistrationModel>()
 			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
@@ -105,7 +103,12 @@ public sealed class WebserverSetup
 	public async Task OneTimeTearDownAsync()
 	{
 		await _webApplicationFactory.DisposeAsync();
+		await Task.WhenAll(_containers.Select(container => container.StopAsync()));
 	}
+
+	internal static IServiceScope CreateScope() => _webApplicationFactory.Services.CreateScope();
+
+	internal static EntityRepository GetEntityRepository(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<EntityRepository>();
 
 	private static async Task<Login> RegisterUser(HttpClient client, RegistrationModel registrationModel)
 	{

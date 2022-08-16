@@ -23,9 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="V1_0\Importing\BankToCustomerAccountReportV02.xml">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<EmbeddedResource Include="V1_0\Importing\BankToCustomerAccountReportV02.xml"/>
 	</ItemGroup>
 
 </Project>
