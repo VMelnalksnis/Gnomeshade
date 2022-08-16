@@ -844,7 +844,7 @@
       },
       "Avalonia.Diagnostics": {
         "type": "CentralTransitive",
-        "requested": "[0.10.17, )",
+        "requested": "[0.10.18, )",
         "resolved": "0.10.0",
         "contentHash": "ZueZfLdkonwk3kjNMrdkuAnqw1feF7fXLcfdV97u04KIcvgfUf1IvsHDbECM+xgpg93cS0D3udjvLpS5/khD2Q==",
         "dependencies": {
