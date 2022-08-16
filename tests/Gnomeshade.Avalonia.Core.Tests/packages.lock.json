@@ -1102,7 +1102,7 @@
       },
       "Avalonia.Desktop": {
         "type": "CentralTransitive",
-        "requested": "[0.10.17, )",
+        "requested": "[0.10.18, )",
         "resolved": "0.10.0",
         "contentHash": "ypCPwtEJs0R9+dgvxU0nCdtOyUe5LIViumEIHqwcUwoG13N4Pl2moU2Pf+ic3RgzGqE7Bfn488mnCEO3EzTJsg==",
         "dependencies": {
