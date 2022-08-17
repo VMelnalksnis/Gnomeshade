@@ -118,7 +118,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue).ConfigureAwait(false);
+		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)).ConfigureAwait(false);
 		var transactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
 			.Where(transaction => transaction.TransferBalance > 0)

@@ -9,11 +9,15 @@ using Avalonia;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 
+using NodaTime;
+using NodaTime.Text;
+
 namespace Gnomeshade.Avalonia.Core;
 
-/// <inheritdoc />
-public sealed class DateTimeConverter : IValueConverter
+/// <summary>Converts a binding value of type <see cref="LocalDate"/>.</summary>
+public sealed class LocalDateConverter : IValueConverter
 {
+	private const string _formatPattern = "d";
 	private static readonly BindingNotification _invalidCastNotification = new(new InvalidCastException(), BindingErrorType.Error);
 
 	/// <inheritdoc />
@@ -24,17 +28,12 @@ public sealed class DateTimeConverter : IValueConverter
 			return BindingNotification.Null;
 		}
 
-		if (!targetType.IsAssignableTo(typeof(string)))
+		if (!targetType.IsAssignableTo(typeof(string)) || value is not LocalDate localDate)
 		{
-			return new BindingNotification(new InvalidCastException(), BindingErrorType.Error);
+			return _invalidCastNotification;
 		}
 
-		return value switch
-		{
-			DateTimeOffset date => date.Date.ToString(culture.DateTimeFormat.ShortDatePattern, culture),
-			TimeSpan time => time.ToString(GetTimeFormat(culture), culture),
-			_ => _invalidCastNotification,
-		};
+		return GetPattern(culture).Format(localDate);
 	}
 
 	/// <inheritdoc />
@@ -56,21 +55,12 @@ public sealed class DateTimeConverter : IValueConverter
 			return AvaloniaProperty.UnsetValue;
 		}
 
-		if (targetType.IsAssignableTo(typeof(DateTimeOffset)) || targetType.IsAssignableTo(typeof(DateTimeOffset?)))
+		if (targetType.IsAssignableTo(typeof(LocalDate)) || targetType.IsAssignableTo(typeof(LocalDate?)))
 		{
-			if (DateTimeOffset.TryParseExact(text, culture.DateTimeFormat.ShortDatePattern, culture, DateTimeStyles.AssumeLocal, out var date))
+			var parseResult = GetPattern(culture).Parse(text);
+			if (parseResult.Success)
 			{
-				return date;
-			}
-
-			return new BindingNotification(new FormatException(), BindingErrorType.DataValidationError);
-		}
-
-		if (targetType.IsAssignableTo(typeof(TimeSpan)) || targetType.IsAssignableTo(typeof(TimeSpan?)))
-		{
-			if (TimeSpan.TryParseExact(text, GetTimeFormat(culture), culture, out var time))
-			{
-				return time;
+				return parseResult.Value;
 			}
 
 			return new BindingNotification(new FormatException(), BindingErrorType.DataValidationError);
@@ -79,5 +69,5 @@ public sealed class DateTimeConverter : IValueConverter
 		return _invalidCastNotification;
 	}
 
-	private static string GetTimeFormat(CultureInfo culture) => $"hh\\{culture.DateTimeFormat.TimeSeparator}mm";
+	private static LocalDatePattern GetPattern(CultureInfo culture) => LocalDatePattern.Create(_formatPattern, culture);
 }

@@ -142,15 +142,14 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync<DetailedTransaction>(Transactions.DetailedIdUri(id), cancellationToken);
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to) =>
-		GetAsync<List<Transaction>>(Transactions.DateRangeUri(from, to));
+	public Task<List<Transaction>> GetTransactionsAsync(Interval interval) =>
+		GetAsync<List<Transaction>>(Transactions.DateRangeUri(interval));
 
 	/// <inheritdoc />
 	public Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(
-		Instant? from,
-		Instant? to,
+		Interval interval,
 		CancellationToken cancellationToken = default) =>
-		GetAsync<List<DetailedTransaction>>(Transactions.DetailedDateRangeUri(from, to), cancellationToken);
+		GetAsync<List<DetailedTransaction>>(Transactions.DetailedDateRangeUri(interval), cancellationToken);
 
 	/// <inheritdoc />
 	public Task DeleteTransactionAsync(Guid id) =>

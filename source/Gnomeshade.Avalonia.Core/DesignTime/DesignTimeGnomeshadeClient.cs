@@ -274,13 +274,15 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to)
+	public Task<List<Transaction>> GetTransactionsAsync(Interval interval)
 	{
 		return Task.FromResult(_transactions.ToList());
 	}
 
 	/// <inheritdoc />
-	public Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(Instant? from, Instant? to, CancellationToken cancellationToken = default)
+	public Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(
+		Interval interval,
+		CancellationToken cancellationToken = default)
 	{
 		var transactions = _transactions
 			.Select(transaction => GetDetailedTransactionAsync(transaction.Id, cancellationToken))

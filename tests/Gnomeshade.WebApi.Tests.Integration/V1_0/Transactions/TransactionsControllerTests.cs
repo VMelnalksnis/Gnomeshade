@@ -72,8 +72,8 @@ public class TransactionsControllerTests
 		var transactionId = Guid.NewGuid();
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
 		var transaction = await _client.GetTransactionAsync(transactionId);
-		var transactions = await _client.GetTransactionsAsync(null, null);
-		var detailedTransactions = await _client.GetDetailedTransactionsAsync(null, null);
+		var transactions = await _client.GetTransactionsAsync(new(null, null));
+		var detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
 
 		transactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
 		detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);

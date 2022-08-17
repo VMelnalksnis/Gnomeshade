@@ -39,20 +39,17 @@ public interface ITransactionClient
 	/// <returns>The transaction with the specified id.</returns>
 	Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default);
 
-	/// <summary>Gets all transactions within the specified time period.</summary>
-	/// <param name="from">The time from which to get transactions.</param>
-	/// <param name="to">The time until which to get transactions.</param>
-	/// <returns>All transactions within the specified time period.</returns>
-	Task<List<Transaction>> GetTransactionsAsync(Instant? from, Instant? to);
+	/// <summary>Gets all transactions within the specified time interval.</summary>
+	/// <param name="interval">The interval for which to get the transactions.</param>
+	/// <returns>All transactions within the specified time interval.</returns>
+	Task<List<Transaction>> GetTransactionsAsync(Interval interval);
 
-	/// <summary>Gets all transactions within the specified time period with all details.</summary>
-	/// <param name="from">The time from which to get transactions.</param>
-	/// <param name="to">The time until which to get transactions.</param>
+	/// <summary>Gets all transactions within the specified time interval with all details.</summary>
+	/// <param name="interval">The interval for which to get the transactions.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-	/// <returns>All transactions within the specified time period.</returns>
+	/// <returns>All transactions within the specified time interval.</returns>
 	Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(
-		Instant? from,
-		Instant? to,
+		Interval interval,
 		CancellationToken cancellationToken = default);
 
 	/// <summary>Deletes the specified transaction.</summary>

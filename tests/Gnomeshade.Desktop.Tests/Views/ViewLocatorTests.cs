@@ -33,7 +33,7 @@ public class ViewLocatorTests
 		catch (TargetInvocationException exception) when
 			(exception.InnerException is KeyNotFoundException keyNotFoundException)
 		{
-			keyNotFoundException.Message.Should().Be("Static resource 'DateTimeConverter' not found.");
+			keyNotFoundException.Message.Should().StartWith("Static resource '");
 		}
 	}
 

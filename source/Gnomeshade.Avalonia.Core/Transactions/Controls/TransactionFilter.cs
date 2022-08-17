@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +10,9 @@ using Avalonia.Controls;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
 
+using NodaTime;
+using NodaTime.Extensions;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Values for filtering transactions.</summary>
@@ -18,8 +20,11 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 {
 	private static readonly string[] _isValidNames = { nameof(IsValid) };
 
-	private DateTimeOffset? _fromDate;
-	private DateTimeOffset? _toDate;
+	private readonly ZonedClock _clock;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
+
+	private LocalDate? _fromDate;
+	private LocalDate? _toDate;
 	private Account? _selectedAccount;
 	private List<Account> _accounts = new();
 	private List<Counterparty> _counterparties = new();
@@ -30,15 +35,25 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	private bool _invertCounterparty;
 	private bool _invertProduct;
 
+	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
+	/// <param name="clock">Clock which can provide the current instant.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public TransactionFilter(IClock clock, IDateTimeZoneProvider dateTimeZoneProvider)
+	{
+		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_clock = clock.InZone(dateTimeZoneProvider.GetSystemDefault());
+		SelectCurrentMonth();
+	}
+
 	/// <summary>Gets or sets the date from which to get transactions.</summary>
-	public DateTimeOffset? FromDate
+	public LocalDate? FromDate
 	{
 		get => _fromDate;
 		set => SetAndNotifyWithGuard(ref _fromDate, value, nameof(FromDate), _isValidNames);
 	}
 
 	/// <summary>Gets or sets the date until which to ge transactions.</summary>
-	public DateTimeOffset? ToDate
+	public LocalDate? ToDate
 	{
 		get => _toDate;
 		set => SetAndNotifyWithGuard(ref _toDate, value, nameof(ToDate), _isValidNames);
@@ -117,6 +132,37 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	{
 		get => _invertProduct;
 		set => SetAndNotify(ref _invertProduct, value);
+	}
+
+	internal Interval Interval
+	{
+		get
+		{
+			var start = _fromDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
+			var end = _toDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
+			return new(start, end);
+		}
+	}
+
+	/// <summary>Sets <see cref="FromDate"/> and <see cref="ToDate"/> to the current calendar month.</summary>
+	public void SelectCurrentMonth()
+	{
+		var date = _clock.GetCurrentDate();
+		FromDate = new LocalDate(date.Year, date.Month, 1, date.Calendar);
+
+		var lastDayOfMonth = date.Calendar.GetDaysInMonth(date.Year, date.Month);
+		ToDate = new LocalDate(date.Year, date.Month, lastDayOfMonth, date.Calendar);
+	}
+
+	/// <summary>Sets <see cref="FromDate"/> and <see cref="ToDate"/> to the current calendar year.</summary>
+	public void SelectCurrentYear()
+	{
+		var date = _clock.GetCurrentDate();
+		FromDate = new LocalDate(date.Year, 1, 1, date.Calendar);
+
+		var lastMonth = date.Calendar.GetMonthsInYear(date.Year);
+		var lastDayOfMonth = date.Calendar.GetDaysInMonth(date.Year, lastMonth);
+		ToDate = new LocalDate(date.Year, lastMonth, lastDayOfMonth, date.Calendar);
 	}
 
 	/// <inheritdoc />

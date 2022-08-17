@@ -7,7 +7,7 @@
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
 	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
-	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.TransactionFilter}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Controls.TransactionFilterView"
 	x:CompileBindings="True"
@@ -15,12 +15,31 @@
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 
-		<TextBox
-			Text="{Binding FromDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
-			Watermark="From" />
-		<TextBox
-			Text="{Binding ToDate, Mode=TwoWay, Converter={StaticResource DateTimeConverter}}"
-			Watermark="To" />
+		<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,5,Auto">
+
+			<TextBox
+				Grid.Column="0" Grid.Row="0"
+				Text="{Binding FromDate, Mode=TwoWay, Converter={StaticResource LocalDateConverter}}"
+				Watermark="From" />
+			<TextBox
+				Grid.Column="1" Grid.Row="0"
+				Text="{Binding ToDate, Mode=TwoWay, Converter={StaticResource LocalDateConverter}}"
+				Watermark="To" />
+
+			<Button
+				Grid.Column="0" Grid.Row="2" Margin="5 0"
+				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+				Command="{ReflectionBinding SelectCurrentMonth}">
+				Current Month
+			</Button>
+
+			<Button
+				Grid.Column="1" Grid.Row="2" Margin="5 0"
+				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+				Command="{ReflectionBinding SelectCurrentYear}">
+				Current Year
+			</Button>
+		</Grid>
 
 		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />

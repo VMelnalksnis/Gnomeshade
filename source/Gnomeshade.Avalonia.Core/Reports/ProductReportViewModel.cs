@@ -139,7 +139,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 		}
 
 		IsBusy = true;
-		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue);
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
 		await Task.WhenAll(transactionsTask, unitsTask);
@@ -161,7 +161,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 		}
 
 		IsBusy = true;
-		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Instant.MinValue, Instant.MaxValue);
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
 		var currentProductNames = Series.Select(series => series.Name).ToList();

@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,12 +45,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
 
-		var toDate = clock.GetCurrentInstant().InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-		Filter = new()
-		{
-			ToDate = toDate,
-			FromDate = new DateTimeOffset(toDate.Year, toDate.Month, 1, 0, 0, 0, toDate.Offset) - TimeSpan.FromDays(1),
-		};
+		Filter = new(clock, dateTimeZoneProvider);
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		DataGridView.Filter = Filter.Filter;
 		DataGridView.SortDescriptions.Add(
@@ -97,27 +91,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(
-			Filter.FromDate is null
-				? null
-				: new ZonedDateTime(
-					Instant.FromUtc(
-						Filter.FromDate.Value.Year,
-						Filter.FromDate.Value.Month,
-						Filter.FromDate.Value.Day,
-						0,
-						0),
-					_dateTimeZoneProvider.GetSystemDefault()).ToInstant(),
-			Filter.ToDate is null
-				? null
-				: new ZonedDateTime(
-					Instant.FromUtc(
-						Filter.ToDate.Value.Year,
-						Filter.ToDate.Value.Month,
-						Filter.ToDate.Value.Day,
-						0,
-						0),
-					_dateTimeZoneProvider.GetSystemDefault()).ToInstant());
+		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Filter.Interval);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();

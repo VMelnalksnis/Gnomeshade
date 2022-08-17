@@ -66,13 +66,12 @@ public static class Routes
 		internal const string Uri = "Transactions";
 		private const string _detailedUri = $"{Uri}/Details";
 
-		/// <summary>Gets the relative uri for all transactions within the specified period.</summary>
-		/// <param name="from">The point in time from which to select transactions.</param>
-		/// <param name="to">The point in time to which to select transactions.</param>
-		/// <returns>Relative uri for all transaction with a query for the specified period.</returns>
-		public static string DateRangeUri(Instant? from, Instant? to) => DateRangeUri(Uri, from, to);
+		/// <summary>Gets the relative uri for all transactions within the specified interval.</summary>
+		/// <param name="interval">The interval for which to get transactions.</param>
+		/// <returns>Relative uri for all transaction with a query for the specified interval.</returns>
+		public static string DateRangeUri(Interval interval) => DateRangeUri(Uri, interval);
 
-		internal static string DetailedDateRangeUri(Instant? from, Instant? to) => DateRangeUri(_detailedUri, from, to);
+		internal static string DetailedDateRangeUri(Interval interval) => DateRangeUri(_detailedUri, interval);
 
 		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
@@ -82,17 +81,17 @@ public static class Routes
 
 		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
 
-		private static string DateRangeUri(string baseUri, Instant? from, Instant? to)
+		private static string DateRangeUri(string baseUri, Interval interval)
 		{
-			var keyValues = new Dictionary<Instant, string>(2);
-			if (from.HasValue)
+			var keyValues = new List<KeyValuePair<Instant, string>>(2);
+			if (interval.HasStart)
 			{
-				keyValues.Add(from.Value, "from");
+				keyValues.Add(new(interval.Start, "from"));
 			}
 
-			if (to.HasValue)
+			if (interval.HasEnd)
 			{
-				keyValues.Add(to.Value, "to");
+				keyValues.Add(new(interval.End, "to"));
 			}
 
 			if (!keyValues.Any())

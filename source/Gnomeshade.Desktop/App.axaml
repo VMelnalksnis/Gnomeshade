@@ -16,5 +16,6 @@
 
 	<Application.Resources>
 		<core:DateTimeConverter x:Key="DateTimeConverter" />
+		<core:LocalDateConverter x:Key="LocalDateConverter" />
 	</Application.Resources>
 </Application>

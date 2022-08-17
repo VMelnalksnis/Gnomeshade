@@ -17,8 +17,8 @@ public class RoutesTests
 	}
 
 	[TestCaseSource(typeof(TransactionUriTestCaseSource))]
-	public void TransactionUri_ShouldReturnExpected(Instant? from, Instant? to, string expectedUri)
+	public void TransactionUri_ShouldReturnExpected(Interval interval, string expectedUri)
 	{
-		Routes.Transactions.DateRangeUri(from, to).Should().Be(expectedUri);
+		Routes.Transactions.DateRangeUri(interval).Should().Be(expectedUri);
 	}
 }

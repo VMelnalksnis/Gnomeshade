@@ -121,8 +121,7 @@ public static class DesignTimeData
 		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
-	public static TransactionFilter TransactionFilter { get; } =
-		new() { FromDate = new DateTimeOffset(new(DateTime.Now.Month, DateTime.Now.Month, 1)), ToDate = DateTimeOffset.Now };
+	public static TransactionFilter TransactionFilter { get; } = new(Clock, DateTimeZoneProvider);
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
