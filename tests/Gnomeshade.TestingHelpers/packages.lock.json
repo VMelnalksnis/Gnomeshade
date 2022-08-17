@@ -767,7 +767,7 @@
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Data.Identity": "1.0.0",
-          "NodaTime": "3.1.1",
+          "NodaTime": "3.1.2",
           "dbup-postgresql": "4.5.0"
         }
       },
@@ -804,7 +804,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "JetBrains.Annotations": "2022.1.0",
           "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "NodaTime": "3.1.1"
+          "NodaTime": "3.1.2"
         }
       },
       "Dapper": {
@@ -936,9 +936,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.1, )",
-        "resolved": "3.1.1",
-        "contentHash": "zb6CryKtfiosfxgn5rREHj8VNPgZMsQDuCH2GyBZIh7YzBQUqQz7SnJg+TbLWtZ9h6Us752ROAb+wlDtd44Khw==",
+        "requested": "[3.1.2, )",
+        "resolved": "3.1.2",
+        "contentHash": "KAlnzQ2EtrrRhFoVePf2kMc24CXX3mAslfp+LmVQnk6HSZ8whgsHNpfUfO+jWCdMgGKQQKMjNCDgmTopjTPFFA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
