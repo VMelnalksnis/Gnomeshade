@@ -9,12 +9,17 @@ A free, open source and self-hosted personal finance manager.
 
 Currently all applications are publish as self-contained, so they can be run after extracting and editing the
 appsettings.json file.
-The latest release can be found [here](https://github.com/VMelnalksnis/Gnomeshade/releases/latest). 
-The latest build results are added to the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/nightly).
+The latest release can be found [here](https://github.com/VMelnalksnis/Gnomeshade/releases/latest).
+The latest build results are added to
+the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/nightly).
 
 ### Server
 
-* A debian package is provided, which can be installed using `sudo dpkg -i gnomeshade.deb`
+* A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
+* The server requires 2 PostgreSQL databases (which can be on a single server):
+	* `ConnectionStrings:IdentityDb` - Used by
+	  [ASP.NET Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-6.0&tabs=visual-studio)
+	* `ConnectionStrings:FinanceDb` - Used by Gnomeshade
 * For additional web server setup,
   see [Microsoft docs](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0)
 * To automatically import data with Nordigen,
@@ -33,7 +38,3 @@ Instructions for contributing can be found in [CONTRIBUTING.md](CONTRIBUTING.md)
 
 This work [is licensed](LICENSE.txt) under the
 [GNU Affero General Public License v3.0 or later](https://www.gnu.org/licenses/agpl-3.0.html).
-
-## Contact
-
-You can contact me at [valters.melnalksnis@gnomeshade.org](mailto:valters.melnalksnis@gnomeshade.org).

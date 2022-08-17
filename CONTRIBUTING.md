@@ -6,7 +6,7 @@
    [Issues](https://github.com/VMelnalksnis/Gnomeshade/issues?q=is%3Aissue+label%3Abug).
 
 2. If you're unable to find an issue addressing the problem,
-   [open a new one](https://github.com/VMelnalksnis/Gnomeshade/issues/new).
+   [open a new one](https://github.com/VMelnalksnis/Gnomeshade/issues/new?labels=bug&template=bug_report.md&title=).
    Be sure to include a **title and clear description**,
    as much relevant information as possible,
    and, if possible, a **code sample** or an **executable test case**
@@ -19,4 +19,4 @@
    If it exists, make sure to add a +1 reaction to show your interest in the feature.
 
 2. If you're unable to find an issue regarding this feature,
-   [open a new one](https://github.com/VMelnalksnis/Gnomeshade/issues/new).
+   [open a new one](https://github.com/VMelnalksnis/Gnomeshade/issues/new?&labels=enhancement&template=feature_request.md&title=).
