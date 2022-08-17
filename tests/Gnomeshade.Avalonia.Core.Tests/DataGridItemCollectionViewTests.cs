@@ -57,7 +57,6 @@ public class DataGridItemCollectionViewTests
 
 		public string? Name
 		{
-			get => _name;
 			set => SetAndNotify(ref _name, value);
 		}
 	}
