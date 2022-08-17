@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -26,15 +25,7 @@ public class ViewLocatorTests
 	public void Build_ShouldReturnExpectedView<TViewModel>(TViewModel viewModel)
 		where TViewModel : ViewModelBase
 	{
-		try
-		{
-			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<TViewModel>>();
-		} // todo How to register static resources during unit tests?
-		catch (TargetInvocationException exception) when
-			(exception.InnerException is KeyNotFoundException keyNotFoundException)
-		{
-			keyNotFoundException.Message.Should().StartWith("Static resource '");
-		}
+		_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<TViewModel>>();
 	}
 
 	private static IEnumerable ViewTestCaseData()

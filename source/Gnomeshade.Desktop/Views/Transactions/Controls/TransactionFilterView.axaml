@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:controls="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Controls;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
@@ -19,11 +20,11 @@
 
 			<TextBox
 				Grid.Column="0" Grid.Row="0"
-				Text="{Binding FromDate, Mode=TwoWay, Converter={StaticResource LocalDateConverter}}"
+				Text="{Binding FromDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDate}}"
 				Watermark="From" />
 			<TextBox
 				Grid.Column="1" Grid.Row="0"
-				Text="{Binding ToDate, Mode=TwoWay, Converter={StaticResource LocalDateConverter}}"
+				Text="{Binding ToDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDate}}"
 				Watermark="To" />
 
 			<Button
