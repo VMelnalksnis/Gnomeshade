@@ -1061,7 +1061,7 @@
           "System.Net.Primitives": "4.3.1",
           "System.Runtime.Handles": "4.3.0",
           "System.Runtime.InteropServices": "4.3.0",
-          "VMelnalksnis.ISO20022DotNet": "0.3.1",
+          "VMelnalksnis.ISO20022DotNet": "0.3.2",
           "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.5.1"
         }
       },
@@ -1593,11 +1593,11 @@
       },
       "VMelnalksnis.ISO20022DotNet": {
         "type": "CentralTransitive",
-        "requested": "[0.3.1, )",
-        "resolved": "0.3.1",
-        "contentHash": "0Po33XbracoQH/GBBJLTSuDfZWmTRs7tQL2nqqFFyuY7zyVgxbL41MTy9dDDg17RSrYtQJlP3Egl85doBzOiEQ==",
+        "requested": "[0.3.2, )",
+        "resolved": "0.3.2",
+        "contentHash": "LALjUeCxlKFcagYszBtiShyuGzIObyc1rOwaMkogX80n9kuKHp0SCfVkAMpnVHvgX0YLig95G0boEvGZ77LyWA==",
         "dependencies": {
-          "NodaTime": "3.1.1"
+          "NodaTime": "3.1.2"
         }
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
