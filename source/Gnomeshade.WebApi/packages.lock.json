@@ -395,16 +395,16 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "Direct",
-        "requested": "[0.5.1, )",
-        "resolved": "0.5.1",
-        "contentHash": "ONavH4KbZBmcFd5vQ6JxoDbyyg9etX7djyrrSjuEueV1WtR5UcigSHs+nLEfAk6x3nkGJeqq4Tm5YmkLTHuFcQ==",
+        "requested": "[0.5.2, )",
+        "resolved": "0.5.2",
+        "contentHash": "g0ACc89fPtvNHk5Zx59/G1EeyBwrA5qLuv99XSZAUzxR/5SJuooDDzVPOVuLfayLt8S/dpFF2kEAuPzcwSnqxw==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "VMelnalksnis.NordigenDotNet": "0.5.1"
+          "VMelnalksnis.NordigenDotNet": "0.5.2"
         }
       },
       "dbup-core": {
@@ -1302,10 +1302,10 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "0.5.1",
-        "contentHash": "jjnJ9WFd8pSekUZ2CrwY/qoWUdFGYWNWc7kLzzj4AkcO3b9LlEC24yrDniBnWlLsblxG31foe3Q905mwLiLciw==",
+        "resolved": "0.5.2",
+        "contentHash": "sDJHenAiNGLsZS94QXHdM0M7zmDebwPoqpet39I3BLCY7aB7yfzmQC4JBIHeEc2vaptNUb+ZTD9tZUMzUVSy1w==",
         "dependencies": {
-          "NodaTime": "3.1.1",
+          "NodaTime": "3.1.2",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
