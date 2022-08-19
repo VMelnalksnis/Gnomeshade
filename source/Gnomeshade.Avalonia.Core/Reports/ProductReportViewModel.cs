@@ -228,11 +228,11 @@ public sealed class ProductReportViewModel : ViewModelBase
 						var product = Products.Single(product => product.Id == purchase.ProductId);
 						if (product.UnitId is null)
 						{
-							return new CalculableValue(purchase, date, null, 1m);
+							return new CalculableValue(purchase, date, 1m);
 						}
 
-						var unit = units.Single(unit => unit.Id == product.UnitId).GetBaseUnit(units, out var multiplier);
-						return new(purchase, date, unit, multiplier);
+						_ = units.Single(unit => unit.Id == product.UnitId).GetBaseUnit(units, out var multiplier);
+						return new(purchase, date, multiplier);
 					});
 			}).ToList();
 
@@ -241,7 +241,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 				(double?)aggregate.Aggregate(values
 					.Where(value => value.Date.Year == split.Year && value.Date.Month == split.Month)
 					.ToList()
-					.DefaultIfEmpty(new(new() { Price = 0, Amount = 1 }, default, default, 1m))
+					.DefaultIfEmpty(new(new() { Price = 0, Amount = 1 }, default, 1m))
 					.Select(calculationFunction.Calculate))))
 			.ToList();
 
