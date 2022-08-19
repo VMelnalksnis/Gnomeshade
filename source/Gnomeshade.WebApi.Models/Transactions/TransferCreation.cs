@@ -12,11 +12,11 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 /// <summary>Information needed to create a transfer.</summary>
 /// <seealso cref="Transfer"/>
 [PublicAPI]
-public sealed record TransferCreation : Creation
+public sealed record TransferCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Transfer.TransactionId"/>
 	[Required]
-	public Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; init; }
 
 	/// <inheritdoc cref="Transfer.SourceAmount"/>
 	[Required]

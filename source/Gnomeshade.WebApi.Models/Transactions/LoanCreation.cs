@@ -12,11 +12,11 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 /// <summary>Information needed to create a loan.</summary>
 /// <seealso cref="Loan"/>
 [PublicAPI]
-public sealed record LoanCreation : Creation
+public sealed record LoanCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Loan.TransactionId"/>
 	[Required]
-	public Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; init; }
 
 	/// <inheritdoc cref="Loan.IssuingCounterpartyId"/>
 	[Required]

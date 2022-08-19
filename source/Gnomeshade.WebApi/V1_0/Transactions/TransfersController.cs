@@ -24,10 +24,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1_0.Transactions;
 
 /// <summary>CRUD operations on transfer entity.</summary>
-public sealed class TransfersController : CreatableBase<TransferRepository, TransferEntity, Transfer, TransferCreation>
+public sealed class TransfersController : TransactionItemController<TransferRepository, TransferEntity, Transfer, TransferCreation>
 {
-	private readonly TransactionRepository _transactionRepository;
-
 	/// <summary>Initializes a new instance of the <see cref="TransfersController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
@@ -42,9 +40,8 @@ public sealed class TransfersController : CreatableBase<TransferRepository, Tran
 		TransferRepository repository,
 		IDbConnection dbConnection,
 		TransactionRepository transactionRepository)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection, transactionRepository)
 	{
-		_transactionRepository = transactionRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
@@ -74,68 +71,4 @@ public sealed class TransfersController : CreatableBase<TransferRepository, Tran
 	// ReSharper disable once RedundantOverriddenMember
 	public override Task<StatusCodeResult> Delete(Guid id) =>
 		base.Delete(id);
-
-	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, TransferCreation creation, UserEntity user)
-	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
-		{
-			if (await TransactionDoesNotExist(creation.TransactionId!.Value, user, dbTransaction))
-			{
-				return NotFound();
-			}
-
-			var transfer = Mapper.Map<TransferEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.UpdateAsync(transfer, dbTransaction);
-			dbTransaction.Commit();
-			return NoContent();
-		}
-		catch (Exception)
-		{
-			dbTransaction.Rollback();
-			throw;
-		}
-	}
-
-	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, TransferCreation creation, UserEntity user)
-	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
-		{
-			if (await TransactionDoesNotExist(creation.TransactionId!.Value, user, dbTransaction))
-			{
-				return NotFound();
-			}
-
-			var transfer = Mapper.Map<TransferEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.AddAsync(transfer, dbTransaction);
-			dbTransaction.Commit();
-			return CreatedAtAction(nameof(Get), new { id }, null);
-		}
-		catch (Exception)
-		{
-			dbTransaction.Rollback();
-			throw;
-		}
-	}
-
-	private async Task<bool> TransactionDoesNotExist(Guid id, UserEntity user, IDbTransaction dbTransaction)
-	{
-		var transaction = await _transactionRepository.FindByIdAsync(id, user.Id, dbTransaction, AccessLevel.Write);
-		return transaction is null;
-	}
 }

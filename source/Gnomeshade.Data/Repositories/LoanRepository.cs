@@ -15,7 +15,7 @@ using Gnomeshade.Data.Entities;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="LoanEntity"/>.</summary>
-public sealed class LoanRepository : Repository<LoanEntity>
+public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoanRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
@@ -42,15 +42,11 @@ public sealed class LoanRepository : Repository<LoanEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE loans.deleted_at IS NULL AND loans.id = @id";
 
-	/// <summary>Gets all loans of the specified transaction.</summary>
-	/// <param name="transactionId">The id of the transaction for which to get the loans.</param>
-	/// <param name="ownerId">The id of the owner of the loans.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all loans for the specified transaction.</returns>
-	public Task<IEnumerable<LoanEntity>> GetAllAsync(
+	/// <inheritdoc />
+	public override Task<IEnumerable<LoanEntity>> GetAllAsync(
 		Guid transactionId,
 		Guid ownerId,
-		CancellationToken cancellationToken)
+		CancellationToken cancellationToken = default)
 	{
 		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);

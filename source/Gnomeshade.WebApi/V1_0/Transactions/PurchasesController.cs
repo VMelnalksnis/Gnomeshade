@@ -24,10 +24,8 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1_0.Transactions;
 
 /// <summary>CRUD operations on purchase entity.</summary>
-public sealed class PurchasesController : CreatableBase<PurchaseRepository, PurchaseEntity, Purchase, PurchaseCreation>
+public sealed class PurchasesController : TransactionItemController<PurchaseRepository, PurchaseEntity, Purchase, PurchaseCreation>
 {
-	private readonly TransactionRepository _transactionRepository;
-
 	/// <summary>Initializes a new instance of the <see cref="PurchasesController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
@@ -42,9 +40,8 @@ public sealed class PurchasesController : CreatableBase<PurchaseRepository, Purc
 		PurchaseRepository repository,
 		IDbConnection dbConnection,
 		TransactionRepository transactionRepository)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, logger, repository, dbConnection, transactionRepository)
 	{
-		_transactionRepository = transactionRepository;
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchaseAsync"/>
@@ -74,68 +71,4 @@ public sealed class PurchasesController : CreatableBase<PurchaseRepository, Purc
 	// ReSharper disable once RedundantOverriddenMember
 	public override Task<StatusCodeResult> Delete(Guid id) =>
 		base.Delete(id);
-
-	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, PurchaseCreation creation, UserEntity user)
-	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
-		{
-			if (await TransactionDoesNotExist(creation.TransactionId!.Value, user, dbTransaction))
-			{
-				return NotFound();
-			}
-
-			var purchase = Mapper.Map<PurchaseEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.UpdateAsync(purchase, dbTransaction);
-			dbTransaction.Commit();
-			return NoContent();
-		}
-		catch (Exception)
-		{
-			dbTransaction.Rollback();
-			throw;
-		}
-	}
-
-	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, PurchaseCreation creation, UserEntity user)
-	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
-		{
-			if (await TransactionDoesNotExist(creation.TransactionId!.Value, user, dbTransaction))
-			{
-				return NotFound();
-			}
-
-			var purchase = Mapper.Map<PurchaseEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.AddAsync(purchase, dbTransaction);
-			dbTransaction.Commit();
-			return CreatedAtAction(nameof(Get), new { id }, null);
-		}
-		catch (Exception)
-		{
-			dbTransaction.Rollback();
-			throw;
-		}
-	}
-
-	private async Task<bool> TransactionDoesNotExist(Guid id, UserEntity user, IDbTransaction dbTransaction)
-	{
-		var transaction = await _transactionRepository.FindByIdAsync(id, user.Id, dbTransaction, AccessLevel.Write);
-		return transaction is null;
-	}
 }

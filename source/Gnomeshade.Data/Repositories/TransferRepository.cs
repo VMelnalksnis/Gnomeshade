@@ -15,7 +15,7 @@ using Gnomeshade.Data.Entities;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="TransferEntity"/>.</summary>
-public sealed class TransferRepository : Repository<TransferEntity>
+public sealed class TransferRepository : TransactionItemRepository<TransferEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransferRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
@@ -42,12 +42,8 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <inheritdoc />
 	protected override string NotDeleted => "transfers.deleted_at IS NULL";
 
-	/// <summary>Gets all transfers of the specified transaction.</summary>
-	/// <param name="transactionId">The id of the transaction for which to get the transfers.</param>
-	/// <param name="ownerId">The id of the owner of the transfers.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all transfers for the specified transaction.</returns>
-	public Task<IEnumerable<TransferEntity>> GetAllAsync(
+	/// <inheritdoc />
+	public override Task<IEnumerable<TransferEntity>> GetAllAsync(
 		Guid transactionId,
 		Guid ownerId,
 		CancellationToken cancellationToken = default)

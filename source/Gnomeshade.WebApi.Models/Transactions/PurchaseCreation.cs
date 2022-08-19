@@ -14,11 +14,11 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 /// <summary>Information needed to create a purchase.</summary>
 /// <seealso cref="Purchase"/>
 [PublicAPI]
-public sealed record PurchaseCreation : Creation
+public sealed record PurchaseCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Purchase.TransactionId"/>
 	[Required]
-	public Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; init; }
 
 	/// <inheritdoc cref="Purchase.Price"/>
 	[Required]
