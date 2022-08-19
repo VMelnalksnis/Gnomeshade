@@ -159,21 +159,20 @@ public sealed class DeleteAccessTests
 
 		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
 
 		var updatedTransfer = purchase.ToCreation() with { Amount = purchase.Amount + 1 };
 
-		await ShouldBeForbiddenForOthers(
-			client => client.PutPurchaseAsync(transaction.Id, purchase.Id, updatedTransfer));
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+		await ShouldBeForbiddenForOthers(client => client.PutPurchaseAsync(purchase.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
 
 		await FluentActions
-			.Awaiting(() => _otherClient.DeletePurchaseAsync(transaction.Id, purchase.Id))
+			.Awaiting(() => _otherClient.DeletePurchaseAsync(purchase.Id))
 			.Should()
 			.NotThrowAsync();
 
 		(await FluentActions
-				.Awaiting(() => _client.GetPurchaseAsync(transaction.Id, purchase.Id))
+				.Awaiting(() => _client.GetPurchaseAsync(purchase.Id))
 				.Should()
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

@@ -16,6 +16,10 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 [PublicAPI]
 public sealed record PurchaseCreation : Creation
 {
+	/// <inheritdoc cref="Purchase.TransactionId"/>
+	[Required]
+	public Guid? TransactionId { get; init; }
+
 	/// <inheritdoc cref="Purchase.Price"/>
 	[Required]
 	public decimal? Price { get; set; }

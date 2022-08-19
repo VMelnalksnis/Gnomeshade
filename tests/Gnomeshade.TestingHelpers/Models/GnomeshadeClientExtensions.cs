@@ -130,6 +130,7 @@ public static class GnomeshadeClientExtensions
 		var purchaseId = Guid.NewGuid();
 		var purchase = new PurchaseCreation
 		{
+			TransactionId = transactionId,
 			CurrencyId = currency.Id,
 			ProductId = productId,
 			Price = 10.5m,
@@ -137,8 +138,8 @@ public static class GnomeshadeClientExtensions
 			OwnerId = ownerId,
 		};
 
-		await gnomeshadeClient.PutPurchaseAsync(transactionId, purchaseId, purchase);
-		return await gnomeshadeClient.GetPurchaseAsync(transactionId, purchaseId);
+		await gnomeshadeClient.PutPurchaseAsync(purchaseId, purchase);
+		return await gnomeshadeClient.GetPurchaseAsync(purchaseId);
 	}
 
 	public static async Task<Loan> CreateLoanAsync(

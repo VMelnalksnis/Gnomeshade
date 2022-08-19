@@ -173,7 +173,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
 			Products = await GnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
-			var purchase = await GnomeshadeClient.GetPurchaseAsync(_transactionId, _id.Value).ConfigureAwait(false);
+			var purchase = await GnomeshadeClient.GetPurchaseAsync(_id.Value).ConfigureAwait(false);
 			Price = purchase.Price;
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
@@ -198,6 +198,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 
 		var purchaseCreation = new PurchaseCreation
 		{
+			TransactionId = _transactionId,
 			Price = Price,
 			CurrencyId = Currency!.Id,
 			Amount = Amount,
@@ -206,7 +207,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		};
 
 		var id = _id ?? Guid.NewGuid(); // todo should this be saved?
-		await GnomeshadeClient.PutPurchaseAsync(_transactionId, id, purchaseCreation).ConfigureAwait(false);
+		await GnomeshadeClient.PutPurchaseAsync(id, purchaseCreation).ConfigureAwait(false);
 		return id;
 	}
 

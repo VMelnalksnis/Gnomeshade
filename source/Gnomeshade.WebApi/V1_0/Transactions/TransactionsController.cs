@@ -210,96 +210,15 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync"/>
+	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all purchases.</response>
 	[HttpGet("{transactionId:guid}/Purchases")]
 	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
-	public async Task<List<Purchase>> GetPurchases(
-		Guid transactionId,
-		CancellationToken cancellationToken)
+	public async Task<List<Purchase>> GetPurchases(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var purchases = await _purchaseRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
 		var models = purchases.Select(purchase => Mapper.Map<Purchase>(purchase)).ToList();
 		return models;
-	}
-
-	/// <inheritdoc cref="ITransactionClient.GetPurchaseAsync"/>
-	/// <response code="200">Successfully got the purchase with the specified id.</response>
-	/// <response code="404">Purchase with the specified id does not exist.</response>
-	[HttpGet("{transactionId:guid}/Purchases/{id:guid}")]
-	[ProducesResponseType(typeof(Purchase), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Purchase>> GetPurchase(
-		Guid transactionId,
-		Guid id,
-		CancellationToken cancellationToken)
-	{
-		var purchase = await _purchaseRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
-		if (purchase is null)
-		{
-			return NotFound();
-		}
-
-		var model = Mapper.Map<Purchase>(purchase);
-		return Ok(model);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.PutPurchaseAsync"/>
-	/// <response code="201">Successfully created a new purchase.</response>
-	/// <response code="204">Successfully replaced an existing purchase.</response>
-	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Purchases/{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> PutPurchase(Guid transactionId, Guid id, [FromBody] PurchaseCreation purchase)
-	{
-		purchase = purchase with { OwnerId = purchase.OwnerId ?? ApplicationUser.Id };
-
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
-		if (transaction is null)
-		{
-			return await Repository.FindByIdAsync(transactionId) is null
-				? NotFound()
-				: Forbid();
-		}
-
-		var existingPurchase = await _purchaseRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id);
-		var entity = Mapper.Map<PurchaseEntity>(purchase) with
-		{
-			Id = id,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			TransactionId = transactionId,
-		};
-
-		if (existingPurchase is null)
-		{
-			await _purchaseRepository.AddAsync(entity);
-			return CreatedAtAction(nameof(GetPurchase), new { transactionId, id }, null);
-		}
-
-		await _purchaseRepository.UpdateAsync(entity);
-		return NoContent();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.DeletePurchaseAsync"/>
-	/// <response code="204">Successfully deleted purchase.</response>
-	/// <response code="404">Purchase with the specified id does not exist.</response>
-	[HttpDelete("{transactionId:guid}/Purchases/{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> DeletePurchase(Guid transactionId, Guid id)
-	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
-		if (transaction is null)
-		{
-			return NotFound();
-		}
-
-		// todo add transaction id
-		await _purchaseRepository.DeleteAsync(id, ApplicationUser.Id);
-		return NoContent();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetLoansAsync"/>

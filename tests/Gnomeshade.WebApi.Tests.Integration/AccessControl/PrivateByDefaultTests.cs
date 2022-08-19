@@ -140,14 +140,13 @@ public sealed class PrivateByDefaultTests
 
 		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id);
 
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
 
 		var updatedTransfer = purchase.ToCreation() with { Amount = purchase.Amount + 1 };
 
-		await ShouldBeForbiddenForOthers(
-			client => client.PutPurchaseAsync(transaction.Id, purchase.Id, updatedTransfer));
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeletePurchaseAsync(transaction.Id, purchase.Id), true);
+		await ShouldBeForbiddenForOthers(client => client.PutPurchaseAsync(purchase.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeletePurchaseAsync(purchase.Id), true);
 	}
 
 	[Test]

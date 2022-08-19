@@ -153,11 +153,11 @@ public static class Routes
 
 	internal static class Purchases
 	{
-		private const string _path = nameof(Purchases);
+		internal const string Uri = nameof(Purchases);
 
-		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
-		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+		internal static string TransactionUri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{Uri}";
 	}
 
 	internal static class Loans

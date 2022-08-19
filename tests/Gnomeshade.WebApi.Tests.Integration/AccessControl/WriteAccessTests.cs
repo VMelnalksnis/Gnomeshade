@@ -193,16 +193,16 @@ public sealed class WriteAccessTests
 
 		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
 
 		var purchaseCreation = purchase.ToCreation() with { Amount = purchase.Amount + 1 };
 
-		await _otherClient.PutPurchaseAsync(transaction.Id, purchase.Id, purchaseCreation);
-		var updatedPurchase = await _client.GetPurchaseAsync(transaction.Id, purchase.Id);
+		await _otherClient.PutPurchaseAsync(purchase.Id, purchaseCreation);
+		var updatedPurchase = await _client.GetPurchaseAsync(purchase.Id);
 		updatedPurchase.Amount.Should().Be(updatedPurchase.Amount);
 
-		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(transaction.Id, purchase.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeletePurchaseAsync(transaction.Id, purchase.Id), true);
+		await ShouldBeNotFoundForOthers(client => client.GetPurchaseAsync(purchase.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeletePurchaseAsync(purchase.Id), true);
 	}
 
 	[Test]

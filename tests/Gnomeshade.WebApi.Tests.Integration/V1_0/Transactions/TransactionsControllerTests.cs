@@ -166,14 +166,15 @@ public class TransactionsControllerTests
 		var purchaseId = Guid.NewGuid();
 		var purchaseCreation = new PurchaseCreation
 		{
+			TransactionId = transactionId,
 			Price = 2.53m,
 			CurrencyId = _account1.Currencies.First().Currency.Id,
 			ProductId = _productId,
 			Amount = 1,
 		};
 
-		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
-		var purchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
+		await _client.PutPurchaseAsync(purchaseId, purchaseCreation);
+		var purchase = await _client.GetPurchaseAsync(purchaseId);
 		var purchases = await _client.GetPurchasesAsync(transactionId);
 		var productPurchases = await _client.GetProductPurchasesAsync(_productId);
 		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
@@ -185,16 +186,16 @@ public class TransactionsControllerTests
 
 		var deliveryDate = SystemClock.Instance.GetCurrentInstant();
 		purchaseCreation = purchaseCreation with { DeliveryDate = deliveryDate };
-		await _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation);
-		var updatedPurchase = await _client.GetPurchaseAsync(transactionId, purchaseId);
+		await _client.PutPurchaseAsync(purchaseId, purchaseCreation);
+		var updatedPurchase = await _client.GetPurchaseAsync(purchaseId);
 		updatedPurchase.DeliveryDate!.Value.Should().BeInRange(
 			deliveryDate - Duration.FromNanoseconds(1000),
 			deliveryDate + Duration.FromNanoseconds(1000));
 
-		await _client.DeletePurchaseAsync(transactionId, purchaseId);
+		await _client.DeletePurchaseAsync(purchaseId);
 		(await _client.GetPurchasesAsync(transactionId)).Should().BeEmpty();
 		(await FluentActions
-				.Awaiting(() => _client.GetPurchaseAsync(transactionId, purchaseId))
+				.Awaiting(() => _client.GetPurchaseAsync(purchaseId))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
@@ -208,6 +209,7 @@ public class TransactionsControllerTests
 		var purchaseId = Guid.NewGuid();
 		var purchaseCreation = new PurchaseCreation
 		{
+			TransactionId = transactionId,
 			Price = 2.53m,
 			CurrencyId = _account1.Currencies.First().Currency.Id,
 			ProductId = _productId,
@@ -215,7 +217,7 @@ public class TransactionsControllerTests
 		};
 
 		(await FluentActions
-				.Awaiting(() => _client.PutPurchaseAsync(transactionId, purchaseId, purchaseCreation))
+				.Awaiting(() => _client.PutPurchaseAsync(purchaseId, purchaseCreation))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

@@ -108,7 +108,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(PurchaseOverview row)
 	{
-		await _gnomeshadeClient.DeletePurchaseAsync(_transactionId, row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeletePurchaseAsync(row.Id).ConfigureAwait(false);
 		await Refresh();
 	}
 

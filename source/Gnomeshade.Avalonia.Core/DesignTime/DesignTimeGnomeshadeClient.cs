@@ -353,26 +353,31 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<List<Purchase>> GetPurchasesAsync(CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(_purchases.ToList());
+	}
+
+	/// <inheritdoc />
 	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_purchases.Where(purchase => purchase.TransactionId == transactionId).ToList());
 	}
 
 	/// <inheritdoc />
-	public Task<Purchase> GetPurchaseAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	public Task<Purchase> GetPurchaseAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		var purchases = _purchases.Where(transfer => transfer.TransactionId == transactionId);
-		return Task.FromResult(purchases.Single(purchase => purchase.Id == id));
+		return Task.FromResult(_purchases.Single(purchase => purchase.Id == id));
 	}
 
 	/// <inheritdoc />
-	public Task PutPurchaseAsync(Guid transactionId, Guid id, PurchaseCreation purchase)
+	public Task PutPurchaseAsync(Guid id, PurchaseCreation purchase)
 	{
 		var existingPurchase = _purchases.SingleOrDefault(p => p.Id == id) ?? new Purchase();
 		existingPurchase = existingPurchase with
 		{
 			Id = id,
-			TransactionId = transactionId,
+			TransactionId = purchase.TransactionId!.Value,
 			ProductId = purchase.ProductId!.Value,
 			Amount = purchase.Amount!.Value,
 			Price = purchase.Price!.Value,
@@ -385,7 +390,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task DeletePurchaseAsync(Guid transactionId, Guid id) =>
+	public Task DeletePurchaseAsync(Guid id) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
