@@ -20,9 +20,9 @@ public abstract class SchemaFilter<T> : ISchemaFilter
 			return;
 		}
 
-		ApplyFilter(schema, context);
+		ApplyFilter(schema);
 	}
 
 	/// <inheritdoc cref="Apply"/>
-	protected abstract void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context);
+	protected abstract void ApplyFilter(OpenApiSchema schema);
 }

@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
-using Swashbuckle.AspNetCore.SwaggerGen;
-
 namespace Gnomeshade.WebApi.OpenApi;
 
 /// <summary>Applies missing inforation to <see cref="ValidationProblemDetails"/> schema.</summary>
@@ -17,7 +15,7 @@ namespace Gnomeshade.WebApi.OpenApi;
 public sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
 {
 	/// <inheritdoc/>
-	protected override void ApplyFilter(OpenApiSchema schema, SchemaFilterContext context)
+	protected override void ApplyFilter(OpenApiSchema schema)
 	{
 		schema.Properties["status"].Default = new OpenApiInteger(400);
 	}
