@@ -10,6 +10,7 @@ public static class TransferExtensions
 {
 	public static TransferCreation ToCreation(this Transfer transfer) => new()
 	{
+		TransactionId = transfer.TransactionId,
 		SourceAccountId = transfer.SourceAccountId,
 		TargetAccountId = transfer.TargetAccountId,
 		SourceAmount = transfer.SourceAmount,

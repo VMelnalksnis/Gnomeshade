@@ -266,7 +266,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var transaction = await GetTransactionAsync(id);
 		return DetailedTransaction.FromTransaction(transaction) with
 		{
-			Transfers = await GetTransfersAsync(transaction.Id, cancellationToken),
+			Transfers = await GetTransfersAsync(cancellationToken),
 			Purchases = await GetPurchasesAsync(transaction.Id, cancellationToken),
 			Loans = await GetLoansAsync(transaction.Id, cancellationToken),
 			Links = await GetTransactionLinksAsync(transaction.Id, cancellationToken),
@@ -333,18 +333,23 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	public Task<List<Transfer>> GetTransfersAsync(CancellationToken cancellationToken = default)
 	{
-		var transfers = _transfers.Where(transfer => transfer.TransactionId == transactionId);
-		return Task.FromResult(transfers.Single(transfer => transfer.Id == id));
+		return Task.FromResult(_transfers.ToList());
 	}
 
 	/// <inheritdoc />
-	public Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer) =>
+	public Task<Transfer> GetTransferAsync(Guid id, CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(_transfers.Single(transfer => transfer.Id == id));
+	}
+
+	/// <inheritdoc />
+	public Task PutTransferAsync(Guid id, TransferCreation transfer) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task DeleteTransferAsync(Guid transactionId, Guid id) =>
+	public Task DeleteTransferAsync(Guid id) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />

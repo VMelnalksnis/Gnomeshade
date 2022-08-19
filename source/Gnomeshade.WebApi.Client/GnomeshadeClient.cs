@@ -169,19 +169,23 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Transfer>> GetTransfersAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		GetAsync<List<Transfer>>(Transfers.Uri(transactionId), cancellationToken);
+		GetAsync<List<Transfer>>(Transfers.TransactionUri(transactionId), cancellationToken);
 
 	/// <inheritdoc />
-	public Task<Transfer> GetTransferAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
-		GetAsync<Transfer>(Transfers.IdUri(transactionId, id), cancellationToken);
+	public Task<List<Transfer>> GetTransfersAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Transfer>>(Transfers.Uri, cancellationToken);
 
 	/// <inheritdoc />
-	public Task PutTransferAsync(Guid transactionId, Guid id, TransferCreation transfer) =>
-		PutAsync(Transfers.IdUri(transactionId, id), transfer);
+	public Task<Transfer> GetTransferAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<Transfer>(Transfers.IdUri(id), cancellationToken);
 
 	/// <inheritdoc />
-	public Task DeleteTransferAsync(Guid transactionId, Guid id) =>
-		DeleteAsync(Transfers.IdUri(transactionId, id));
+	public Task PutTransferAsync(Guid id, TransferCreation transfer) =>
+		PutAsync(Transfers.IdUri(id), transfer);
+
+	/// <inheritdoc />
+	public Task DeleteTransferAsync(Guid id) =>
+		DeleteAsync(Transfers.IdUri(id));
 
 	/// <inheritdoc />
 	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default) =>

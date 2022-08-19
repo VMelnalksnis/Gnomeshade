@@ -101,14 +101,15 @@ public class TransactionsControllerTests
 		var transferId = Guid.NewGuid();
 		var transferCreation = new TransferCreation
 		{
+			TransactionId = transactionId,
 			SourceAmount = 1,
 			SourceAccountId = _account1.Currencies.First().Id,
 			TargetAmount = 1,
 			TargetAccountId = _account2.Currencies.First().Id,
 		};
 
-		await _client.PutTransferAsync(transactionId, transferId, transferCreation);
-		var transfer = await _client.GetTransferAsync(transactionId, transferId);
+		await _client.PutTransferAsync(transferId, transferCreation);
+		var transfer = await _client.GetTransferAsync(transferId);
 		var transfers = await _client.GetTransfersAsync(transactionId);
 		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
 
@@ -118,13 +119,13 @@ public class TransactionsControllerTests
 
 		var bankReference = $"{Guid.NewGuid():N}";
 		transferCreation = transferCreation with { BankReference = bankReference };
-		await _client.PutTransferAsync(transactionId, transferId, transferCreation);
-		(await _client.GetTransferAsync(transactionId, transferId)).BankReference.Should().Be(bankReference);
+		await _client.PutTransferAsync(transferId, transferCreation);
+		(await _client.GetTransferAsync(transferId)).BankReference.Should().Be(bankReference);
 
-		await _client.DeleteTransferAsync(transactionId, transferId);
+		await _client.DeleteTransferAsync(transferId);
 		(await _client.GetTransfersAsync(transactionId)).Should().BeEmpty();
 		(await FluentActions
-				.Awaiting(() => _client.GetTransferAsync(transactionId, transferId))
+				.Awaiting(() => _client.GetTransferAsync(transferId))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
@@ -134,10 +135,10 @@ public class TransactionsControllerTests
 	[Test]
 	public async Task PutTransfer_NonExistentTransaction()
 	{
-		var transactionId = Guid.NewGuid();
 		var transferId = Guid.NewGuid();
 		var transferCreation = new TransferCreation
 		{
+			TransactionId = Guid.NewGuid(),
 			SourceAmount = 1,
 			SourceAccountId = _account1.Currencies.First().Id,
 			TargetAmount = 1,
@@ -145,7 +146,7 @@ public class TransactionsControllerTests
 		};
 
 		(await FluentActions
-				.Awaiting(() => _client.PutTransferAsync(transactionId, transferId, transferCreation))
+				.Awaiting(() => _client.PutTransferAsync(transferId, transferCreation))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

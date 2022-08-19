@@ -171,16 +171,16 @@ public sealed class WriteAccessTests
 
 		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
 
 		var transferCreation = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
 
-		await _otherClient.PutTransferAsync(transaction.Id, transfer.Id, transferCreation);
-		var updatedTransfer = await _client.GetTransferAsync(transaction.Id, transfer.Id);
+		await _otherClient.PutTransferAsync(transfer.Id, transferCreation);
+		var updatedTransfer = await _client.GetTransferAsync(transfer.Id);
 		updatedTransfer.BankReference.Should().Be(updatedTransfer.BankReference);
 
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transaction.Id, transfer.Id), true);
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transfer.Id), true);
 	}
 
 	[Test]

@@ -121,14 +121,13 @@ public sealed class PrivateByDefaultTests
 
 		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id);
 
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
 
 		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
 
-		await ShouldBeForbiddenForOthers(
-			client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transaction.Id, transfer.Id), true);
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteTransferAsync(transfer.Id), true);
 	}
 
 	[Test]

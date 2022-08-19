@@ -19,7 +19,7 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Accounts;
 
 [TestOf(typeof(AccountsController))]
-public class AccountsControllerTests
+public sealed class AccountsControllerTests
 {
 	private IGnomeshadeClient _client = null!;
 	private Currency _firstCurrency = null!;
@@ -156,12 +156,13 @@ public class AccountsControllerTests
 
 		var transfer = new TransferCreation
 		{
+			TransactionId = transactionId,
 			SourceAccountId = source.Id,
 			SourceAmount = sourceAmount,
 			TargetAccountId = target.Id,
 			TargetAmount = targetAmount,
 		};
-		await _client.PutTransferAsync(transactionId, Guid.NewGuid(), transfer);
+		await _client.PutTransferAsync(Guid.NewGuid(), transfer);
 	}
 
 	private AccountCreation GetAccountCreationModel(Currency currency)

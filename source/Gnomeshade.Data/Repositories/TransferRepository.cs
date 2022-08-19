@@ -39,6 +39,9 @@ public sealed class TransferRepository : Repository<TransferEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE transfers.deleted_at IS NULL AND transfers.id = @id";
 
+	/// <inheritdoc />
+	protected override string NotDeleted => "transfers.deleted_at IS NULL";
+
 	/// <summary>Gets all transfers of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the transfers.</param>
 	/// <param name="ownerId">The id of the owner of the transfers.</param>
@@ -52,32 +55,6 @@ public sealed class TransferRepository : Repository<TransferEntity>
 		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
-	}
-
-	/// <summary>Searches for a transfer for a specific transaction with the specified id.</summary>
-	/// <param name="transactionId">The transaction id for which to get the transfer.</param>
-	/// <param name="id">The transfer id to search by.</param>
-	/// <param name="ownerId">The id of the owner of the transfer.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransferEntity?> FindByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
-	{
-		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.id = @id AND transaction_id = @transactionId AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
-	}
-
-	/// <summary>Searches for a transfer for a specific transaction with the specified id that can be updated.</summary>
-	/// <param name="transactionId">The transaction id for which to get the transfer.</param>
-	/// <param name="id">The transfer id to search by.</param>
-	/// <param name="ownerId">The id of the owner of the transfer.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The transfer if one exists and can be updated, otherwise <see langword="null"/>.</returns>
-	public Task<TransferEntity?> FindWriteableByIdAsync(Guid transactionId, Guid id, Guid ownerId, CancellationToken cancellationToken = default)
-	{
-		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.id = @id AND transaction_id = @transactionId AND {WriteAccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, id, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
 	}
 
 	/// <summary>Searches for a transfer with the specified bank reference.</summary>

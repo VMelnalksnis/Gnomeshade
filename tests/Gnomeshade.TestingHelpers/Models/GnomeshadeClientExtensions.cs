@@ -108,6 +108,7 @@ public static class GnomeshadeClientExtensions
 		var transferId = Guid.NewGuid();
 		var transfer = new TransferCreation
 		{
+			TransactionId = transactionId,
 			SourceAccountId = account1.Currencies.First().Id,
 			TargetAccountId = account2.Currencies.First().Id,
 			SourceAmount = 10.5m,
@@ -115,8 +116,8 @@ public static class GnomeshadeClientExtensions
 			OwnerId = ownerId,
 		};
 
-		await gnomeshadeClient.PutTransferAsync(transactionId, transferId, transfer);
-		return await gnomeshadeClient.GetTransferAsync(transactionId, transferId);
+		await gnomeshadeClient.PutTransferAsync(transferId, transfer);
+		return await gnomeshadeClient.GetTransferAsync(transferId);
 	}
 
 	public static async Task<Purchase> CreatePurchaseAsync(

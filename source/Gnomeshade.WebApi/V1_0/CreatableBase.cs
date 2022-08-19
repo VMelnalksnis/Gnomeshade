@@ -36,8 +36,6 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	where TModel : class
 	where TCreation : Creation
 {
-	private readonly IDbConnection _dbConnection;
-
 	/// <summary>Initializes a new instance of the <see cref="CreatableBase{TRepository, TEntity, TModel, TCreation}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
@@ -53,15 +51,18 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 		: base(applicationUserContext, mapper, logger)
 	{
 		Repository = repository;
-		_dbConnection = dbConnection;
-		if (_dbConnection.State is not ConnectionState.Open)
+		DbConnection = dbConnection;
+		if (DbConnection.State is not ConnectionState.Open)
 		{
-			_dbConnection.Open();
+			DbConnection.Open();
 		}
 	}
 
-	/// <summary>Gets the repository from managing <typeparamref name="TEntity"/>.</summary>
+	/// <summary>Gets the repository for managing <typeparamref name="TEntity"/>.</summary>
 	protected TRepository Repository { get; }
+
+	/// <summary>Gets the database connection for managing database transactions.</summary>
+	protected IDbConnection DbConnection { get; }
 
 	/// <summary>Gets all entities.</summary>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -129,7 +130,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[HttpDelete("{id:guid}")]
 	public virtual async Task<StatusCodeResult> Delete(Guid id)
 	{
-		var dbTransaction = _dbConnection.BeginTransaction();
+		var dbTransaction = DbConnection.BeginTransaction();
 
 		try
 		{

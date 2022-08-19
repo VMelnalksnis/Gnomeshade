@@ -127,20 +127,20 @@ public sealed class DeleteAccessTests
 
 		var transfer = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
 
 		var updatedTransfer = transfer.ToCreation() with { BankReference = $"{transfer.BankReference}1" };
 
-		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transaction.Id, transfer.Id, updatedTransfer));
-		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transaction.Id, transfer.Id));
+		await ShouldBeForbiddenForOthers(client => client.PutTransferAsync(transfer.Id, updatedTransfer));
+		await ShouldBeNotFoundForOthers(client => client.GetTransferAsync(transfer.Id));
 
 		await FluentActions
-			.Awaiting(() => _otherClient.DeleteTransferAsync(transaction.Id, transfer.Id))
+			.Awaiting(() => _otherClient.DeleteTransferAsync(transfer.Id))
 			.Should()
 			.NotThrowAsync();
 
 		(await FluentActions
-				.Awaiting(() => _client.GetTransferAsync(transaction.Id, transfer.Id))
+				.Awaiting(() => _client.GetTransferAsync(transfer.Id))
 				.Should()
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

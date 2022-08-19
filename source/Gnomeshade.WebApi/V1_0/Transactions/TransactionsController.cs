@@ -200,95 +200,14 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return NoContent();
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync"/>
+	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all transfers.</response>
 	[HttpGet("{transactionId:guid}/Transfers")]
 	[ProducesResponseType(typeof(List<Transfer>), Status200OK)]
-	public async Task<List<Transfer>> GetTransfers(
-		Guid transactionId,
-		CancellationToken cancellationToken)
+	public async Task<List<Transfer>> GetTransfers(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var transfers = await _transferRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
 		return transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
-	/// <response code="200">Successfully got the transfer with the specified id.</response>
-	/// <response code="404">Transfer with the specified id does not exist.</response>
-	[HttpGet("{transactionId:guid}/Transfers/{id:guid}")]
-	[ProducesResponseType(typeof(Transfer), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult<Transfer>> GetTransfer(
-		Guid transactionId,
-		Guid id,
-		CancellationToken cancellationToken)
-	{
-		var transfer = await _transferRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
-		if (transfer is null)
-		{
-			return NotFound();
-		}
-
-		var model = Mapper.Map<Transfer>(transfer);
-		return Ok(model);
-	}
-
-	/// <inheritdoc cref="ITransactionClient.PutTransferAsync"/>
-	/// <response code="201">Successfully created a new transfer.</response>
-	/// <response code="204">Successfully replaced an existing transfer.</response>
-	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Transfers/{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> PutTransfer(Guid transactionId, Guid id, [FromBody] TransferCreation transfer)
-	{
-		transfer = transfer with { OwnerId = transfer.OwnerId ?? ApplicationUser.Id };
-
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
-		if (transaction is null)
-		{
-			return await Repository.FindByIdAsync(transactionId) is null
-				? NotFound()
-				: Forbid();
-		}
-
-		var existingTransfer = await _transferRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id);
-		var entity = Mapper.Map<TransferEntity>(transfer) with
-		{
-			Id = id,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			TransactionId = transactionId,
-		};
-
-		if (existingTransfer is null)
-		{
-			await _transferRepository.AddAsync(entity);
-			return CreatedAtAction(nameof(GetTransfer), new { transactionId, id }, null);
-		}
-
-		await _transferRepository.UpdateAsync(entity);
-		return NoContent();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.DeleteTransferAsync"/>
-	/// <response code="204">Successfully deleted transfer.</response>
-	/// <response code="404">Transfer with the specified id does not exist.</response>
-	[HttpDelete("{transactionId:guid}/Transfers/{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> DeleteTransfer(Guid transactionId, Guid id)
-	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
-		if (transaction is null)
-		{
-			return NotFound();
-		}
-
-		// todo add transaction id
-		await _transferRepository.DeleteAsync(id, ApplicationUser.Id);
-		return NoContent();
 	}
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync"/>
