@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 namespace Gnomeshade.Desktop.Views.Transactions.Transfers;
 
 /// <inheritdoc cref="TransferViewModel" />
-public sealed class TransferView : UserControl, IView<TransferViewModel>
+public sealed class TransferView : UserControl, IView<TransferView, TransferViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransferView"/> class.</summary>
 	public TransferView()

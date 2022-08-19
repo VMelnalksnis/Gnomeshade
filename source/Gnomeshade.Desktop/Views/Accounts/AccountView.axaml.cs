@@ -10,14 +10,10 @@ using Gnomeshade.Avalonia.Core.Accounts;
 
 namespace Gnomeshade.Desktop.Views.Accounts;
 
-/// <summary>
-/// An overview of of all accounts.
-/// </summary>
-public sealed class AccountView : UserControl, IView<AccountViewModel>
+/// <inheritdoc cref="AccountViewModel"/>
+public sealed class AccountView : UserControl, IView<AccountView, AccountViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountView"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountView"/> class.</summary>
 	public AccountView()
 	{
 		AvaloniaXamlLoader.Load(this);

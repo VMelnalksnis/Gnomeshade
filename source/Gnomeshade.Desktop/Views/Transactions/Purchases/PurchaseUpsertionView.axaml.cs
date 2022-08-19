@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 namespace Gnomeshade.Desktop.Views.Transactions.Purchases;
 
 /// <inheritdoc cref="PurchaseUpsertionViewModel"/>
-public sealed class PurchaseUpsertionView : UserControl, IView<PurchaseUpsertionViewModel>
+public sealed class PurchaseUpsertionView : UserControl, IView<PurchaseUpsertionView, PurchaseUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionView"/> class.</summary>
 	public PurchaseUpsertionView()

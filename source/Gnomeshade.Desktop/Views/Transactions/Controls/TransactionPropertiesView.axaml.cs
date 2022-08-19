@@ -10,8 +10,8 @@ using Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 namespace Gnomeshade.Desktop.Views.Transactions.Controls;
 
-/// <summary>Editor for transaction information besides transaction items.</summary>
-public sealed class TransactionPropertiesView : UserControl, IView<TransactionProperties>
+/// <inheritdoc cref="TransactionProperties"/>
+public sealed class TransactionPropertiesView : UserControl, IView<TransactionPropertiesView, TransactionProperties>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionPropertiesView"/> class.</summary>
 	public TransactionPropertiesView()

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Controls;
 namespace Gnomeshade.Desktop.Views.Transactions.Controls;
 
 /// <inheritdoc cref="TransactionFilter" />
-public sealed class TransactionFilterView : UserControl, IView<TransactionFilter>
+public sealed class TransactionFilterView : UserControl, IView<TransactionFilterView, TransactionFilter>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilterView"/> class.</summary>
 	public TransactionFilterView()

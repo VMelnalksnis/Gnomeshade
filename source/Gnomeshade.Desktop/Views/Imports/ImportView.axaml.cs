@@ -16,14 +16,10 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.Desktop.Views.Imports;
 
-/// <summary>
-/// Data importing and overview of import result.
-/// </summary>
-public sealed class ImportView : UserControl, IView<ImportViewModel>
+/// <inheritdoc cref="ImportViewModel"/>
+public sealed class ImportView : UserControl, IView<ImportView, ImportViewModel>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ImportView"/> class.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="ImportView"/> class.</summary>
 	public ImportView()
 	{
 		AvaloniaXamlLoader.Load(this);

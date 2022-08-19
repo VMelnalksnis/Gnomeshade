@@ -13,7 +13,7 @@ using Avalonia.Controls.Templates;
 
 namespace Gnomeshade.Avalonia.Core;
 
-/// <summary>Data template for locating the <see cref="IView{TViewModel}"/> from the calling assembly.</summary>
+/// <summary>Data template for locating the <see cref="IView{TView,TViewModel}"/> from the calling assembly.</summary>
 /// <typeparam name="TAssembly">A type from the assembly in which to search for views.</typeparam>
 public sealed class ViewLocator<TAssembly> : IDataTemplate
 {
@@ -32,9 +32,12 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 			return CreateControl(viewType);
 		}
 
-		var interfaceType = typeof(IView<>).MakeGenericType(dataType);
 		viewType = _assembly.GetTypes().Single(type =>
-			type.IsAssignableTo(interfaceType) &&
+			type.GetInterfaces().Any(i =>
+				i.IsGenericType &&
+				i.GetGenericTypeDefinition() == typeof(IView<,>) &&
+				i.GetGenericArguments().Length >= 2 &&
+				i.GetGenericArguments()[1] == dataType) &&
 			type.IsAssignableTo(typeof(IControl)));
 
 		_viewDictionary.Add(dataType, viewType);

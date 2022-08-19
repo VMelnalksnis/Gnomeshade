@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Products;
 namespace Gnomeshade.Desktop.Views.Products;
 
 /// <inheritdoc cref="ProductUpsertionViewModel"/>
-public sealed class ProductUpsertionView : UserControl, IView<ProductUpsertionViewModel>
+public sealed class ProductUpsertionView : UserControl, IView<ProductUpsertionView, ProductUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionView"/> class.</summary>
 	public ProductUpsertionView()

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Links;
 namespace Gnomeshade.Desktop.Views.Transactions.Links;
 
 /// <inheritdoc cref="LinkUpsertionViewModel"/>
-public sealed class LinkUpsertionView : UserControl, IView<LinkUpsertionViewModel>
+public sealed class LinkUpsertionView : UserControl, IView<LinkUpsertionView, LinkUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="LinkUpsertionView"/> class.</summary>
 	public LinkUpsertionView()

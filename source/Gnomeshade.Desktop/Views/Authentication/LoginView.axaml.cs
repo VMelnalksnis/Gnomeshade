@@ -10,8 +10,8 @@ using Gnomeshade.Avalonia.Core.Authentication;
 
 namespace Gnomeshade.Desktop.Views.Authentication;
 
-/// <summary>Authenticate the current user.</summary>
-public sealed class LoginView : UserControl, IView<LoginViewModel>
+/// <inheritdoc cref="LoginViewModel"/>
+public sealed class LoginView : UserControl, IView<LoginView, LoginViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoginView"/> class.</summary>
 	public LoginView()

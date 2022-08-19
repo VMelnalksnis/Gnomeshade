@@ -4,16 +4,23 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Avalonia.Controls;
+
 using JetBrains.Annotations;
+
+using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
+
+using static JetBrains.Annotations.ImplicitUseKindFlags;
 
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Marker interface for matching views with view models.</summary>
+/// <typeparam name="TView">The view type.</typeparam>
 /// <typeparam name="TViewModel">The view model for this view.</typeparam>
 public interface IView<
-	[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature),
-	 DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-	TViewModel>
+	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TView,
+	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TViewModel>
+	where TView : IControl
 	where TViewModel : ViewModelBase
 {
 }

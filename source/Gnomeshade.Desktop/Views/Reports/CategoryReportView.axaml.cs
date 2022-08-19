@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Reports;
 namespace Gnomeshade.Desktop.Views.Reports;
 
 /// <inheritdoc cref="CategoryReportViewModel"/>
-public sealed class CategoryReportView : UserControl, IView<CategoryReportViewModel>
+public sealed class CategoryReportView : UserControl, IView<CategoryReportView, CategoryReportViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportView"/> class.</summary>
 	public CategoryReportView()

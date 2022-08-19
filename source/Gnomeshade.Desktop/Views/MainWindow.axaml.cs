@@ -12,8 +12,8 @@ using Gnomeshade.Avalonia.Core;
 
 namespace Gnomeshade.Desktop.Views;
 
-/// <summary>The root element of the application.</summary>
-public sealed class MainWindow : Window, IView<MainWindowViewModel>
+/// <inheritdoc cref="MainWindowViewModel"/>
+public sealed class MainWindow : Window, IView<MainWindow, MainWindowViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="MainWindow"/> class.</summary>
 	public MainWindow()

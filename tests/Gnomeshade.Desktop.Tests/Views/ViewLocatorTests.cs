@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Platform;
 
@@ -17,7 +18,7 @@ using Moq;
 
 namespace Gnomeshade.Desktop.Tests.Views;
 
-public class ViewLocatorTests
+public sealed class ViewLocatorTests
 {
 	private readonly ViewLocator<App> _viewLocator = new();
 
@@ -25,7 +26,11 @@ public class ViewLocatorTests
 	public void Build_ShouldReturnExpectedView<TViewModel>(TViewModel viewModel)
 		where TViewModel : ViewModelBase
 	{
-		_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<TViewModel>>();
+		using (new AssertionScope())
+		{
+			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<IControl, TViewModel>>();
+			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<IControl, ViewModelBase>>();
+		}
 	}
 
 	private static IEnumerable ViewTestCaseData()

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Configuration;
 namespace Gnomeshade.Desktop.Views.Configuration;
 
 /// <inheritdoc cref="ApplicationSettingsViewModel"/>
-public sealed class ApplicationSettingsView : UserControl, IView<ApplicationSettingsViewModel>
+public sealed class ApplicationSettingsView : UserControl, IView<ApplicationSettingsView, ApplicationSettingsViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="ApplicationSettingsView"/> class.</summary>
 	public ApplicationSettingsView()

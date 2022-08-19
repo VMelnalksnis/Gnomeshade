@@ -10,8 +10,8 @@ using Gnomeshade.Avalonia.Core.Counterparties;
 
 namespace Gnomeshade.Desktop.Views.Counterparties;
 
-/// <summary>Merge two counterparties.</summary>
-public sealed class CounterpartyMergeView : UserControl, IView<CounterpartyMergeViewModel>
+/// <inheritdoc cref="CounterpartyMergeViewModel"/>
+public sealed class CounterpartyMergeView : UserControl, IView<CounterpartyMergeView, CounterpartyMergeViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyMergeView"/> class.</summary>
 	public CounterpartyMergeView()

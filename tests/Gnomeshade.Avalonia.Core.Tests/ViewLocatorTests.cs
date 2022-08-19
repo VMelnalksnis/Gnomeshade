@@ -6,7 +6,7 @@ using Avalonia.Controls;
 
 namespace Gnomeshade.Avalonia.Core.Tests;
 
-public class ViewLocatorTests
+public sealed class ViewLocatorTests
 {
 	[Test]
 	public void Build_ShouldReturnExpected()
@@ -25,7 +25,7 @@ public class ViewLocatorTests
 	{
 	}
 
-	private sealed class TestView : UserControl, IView<TestViewModel>
+	private sealed class TestView : UserControl, IView<TestView, TestViewModel>
 	{
 	}
 }

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Counterparties;
 namespace Gnomeshade.Desktop.Views.Counterparties;
 
 /// <inheritdoc cref="CounterpartyUpsertionViewModel"/>
-public sealed class CounterpartyUpsertionView : UserControl, IView<CounterpartyUpsertionViewModel>
+public sealed class CounterpartyUpsertionView : UserControl, IView<CounterpartyUpsertionView, CounterpartyUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyUpsertionView"/> class.</summary>
 	public CounterpartyUpsertionView()
