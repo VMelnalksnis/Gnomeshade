@@ -153,6 +153,7 @@ public static class GnomeshadeClientExtensions
 		var loanId = Guid.NewGuid();
 		var purchase = new LoanCreation
 		{
+			TransactionId = transactionId,
 			CurrencyId = currency.Id,
 			Amount = 1,
 			IssuingCounterpartyId = issuingId,
@@ -160,7 +161,7 @@ public static class GnomeshadeClientExtensions
 			OwnerId = ownerId,
 		};
 
-		await gnomeshadeClient.PutLoanAsync(transactionId, loanId, purchase);
-		return await gnomeshadeClient.GetLoanAsync(transactionId, loanId);
+		await gnomeshadeClient.PutLoanAsync(loanId, purchase);
+		return await gnomeshadeClient.GetLoanAsync(loanId);
 	}
 }

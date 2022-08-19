@@ -116,7 +116,7 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var loan = await GnomeshadeClient.GetLoanAsync(_transactionId, _id.Value);
+		var loan = await GnomeshadeClient.GetLoanAsync(_id.Value);
 		IssuingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId);
 		ReceivingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.ReceivingCounterpartyId);
 		Amount = loan.Amount;
@@ -128,6 +128,7 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	{
 		var creation = new LoanCreation
 		{
+			TransactionId = _transactionId,
 			IssuingCounterpartyId = IssuingCounterparty?.Id,
 			ReceivingCounterpartyId = ReceivingCounterparty?.Id,
 			Amount = Amount,
@@ -135,7 +136,7 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 		};
 
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutLoanAsync(_transactionId, _id.Value, creation).ConfigureAwait(false);
+		await GnomeshadeClient.PutLoanAsync(_id.Value, creation).ConfigureAwait(false);
 		return _id.Value;
 	}
 }

@@ -266,14 +266,15 @@ public class TransactionsControllerTests
 		var loanId = Guid.NewGuid();
 		var loanCreation = new LoanCreation
 		{
+			TransactionId = transactionId,
 			IssuingCounterpartyId = issuer.Id,
 			ReceivingCounterpartyId = receiver.Id,
 			CurrencyId = _account1.Currencies.First().Currency.Id,
 			Amount = 1,
 		};
 
-		await _client.PutLoanAsync(transactionId, loanId, loanCreation);
-		var loan = await _client.GetLoanAsync(transactionId, loanId);
+		await _client.PutLoanAsync(loanId, loanCreation);
+		var loan = await _client.GetLoanAsync(loanId);
 		var loans = await _client.GetLoansAsync(transactionId);
 		var receiverLoans = await _client.GetCounterpartyLoansAsync(receiver.Id);
 		var issuerLoans = await _client.GetCounterpartyLoansAsync(issuer.Id);
@@ -286,14 +287,14 @@ public class TransactionsControllerTests
 		loan.Should().BeEquivalentTo(loanCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		loanCreation = loanCreation with { Amount = 2 };
-		await _client.PutLoanAsync(transactionId, loanId, loanCreation);
-		var updatedLoan = await _client.GetLoanAsync(transactionId, loanId);
+		await _client.PutLoanAsync(loanId, loanCreation);
+		var updatedLoan = await _client.GetLoanAsync(loanId);
 		updatedLoan.Amount.Should().Be(2);
 
-		await _client.DeleteLoanAsync(transactionId, loanId);
+		await _client.DeleteLoanAsync(loanId);
 		(await _client.GetLoansAsync(transactionId)).Should().BeEmpty();
 		(await FluentActions
-				.Awaiting(() => _client.GetLoanAsync(transactionId, loanId))
+				.Awaiting(() => _client.GetLoanAsync(loanId))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()
@@ -311,6 +312,7 @@ public class TransactionsControllerTests
 		var loanId = Guid.NewGuid();
 		var loanCreation = new LoanCreation
 		{
+			TransactionId = transactionId,
 			IssuingCounterpartyId = issuer.Id,
 			ReceivingCounterpartyId = receiver.Id,
 			CurrencyId = _account1.Currencies.First().Currency.Id,
@@ -318,7 +320,7 @@ public class TransactionsControllerTests
 		};
 
 		(await FluentActions
-				.Awaiting(() => _client.PutLoanAsync(transactionId, loanId, loanCreation))
+				.Awaiting(() => _client.PutLoanAsync(loanId, loanCreation))
 				.Should()
 				.ThrowExactlyAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

@@ -158,13 +158,13 @@ public sealed class PrivateByDefaultTests
 
 		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
 
 		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
 
-		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(transaction.Id, loan.Id, updatedLoan));
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(transaction.Id, loan.Id), true);
+		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(loan.Id, updatedLoan));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
 	}
 
 	[Test]

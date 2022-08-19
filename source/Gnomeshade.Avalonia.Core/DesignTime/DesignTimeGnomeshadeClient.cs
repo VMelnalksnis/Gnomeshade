@@ -394,6 +394,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(_loans.ToList());
+	}
+
+	/// <inheritdoc />
 	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default)
 	{
 		var loans = _loans.Where(loan => loan.TransactionId == transactionId).ToList();
@@ -412,22 +418,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default)
+	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		var loan = _loans.Single(loan => loan.TransactionId == transactionId && loan.Id == id);
+		var loan = _loans.Single(loan => loan.Id == id);
 		return Task.FromResult(loan);
 	}
 
 	/// <inheritdoc />
-	public Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan)
+	public Task PutLoanAsync(Guid id, LoanCreation loan)
 	{
-		var existing = _loans.SingleOrDefault(l => l.TransactionId == transactionId && l.Id == id);
+		var existing = _loans.SingleOrDefault(l => l.Id == id);
 		if (existing is not null)
 		{
 			_loans.Remove(existing);
 		}
 
-		existing ??= new() { TransactionId = transactionId, Id = id };
+		existing ??= new() { TransactionId = loan.TransactionId!.Value, Id = id };
 		existing = existing with
 		{
 			IssuingCounterpartyId = loan.IssuingCounterpartyId!.Value,
@@ -441,9 +447,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task DeleteLoanAsync(Guid transactionId, Guid id)
+	public Task DeleteLoanAsync(Guid id)
 	{
-		var loan = _loans.Single(loan => loan.TransactionId == transactionId && loan.Id == id);
+		var loan = _loans.Single(loan => loan.Id == id);
 		_loans.Remove(loan);
 		return Task.CompletedTask;
 	}

@@ -190,20 +190,20 @@ public sealed class DeleteAccessTests
 
 		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
 
 		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
 
-		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(transaction.Id, loan.Id, updatedLoan));
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(loan.Id, updatedLoan));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
 
 		await FluentActions
-			.Awaiting(() => _otherClient.DeleteLoanAsync(transaction.Id, loan.Id))
+			.Awaiting(() => _otherClient.DeleteLoanAsync(loan.Id))
 			.Should()
 			.NotThrowAsync();
 
 		(await FluentActions
-				.Awaiting(() => _client.GetLoanAsync(transaction.Id, loan.Id))
+				.Awaiting(() => _client.GetLoanAsync(loan.Id))
 				.Should()
 				.ThrowAsync<HttpRequestException>())
 			.Which.StatusCode.Should()

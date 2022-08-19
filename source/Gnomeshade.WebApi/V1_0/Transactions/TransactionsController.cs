@@ -221,7 +221,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return models;
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetLoansAsync"/>
+	/// <inheritdoc cref="ITransactionClient.GetLoansAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all loans.</response>
 	[HttpGet("{transactionId:guid}/Loans")]
 	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
@@ -239,78 +239,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		var loans = await _loanRepository.GetAllForCounterpartyAsync(counterpartyId, ApplicationUser.Id, cancellationToken);
 		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.GetLoanAsync"/>
-	/// <response code="200">Successfully got the loan with the specified id.</response>
-	/// <response code="404">Loan with the specified id does not exist.</response>
-	[HttpGet("{transactionId:guid}/Loans/{id:guid}")]
-	[ProducesResponseType(typeof(Loan), Status200OK)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> GetLoan(Guid transactionId, Guid id, CancellationToken cancellationToken)
-	{
-		var loan = await _loanRepository.FindByIdAsync(transactionId, id, ApplicationUser.Id, cancellationToken);
-		return loan is null
-			? NotFound()
-			: Ok(Mapper.Map<Loan>(loan));
-	}
-
-	/// <inheritdoc cref="ITransactionClient.PutLoanAsync"/>
-	/// <response code="201">Successfully created a new loan.</response>
-	/// <response code="204">Successfully replaced an existing loan.</response>
-	/// <response code="404">Transaction with the specified id was not found.</response>
-	[HttpPut("{transactionId:guid}/Loans/{id:guid}")]
-	[ProducesResponseType(Status201Created)]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> PutLoan(Guid transactionId, Guid id, [FromBody] LoanCreation loan)
-	{
-		loan = loan with { OwnerId = loan.OwnerId ?? ApplicationUser.Id };
-
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Write);
-		if (transaction is null)
-		{
-			return await Repository.FindByIdAsync(transactionId) is null
-				? NotFound()
-				: Forbid();
-		}
-
-		var existingLoan = await _loanRepository.FindWriteableByIdAsync(transactionId, id, ApplicationUser.Id, CancellationToken.None);
-		var entity = Mapper.Map<LoanEntity>(loan) with
-		{
-			Id = id,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
-			TransactionId = transactionId,
-		};
-
-		if (existingLoan is null)
-		{
-			await _loanRepository.AddAsync(entity);
-			return CreatedAtAction(nameof(GetLoan), new { transactionId, id }, null);
-		}
-
-		await _loanRepository.UpdateAsync(entity);
-		return NoContent();
-	}
-
-	/// <inheritdoc cref="ITransactionClient.DeleteLoanAsync"/>
-	/// <response code="204">Successfully deleted loan.</response>
-	/// <response code="404">Loan with the specified id does not exist.</response>
-	[HttpDelete("{transactionId:guid}/Loans/{id:guid}")]
-	[ProducesResponseType(Status204NoContent)]
-	[ProducesStatus404NotFound]
-	public async Task<ActionResult> DeleteLoan(Guid transactionId, Guid id)
-	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id, AccessLevel.Delete);
-		if (transaction is null)
-		{
-			return NotFound();
-		}
-
-		// todo add transaction id
-		await _loanRepository.DeleteAsync(id, ApplicationUser.Id);
-		return NoContent();
 	}
 
 	/// <inheritdoc />

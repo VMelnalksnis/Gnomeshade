@@ -192,13 +192,13 @@ public sealed class ReadAccessTests
 
 		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
 
-		await ShouldReturnTheSame(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldReturnTheSame(client => client.GetLoanAsync(loan.Id));
 
 		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
 
-		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(transaction.Id, loan.Id, updatedLoan));
-		await ShouldReturnTheSame(client => client.GetLoanAsync(transaction.Id, loan.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(transaction.Id, loan.Id), true);
+		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(loan.Id, updatedLoan));
+		await ShouldReturnTheSame(client => client.GetLoanAsync(loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
 	}
 
 	[Test]

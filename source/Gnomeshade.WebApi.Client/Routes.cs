@@ -162,15 +162,15 @@ public static class Routes
 
 	internal static class Loans
 	{
-		private const string _path = nameof(Loans);
+		internal const string Uri = nameof(Loans);
 
-		internal static string Uri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{_path}";
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
-		internal static string IdUri(Guid transactionId, Guid id) => $"{Uri(transactionId)}/{Format(id)}";
+		internal static string TransactionUri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{Uri}";
 
 		internal static string CounterpartyUri(Guid counterpartyId)
 		{
-			const string url = $"{Transactions.Uri}/{_path}";
+			const string url = $"{Transactions.Uri}/{Uri}";
 			return $"{url}?counterpartyId={Format(counterpartyId)}";
 		}
 	}

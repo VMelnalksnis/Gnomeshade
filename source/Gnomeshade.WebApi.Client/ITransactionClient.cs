@@ -131,6 +131,11 @@ public interface ITransactionClient
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeletePurchaseAsync(Guid id);
 
+	/// <summary>Gets all loans.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All loans.</returns>
+	Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default);
+
 	/// <summary>Gets all loans for the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get all the loans.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -144,22 +149,19 @@ public interface ITransactionClient
 	Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the specified loan.</summary>
-	/// <param name="transactionId">The id of transaction of which the loan is a part of.</param>
 	/// <param name="id">The id of the loan to get.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The loan with the specified id.</returns>
-	Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default);
+	Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Creates a new loan or replaces an existing one, if one exists with the specified id.</summary>
-	/// <param name="transactionId">The id of the transaction to which to add a new loan.</param>
 	/// <param name="id">The id of the loan.</param>
 	/// <param name="loan">The loan to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan);
+	Task PutLoanAsync(Guid id, LoanCreation loan);
 
 	/// <summary>Deletes the specified loan.</summary>
-	/// <param name="transactionId">The id of the transaction of the loan.</param>
 	/// <param name="id">The id of the loan to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task DeleteLoanAsync(Guid transactionId, Guid id);
+	Task DeleteLoanAsync(Guid id);
 }

@@ -76,7 +76,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(LoanOverview row)
 	{
-		await _gnomeshadeClient.DeleteLoanAsync(_transactionId, row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteLoanAsync(row.Id).ConfigureAwait(false);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

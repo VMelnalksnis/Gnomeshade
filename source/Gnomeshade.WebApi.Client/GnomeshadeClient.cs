@@ -208,24 +208,28 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Purchases.IdUri(id));
 
 	/// <inheritdoc />
+	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default) =>
+		GetAsync<List<Loan>>(Loans.Uri, cancellationToken);
+
+	/// <inheritdoc />
 	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		GetAsync<List<Loan>>(Loans.Uri(transactionId), cancellationToken);
+		GetAsync<List<Loan>>(Loans.TransactionUri(transactionId), cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default) =>
 		GetAsync<List<Loan>>(Loans.CounterpartyUri(counterpartyId), cancellationToken);
 
 	/// <inheritdoc />
-	public Task<Loan> GetLoanAsync(Guid transactionId, Guid id, CancellationToken cancellationToken = default) =>
-		GetAsync<Loan>(Loans.IdUri(transactionId, id), cancellationToken);
+	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync<Loan>(Loans.IdUri(id), cancellationToken);
 
 	/// <inheritdoc />
-	public Task PutLoanAsync(Guid transactionId, Guid id, LoanCreation loan) =>
-		PutAsync(Loans.IdUri(transactionId, id), loan);
+	public Task PutLoanAsync(Guid id, LoanCreation loan) =>
+		PutAsync(Loans.IdUri(id), loan);
 
 	/// <inheritdoc />
-	public Task DeleteLoanAsync(Guid transactionId, Guid id) =>
-		DeleteAsync(Loans.IdUri(transactionId, id));
+	public Task DeleteLoanAsync(Guid id) =>
+		DeleteAsync(Loans.IdUri(id));
 
 	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id) =>

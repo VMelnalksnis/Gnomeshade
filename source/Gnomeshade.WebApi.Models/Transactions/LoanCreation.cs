@@ -5,12 +5,19 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using JetBrains.Annotations;
+
 namespace Gnomeshade.WebApi.Models.Transactions;
 
 /// <summary>Information needed to create a loan.</summary>
 /// <seealso cref="Loan"/>
+[PublicAPI]
 public sealed record LoanCreation : Creation
 {
+	/// <inheritdoc cref="Loan.TransactionId"/>
+	[Required]
+	public Guid? TransactionId { get; init; }
+
 	/// <inheritdoc cref="Loan.IssuingCounterpartyId"/>
 	[Required]
 	public Guid? IssuingCounterpartyId { get; init; }

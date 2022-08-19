@@ -214,16 +214,16 @@ public sealed class WriteAccessTests
 
 		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
 
 		var loanCreation = loan.ToCreation() with { Amount = loan.Amount + 1 };
 
-		await _otherClient.PutLoanAsync(transaction.Id, loan.Id, loanCreation);
-		var updatedLoan = await _client.GetLoanAsync(transaction.Id, loan.Id);
+		await _otherClient.PutLoanAsync(loan.Id, loanCreation);
+		var updatedLoan = await _client.GetLoanAsync(loan.Id);
 		updatedLoan.Amount.Should().Be(loanCreation.Amount);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(transaction.Id, loan.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(transaction.Id, loan.Id), true);
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
 	}
 
 	[Test]
