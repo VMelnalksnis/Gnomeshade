@@ -49,7 +49,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		try
 		{
-			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login, _jsonSerializerOptions).ConfigureAwait(false);
+			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login, _jsonSerializerOptions).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
 				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions).ConfigureAwait(false);
@@ -69,7 +69,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public async Task SocialRegister()
 	{
-		using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
+		using var response = await _httpClient.PostAsync(SocialRegisterUri, new StringContent(string.Empty));
 		response.EnsureSuccessStatusCode();
 	}
 
@@ -78,13 +78,13 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		_httpClient.DefaultRequestHeaders.Authorization = null;
 		using var response =
-			await _httpClient.PostAsync(_logOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+			await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
 	public Task<List<Link>> GetLinksAsync(CancellationToken cancellationToken = default) =>
-		GetAsync<List<Link>>(Links._uri, cancellationToken);
+		GetAsync<List<Link>>(Links.Uri, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Link> GetLinkAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -100,7 +100,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync() =>
-		GetAsync<Counterparty>($"{_counterpartyUri}/Me");
+		GetAsync<Counterparty>($"{CounterpartyUri}/Me");
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>
@@ -108,11 +108,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Counterparty>> GetCounterpartiesAsync() =>
-		GetAsync<List<Counterparty>>(_counterpartyUri);
+		GetAsync<List<Counterparty>>(CounterpartyUri);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
-		PostAsync(_counterpartyUri, counterparty);
+		PostAsync(CounterpartyUri, counterparty);
 
 	/// <inheritdoc />
 	public Task PutCounterpartyAsync(Guid id, CounterpartyCreation counterparty) =>
@@ -217,7 +217,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default) =>
-		GetAsync<List<Loan>>(Loans.CounterpartyUri(counterpartyId), cancellationToken);
+		GetAsync<List<Loan>>(Loans.ForCounterparty(counterpartyId), cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -237,15 +237,15 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync() =>
-		GetAsync<List<Account>>(Accounts._allUri);
+		GetAsync<List<Account>>(Accounts.AllUri);
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetActiveAccountsAsync() =>
-		GetAsync<List<Account>>(Accounts._uri);
+		GetAsync<List<Account>>(Accounts.Uri);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateAccountAsync(AccountCreation account) =>
-		PostAsync(Accounts._uri, account);
+		PostAsync(Accounts.Uri, account);
 
 	/// <inheritdoc />
 	public Task PutAccountAsync(Guid id, AccountCreation account) =>
@@ -253,7 +253,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Guid> AddCurrencyToAccountAsync(Guid id, AccountInCurrencyCreation currency) =>
-		PostAsync(Accounts.CurrencyUri(id), currency);
+		PostAsync(Accounts.Currencies(id), currency);
 
 	/// <inheritdoc />
 	public Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId) =>
@@ -261,7 +261,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync() =>
-		GetAsync<List<Currency>>(_currencyUri);
+		GetAsync<List<Currency>>(CurrencyUri);
 
 	/// <inheritdoc />
 	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -281,7 +281,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync() =>
-		GetAsync<List<Unit>>(_unitUri);
+		GetAsync<List<Unit>>(UnitUri);
 
 	/// <inheritdoc />
 	public Task PutProductAsync(Guid id, ProductCreation product) =>
@@ -300,7 +300,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		multipartContent.Add(streamContent, "Report", name);
 		multipartContent.Add(new StringContent(DateTimeZoneProviders.Tzdb.GetSystemDefault().Id), "TimeZone");
 
-		using var importResponse = await _httpClient.PostAsync(_iso20022, multipartContent);
+		using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
 		await ThrowIfNotSuccessCode(importResponse);
 
 		return (await importResponse.Content.ReadFromJsonAsync<AccountReportResult>(_jsonSerializerOptions))!;
@@ -321,13 +321,13 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Category>> GetCategoriesAsync() => GetAsync<List<Category>>(Categories._uri);
+	public Task<List<Category>> GetCategoriesAsync() => GetAsync<List<Category>>(Categories.Uri);
 
 	/// <inheritdoc />
 	public Task<Category> GetCategoryAsync(Guid id) => GetAsync<Category>(Categories.IdUri(id));
 
 	/// <inheritdoc />
-	public Task<Guid> CreateCategoryAsync(CategoryCreation category) => PostAsync(Categories._uri, category);
+	public Task<Guid> CreateCategoryAsync(CategoryCreation category) => PostAsync(Categories.Uri, category);
 
 	/// <inheritdoc />
 	public Task PutCategoryAsync(Guid id, CategoryCreation category) => PutAsync(Categories.IdUri(id), category);

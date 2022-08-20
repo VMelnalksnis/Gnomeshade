@@ -14,48 +14,48 @@ namespace Gnomeshade.WebApi.Client;
 /// <summary>Relative URIs of API endpoints.</summary>
 public static class Routes
 {
-	internal const string _authenticationUri = "Authentication";
-	internal const string _counterpartyUri = "Counterparties";
-	internal const string _currencyUri = "Currencies";
-	internal const string _iso20022 = "Iso";
-	internal const string _unitUri = "Units";
-	internal const string _loginUri = $"{_authenticationUri}/Login";
-	internal const string _logOutUri = $"{_authenticationUri}/Logout";
-	internal const string _socialRegisterUri = "ExternalAuthentication/SocialRegister";
+	internal const string AuthenticationUri = "Authentication";
+	internal const string CounterpartyUri = "Counterparties";
+	internal const string CurrencyUri = "Currencies";
+	internal const string Iso20022 = "Iso";
+	internal const string UnitUri = "Units";
+	internal const string LoginUri = $"{AuthenticationUri}/Login";
+	internal const string LogOutUri = $"{AuthenticationUri}/Logout";
+	internal const string SocialRegisterUri = "ExternalAuthentication/SocialRegister";
 
 	/// <summary>Gets the relative uri for the specified counterparty.</summary>
 	/// <param name="id">The id of the counterparty.</param>
 	/// <returns>Relative uri for a specified counterparty.</returns>
-	public static string CounterpartyIdUri(Guid id) => $"{_counterpartyUri}/{Format(id)}";
+	public static string CounterpartyIdUri(Guid id) => $"{CounterpartyUri}/{Format(id)}";
 
 	/// <summary>Gets the relative uri for merging two counterparties.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>
 	/// <param name="sourceId">The id of the counterparty which to merge into the other.</param>
 	/// <returns>Relative uri for merging two counterparties.</returns>
 	public static string CounterpartyMergeUri(Guid targetId, Guid sourceId) =>
-		$"{_counterpartyUri}/{Format(targetId)}/Merge/{Format(sourceId)}";
+		$"{CounterpartyUri}/{Format(targetId)}/Merge/{Format(sourceId)}";
 
 	/// <summary>Gets the relative uri for the specified unit.</summary>
 	/// <param name="id">The id of the unit.</param>
 	/// <returns>Relative uri for the specified unit.</returns>
-	public static string UnitIdUri(Guid id) => $"{_unitUri}/{Format(id)}";
+	public static string UnitIdUri(Guid id) => $"{UnitUri}/{Format(id)}";
 
 	private static string Format(Guid guid) => guid.ToString("N", CultureInfo.InvariantCulture);
 
 	/// <summary>Account routes.</summary>
 	public static class Accounts
 	{
-		internal const string _uri = nameof(Accounts);
-		internal const string _allUri = $"{_uri}?onlyActive=false";
+		internal const string Uri = nameof(Accounts);
+		internal const string AllUri = $"{Uri}?onlyActive=false";
 
 		/// <summary>Gets the relative uri for the specified account.</summary>
 		/// <param name="id">The id of the account.</param>
 		/// <returns>Relative uri for a specific account.</returns>
-		public static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+		public static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
-		internal static string CurrencyUri(Guid id) => $"{IdUri(id)}/{_currencyUri}";
+		internal static string Currencies(Guid id) => $"{IdUri(id)}/{CurrencyUri}";
 
-		internal static string CurrencyIdUri(Guid id, Guid currencyId) => $"{IdUri(id)}/{_currencyUri}/{Format(currencyId)}";
+		internal static string CurrencyIdUri(Guid id, Guid currencyId) => $"{IdUri(id)}/{CurrencyUri}/{Format(currencyId)}";
 
 		internal static string BalanceUri(Guid id) => $"{IdUri(id)}/Balance";
 	}
@@ -130,16 +130,16 @@ public static class Routes
 
 	internal static class Categories
 	{
-		internal const string _uri = "Categories";
+		internal const string Uri = "Categories";
 
-		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 	}
 
 	internal static class Links
 	{
-		internal const string _uri = "Links";
+		internal const string Uri = "Links";
 
-		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 	}
 
 	internal static class Transfers
@@ -168,7 +168,7 @@ public static class Routes
 
 		internal static string TransactionUri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/{Uri}";
 
-		internal static string CounterpartyUri(Guid counterpartyId)
+		internal static string ForCounterparty(Guid counterpartyId)
 		{
 			const string url = $"{Transactions.Uri}/{Uri}";
 			return $"{url}?counterpartyId={Format(counterpartyId)}";
