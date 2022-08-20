@@ -260,7 +260,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var currencyCode = cashAccount.Currency;
 		if (string.IsNullOrWhiteSpace(currencyCode))
 		{
-			throw new NotSupportedException($"Cannot create a new account without a currency");
+			throw new NotSupportedException("Cannot create a new account without a currency");
 		}
 
 		var currency = await _currencyRepository.FindByAlphabeticCodeAsync(currencyCode);
