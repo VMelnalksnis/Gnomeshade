@@ -103,11 +103,15 @@ public sealed class PrivateByDefaultTests
 		var transaction = await _client.CreateTransactionAsync();
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetDetailedTransactionAsync(transaction.Id));
+		(await _client.GetTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
+		(await _client.GetDetailedTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
 
 		var updatedTransaction = transaction.ToCreation() with { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
 
 		await ShouldBeForbiddenForOthers(client => client.PutTransactionAsync(transaction.Id, updatedTransaction));
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetDetailedTransactionAsync(transaction.Id));
 		await ShouldBeNotFoundForOthers(client => client.DeleteTransactionAsync(transaction.Id));
 	}
 

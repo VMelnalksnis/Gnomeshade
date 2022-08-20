@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -88,7 +89,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
 	{
-		var transaction = await Repository.FindByIdAsync(id, cancellationToken);
+		var transaction = await Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Read, cancellationToken);
 		if (transaction is null)
 		{
 			return NotFound();
@@ -122,20 +123,18 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <response code="200">Successfully got all transactions.</response>
 	[HttpGet("Details")]
 	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
-	public async Task<List<DetailedTransaction>> GetAllDetailed(
+	public async IAsyncEnumerable<Transaction> GetAllDetailed(
 		[FromQuery] OptionalTimeRange timeRange,
-		CancellationToken cancellationToken)
+		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
 		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
-
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
-		var detailedTransactions = transactions
-			.Select(async transaction => await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken))
-			.Select(task => task.Result)
-			.ToList();
 
-		return detailedTransactions;
+		foreach (var transaction in transactions)
+		{
+			yield return await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken);
+		}
 	}
 
 	/// <inheritdoc cref="ITransactionClient.CreateTransactionAsync"/>
