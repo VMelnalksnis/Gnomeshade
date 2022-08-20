@@ -122,8 +122,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 	/// <response code="200">Successfully got all transactions.</response>
 	[HttpGet("Details")]
-	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
-	public async IAsyncEnumerable<Transaction> GetAllDetailed(
+	[ProducesResponseType(typeof(List<DetailedTransaction>), Status200OK)]
+	public async IAsyncEnumerable<DetailedTransaction> GetAllDetailed(
 		[FromQuery] OptionalTimeRange timeRange,
 		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
