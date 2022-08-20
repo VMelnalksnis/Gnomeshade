@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Data;
+using System.Data.Common;
 
 using Gnomeshade.Data.Entities;
 
@@ -13,7 +13,7 @@ public sealed class LinkRepository : Repository<LinkEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LinkRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public LinkRepository(IDbConnection dbConnection)
+	public LinkRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

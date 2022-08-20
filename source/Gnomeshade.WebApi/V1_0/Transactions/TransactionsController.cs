@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -63,7 +63,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		LoanRepository loanRepository,
 		CounterpartyRepository counterpartyRepository,
 		AccountRepository accountRepository,
-		IDbConnection dbConnection)
+		DbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 		_unitOfWork = unitOfWork;

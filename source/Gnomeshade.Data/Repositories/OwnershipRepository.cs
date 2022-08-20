@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,11 +20,11 @@ namespace Gnomeshade.Data.Repositories;
 /// <summary>Persistence store of <see cref="OwnershipEntity"/>.</summary>
 public sealed class OwnershipRepository : IDisposable
 {
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
 	/// <summary>Initializes a new instance of the <see cref="OwnershipRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public OwnershipRepository(IDbConnection dbConnection)
+	public OwnershipRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

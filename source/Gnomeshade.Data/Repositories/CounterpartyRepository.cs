@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -17,7 +17,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public CounterpartyRepository(IDbConnection dbConnection)
+	public CounterpartyRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

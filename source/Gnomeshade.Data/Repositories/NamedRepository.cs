@@ -4,6 +4,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="NamedRepository{TNamedEntity}"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected NamedRepository(IDbConnection dbConnection)
+	protected NamedRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

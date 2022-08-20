@@ -4,10 +4,12 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories;
@@ -45,7 +47,7 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 		Mapper mapper,
 		ILogger<TransactionItemController<TRepository, TEntity, TModel, TItemCreation>> logger,
 		TRepository repository,
-		IDbConnection dbConnection,
+		DbConnection dbConnection,
 		TransactionRepository transactionRepository)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
@@ -55,61 +57,45 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 	/// <inheritdoc />
 	protected sealed override async Task<ActionResult> UpdateExistingAsync(Guid id, TItemCreation creation, UserEntity user)
 	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
+		if (conflictingResult is not null)
 		{
-			var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
-			if (conflictingResult is not null)
-			{
-				return conflictingResult;
-			}
-
-			var entity = Mapper.Map<TEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.UpdateAsync(entity, dbTransaction);
-			dbTransaction.Commit();
-			return NoContent();
+			return conflictingResult;
 		}
-		catch (Exception)
+
+		var entity = Mapper.Map<TEntity>(creation) with
 		{
-			dbTransaction.Rollback();
-			throw;
-		}
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			ModifiedByUserId = ApplicationUser.Id,
+		};
+
+		await Repository.UpdateAsync(entity, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return NoContent();
 	}
 
 	/// <inheritdoc />
 	protected sealed override async Task<ActionResult> CreateNewAsync(Guid id, TItemCreation creation, UserEntity user)
 	{
-		var dbTransaction = DbConnection.BeginTransaction();
-		try
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
+		if (conflictingResult is not null)
 		{
-			var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
-			if (conflictingResult is not null)
-			{
-				return conflictingResult;
-			}
-
-			var entity = Mapper.Map<TEntity>(creation) with
-			{
-				Id = id,
-				CreatedByUserId = ApplicationUser.Id,
-				ModifiedByUserId = ApplicationUser.Id,
-			};
-
-			await Repository.AddAsync(entity, dbTransaction);
-			dbTransaction.Commit();
-			return CreatedAtAction("Get", new { id }, null);
+			return conflictingResult;
 		}
-		catch (Exception)
+
+		var entity = Mapper.Map<TEntity>(creation) with
 		{
-			dbTransaction.Rollback();
-			throw;
-		}
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+			ModifiedByUserId = ApplicationUser.Id,
+		};
+
+		await Repository.AddAsync(entity, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return CreatedAtAction("Get", new { id }, null);
 	}
 
 	private async Task<ActionResult?> FindConflictingTransaction(

@@ -4,6 +4,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
@@ -14,13 +15,13 @@ namespace Gnomeshade.Data;
 /// <summary>Transaction related actions spanning multiple entities.</summary>
 public sealed class TransactionUnitOfWork : IDisposable
 {
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 	private readonly TransactionRepository _repository;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionUnitOfWork"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	/// <param name="repository">The repository for managing transactions.</param>
-	public TransactionUnitOfWork(IDbConnection dbConnection, TransactionRepository repository)
+	public TransactionUnitOfWork(DbConnection dbConnection, TransactionRepository repository)
 	{
 		_dbConnection = dbConnection;
 		_repository = repository;
@@ -31,17 +32,17 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <returns>The id of the created transaction.</returns>
 	public async Task<Guid> AddAsync(TransactionEntity transaction)
 	{
-		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		try
 		{
 			var transactionId = await AddAsync(transaction, dbTransaction);
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 			return transactionId;
 		}
 		catch (Exception)
 		{
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}
@@ -68,15 +69,15 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId)
 	{
-		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 		try
 		{
 			await DeleteAsync(transaction, ownerId, dbTransaction);
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 		}
 		catch (Exception)
 		{
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}
@@ -99,16 +100,16 @@ public sealed class TransactionUnitOfWork : IDisposable
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
 	{
-		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		try
 		{
 			await UpdateAsync(transaction, modifiedBy, dbTransaction);
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 		}
 		catch (Exception)
 		{
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}

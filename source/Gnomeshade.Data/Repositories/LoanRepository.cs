@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoanRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public LoanRepository(IDbConnection dbConnection)
+	public LoanRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,11 +22,11 @@ public sealed class OwnerRepository : IDisposable
 	private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@id) RETURNING id;";
 	private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
 
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
 	/// <summary>Initializes a new instance of the <see cref="OwnerRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public OwnerRepository(IDbConnection dbConnection)
+	public OwnerRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

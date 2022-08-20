@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Repositories;
@@ -15,7 +15,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
 public sealed class CategoryRepositoryTests : IDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private CategoryRepository _repository = null!;
 
 	[SetUp]

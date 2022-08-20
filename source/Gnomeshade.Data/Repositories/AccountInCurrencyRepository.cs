@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 
 using Gnomeshade.Data.Entities;
 
@@ -18,7 +18,7 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	/// Initializes a new instance of the <see cref="AccountInCurrencyRepository"/> class with a database connection.
 	/// </summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccountInCurrencyRepository(IDbConnection dbConnection)
+	public AccountInCurrencyRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

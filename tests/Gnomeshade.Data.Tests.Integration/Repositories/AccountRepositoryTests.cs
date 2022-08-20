@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,7 +21,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
 public class AccountRepositoryTests : IDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private CounterpartyRepository _counterpartyRepository = null!;
 	private AccountRepository _repository = null!;
 	private AccountInCurrencyRepository _inCurrencyRepository = null!;

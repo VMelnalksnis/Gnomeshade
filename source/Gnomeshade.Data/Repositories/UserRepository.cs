@@ -4,6 +4,7 @@
 
 using System;
 using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -17,13 +18,13 @@ namespace Gnomeshade.Data.Repositories;
 /// </summary>
 public sealed class UserRepository : IDisposable
 {
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="UserRepository"/> class with a database connection.
 	/// </summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public UserRepository(IDbConnection dbConnection)
+	public UserRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

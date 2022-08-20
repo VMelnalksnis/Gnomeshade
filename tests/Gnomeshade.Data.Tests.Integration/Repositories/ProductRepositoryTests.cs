@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Repositories;
@@ -13,9 +13,9 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public class ProductRepositoryTests : IDisposable
+public sealed class ProductRepositoryTests : IAsyncDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private ProductRepository _repository = null!;
 
 	[SetUp]
@@ -26,9 +26,9 @@ public class ProductRepositoryTests : IDisposable
 	}
 
 	[TearDown]
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		_dbConnection.Dispose();
+		await _dbConnection.DisposeAsync();
 		_repository.Dispose();
 	}
 
@@ -78,9 +78,9 @@ public class ProductRepositoryTests : IDisposable
 	{
 		var productToAdd = new ProductFaker(TestUser).Generate();
 
-		using var dbTransaction = _dbConnection.BeginTransaction();
+		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 		var id = await _repository.AddAsync(productToAdd, dbTransaction);
-		dbTransaction.Commit();
+		await dbTransaction.CommitAsync();
 
 		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
 		var expectedProduct = productToAdd with

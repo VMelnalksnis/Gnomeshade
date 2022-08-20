@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +49,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 		AccountRepository repository,
 		AccountInCurrencyRepository inCurrencyRepository,
 		AccountUnitOfWork accountUnitOfWork,
-		IDbConnection dbConnection)
+		DbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 		_repository = repository;

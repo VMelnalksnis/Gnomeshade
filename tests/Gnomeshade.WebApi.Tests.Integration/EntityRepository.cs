@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -36,9 +36,9 @@ internal sealed class EntityRepository
 		{ typeof(UserEntity), "users" },
 	};
 
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
-	public EntityRepository(IDbConnection dbConnection)
+	public EntityRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

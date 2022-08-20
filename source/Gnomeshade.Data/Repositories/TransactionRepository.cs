@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public TransactionRepository(IDbConnection dbConnection)
+	public TransactionRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

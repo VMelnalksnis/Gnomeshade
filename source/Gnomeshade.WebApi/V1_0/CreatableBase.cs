@@ -4,13 +4,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories;
@@ -47,22 +48,18 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 		Mapper mapper,
 		ILogger<CreatableBase<TRepository, TEntity, TModel, TCreation>> logger,
 		TRepository repository,
-		IDbConnection dbConnection)
+		DbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger)
 	{
 		Repository = repository;
 		DbConnection = dbConnection;
-		if (DbConnection.State is not ConnectionState.Open)
-		{
-			DbConnection.Open();
-		}
 	}
 
 	/// <summary>Gets the repository for managing <typeparamref name="TEntity"/>.</summary>
 	protected TRepository Repository { get; }
 
 	/// <summary>Gets the database connection for managing database transactions.</summary>
-	protected IDbConnection DbConnection { get; }
+	protected DbConnection DbConnection { get; }
 
 	/// <summary>Gets all entities.</summary>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -130,25 +127,17 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[HttpDelete("{id:guid}")]
 	public virtual async Task<StatusCodeResult> Delete(Guid id)
 	{
-		var dbTransaction = DbConnection.BeginTransaction();
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 
-		try
+		var existing = await Repository.FindByIdAsync(id, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
+		if (existing is null)
 		{
-			var existing = await Repository.FindByIdAsync(id, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
-			if (existing is null)
-			{
-				return NotFound();
-			}
+			return NotFound();
+		}
 
-			await Repository.DeleteAsync(id, ApplicationUser.Id, dbTransaction);
-			dbTransaction.Commit();
-			return NoContent();
-		}
-		catch (Exception)
-		{
-			dbTransaction.Rollback();
-			throw;
-		}
+		await Repository.DeleteAsync(id, ApplicationUser.Id, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return NoContent();
 	}
 
 	/// <summary>Updates an existing <typeparamref name="TEntity"/> with details from <paramref name="creation"/>.</summary>

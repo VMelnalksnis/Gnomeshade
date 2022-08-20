@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,13 +27,13 @@ public abstract class Repository<TEntity> : IDisposable
 
 	/// <summary>Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected Repository(IDbConnection dbConnection)
+	protected Repository(DbConnection dbConnection)
 	{
 		DbConnection = dbConnection;
 	}
 
 	/// <summary>Gets the database connection for executing queries.</summary>
-	protected IDbConnection DbConnection { get; }
+	protected DbConnection DbConnection { get; }
 
 	/// <summary>Gets the SQL query for deleting entities.</summary>
 	protected abstract string DeleteSql { get; }

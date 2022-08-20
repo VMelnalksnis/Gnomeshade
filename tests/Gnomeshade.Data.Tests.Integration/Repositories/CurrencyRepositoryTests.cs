@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +14,7 @@ namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
 public class CurrencyRepositoryTests : IDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private CurrencyRepository _repository = null!;
 
 	[SetUp]

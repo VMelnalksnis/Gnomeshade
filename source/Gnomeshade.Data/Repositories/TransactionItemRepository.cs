@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ public abstract class TransactionItemRepository<TEntity> : Repository<TEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionItemRepository{TEntity}"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected TransactionItemRepository(IDbConnection dbConnection)
+	protected TransactionItemRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

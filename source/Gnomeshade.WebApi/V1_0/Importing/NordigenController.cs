@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ public sealed class NordigenController : ControllerBase
 	private readonly ApplicationUserContext _applicationUserContext;
 	private readonly ILogger<NordigenController> _logger;
 	private readonly INordigenClient _nordigenClient;
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 	private readonly AccountRepository _accountRepository;
 	private readonly TransactionRepository _transactionRepository;
 	private readonly TransferRepository _transferRepository;
@@ -80,7 +81,7 @@ public sealed class NordigenController : ControllerBase
 		ApplicationUserContext applicationUserContext,
 		ILogger<NordigenController> logger,
 		INordigenClient nordigenClient,
-		IDbConnection dbConnection,
+		DbConnection dbConnection,
 		AccountRepository accountRepository,
 		TransactionRepository transactionRepository,
 		TransferRepository transferRepository,
@@ -120,12 +121,7 @@ public sealed class NordigenController : ControllerBase
 	[HttpPost("{id}")]
 	public async Task<ActionResult> Import(string id, [Required] string timeZone)
 	{
-		if (_dbConnection.State is not ConnectionState.Open)
-		{
-			_dbConnection.Open();
-		}
-
-		using var dbTransaction = _dbConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 		try
 		{
 			var dateTimeZone = _dateTimeZoneProvider.GetZoneOrNull(timeZone);
@@ -211,12 +207,12 @@ public sealed class NordigenController : ControllerBase
 				results.Add(resultBuilder.ToResult());
 			}
 
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 			return Ok(results);
 		}
 		catch
 		{
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}

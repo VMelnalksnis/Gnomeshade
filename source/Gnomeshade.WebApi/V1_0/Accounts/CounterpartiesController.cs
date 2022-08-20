@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +38,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ILogger<CounterpartiesController> logger,
-		IDbConnection dbConnection)
+		DbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}

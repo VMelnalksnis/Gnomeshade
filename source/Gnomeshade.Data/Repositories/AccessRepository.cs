@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,11 +17,11 @@ namespace Gnomeshade.Data.Repositories;
 /// <summary>Persistence store of <see cref="AccessEntity"/>.</summary>
 public sealed class AccessRepository : IDisposable
 {
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
 	/// <summary>Initializes a new instance of the <see cref="AccessRepository"/> class.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccessRepository(IDbConnection dbConnection)
+	public AccessRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

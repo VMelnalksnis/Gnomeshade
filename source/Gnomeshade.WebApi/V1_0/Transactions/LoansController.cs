@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +38,7 @@ public sealed class LoansController : TransactionItemController<LoanRepository, 
 		Mapper mapper,
 		ILogger<LoansController> logger,
 		LoanRepository repository,
-		IDbConnection dbConnection,
+		DbConnection dbConnection,
 		TransactionRepository transactionRepository)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection, transactionRepository)
 	{

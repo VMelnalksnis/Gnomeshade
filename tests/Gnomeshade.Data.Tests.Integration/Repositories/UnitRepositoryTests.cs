@@ -2,7 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Data;
+using System;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Repositories;
@@ -12,9 +13,9 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public class UnitRepositoryTests
+public sealed class UnitRepositoryTests : IAsyncDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private UnitRepository _repository = null!;
 
 	[SetUp]
@@ -25,9 +26,9 @@ public class UnitRepositoryTests
 	}
 
 	[TearDown]
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		_dbConnection.Dispose();
+		await _dbConnection.DisposeAsync();
 		_repository.Dispose();
 	}
 
@@ -62,7 +63,7 @@ public class UnitRepositoryTests
 	public async Task AddGetDelete_WithTransaction()
 	{
 		var unitFaker = new UnitFaker(TestUser);
-		using var dbTransaction = _dbConnection.BeginTransaction();
+		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 
 		var parentUnit = unitFaker.Generate();
 		var parentUnitId = await _repository.AddAsync(parentUnit, dbTransaction);
@@ -70,7 +71,7 @@ public class UnitRepositoryTests
 		var childUnit = unitFaker.GenerateUnique(parentUnit) with { ParentUnitId = parentUnitId, Multiplier = 1 };
 		var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
 
-		dbTransaction.Commit();
+		await dbTransaction.CommitAsync();
 
 		var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id);
 		var expectedUnit = childUnit with

@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,13 +23,13 @@ public sealed class CurrencyRepository : IDisposable
 	private static readonly string _selectAlphabetic = $"{Queries.Currency.Select} WHERE alphabetic_code = @code;";
 	private static readonly string _selectId = $"{Queries.Currency.Select} WHERE id = @id;";
 
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="CurrencyRepository"/> class with a database connection.
 	/// </summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public CurrencyRepository(IDbConnection dbConnection)
+	public CurrencyRepository(DbConnection dbConnection)
 	{
 		_dbConnection = dbConnection;
 	}

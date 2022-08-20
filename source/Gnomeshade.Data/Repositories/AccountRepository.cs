@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.</summary>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccountRepository(IDbConnection dbConnection)
+	public AccountRepository(DbConnection dbConnection)
 		: base(dbConnection)
 	{
 	}

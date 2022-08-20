@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,7 +54,7 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly TransferRepository _transferRepository;
 	private readonly TransactionUnitOfWork _transactionUnitOfWork;
 	private readonly AccountUnitOfWork _accountUnitOfWork;
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 	private readonly Mapper _mapper;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly IClock _clock;
@@ -84,7 +85,7 @@ public sealed class Iso20022Controller : ControllerBase
 		TransferRepository transferRepository,
 		TransactionUnitOfWork transactionUnitOfWork,
 		AccountUnitOfWork accountUnitOfWork,
-		IDbConnection dbConnection,
+		DbConnection dbConnection,
 		Mapper mapper,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		IClock clock)
@@ -126,12 +127,7 @@ public sealed class Iso20022Controller : ControllerBase
 		var accountReport = await ReadReport(report.Report);
 		_logger.LogDebug("Reading Account Report {ReportId}", accountReport.Identification);
 
-		if (!_dbConnection.State.HasFlag(ConnectionState.Open))
-		{
-			_dbConnection.Open();
-		}
-
-		using var dbTransaction = _dbConnection.BeginTransaction();
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		var (reportAccount, currency, createdAccount) = await FindAccount(accountReport.Account, user, dbTransaction);
 		_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
@@ -200,13 +196,13 @@ public sealed class Iso20022Controller : ControllerBase
 				resultBuilder.AddTransfer(transaction.Transfer, created);
 			}
 
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 			return Ok(resultBuilder.ToResult());
 		}
 		catch (Exception exception)
 		{
 			_logger.LogError(exception, "Failed to import");
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}

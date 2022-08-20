@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
@@ -16,9 +16,9 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork;
 
-public sealed class TransactionUnitOfWorkTests : IDisposable
+public sealed class TransactionUnitOfWorkTests : IAsyncDisposable
 {
-	private IDbConnection _dbConnection = null!;
+	private DbConnection _dbConnection = null!;
 	private TransactionRepository _repository = null!;
 	private TransactionUnitOfWork _unitOfWork = null!;
 
@@ -31,9 +31,9 @@ public sealed class TransactionUnitOfWorkTests : IDisposable
 	}
 
 	[TearDown]
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		_dbConnection.Dispose();
+		await _dbConnection.DisposeAsync();
 		_repository.Dispose();
 		_unitOfWork.Dispose();
 	}
@@ -47,8 +47,8 @@ public sealed class TransactionUnitOfWorkTests : IDisposable
 
 		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
 		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
-		var dbTransaction = _dbConnection.BeginTransaction();
-		dbTransaction.Commit();
+		var dbTransaction = await _dbConnection.BeginTransactionAsync();
+		await dbTransaction.CommitAsync();
 		var now = SystemClock.Instance.GetCurrentInstant();
 		var allTransactions = await _repository.GetAllAsync(now - Duration.FromDays(31), now, TestUser.Id);
 

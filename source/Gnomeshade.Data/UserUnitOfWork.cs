@@ -3,7 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
+using System.Data.Common;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
@@ -15,7 +15,7 @@ namespace Gnomeshade.Data;
 /// <summary>User related actions spanning multiple entities.</summary>
 public sealed class UserUnitOfWork : IDisposable
 {
-	private readonly IDbConnection _dbConnection;
+	private readonly DbConnection _dbConnection;
 	private readonly OwnerRepository _ownerRepository;
 	private readonly OwnershipRepository _ownershipRepository;
 	private readonly UserRepository _userRepository;
@@ -28,7 +28,7 @@ public sealed class UserUnitOfWork : IDisposable
 	/// <param name="userRepository">The repository for managing users.</param>
 	/// <param name="counterpartyRepository">The repository for managing counterparties.</param>
 	public UserUnitOfWork(
-		IDbConnection dbConnection,
+		DbConnection dbConnection,
 		OwnerRepository ownerRepository,
 		OwnershipRepository ownershipRepository,
 		UserRepository userRepository,
@@ -50,7 +50,7 @@ public sealed class UserUnitOfWork : IDisposable
 		var fullName = applicationUser.FullName;
 		var user = new UserEntity { Id = userId, ModifiedByUserId = userId };
 
-		using var dbTransaction = _dbConnection.OpenAndBeginTransaction();
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		try
 		{
@@ -69,11 +69,11 @@ public sealed class UserUnitOfWork : IDisposable
 			user.CounterpartyId = counterpartyId;
 			_ = await _userRepository.UpdateAsync(user, dbTransaction);
 
-			dbTransaction.Commit();
+			await dbTransaction.CommitAsync();
 		}
 		catch (Exception)
 		{
-			dbTransaction.Rollback();
+			await dbTransaction.RollbackAsync();
 			throw;
 		}
 	}

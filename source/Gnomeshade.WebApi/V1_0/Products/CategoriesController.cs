@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,7 +37,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		Mapper mapper,
 		ILogger<CategoriesController> logger,
 		CategoryRepository repository,
-		IDbConnection dbConnection)
+		DbConnection dbConnection)
 		: base(applicationUserContext, mapper, logger, repository, dbConnection)
 	{
 	}
