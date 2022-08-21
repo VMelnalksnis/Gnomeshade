@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -13,7 +12,7 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public sealed class ProductRepositoryTests : IAsyncDisposable
+public sealed class ProductRepositoryTests
 {
 	private DbConnection _dbConnection = null!;
 	private ProductRepository _repository = null!;
@@ -23,13 +22,6 @@ public sealed class ProductRepositoryTests : IAsyncDisposable
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 		_repository = new(_dbConnection);
-	}
-
-	[TearDown]
-	public async ValueTask DisposeAsync()
-	{
-		await _dbConnection.DisposeAsync();
-		_repository.Dispose();
 	}
 
 	[Test]

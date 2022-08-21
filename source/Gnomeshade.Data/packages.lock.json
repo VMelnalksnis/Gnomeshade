@@ -8,14 +8,14 @@
         "resolved": "2.0.123",
         "contentHash": "RDFF4rBLLmbpi6pwkY7q/M6UXHRJEOerplDGE5jwEkP/JGJnBauAClYavNKJPW1yOTWRPIyfj4is3EaJxQXILQ=="
       },
-      "dbup-postgresql": {
+      "dbup-core": {
         "type": "Direct",
         "requested": "[4.5.0, )",
         "resolved": "4.5.0",
-        "contentHash": "ueGb+JXnwssIiJAP8a3t1mitebDgw+x18pRbJTQbnbuR5F2vZrgrW12PfjwM3HdF8x9bjfMMyR5XbgVAVTSuag==",
+        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
         "dependencies": {
-          "Npgsql": "3.2.6",
-          "dbup-core": "4.5.0"
+          "Microsoft.CSharp": "4.4.0",
+          "System.Diagnostics.TraceSource": "4.3.0"
         }
       },
       "DotNet.ReproducibleBuilds": {
@@ -36,6 +36,39 @@
         "resolved": "1.1.1",
         "contentHash": "mdk9ue5KRj+2uaWpyrqUtnMw2c0RMVK1MhdOyvEB3xeBO80G28zAGRnHw/Eu/fnOfIYyUl79Ld2BTWwjmpanQA=="
       },
+      "Microsoft.AspNetCore.Identity": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "F16BKeS96wKhyIyhaFR7m8kRIwIvPUW9Dx7IlGWmu2IIwnUDCdo+2z7IrWKA8r77pZQ1UE9kYcBPg5456YdAIA==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Cookies": "2.2.0",
+          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "2.2.0",
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Identity.Core": "2.2.0"
+        }
+      },
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+        "type": "Direct",
+        "requested": "[6.0.8, )",
+        "resolved": "6.0.8",
+        "contentHash": "caoSu3dk7hZKE6/l/4JSXzVEXKrqvRtqDxEO4c3KtJpK1gZzrVFYUamsakVxxp2JRv/w8n8Xm4b8w9OUCS1lQg==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.8",
+          "Microsoft.Extensions.Identity.Stores": "6.0.8"
+        }
+      },
+      "Microsoft.Extensions.Identity.Stores": {
+        "type": "Direct",
+        "requested": "[6.0.8, )",
+        "resolved": "6.0.8",
+        "contentHash": "rvSqpHdPDYEns6qjfaG+6GqnrVYFICVbcuC1vJSVSW9DyxhfKdn0mD/sp1ZRp41x5au6iRr5c4Cm5CTP8I8grA==",
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Identity.Core": "6.0.8",
+          "Microsoft.Extensions.Logging": "6.0.0"
+        }
+      },
       "NodaTime": {
         "type": "Direct",
         "requested": "[3.1.2, )",
@@ -54,13 +87,23 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.406"
         }
       },
-      "dbup-core": {
-        "type": "Transitive",
-        "resolved": "4.5.0",
-        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
+      "System.Security.Cryptography.Xml": {
+        "type": "Direct",
+        "requested": "[6.0.1, )",
+        "resolved": "6.0.1",
+        "contentHash": "5e5bI28T0x73AwTsbuFP4qSRzthmU2C0Gqgg3AZ3KTxmSyA+Uhk31puA3srdaeWaacVnHhLdJywCzqOiEpbO/w==",
         "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
-          "System.Diagnostics.TraceSource": "4.3.0"
+          "System.Security.AccessControl": "6.0.0",
+          "System.Security.Cryptography.Pkcs": "6.0.1"
+        }
+      },
+      "System.Text.Encodings.Web": {
+        "type": "Direct",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "Microsoft.AspNetCore.Authentication": {
@@ -623,18 +666,6 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "gnomeshade.data.identity": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Microsoft.AspNetCore.Identity": "2.2.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
-          "Microsoft.Extensions.Identity.Stores": "6.0.8",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
-          "System.Security.Cryptography.Xml": "6.0.1",
-          "System.Text.Encodings.Web": "6.0.0"
-        }
-      },
       "Microsoft.AspNetCore.Http.Features": {
         "type": "CentralTransitive",
         "requested": "[5.0.17, )",
@@ -644,44 +675,11 @@
           "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
-      "Microsoft.AspNetCore.Identity": {
-        "type": "CentralTransitive",
-        "requested": "[2.2.0, )",
-        "resolved": "2.2.0",
-        "contentHash": "F16BKeS96wKhyIyhaFR7m8kRIwIvPUW9Dx7IlGWmu2IIwnUDCdo+2z7IrWKA8r77pZQ1UE9kYcBPg5456YdAIA==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Authentication.Cookies": "2.2.0",
-          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "2.2.0",
-          "Microsoft.AspNetCore.Hosting.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Identity.Core": "2.2.0"
-        }
-      },
-      "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "caoSu3dk7hZKE6/l/4JSXzVEXKrqvRtqDxEO4c3KtJpK1gZzrVFYUamsakVxxp2JRv/w8n8Xm4b8w9OUCS1lQg==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.8",
-          "Microsoft.Extensions.Identity.Stores": "6.0.8"
-        }
-      },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "CentralTransitive",
         "requested": "[6.0.0, )",
         "resolved": "6.0.0",
         "contentHash": "xlzi2IYREJH3/m6+lUrQlujzX8wDitm4QGnUu6kUXTQAWPuZY8i+ticFJbzfqaetLA6KR/rO6Ew/HuYD+bxifg=="
-      },
-      "Microsoft.Extensions.Identity.Stores": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "rvSqpHdPDYEns6qjfaG+6GqnrVYFICVbcuC1vJSVSW9DyxhfKdn0mD/sp1ZRp41x5au6iRr5c4Cm5CTP8I8grA==",
-        "dependencies": {
-          "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Identity.Core": "6.0.8",
-          "Microsoft.Extensions.Logging": "6.0.0"
-        }
       },
       "Microsoft.Extensions.Options": {
         "type": "CentralTransitive",
@@ -691,46 +689,6 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
           "Microsoft.Extensions.Primitives": "6.0.0"
-        }
-      },
-      "Npgsql": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "IIwnoJp0sFkhAydT/KKe/0NhlJKhYPIrXSE95AuU/2dqHNI9alxvjClJSGL+QE8NGqq1SFn+NenxVtm/JYsrJg==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
-      },
-      "Npgsql.EntityFrameworkCore.PostgreSQL": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "e1RVE6xtKDsWcCvBpXnbbHfY2p2/9l6cO/FpXvP3QqvRSCcWoabC22sr8wdWPRxex0a128Pq678Jo5XiIMcrxw==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore": "6.0.7",
-          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.7",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.7",
-          "Npgsql": "6.0.6"
-        }
-      },
-      "System.Security.Cryptography.Xml": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.1, )",
-        "resolved": "6.0.1",
-        "contentHash": "5e5bI28T0x73AwTsbuFP4qSRzthmU2C0Gqgg3AZ3KTxmSyA+Uhk31puA3srdaeWaacVnHhLdJywCzqOiEpbO/w==",
-        "dependencies": {
-          "System.Security.AccessControl": "6.0.0",
-          "System.Security.Cryptography.Pkcs": "6.0.1"
-        }
-      },
-      "System.Text.Encodings.Web": {
-        "type": "CentralTransitive",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       }
     }

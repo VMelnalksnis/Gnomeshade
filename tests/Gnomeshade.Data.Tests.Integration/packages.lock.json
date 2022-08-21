@@ -135,15 +135,6 @@
           "System.Text.Json": "4.7.2"
         }
       },
-      "dbup-core": {
-        "type": "Transitive",
-        "resolved": "4.5.0",
-        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
-        "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
-          "System.Diagnostics.TraceSource": "4.3.0"
-        }
-      },
       "Docker.DotNet": {
         "type": "Transitive",
         "resolved": "3.125.10",
@@ -847,21 +838,24 @@
         "dependencies": {
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Data.Identity": "1.0.0",
-          "NodaTime": "3.1.2",
-          "dbup-postgresql": "4.5.0"
-        }
-      },
-      "gnomeshade.data.identity": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
           "Microsoft.Extensions.Identity.Stores": "6.0.8",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
+          "NodaTime": "3.1.2",
           "System.Security.Cryptography.Xml": "6.0.1",
-          "System.Text.Encodings.Web": "6.0.0"
+          "System.Text.Encodings.Web": "6.0.0",
+          "dbup-core": "4.5.0"
+        }
+      },
+      "gnomeshade.data.postgresql": {
+        "type": "Project",
+        "dependencies": {
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Gnomeshade.Data": "1.0.0",
+          "Npgsql": "6.0.6",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
+          "Npgsql.NodaTime": "6.0.6",
+          "dbup-postgresql": "4.5.0"
         }
       },
       "gnomeshade.testinghelpers": {
@@ -911,6 +905,16 @@
         "requested": "[2.0.123, )",
         "resolved": "2.0.123",
         "contentHash": "RDFF4rBLLmbpi6pwkY7q/M6UXHRJEOerplDGE5jwEkP/JGJnBauAClYavNKJPW1yOTWRPIyfj4is3EaJxQXILQ=="
+      },
+      "dbup-core": {
+        "type": "CentralTransitive",
+        "requested": "[4.5.0, )",
+        "resolved": "4.5.0",
+        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.4.0",
+          "System.Diagnostics.TraceSource": "4.3.0"
+        }
       },
       "dbup-postgresql": {
         "type": "CentralTransitive",

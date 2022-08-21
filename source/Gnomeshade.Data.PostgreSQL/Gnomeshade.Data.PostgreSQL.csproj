@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<IsTrimmable>true</IsTrimmable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="dbup-postgresql"/>
+		<PackageReference Include="Npgsql"/>
+		<PackageReference Include="Npgsql.NodaTime"/>
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Migrations\00000001_database_extensions.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000001_database_extensions.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000002_create_tables.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000002_create_tables.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000003_shared_data.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000003_shared_data.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000004_transaction_dates.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000004_transaction_dates.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000005_product_sku.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000005_product_sku.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000006_account_name_uniqueness.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000007_transfers.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000007_transfers.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000008_purchases.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000008_purchases.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000009_links.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000009_links.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000010_cleanup.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000010_cleanup.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000011_rename_tags.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000011_rename_tags.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000012_category_ids.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000012_category_ids.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000013_hrd.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000013_hrd.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000014_account_currency_uniqueness.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000014_account_currency_uniqueness.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000015_loans.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000015_loans.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000016_name_uniqueness.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000016_name_uniqueness.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000017_create_system_user.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000017_create_system_user.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000018_add_base_columns.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000018_add_base_columns.sql</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000019_stored_procedures.sql">
+			<LogicalName>Gnomeshade.Data.Migrations.00000019_stored_procedures.sql</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

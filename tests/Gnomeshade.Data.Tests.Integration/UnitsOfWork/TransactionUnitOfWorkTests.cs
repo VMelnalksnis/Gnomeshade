@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork;
 
-public sealed class TransactionUnitOfWorkTests : IAsyncDisposable
+public sealed class TransactionUnitOfWorkTests
 {
 	private DbConnection _dbConnection = null!;
 	private TransactionRepository _repository = null!;
@@ -25,17 +24,9 @@ public sealed class TransactionUnitOfWorkTests : IAsyncDisposable
 	[SetUp]
 	public async Task OneTimeSetupAsync()
 	{
-		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
+		_dbConnection = await CreateConnectionAsync();
 		_repository = new(_dbConnection);
 		_unitOfWork = new(_dbConnection, _repository);
-	}
-
-	[TearDown]
-	public async ValueTask DisposeAsync()
-	{
-		await _dbConnection.DisposeAsync();
-		_repository.Dispose();
-		_unitOfWork.Dispose();
 	}
 
 	[Test]

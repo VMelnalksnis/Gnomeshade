@@ -18,7 +18,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj"/>
 		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
 	</ItemGroup>
 

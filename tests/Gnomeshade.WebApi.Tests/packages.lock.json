@@ -75,15 +75,6 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.406"
         }
       },
-      "dbup-core": {
-        "type": "Transitive",
-        "resolved": "4.5.0",
-        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
-        "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
-          "System.Diagnostics.TraceSource": "4.3.0"
-        }
-      },
       "Elastic.Apm": {
         "type": "Transitive",
         "resolved": "1.16.1",
@@ -517,8 +508,8 @@
       },
       "Microsoft.NETCore.Targets": {
         "type": "Transitive",
-        "resolved": "1.1.3",
-        "contentHash": "3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ=="
+        "resolved": "1.1.0",
+        "contentHash": "aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg=="
       },
       "Microsoft.OpenApi": {
         "type": "Transitive",
@@ -875,11 +866,11 @@
       },
       "System.Runtime": {
         "type": "Transitive",
-        "resolved": "4.3.1",
-        "contentHash": "abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
+        "resolved": "4.3.0",
+        "contentHash": "JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
-          "Microsoft.NETCore.Targets": "1.1.3"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0"
         }
       },
       "System.Runtime.CompilerServices.Unsafe": {
@@ -1004,21 +995,24 @@
         "dependencies": {
           "Dapper": "2.0.123",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Data.Identity": "1.0.0",
-          "NodaTime": "3.1.2",
-          "dbup-postgresql": "4.5.0"
-        }
-      },
-      "gnomeshade.data.identity": {
-        "type": "Project",
-        "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
           "Microsoft.Extensions.Identity.Stores": "6.0.8",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
+          "NodaTime": "3.1.2",
           "System.Security.Cryptography.Xml": "6.0.1",
-          "System.Text.Encodings.Web": "6.0.0"
+          "System.Text.Encodings.Web": "6.0.0",
+          "dbup-core": "4.5.0"
+        }
+      },
+      "gnomeshade.data.postgresql": {
+        "type": "Project",
+        "dependencies": {
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Gnomeshade.Data": "1.0.0",
+          "Npgsql": "6.0.6",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
+          "Npgsql.NodaTime": "6.0.6",
+          "dbup-postgresql": "4.5.0"
         }
       },
       "gnomeshade.webapi": {
@@ -1033,34 +1027,21 @@
           "Elastic.Apm.SerilogEnricher": "1.5.3",
           "Elastic.Apm.SqlClient": "1.16.1",
           "Elastic.CommonSchema.Serilog": "1.5.3",
-          "Gnomeshade.Data": "1.0.0",
-          "Gnomeshade.Data.Identity": "1.0.0",
+          "Gnomeshade.Data.PostgreSQL": "1.0.0",
           "Gnomeshade.WebApi.Client": "1.0.0",
           "Gnomeshade.WebApi.Models": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.8",
-          "Microsoft.AspNetCore.Identity": "2.2.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.8",
           "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
           "NodaTime": "3.1.2",
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
-          "Npgsql": "6.0.6",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
-          "Npgsql.NodaTime": "6.0.6",
           "Serilog": "2.11.0",
           "Serilog.AspNetCore": "6.0.1",
           "Serilog.Sinks.Console": "4.0.1",
           "Serilog.Sinks.Elasticsearch": "8.4.1",
           "Swashbuckle.AspNetCore": "6.4.0",
           "Swashbuckle.AspNetCore.Annotations": "6.4.0",
-          "System.Diagnostics.Tracing": "4.3.0",
-          "System.IO.FileSystem": "4.3.0",
-          "System.IO.FileSystem.Primitives": "4.3.0",
           "System.Linq.Async": "6.0.1",
-          "System.Net.NameResolution": "4.3.0",
-          "System.Net.Primitives": "4.3.1",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
           "VMelnalksnis.ISO20022DotNet": "0.3.2",
           "VMelnalksnis.NordigenDotNet.DependencyInjection": "0.5.2"
         }
@@ -1109,6 +1090,16 @@
         "requested": "[2.0.123, )",
         "resolved": "2.0.123",
         "contentHash": "RDFF4rBLLmbpi6pwkY7q/M6UXHRJEOerplDGE5jwEkP/JGJnBauAClYavNKJPW1yOTWRPIyfj4is3EaJxQXILQ=="
+      },
+      "dbup-core": {
+        "type": "CentralTransitive",
+        "requested": "[4.5.0, )",
+        "resolved": "4.5.0",
+        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.4.0",
+          "System.Diagnostics.TraceSource": "4.3.0"
+        }
       },
       "dbup-postgresql": {
         "type": "CentralTransitive",
@@ -1471,37 +1462,12 @@
       "System.Diagnostics.Tracing": {
         "type": "CentralTransitive",
         "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "rswfv0f/Cqkh78rA5S8eN8Neocz234+emGCtTF3lxPY96F+mmmUen6tbn0glN6PMvlKQb9bPAY5e9u7fgPTkKw==",
+        "resolved": "4.1.0",
+        "contentHash": "vDN1PoMZCkkdNjvZLql592oYJZgS7URcJzJ7bxeBgGtx5UtR5leNm49VmfHGqIffX4FKacHbI3H6UyNSHQknBg==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.Runtime": "4.3.0"
-        }
-      },
-      "System.IO.FileSystem": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "3wEMARTnuio+ulnvi+hkRNROYwa1kylvYahhcLk4HSoVdl+xxTFVeVlYOfLwrDPImGls0mDqbMhrza8qnWPTdA==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.IO": "4.3.0",
-          "System.IO.FileSystem.Primitives": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Text.Encoding": "4.3.0",
-          "System.Threading.Tasks": "4.3.0"
-        }
-      },
-      "System.IO.FileSystem.Primitives": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "6QOb2XFLch7bEc4lIcJH49nJN2HV+OC3fHDgsLVsBVBk3Y4hFAnOBGzJ2lUu7CyDDFo9IBWkSsnbkT6IBwwiMw==",
-        "dependencies": {
-          "System.Runtime": "4.3.0"
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "Microsoft.NETCore.Targets": "1.0.1",
+          "System.Runtime": "4.1.0"
         }
       },
       "System.Linq.Async": {
@@ -1511,65 +1477,6 @@
         "contentHash": "0YhHcaroWpQ9UCot3Pizah7ryAzQhNvobLMSxeDIGmnXfkQn8u5owvpOH0K6EVB+z9L7u6Cc4W17Br/+jyttEQ==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0"
-        }
-      },
-      "System.Net.NameResolution": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "AFYl08R7MrsrEjqpQWTZWBadqXyTzNDaWpMqyxhb0d6sGhV6xMDKueuBXlLL30gz+DIRY6MpdgnHWlCh5wmq9w==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Tracing": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Net.Primitives": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Security.Principal.Windows": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0",
-          "runtime.native.System": "4.3.0"
-        }
-      },
-      "System.Net.Primitives": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.1, )",
-        "resolved": "4.3.1",
-        "contentHash": "OHzPhSme78BbmLe9UBxHM69ZYjClS5URuhce6Ta4ikiLgaUGiG/X84fZpI6zy7CsUH5R9cYzI2tv9dWPqdTkUg==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
-          "Microsoft.NETCore.Targets": "1.1.3",
-          "System.Runtime": "4.3.1",
-          "System.Runtime.Handles": "4.3.0"
-        }
-      },
-      "System.Runtime.Handles": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "OKiSUN7DmTWeYb3l51A7EYaeNMnvxwE249YtZz7yooT4gOZhmTjIn48KgSsw2k2lYdLgTKNJw/ZIfSElwDRVgg==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.Runtime": "4.3.0"
-        }
-      },
-      "System.Runtime.InteropServices": {
-        "type": "CentralTransitive",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "uv1ynXqiMK8mp1GM3jDqPCFN66eJ5w5XNomaK2XD+TuCroNTLFGeZ+WCmBMcBDyTFKou3P6cR6J/QsaqDp7fGQ==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Handles": "4.3.0"
         }
       },
       "System.Security.Cryptography.Xml": {

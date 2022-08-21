@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
@@ -12,7 +11,7 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public class CurrencyRepositoryTests : IDisposable
+public sealed class CurrencyRepositoryTests
 {
 	private DbConnection _dbConnection = null!;
 	private CurrencyRepository _repository = null!;
@@ -22,13 +21,6 @@ public class CurrencyRepositoryTests : IDisposable
 	{
 		_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
 		_repository = new(_dbConnection);
-	}
-
-	[TearDown]
-	public void Dispose()
-	{
-		_dbConnection.Dispose();
-		_repository.Dispose();
 	}
 
 	[Test]

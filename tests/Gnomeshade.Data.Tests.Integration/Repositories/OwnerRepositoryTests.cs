@@ -10,7 +10,7 @@ using Gnomeshade.Data.Repositories;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public sealed class OwnerRepositoryTests : IAsyncDisposable
+public sealed class OwnerRepositoryTests
 {
 	private DbConnection _dbConnection = null!;
 	private OwnerRepository _ownerRepository = null!;
@@ -20,13 +20,6 @@ public sealed class OwnerRepositoryTests : IAsyncDisposable
 	{
 		_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
 		_ownerRepository = new(_dbConnection);
-	}
-
-	[TearDown]
-	public async ValueTask DisposeAsync()
-	{
-		await _dbConnection.DisposeAsync();
-		_ownerRepository.Dispose();
 	}
 
 	[Test]

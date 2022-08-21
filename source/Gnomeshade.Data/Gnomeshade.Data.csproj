@@ -7,34 +7,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Dapper"/>
-		<PackageReference Include="dbup-postgresql"/>
+		<PackageReference Include="dbup-core"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores"/>
 		<PackageReference Include="NodaTime"/>
+		<PackageReference Include="System.Security.Cryptography.Xml"/>
+		<PackageReference Include="System.Text.Encodings.Web"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj"/>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Migrations\00000001_database_extensions.sql"/>
-		<EmbeddedResource Include="Migrations\00000002_create_tables.sql"/>
-		<EmbeddedResource Include="Migrations\00000003_shared_data.sql"/>
-		<EmbeddedResource Include="Migrations\00000004_transaction_dates.sql"/>
-		<EmbeddedResource Include="Migrations\00000005_product_sku.sql"/>
-		<EmbeddedResource Include="Migrations\00000006_account_name_uniqueness.sql"/>
-		<EmbeddedResource Include="Migrations\00000007_transfers.sql"/>
-		<EmbeddedResource Include="Migrations\00000008_purchases.sql"/>
-		<EmbeddedResource Include="Migrations\00000009_links.sql"/>
-		<EmbeddedResource Include="Migrations\00000010_cleanup.sql"/>
-		<EmbeddedResource Include="Migrations\00000011_rename_tags.sql"/>
-		<EmbeddedResource Include="Migrations\00000012_category_ids.sql"/>
-		<EmbeddedResource Include="Migrations\00000013_hrd.sql"/>
-		<EmbeddedResource Include="Migrations\00000014_account_currency_uniqueness.sql"/>
-		<EmbeddedResource Include="Migrations\00000015_loans.sql"/>
-		<EmbeddedResource Include="Migrations\00000016_name_uniqueness.sql"/>
-		<EmbeddedResource Include="Migrations\00000017_create_system_user.sql"/>
-		<EmbeddedResource Include="Migrations\00000018_add_base_columns.sql"/>
-		<EmbeddedResource Include="Migrations\00000019_stored_procedures.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Account\Balance.sql"/>

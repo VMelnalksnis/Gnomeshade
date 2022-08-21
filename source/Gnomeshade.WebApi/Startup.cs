@@ -2,11 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Data.Common;
-
 using AutoMapper;
-
-using Dapper;
 
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.AspNetCore.DiagnosticListener;
@@ -16,10 +12,7 @@ using Elastic.Apm.EntityFrameworkCore;
 using Elastic.Apm.SqlClient;
 
 using Gnomeshade.Data;
-using Gnomeshade.Data.Dapper;
-using Gnomeshade.Data.Identity;
-using Gnomeshade.Data.Migrations;
-using Gnomeshade.Data.Repositories;
+using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
@@ -35,9 +28,6 @@ using Microsoft.Extensions.Hosting;
 
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
-
-using Npgsql;
-using Npgsql.Logging;
 
 using Serilog;
 
@@ -55,11 +45,6 @@ public class Startup
 	public Startup(IConfiguration configuration)
 	{
 		_configuration = configuration;
-
-		NpgsqlLogManager.Provider = new SerilogNpgsqlLoggingProvider();
-		NpgsqlLogManager.IsParameterLoggingEnabled = true;
-		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
-		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
 	}
 
 	/// <summary>This method gets called by the runtime. Use this method to add services to the container.</summary>
@@ -83,30 +68,14 @@ public class Startup
 
 		services.AddApiVersioning();
 
-		services.AddIdentityContext();
+		services
+			.AddRepositories()
+			.AddPostgreSQL(_configuration, new SerilogNpgsqlLoggingProvider())
+			.AddPostgreSQLIdentity();
+
 		services.AddAuthenticationAndAuthorization(_configuration);
 
 		services
-			.AddScoped<DbConnection>(_ => new NpgsqlConnection(_configuration.GetConnectionString("FinanceDb")))
-			.AddScoped<OwnerRepository>()
-			.AddScoped<OwnershipRepository>()
-			.AddScoped<TransactionRepository>()
-			.AddScoped<PurchaseRepository>()
-			.AddScoped<TransferRepository>()
-			.AddScoped<LoanRepository>()
-			.AddScoped<UserRepository>()
-			.AddScoped<AccountRepository>()
-			.AddScoped<AccountInCurrencyRepository>()
-			.AddScoped<CurrencyRepository>()
-			.AddScoped<ProductRepository>()
-			.AddScoped<UnitRepository>()
-			.AddScoped<CounterpartyRepository>()
-			.AddScoped<LinkRepository>()
-			.AddScoped<AccessRepository>()
-			.AddScoped<AccountUnitOfWork>()
-			.AddScoped<CategoryRepository>()
-			.AddScoped<TransactionUnitOfWork>()
-			.AddScoped<UserUnitOfWork>()
 			.AddTransient<Iso20022AccountReportReader>();
 
 		services
@@ -119,10 +88,6 @@ public class Startup
 			});
 
 		services.AddSwaggerGen(Options.SwaggerGen);
-
-		services
-			.AddTransient<DatabaseMigrator>()
-			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 
 		services.AddGnomeshadeHealthChecks();
 		services.AddNordigenDotNet(_configuration);

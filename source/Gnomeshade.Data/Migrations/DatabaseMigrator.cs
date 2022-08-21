@@ -3,40 +3,48 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Data.Common;
 
 using DbUp;
+using DbUp.Builder;
 using DbUp.Engine.Output;
 
 using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Migrations;
 
-/// <summary>Migrates database to the latest version.</summary>
-public sealed class DatabaseMigrator
+/// <inheritdoc />
+public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
+	where TConnection : DbConnection
 {
-	private readonly ILogger<DatabaseMigrator> _logger;
-	private readonly IUpgradeLog _upgradeLog;
+	private readonly ILogger<DatabaseMigrator<TConnection>> _logger;
 
-	/// <summary>Initializes a new instance of the <see cref="DatabaseMigrator"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="DatabaseMigrator{TConnection}"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public DatabaseMigrator(ILogger<DatabaseMigrator> logger)
+	/// <param name="connection">A connection to the database to which to apply migrations to.</param>
+	protected DatabaseMigrator(ILogger<DatabaseMigrator<TConnection>> logger, TConnection connection)
 	{
+		Connection = connection;
 		_logger = logger;
 
-		_upgradeLog = new DatabaseUpgradeLogger<DatabaseMigrator>(logger);
+		UpgradeLog = new DatabaseUpgradeLogger<DatabaseMigrator<TConnection>>(logger);
 	}
 
-	/// <summary>Ensures that the database is created and upgraded to the latest version.</summary>
-	/// <param name="connectionString">The connection string of the database to migrate.</param>
-	public void Migrate(string connectionString)
-	{
-		EnsureDatabase.For.PostgresqlDatabase(connectionString, _upgradeLog);
+	/// <summary>Gets the database migration logger.</summary>
+	protected IUpgradeLog UpgradeLog { get; }
 
-		var upgradeEngine = DeployChanges.To
-			.PostgresqlDatabase(connectionString)
-			.WithScriptsEmbeddedInAssembly(typeof(DatabaseMigrator).Assembly, ScriptFilter)
+	/// <summary>Gets a connection to the database to which to apply migrations to.</summary>
+	protected TConnection Connection { get; }
+
+	/// <inheritdoc />
+	public void Migrate()
+	{
+		CheckDatabase(EnsureDatabase.For);
+
+		var upgradeEngine = GetBuilder(DeployChanges.To)
+			.WithScriptsEmbeddedInAssembly(GetType().Assembly, ScriptFilter)
 			.WithTransaction()
-			.LogTo(_upgradeLog)
+			.LogTo(UpgradeLog)
 			.Build();
 
 		if (!upgradeEngine.IsUpgradeRequired())
@@ -62,12 +70,25 @@ public sealed class DatabaseMigrator
 		throw upgradeResult.Error;
 	}
 
-	private static bool ScriptFilter(string filepath)
+	/// <summary>Checks that the specific database is accessible.</summary>
+	/// <param name="supportedDatabases">Databases that have migration support.</param>
+	protected abstract void CheckDatabase(SupportedDatabasesForEnsureDatabase supportedDatabases);
+
+	/// <summary>Gets the upgrade engine builder for the specific database from <paramref name="supportedDatabases"/>.</summary>
+	/// <param name="supportedDatabases">Databases that have migration support.</param>
+	/// <returns>Builder for the specific database.</returns>
+	protected abstract UpgradeEngineBuilder GetBuilder(SupportedDatabases supportedDatabases);
+
+	/// <summary>Filters migration scripts that need to be run.</summary>
+	/// <param name="filepath">The filepath of the script.</param>
+	/// <returns>Whether to run the specified migration scripts.</returns>
+	/// <exception cref="InvalidOperationException">The current type does not have a namespace.</exception>
+	protected virtual bool ScriptFilter(string filepath)
 	{
-		var migrationNamespace = typeof(DatabaseMigrator).Namespace;
+		var migrationNamespace = GetType().Namespace;
 		if (migrationNamespace is null)
 		{
-			throw new InvalidOperationException($"{typeof(DatabaseMigrator).FullName} does not have a namespace");
+			throw new InvalidOperationException($"{GetType().FullName} does not have a namespace");
 		}
 
 		return filepath.Contains(migrationNamespace, StringComparison.OrdinalIgnoreCase);

@@ -12,7 +12,7 @@ using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
-public class TransactionRepositoryTests : IDisposable
+public class TransactionRepositoryTests
 {
 	private DbConnection _dbConnection = null!;
 	private TransactionRepository _repository = null!;
@@ -22,13 +22,6 @@ public class TransactionRepositoryTests : IDisposable
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
 		_repository = new(_dbConnection);
-	}
-
-	[TearDown]
-	public void Dispose()
-	{
-		_dbConnection.Dispose();
-		_repository.Dispose();
 	}
 
 	[Test]

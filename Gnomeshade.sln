@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi", "source
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Data.Tests.Integration", "tests\Gnomeshade.Data.Tests.Integration\Gnomeshade.Data.Tests.Integration.csproj", "{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.Data.Identity", "source\Gnomeshade.Data.Identity\Gnomeshade.Data.Identity.csproj", "{51A690B4-E021-4232-BF47-B8ECFDB20914}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi.Client", "source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj", "{24E65161-93D4-49BC-B62C-C26928F37845}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gnomeshade.WebApi.Client.Tests", "tests\Gnomeshade.WebApi.Client.Tests\Gnomeshade.WebApi.Client.Tests.csproj", "{2104FB4D-201F-4F96-939B-9AAF4C48C77B}"
@@ -75,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop.Installer", "source\Gnomeshade.Desktop.Installer\Gnomeshade.Desktop.Installer.wixproj", "{FED9416F-F622-4120-85BC-8E5B183C89A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Data.PostgreSQL", "source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj", "{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,10 +93,6 @@ Global
 		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43DFCD08-5B6E-410C-B941-1C5AE5B6F3D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51A690B4-E021-4232-BF47-B8ECFDB20914}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24E65161-93D4-49BC-B62C-C26928F37845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24E65161-93D4-49BC-B62C-C26928F37845}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24E65161-93D4-49BC-B62C-C26928F37845}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -137,6 +133,10 @@ Global
 		{D30778D9-A8F3-480E-8070-F1BAE8331A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D30778D9-A8F3-480E-8070-F1BAE8331A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D30778D9-A8F3-480E-8070-F1BAE8331A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

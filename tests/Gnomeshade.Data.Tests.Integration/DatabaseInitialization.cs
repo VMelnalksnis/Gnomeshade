@@ -5,23 +5,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Dapper;
-
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
-using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Migrations;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging.Abstractions;
-
-using NodaTime;
 
 using Npgsql;
-using Npgsql.Logging;
 
 namespace Gnomeshade.Data.Tests.Integration;
 
@@ -45,7 +37,7 @@ public class DatabaseInitialization
 
 		_postgreSqlTestcontainer.StartAsync().GetAwaiter().GetResult();
 
-		IConfiguration configuration = new ConfigurationBuilder()
+		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string>
 			{
 				{ "ConnectionStrings:FinanceDb", _postgreSqlTestcontainer.ConnectionString },
@@ -53,31 +45,21 @@ public class DatabaseInitialization
 			.AddEnvironmentVariables()
 			.Build();
 
-		_initializer = new(configuration, new(new NullLogger<DatabaseMigrator>()));
+		_initializer = new(configuration);
 	}
 
 	public static UserEntity TestUser { get; private set; } = null!;
 
-	public static async Task<NpgsqlConnection> CreateConnectionAsync()
-	{
-		return await _initializer.CreateConnectionAsync();
-	}
+	public static Task<NpgsqlConnection> CreateConnectionAsync() => _initializer.CreateConnectionAsync();
 
 	[OneTimeSetUp]
 	public static async Task SetupDatabaseAsync()
 	{
 		AssertionOptions.AssertEquivalencyUsing(options => options.ComparingByMembers<AccountEntity>());
-		NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug);
-		NpgsqlLogManager.IsParameterLoggingEnabled = true;
-		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
-		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
 
 		TestUser = await _initializer.SetupDatabaseAsync();
 	}
 
 	[OneTimeTearDown]
-	public static async Task DropDatabaseAsync()
-	{
-		await _postgreSqlTestcontainer.StopAsync();
-	}
+	public static Task DropDatabaseAsync() => _postgreSqlTestcontainer.StopAsync();
 }
