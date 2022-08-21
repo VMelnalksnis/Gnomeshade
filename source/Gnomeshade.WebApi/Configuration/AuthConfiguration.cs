@@ -26,6 +26,7 @@ internal static class AuthConfiguration
 		IConfiguration configuration)
 	{
 		IdentityModelEventSource.ShowPII = true;
+		services.AddTransient<JwtSecurityTokenHandler>();
 
 		var jwtOptionsDefined = configuration.GetValidIfDefined<JwtOptions>(out var jwtOptions);
 		var authenticationSchemes = new List<string>();
@@ -38,11 +39,6 @@ internal static class AuthConfiguration
 		var providerNames = providerSection.GetChildren().Select(section => section.Key).ToList();
 
 		authenticationSchemes.AddRange(providerNames);
-		if (jwtOptionsDefined)
-		{
-			services.AddValidatedOptions<JwtOptions>(configuration);
-			services.AddTransient<JwtSecurityTokenHandler>();
-		}
 
 		var authenticationBuilder =
 			services
@@ -70,6 +66,7 @@ internal static class AuthConfiguration
 
 		if (jwtOptionsDefined)
 		{
+			services.AddValidatedOptions<JwtOptions>(configuration);
 			authenticationBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 			{
 				options.ClaimsIssuer = jwtOptions!.ValidIssuer;
