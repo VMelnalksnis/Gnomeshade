@@ -14,9 +14,13 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
 		<PackageReference Include="Testcontainers"/>
+		<PackageReference Include="IdentityModel.OidcClient"/>
+		<PackageReference Include="Serilog.Sinks.NUnit"/>
+		<PackageReference Include="HtmlAgilityPack"/>
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj"/>
 		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj"/>
 		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj"/>
 		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
@@ -24,6 +28,12 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="V1_0\Importing\BankToCustomerAccountReportV02.xml"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="realm-export.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

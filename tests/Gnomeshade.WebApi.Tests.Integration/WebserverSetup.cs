@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -29,17 +30,17 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 [SetUpFixture]
 public sealed class WebserverSetup
 {
-	private static readonly List<TestcontainerDatabase> _containers = new();
+	private static readonly List<ITestcontainersContainer> _containers = new();
 
 	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
 	private static Login _login = null!;
 	private static Login _secondLogin = null!;
 
-	public static HttpClient CreateHttpClient() => _webApplicationFactory.CreateDefaultClient();
+	public static HttpClient CreateHttpClient(params DelegatingHandler[] handlers) => _webApplicationFactory.CreateDefaultClient(handlers);
 
-	public static GnomeshadeClient CreateUnauthorizedClient()
+	public static GnomeshadeClient CreateUnauthorizedClient(params DelegatingHandler[] handlers)
 	{
-		var httpClient = CreateHttpClient();
+		var httpClient = CreateHttpClient(handlers);
 		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
 	}
 
@@ -51,7 +52,7 @@ public sealed class WebserverSetup
 	public async Task OneTimeSetUpAsync()
 	{
 		var databaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
 			{
 				Database = "gnomeshade-test",
 				Username = "gnomeshade",
@@ -60,19 +61,36 @@ public sealed class WebserverSetup
 			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
 			.Build();
 
-		var identityDatabaseContainer =
-			new TestcontainersBuilder<PostgreSqlTestcontainer>()
-				.WithDatabase(new PostgreSqlTestcontainerConfiguration
-				{
-					Database = "gnomeshade-identity-test",
-					Username = "gnomeshade",
-					Password = "foobar",
-				})
-				.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-				.Build();
+		var identityDatabaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
+			{
+				Database = "gnomeshade-identity-test",
+				Username = "gnomeshade",
+				Password = "foobar",
+			})
+			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
+			.Build();
+
+		var keycloakContainer = new TestcontainersBuilder<TestcontainersContainer>()
+			.WithImage("quay.io/keycloak/keycloak:19.0.1")
+			.WithEnvironment(new Dictionary<string, string>
+			{
+				{ "KEYCLOAK_ADMIN", "admin" },
+				{ "KEYCLOAK_ADMIN_PASSWORD", "admin" },
+			})
+			.WithPortBinding(8080)
+			.WithExposedPort(8080)
+			.WithBindMount(
+				Path.Combine(Directory.GetCurrentDirectory(), "realm-export.json"),
+				"/opt/keycloak/data/import/realm.json",
+				AccessMode.ReadOnly)
+			.WithCommand("start-dev", "--import-realm")
+			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(8080))
+			.Build();
 
 		_containers.Add(databaseContainer);
 		_containers.Add(identityDatabaseContainer);
+		_containers.Add(keycloakContainer);
 
 		await Task.WhenAll(_containers.Select(container => container.StartAsync()));
 
@@ -82,6 +100,9 @@ public sealed class WebserverSetup
 				{
 					{ "ConnectionStrings:FinanceDb", databaseContainer.ConnectionString },
 					{ "ConnectionStrings:IdentityDb", identityDatabaseContainer.ConnectionString },
+					{ "Oidc:Keycloak:ServerRealm", "http://localhost:8080/realms/gnomeshade" },
+					{ "Oidc:Keycloak:Metadata", "http://localhost:8080/realms/gnomeshade/.well-known/openid-configuration" },
+					{ "Oidc:Keycloak:ClientId", "gnomeshade" },
 				})
 				.AddEnvironmentVariables()
 				.Build();

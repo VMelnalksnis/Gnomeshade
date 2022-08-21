@@ -21,9 +21,9 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 	{
 		_configuration = configuration;
 		Log.Logger = new LoggerConfiguration()
-			.MinimumLevel.Verbose()
+			.MinimumLevel.Information()
 			.Enrich.FromLogContext()
-			.WriteTo.Console()
+			.WriteTo.NUnitOutput(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}")
 			.CreateLogger();
 
 		Server.PreserveExecutionContext = true;
