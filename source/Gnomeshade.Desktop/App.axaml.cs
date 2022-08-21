@@ -18,6 +18,7 @@ using Gnomeshade.Desktop.Views;
 using Gnomeshade.WebApi.Client;
 
 using IdentityModel.OidcClient;
+using IdentityModel.OidcClient.Browser;
 
 using JetBrains.Annotations;
 
@@ -65,15 +66,15 @@ public sealed class App : Application
 
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
-			.AddSingleton(DateTimeZoneProviders.Tzdb);
+			.AddSingleton(DateTimeZoneProviders.Tzdb)
+			.AddSingleton<IBrowser, SystemBrowser>();
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
 		{
 			var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue.ToOidcClientOptions();
-			var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-			options.Browser = new SystemBrowser(options.RedirectUri);
+			options.Browser = provider.GetRequiredService<IBrowser>();
 			options.HttpClientFactory = _ => provider.GetRequiredService<HttpClient>();
-			options.LoggerFactory = loggerFactory;
+			options.LoggerFactory = provider.GetRequiredService<ILoggerFactory>();
 			return new(options);
 		});
 
