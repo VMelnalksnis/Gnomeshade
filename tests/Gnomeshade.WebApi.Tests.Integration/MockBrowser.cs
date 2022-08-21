@@ -6,8 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Authentication;
 
@@ -19,16 +17,17 @@ internal sealed class MockBrowser : Browser
 {
 	private readonly HttpClient _httpClient;
 
-	public MockBrowser(HttpClient httpClient)
+	public MockBrowser(HttpClient httpClient, TimeSpan? timeout = null)
+		: base(timeout ?? TimeSpan.FromMinutes(1))
 	{
 		_httpClient = httpClient;
 	}
 
 	/// <inheritdoc/>
-	protected override async Task StartUserSignin(string startUrl, CancellationToken cancellationToken = default)
+	protected override void StartUserSignin(string startUrl)
 	{
-		var response = await _httpClient.GetAsync(startUrl, cancellationToken);
-		var responseContent = await response.Content.ReadAsStreamAsync(cancellationToken);
+		var response = _httpClient.Send(new(HttpMethod.Get, startUrl));
+		var responseContent = response.Content.ReadAsStream();
 		var htmlDocument = new HtmlDocument();
 		htmlDocument.Load(responseContent);
 		var loginUrl = htmlDocument
@@ -54,7 +53,7 @@ internal sealed class MockBrowser : Browser
 
 		_httpClient.DefaultRequestHeaders.Add("Cookie", cookie);
 
-		var loginResponse = await _httpClient.PostAsync(loginUrl, formContent, cancellationToken);
+		var loginResponse = _httpClient.Send(new(HttpMethod.Post, loginUrl) { Content = formContent });
 		loginResponse.EnsureSuccessStatusCode();
 	}
 }

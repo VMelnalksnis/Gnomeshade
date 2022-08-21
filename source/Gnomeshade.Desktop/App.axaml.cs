@@ -67,7 +67,11 @@ public sealed class App : Application
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
-			.AddSingleton<IBrowser, SystemBrowser>();
+			.AddSingleton<IBrowser, SystemBrowser>(provider =>
+			{
+				var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue;
+				return new(options.SigninTimeout);
+			});
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
 		{

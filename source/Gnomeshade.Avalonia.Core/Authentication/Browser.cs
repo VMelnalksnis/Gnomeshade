@@ -24,35 +24,46 @@ public abstract class Browser : IBrowser
 {
 	private const string _formUrlEncoded = "application/x-www-form-urlencoded";
 
+	private readonly TimeSpan _timeout;
+
+	/// <summary>Initializes a new instance of the <see cref="Browser"/> class.</summary>
+	/// <param name="timeout">The time to wait until user completes signin.</param>
+	protected Browser(TimeSpan timeout)
+	{
+		_timeout = timeout;
+	}
+
 	/// <inheritdoc />
-	public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
+	public Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
 	{
 		using var httpListener = new HttpListener();
 		httpListener.Prefixes.Add(options.EndUrl);
 		httpListener.Start();
 
-		var browserTask = StartUserSignin(options.StartUrl, cancellationToken);
-
 		try
 		{
-			// todo need to add timeout for waiting for redirect
-			var httpContext = await httpListener.GetContextAsync().ConfigureAwait(false);
-			var result = await HandeRequest(httpContext).ConfigureAwait(false);
-			httpContext.Response.Close();
+			string? result = null;
+			var getContext = httpListener.BeginGetContext(asyncResult => HandleRequest(asyncResult, ref result), httpListener);
 
-			await browserTask;
+			StartUserSignin(options.StartUrl);
 
-			return string.IsNullOrWhiteSpace(result)
+			var receivedRequest = getContext.AsyncWaitHandle.WaitOne(_timeout);
+			if (!receivedRequest)
+			{
+				throw new TaskCanceledException("Timed out while waiting for redirect after sign-in");
+			}
+
+			return Task.FromResult(string.IsNullOrWhiteSpace(result)
 				? new() { ResultType = UnknownError, Error = "Empty response." }
-				: new BrowserResult { Response = result, ResultType = Success };
+				: new BrowserResult { Response = result, ResultType = Success });
 		}
 		catch (TaskCanceledException ex)
 		{
-			return new() { ResultType = BrowserResultType.Timeout, Error = ex.Message };
+			return Task.FromResult<BrowserResult>(new() { ResultType = BrowserResultType.Timeout, Error = ex.Message });
 		}
 		catch (Exception ex)
 		{
-			return new() { ResultType = UnknownError, Error = ex.Message };
+			return Task.FromResult<BrowserResult>(new() { ResultType = UnknownError, Error = ex.Message });
 		}
 		finally
 		{
@@ -62,13 +73,21 @@ public abstract class Browser : IBrowser
 
 	/// <summary>Starts the user sign-in process.</summary>
 	/// <param name="startUrl">The URL for starting the sign-in process.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A <see cref="Task"/> representing the user sign-in process.</returns>
-	protected abstract Task StartUserSignin(string startUrl, CancellationToken cancellationToken = default);
+	protected abstract void StartUserSignin(string startUrl);
 
-	private static Task<string?> HandeRequest(HttpListenerContext context) => context.Request.HttpMethod switch
+	// ref Used to get value out of callback
+	// ReSharper disable once RedundantAssignment
+	private static void HandleRequest(IAsyncResult asyncResult, ref string? result)
 	{
-		"GET" => SuccessfulResponse(context, () => Task.FromResult(context.Request.Url?.Query)),
+		var httpListener = (HttpListener)asyncResult.AsyncState!;
+		var context = httpListener.EndGetContext(asyncResult);
+		result = HandleRequest(context);
+		context.Response.OutputStream.Close();
+	}
+
+	private static string? HandleRequest(HttpListenerContext context) => context.Request.HttpMethod switch
+	{
+		"GET" => SuccessfulResponse(context, () => context.Request.Url?.Query),
 
 		"POST" when !context.Request.ContentType?.Equals(_formUrlEncoded, OrdinalIgnoreCase) ?? true =>
 			SetStatusCode(context, UnsupportedMediaType),
@@ -76,13 +95,13 @@ public abstract class Browser : IBrowser
 		"POST" => SuccessfulResponse(context, () =>
 		{
 			using var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding);
-			return reader.ReadToEndAsync()!;
+			return reader.ReadToEnd();
 		}),
 
 		_ => SetStatusCode(context, MethodNotAllowed),
 	};
 
-	private static async Task<string?> SuccessfulResponse(HttpListenerContext context, Func<Task<string?>> resultFunc)
+	private static string? SuccessfulResponse(HttpListenerContext context, Func<string?> resultFunc)
 	{
 		context.Response.StatusCode = (int)OK;
 		context.Response.ContentType = "text/html";
@@ -97,17 +116,17 @@ public abstract class Browser : IBrowser
 			throw new MissingManifestResourceException(resourceName);
 		}
 
-		await using (contentStream.ConfigureAwait(false))
+		using (contentStream)
 		{
-			await contentStream.CopyToAsync(context.Response.OutputStream).ConfigureAwait(false);
+			contentStream.CopyTo(context.Response.OutputStream);
 		}
 
-		return await resultFunc();
+		return resultFunc();
 	}
 
-	private static Task<string?> SetStatusCode(HttpListenerContext context, HttpStatusCode statusCode)
+	private static string? SetStatusCode(HttpListenerContext context, HttpStatusCode statusCode)
 	{
 		context.Response.StatusCode = (int)statusCode;
-		return Task.FromResult(default(string));
+		return null;
 	}
 }
