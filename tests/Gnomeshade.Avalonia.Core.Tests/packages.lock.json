@@ -991,7 +991,7 @@
           "NodaTime": "3.1.2",
           "System.Security.Cryptography.Xml": "6.0.1",
           "System.Text.Encodings.Web": "6.0.0",
-          "dbup-core": "4.5.0"
+          "dbup-core": "4.6.3"
         }
       },
       "gnomeshade.testinghelpers": {
@@ -1102,9 +1102,9 @@
       },
       "dbup-core": {
         "type": "CentralTransitive",
-        "requested": "[4.5.0, )",
-        "resolved": "4.5.0",
-        "contentHash": "CR00QMAtHjfeMhwxFC5haoA0q4KZ5s6Y/AdZaT6oFjySik2eFEqVasuLgWSPKSiR7ti3z01BtiR7aD3nVckAsg==",
+        "requested": "[4.6.3, )",
+        "resolved": "4.6.3",
+        "contentHash": "2Am8Q9dkL11DrjDUR7vd+o4MOTbXCCO09uC51CNXIvhv3/TSmk0kHH6EhRx8e2gA+Gm6DOKYHru7ZBgKQIBZYg==",
         "dependencies": {
           "Microsoft.CSharp": "4.4.0",
           "System.Diagnostics.TraceSource": "4.3.0"
