@@ -169,15 +169,15 @@
       },
       "LiveChartsCore": {
         "type": "Transitive",
-        "resolved": "2.0.0-beta.350",
-        "contentHash": "XJKxjb9BFDHjZTXdDI54oHs9RFpEPdiE/leTTQmEY49L+nxBJtnsV467prFF1XUQ9rK602M1O//maL0k1b1enw=="
+        "resolved": "2.0.0-beta.361",
+        "contentHash": "TOSrwb3aCGJkFEgSmachwfSCYMUfCv2r3eEEfLM5wy+HrwW7nitxgZCZgl/3bIY7Pk9+gjL/5DYqnde6v3JHMQ=="
       },
       "LiveChartsCore.SkiaSharpView": {
         "type": "Transitive",
-        "resolved": "2.0.0-beta.350",
-        "contentHash": "QTi/7cJAnNX2AFB4LgoZJYnHDmwEravsyzzfSaW95qZhkpoIOiQEdR+4GUcqocwWgAR7eAFQrQgOuIqTbrqngw==",
+        "resolved": "2.0.0-beta.361",
+        "contentHash": "160rqTbXkv1AIT4rJPE8Ir93s7LFpEQVmhBqx7EFQv9//ihM6zaJm64ZiBQXewgwcVr8Guj8OWijZX8pVqIqGg==",
         "dependencies": {
-          "LiveChartsCore": "2.0.0-beta.350",
+          "LiveChartsCore": "2.0.0-beta.361",
           "SkiaSharp": "2.88.1-preview.91",
           "SkiaSharp.HarfBuzz": "2.88.1-preview.91"
         }
@@ -971,7 +971,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.WebApi.Client": "1.0.0",
           "IdentityModel.OidcClient": "5.0.2",
-          "LiveChartsCore.SkiaSharpView.Avalonia": "2.0.0-beta.350",
+          "LiveChartsCore.SkiaSharpView.Avalonia": "2.0.0-beta.361",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.1",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
@@ -1128,14 +1128,14 @@
       },
       "LiveChartsCore.SkiaSharpView.Avalonia": {
         "type": "CentralTransitive",
-        "requested": "[2.0.0-beta.350, )",
-        "resolved": "2.0.0-beta.350",
-        "contentHash": "TWV4YfpY6ezqZv8Btq3Nynu+mzds7bCL+lVzzR9fDSqCru1pVbKMogzL0QonfboH8L2ZDbHf0HVS3x23y8ZrLA==",
+        "requested": "[2.0.0-beta.361, )",
+        "resolved": "2.0.0-beta.361",
+        "contentHash": "a/tsqIwaLApiCRztxcEkzp9mvnQjOurDQEH+PgXKS7gvEl/xJtYC9adC+TCQBYkLZXAbutQ8B7+NnJox/jzolQ==",
         "dependencies": {
           "Avalonia": "0.10.0",
           "Avalonia.Desktop": "0.10.0",
           "Avalonia.Diagnostics": "0.10.0",
-          "LiveChartsCore.SkiaSharpView": "2.0.0-beta.350"
+          "LiveChartsCore.SkiaSharpView": "2.0.0-beta.361"
         }
       },
       "Microsoft.AspNetCore.Http.Features": {
