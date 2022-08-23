@@ -24,6 +24,15 @@ public abstract class Browser : IBrowser
 {
 	private const string _formUrlEncoded = "application/x-www-form-urlencoded";
 
+	private readonly TimeSpan _timeout;
+
+	/// <summary>Initializes a new instance of the <see cref="Browser"/> class.</summary>
+	/// <param name="timeout">The time to wait until user completes signin.</param>
+	protected Browser(TimeSpan timeout)
+	{
+		_timeout = timeout;
+	}
+
 	/// <inheritdoc />
 	public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
 	{
@@ -35,12 +44,19 @@ public abstract class Browser : IBrowser
 
 		try
 		{
-			// todo need to add timeout for waiting for redirect
-			var httpContext = await httpListener.GetContextAsync().ConfigureAwait(false);
+			var timeoutTask = Task.Delay(_timeout, cancellationToken);
+			var contextTask = httpListener.GetContextAsync();
+			await Task.WhenAny(timeoutTask, contextTask).ConfigureAwait(false);
+			if (timeoutTask.IsCompleted)
+			{
+				return new() { ResultType = BrowserResultType.Timeout, Error = "Timeout" };
+			}
+
+			var httpContext = contextTask.Result;
 			var result = await HandeRequest(httpContext).ConfigureAwait(false);
 			httpContext.Response.Close();
 
-			await browserTask;
+			await browserTask.ConfigureAwait(false);
 
 			return string.IsNullOrWhiteSpace(result)
 				? new() { ResultType = UnknownError, Error = "Empty response." }

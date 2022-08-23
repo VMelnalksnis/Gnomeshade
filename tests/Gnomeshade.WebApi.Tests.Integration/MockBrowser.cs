@@ -20,6 +20,7 @@ internal sealed class MockBrowser : Browser
 	private readonly HttpClient _httpClient;
 
 	public MockBrowser(HttpClient httpClient)
+		: base(TimeSpan.FromMinutes(1))
 	{
 		_httpClient = httpClient;
 	}
