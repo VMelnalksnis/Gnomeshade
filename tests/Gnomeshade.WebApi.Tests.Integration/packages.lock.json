@@ -53,9 +53,9 @@
       },
       "HtmlAgilityPack": {
         "type": "Direct",
-        "requested": "[1.11.43, )",
-        "resolved": "1.11.43",
-        "contentHash": "C2gpt+S2tdFlQMOC3DK7rHZ8iv6EpDuIo4v0UTUSGX1F1bZ+NAQ3gp77HK8/JfCDszUm3Y2rHoyTp/TpO4KOIA=="
+        "requested": "[1.11.45, )",
+        "resolved": "1.11.45",
+        "contentHash": "adcQUl0CTUJuOVb365DEVxAs7z36AjUU/3JCq65DuYRFJ/+Fsd99MxpkiE9xwelYAcsD0cFlOKI2FXhxSoA3iw=="
       },
       "IdentityModel.OidcClient": {
         "type": "Direct",
