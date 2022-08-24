@@ -22,7 +22,7 @@
 		<PackageVersion Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
 		<PackageVersion Include="FluentAssertions" Version="6.7.0"/>
 		<PackageVersion Include="FluentAssertions.NodaTime" Version="2.0.1"/>
-		<PackageVersion Include="HtmlAgilityPack" Version="1.11.43"/>
+		<PackageVersion Include="HtmlAgilityPack" Version="1.11.45"/>
 		<PackageVersion Include="IdentityModel.OidcClient" Version="5.0.2"/>
 		<PackageVersion Include="JetBrains.Annotations" Version="2022.1.0"/>
 		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.361"/>
