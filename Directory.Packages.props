@@ -16,7 +16,7 @@
 		<PackageVersion Include="DotNet.ReproducibleBuilds.Isolated" Version="1.1.1"/>
 		<PackageVersion Include="Elastic.Apm.AspNetCore" Version="1.16.1"/>
 		<PackageVersion Include="Elastic.Apm.Elasticsearch" Version="1.16.1"/>
-		<PackageVersion Include="Elastic.Apm.EntityFrameworkCore" Version="1.16.1"/>
+		<PackageVersion Include="Elastic.Apm.EntityFrameworkCore" Version="1.17.0"/>
 		<PackageVersion Include="Elastic.Apm.SerilogEnricher" Version="1.5.3"/>
 		<PackageVersion Include="Elastic.Apm.SqlClient" Version="1.16.1"/>
 		<PackageVersion Include="Elastic.CommonSchema.Serilog" Version="1.5.3"/>
