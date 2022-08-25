@@ -77,8 +77,8 @@
       },
       "Elastic.Apm": {
         "type": "Transitive",
-        "resolved": "1.16.1",
-        "contentHash": "hQLBcK9fW4K35/Fg5oIlQgG+F7gguo7C/2FVIxOeo2BghDn++KjtT1Sd5amnrg6gdorIRpWdi0TZruk0xV1yNg==",
+        "resolved": "1.17.0",
+        "contentHash": "zdiIyhNNWarS7Mu5kg8Oq+UEqSDCEou/0QEN+OFCZqXUO5j3XDYG7lT3XHGx7YE04TMZd+54v6qjsbqRlp+Cag==",
         "dependencies": {
           "Microsoft.Diagnostics.Tracing.TraceEvent": "2.0.2",
           "System.Diagnostics.DiagnosticSource": "5.0.0",
@@ -90,11 +90,11 @@
       },
       "Elastic.Apm.Extensions.Hosting": {
         "type": "Transitive",
-        "resolved": "1.16.1",
-        "contentHash": "Yx9ff2/Q+mQmzyfriHL+c/AycVwbRJDwwXzXWJlWM6sO3xAiNVWtFOfCBVDYN+TpofjLb/3I6POq3JJF6rG27A==",
+        "resolved": "1.17.0",
+        "contentHash": "R5148q6LUQFmsd2j2hQLCmhW9O7V2E85LvakafsBfNAhfVMiA3w/SWqV+LtSEY1ZdjQTzx39dx8w/P+TZWy8lw==",
         "dependencies": {
-          "Elastic.Apm": "1.16.1",
-          "Elastic.Apm.Extensions.Logging": "1.16.1",
+          "Elastic.Apm": "1.17.0",
+          "Elastic.Apm.Extensions.Logging": "1.17.0",
           "Microsoft.Extensions.DependencyInjection": "5.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
@@ -102,10 +102,10 @@
       },
       "Elastic.Apm.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "1.16.1",
-        "contentHash": "BZlo7C/7VT4qGCQ7aNkGgy3gdmHAQG/1BO/yxB+iPk6DqQvoh5suiks5Wqt8GxkzrwbBPkV8LhewXjJ7vpd2Ag==",
+        "resolved": "1.17.0",
+        "contentHash": "sNGGuHwJNuYmakHnphT5G2PXB/DsNuZ8ypM6OKXtQwIvmUDl+0D0JZHXDbcjGgYIEBKE4FsAbV/H7br9BwpmtA==",
         "dependencies": {
-          "Elastic.Apm": "1.16.1"
+          "Elastic.Apm": "1.17.0"
         }
       },
       "Elastic.CommonSchema": {
@@ -1021,7 +1021,7 @@
           "Ardalis.SmartEnum": "2.1.0",
           "AutoMapper": "11.0.1",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Elastic.Apm.AspNetCore": "1.16.1",
+          "Elastic.Apm.AspNetCore": "1.17.0",
           "Elastic.Apm.Elasticsearch": "1.16.1",
           "Elastic.Apm.EntityFrameworkCore": "1.16.1",
           "Elastic.Apm.SerilogEnricher": "1.5.3",
@@ -1113,12 +1113,12 @@
       },
       "Elastic.Apm.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[1.16.1, )",
-        "resolved": "1.16.1",
-        "contentHash": "GH5oUfDOa8016HVpgIMncfhxnhw5aKBHA3Fi4atKKE+iMOkMWDHuxF6YlCbppdeSnHme9wKiGlFAl85np+CTpQ==",
+        "requested": "[1.17.0, )",
+        "resolved": "1.17.0",
+        "contentHash": "jpvhtoJiFWwffRaiWGbSZpKpE9EygnRG9TV75nbeMEDeXzY+8e3wH13p+kfe6HH1B538JqM3k0zP8J/QKohp+A==",
         "dependencies": {
-          "Elastic.Apm": "1.16.1",
-          "Elastic.Apm.Extensions.Hosting": "1.16.1",
+          "Elastic.Apm": "1.17.0",
+          "Elastic.Apm.Extensions.Hosting": "1.17.0",
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
