@@ -1022,7 +1022,7 @@
           "AutoMapper": "11.0.1",
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Elastic.Apm.AspNetCore": "1.17.0",
-          "Elastic.Apm.Elasticsearch": "1.16.1",
+          "Elastic.Apm.Elasticsearch": "1.17.0",
           "Elastic.Apm.EntityFrameworkCore": "1.16.1",
           "Elastic.Apm.SerilogEnricher": "1.5.3",
           "Elastic.Apm.SqlClient": "1.16.1",
@@ -1126,11 +1126,11 @@
       },
       "Elastic.Apm.Elasticsearch": {
         "type": "CentralTransitive",
-        "requested": "[1.16.1, )",
-        "resolved": "1.16.1",
-        "contentHash": "InTvvuw/iD1jCXagPNr7aquQ/xyjPV78ofsp+jn+rxqnVCg5y+KuPnvPN11jLTacxspGkKyg0eJfSOz8yqypJQ==",
+        "requested": "[1.17.0, )",
+        "resolved": "1.17.0",
+        "contentHash": "AIiaDLWP3g3FGq7p2oWLJ2p6xtSOk/K+z0bgcmBIP6KxCQWIGuDyoRGbDA2pKWpX8fc+MfriBNYYmgPFrLjqvg==",
         "dependencies": {
-          "Elastic.Apm": "1.16.1",
+          "Elastic.Apm": "1.17.0",
           "Elasticsearch.Net": "7.6.0"
         }
       },
