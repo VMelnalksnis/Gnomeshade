@@ -60,11 +60,11 @@
       },
       "Elastic.Apm.EntityFrameworkCore": {
         "type": "Direct",
-        "requested": "[1.16.1, )",
-        "resolved": "1.16.1",
-        "contentHash": "pSVHj2EZABlsGGHgly2eErqP4kY7HK43slK55xWdJtaII8b3J3QaBrk/faUYrch5fRZnew5R6LWwUSIf1+rGaA==",
+        "requested": "[1.17.0, )",
+        "resolved": "1.17.0",
+        "contentHash": "6Xg9VbILio5C9ATpcYiUQdNVxdrBnkFE4BFmHqB1bjl6hsaYlJliNGiEOXoOGo1ViYx2XMt8iivGHgciN0U7wA==",
         "dependencies": {
-          "Elastic.Apm": "1.16.1"
+          "Elastic.Apm": "1.17.0"
         }
       },
       "Elastic.Apm.SerilogEnricher": {
