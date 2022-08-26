@@ -6,6 +6,7 @@
 		<PackageVersion Include="Avalonia.Controls.DataGrid" Version="0.10.18"/>
 		<PackageVersion Include="Avalonia.Desktop" Version="0.10.18"/>
 		<PackageVersion Include="Avalonia.Diagnostics" Version="0.10.18"/>
+		<PackageVersion Include="Avalonia.Headless" Version="0.10.18"/>
 		<PackageVersion Include="Avalonia.Xaml.Behaviors" Version="0.10.18"/>
 		<PackageVersion Include="Bogus" Version="34.0.2"/>
 		<PackageVersion Include="coverlet.msbuild" Version="3.1.2"/>

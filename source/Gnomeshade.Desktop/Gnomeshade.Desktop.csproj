@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
+		<InternalsVisibleTo Include="Gnomeshade.Desktop.Tests.Integration" />
 	</ItemGroup>
 
 	<ItemGroup>

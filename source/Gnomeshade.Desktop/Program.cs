@@ -13,8 +13,6 @@ using Avalonia.Xaml.Interactivity;
 
 using Gnomeshade.WebApi.Models.Products;
 
-using JetBrains.Annotations;
-
 using Serilog;
 
 namespace Gnomeshade.Desktop;
@@ -40,7 +38,6 @@ internal static class Program
 		}
 	}
 
-	[UsedImplicitly]
 	public static AppBuilder BuildAvaloniaApp()
 	{
 		if (Debugger.IsAttached)
@@ -50,11 +47,10 @@ internal static class Program
 			typeof(EventTriggerBehavior).GetTypeInfo();
 		}
 
-		return
-			AppBuilder
-				.Configure<App>()
-				.UsePlatformDetect()
-				.LogToTrace(LogEventLevel.Debug);
+		return AppBuilder
+			.Configure<App>()
+			.UsePlatformDetect()
+			.LogToTrace(LogEventLevel.Debug);
 	}
 
 	private static void InitializeBootstrapLogger()
