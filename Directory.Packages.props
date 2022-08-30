@@ -78,6 +78,6 @@
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.406"/>
 		<PackageVersion Include="Testcontainers" Version="2.1.0"/>
 		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.2"/>
-		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="0.5.2"/>
+		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.0.0"/>
 	</ItemGroup>
 </Project>
