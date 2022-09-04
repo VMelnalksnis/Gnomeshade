@@ -6,9 +6,9 @@ using System.Data.Common;
 
 using Dapper;
 
-using Gnomeshade.Data.Dapper;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Migrations;
+using Gnomeshade.Data.PostgreSQL.Dapper;
 using Gnomeshade.Data.PostgreSQL.Migrations;
 
 using Microsoft.AspNetCore.Identity;
@@ -60,7 +60,6 @@ public static class ServiceCollectionExtensions
 	{
 		return services
 			.AddDbContext<IdentityContext, PostgreSQLIdentityContext>()
-			.AddDbContext<PostgreSQLIdentityContext>()
 			.AddIdentity<ApplicationUser, IdentityRole>()
 			.AddEntityFrameworkStores<PostgreSQLIdentityContext>()
 			.AddDefaultTokenProviders();

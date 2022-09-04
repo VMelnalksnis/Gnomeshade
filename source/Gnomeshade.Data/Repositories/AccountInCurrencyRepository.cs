@@ -24,7 +24,7 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_account_in_currency(@Id, @OwnerId);";
+	protected override string DeleteSql => Queries.AccountInCurrency.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.AccountInCurrency.Insert;

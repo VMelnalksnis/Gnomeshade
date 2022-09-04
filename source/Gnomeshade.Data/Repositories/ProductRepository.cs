@@ -19,7 +19,7 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_product(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Product.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Product.Insert;

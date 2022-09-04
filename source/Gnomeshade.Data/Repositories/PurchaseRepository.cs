@@ -25,7 +25,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_purchase(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Purchase.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Purchase.Insert;

@@ -38,7 +38,7 @@ public sealed class TransactionUnitOfWorkTests
 
 		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
 		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
-		var dbTransaction = await _dbConnection.BeginTransactionAsync();
+		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 		await dbTransaction.CommitAsync();
 		var now = SystemClock.Instance.GetCurrentInstant();
 		var allTransactions = await _repository.GetAllAsync(now - Duration.FromDays(31), now, TestUser.Id);

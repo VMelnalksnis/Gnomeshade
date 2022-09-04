@@ -9,7 +9,7 @@
       AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE transfers
-SET modified_at         = DEFAULT,
+SET modified_at         = CURRENT_TIMESTAMP,
     modified_by_user_id = @ModifiedByUserId,
     transaction_id      = @TransactionId,
     source_amount       = @SourceAmount,
@@ -20,4 +20,4 @@ SET modified_at         = DEFAULT,
     external_reference  = @ExternalReference,
     internal_reference  = @InternalReference
 FROM t
-WHERE transfers.id = t.id;
+WHERE transfers.id IN (SELECT id FROM t);

@@ -122,99 +122,91 @@ public sealed class NordigenController : ControllerBase
 	public async Task<ActionResult> Import(string id, [Required] string timeZone)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		try
+		var dateTimeZone = _dateTimeZoneProvider.GetZoneOrNull(timeZone);
+		if (dateTimeZone is null)
 		{
-			var dateTimeZone = _dateTimeZoneProvider.GetZoneOrNull(timeZone);
-			if (dateTimeZone is null)
-			{
-				ModelState.AddModelError(nameof(Iso20022Report.TimeZone), "Unknown timezone");
-				return BadRequest(ModelState);
-			}
+			ModelState.AddModelError(nameof(Iso20022Report.TimeZone), "Unknown timezone");
+			return BadRequest(ModelState);
+		}
 
-			_logger.LogDebug("Getting requisition for {InstitutionId}", id);
-			var existing = await _nordigenClient.Requisitions.Get().SingleOrDefaultAsync(r => r.InstitutionId == id);
-			if (existing is null)
-			{
-				_logger.LogDebug("Creating new requisition for {InstitutionId}", id);
-				var requisition = await _nordigenClient.Requisitions.Post(new(new("https://gnomeshade.org/"), id));
-				return Redirect(requisition.Link.ToString());
-			}
+		_logger.LogDebug("Getting requisition for {InstitutionId}", id);
+		var existing = await _nordigenClient.Requisitions.Get().SingleOrDefaultAsync(r => r.InstitutionId == id);
+		if (existing is null)
+		{
+			_logger.LogDebug("Creating new requisition for {InstitutionId}", id);
+			var requisition = await _nordigenClient.Requisitions.Post(new(new("https://gnomeshade.org/"), id));
+			return Redirect(requisition.Link.ToString());
+		}
 
-			var tasks = existing.Accounts.Select(async accountId => await _nordigenClient.Accounts.Get(accountId));
-			var accounts = await Task.WhenAll(tasks);
-			var user = _applicationUserContext.User;
-			var results = new List<AccountReportResult>();
+		var tasks = existing.Accounts.Select(async accountId => await _nordigenClient.Accounts.Get(accountId));
+		var accounts = await Task.WhenAll(tasks);
+		var user = _applicationUserContext.User;
+		var results = new List<AccountReportResult>();
 
-			var dataTasks = accounts.Select(async account =>
-			{
-				var details = await _nordigenClient.Accounts.GetDetails(account.Id);
-				var transactions = await _nordigenClient.Accounts.GetTransactions(account.Id);
-				return (account, details, transactions);
-			});
+		var dataTasks = accounts.Select(async account =>
+		{
+			var details = await _nordigenClient.Accounts.GetDetails(account.Id);
+			var transactions = await _nordigenClient.Accounts.GetTransactions(account.Id);
+			return (account, details, transactions);
+		});
 
-			var data = await Task.WhenAll(dataTasks);
-			foreach (var (account, details, transactions) in data)
-			{
-				var (reportAccount, currency, createdAccount) =
-					await FindAccount(account, details, user, dbTransaction);
-				_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
+		var data = await Task.WhenAll(dataTasks);
+		foreach (var (account, details, transactions) in data)
+		{
+			var (reportAccount, currency, createdAccount) =
+				await FindAccount(account, details, user, dbTransaction);
+			_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
 
-				var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
+			var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
 
-				var institution = await _nordigenClient.Institutions.Get(account.InstitutionId);
-				var (bankAccount, bankCreated) = await FindBankAccount(institution, user, currency, dbTransaction);
-				resultBuilder.AddAccount(bankAccount, bankCreated);
+			var institution = await _nordigenClient.Institutions.Get(account.InstitutionId);
+			var (bankAccount, bankCreated) = await FindBankAccount(institution, user, currency, dbTransaction);
+			resultBuilder.AddAccount(bankAccount, bankCreated);
 
-				var importResults =
-					transactions
-						.Booked
-						.Select(async bookedTransaction =>
+			var importResults =
+				transactions
+					.Booked
+					.Select(async bookedTransaction =>
+					{
+						var transaction = await Translate(
+							dbTransaction,
+							resultBuilder,
+							bookedTransaction,
+							reportAccount,
+							bankAccount,
+							user,
+							dateTimeZone);
+
+						if (transaction.Transaction.Id != Guid.Empty)
 						{
-							var transaction = await Translate(
-								dbTransaction,
-								resultBuilder,
-								bookedTransaction,
-								reportAccount,
-								bankAccount,
-								user,
-								dateTimeZone);
+							return (transaction, false);
+						}
 
-							if (transaction.Transaction.Id != Guid.Empty)
-							{
-								return (transaction, false);
-							}
+						var transactionId =
+							await _transactionUnitOfWork.AddAsync(transaction.Transaction, dbTransaction);
+						var transferId =
+							await _transferRepository.AddAsync(
+								transaction.Transfer with { Id = Guid.NewGuid(), TransactionId = transactionId },
+								dbTransaction);
+						var t1 = await _transactionRepository.GetByIdAsync(transactionId, user.Id, dbTransaction);
+						var t2 = await _transferRepository.GetByIdAsync(transferId, user.Id, dbTransaction);
+						transaction = (t1, t2);
+						return (transaction, true);
+					})
+					.Select(task => task.Result)
+					.ToList();
 
-							var transactionId =
-								await _transactionUnitOfWork.AddAsync(transaction.Transaction, dbTransaction);
-							var transferId =
-								await _transferRepository.AddAsync(
-									transaction.Transfer with { Id = Guid.NewGuid(), TransactionId = transactionId },
-									dbTransaction);
-							var t1 = await _transactionRepository.GetByIdAsync(transactionId, user.Id, dbTransaction);
-							var t2 = await _transferRepository.GetByIdAsync(transferId, user.Id, dbTransaction);
-							transaction = (t1, t2);
-							return (transaction, true);
-						})
-						.Select(task => task.Result)
-						.ToList();
-
-				foreach (var (transaction, created) in importResults)
-				{
-					resultBuilder.AddTransaction(transaction.Transaction, created);
-					resultBuilder.AddTransfer(transaction.Transfer, created);
-				}
-
-				results.Add(resultBuilder.ToResult());
+			foreach (var (transaction, created) in importResults)
+			{
+				resultBuilder.AddTransaction(transaction.Transaction, created);
+				resultBuilder.AddTransfer(transaction.Transfer, created);
 			}
 
-			await dbTransaction.CommitAsync();
-			return Ok(results);
+			results.Add(resultBuilder.ToResult());
 		}
-		catch
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+
+		await dbTransaction.CommitAsync();
+		return Ok(results);
 	}
 
 	private static Instant GetBookingDate(BookedTransaction bookedTransaction, DateTimeZone dateTimeZone)

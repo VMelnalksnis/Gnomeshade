@@ -11,21 +11,27 @@ using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 using NodaTime;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
-public sealed class PrivateByDefaultTests
+public sealed class PrivateByDefaultTests : WebserverTests
 {
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
 
+	public PrivateByDefaultTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
-		_otherClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
+		_otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
 	}
 
 	[Test]

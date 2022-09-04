@@ -14,22 +14,24 @@ using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 using NodaTime;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
 [TestFixtureSource(typeof(OwnerTestFixtureSource))]
-public sealed class DeleteAccessTests
+public sealed class DeleteAccessTests : WebserverTests
 {
-	private readonly Func<Task<Guid>> _ownerIdFunc;
+	private readonly Func<WebserverFixture, Task<Guid>> _ownerIdFunc;
 	private readonly Guid _deleteOwnershipId = Guid.NewGuid();
 
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
 	private Guid? _ownerId;
 
-	public DeleteAccessTests(Func<Task<Guid>> ownerIdFunc)
+	public DeleteAccessTests(Func<WebserverFixture, Task<Guid>> ownerIdFunc, WebserverFixture fixture)
+		: base(fixture)
 	{
 		_ownerIdFunc = ownerIdFunc;
 	}
@@ -37,14 +39,14 @@ public sealed class DeleteAccessTests
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
-		_otherClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
+		_otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
 
 		var counterparty = await _client.GetMyCounterpartyAsync();
 		var otherCounterparty = await _otherClient.GetMyCounterpartyAsync();
 		var accesses = await _client.GetAccessesAsync();
 		var deleteAccess = accesses.Single(access => access.Name == "Delete");
-		var ownerId = await _ownerIdFunc();
+		var ownerId = await _ownerIdFunc(Fixture);
 		var deleteOwnership = new OwnershipCreation
 		{
 			AccessId = deleteAccess.Id,
@@ -58,10 +60,7 @@ public sealed class DeleteAccessTests
 	}
 
 	[OneTimeTearDown]
-	public async Task OneTimeTearDown()
-	{
-		await _client.DeleteOwnershipAsync(_deleteOwnershipId);
-	}
+	public Task OneTimeTearDown() => _client.DeleteOwnershipAsync(_deleteOwnershipId);
 
 	[Test]
 	public async Task Categories()
@@ -241,11 +240,11 @@ public sealed class DeleteAccessTests
 		await ShouldBeDeletedWithClient<LinkEntity>(link.Id, _otherClient);
 	}
 
-	private static async Task ShouldBeDeletedWithClient<TEntity>(Guid id, IGnomeshadeClient client)
+	private async Task ShouldBeDeletedWithClient<TEntity>(Guid id, IGnomeshadeClient client)
 		where TEntity : Entity
 	{
-		using var scope = WebserverSetup.CreateScope();
-		var deletedEntity = await WebserverSetup.GetEntityRepository(scope).FindByIdAsync<TEntity>(id);
+		using var scope = Fixture.CreateScope();
+		var deletedEntity = await Fixture.GetEntityRepository(scope).FindByIdAsync<TEntity>(id);
 		var userId = (await client.GetMyCounterpartyAsync()).CreatedByUserId;
 
 		using (new AssertionScope())

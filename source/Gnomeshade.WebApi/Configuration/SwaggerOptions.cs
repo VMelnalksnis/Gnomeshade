@@ -17,7 +17,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Gnomeshade.WebApi.Configuration;
 
-internal static class Options
+internal static class SwaggerOptions
 {
 	internal static void SwaggerGen(SwaggerGenOptions options)
 	{

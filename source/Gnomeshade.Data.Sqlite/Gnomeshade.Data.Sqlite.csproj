@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<IsTrimmable>true</IsTrimmable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="dbup-sqlite" />
+		<PackageReference Include="Microsoft.Data.Sqlite" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<PackageReference Include="System.Net.Http" />
+		<PackageReference Include="System.Text.RegularExpressions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Migrations\00000002_create_tables.sql" />
+		<EmbeddedResource Include="Migrations\00000003_insert_data.sql" />
+	</ItemGroup>
+
+</Project>

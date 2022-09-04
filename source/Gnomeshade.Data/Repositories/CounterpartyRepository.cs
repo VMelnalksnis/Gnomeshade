@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_counterparty(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Counterparty.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Counterparty.Insert;
@@ -47,10 +48,11 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>
 	/// <param name="sourceId">The id of the counterparty which to merge into the other one.</param>
 	/// <param name="ownerId">The id of the owner of the counterparties.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId)
+	public Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var command = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId });
+		var command = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
 		return DbConnection.ExecuteAsync(command);
 	}
 }

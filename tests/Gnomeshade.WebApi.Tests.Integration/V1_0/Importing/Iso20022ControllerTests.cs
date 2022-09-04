@@ -8,21 +8,27 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Importing;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Importing;
 
 [TestOf(typeof(Iso20022Controller))]
-public sealed class Iso20022ControllerTests
+public sealed class Iso20022ControllerTests : WebserverTests
 {
 	private const string _fileName = "BankToCustomerAccountReportV02.xml";
 
 	private IGnomeshadeClient _client = null!;
 
+	public Iso20022ControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
 	}
 
 	[Test]

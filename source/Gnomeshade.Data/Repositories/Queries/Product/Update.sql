@@ -9,7 +9,7 @@
 	  AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE products
-SET modified_at         = DEFAULT,
+SET modified_at         = CURRENT_TIMESTAMP,
 	modified_by_user_id = @ModifiedByUserId,
 	name                = @Name,
 	normalized_name     = upper(@Name),
@@ -18,5 +18,5 @@ SET modified_at         = DEFAULT,
 	unit_id             = @UnitId,
 	category_id         = @CategoryId
 FROM p
-WHERE products.id = p.id
-RETURNING p.id;
+WHERE products.id IN (SELECT id from p)
+RETURNING (SELECT id from p);

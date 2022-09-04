@@ -9,7 +9,7 @@
       AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE accounts
-SET modified_at           = DEFAULT,
+SET modified_at           = CURRENT_TIMESTAMP,
     modified_by_user_id   = @ModifiedByUserId,
     name                  = @Name,
     normalized_name       = upper(@Name),
@@ -21,5 +21,5 @@ SET modified_at           = DEFAULT,
     iban                  = @Iban,
     account_number        = @AccountNumber
 FROM a
-WHERE accounts.id = a.id
-RETURNING a.id;
+WHERE accounts.id IN (SELECT id FROM a)
+RETURNING (SELECT id FROM a);

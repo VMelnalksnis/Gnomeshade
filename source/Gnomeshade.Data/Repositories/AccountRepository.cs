@@ -28,7 +28,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_account(@Id, @OwnerId);";
+	protected override string DeleteSql => Queries.Account.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Account.Insert;

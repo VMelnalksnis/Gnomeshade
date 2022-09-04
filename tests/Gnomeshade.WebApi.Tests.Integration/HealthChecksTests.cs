@@ -5,16 +5,23 @@
 using System.Net;
 using System.Threading.Tasks;
 
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
+
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Gnomeshade.WebApi.Tests.Integration;
 
-public class HealthChecksTests
+public sealed class HealthChecksTests : WebserverTests
 {
+	public HealthChecksTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[Test]
 	public async Task Health_ShouldReturnHealthy()
 	{
-		var apiClient = WebserverSetup.CreateHttpClient();
+		var apiClient = Fixture.CreateHttpClient();
 
 		using var response = await apiClient.GetAsync("/health");
 		response.StatusCode.Should().Be(HttpStatusCode.OK);

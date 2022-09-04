@@ -21,7 +21,7 @@ internal static class ConfigurationExtensions
 	internal static bool GetValidIfDefined<[MeansImplicitUse(Assign, Members)] TOptions>(
 		this IConfiguration configuration,
 		[MaybeNullWhen(false)] out TOptions options)
-		where TOptions : notnull
+		where TOptions : notnull, new()
 	{
 		if (!configuration.IsSectionDefined<TOptions>())
 		{
@@ -34,10 +34,10 @@ internal static class ConfigurationExtensions
 	}
 
 	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(this IConfiguration configuration)
-		where TOptions : notnull
+		where TOptions : notnull, new()
 	{
 		var sectionName = typeof(TOptions).GetSectionName();
-		return configuration.GetSection(sectionName).Get<TOptions>().ValidateAndThrow();
+		return (configuration.GetSection(sectionName).Get<TOptions>() ?? new()).ValidateAndThrow();
 	}
 
 	internal static string GetSectionName(this Type type)

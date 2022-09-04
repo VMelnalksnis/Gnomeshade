@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Accounts;
 
 using NodaTime;
@@ -19,17 +20,22 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Accounts;
 
 [TestOf(typeof(AccountsController))]
-public sealed class AccountsControllerTests
+public sealed class AccountsControllerTests : WebserverTests
 {
 	private IGnomeshadeClient _client = null!;
 	private Currency _firstCurrency = null!;
 	private Currency _secondCurrency = null!;
 	private Counterparty _counterparty = null!;
 
+	public AccountsControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[SetUp]
 	public async Task SetUpAsync()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
 		var currencies = await _client.GetCurrenciesAsync();
 		_firstCurrency = currencies.First();
 		_secondCurrency = currencies.Skip(1).First();
@@ -52,6 +58,7 @@ public sealed class AccountsControllerTests
 
 		addCurrencyId.Should().Be(accountId);
 		account.Currencies
+			.OrderBy(c => c.CreatedAt)
 			.Should()
 			.SatisfyRespectively(
 				inCurrency => inCurrency.Currency.Id.Should().Be(_firstCurrency.Id),
@@ -74,7 +81,7 @@ public sealed class AccountsControllerTests
 
 		var updatedAccount = await _client.GetAccountAsync(accountId);
 		updatedAccount.Should().BeEquivalentTo(createdAccount, options => options.Excluding(a => a.ModifiedAt));
-		updatedAccount.ModifiedAt.Should().BeGreaterThan(createdAccount.ModifiedAt);
+		updatedAccount.ModifiedAt.Should().BeGreaterThanOrEqualTo(createdAccount.ModifiedAt);
 	}
 
 	[Test]
@@ -98,7 +105,7 @@ public sealed class AccountsControllerTests
 		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
 		await _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel);
 
-		var differentCounterparty = await (await WebserverSetup.CreateAuthorizedSecondClientAsync()).GetMyCounterpartyAsync();
+		var differentCounterparty = await (await Fixture.CreateAuthorizedSecondClientAsync()).GetMyCounterpartyAsync();
 		var secondAccount = accountCreationModel with
 		{
 			CounterpartyId = differentCounterparty.Id,

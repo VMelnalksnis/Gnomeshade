@@ -7,6 +7,7 @@ using System.Collections;
 using System.Linq;
 
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
@@ -14,31 +15,40 @@ internal sealed class OwnerTestFixtureSource : IEnumerable
 {
 	public IEnumerator GetEnumerator()
 	{
-		yield return new TestFixtureData(async () =>
+		foreach (var webserverFixture in DatabaseFixtureSource.Fixtures)
 		{
-			var client = await WebserverSetup.CreateAuthorizedClientAsync();
-			var counterparty = await client.GetMyCounterpartyAsync();
-			return counterparty.OwnerId;
-		}).SetArgDisplayNames("Original owner");
+			yield return new TestFixtureData(
+					async (WebserverFixture fixture) =>
+					{
+						var client = await fixture.CreateAuthorizedClientAsync();
+						var counterparty = await client.GetMyCounterpartyAsync();
+						return counterparty.OwnerId;
+					},
+					webserverFixture)
+				.SetArgDisplayNames("Original owner", webserverFixture.Name);
 
-		yield return new TestFixtureData(async () =>
-		{
-			var client = await WebserverSetup.CreateAuthorizedClientAsync();
-			var counterparty = await client.GetMyCounterpartyAsync();
-			var ownerAccess = (await client.GetAccessesAsync()).Single(access => access.Name == "Owner");
-			var ownerId = Guid.NewGuid();
+			yield return new TestFixtureData(
+					async (WebserverFixture fixture) =>
+					{
+						var client = await fixture.CreateAuthorizedClientAsync();
+						var counterparty = await client.GetMyCounterpartyAsync();
+						var ownerAccess = (await client.GetAccessesAsync()).Single(access => access.Name == "Owner");
+						var ownerId = Guid.NewGuid();
 
-			await client.PutOwnerAsync(ownerId);
-			var ownership = new OwnershipCreation
-			{
-				AccessId = ownerAccess.Id,
-				OwnerId = ownerId,
-				UserId = counterparty.OwnerId,
-			};
+						await client.PutOwnerAsync(ownerId);
+						var ownership = new OwnershipCreation
+						{
+							AccessId = ownerAccess.Id,
+							OwnerId = ownerId,
+							UserId = counterparty.OwnerId,
+						};
 
-			await client.PutOwnershipAsync(Guid.NewGuid(), ownership);
+						await client.PutOwnershipAsync(Guid.NewGuid(), ownership);
 
-			return ownerId;
-		}).SetArgDisplayNames("Additional owner");
+						return ownerId;
+					},
+					webserverFixture)
+				.SetArgDisplayNames("Additional owner", webserverFixture.Name);
+		}
 	}
 }

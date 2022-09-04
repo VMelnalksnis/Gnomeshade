@@ -28,7 +28,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_transaction(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Transaction.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Transaction.Insert;
@@ -91,7 +91,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 INSERT INTO transaction_links 
     (created_at, created_by_user_id, link_id, transaction_id) 
 VALUES 
-    (DEFAULT, @ownerId, @linkId, @id);";
+    (CURRENT_TIMESTAMP, @ownerId, @linkId, @id);";
 
 		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
 		return DbConnection.ExecuteAsync(command);

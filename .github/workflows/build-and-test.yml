@@ -51,13 +51,14 @@ jobs:
           -p:CollectCoverage=true
           -p:CoverletOutput=TestResults/
           -p:CoverletOutputFormat=opencover
-          -p:BuildInParallel=false
+          -p:BuildInParallel=true
           -m:1
           --configuration Release
           --no-build
         env:
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
           Nordigen:SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
+          Serilog:MinimumLevel: Warning
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v1

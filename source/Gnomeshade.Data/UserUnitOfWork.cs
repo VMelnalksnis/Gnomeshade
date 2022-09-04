@@ -13,7 +13,7 @@ using Gnomeshade.Data.Repositories;
 namespace Gnomeshade.Data;
 
 /// <summary>User related actions spanning multiple entities.</summary>
-public sealed class UserUnitOfWork : IDisposable
+public sealed class UserUnitOfWork
 {
 	private readonly DbConnection _dbConnection;
 	private readonly OwnerRepository _ownerRepository;
@@ -52,39 +52,21 @@ public sealed class UserUnitOfWork : IDisposable
 
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
-		try
+		_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
+		_ = await _ownerRepository.AddAsync(userId, dbTransaction);
+		await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
+		var counterparty = new CounterpartyEntity
 		{
-			_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
-			_ = await _ownerRepository.AddAsync(userId, dbTransaction);
-			await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
-			var counterparty = new CounterpartyEntity
-			{
-				Id = userId,
-				OwnerId = userId,
-				CreatedByUserId = userId,
-				ModifiedByUserId = userId,
-				Name = fullName,
-			};
-			var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
-			user.CounterpartyId = counterpartyId;
-			_ = await _userRepository.UpdateAsync(user, dbTransaction);
+			Id = userId,
+			OwnerId = userId,
+			CreatedByUserId = userId,
+			ModifiedByUserId = userId,
+			Name = fullName,
+		};
+		var counterpartyId = await _counterpartyRepository.AddAsync(counterparty, dbTransaction);
+		user.CounterpartyId = counterpartyId;
+		_ = await _userRepository.UpdateAsync(user, dbTransaction);
 
-			await dbTransaction.CommitAsync();
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
-	}
-
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_dbConnection.Dispose();
-		_ownerRepository.Dispose();
-		_ownershipRepository.Dispose();
-		_userRepository.Dispose();
-		_counterpartyRepository.Dispose();
+		await dbTransaction.CommitAsync();
 	}
 }

@@ -13,7 +13,7 @@ using Gnomeshade.Data.Repositories;
 namespace Gnomeshade.Data;
 
 /// <summary>Transaction related actions spanning multiple entities.</summary>
-public sealed class TransactionUnitOfWork : IDisposable
+public sealed class TransactionUnitOfWork
 {
 	private readonly DbConnection _dbConnection;
 	private readonly TransactionRepository _repository;
@@ -33,18 +33,9 @@ public sealed class TransactionUnitOfWork : IDisposable
 	public async Task<Guid> AddAsync(TransactionEntity transaction)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-
-		try
-		{
-			var transactionId = await AddAsync(transaction, dbTransaction);
-			await dbTransaction.CommitAsync();
-			return transactionId;
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+		var transactionId = await AddAsync(transaction, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return transactionId;
 	}
 
 	/// <summary>Adds a new transaction with the specified items.</summary>
@@ -70,16 +61,8 @@ public sealed class TransactionUnitOfWork : IDisposable
 	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		try
-		{
-			await DeleteAsync(transaction, ownerId, dbTransaction);
-			await dbTransaction.CommitAsync();
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+		await DeleteAsync(transaction, ownerId, dbTransaction);
+		await dbTransaction.CommitAsync();
 	}
 
 	/// <summary>Deletes the specified transaction and all its items.</summary>
@@ -101,17 +84,8 @@ public sealed class TransactionUnitOfWork : IDisposable
 	public async Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-
-		try
-		{
-			await UpdateAsync(transaction, modifiedBy, dbTransaction);
-			await dbTransaction.CommitAsync();
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+		await UpdateAsync(transaction, modifiedBy, dbTransaction);
+		await dbTransaction.CommitAsync();
 	}
 
 	/// <summary>Updates the specified transaction and all its items.</summary>
@@ -123,12 +97,5 @@ public sealed class TransactionUnitOfWork : IDisposable
 	{
 		transaction.ModifiedByUserId = modifiedBy.Id;
 		return _repository.UpdateAsync(transaction, dbTransaction);
-	}
-
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_dbConnection.Dispose();
-		_repository.Dispose();
 	}
 }

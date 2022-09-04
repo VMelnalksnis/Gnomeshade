@@ -12,6 +12,7 @@
 		<PackageVersion Include="Dapper" Version="2.0.123"/>
 		<PackageVersion Include="dbup-core" Version="4.6.3"/>
 		<PackageVersion Include="dbup-postgresql" Version="4.5.0"/>
+		<PackageVersion Include="dbup-sqlite" Version="4.6.0"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.1.1"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds.Isolated" Version="1.1.1"/>
 		<PackageVersion Include="Elastic.Apm.AspNetCore" Version="1.17.0"/>
@@ -33,6 +34,8 @@
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.8"/>
+		<PackageVersion Include="Microsoft.Data.Sqlite" Version="6.0.8"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8"/>
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration" Version="6.0.1"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1"/>
@@ -69,12 +72,14 @@
 		<PackageVersion Include="System.IO.FileSystem" Version="4.3.0"/>
 		<PackageVersion Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
 		<PackageVersion Include="System.Linq.Async" Version="6.0.1"/>
+		<PackageVersion Include="System.Net.Http" Version="4.3.4"/>
 		<PackageVersion Include="System.Net.NameResolution" Version="4.3.0"/>
 		<PackageVersion Include="System.Net.Primitives" Version="4.3.1"/>
 		<PackageVersion Include="System.Runtime.Handles" Version="4.3.0"/>
 		<PackageVersion Include="System.Runtime.InteropServices" Version="4.3.0"/>
 		<PackageVersion Include="System.Security.Cryptography.Xml" Version="6.0.1"/>
 		<PackageVersion Include="System.Text.Encodings.Web" Version="6.0.0"/>
+		<PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1"/>
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.406"/>
 		<PackageVersion Include="Testcontainers" Version="2.1.0"/>
 		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.2"/>

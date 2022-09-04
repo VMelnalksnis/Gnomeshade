@@ -24,10 +24,8 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 			.MinimumLevel.Information()
 			.Enrich.FromLogContext()
 			.WriteTo.NUnitOutput(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}")
+			.ReadFrom.Configuration(configuration)
 			.CreateLogger();
-
-		Server.PreserveExecutionContext = true;
-		Server.AllowSynchronousIO = true;
 	}
 
 	protected override IHost CreateHost(IHostBuilder builder)

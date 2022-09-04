@@ -19,7 +19,7 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_unit(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Unit.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Unit.Insert;

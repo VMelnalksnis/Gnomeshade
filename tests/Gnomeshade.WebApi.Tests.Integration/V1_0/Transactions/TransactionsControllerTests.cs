@@ -14,6 +14,7 @@ using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Transactions;
 
 using NodaTime;
@@ -21,7 +22,7 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Transactions;
 
 [TestOf(typeof(TransactionsController))]
-public class TransactionsControllerTests
+public sealed class TransactionsControllerTests : WebserverTests
 {
 	private IGnomeshadeClient _client = null!;
 
@@ -31,10 +32,15 @@ public class TransactionsControllerTests
 	private Account _account2 = null!;
 	private Guid _productId;
 
+	public TransactionsControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[SetUp]
 	public async Task SetUpAsync()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
 
 		_counterparty = await _client.GetMyCounterpartyAsync();
 		var other = (await _client.GetCounterpartiesAsync())

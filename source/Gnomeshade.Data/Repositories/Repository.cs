@@ -18,7 +18,7 @@ namespace Gnomeshade.Data.Repositories;
 
 /// <summary>A base class for entity repositories implementing common functionality.</summary>
 /// <typeparam name="TEntity">The type of entity that will be queried with this repository.</typeparam>
-public abstract class Repository<TEntity> : IDisposable
+public abstract class Repository<TEntity>
 	where TEntity : class, IEntity
 {
 	internal const string AccessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
@@ -188,13 +188,6 @@ public abstract class Repository<TEntity> : IDisposable
 		return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
 	}
 
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		Dispose(true);
-		GC.SuppressFinalize(this);
-	}
-
 	/// <summary>Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.</summary>
 	/// <param name="command">The command to execute.</param>
 	/// <returns>The entities returned by the query.</returns>
@@ -230,12 +223,4 @@ public abstract class Repository<TEntity> : IDisposable
 		AccessLevel.Delete => $"{SelectSql} {FindSql} AND {DeleteAccessSql}",
 		_ => throw new ArgumentOutOfRangeException(nameof(accessLevel), accessLevel, null),
 	};
-
-	private void Dispose(bool disposing)
-	{
-		if (disposing)
-		{
-			DbConnection.Dispose();
-		}
-	}
 }

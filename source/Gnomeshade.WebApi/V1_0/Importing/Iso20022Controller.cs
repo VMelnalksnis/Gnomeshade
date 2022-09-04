@@ -156,55 +156,46 @@ public sealed class Iso20022Controller : ControllerBase
 				debitEntriesSummary.Sum);
 		}
 
-		try
-		{
-			var importResults =
-				accountReport
-					.Entry
-					.Select(async entry =>
+		var importResults =
+			accountReport
+				.Entry
+				.Select(async entry =>
+				{
+					var transaction = await Translate(
+						dbTransaction,
+						resultBuilder,
+						entry,
+						reportAccount,
+						bankAccount,
+						user,
+						dateTimeZone);
+
+					if (transaction.Transaction.Id != Guid.Empty)
 					{
-						var transaction = await Translate(
-							dbTransaction,
-							resultBuilder,
-							entry,
-							reportAccount,
-							bankAccount,
-							user,
-							dateTimeZone);
+						return (transaction, false);
+					}
 
-						if (transaction.Transaction.Id != Guid.Empty)
-						{
-							return (transaction, false);
-						}
+					var id = await _transactionUnitOfWork.AddAsync(transaction.Transaction, dbTransaction);
+					var transferId =
+						await _transferRepository.AddAsync(
+							transaction.Transfer with { Id = Guid.NewGuid(), TransactionId = id },
+							dbTransaction);
+					var t1 = await _transactionRepository.GetByIdAsync(id, user.Id, dbTransaction);
+					var t2 = await _transferRepository.GetByIdAsync(transferId, user.Id, dbTransaction);
+					transaction = (t1, t2);
+					return (transaction, true);
+				})
+				.Select(task => task.Result)
+				.ToList();
 
-						var id = await _transactionUnitOfWork.AddAsync(transaction.Transaction, dbTransaction);
-						var transferId =
-							await _transferRepository.AddAsync(
-								transaction.Transfer with { Id = Guid.NewGuid(), TransactionId = id },
-								dbTransaction);
-						var t1 = await _transactionRepository.GetByIdAsync(id, user.Id, dbTransaction);
-						var t2 = await _transferRepository.GetByIdAsync(transferId, user.Id, dbTransaction);
-						transaction = (t1, t2);
-						return (transaction, true);
-					})
-					.Select(task => task.Result)
-					.ToList();
-
-			foreach (var (transaction, created) in importResults)
-			{
-				resultBuilder.AddTransaction(transaction.Transaction, created);
-				resultBuilder.AddTransfer(transaction.Transfer, created);
-			}
-
-			await dbTransaction.CommitAsync();
-			return Ok(resultBuilder.ToResult());
-		}
-		catch (Exception exception)
+		foreach (var (transaction, created) in importResults)
 		{
-			_logger.LogError(exception, "Failed to import");
-			await dbTransaction.RollbackAsync();
-			throw;
+			resultBuilder.AddTransaction(transaction.Transaction, created);
+			resultBuilder.AddTransfer(transaction.Transfer, created);
 		}
+
+		await dbTransaction.CommitAsync();
+		return Ok(resultBuilder.ToResult());
 	}
 
 	private static Instant GetBookingDate(DateAndDateTimeChoice? dateAndDateTimeChoice, DateTimeZone dateTimeZone)

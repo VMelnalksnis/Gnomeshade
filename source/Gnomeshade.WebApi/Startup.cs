@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 using AutoMapper;
 
 using Elastic.Apm.AspNetCore;
@@ -13,7 +15,9 @@ using Elastic.Apm.SqlClient;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.PostgreSQL;
+using Gnomeshade.Data.Sqlite;
 using Gnomeshade.WebApi.Configuration;
+using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
 using Gnomeshade.WebApi.V1_0;
@@ -68,10 +72,20 @@ public class Startup
 
 		services.AddApiVersioning();
 
-		services
-			.AddRepositories()
-			.AddPostgreSQL(_configuration, new SerilogNpgsqlLoggingProvider())
-			.AddPostgreSQLIdentity();
+		services.AddRepositories();
+		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
+		_ = databaseProvider switch
+		{
+			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
+				.AddPostgreSQL(_configuration, new SerilogNpgsqlLoggingProvider())
+				.AddPostgreSQLIdentity(),
+
+			_ when databaseProvider.Equals(DatabaseProvider.Sqlite.Name, StringComparison.OrdinalIgnoreCase) => services
+				.AddSqlite(_configuration)
+				.AddSqliteIdentity(),
+
+			_ => throw new ArgumentOutOfRangeException(nameof(databaseProvider), databaseProvider, "Unsupported database provider"),
+		};
 
 		services.AddAuthenticationAndAuthorization(_configuration);
 
@@ -87,7 +101,7 @@ public class Startup
 				return config;
 			});
 
-		services.AddSwaggerGen(Options.SwaggerGen);
+		services.AddSwaggerGen(SwaggerOptions.SwaggerGen);
 
 		services.AddGnomeshadeHealthChecks();
 		services.AddNordigenDotNet(_configuration);

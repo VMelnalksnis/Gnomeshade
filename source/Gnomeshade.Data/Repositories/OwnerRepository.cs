@@ -17,7 +17,7 @@ using Gnomeshade.Data.Entities.Abstractions;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="OwnerEntity"/>.</summary>
-public sealed class OwnerRepository : IDisposable
+public sealed class OwnerRepository
 {
 	private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@id) RETURNING id;";
 	private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
@@ -61,7 +61,4 @@ public sealed class OwnerRepository : IDisposable
 	/// <returns>The number of affected rows.</returns>
 	public Task<int> DeleteAsync(Guid id) =>
 		_dbConnection.ExecuteAsync("DELETE FROM owners WHERE id = @id", new { id });
-
-	/// <inheritdoc/>
-	public void Dispose() => _dbConnection.Dispose();
 }

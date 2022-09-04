@@ -18,7 +18,7 @@ using Gnomeshade.Data.Entities.Abstractions;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="OwnershipEntity"/>.</summary>
-public sealed class OwnershipRepository : IDisposable
+public sealed class OwnershipRepository
 {
 	private readonly DbConnection _dbConnection;
 
@@ -101,7 +101,4 @@ public sealed class OwnershipRepository : IDisposable
 	/// <returns>The number of affected rows.</returns>
 	public Task<int> DeleteAsync(Guid id) =>
 		_dbConnection.ExecuteAsync(new(Queries.Ownership.Delete, new { id }));
-
-	/// <inheritdoc />
-	public void Dispose() => _dbConnection.Dispose();
 }

@@ -19,7 +19,7 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_category(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Category.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Category.Insert;

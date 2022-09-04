@@ -7,17 +7,23 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Owners;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Owners;
 
 [TestOf(typeof(OwnershipsController))]
-public sealed class OwnershipsControllerTests
+public sealed class OwnershipsControllerTests : WebserverTests
 {
+	public OwnershipsControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[Test]
 	public async Task Get_ShouldContainUserOwnership()
 	{
-		var client = await WebserverSetup.CreateAuthorizedClientAsync();
+		var client = await Fixture.CreateAuthorizedClientAsync();
 
 		var counterparty = await client.GetMyCounterpartyAsync();
 		var ownerships = await client.GetOwnershipsAsync();
@@ -28,8 +34,8 @@ public sealed class OwnershipsControllerTests
 	[Test]
 	public async Task PutDelete()
 	{
-		var client = await WebserverSetup.CreateAuthorizedClientAsync();
-		var otherClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
+		var client = await Fixture.CreateAuthorizedClientAsync();
+		var otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
 
 		var counterparty = await client.GetMyCounterpartyAsync();
 		var otherCounterparty = await otherClient.GetMyCounterpartyAsync();

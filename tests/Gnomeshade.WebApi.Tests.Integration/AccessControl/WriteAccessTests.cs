@@ -13,22 +13,24 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 using NodaTime;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
 [TestFixtureSource(typeof(OwnerTestFixtureSource))]
-public sealed class WriteAccessTests
+public sealed class WriteAccessTests : WebserverTests
 {
-	private readonly Func<Task<Guid>> _ownerIdFunc;
+	private readonly Func<WebserverFixture, Task<Guid>> _ownerIdFunc;
 	private readonly Guid _writeOwnershipId = Guid.NewGuid();
 
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
 	private Guid? _ownerId;
 
-	public WriteAccessTests(Func<Task<Guid>> ownerIdFunc)
+	public WriteAccessTests(Func<WebserverFixture, Task<Guid>> ownerIdFunc, WebserverFixture fixture)
+		: base(fixture)
 	{
 		_ownerIdFunc = ownerIdFunc;
 	}
@@ -36,14 +38,14 @@ public sealed class WriteAccessTests
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
-		_otherClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
+		_otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
 
 		var counterparty = await _client.GetMyCounterpartyAsync();
 		var otherCounterparty = await _otherClient.GetMyCounterpartyAsync();
 		var accesses = await _client.GetAccessesAsync();
 		var writeAccess = accesses.Single(access => access.Name == "Write");
-		var ownerId = await _ownerIdFunc();
+		var ownerId = await _ownerIdFunc(Fixture);
 		var writeOwnership = new OwnershipCreation
 		{
 			AccessId = writeAccess.Id,
@@ -57,10 +59,7 @@ public sealed class WriteAccessTests
 	}
 
 	[OneTimeTearDown]
-	public async Task OneTimeTearDown()
-	{
-		await _client.DeleteOwnershipAsync(_writeOwnershipId);
-	}
+	public Task OneTimeTearDown() => _client.DeleteOwnershipAsync(_writeOwnershipId);
 
 	[Test]
 	public async Task Counterparties()

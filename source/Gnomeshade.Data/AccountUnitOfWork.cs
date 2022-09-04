@@ -14,7 +14,7 @@ using Gnomeshade.Data.Repositories;
 namespace Gnomeshade.Data;
 
 /// <summary>Performs bulk actions on account entities.</summary>
-public sealed class AccountUnitOfWork : IDisposable
+public sealed class AccountUnitOfWork
 {
 	private readonly DbConnection _dbConnection;
 	private readonly AccountRepository _repository;
@@ -44,18 +44,9 @@ public sealed class AccountUnitOfWork : IDisposable
 	public async Task<Guid> AddAsync(AccountEntity account)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-
-		try
-		{
-			var id = await AddAsync(account, dbTransaction).ConfigureAwait(false);
-			await dbTransaction.CommitAsync();
-			return id;
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+		var id = await AddAsync(account, dbTransaction).ConfigureAwait(false);
+		await dbTransaction.CommitAsync();
+		return id;
 	}
 
 	/// <summary>Creates a new account with the currencies in <see cref="AccountEntity.Currencies"/>.</summary>
@@ -117,17 +108,8 @@ public sealed class AccountUnitOfWork : IDisposable
 	public async Task DeleteAsync(AccountEntity account, Guid ownerId)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-
-		try
-		{
-			await DeleteAsync(account, ownerId, dbTransaction).ConfigureAwait(false);
-			await dbTransaction.CommitAsync();
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
+		await DeleteAsync(account, ownerId, dbTransaction).ConfigureAwait(false);
+		await dbTransaction.CommitAsync();
 	}
 
 	/// <summary>Updates the specified account.</summary>
@@ -137,26 +119,8 @@ public sealed class AccountUnitOfWork : IDisposable
 	public async Task UpdateAsync(AccountEntity account, UserEntity modifiedBy)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-
-		try
-		{
-			await UpdateAsync(account, modifiedBy, dbTransaction);
-			await dbTransaction.CommitAsync();
-		}
-		catch (Exception)
-		{
-			await dbTransaction.RollbackAsync();
-			throw;
-		}
-	}
-
-	/// <inheritdoc />
-	public void Dispose()
-	{
-		_dbConnection.Dispose();
-		_repository.Dispose();
-		_inCurrencyRepository.Dispose();
-		_counterpartyRepository.Dispose();
+		await UpdateAsync(account, modifiedBy, dbTransaction);
+		await dbTransaction.CommitAsync();
 	}
 
 	private async Task DeleteAsync(AccountEntity account, Guid ownerId, IDbTransaction dbTransaction)

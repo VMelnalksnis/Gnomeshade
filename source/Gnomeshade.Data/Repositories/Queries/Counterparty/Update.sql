@@ -9,10 +9,10 @@
       AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE counterparties
-SET modified_at         = DEFAULT,
+SET modified_at         = CURRENT_TIMESTAMP,
     modified_by_user_id = @ModifiedByUserId,
     name                = @Name,
     normalized_name     = upper(@Name)
 FROM c
-WHERE counterparties.id = c.id
-RETURNING c.id;
+WHERE counterparties.id IN (SELECT id FROM c)
+RETURNING (SELECT id FROM c);

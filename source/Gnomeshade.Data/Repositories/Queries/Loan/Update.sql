@@ -7,7 +7,7 @@
 			 AND ownerships.user_id = @OwnerId
 			 AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER'))
 UPDATE loans
-SET modified_at               = DEFAULT,
+SET modified_at               = CURRENT_TIMESTAMP,
 	modified_by_user_id       = @ModifiedByUserId,
 	transaction_id            = @TransactionId,
 	issuing_counterparty_id   = @IssuingCounterpartyId,
@@ -15,5 +15,5 @@ SET modified_at               = DEFAULT,
 	amount                    = @Amount,
 	currency_id               = @CurrencyId
 FROM l
-WHERE loans.id = l.id
-RETURNING l.id;
+WHERE loans.id IN (SELECT id FROM l)
+RETURNING (SELECT id FROM l);

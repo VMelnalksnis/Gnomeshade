@@ -25,7 +25,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_loan(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Loan.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Loan.Insert;

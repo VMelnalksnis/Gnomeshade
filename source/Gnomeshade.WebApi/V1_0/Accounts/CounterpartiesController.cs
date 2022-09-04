@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
@@ -87,7 +88,9 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	[ProducesResponseType(Status204NoContent)]
 	public async Task<ActionResult> Merge(Guid targetId, Guid sourceId)
 	{
-		await Repository.MergeAsync(targetId, sourceId, ApplicationUser.Id);
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		await Repository.MergeAsync(targetId, sourceId, ApplicationUser.Id, dbTransaction);
+		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 

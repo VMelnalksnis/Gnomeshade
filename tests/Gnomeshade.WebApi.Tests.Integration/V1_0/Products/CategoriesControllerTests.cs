@@ -8,19 +8,25 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Products;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Products;
 
 [TestOf(typeof(CategoriesController))]
-public sealed class CategoriesControllerTests
+public sealed class CategoriesControllerTests : WebserverTests
 {
 	private IProductClient _client = null!;
+
+	public CategoriesControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
 
 	[SetUp]
 	public async Task SetUpAsync()
 	{
-		_client = await WebserverSetup.CreateAuthorizedClientAsync();
+		_client = await Fixture.CreateAuthorizedClientAsync();
 	}
 
 	[Test]
@@ -41,7 +47,7 @@ public sealed class CategoriesControllerTests
 		await _client.PutCategoryAsync(categoryId, new() { Name = $"{Guid.NewGuid():N}", CategoryId = otherCategoryId });
 		var updatedCategory = await _client.GetCategoryAsync(categoryId);
 		updatedCategory.Name.Should().NotBeEquivalentTo(category.Name);
-		updatedCategory.ModifiedAt.Should().BeGreaterThan(category.ModifiedAt);
+		updatedCategory.ModifiedAt.Should().BeGreaterThanOrEqualTo(category.ModifiedAt);
 		updatedCategory.CategoryId.Should().Be(otherCategoryId);
 
 		await _client.DeleteCategoryAsync(categoryId);

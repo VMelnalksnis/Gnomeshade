@@ -8,7 +8,9 @@
 	   loans.issuing_counterparty_id   IssuingCounterpartyId,
 	   loans.receiving_counterparty_id ReceivingCounterpartyId,
 	   loans.amount AS                 Amount,
-	   loans.currency_id               CurrencyId
+	   loans.currency_id               CurrencyId,
+	   loans.deleted_at                DeletedAt,
+	   loans.deleted_by_user_id        DeletedByUserId
 FROM loans
 		 INNER JOIN owners ON owners.id = loans.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id

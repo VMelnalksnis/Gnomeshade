@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
@@ -18,12 +19,17 @@ using NodaTime;
 
 namespace Gnomeshade.WebApi.Tests.Integration;
 
-public class AuthorizationTests
+public sealed class AuthorizationTests : WebserverTests
 {
+	public AuthorizationTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[Test]
 	public async Task Get_ShouldReturnUnauthorized()
 	{
-		var client = WebserverSetup.CreateHttpClient();
+		var client = Fixture.CreateHttpClient();
 
 		var response = await client.GetAsync("/api/v1.0/transactions");
 
@@ -41,10 +47,10 @@ public class AuthorizationTests
 			.AddSingleton<IBrowser, MockBrowser>()
 			.AddTransient<OidcClient>(provider => new(new()
 			{
-				Authority = "http://localhost:8080/realms/gnomeshade/",
+				Authority = $"http://localhost:{Fixture.KeycloakPort}/realms/gnomeshade/",
 				ClientId = "gnomeshade",
 				Scope = "openid profile",
-				RedirectUri = "http://localhost:8297/",
+				RedirectUri = $"http://localhost:{Fixture.RedirectPort}/",
 				Browser = provider.GetRequiredService<IBrowser>(),
 				LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
 				HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),
@@ -57,7 +63,7 @@ public class AuthorizationTests
 		var provider = services.BuildServiceProvider();
 
 		var handler = provider.GetRequiredService<TokenDelegatingHandler>();
-		var gnomeshadeClient = WebserverSetup.CreateUnauthorizedClient(handler);
+		var gnomeshadeClient = Fixture.CreateUnauthorizedClient(handler);
 
 		await gnomeshadeClient.SocialRegister();
 

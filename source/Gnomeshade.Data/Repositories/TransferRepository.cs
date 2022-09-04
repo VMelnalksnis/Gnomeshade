@@ -26,7 +26,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_transfer(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Transfer.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Transfer.Insert;

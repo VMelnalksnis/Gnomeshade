@@ -75,6 +75,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Desktop.Installe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Data.PostgreSQL", "source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj", "{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Data.Sqlite", "source\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj", "{53B07CEC-44AD-4BB7-B518-C386A4EFE286}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests.Integration.Sqlite", "tests\Gnomeshade.WebApi.Tests.Integration.Sqlite\Gnomeshade.WebApi.Tests.Integration.Sqlite.csproj", "{D42CD300-2BE9-476E-BCA1-81D038BEE748}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests.Integration.PostgreSQL", "tests\Gnomeshade.WebApi.Tests.Integration.PostgreSQL\Gnomeshade.WebApi.Tests.Integration.PostgreSQL.csproj", "{500AE809-A986-44E8-A53D-18826B41DFEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,8 +108,8 @@ Global
 		{2104FB4D-201F-4F96-939B-9AAF4C48C77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2104FB4D-201F-4F96-939B-9AAF4C48C77B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6757CB9-998B-499F-8042-8A59E2B92577}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6757CB9-998B-499F-8042-8A59E2B92577}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6757CB9-998B-499F-8042-8A59E2B92577}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2ED2F80-3638-405E-BAA0-2788A47D853D}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -137,6 +143,18 @@ Global
 		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{001B3CFC-CD5A-4A73-B45A-904CBCBF601E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53B07CEC-44AD-4BB7-B518-C386A4EFE286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53B07CEC-44AD-4BB7-B518-C386A4EFE286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53B07CEC-44AD-4BB7-B518-C386A4EFE286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53B07CEC-44AD-4BB7-B518-C386A4EFE286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D42CD300-2BE9-476E-BCA1-81D038BEE748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D42CD300-2BE9-476E-BCA1-81D038BEE748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D42CD300-2BE9-476E-BCA1-81D038BEE748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D42CD300-2BE9-476E-BCA1-81D038BEE748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{500AE809-A986-44E8-A53D-18826B41DFEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{500AE809-A986-44E8-A53D-18826B41DFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{500AE809-A986-44E8-A53D-18826B41DFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{500AE809-A986-44E8-A53D-18826B41DFEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +170,8 @@ Global
 		{EACC6CF9-1097-4C31-914E-C21155D4FF07} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 		{D30778D9-A8F3-480E-8070-F1BAE8331A0A} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 		{F38BE682-DC57-4090-99A3-C913DB95F109} = {C40963A1-CFE1-4CF8-BAC3-3F3B0A87B7D0}
+		{D42CD300-2BE9-476E-BCA1-81D038BEE748} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
+		{500AE809-A986-44E8-A53D-18826B41DFEA} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}

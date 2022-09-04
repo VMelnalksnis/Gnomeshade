@@ -19,7 +19,7 @@ public sealed class LinkRepository : Repository<LinkEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string DeleteSql => "CALL delete_link(@id, @ownerId);";
+	protected override string DeleteSql => Queries.Link.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Link.Insert;

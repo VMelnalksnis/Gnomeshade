@@ -8,17 +8,23 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Models;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0;
 
 [TestOf(typeof(LinksController))]
-public class LinksControllerTests
+public sealed class LinksControllerTests : WebserverTests
 {
+	public LinksControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[Test]
 	public async Task AddGetDelete()
 	{
-		var client = await WebserverSetup.CreateAuthorizedClientAsync();
+		var client = await Fixture.CreateAuthorizedClientAsync();
 
 		var linkCreation = new LinkCreation { Uri = new("https://localhost/documents/1") };
 		var id = Guid.NewGuid();
@@ -44,7 +50,7 @@ public class LinksControllerTests
 	[Test]
 	public async Task UniqueConstraint()
 	{
-		var client = await WebserverSetup.CreateAuthorizedClientAsync();
+		var client = await Fixture.CreateAuthorizedClientAsync();
 
 		var id = Guid.NewGuid();
 		var linkCreation = new LinkCreation { Uri = new($"https://localhost/documents/{id:N}") };

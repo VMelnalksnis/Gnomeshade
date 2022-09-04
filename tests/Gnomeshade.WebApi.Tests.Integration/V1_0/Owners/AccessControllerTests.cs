@@ -4,18 +4,24 @@
 
 using System.Threading.Tasks;
 
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Owners;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Owners;
 
 [TestOf(typeof(AccessController))]
-public sealed class AccessControllerTests
+public sealed class AccessControllerTests : WebserverTests
 {
+	public AccessControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[Test]
 	public async Task Get_ShouldReturnExpected()
 	{
-		var client = await WebserverSetup.CreateAuthorizedClientAsync();
-		var otherClient = await WebserverSetup.CreateAuthorizedSecondClientAsync();
+		var client = await Fixture.CreateAuthorizedClientAsync();
+		var otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
 
 		var accesses = await client.GetAccessesAsync();
 		accesses.Should().HaveCount(4);

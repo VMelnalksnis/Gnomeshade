@@ -1,39 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.3.0">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="ContinuousIntegrationBuild != true">
-		<UserSecretsId>a8ee8b2c-5151-45b6-ad24-3a3768fb80a5</UserSecretsId>
-	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="Bogus"/>
-		<PackageReference Include="FluentAssertions.NodaTime"/>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
-		<PackageReference Include="Testcontainers"/>
-		<PackageReference Include="IdentityModel.OidcClient"/>
-		<PackageReference Include="Serilog.Sinks.NUnit"/>
-		<PackageReference Include="HtmlAgilityPack"/>
+		<PackageReference Remove="*"/>
+		<Using Remove="*"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj"/>
-		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="V1_0\Importing\BankToCustomerAccountReportV02.xml"/>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="realm-export.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<!-- Include all files so that they are visible from IDE -->
+		<None Include="**\*.*"/>
+		<None Remove="**\obj\**"/>
+		<None Remove="**\bin\**"/>
 	</ItemGroup>
 
 </Project>

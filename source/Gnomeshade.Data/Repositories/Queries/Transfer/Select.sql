@@ -4,6 +4,8 @@
 	   transfers.created_by_user_id  AS CreatedByUserId,
 	   transfers.modified_at         AS ModifiedAt,
 	   transfers.modified_by_user_id AS ModifiedByUserId,
+	   transfers.deleted_at          AS DeletedAt,
+	   transfers.deleted_by_user_id  AS DeletedByUserId,
 	   transfers.transaction_id      AS TransactionId,
 	   transfers.source_amount       AS SourceAmount,
 	   transfers.source_account_id   AS SourceAccountId,

@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,52 +26,31 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NodaTime;
 
-namespace Gnomeshade.WebApi.Tests.Integration;
+namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
-[SetUpFixture]
-public sealed class WebserverSetup
+public abstract class WebserverFixture : IAsyncDisposable
 {
-	private static readonly List<ITestcontainersContainer> _containers = new();
+	private const int _keycloakPort = 8080;
+	private WebApplicationFactory<Startup> _webApplicationFactory = null!;
+	private Login _login = null!;
+	private Login _secondLogin = null!;
 
-	private static WebApplicationFactory<Startup> _webApplicationFactory = null!;
-	private static Login _login = null!;
-	private static Login _secondLogin = null!;
+	internal abstract string Name { get; }
 
-	public static HttpClient CreateHttpClient(params DelegatingHandler[] handlers) => _webApplicationFactory.CreateDefaultClient(handlers);
+	internal int KeycloakPort { get; private set; }
 
-	public static GnomeshadeClient CreateUnauthorizedClient(params DelegatingHandler[] handlers)
+	internal abstract int RedirectPort { get; }
+
+	protected List<ITestcontainersContainer> Containers { get; } = new();
+
+	public async ValueTask DisposeAsync()
 	{
-		var httpClient = CreateHttpClient(handlers);
-		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
+		await _webApplicationFactory.DisposeAsync();
+		await Task.WhenAll(Containers.Select(container => container.StopAsync()));
 	}
 
-	public static Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
-
-	public static Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() => CreateAuthorizedClientAsync(_secondLogin);
-
-	[OneTimeSetUp]
-	public async Task OneTimeSetUpAsync()
+	internal async Task Initialize()
 	{
-		var databaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
-			{
-				Database = "gnomeshade-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
-
-		var identityDatabaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
-			{
-				Database = "gnomeshade-identity-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
-
 		var keycloakContainer = new TestcontainersBuilder<TestcontainersContainer>()
 			.WithImage("quay.io/keycloak/keycloak:19.0.1")
 			.WithEnvironment(new Dictionary<string, string>
@@ -78,8 +58,7 @@ public sealed class WebserverSetup
 				{ "KEYCLOAK_ADMIN", "admin" },
 				{ "KEYCLOAK_ADMIN_PASSWORD", "admin" },
 			})
-			.WithPortBinding(8080)
-			.WithExposedPort(8080)
+			.WithPortBinding(_keycloakPort, true)
 			.WithBindMount(
 				Path.Combine(Directory.GetCurrentDirectory(), "realm-export.json"),
 				"/opt/keycloak/data/import/realm.json",
@@ -88,20 +67,18 @@ public sealed class WebserverSetup
 			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(8080))
 			.Build();
 
-		_containers.Add(databaseContainer);
-		_containers.Add(identityDatabaseContainer);
-		_containers.Add(keycloakContainer);
+		Containers.Add(keycloakContainer);
 
-		await Task.WhenAll(_containers.Select(container => container.StartAsync()));
+		await Task.WhenAll(Containers.Select(container => container.StartAsync()));
 
+		KeycloakPort = keycloakContainer.GetMappedPublicPort(_keycloakPort);
 		var configuration =
 			new ConfigurationBuilder()
+				.AddConfiguration(GetAdditionalConfiguration())
 				.AddInMemoryCollection(new Dictionary<string, string>
 				{
-					{ "ConnectionStrings:FinanceDb", databaseContainer.ConnectionString },
-					{ "ConnectionStrings:IdentityDb", identityDatabaseContainer.ConnectionString },
-					{ "Oidc:Keycloak:ServerRealm", "http://localhost:8080/realms/gnomeshade" },
-					{ "Oidc:Keycloak:Metadata", "http://localhost:8080/realms/gnomeshade/.well-known/openid-configuration" },
+					{ "Oidc:Keycloak:ServerRealm", $"http://localhost:{KeycloakPort}/realms/gnomeshade" },
+					{ "Oidc:Keycloak:Metadata", $"http://localhost:{KeycloakPort}/realms/gnomeshade/.well-known/openid-configuration" },
 					{ "Oidc:Keycloak:ClientId", "gnomeshade" },
 				})
 				.AddEnvironmentVariables()
@@ -120,16 +97,26 @@ public sealed class WebserverSetup
 		_secondLogin = await RegisterUser(client, registrationFaker.Generate());
 	}
 
-	[OneTimeTearDown]
-	public async Task OneTimeTearDownAsync()
+	internal HttpClient CreateHttpClient(params DelegatingHandler[] handlers) =>
+		_webApplicationFactory.CreateDefaultClient(handlers);
+
+	internal GnomeshadeClient CreateUnauthorizedClient(params DelegatingHandler[] handlers)
 	{
-		await _webApplicationFactory.DisposeAsync();
-		await Task.WhenAll(_containers.Select(container => container.StopAsync()));
+		var httpClient = CreateHttpClient(handlers);
+		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
 	}
 
-	internal static IServiceScope CreateScope() => _webApplicationFactory.Services.CreateScope();
+	internal Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
 
-	internal static EntityRepository GetEntityRepository(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<EntityRepository>();
+	internal Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() =>
+		CreateAuthorizedClientAsync(_secondLogin);
+
+	internal IServiceScope CreateScope() => _webApplicationFactory.Services.CreateScope();
+
+	internal EntityRepository GetEntityRepository(IServiceScope scope) =>
+		scope.ServiceProvider.GetRequiredService<EntityRepository>();
+
+	protected abstract IConfiguration GetAdditionalConfiguration();
 
 	private static async Task<Login> RegisterUser(HttpClient client, RegistrationModel registrationModel)
 	{
@@ -144,7 +131,7 @@ public sealed class WebserverSetup
 		return new() { Username = registrationModel.Username, Password = registrationModel.Password };
 	}
 
-	private static async Task<IGnomeshadeClient> CreateAuthorizedClientAsync(Login login)
+	private async Task<IGnomeshadeClient> CreateAuthorizedClientAsync(Login login)
 	{
 		var client = CreateUnauthorizedClient();
 		var loginResult = await client.LogInAsync(login);

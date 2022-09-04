@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Threading;
@@ -15,7 +14,7 @@ using Gnomeshade.Data.Entities;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="AccessEntity"/>.</summary>
-public sealed class AccessRepository : IDisposable
+public sealed class AccessRepository
 {
 	private readonly DbConnection _dbConnection;
 
@@ -35,7 +34,4 @@ public sealed class AccessRepository : IDisposable
 		var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
 		return _dbConnection.QueryAsync<AccessEntity>(command);
 	}
-
-	/// <inheritdoc />
-	public void Dispose() => _dbConnection.Dispose();
 }

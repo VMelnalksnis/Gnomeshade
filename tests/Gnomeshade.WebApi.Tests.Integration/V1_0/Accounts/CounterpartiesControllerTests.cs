@@ -10,20 +10,26 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1_0.Accounts;
 
 namespace Gnomeshade.WebApi.Tests.Integration.V1_0.Accounts;
 
 [TestOf(typeof(CounterpartiesController))]
-public class CounterpartiesControllerTests
+public class CounterpartiesControllerTests : WebserverTests
 {
 	private IGnomeshadeClient _gnomeshadeClient = null!;
 	private Currency _currency = null!;
 
+	public CounterpartiesControllerTests(WebserverFixture fixture)
+		: base(fixture)
+	{
+	}
+
 	[SetUp]
 	public async Task SetUp()
 	{
-		_gnomeshadeClient = await WebserverSetup.CreateAuthorizedClientAsync();
+		_gnomeshadeClient = await Fixture.CreateAuthorizedClientAsync();
 		_currency = (await _gnomeshadeClient.GetCurrenciesAsync()).First();
 	}
 
@@ -49,10 +55,7 @@ public class CounterpartiesControllerTests
 		await _gnomeshadeClient.PutCounterpartyAsync(id, creationModel);
 
 		var updatedCounterparty = await _gnomeshadeClient.GetCounterpartyAsync(id);
-		updatedCounterparty
-			.ModifiedAt
-			.Should()
-			.BeGreaterThan(counterparty.ModifiedAt);
+		updatedCounterparty.ModifiedAt.Should().BeGreaterThanOrEqualTo(counterparty.ModifiedAt);
 	}
 
 	[Test]

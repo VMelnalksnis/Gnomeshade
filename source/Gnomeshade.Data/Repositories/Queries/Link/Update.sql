@@ -9,9 +9,9 @@
       AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')
 )
 UPDATE links
-SET modified_at         = DEFAULT,
+SET modified_at         = CURRENT_TIMESTAMP,
     modified_by_user_id = @ModifiedByUserId,
     uri                 = @Uri
 FROM l
-WHERE links.id = l.id
-RETURNING l.id;
+WHERE links.id IN (SELECT id FROM l)
+RETURNING (SELECT id FROM l);

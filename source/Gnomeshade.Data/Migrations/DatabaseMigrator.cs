@@ -44,6 +44,7 @@ public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
 		var upgradeEngine = GetBuilder(DeployChanges.To)
 			.WithScriptsEmbeddedInAssembly(GetType().Assembly, ScriptFilter)
 			.WithTransaction()
+			.LogScriptOutput()
 			.LogTo(UpgradeLog)
 			.Build();
 

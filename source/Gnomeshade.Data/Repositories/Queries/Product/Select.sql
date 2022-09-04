@@ -6,6 +6,8 @@
 	   p.modified_by_user_id ModifiedByUserId,
 	   p.name AS             Name,
 	   p.normalized_name     NormalizedName,
+	   p.deleted_at          DeletedAt,
+	   p.deleted_by_user_id  DeletedByUserId,
 	   p.sku                 Sku,
 	   p.description,
 	   p.unit_id             UnitId,
