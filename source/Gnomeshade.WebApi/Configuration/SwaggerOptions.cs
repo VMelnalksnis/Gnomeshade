@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 
 using Gnomeshade.WebApi.OpenApi;
-using Gnomeshade.WebApi.V1_0.OpenApi;
+using Gnomeshade.WebApi.V1.OpenApi;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;

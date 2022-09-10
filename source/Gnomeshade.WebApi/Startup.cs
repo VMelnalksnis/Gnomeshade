@@ -20,9 +20,9 @@ using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
-using Gnomeshade.WebApi.V1_0;
-using Gnomeshade.WebApi.V1_0.Importing;
-using Gnomeshade.WebApi.V1_0.OpenApi;
+using Gnomeshade.WebApi.V1;
+using Gnomeshade.WebApi.V1.Importing;
+using Gnomeshade.WebApi.V1.OpenApi;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

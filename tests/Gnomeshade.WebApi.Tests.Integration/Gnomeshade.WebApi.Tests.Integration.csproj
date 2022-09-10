@@ -5,15 +5,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Remove="*"/>
-		<Using Remove="*"/>
+		<PackageReference Remove="*" />
+		<Using Remove="*" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Include all files so that they are visible from IDE -->
-		<None Include="**\*.*"/>
-		<None Remove="**\obj\**"/>
-		<None Remove="**\bin\**"/>
+		<None Include="**\*.*" />
+		<None Remove="**\obj\**" />
+		<None Remove="**\bin\**" />
 	</ItemGroup>
 
 </Project>
