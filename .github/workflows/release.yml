@@ -111,6 +111,69 @@ jobs:
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
+
+  deploy-demo:
+    name: Deploy demo app
+    needs: build-linux
+    runs-on: ubuntu-latest
+    env:
+      AZURE_APP_NAME: gnomeshade-demo
+      AZURE_APP_DOMAIN: 'https://gnomeshade-demo.azurewebsites.net/'
+    steps:
+      - uses: actions/download-artifact@v3.0.0
+        id: download
+        with:
+          name: Gnomeshade.WebApi_linux-x64.zip
+
+      - run: unzip Gnomeshade.WebApi_linux-x64.zip
+      - run: rm Gnomeshade.WebApi_linux-x64.zip
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_APP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '.'
+
+      - uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ env.AZURE_APP_NAME }}
+          app-settings-json: |
+            [
+                {
+                    "name": "ConnectionStrings__FinanceDb",
+                    "value": "Data Source=/tmp/finance.db",
+                    "slotSetting": false
+                },
+                {
+                    "name": "ConnectionStrings__IdentityDb",
+                    "value": "Data Source=/tmp/identity.db",
+                    "slotSetting": false
+                },
+                {
+                    "name": "Database__Provider",
+                    "value": "Sqlite",
+                    "slotSetting": false
+                },
+                {
+                    "name": "Jwt__Secret",
+                    "value": "${{ secrets.DEMO_JWT_SECRET }}",
+                    "slotSetting": false
+                },
+                {
+                    "name": "Jwt__ValidAudience",
+                    "value": "${{ env.AZURE_APP_DOMAIN }}",
+                    "slotSetting": false
+                },
+                {
+                    "name": "Jwt__ValidIssuer",
+                    "value": "${{ env.AZURE_APP_DOMAIN }}",
+                    "slotSetting": false
+                }
+            ]
   
   update-nightly:
     name: Update nightly release
