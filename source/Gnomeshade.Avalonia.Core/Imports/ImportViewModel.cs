@@ -67,15 +67,23 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ImportAsync()
 	{
-		if (FilePath is not null)
+		try
 		{
-			var file = new FileInfo(FilePath);
-			await using var stream = file.OpenRead();
-			await _gnomeshadeClient.Import(stream, file.Name);
+			IsBusy = true;
+			if (FilePath is not null)
+			{
+				var file = new FileInfo(FilePath);
+				await using var stream = file.OpenRead();
+				await _gnomeshadeClient.Import(stream, file.Name);
+			}
+			else if (SelectedInstitution is not null)
+			{
+				await _gnomeshadeClient.ImportAsync(SelectedInstitution);
+			}
 		}
-		else if (SelectedInstitution is not null)
+		finally
 		{
-			await _gnomeshadeClient.ImportAsync(SelectedInstitution);
+			IsBusy = false;
 		}
 
 		throw new InvalidOperationException("Could not import");
@@ -84,7 +92,15 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country).ConfigureAwait(false);
-		SelectedInstitution = Institutions.First();
+		try
+		{
+			IsBusy = true;
+			Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country).ConfigureAwait(false);
+			SelectedInstitution = Institutions.First();
+		}
+		finally
+		{
+			IsBusy = false;
+		}
 	}
 }
