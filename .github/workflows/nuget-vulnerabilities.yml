@@ -27,8 +27,6 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-linux-x64-nuget-
 
       - name: Restore dependencies
         run: dotnet restore

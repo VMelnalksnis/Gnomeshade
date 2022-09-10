@@ -35,8 +35,6 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-win10-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-win10-x64-nuget-
 
       - name: Publish project
         id: publish
@@ -69,8 +67,6 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-linux-x64-nuget-
 
       - name: Publish project
         id: publish
