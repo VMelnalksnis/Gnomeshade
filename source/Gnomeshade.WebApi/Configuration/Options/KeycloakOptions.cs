@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Gnomeshade.WebApi.Configuration;
+namespace Gnomeshade.WebApi.Configuration.Options;
 
 /// <summary>Options for configuration Keycloak OIDC provider.</summary>
 public sealed class KeycloakOptions

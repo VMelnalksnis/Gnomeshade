@@ -16,7 +16,7 @@ namespace Gnomeshade.WebApi.OpenApi;
 
 /// <summary>Adds 400 response with <see cref="ValidationProblemDetails"/> to all operations.</summary>
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
-public sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
+internal sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
 {
 	/// <inheritdoc/>
 	void ISchemaFilter.Apply(OpenApiSchema swaggerDoc, SchemaFilterContext context)

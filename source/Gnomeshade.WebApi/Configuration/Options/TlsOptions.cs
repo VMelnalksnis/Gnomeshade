@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Security;
 using System.Runtime.InteropServices;
 
-namespace Gnomeshade.WebApi.Configuration;
+namespace Gnomeshade.WebApi.Configuration.Options;
 
 /// <summary>Options for configuring TLS settings not exposed by Kestrel configuration.</summary>
 public sealed record TlsOptions : IValidatableObject

@@ -1361,7 +1361,6 @@
           "Elastic.Apm.Elasticsearch": "1.17.0",
           "Elastic.Apm.EntityFrameworkCore": "1.17.0",
           "Elastic.Apm.SerilogEnricher": "1.5.3",
-          "Elastic.Apm.SqlClient": "1.17.0",
           "Elastic.CommonSchema.Serilog": "1.5.3",
           "Gnomeshade.Data.PostgreSQL": "1.0.0",
           "Gnomeshade.Data.Sqlite": "1.0.0",
@@ -1499,15 +1498,6 @@
         "dependencies": {
           "Elastic.Apm": "1.4.0",
           "Serilog": "2.0.0"
-        }
-      },
-      "Elastic.Apm.SqlClient": {
-        "type": "CentralTransitive",
-        "requested": "[1.17.0, )",
-        "resolved": "1.17.0",
-        "contentHash": "gmU/Qnc6n2unPFDsOzmu/++XlAVM63jjGoh+hfNVF/3MzthTSU86xKOJbfsWYoj/WYVT48G98N7yqy4Ie5p9+w==",
-        "dependencies": {
-          "Elastic.Apm": "1.17.0"
         }
       },
       "Elastic.CommonSchema.Serilog": {

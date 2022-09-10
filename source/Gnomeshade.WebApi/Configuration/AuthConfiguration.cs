@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 
+using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;

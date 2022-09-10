@@ -23,7 +23,6 @@ namespace Gnomeshade.WebApi.V1;
 /// <typeparam name="TEntity">The type of the database model.</typeparam>
 /// <typeparam name="TModel">The type of the public API model.</typeparam>
 [ApiController]
-[ApiVersion("1.0")]
 [Authorize]
 [AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]

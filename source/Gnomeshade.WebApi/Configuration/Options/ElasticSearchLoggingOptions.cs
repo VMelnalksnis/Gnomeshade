@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Gnomeshade.WebApi.Configuration;
+namespace Gnomeshade.WebApi.Configuration.Options;
 
 /// <summary>Options for configuring logging to ElasticSearch.</summary>
 public sealed class ElasticSearchLoggingOptions

@@ -11,18 +11,17 @@ using Elastic.Apm.AspNetCore.DiagnosticListener;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
-using Elastic.Apm.SqlClient;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Sqlite;
 using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.Configuration.Options;
+using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
 using Gnomeshade.WebApi.V1;
 using Gnomeshade.WebApi.V1.Importing;
-using Gnomeshade.WebApi.V1.OpenApi;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -70,8 +69,6 @@ public class Startup
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
 			});
 
-		services.AddApiVersioning();
-
 		services.AddRepositories();
 		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
 		_ = databaseProvider switch
@@ -101,9 +98,11 @@ public class Startup
 				return config;
 			});
 
-		services.AddSwaggerGen(SwaggerOptions.SwaggerGen);
+		services
+			.AddGnomeshadeApiVersioning()
+			.AddGnomeshadeApiExplorer()
+			.AddGnomeshadeHealthChecks();
 
-		services.AddGnomeshadeHealthChecks();
 		services.AddNordigenDotNet(_configuration);
 	}
 
@@ -117,7 +116,6 @@ public class Startup
 			new AspNetCoreDiagnosticSubscriber(),
 			new HttpDiagnosticsSubscriber(),
 			new EfCoreDiagnosticsSubscriber(),
-			new SqlClientDiagnosticSubscriber(),
 			new ElasticsearchDiagnosticsSubscriber());
 
 		if (environment.IsDevelopment())
@@ -138,7 +136,6 @@ public class Startup
 			builder.MapHealthChecks("/health").AllowAnonymous();
 		});
 
-		application.UseSwagger();
-		application.UseSwaggerUI(options => options.SwaggerEndpointV1_0());
+		application.UseGnomeshadeApiExplorer();
 	}
 }

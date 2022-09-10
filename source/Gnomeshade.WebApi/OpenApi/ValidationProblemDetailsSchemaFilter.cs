@@ -12,7 +12,7 @@ namespace Gnomeshade.WebApi.OpenApi;
 
 /// <summary>Applies missing inforation to <see cref="ValidationProblemDetails"/> schema.</summary>
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
-public sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
+internal sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<ValidationProblemDetails>
 {
 	/// <inheritdoc/>
 	protected override void ApplyFilter(OpenApiSchema schema)

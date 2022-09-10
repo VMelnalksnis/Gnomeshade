@@ -19,7 +19,6 @@
 		<PackageReference Include="Elastic.Apm.Elasticsearch" />
 		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" />
 		<PackageReference Include="Elastic.Apm.SerilogEnricher" />
-		<PackageReference Include="Elastic.Apm.SqlClient" />
 		<PackageReference Include="Elastic.CommonSchema.Serilog" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />

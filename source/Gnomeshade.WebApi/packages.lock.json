@@ -77,15 +77,6 @@
           "Serilog": "2.0.0"
         }
       },
-      "Elastic.Apm.SqlClient": {
-        "type": "Direct",
-        "requested": "[1.17.0, )",
-        "resolved": "1.17.0",
-        "contentHash": "gmU/Qnc6n2unPFDsOzmu/++XlAVM63jjGoh+hfNVF/3MzthTSU86xKOJbfsWYoj/WYVT48G98N7yqy4Ie5p9+w==",
-        "dependencies": {
-          "Elastic.Apm": "1.17.0"
-        }
-      },
       "Elastic.CommonSchema.Serilog": {
         "type": "Direct",
         "requested": "[1.5.3, )",

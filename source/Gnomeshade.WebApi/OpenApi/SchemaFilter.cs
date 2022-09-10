@@ -10,7 +10,7 @@ namespace Gnomeshade.WebApi.OpenApi;
 
 /// <summary>An <see cref="ISchemaFilter"/> applied only to a specific type.</summary>
 /// <typeparam name="T">The <see cref="SchemaFilterContext.Type"/> to which to apply the filer.</typeparam>
-public abstract class SchemaFilter<T> : ISchemaFilter
+internal abstract class SchemaFilter<T> : ISchemaFilter
 {
 	/// <inheritdoc/>
 	public void Apply(OpenApiSchema schema, SchemaFilterContext context)

@@ -8,14 +8,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.WebApi.OpenApi;
 
-/// <summary>
-/// A filter that specifies that the action returns <see cref="Status409Conflict"/> with <see cref="ProblemDetails"/>.
-/// </summary>
-public sealed class ProducesStatus409ConflictAttribute : ProducesResponseTypeAttribute
+/// <summary>A filter that specifies that the action returns <see cref="Status409Conflict"/> with <see cref="ProblemDetails"/>.</summary>
+internal sealed class ProducesStatus409ConflictAttribute : ProducesResponseTypeAttribute
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ProducesStatus409ConflictAttribute"/> class.
-	/// </summary>
 	public ProducesStatus409ConflictAttribute()
 		: base(typeof(ProblemDetails), Status409Conflict)
 	{

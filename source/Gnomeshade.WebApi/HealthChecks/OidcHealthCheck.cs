@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Configuration;
+using Gnomeshade.WebApi.Configuration.Options;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

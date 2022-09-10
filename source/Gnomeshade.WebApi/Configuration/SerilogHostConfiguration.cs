@@ -11,6 +11,8 @@ using Elastic.CommonSchema.Serilog;
 
 using Elasticsearch.Net;
 
+using Gnomeshade.WebApi.Configuration.Options;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -23,15 +25,11 @@ namespace Gnomeshade.WebApi.Configuration;
 
 internal static class SerilogHostConfiguration
 {
-	internal static ReloadableLogger CreateBoostrapLogger()
-	{
-		return
-			new LoggerConfiguration()
-				.Enrich.FromLogContext()
-				.WriteTo.Console()
-				.MinimumLevel.Verbose()
-				.CreateBootstrapLogger();
-	}
+	internal static ReloadableLogger CreateBoostrapLogger() => new LoggerConfiguration()
+		.Enrich.FromLogContext()
+		.WriteTo.Console()
+		.MinimumLevel.Verbose()
+		.CreateBootstrapLogger();
 
 	internal static void Configure(HostBuilderContext context, LoggerConfiguration configuration)
 	{

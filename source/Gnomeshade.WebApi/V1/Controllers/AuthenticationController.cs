@@ -13,7 +13,7 @@ using AutoMapper;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
-using Gnomeshade.WebApi.Configuration;
+using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.V1.Authentication;
 

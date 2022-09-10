@@ -59,7 +59,10 @@ public static class Program
 			.ConfigureWebHostDefaults(builder =>
 			{
 				builder.UseStartup<Startup>();
-				builder.ConfigureKestrel(KestrelConfiguration.ConfigureOptions);
+				builder.ConfigureKestrel((context, kestrelOptions) =>
+				{
+					kestrelOptions.ConfigureHttpsDefaults(options => options.ConfigureCipherSuites(context));
+				});
 			});
 	}
 }
