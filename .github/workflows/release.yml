@@ -144,13 +144,8 @@ jobs:
           app-settings-json: |
             [
                 {
-                    "name": "ConnectionStrings__FinanceDb",
-                    "value": "Data Source=/tmp/finance.db",
-                    "slotSetting": false
-                },
-                {
-                    "name": "ConnectionStrings__IdentityDb",
-                    "value": "Data Source=/tmp/identity.db",
+                    "name": "ConnectionStrings__Gnomeshade",
+                    "value": "Data Source=/tmp/gnomeshade.db",
                     "slotSetting": false
                 },
                 {

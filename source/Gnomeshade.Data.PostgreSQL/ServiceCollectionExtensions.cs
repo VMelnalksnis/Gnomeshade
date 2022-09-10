@@ -49,7 +49,7 @@ public static class ServiceCollectionExtensions
 
 		return services
 			.AddTransient<IDatabaseMigrator, PostgreSQLDatabaseMigrator>()
-			.AddScoped<NpgsqlConnection>(_ => new(configuration.GetConnectionString("FinanceDb")))
+			.AddScoped<NpgsqlConnection>(_ => new(configuration.GetConnectionString("Gnomeshade")))
 			.AddScoped<DbConnection>(provider => provider.GetRequiredService<NpgsqlConnection>());
 	}
 

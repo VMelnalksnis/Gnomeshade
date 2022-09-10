@@ -24,6 +24,8 @@ public sealed class PostgreSQLIdentityContext : IdentityContext
 	/// <inheritdoc />
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		optionsBuilder.UseNpgsql(_configuration.GetConnectionString(ConnectionStringName));
+		optionsBuilder.UseNpgsql(
+			_configuration.GetConnectionString(ConnectionStringName),
+			npgsqlOptions => npgsqlOptions.MigrationsHistoryTable(MigrationHistoryTableName, SchemaName));
 	}
 }

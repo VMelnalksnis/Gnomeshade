@@ -15,7 +15,6 @@ namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 internal sealed class PostgreSQLFixture : WebserverFixture
 {
 	private readonly PostgreSqlTestcontainer _databaseContainer;
-	private readonly PostgreSqlTestcontainer _identityDatabaseContainer;
 
 	internal PostgreSQLFixture()
 	{
@@ -29,18 +28,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
 			.Build();
 
-		_identityDatabaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
-			{
-				Database = "gnomeshade-identity-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
-
 		Containers.Add(_databaseContainer);
-		Containers.Add(_identityDatabaseContainer);
 	}
 
 	internal override string Name => "PostgreSQL";
@@ -50,8 +38,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string>
 		{
-			{ "ConnectionStrings:FinanceDb", _databaseContainer.ConnectionString },
-			{ "ConnectionStrings:IdentityDb", _identityDatabaseContainer.ConnectionString },
+			{ "ConnectionStrings:Gnomeshade", _databaseContainer.ConnectionString },
 			{ "Database:Provider", "PostgreSQL" },
 		})
 		.Build();

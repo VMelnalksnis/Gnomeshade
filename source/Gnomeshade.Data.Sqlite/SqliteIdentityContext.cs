@@ -24,6 +24,8 @@ public sealed class SqliteIdentityContext : IdentityContext
 	/// <inheritdoc />
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
-		optionsBuilder.UseSqlite(_configuration.GetConnectionString(ConnectionStringName));
+		optionsBuilder.UseSqlite(
+			_configuration.GetConnectionString(ConnectionStringName),
+			sqliteOptions => sqliteOptions.MigrationsHistoryTable(MigrationHistoryTableName, SchemaName));
 	}
 }

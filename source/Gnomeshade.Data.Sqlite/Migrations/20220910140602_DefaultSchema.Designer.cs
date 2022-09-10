@@ -3,6 +3,7 @@ using System;
 using Gnomeshade.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,10 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gnomeshade.Data.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteIdentityContext))]
-    partial class SqliteIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20220910140602_DefaultSchema")]
+    partial class DefaultSchema
     {
 	    /// <inheritdoc />
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

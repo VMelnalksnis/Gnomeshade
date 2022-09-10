@@ -40,7 +40,7 @@ public class DatabaseInitialization
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string>
 			{
-				{ "ConnectionStrings:FinanceDb", _postgreSqlTestcontainer.ConnectionString },
+				{ "ConnectionStrings:Gnomeshade", _postgreSqlTestcontainer.ConnectionString },
 			})
 			.AddEnvironmentVariables()
 			.Build();

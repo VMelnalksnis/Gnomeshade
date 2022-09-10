@@ -11,13 +11,11 @@ namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 internal sealed class SqliteFixture : WebserverFixture
 {
-	private const string _databasePath = "finance.db";
-	private const string _identityDatabasePath = "finance.db";
+	private const string _databasePath = "gnomeshade.db";
 
 	internal SqliteFixture()
 	{
 		File.Delete(_databasePath);
-		File.Delete(_identityDatabasePath);
 	}
 
 	internal override string Name => "SQLite";
@@ -27,8 +25,7 @@ internal sealed class SqliteFixture : WebserverFixture
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string>
 		{
-			{ "ConnectionStrings:FinanceDb", $"Data Source={_databasePath}" },
-			{ "ConnectionStrings:IdentityDb", $"Data Source={_identityDatabasePath}" },
+			{ "ConnectionStrings:Gnomeshade", $"Data Source={_databasePath}" },
 			{ "Database:Provider", "Sqlite" },
 		})
 		.Build();

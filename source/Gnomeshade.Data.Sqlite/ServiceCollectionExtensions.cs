@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
 			.AddTransient<IDatabaseMigrator, SqliteDatabaseMigrator>()
 			.AddSingleton(_ =>
 			{
-				var connection = new SqliteConnection(configuration.GetConnectionString("FinanceDb"));
+				var connection = new SqliteConnection(configuration.GetConnectionString("Gnomeshade"));
 				connection.CreateFunction("uuid_generate_v4", Guid.NewGuid);
 				connection.CreateFunction("get_system_user_id", () => Guid.Parse("0231c78f-2709-4833-8d8a-aa0704c5b8b6"), true);
 

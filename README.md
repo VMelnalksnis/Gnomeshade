@@ -19,10 +19,7 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 ### Server
 
 * A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
-* The server requires 2 PostgreSQL databases (which can be on a single server):
-	* `ConnectionStrings:IdentityDb` - Used by
-	  [ASP.NET Core Identity](https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-6.0&tabs=visual-studio)
-	* `ConnectionStrings:FinanceDb` - Used by Gnomeshade
+* The server requires a database (see list of supported databases [here](source/Gnomeshade.WebApi/Configuration/Options/DatabaseProvider.cs)):
 * For additional web server setup,
   see [Microsoft docs](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0)
 * To automatically import data with Nordigen,

@@ -13,8 +13,7 @@ gnomeshade_url: 'https://localhost:8297'
 gnomeshade_certificate_path: 'certificate.pfx'
 gnomeshade_certificate_password: 'changeme'
 
-gnomeshade_connection_string_finance: 'Server = localhost; Port = 5432; Database = gnomeshade; User Id = gnomeshade; Include Error Detail = true;'
-gnomeshade_connection_string_identity: 'Server = localhost; Port = 5432; Database = gnomeshade-identity; User Id = gnomeshade; Include Error Detail = true;'
+gnomeshade_connection_string: 'Server = localhost; Port = 5432; Database = gnomeshade; User Id = gnomeshade; Include Error Detail = true;'
 
 gnomeshade_allowed_hosts: '*'
 gnomeshade_jwt_valid_audience: '{{ gnomeshade_urls }}'
