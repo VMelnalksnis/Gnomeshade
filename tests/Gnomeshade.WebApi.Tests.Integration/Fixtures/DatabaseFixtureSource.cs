@@ -10,7 +10,7 @@ namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 public sealed class DatabaseFixtureSource : IEnumerable
 {
-	internal static readonly List<WebserverFixture> Fixtures = new() { WebserverSetup.WebserverFixture };
+	internal static readonly List<WebserverFixture> Fixtures = WebserverSetup.WebserverFixtures;
 
 	public IEnumerator GetEnumerator()
 	{

@@ -16,10 +16,11 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 {
 	private readonly PostgreSqlTestcontainer _databaseContainer;
 
-	internal PostgreSQLFixture()
+	internal PostgreSQLFixture(string version)
 	{
+		Name = version;
 		_databaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14.5")
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration($"postgres:{version}")
 			{
 				Database = "gnomeshade-test",
 				Username = "gnomeshade",
@@ -31,7 +32,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 		Containers.Add(_databaseContainer);
 	}
 
-	internal override string Name => "PostgreSQL";
+	internal override string Name { get; }
 
 	internal override int RedirectPort => 8297;
 

@@ -33,6 +33,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.2.3
+        with:
+          key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -52,7 +57,7 @@ jobs:
           -p:CoverletOutput=TestResults/
           -p:CoverletOutputFormat=opencover
           -p:BuildInParallel=true
-          -m:1
+          -m:8
           --configuration Release
           --no-build
         env:

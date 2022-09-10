@@ -26,7 +26,7 @@ public class DatabaseInitialization
 	static DatabaseInitialization()
 	{
 		_postgreSqlTestcontainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration
+			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14")
 			{
 				Database = "gnomeshade-test",
 				Username = "gnomeshade",

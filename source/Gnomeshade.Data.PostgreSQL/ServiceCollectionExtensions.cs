@@ -25,6 +25,8 @@ namespace Gnomeshade.Data.PostgreSQL;
 /// <summary>Extensions methods for configuration.</summary>
 public static class ServiceCollectionExtensions
 {
+	private static bool _loggerSet;
+
 	/// <summary>Adds PostgreSQL specific database services.</summary>
 	/// <param name="services">The service collection into which to register the services.</param>
 	/// <param name="configuration">Configuration from which to get connection strings.</param>
@@ -38,9 +40,10 @@ public static class ServiceCollectionExtensions
 		INpgsqlLoggingProvider? npgsqlLoggingProvider = null,
 		bool enableParameterLogging = false)
 	{
-		if (npgsqlLoggingProvider is not null)
+		if (npgsqlLoggingProvider is not null && !_loggerSet)
 		{
 			NpgsqlLogManager.Provider = npgsqlLoggingProvider;
+			_loggerSet = true;
 		}
 
 		NpgsqlLogManager.IsParameterLoggingEnabled = enableParameterLogging;
