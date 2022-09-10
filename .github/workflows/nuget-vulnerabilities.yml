@@ -5,8 +5,12 @@ on:
     - cron: "0 0 * * 1-5"
   push:
     branches: [ master ]
+    paths-ignore:
+      - '**.md'
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - '**.md'
 
 env:
   DOTNET_NOLOGO: true
