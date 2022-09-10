@@ -76,14 +76,14 @@ public sealed class UnitViewModel : ViewModelBase
 		return new(gnomeshadeClient, productRows, productCreation);
 	}
 
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is not nameof(SelectedUnit))
 		{
 			return;
 		}
 
-		Unit = Task.Run(() => UnitCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedUnit?.Id)).Result;
+		Unit = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedUnit?.Id);
 	}
 
 	private async void OnUnitUpserted(object? sender, UpsertedEventArgs e)

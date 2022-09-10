@@ -29,6 +29,12 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn
 					x:DataType="p:UnitRow"
+					Header="Symbol" IsReadOnly="True"
+					Binding="{Binding Symbol, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="p:UnitRow"
 					Header="Parent Unit" IsReadOnly="True"
 					Binding="{Binding ParentUnitName, Mode=OneWay}" />
 			</DataGrid.Columns>

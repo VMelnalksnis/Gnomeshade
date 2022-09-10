@@ -28,6 +28,9 @@ public sealed record UnitEntity : Entity, IOwnableEntity, IModifiableEntity, INa
 	/// <inheritdoc />
 	public string NormalizedName { get; set; } = null!;
 
+	/// <summary>Gets or sets the symbol of the unit.</summary>
+	public string? Symbol { get; set; }
+
 	/// <summary>Gets or sets the id of the parent <see cref="UnitEntity"/>.</summary>
 	public Guid? ParentUnitId { get; set; }
 

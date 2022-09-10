@@ -17,6 +17,9 @@ public sealed record UnitCreation : Creation
 	[Required]
 	public string? Name { get; init; }
 
+	/// <inheritdoc cref="Unit.Symbol"/>
+	public string? Symbol { get; init; }
+
 	/// <inheritdoc cref="Unit.ParentUnitId"/>
 	[RequiredIfNotNull(nameof(Multiplier))]
 	public Guid? ParentUnitId { get; init; }

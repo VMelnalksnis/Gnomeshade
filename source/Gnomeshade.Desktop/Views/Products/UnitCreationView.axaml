@@ -28,6 +28,18 @@
 				<FocusOnAttachedToVisualTreeBehavior />
 			</Interaction.Behaviors>
 		</TextBox>
+		
+		<TextBlock
+			Grid.Column="0" Grid.Row="1"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="Symbol:" />
+		<TextBox
+			Grid.Column="1" Grid.Row="1"
+			MinWidth="300" Margin="5"
+			AcceptsReturn="False"
+			Text="{Binding Symbol}">
+		</TextBox>
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="2"

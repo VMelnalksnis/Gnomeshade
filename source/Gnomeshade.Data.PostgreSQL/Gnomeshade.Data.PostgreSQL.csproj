@@ -71,6 +71,7 @@
 		<EmbeddedResource Include="Migrations\00000018_add_base_columns.sql">
 			<LogicalName>Gnomeshade.Data.Migrations.00000018_add_base_columns.sql</LogicalName>
 		</EmbeddedResource>
+		<EmbeddedResource Include="Migrations\00000019_unit_symbol.sql"/>
 	</ItemGroup>
 
 </Project>

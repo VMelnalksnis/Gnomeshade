@@ -52,19 +52,20 @@ public sealed class UnitsControllerTests : WebserverTests
 	[Test]
 	public async Task Put()
 	{
-		var creationModel = CreateUniqueUnit() with { ParentUnitId = _parentUnit.Id, Multiplier = 10 };
+		var creationModel = CreateUniqueUnit() with { ParentUnitId = _parentUnit.Id, Multiplier = 10, Symbol = "kg" };
 		var productId = Guid.NewGuid();
 		var product = await PutAndGet(productId, creationModel);
 
 		product.Name.Should().Be(creationModel.Name);
 		product.Multiplier.Should().Be(creationModel.Multiplier);
+		product.Symbol.Should().Be(creationModel.Symbol);
 
 		var productWithoutChanges = await PutAndGet(productId, creationModel);
 
 		productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
 		productWithoutChanges.ModifiedAt.Should().BeGreaterThanOrEqualTo(product.ModifiedAt);
 
-		var changedCreationModel = creationModel with { ParentUnitId = null, Multiplier = null };
+		var changedCreationModel = creationModel with { ParentUnitId = null, Multiplier = null, Symbol = null };
 		var productWithChanges = await PutAndGet(productId, changedCreationModel);
 
 		productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndParent);
@@ -90,7 +91,8 @@ public sealed class UnitsControllerTests : WebserverTests
 	{
 		return WithoutModifiedAt(options)
 			.Excluding(model => model.Multiplier)
-			.Excluding(model => model.ParentUnitId);
+			.Excluding(model => model.ParentUnitId)
+			.Excluding(model => model.Symbol);
 	}
 
 	private async Task<Unit> PutAndGet(Guid id, UnitCreation creation)

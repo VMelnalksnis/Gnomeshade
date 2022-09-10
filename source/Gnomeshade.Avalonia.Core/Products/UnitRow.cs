@@ -20,6 +20,7 @@ public sealed class UnitRow : PropertyChangedBase
 	{
 		Id = unit.Id;
 		Name = unit.Name;
+		Symbol = unit.Symbol;
 		ParentUnitName = unit.ParentUnitId is null
 			? null
 			: units.Single(u => u.Id == unit.ParentUnitId.Value).Name;
@@ -31,6 +32,9 @@ public sealed class UnitRow : PropertyChangedBase
 
 	/// <summary>Gets the name of the unit.</summary>
 	public string Name { get; }
+
+	/// <summary>Gets the symbol of the unit.</summary>
+	public string? Symbol { get; }
 
 	/// <summary>Gets the name of the parent unit.</summary>
 	public string? ParentUnitName { get; }

@@ -20,6 +20,7 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Migrations\00000002_create_tables.sql" />
 		<EmbeddedResource Include="Migrations\00000003_insert_data.sql" />
+		<EmbeddedResource Include="Migrations\00000004_unit_symbol.sql" />
 	</ItemGroup>
 
 </Project>

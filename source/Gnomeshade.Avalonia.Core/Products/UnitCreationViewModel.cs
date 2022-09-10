@@ -24,6 +24,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	private string? _name;
 	private Unit? _parentUnit;
 	private decimal? _multiplier;
+	private string? _symbol;
 
 	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
 		: base(gnomeshadeClient)
@@ -48,6 +49,13 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	{
 		get => _name;
 		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), _canCreate);
+	}
+
+	/// <summary>Gets or sets the symbol of the unit.</summary>
+	public string? Symbol
+	{
+		get => _symbol;
+		set => SetAndNotify(ref _symbol, value);
 	}
 
 	/// <summary>Gets or sets the unit on which this unit is based on.</summary>
@@ -99,6 +107,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 			Name = Name,
 			ParentUnitId = ParentUnit?.Id,
 			Multiplier = Multiplier,
+			Symbol = _symbol,
 		};
 
 		var id = _existingUnit?.Id ?? Guid.NewGuid();

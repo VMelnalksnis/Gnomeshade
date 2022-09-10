@@ -35,6 +35,9 @@ public sealed record Unit
 	/// <summary>The name of the unit.</summary>
 	public string Name { get; init; } = null!;
 
+	/// <summary>The symbol of the unit.</summary>
+	public string? Symbol { get; init; }
+
 	/// <summary>The id of the parent unit.</summary>
 	public Guid? ParentUnitId { get; init; }
 

@@ -11,6 +11,7 @@ SET modified_at         = CURRENT_TIMESTAMP,
 	modified_by_user_id = @ModifiedByUserId,
 	name                = @Name,
 	normalized_name     = UPPER(@Name),
+	symbol              = @Symbol,
 	parent_unit_id      = @ParentUnitId,
 	multiplier          = @Multiplier
 FROM u
