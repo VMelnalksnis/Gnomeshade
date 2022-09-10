@@ -250,6 +250,22 @@
           "VMelnalksnis.NordigenDotNet": "1.0.0"
         }
       },
+      "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
+        "type": "Direct",
+        "requested": "[0.1.0, )",
+        "resolved": "0.1.0",
+        "contentHash": "z5qgoqt+c6FDIY43iVICcuYHc5iMM75fF5g1dG/ypxgilPfT+34ylbWUF/XCNanr7U13aGzFTmGqj4ToWd5VgQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Http": "6.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
+          "NodaTime": "3.1.2",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0",
+          "VMelnalksnis.PaperlessDotNet": "0.1.0"
+        }
+      },
       "Elastic.Apm": {
         "type": "Transitive",
         "resolved": "1.17.0",
@@ -1768,6 +1784,15 @@
         "type": "Transitive",
         "resolved": "1.0.0",
         "contentHash": "bNrhuvXeP/IYFaZN0wefUCiMl3MEFL1vOyNdvGyz5TrG7EQ3Mbcq6qg2FMeag5fezegZPTS9txsk3E6vq+uZYg==",
+        "dependencies": {
+          "NodaTime": "3.1.2",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+        }
+      },
+      "VMelnalksnis.PaperlessDotNet": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "Zg034syr7FtDvFK7ZAwwOfmS2T+VMpAEBPbcfGO0VhU+zgxDc3t7AfGJbra8xwHHY0bQ3C6FEHtRBY1hVibsXA==",
         "dependencies": {
           "NodaTime": "3.1.2",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"

@@ -1785,6 +1785,15 @@
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
+      "VMelnalksnis.PaperlessDotNet": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "Zg034syr7FtDvFK7ZAwwOfmS2T+VMpAEBPbcfGO0VhU+zgxDc3t7AfGJbra8xwHHY0bQ3C6FEHtRBY1hVibsXA==",
+        "dependencies": {
+          "NodaTime": "3.1.2",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+        }
+      },
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
@@ -1885,7 +1894,8 @@
           "Swashbuckle.AspNetCore.Annotations": "6.4.0",
           "System.Linq.Async": "6.0.1",
           "VMelnalksnis.ISO20022DotNet": "0.3.2",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "1.0.0"
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "1.0.0",
+          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "0.1.0"
         }
       },
       "gnomeshade.webapi.client": {
@@ -2575,6 +2585,22 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
           "VMelnalksnis.NordigenDotNet": "1.0.0"
+        }
+      },
+      "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
+        "type": "CentralTransitive",
+        "requested": "[0.1.0, )",
+        "resolved": "0.1.0",
+        "contentHash": "z5qgoqt+c6FDIY43iVICcuYHc5iMM75fF5g1dG/ypxgilPfT+34ylbWUF/XCNanr7U13aGzFTmGqj4ToWd5VgQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Http": "6.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
+          "NodaTime": "3.1.2",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0",
+          "VMelnalksnis.PaperlessDotNet": "0.1.0"
         }
       }
     }

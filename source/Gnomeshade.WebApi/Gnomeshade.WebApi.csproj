@@ -38,6 +38,7 @@
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="VMelnalksnis.ISO20022DotNet" />
 		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" />
+		<PackageReference Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -35,6 +35,7 @@ using NodaTime.Serialization.SystemTextJson;
 using Serilog;
 
 using VMelnalksnis.NordigenDotNet.DependencyInjection;
+using VMelnalksnis.PaperlessDotNet.DependencyInjection;
 
 namespace Gnomeshade.WebApi;
 
@@ -104,6 +105,7 @@ public class Startup
 			.AddGnomeshadeHealthChecks();
 
 		services.AddNordigenDotNet(_configuration);
+		services.AddPaperlessDotNet(_configuration);
 	}
 
 	/// <summary>This method gets called by the runtime. Use this method to configure the HTTP request pipeline.</summary>
