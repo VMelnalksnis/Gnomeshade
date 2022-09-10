@@ -19,7 +19,9 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 ### Server
 
 * A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
-* The server requires a database (see list of supported databases [here](source/Gnomeshade.WebApi/Configuration/Options/DatabaseProvider.cs)):
+* The server requires a database, currently the following are supported:
+	* SQLite
+	* PostgreSQL (for [supported versions](https://www.postgresql.org/support/versioning/) see [integration tests](tests/Gnomeshade.WebApi.Tests.Integration.PostgreSQL/WebserverSetup.cs))
 * For additional web server setup,
   see [Microsoft docs](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0)
 * To automatically import data with Nordigen,
