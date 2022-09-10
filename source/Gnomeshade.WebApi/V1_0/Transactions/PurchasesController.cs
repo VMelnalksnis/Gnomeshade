@@ -53,7 +53,6 @@ public sealed class PurchasesController : TransactionItemController<PurchaseRepo
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all purchases.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
 	public override Task<List<Purchase>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

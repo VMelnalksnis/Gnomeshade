@@ -74,6 +74,11 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		_accountRepository = accountRepository;
 	}
 
+	/// <inheritdoc />
+	[NonAction]
+	public override Task<List<Transaction>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
+
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>

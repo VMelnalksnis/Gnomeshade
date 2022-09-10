@@ -64,6 +64,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <summary>Gets all entities.</summary>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all entities.</returns>
+	[HttpGet]
 	public virtual async Task<List<TModel>> Get(CancellationToken cancellationToken)
 	{
 		var entities = await Repository.GetAllAsync(ApplicationUser.Id, cancellationToken);

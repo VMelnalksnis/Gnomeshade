@@ -12,6 +12,6 @@ internal static class SwaggerUIOptionsExtensions
 {
 	internal static void SwaggerEndpointV1_0(this SwaggerUIOptions options)
 	{
-		options.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Finance Tracker API v1.0");
+		options.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Gnomeshade v1.0");
 	}
 }

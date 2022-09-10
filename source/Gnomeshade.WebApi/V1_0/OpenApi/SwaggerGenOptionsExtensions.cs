@@ -12,24 +12,18 @@ internal static class SwaggerGenOptionsExtensions
 {
 	internal static void SwaggerDocV1_0(this SwaggerGenOptions options)
 	{
-		options
-			.SwaggerDoc(
-				"v1.0",
-				new()
+		options.SwaggerDoc(
+			"v1.0",
+			new()
+			{
+				Title = "Gnomeshade",
+				Version = "v1.0",
+				Description = "Personal finance tracking API",
+				License = new()
 				{
-					Title = "Finance Tracker API",
-					Version = "v1.0",
-					Description = "Personal finance tracking API",
-					Contact = new()
-					{
-						Name = "Valters Melnalksnis",
-						Email = "valters.melnalksnis@outlook.com",
-					},
-					License = new()
-					{
-						Name = "AGPL-3.0-or-later",
-						Url = new("https://www.gnu.org/licenses/agpl-3.0.txt"),
-					},
-				});
+					Name = "AGPL-3.0-or-later",
+					Url = new("https://www.gnu.org/licenses/agpl-3.0.txt"),
+				},
+			});
 	}
 }

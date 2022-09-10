@@ -57,12 +57,10 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 		_accountUnitOfWork = accountUnitOfWork;
 	}
 
-	/// <inheritdoc cref="IAccountClient.GetAccountAsync"/>
-	/// <response code="200">Successfully got the account.</response>
-	/// <response code="404">Account with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Account), Status200OK)]
-	public override Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellationToken) =>
-		base.Get(id, cancellationToken);
+	/// <inheritdoc />
+	[NonAction]
+	public override Task<List<Account>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <summary>Gets all accounts.</summary>
 	/// <param name="onlyActive">Whether to get only active accounts.</param>
@@ -71,7 +69,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	/// <response code="200">Successfully got all accounts.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Account>), Status200OK)]
-	public async Task<IEnumerable<Account>> GetAll(
+	public async Task<List<Account>> GetAll(
 		[FromQuery, DefaultValue(true)] bool onlyActive,
 		CancellationToken cancellationToken)
 	{
@@ -81,6 +79,13 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 
 		return accounts.Select(MapToModel).ToList();
 	}
+
+	/// <inheritdoc cref="IAccountClient.GetAccountAsync"/>
+	/// <response code="200">Successfully got the account.</response>
+	/// <response code="404">Account with the specified id does not exist.</response>
+	[ProducesResponseType(typeof(Account), Status200OK)]
+	public override Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellationToken) =>
+		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IAccountClient.CreateAccountAsync"/>
 	/// <response code="201">A new account was created.</response>

@@ -53,7 +53,6 @@ public sealed class LoansController : TransactionItemController<LoanRepository, 
 
 	/// <inheritdoc cref="ITransactionClient.GetLoansAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all loans.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
 	public override Task<List<Loan>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

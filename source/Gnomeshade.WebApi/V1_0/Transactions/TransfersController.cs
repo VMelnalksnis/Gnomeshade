@@ -53,7 +53,6 @@ public sealed class TransfersController : TransactionItemController<TransferRepo
 
 	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all transfers.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Transfer>), Status200OK)]
 	public override Task<List<Transfer>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

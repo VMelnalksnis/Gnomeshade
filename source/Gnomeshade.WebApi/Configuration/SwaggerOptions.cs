@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Gnomeshade.WebApi.OpenApi;
 using Gnomeshade.WebApi.V1_0.OpenApi;
@@ -35,11 +36,11 @@ internal static class SwaggerOptions
 		options.OperationFilter<UnauthorizedOperationFilter>();
 
 		var xmlDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.WebApi.xml");
-		options.IncludeXmlComments(xmlDocumentationFilepath, true);
+		options.IncludeXmlComments(xmlDocumentationFilepath);
 		var modelDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.WebApi.Models.xml");
-		options.IncludeXmlComments(modelDocumentationFilepath, true);
+		options.IncludeXmlComments(modelDocumentationFilepath);
 		var clientDocumentationFilepath = Path.Combine(AppContext.BaseDirectory, "Gnomeshade.WebApi.Client.xml");
-		options.IncludeXmlComments(clientDocumentationFilepath, true);
+		options.IncludeXmlComments(clientDocumentationFilepath);
 		options.EnableAnnotations();
 
 		const string jwtSecurityDefinition = "JWT";
@@ -62,5 +63,8 @@ internal static class SwaggerOptions
 				new List<string>()
 			},
 		});
+
+		options.ResolveConflictingActions(enumerable =>
+			enumerable.OrderBy(description => description.ParameterDescriptions.Count).Last());
 	}
 }

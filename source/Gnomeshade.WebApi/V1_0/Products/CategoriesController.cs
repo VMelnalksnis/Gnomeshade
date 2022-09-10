@@ -44,7 +44,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 
 	/// <inheritdoc cref="IProductClient.GetCategoriesAsync"/>
 	/// <response code="200">Successfully got the categories.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Category>), Status200OK)]
 	public override Task<List<Category>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

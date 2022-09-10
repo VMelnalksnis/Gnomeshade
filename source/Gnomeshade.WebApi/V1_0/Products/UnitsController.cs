@@ -52,7 +52,6 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 
 	/// <inheritdoc cref="IProductClient.GetUnitsAsync"/>
 	/// <response code="200">Successfully got all units.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Unit>), Status200OK)]
 	public override Task<List<Unit>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

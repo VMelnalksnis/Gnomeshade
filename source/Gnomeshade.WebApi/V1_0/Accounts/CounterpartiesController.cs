@@ -64,7 +64,6 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 
 	/// <inheritdoc cref="IAccountClient.GetCounterpartiesAsync"/>
 	/// <response code="200">Successfully got all counterparties.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Counterparty>), Status200OK)]
 	public override Task<List<Counterparty>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);

@@ -59,7 +59,6 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 
 	/// <inheritdoc cref="IProductClient.GetProductsAsync"/>
 	/// <response code="200">Successfully got all products.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Product>), Status200OK)]
 	public override Task<List<Product>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
