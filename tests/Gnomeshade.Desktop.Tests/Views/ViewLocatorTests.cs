@@ -6,15 +6,10 @@ using System.Collections;
 using System.Linq;
 using System.Reflection;
 
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Platform;
 
 using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.DesignTime;
-
-using Moq;
 
 namespace Gnomeshade.Desktop.Tests.Views;
 
@@ -35,19 +30,10 @@ public sealed class ViewLocatorTests
 
 	private static IEnumerable ViewTestCaseData()
 	{
-		AvaloniaLocator.CurrentMutable.Bind<ICursorFactory>().ToSingleton<CursorFactory>();
-
 		return typeof(DesignTimeData)
 			.GetProperties(BindingFlags.Public | BindingFlags.Static)
 			.Where(property => property.PropertyType.IsAssignableTo(typeof(ViewModelBase)))
 			.Where(property => property.PropertyType != typeof(MainWindowViewModel))
 			.Select(property => new TestCaseData((ViewModelBase)property.GetValue(null)!).SetName(property.Name));
-	}
-
-	private class CursorFactory : ICursorFactory
-	{
-		public ICursorImpl GetCursor(StandardCursorType cursorType) => new Mock<ICursorImpl>().Object;
-
-		public ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot) => new Mock<ICursorImpl>().Object;
 	}
 }

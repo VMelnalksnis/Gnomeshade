@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
@@ -38,7 +37,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private ViewModelBase? _activeView;
-	private Cursor _cursor;
 
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="serviceProvider">Dependency injection service provider.</param>
@@ -50,8 +48,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		_userConfigurationWriter = serviceProvider.GetRequiredService<UserConfigurationWriter>();
 		_dateTimeZoneProvider = serviceProvider.GetRequiredService<IDateTimeZoneProvider>();
 		_clock = serviceProvider.GetRequiredService<IClock>();
-
-		_cursor = Cursor.Default;
 
 		PropertyChanged += OnPropertyChanged;
 
@@ -79,13 +75,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 			SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
 		}
-	}
-
-	/// <summary>Gets or sets the current cursor.</summary>
-	public Cursor Cursor
-	{
-		get => _cursor;
-		set => SetAndNotify(ref _cursor, value);
 	}
 
 	private ViewModelBase? PreviousView { get; set; }
@@ -390,10 +379,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		if (e.PropertyName is nameof(ActiveView) && ActiveView is not null)
 		{
 			ActiveView.PropertyChanged += ActiveViewOnPropertyChanged;
-		}
-		else if (e.PropertyName is nameof(IsBusy))
-		{
-			Cursor = IsBusy ? new(StandardCursorType.Wait) : Cursor.Default;
 		}
 	}
 
