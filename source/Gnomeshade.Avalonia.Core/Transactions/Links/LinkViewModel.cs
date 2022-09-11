@@ -49,6 +49,19 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 		await Details.RefreshAsync().ConfigureAwait(false);
 	}
 
+	/// <summary>Imports purchases from the <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> link.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task ImportSelected()
+	{
+		if (Selected is null)
+		{
+			return;
+		}
+
+		await _gnomeshadeClient.AddPurchasesFromDocument(_transactionId, Selected.Id).ConfigureAwait(false);
+		await RefreshAsync().ConfigureAwait(false);
+	}
+
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{

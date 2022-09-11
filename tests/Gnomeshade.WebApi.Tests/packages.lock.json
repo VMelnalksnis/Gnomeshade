@@ -1371,6 +1371,7 @@
           "Elastic.Apm.EntityFrameworkCore": "1.17.0",
           "Elastic.Apm.SerilogEnricher": "1.5.3",
           "Elastic.CommonSchema.Serilog": "1.5.3",
+          "FuzzySharp": "2.0.2",
           "Gnomeshade.Data.PostgreSQL": "1.0.0",
           "Gnomeshade.Data.Sqlite": "1.0.0",
           "Gnomeshade.WebApi.Client": "1.0.0",
@@ -1520,6 +1521,12 @@
           "Microsoft.AspNetCore.Http.Abstractions": "2.1.0",
           "Serilog": "2.9.0"
         }
+      },
+      "FuzzySharp": {
+        "type": "CentralTransitive",
+        "requested": "[2.0.2, )",
+        "resolved": "2.0.2",
+        "contentHash": "sBKqWxw3g//peYxDZ8JipRlyPbIyBtgzqBVA5GqwHVeqtIrw75maGXAllztf+1aJhchD+drcQIgf2mFho8ZV8A=="
       },
       "IdentityModel.OidcClient": {
         "type": "CentralTransitive",

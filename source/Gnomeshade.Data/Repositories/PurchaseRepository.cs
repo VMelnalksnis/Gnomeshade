@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,6 +48,17 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	{
 		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
+		return GetEntitiesAsync(command);
+	}
+
+	/// <inheritdoc />
+	public override Task<IEnumerable<PurchaseEntity>> GetAllAsync(
+		Guid transactionId,
+		Guid ownerId,
+		IDbTransaction dbTransaction)
+	{
+		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var command = new CommandDefinition(sql, new { transactionId, ownerId }, dbTransaction);
 		return GetEntitiesAsync(command);
 	}
 

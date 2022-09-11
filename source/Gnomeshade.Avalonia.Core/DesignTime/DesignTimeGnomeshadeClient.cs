@@ -588,6 +588,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<List<AccountReportResult>> ImportAsync(string id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
+	public Task AddPurchasesFromDocument(Guid transactionId, Guid linkId) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<List<Category>> GetCategoriesAsync() => Task.FromResult(_categories.ToList());
 
 	/// <inheritdoc />

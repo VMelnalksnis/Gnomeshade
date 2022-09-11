@@ -183,4 +183,12 @@ public static class Routes
 
 		internal static string Import(string id, string timeZone) => $"{_path}/{id}/?timeZone={timeZone}";
 	}
+
+	internal static class Paperless
+	{
+		private const string _path = nameof(Paperless);
+
+		internal static string Import(Guid transactionId, Guid linkId) =>
+			$"{_path}/?transactionId{Format(transactionId)}&linkId={Format(linkId)}";
+	}
 }

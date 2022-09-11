@@ -321,6 +321,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task AddPurchasesFromDocument(Guid transactionId, Guid linkId) =>
+		_httpClient.PostAsync(Paperless.Import(transactionId, linkId), null);
+
+	/// <inheritdoc />
 	public Task<List<Category>> GetCategoriesAsync() => GetAsync<List<Category>>(Categories.Uri);
 
 	/// <inheritdoc />

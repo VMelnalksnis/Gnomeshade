@@ -88,9 +88,6 @@ public class Startup
 		services.AddAuthenticationAndAuthorization(_configuration);
 
 		services
-			.AddTransient<Iso20022AccountReportReader>();
-
-		services
 			.AddTransient<Mapper>()
 			.AddSingleton<AutoMapper.IConfigurationProvider>(_ =>
 			{
@@ -104,6 +101,7 @@ public class Startup
 			.AddGnomeshadeApiExplorer()
 			.AddGnomeshadeHealthChecks();
 
+		services.AddV1ImportingServices();
 		services.AddNordigenDotNet(_configuration);
 		services.AddPaperlessDotNet(_configuration);
 	}

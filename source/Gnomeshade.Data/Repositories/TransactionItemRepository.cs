@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,4 +33,17 @@ public abstract class TransactionItemRepository<TEntity> : Repository<TEntity>
 		Guid transactionId,
 		Guid ownerId,
 		CancellationToken cancellationToken = default);
+
+	/// <summary>Gets all entities of the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get the entities.</param>
+	/// <param name="ownerId">The id of the owner of the entities.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
+	/// <returns>A collection of all entities for the specified transaction.</returns>
+	public virtual Task<IEnumerable<TEntity>> GetAllAsync(
+		Guid transactionId,
+		Guid ownerId,
+		IDbTransaction dbTransaction)
+	{
+		throw new NotImplementedException();
+	}
 }

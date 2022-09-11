@@ -20,6 +20,7 @@
 		<PackageReference Include="Elastic.Apm.EntityFrameworkCore" />
 		<PackageReference Include="Elastic.Apm.SerilogEnricher" />
 		<PackageReference Include="Elastic.CommonSchema.Serilog" />
+		<PackageReference Include="FuzzySharp" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />

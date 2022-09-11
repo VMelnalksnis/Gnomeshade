@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -30,4 +31,10 @@ public interface IImportClient
 	/// <param name="id">The institution id.</param>
 	/// <returns>A summary of the imported data.</returns>
 	Task<List<AccountReportResult>> ImportAsync(string id);
+
+	/// <summary>Adds purchases from the document from <paramref name="linkId"/> to the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction to which to add the purchases.</param>
+	/// <param name="linkId">The id of the link from which to get a document, from which then to parse purchases from.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task AddPurchasesFromDocument(Guid transactionId, Guid linkId);
 }
