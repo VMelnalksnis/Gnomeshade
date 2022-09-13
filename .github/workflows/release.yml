@@ -21,7 +21,7 @@ jobs:
         project:
           - Gnomeshade.Desktop.Installer
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v2.1.0
       - uses: microsoft/setup-msbuild@v1.1
 
@@ -56,7 +56,7 @@ jobs:
     name: Build for Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v2.1.0
 
       - run: echo "BUILD_TAG=-nightly"
@@ -87,7 +87,7 @@ jobs:
     needs: build-linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v3.0.0
         id: download
