@@ -1381,7 +1381,7 @@
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
           "NodaTime": "3.1.2",
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
-          "Serilog": "2.11.0",
+          "Serilog": "2.12.0",
           "Serilog.AspNetCore": "6.0.1",
           "Serilog.Sinks.Console": "4.1.0",
           "Serilog.Sinks.Elasticsearch": "8.4.1",
@@ -1745,9 +1745,9 @@
       },
       "Serilog": {
         "type": "CentralTransitive",
-        "requested": "[2.11.0, )",
-        "resolved": "2.11.0",
-        "contentHash": "ysv+hBzTul6Dp+Hvm10FlhJO3yMQcFKSAleus+LpiIzvNstpeV4Z7gGuIZ1OPNfIMulSHOjmLuGAEDKzpnV8ZQ=="
+        "requested": "[2.12.0, )",
+        "resolved": "2.12.0",
+        "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
       },
       "Serilog.AspNetCore": {
         "type": "CentralTransitive",
