@@ -120,11 +120,11 @@
       },
       "Microsoft.EntityFrameworkCore.Tools": {
         "type": "Direct",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "+wjKy16Vdz/ArHFvJZ1xXG241OZMFbTY0lS8vTQL4tfo8slX/h1J9PkzbWJjG6G7SMharUwvigIo+vrMO628Xg==",
+        "requested": "[6.0.9, )",
+        "resolved": "6.0.9",
+        "contentHash": "HqdzDohxXfh7onMfrKxI3qtRu+TF246dNVQ1Yjql7v69CfeKWFyRxLbuNG/ScGh9dZdXHDvNjqXb4Ou9GHflew==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "6.0.8"
+          "Microsoft.EntityFrameworkCore.Design": "6.0.9"
         }
       },
       "NodaTime": {
@@ -523,11 +523,11 @@
       },
       "Microsoft.EntityFrameworkCore.Design": {
         "type": "Transitive",
-        "resolved": "6.0.8",
-        "contentHash": "yv3RGUVWP+UVmCrQiD0XGB7U1JandH+MeBrlLWMBvue01cJhFSBrzvtHr6jTNJaMTmoKiNIeK7uff6HesrfU4g==",
+        "resolved": "6.0.9",
+        "contentHash": "F+1dYjaxMG181+seb2xK4uLU1UoTR0UZRcfYzSQFfVFwAyWtCp3uooNorWYE3BnJAHNEVJgsGmlfYAEGsrewqg==",
         "dependencies": {
           "Humanizer.Core": "2.8.26",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.8"
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.9"
         }
       },
       "Microsoft.EntityFrameworkCore.Relational": {
