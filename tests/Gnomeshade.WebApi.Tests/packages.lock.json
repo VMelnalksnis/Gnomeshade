@@ -1376,7 +1376,7 @@
           "Gnomeshade.Data.Sqlite": "1.0.0",
           "Gnomeshade.WebApi.Client": "1.0.0",
           "Gnomeshade.WebApi.Models": "1.0.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.8",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
           "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
           "NodaTime": "3.1.2",
@@ -1546,9 +1546,9 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "CentralTransitive",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "ktmldryRkyAMRQpluCZaltRvlcOrlE9SQDmnMOh+XTbck6Vi296UjvwdJb4ULU6PgvZh5j00KAp7uhjpcWQopA==",
+        "requested": "[6.0.9, )",
+        "resolved": "6.0.9",
+        "contentHash": "U02ylUPpnb31C8irNFMVZSq6vn00DlCyQHra5ky1mnzWrbwmZ+Er6tms+hsvfp2dVJqTFLXD9+araslWapWY3g==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
