@@ -289,8 +289,8 @@
       },
       "Microsoft.Data.Sqlite.Core": {
         "type": "Transitive",
-        "resolved": "6.0.8",
-        "contentHash": "ssJbtn9p7vXh3T4gi7g1Ir0bY4cJgVOU1MtTvnl4JvbLNmlq2q24SNK5jJHK/IPI37nhDqcPLHtfW40bscYU/Q==",
+        "resolved": "6.0.9",
+        "contentHash": "vH2Mul/lTqCYIaLDl1ICvv8LrDl1870s7erbRjyWdMNWIzL05I+k6osKifzQpqFNkhAApjU3GgEYHuw1XZBoxA==",
         "dependencies": {
           "SQLitePCLRaw.core": "2.0.6"
         }
@@ -1353,7 +1353,7 @@
         "dependencies": {
           "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
           "Gnomeshade.Data": "1.0.0",
-          "Microsoft.Data.Sqlite": "6.0.8",
+          "Microsoft.Data.Sqlite": "6.0.9",
           "Microsoft.EntityFrameworkCore.Sqlite": "6.0.8",
           "System.Net.Http": "4.3.4",
           "System.Text.RegularExpressions": "4.3.1",
@@ -1602,11 +1602,11 @@
       },
       "Microsoft.Data.Sqlite": {
         "type": "CentralTransitive",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "oX2Ehhy1s/5CLaXRzajASHu2bAp87QrMqPzF3MjQlAm3alUwgmeIDdbm2Mp4i4BB2oxdujyeYCGcDnbew8mBdA==",
+        "requested": "[6.0.9, )",
+        "resolved": "6.0.9",
+        "contentHash": "hkicTW4qEVQUgPs4qCSsd0cP1+1IiM0WRmlinnixGMUyxvIOT98BpVbQd9Ukc52q8mDEhDVam1oLa5yAofdQ1Q==",
         "dependencies": {
-          "Microsoft.Data.Sqlite.Core": "6.0.8",
+          "Microsoft.Data.Sqlite.Core": "6.0.9",
           "SQLitePCLRaw.bundle_e_sqlite3": "2.0.6"
         }
       },
