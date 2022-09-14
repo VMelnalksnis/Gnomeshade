@@ -43,11 +43,11 @@
       },
       "Microsoft.EntityFrameworkCore.Sqlite": {
         "type": "Direct",
-        "requested": "[6.0.8, )",
-        "resolved": "6.0.8",
-        "contentHash": "SCDjo2xtsL/7h1ugbHR7kOrSsBNcoGvyeuyfAIQ1yWJh5pRYOj/EOV8vTkzXY6LylnbL+hH1+ZPlV3e1cakiuw==",
+        "requested": "[6.0.9, )",
+        "resolved": "6.0.9",
+        "contentHash": "kaAUWwv967c1pZUD1xQ4+XYGaRfIxqaRjVE8sv8ZSG+FXdqz7wYT9GB/1Sv2j0hgqknOpTrUu4x5O6RVyhPjEA==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Sqlite.Core": "6.0.8",
+          "Microsoft.EntityFrameworkCore.Sqlite.Core": "6.0.9",
           "SQLitePCLRaw.bundle_e_sqlite3": "2.0.6"
         }
       },
@@ -292,11 +292,11 @@
       },
       "Microsoft.EntityFrameworkCore.Sqlite.Core": {
         "type": "Transitive",
-        "resolved": "6.0.8",
-        "contentHash": "RBFMQt4VJqRj4jOFJ7N36f4z3PtoItWav6p3iAbgDoAwTTT2iKTQ6AVqtuCLKk4Mdqn0dDxUufiuZFoocHpKrw==",
+        "resolved": "6.0.9",
+        "contentHash": "yo2m2Tvi0f8SQPBaFTmmO2P+sLNl5Zz23JsV7J85N4AFXyDMvCiS0eza/90HgJ/RgrGssEIC2jvaABRreRKl/g==",
         "dependencies": {
-          "Microsoft.Data.Sqlite.Core": "6.0.8",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.8",
+          "Microsoft.Data.Sqlite.Core": "6.0.9",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.9",
           "Microsoft.Extensions.DependencyModel": "6.0.0"
         }
       },
