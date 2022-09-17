@@ -139,7 +139,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		{
 			new Axis
 			{
-				Labeler = value => new DateTime((long)value).ToString("yyyy MM"),
+				Labeler = value => new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString("yyyy MM"),
 				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
 				MinStep = TimeSpan.FromDays(30.4375).Ticks,
 				LabelsRotation = 90,
