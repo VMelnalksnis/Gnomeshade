@@ -32,9 +32,9 @@
       },
       "Npgsql": {
         "type": "Direct",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "IIwnoJp0sFkhAydT/KKe/0NhlJKhYPIrXSE95AuU/2dqHNI9alxvjClJSGL+QE8NGqq1SFn+NenxVtm/JYsrJg==",
+        "requested": "[6.0.7, )",
+        "resolved": "6.0.7",
+        "contentHash": "HhD5q/VUJY++tCzc0eCrhtsxmUdP7NxNhUMOdYW6sqpC6NRlFLvUDf5JyRj0gOGkXe3Tn49toaisgvLqlzQ2JQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
@@ -633,15 +633,15 @@
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
-          "Dapper": "2.0.123",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Microsoft.AspNetCore.Identity": "2.2.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.9",
-          "Microsoft.Extensions.Identity.Stores": "6.0.9",
-          "NodaTime": "3.1.2",
-          "System.Security.Cryptography.Xml": "6.0.1",
-          "System.Text.Encodings.Web": "6.0.0",
-          "dbup-core": "4.6.3"
+          "Dapper": "[2.0.123, )",
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Microsoft.AspNetCore.Identity": "[2.2.0, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.9, )",
+          "Microsoft.Extensions.Identity.Stores": "[6.0.9, )",
+          "NodaTime": "[3.1.2, )",
+          "System.Security.Cryptography.Xml": "[6.0.1, )",
+          "System.Text.Encodings.Web": "[6.0.0, )",
+          "dbup-core": "[4.6.3, )"
         }
       },
       "Dapper": {

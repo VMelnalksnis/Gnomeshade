@@ -81,9 +81,9 @@
       },
       "Npgsql": {
         "type": "Direct",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "IIwnoJp0sFkhAydT/KKe/0NhlJKhYPIrXSE95AuU/2dqHNI9alxvjClJSGL+QE8NGqq1SFn+NenxVtm/JYsrJg==",
+        "requested": "[6.0.7, )",
+        "resolved": "6.0.7",
+        "contentHash": "HhD5q/VUJY++tCzc0eCrhtsxmUdP7NxNhUMOdYW6sqpC6NRlFLvUDf5JyRj0gOGkXe3Tn49toaisgvLqlzQ2JQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
@@ -836,68 +836,68 @@
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
-          "Dapper": "2.0.123",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Microsoft.AspNetCore.Identity": "2.2.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.9",
-          "Microsoft.Extensions.Identity.Stores": "6.0.9",
-          "NodaTime": "3.1.2",
-          "System.Security.Cryptography.Xml": "6.0.1",
-          "System.Text.Encodings.Web": "6.0.0",
-          "dbup-core": "4.6.3"
+          "Dapper": "[2.0.123, )",
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Microsoft.AspNetCore.Identity": "[2.2.0, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.9, )",
+          "Microsoft.Extensions.Identity.Stores": "[6.0.9, )",
+          "NodaTime": "[3.1.2, )",
+          "System.Security.Cryptography.Xml": "[6.0.1, )",
+          "System.Text.Encodings.Web": "[6.0.0, )",
+          "dbup-core": "[4.6.3, )"
         }
       },
       "gnomeshade.data.postgresql": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Data": "1.0.0",
-          "Npgsql": "6.0.6",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.6",
-          "Npgsql.NodaTime": "6.0.6",
-          "dbup-postgresql": "4.5.0"
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Gnomeshade.Data": "[1.0.0, )",
+          "Npgsql": "[6.0.7, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[6.0.6, )",
+          "Npgsql.NodaTime": "[6.0.6, )",
+          "dbup-postgresql": "[4.5.0, )"
         }
       },
       "gnomeshade.testinghelpers": {
         "type": "Project",
         "dependencies": {
-          "Bogus": "34.0.2",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "FluentAssertions": "6.7.0",
-          "Gnomeshade.Data": "1.0.0",
-          "Gnomeshade.WebApi.Client": "1.0.0",
-          "Gnomeshade.WebApi.Models": "1.0.0",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.NET.Test.Sdk": "17.3.1",
-          "NUnit": "3.13.3",
-          "NUnit3TestAdapter": "4.2.1",
-          "Newtonsoft.Json": "13.0.1",
-          "NodaTime.Bogus": "3.0.1",
-          "Npgsql": "6.0.6"
+          "Bogus": "[34.0.2, )",
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "FluentAssertions": "[6.7.0, )",
+          "Gnomeshade.Data": "[1.0.0, )",
+          "Gnomeshade.WebApi.Client": "[1.0.0, )",
+          "Gnomeshade.WebApi.Models": "[1.0.0, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.NET.Test.Sdk": "[17.3.1, )",
+          "NUnit": "[3.13.3, )",
+          "NUnit3TestAdapter": "[4.2.1, )",
+          "Newtonsoft.Json": "[13.0.1, )",
+          "NodaTime.Bogus": "[3.0.1, )",
+          "Npgsql": "[6.0.7, )"
         }
       },
       "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.WebApi.Models": "1.0.0",
-          "IdentityModel.OidcClient": "5.0.2",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Http": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
-          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Gnomeshade.WebApi.Models": "[1.0.0, )",
+          "IdentityModel.OidcClient": "[5.0.2, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
+          "Microsoft.Extensions.Http": "[6.0.0, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "[6.0.0, )",
+          "Microsoft.Extensions.Options.DataAnnotations": "[6.0.0, )",
+          "NodaTime.Serialization.SystemTextJson": "[1.0.0, )"
         }
       },
       "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "NodaTime": "3.1.2"
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "JetBrains.Annotations": "[2022.1.0, )",
+          "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
+          "NodaTime": "[3.1.2, )"
         }
       },
       "Dapper": {
