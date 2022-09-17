@@ -53,12 +53,12 @@
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "UoSvRBWBHvTxqMzR4ucsNyRcqOaL/oieVM9NkeoNaviyvVMDgMohDu82vQ3/rx3S0TzB3Oeglg+2Ygd/U+06aw==",
+        "requested": "[6.0.7, )",
+        "resolved": "6.0.7",
+        "contentHash": "DZHvGPBIIeKj8RIydgyk7si+bOL09BQhFxA/Mft6QaFlYobM6yqKYjd8LxV/6Q9JnDvHmFcdUBX8ecW9albxyA==",
         "dependencies": {
           "NodaTime": "3.0.9",
-          "Npgsql": "6.0.6"
+          "Npgsql": "6.0.7"
         }
       },
       "StyleCop.Analyzers": {
