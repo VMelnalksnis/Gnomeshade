@@ -46,17 +46,17 @@ public abstract class Browser : IBrowser
 		{
 			var timeoutTask = Task.Delay(_timeout, cancellationToken);
 			var contextTask = httpListener.GetContextAsync();
-			await Task.WhenAny(timeoutTask, contextTask).ConfigureAwait(false);
+			await Task.WhenAny(timeoutTask, contextTask);
 			if (timeoutTask.IsCompleted)
 			{
 				return new() { ResultType = BrowserResultType.Timeout, Error = "Timeout" };
 			}
 
 			var httpContext = contextTask.Result;
-			var result = await HandeRequest(httpContext).ConfigureAwait(false);
+			var result = await HandeRequest(httpContext);
 			httpContext.Response.Close();
 
-			await browserTask.ConfigureAwait(false);
+			await browserTask;
 
 			return string.IsNullOrWhiteSpace(result)
 				? new() { ResultType = UnknownError, Error = "Empty response." }
@@ -113,9 +113,9 @@ public abstract class Browser : IBrowser
 			throw new MissingManifestResourceException(resourceName);
 		}
 
-		await using (contentStream.ConfigureAwait(false))
+		await using (contentStream)
 		{
-			await contentStream.CopyToAsync(context.Response.OutputStream).ConfigureAwait(false);
+			await contentStream.CopyToAsync(context.Response.OutputStream);
 		}
 
 		return await resultFunc();

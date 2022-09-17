@@ -15,16 +15,16 @@ internal static class ProductClientExtensions
 {
 	internal static async Task<IEnumerable<ProductRow>> GetProductRowsAsync(this IGnomeshadeClient gnomeshadeClient)
 	{
-		var products = await gnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
-		return await gnomeshadeClient.GetProductRowsAsync(products).ConfigureAwait(false);
+		var products = await gnomeshadeClient.GetProductsAsync();
+		return await gnomeshadeClient.GetProductRowsAsync(products);
 	}
 
 	internal static async Task<IEnumerable<ProductRow>> GetProductRowsAsync(
 		this IGnomeshadeClient gnomeshadeClient,
 		IEnumerable<Product> products)
 	{
-		var unitRows = (await gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false)).ToList();
-		var categories = await gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		var unitRows = (await gnomeshadeClient.GetUnitRowsAsync()).ToList();
+		var categories = await gnomeshadeClient.GetCategoriesAsync();
 		return products.Select(product => new ProductRow(
 			product,
 			unitRows,
@@ -33,7 +33,7 @@ internal static class ProductClientExtensions
 
 	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)
 	{
-		var units = await productClient.GetUnitsAsync().ConfigureAwait(false);
+		var units = await productClient.GetUnitsAsync();
 		return units.Select(unit => new UnitRow(unit, units));
 	}
 }

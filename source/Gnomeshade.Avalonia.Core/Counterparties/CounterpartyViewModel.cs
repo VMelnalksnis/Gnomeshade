@@ -49,15 +49,15 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
 		Rows = new(counterpartyRows);
 
 		foreach (var row in Rows)
 		{
-			var loans = await _gnomeshadeClient.GetCounterpartyLoansAsync(row.Id).ConfigureAwait(false);
+			var loans = await _gnomeshadeClient.GetCounterpartyLoansAsync(row.Id);
 			var issued = loans
 				.Where(loan =>
 					loan.IssuingCounterpartyId == row.Id &&

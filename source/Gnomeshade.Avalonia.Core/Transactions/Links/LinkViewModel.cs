@@ -46,7 +46,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	public override async Task UpdateSelection()
 	{
 		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
-		await Details.RefreshAsync().ConfigureAwait(false);
+		await Details.RefreshAsync();
 	}
 
 	/// <summary>Imports purchases from the <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> link.</summary>
@@ -58,14 +58,14 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 			return;
 		}
 
-		await _gnomeshadeClient.AddPurchasesFromDocument(_transactionId, Selected.Id).ConfigureAwait(false);
-		await RefreshAsync().ConfigureAwait(false);
+		await _gnomeshadeClient.AddPurchasesFromDocument(_transactionId, Selected.Id);
+		await RefreshAsync();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
 		var overviews = transaction.Links
 			.OrderBy(link => link.CreatedAt)
 			.Select(link => new LinkOverview(link.Id, link.Uri)).ToList();
@@ -80,12 +80,12 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(LinkOverview row)
 	{
-		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id).ConfigureAwait(false);
-		await Refresh().ConfigureAwait(false);
+		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id);
+		await Refresh();
 	}
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		await RefreshAsync().ConfigureAwait(false);
+		await RefreshAsync();
 	}
 }

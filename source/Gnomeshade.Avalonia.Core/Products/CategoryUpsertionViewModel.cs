@@ -71,7 +71,7 @@ public sealed class CategoryUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var categories = await GnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		var categories = await GnomeshadeClient.GetCategoriesAsync();
 		var editedCategory = categories.SingleOrDefault(category => category.Id == _id);
 		if (editedCategory is not null)
 		{
@@ -95,7 +95,7 @@ public sealed class CategoryUpsertionViewModel : UpsertionViewModel
 		};
 
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutCategoryAsync(_id.Value, categoryCreationModel).ConfigureAwait(false);
+		await GnomeshadeClient.PutCategoryAsync(_id.Value, categoryCreationModel);
 		return _id.Value;
 	}
 }

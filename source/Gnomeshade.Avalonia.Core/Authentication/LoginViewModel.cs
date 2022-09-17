@@ -63,7 +63,7 @@ public sealed class LoginViewModel : ViewModelBase
 		try
 		{
 			IsBusy = true;
-			await _authenticationService.SocialLogin().ConfigureAwait(false);
+			await _authenticationService.SocialLogin();
 			IsBusy = false;
 			OnUserLoggedIn();
 		}
@@ -82,7 +82,7 @@ public sealed class LoginViewModel : ViewModelBase
 		ErrorMessage = string.Empty;
 
 		var login = new Login { Username = Username!, Password = Password! };
-		var loginResult = await _authenticationService.Login(login).ConfigureAwait(false);
+		var loginResult = await _authenticationService.Login(login);
 
 		switch (loginResult)
 		{

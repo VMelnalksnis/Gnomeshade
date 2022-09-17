@@ -44,15 +44,15 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	public override async Task UpdateSelection()
 	{
 		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
-		await Details.RefreshAsync().ConfigureAwait(false);
+		await Details.RefreshAsync();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		var currencies = await _gnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
+		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var currencies = await _gnomeshadeClient.GetCurrenciesAsync();
 		var overviews = transaction.Loans
 			.Select(loan => new LoanOverview(
 				loan.Id,
@@ -69,14 +69,14 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 
 		if (Selected is null)
 		{
-			await Details.RefreshAsync().ConfigureAwait(false);
+			await Details.RefreshAsync();
 		}
 	}
 
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(LoanOverview row)
 	{
-		await _gnomeshadeClient.DeleteLoanAsync(row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteLoanAsync(row.Id);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

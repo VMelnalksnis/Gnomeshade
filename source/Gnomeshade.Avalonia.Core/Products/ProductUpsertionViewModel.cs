@@ -118,8 +118,8 @@ public sealed class ProductUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var units = await GnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
-		var categories = await GnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		var units = await GnomeshadeClient.GetUnitsAsync();
+		var categories = await GnomeshadeClient.GetCategoriesAsync();
 
 		Units = units;
 		Categories = categories;
@@ -141,8 +141,8 @@ public sealed class ProductUpsertionViewModel : UpsertionViewModel
 			? null
 			: Categories.SingleOrDefault(category => category.Id == product.CategoryId.Value);
 
-		var purchases = await GnomeshadeClient.GetProductPurchasesAsync(productId).ConfigureAwait(false);
-		var currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		var purchases = await GnomeshadeClient.GetProductPurchasesAsync(productId);
+		var currencies = await GnomeshadeClient.GetCurrenciesAsync();
 		var products = new[] { product };
 		var overviews = purchases
 			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
@@ -164,7 +164,7 @@ public sealed class ProductUpsertionViewModel : UpsertionViewModel
 		};
 
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutProductAsync(_id.Value, creationModel).ConfigureAwait(false);
+		await GnomeshadeClient.PutProductAsync(_id.Value, creationModel);
 		return _id.Value;
 	}
 }

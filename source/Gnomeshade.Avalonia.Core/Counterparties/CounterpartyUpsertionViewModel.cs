@@ -43,7 +43,7 @@ public sealed class CounterpartyUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var counterparty = await GnomeshadeClient.GetCounterpartyAsync(_id.Value).ConfigureAwait(false);
+		var counterparty = await GnomeshadeClient.GetCounterpartyAsync(_id.Value);
 		Name = counterparty.Name;
 	}
 
@@ -52,7 +52,7 @@ public sealed class CounterpartyUpsertionViewModel : UpsertionViewModel
 	{
 		var counterparty = new CounterpartyCreation { Name = Name };
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutCounterpartyAsync(_id.Value, counterparty).ConfigureAwait(false);
+		await GnomeshadeClient.PutCounterpartyAsync(_id.Value, counterparty);
 		return _id.Value;
 	}
 }

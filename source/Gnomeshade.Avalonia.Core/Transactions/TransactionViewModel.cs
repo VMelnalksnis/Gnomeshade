@@ -85,7 +85,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	public override async Task UpdateSelection()
 	{
 		Details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, Selected?.Id);
-		await Details.RefreshAsync().ConfigureAwait(false);
+		await Details.RefreshAsync();
 	}
 
 	/// <inheritdoc />
@@ -96,11 +96,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
-		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync().ConfigureAwait(false);
+		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var overviews = transactions.Select(transaction =>
 		{
@@ -132,7 +132,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(TransactionOverview row)
 	{
-		await _gnomeshadeClient.DeleteTransactionAsync(row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteTransactionAsync(row.Id);
 		await RefreshAsync();
 	}
 

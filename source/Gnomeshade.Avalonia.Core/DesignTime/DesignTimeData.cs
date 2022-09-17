@@ -192,7 +192,7 @@ public static class DesignTimeData
 	private static TViewModel InitializeViewModel<TViewModel>(TViewModel viewModel)
 		where TViewModel : ViewModelBase
 	{
-		viewModel.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		viewModel.RefreshAsync().GetAwaiter().GetResult();
 		return viewModel;
 	}
 
@@ -201,8 +201,8 @@ public static class DesignTimeData
 		where TRow : PropertyChangedBase
 		where TUpsertion : UpsertionViewModel?
 	{
-		viewModel.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-		viewModel.Details?.RefreshAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+		viewModel.RefreshAsync().GetAwaiter().GetResult();
+		viewModel.Details?.RefreshAsync().GetAwaiter().GetResult();
 		return viewModel;
 	}
 }

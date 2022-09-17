@@ -89,7 +89,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	/// <returns>A new instance of the <see cref="UnitCreationViewModel"/> class.</returns>
 	public static async Task<UnitCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? unitId = null)
 	{
-		var units = await gnomeshadeClient.GetUnitsAsync().ConfigureAwait(false);
+		var units = await gnomeshadeClient.GetUnitsAsync();
 		if (unitId is null)
 		{
 			return new(gnomeshadeClient, units);
@@ -111,7 +111,7 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 		};
 
 		var id = _existingUnit?.Id ?? Guid.NewGuid();
-		await GnomeshadeClient.PutUnitAsync(id, unit).ConfigureAwait(false);
+		await GnomeshadeClient.PutUnitAsync(id, unit);
 		return id;
 	}
 }

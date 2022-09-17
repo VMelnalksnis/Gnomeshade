@@ -42,16 +42,16 @@ public sealed class UserConfigurationWriter
 
 		var fileStream = File.Open(Filepath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
 		var writer = new Utf8JsonWriter(fileStream);
-		await using (fileStream.ConfigureAwait(false))
-		await using (writer.ConfigureAwait(false))
+		await using (fileStream)
+		await using (writer)
 		{
-			await JsonSerializer.SerializeAsync(fileStream, userConfiguration, _context.UserConfiguration).ConfigureAwait(false);
+			await JsonSerializer.SerializeAsync(fileStream, userConfiguration, _context.UserConfiguration);
 		}
 
 		var delay = TimeSpan.FromMilliseconds(100);
 		while (!changed)
 		{
-			await Task.Delay(delay).ConfigureAwait(false);
+			await Task.Delay(delay);
 		}
 	}
 }

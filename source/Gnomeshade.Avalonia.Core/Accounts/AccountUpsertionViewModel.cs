@@ -172,8 +172,8 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		var currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		var counterparties = await GnomeshadeClient.GetCounterpartiesAsync();
+		var currencies = await GnomeshadeClient.GetCurrenciesAsync();
 
 		Counterparties = counterparties;
 		Currencies = currencies;
@@ -183,7 +183,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var account = await GnomeshadeClient.GetAccountAsync(id).ConfigureAwait(false);
+		var account = await GnomeshadeClient.GetAccountAsync(id);
 
 		Counterparty = Counterparties.Single(counterparty => counterparty.Id == account.CounterpartyId);
 		PreferredCurrency = account.PreferredCurrency;
@@ -226,7 +226,7 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 
 		var newAccount = _id is null;
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutAccountAsync(_id.Value, creationModel).ConfigureAwait(false);
+		await GnomeshadeClient.PutAccountAsync(_id.Value, creationModel);
 		if (newAccount)
 		{
 			return _id.Value;

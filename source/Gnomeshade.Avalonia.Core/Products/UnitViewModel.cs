@@ -70,8 +70,8 @@ public sealed class UnitViewModel : ViewModelBase
 	/// <returns>A new instance of the <see cref="UnitViewModel"/> class.</returns>
 	public static async Task<UnitViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
 	{
-		var productRows = await gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false);
-		var productCreation = await UnitCreationViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
+		var productRows = await gnomeshadeClient.GetUnitRowsAsync();
+		var productCreation = await UnitCreationViewModel.CreateAsync(gnomeshadeClient);
 
 		return new(gnomeshadeClient, productRows, productCreation);
 	}
@@ -88,8 +88,8 @@ public sealed class UnitViewModel : ViewModelBase
 
 	private async void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var unitRowsTask = _gnomeshadeClient.GetUnitRowsAsync().ConfigureAwait(false);
-		var unitCreationTask = UnitCreationViewModel.CreateAsync(_gnomeshadeClient).ConfigureAwait(false);
+		var unitRowsTask = _gnomeshadeClient.GetUnitRowsAsync();
+		var unitCreationTask = UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		var units = (await unitRowsTask).ToList();

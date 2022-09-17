@@ -153,7 +153,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		var accountsTask = GnomeshadeClient.GetAccountsAsync();
 		var currenciesTask = GnomeshadeClient.GetCurrenciesAsync();
 
-		await Task.WhenAll(accountsTask, currenciesTask).ConfigureAwait(false);
+		await Task.WhenAll(accountsTask, currenciesTask);
 
 		Accounts = accountsTask.Result;
 		Currencies = currenciesTask.Result;
@@ -163,7 +163,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var transfer = await GnomeshadeClient.GetTransferAsync(_id.Value).ConfigureAwait(false);
+		var transfer = await GnomeshadeClient.GetTransferAsync(_id.Value);
 
 		SourceAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
 		SourceAmount = transfer.SourceAmount;
@@ -194,7 +194,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		};
 
 		var id = _id ?? Guid.NewGuid();
-		await GnomeshadeClient.PutTransferAsync(id, transferCreation).ConfigureAwait(false);
+		await GnomeshadeClient.PutTransferAsync(id, transferCreation);
 		return id;
 	}
 

@@ -53,7 +53,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	public override async Task UpdateSelection()
 	{
 		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
-		await Details.RefreshAsync().ConfigureAwait(false);
+		await Details.RefreshAsync();
 		SetDefaultCurrency(this);
 	}
 
@@ -62,7 +62,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	{
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		await Task.WhenAll(transactionsTask, accountsTask).ConfigureAwait(false);
+		await Task.WhenAll(transactionsTask, accountsTask);
 
 		var accounts = accountsTask.Result;
 		var transaction = transactionsTask.Result;
@@ -82,14 +82,14 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 
 		if (Selected is null)
 		{
-			await Details.RefreshAsync().ConfigureAwait(false);
+			await Details.RefreshAsync();
 		}
 	}
 
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(TransferOverview row)
 	{
-		await _gnomeshadeClient.DeleteTransferAsync(row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteTransferAsync(row.Id);
 		await RefreshAsync();
 	}
 
@@ -123,6 +123,6 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		await RefreshAsync().ConfigureAwait(false);
+		await RefreshAsync();
 	}
 }

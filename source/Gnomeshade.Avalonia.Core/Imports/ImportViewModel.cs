@@ -95,7 +95,7 @@ public sealed class ImportViewModel : ViewModelBase
 		try
 		{
 			IsBusy = true;
-			Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country).ConfigureAwait(false);
+			Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country);
 			SelectedInstitution = Institutions.First();
 		}
 		finally

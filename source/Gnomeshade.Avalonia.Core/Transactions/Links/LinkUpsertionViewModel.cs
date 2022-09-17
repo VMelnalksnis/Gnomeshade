@@ -48,14 +48,14 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var link = await GnomeshadeClient.GetLinkAsync(_id.Value).ConfigureAwait(false);
+		var link = await GnomeshadeClient.GetLinkAsync(_id.Value);
 		UriValue = link.Uri;
 	}
 
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var links = await GnomeshadeClient.GetLinksAsync().ConfigureAwait(false);
+		var links = await GnomeshadeClient.GetLinksAsync();
 		var existingLink = links.SingleOrDefault(link => StringComparer.InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
 		if (existingLink is not null)
 		{
@@ -65,10 +65,10 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 		{
 			var linkCreation = new LinkCreation { Uri = new(UriValue!) };
 			_id ??= Guid.NewGuid();
-			await GnomeshadeClient.PutLinkAsync(_id.Value, linkCreation).ConfigureAwait(false);
+			await GnomeshadeClient.PutLinkAsync(_id.Value, linkCreation);
 		}
 
-		await GnomeshadeClient.AddLinkToTransactionAsync(_transactionId, _id.Value).ConfigureAwait(false);
+		await GnomeshadeClient.AddLinkToTransactionAsync(_transactionId, _id.Value);
 		return _id.Value;
 	}
 }

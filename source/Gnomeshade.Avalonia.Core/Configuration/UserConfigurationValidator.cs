@@ -42,7 +42,7 @@ public sealed class UserConfigurationValidator
 		var uriBuilder = new UriBuilder(baseAddress) { Path = "health" };
 		try
 		{
-			var response = await _httpClient.SendAsync(new(HttpMethod.Get, uriBuilder.Uri), cancellationToken).ConfigureAwait(false);
+			var response = await _httpClient.SendAsync(new(HttpMethod.Get, uriBuilder.Uri), cancellationToken);
 			if (response.StatusCode is not HttpStatusCode.OK)
 			{
 				return false;
@@ -62,7 +62,7 @@ public sealed class UserConfigurationValidator
 
 		try
 		{
-			return (await _httpClient.SendAsync(new(HttpMethod.Get, authority), cancellationToken).ConfigureAwait(false)).StatusCode is HttpStatusCode.OK;
+			return (await _httpClient.SendAsync(new(HttpMethod.Get, authority), cancellationToken)).StatusCode is HttpStatusCode.OK;
 		}
 		catch (Exception exception)
 		{

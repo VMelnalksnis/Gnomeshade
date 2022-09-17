@@ -116,7 +116,7 @@ public sealed class ApplicationSettingsViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateConfiguration()
 	{
-		await _userConfigurationWriter.Write(Configuration).ConfigureAwait(false);
+		await _userConfigurationWriter.Write(Configuration);
 		Updated?.Invoke(this, EventArgs.Empty);
 	}
 }

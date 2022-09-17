@@ -92,7 +92,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		IsBusy = true;
-		var isValid = await _validator.IsValid(_userConfiguration.Value).ConfigureAwait(false);
+		var isValid = await _validator.IsValid(_userConfiguration.Value);
 
 		if (isValid)
 		{
@@ -111,7 +111,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public async Task LogOut()
 	{
 		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
-		await authenticationService.Logout().ConfigureAwait(false);
+		await authenticationService.Logout();
 		SwitchToLogin();
 	}
 
@@ -231,7 +231,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var unitViewModel = await UnitViewModel.CreateAsync(gnomeshadeClient).ConfigureAwait(false);
+		var unitViewModel = await UnitViewModel.CreateAsync(gnomeshadeClient);
 		ActiveView = unitViewModel;
 	}
 

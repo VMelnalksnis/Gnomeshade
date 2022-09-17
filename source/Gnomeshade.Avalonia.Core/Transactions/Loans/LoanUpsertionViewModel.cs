@@ -108,8 +108,8 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync().ConfigureAwait(false);
-		Currencies = await GnomeshadeClient.GetCurrenciesAsync().ConfigureAwait(false);
+		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync();
+		Currencies = await GnomeshadeClient.GetCurrenciesAsync();
 
 		if (_id is null)
 		{
@@ -136,7 +136,7 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 		};
 
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutLoanAsync(_id.Value, creation).ConfigureAwait(false);
+		await GnomeshadeClient.PutLoanAsync(_id.Value, creation);
 		return _id.Value;
 	}
 }

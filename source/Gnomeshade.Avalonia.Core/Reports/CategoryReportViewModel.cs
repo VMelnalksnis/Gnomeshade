@@ -74,7 +74,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		var viewModel = new CategoryReportViewModel(gnomeshadeClient, clock, dateTimeZoneProvider);
-		await viewModel.RefreshAsync().ConfigureAwait(false);
+		await viewModel.RefreshAsync();
 		return viewModel;
 	}
 
@@ -118,7 +118,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)).ConfigureAwait(false);
+		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var transactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
 			.Where(transaction => transaction.TransferBalance > 0)
@@ -146,8 +146,8 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			},
 		};
 
-		var products = await _gnomeshadeClient.GetProductsAsync().ConfigureAwait(false);
-		var categories = await _gnomeshadeClient.GetCategoriesAsync().ConfigureAwait(false);
+		var products = await _gnomeshadeClient.GetProductsAsync();
+		var categories = await _gnomeshadeClient.GetCategoriesAsync();
 		var nodes = categories.Where(c => c.CategoryId is null)
 			.Select(category => CategoryNode.FromCategory(category, categories)).ToList();
 

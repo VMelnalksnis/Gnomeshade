@@ -83,7 +83,7 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(CategoryRow row)
 	{
-		await _gnomeshadeClient.DeleteCategoryAsync(row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeleteCategoryAsync(row.Id);
 		await RefreshAsync();
 	}
 

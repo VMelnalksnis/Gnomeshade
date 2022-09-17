@@ -65,21 +65,21 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	public override async Task UpdateSelection()
 	{
 		Details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
-		await Details.RefreshAsync().ConfigureAwait(false);
-		await SetDefaultCurrency().ConfigureAwait(false);
+		await Details.RefreshAsync();
+		await SetDefaultCurrency();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId).ConfigureAwait(false);
+		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
 
 		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productIds = transaction.Purchases.Select(purchase => purchase.ProductId).Distinct();
 		var productsTask = Task.WhenAll(productIds.Select(async id => await _gnomeshadeClient.GetProductAsync(id)));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		await Task.WhenAll(productsTask, currenciesTask, unitsTask).ConfigureAwait(false);
+		await Task.WhenAll(productsTask, currenciesTask, unitsTask);
 		var currencies = currenciesTask.Result;
 		var products = productsTask.Result;
 		var units = unitsTask.Result;
@@ -100,15 +100,15 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 		if (Selected is null)
 		{
-			await Details.RefreshAsync().ConfigureAwait(false);
-			await SetDefaultCurrency().ConfigureAwait(false);
+			await Details.RefreshAsync();
+			await SetDefaultCurrency();
 		}
 	}
 
 	/// <inheritdoc />
 	protected override async Task DeleteAsync(PurchaseOverview row)
 	{
-		await _gnomeshadeClient.DeletePurchaseAsync(row.Id).ConfigureAwait(false);
+		await _gnomeshadeClient.DeletePurchaseAsync(row.Id);
 		await Refresh();
 	}
 
@@ -121,11 +121,11 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		}
 
 		var currencyName = currencies.FirstOrDefault();
-		var transfers = await _gnomeshadeClient.GetTransfersAsync(_transactionId).ConfigureAwait(false);
+		var transfers = await _gnomeshadeClient.GetTransfersAsync(_transactionId);
 		if (string.IsNullOrWhiteSpace(currencyName))
 		{
 			var accounts =
-				(await _gnomeshadeClient.GetAccountsAsync().ConfigureAwait(false)).SelectMany(account =>
+				(await _gnomeshadeClient.GetAccountsAsync()).SelectMany(account =>
 					account.Currencies);
 			var c = transfers
 				.Select(transfer => transfer.SourceAccountId)
@@ -167,6 +167,6 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		await RefreshAsync().ConfigureAwait(false);
+		await RefreshAsync();
 	}
 }

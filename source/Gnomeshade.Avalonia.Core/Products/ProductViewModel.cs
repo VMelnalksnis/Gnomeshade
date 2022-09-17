@@ -61,7 +61,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var productRows = (await _gnomeshadeClient.GetProductRowsAsync().ConfigureAwait(false)).ToList();
+		var productRows = (await _gnomeshadeClient.GetProductRowsAsync()).ToList();
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		var selected = Selected;

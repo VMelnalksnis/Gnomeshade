@@ -93,7 +93,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value).ConfigureAwait(false);
+		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value);
 		if (!transaction.Reconciled)
 		{
 			return;
@@ -109,8 +109,8 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 			ValuedAt = transaction.ValuedAt,
 		};
 
-		await GnomeshadeClient.PutTransactionAsync(_id.Value, creation).ConfigureAwait(false);
-		await RefreshAsync().ConfigureAwait(false);
+		await GnomeshadeClient.PutTransactionAsync(_id.Value, creation);
+		await RefreshAsync();
 	}
 
 	/// <inheritdoc />
@@ -121,7 +121,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value).ConfigureAwait(false);
+		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value);
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 
@@ -150,7 +150,7 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 				Purchases.RefreshAsync(),
 				Links.RefreshAsync(),
 				Loans.RefreshAsync())
-			.ConfigureAwait(false);
+			;
 
 		if (!transaction.Reconciled)
 		{
@@ -181,8 +181,8 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		};
 
 		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutTransactionAsync(_id.Value, creationModel).ConfigureAwait(false);
-		await RefreshAsync().ConfigureAwait(false);
+		await GnomeshadeClient.PutTransactionAsync(_id.Value, creationModel);
+		await RefreshAsync();
 
 		return _id.Value;
 	}
