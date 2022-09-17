@@ -1343,7 +1343,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Gnomeshade.Data": "[1.0.0, )",
           "Npgsql": "[6.0.7, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[6.0.6, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[6.0.7, )",
           "Npgsql.NodaTime": "[6.0.6, )",
           "dbup-postgresql": "[4.5.0, )"
         }
@@ -1723,14 +1723,14 @@
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "CentralTransitive",
-        "requested": "[6.0.6, )",
-        "resolved": "6.0.6",
-        "contentHash": "e1RVE6xtKDsWcCvBpXnbbHfY2p2/9l6cO/FpXvP3QqvRSCcWoabC22sr8wdWPRxex0a128Pq678Jo5XiIMcrxw==",
+        "requested": "[6.0.7, )",
+        "resolved": "6.0.7",
+        "contentHash": "kqwX2V9Znw/QjLDL6SyYEHiy9toMuqMTyCJ4ebQu65FpV8pElYKpOlBbxoyr6YNgqieXEMmpnE0TIoTKsVdeLw==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "6.0.7",
           "Microsoft.EntityFrameworkCore.Abstractions": "6.0.7",
           "Microsoft.EntityFrameworkCore.Relational": "6.0.7",
-          "Npgsql": "6.0.6"
+          "Npgsql": "6.0.7"
         }
       },
       "Npgsql.NodaTime": {
