@@ -21,55 +21,55 @@ public sealed record Currency
 	/// <summary>
 	/// The id of the currency.
 	/// </summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>
 	/// The point in time when this currency was created.
 	/// </summary>
-	public Instant CreatedAt { get; init; }
+	public Instant CreatedAt { get; set; }
 
 	/// <summary>
 	/// The name of the currency.
 	/// </summary>
-	public string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 
 	/// <summary>
 	/// The ISO 4217 three digit numeric code.
 	/// </summary>
-	public short NumericCode { get; init; }
+	public short NumericCode { get; set; }
 
 	/// <summary>
 	/// The ISO 4217 three letter alphabetic code.
 	/// </summary>
-	public string AlphabeticCode { get; init; } = null!;
+	public string AlphabeticCode { get; set; } = null!;
 
 	/// <summary>
 	/// The number of minor unit decimal places.
 	/// </summary>
-	public byte MinorUnit { get; init; }
+	public byte MinorUnit { get; set; }
 
 	/// <summary>
 	/// A value indicating whether this currency is listed in ISO 4217.
 	/// </summary>
-	public bool Official { get; init; }
+	public bool Official { get; set; }
 
 	/// <summary>
 	/// A value indicating whether this currency is a cryptocurrency.
 	/// </summary>
-	public bool Crypto { get; init; }
+	public bool Crypto { get; set; }
 
 	/// <summary>
 	/// A value indicating whether this currency is no longer being used.
 	/// </summary>
-	public bool Historical { get; init; }
+	public bool Historical { get; set; }
 
 	/// <summary>
 	/// The point of time from which this currency has been used.
 	/// </summary>
-	public Instant? ActiveFrom { get; init; }
+	public Instant? ActiveFrom { get; set; }
 
 	/// <summary>
 	/// The point of time until which this currency has been used.
 	/// </summary>
-	public Instant? ActiveUntil { get; init; }
+	public Instant? ActiveUntil { get; set; }
 }

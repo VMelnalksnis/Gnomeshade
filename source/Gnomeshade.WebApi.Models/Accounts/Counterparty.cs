@@ -15,23 +15,23 @@ namespace Gnomeshade.WebApi.Models.Accounts;
 public sealed record Counterparty
 {
 	/// <summary>The id of the counterparty.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>The point in time when this counterparty was created. </summary>
-	public Instant CreatedAt { get; init; }
+	public Instant CreatedAt { get; set; }
 
 	/// <summary>The id of the owner of this counterparty.</summary>
-	public Guid OwnerId { get; init; }
+	public Guid OwnerId { get; set; }
 
 	/// <summary>The id of the user which created this counterparty.</summary>
-	public Guid CreatedByUserId { get; init; }
+	public Guid CreatedByUserId { get; set; }
 
 	/// <summary>The point in time when this counterparty was last modified.</summary>
-	public Instant ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; set; }
 
 	/// <summary>The id of the user which last modified this counterparty.</summary>
-	public Guid ModifiedByUserId { get; init; }
+	public Guid ModifiedByUserId { get; set; }
 
 	/// <summary>The name of the counterparty.</summary>
-	public string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 }

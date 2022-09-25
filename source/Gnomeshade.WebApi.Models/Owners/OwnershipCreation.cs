@@ -13,8 +13,8 @@ namespace Gnomeshade.WebApi.Models.Owners;
 public sealed record OwnershipCreation : Creation
 {
 	/// <inheritdoc cref="Ownership.UserId"/>
-	public Guid UserId { get; init; }
+	public Guid UserId { get; set; }
 
 	/// <inheritdoc cref="Ownership.AccessId"/>
-	public Guid AccessId { get; init; }
+	public Guid AccessId { get; set; }
 }

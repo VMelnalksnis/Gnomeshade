@@ -12,5 +12,5 @@ public abstract record TransactionItemCreation : Creation
 {
 	/// <summary>The id of the transaction of which this item is a part of.</summary>
 	[Required]
-	public abstract Guid? TransactionId { get; init; }
+	public abstract Guid? TransactionId { get; set; }
 }

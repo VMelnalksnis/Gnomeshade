@@ -4,6 +4,8 @@
 
 using System.Text.Json;
 
+using Gnomeshade.WebApi.Models;
+
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -16,9 +18,10 @@ public sealed class GnomeshadeJsonSerializerOptions
 	/// <param name="dateTimeZoneProvider">Time zone provider for date and time serialization.</param>
 	public GnomeshadeJsonSerializerOptions(IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		Options = new(JsonSerializerDefaults.Web);
-		Options.ConfigureForNodaTime(dateTimeZoneProvider);
+		var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+		options.ConfigureForNodaTime(dateTimeZoneProvider);
+		Context = new(options);
 	}
 
-	internal JsonSerializerOptions Options { get; }
+	internal GnomeshadeSerializerContext Context { get; }
 }

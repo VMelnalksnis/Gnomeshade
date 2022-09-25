@@ -15,32 +15,32 @@ namespace Gnomeshade.WebApi.Models.Products;
 public sealed record Unit
 {
 	/// <summary>The id of the unit.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>The point in time when the unit was created.</summary>
-	public Instant CreatedAt { get; init; }
+	public Instant CreatedAt { get; set; }
 
 	/// <summary>The id of the owner of the unit.</summary>
-	public Guid OwnerId { get; init; }
+	public Guid OwnerId { get; set; }
 
 	/// <summary>The id of the user that created this unit.</summary>
-	public Guid CreatedByUserId { get; init; }
+	public Guid CreatedByUserId { get; set; }
 
 	/// <summary>The point in the when the unit was last modified.</summary>
-	public Instant ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; set; }
 
 	/// <summary>The id of the user that last modified this unit.</summary>
-	public Guid ModifiedByUserId { get; init; }
+	public Guid ModifiedByUserId { get; set; }
 
 	/// <summary>The name of the unit.</summary>
-	public string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 
 	/// <summary>The symbol of the unit.</summary>
-	public string? Symbol { get; init; }
+	public string? Symbol { get; set; }
 
 	/// <summary>The id of the parent unit.</summary>
-	public Guid? ParentUnitId { get; init; }
+	public Guid? ParentUnitId { get; set; }
 
 	/// <summary>The multiplier to convert a value in this unit to the parent unit.</summary>
-	public decimal? Multiplier { get; init; }
+	public decimal? Multiplier { get; set; }
 }

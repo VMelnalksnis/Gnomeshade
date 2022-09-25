@@ -15,17 +15,20 @@ namespace Gnomeshade.WebApi.Client;
 public interface IAccountClient
 {
 	/// <summary>Gets the counterparty that represents the current user.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The counterparty that represents the current user.</returns>
-	Task<Counterparty> GetMyCounterpartyAsync();
+	Task<Counterparty> GetMyCounterpartyAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the counterparty with the specified id.</summary>
 	/// <param name="id">The id by which to search for the counterparty.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The counterparty with the specified id if it exists.</returns>
-	Task<Counterparty> GetCounterpartyAsync(Guid id);
+	Task<Counterparty> GetCounterpartyAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all counterparties.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection of all counterparties.</returns>
-	Task<List<Counterparty>> GetCounterpartiesAsync();
+	Task<List<Counterparty>> GetCounterpartiesAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Creates a new counterparty.</summary>
 	/// <param name="counterparty">The counterparty to create.</param>
@@ -46,16 +49,19 @@ public interface IAccountClient
 
 	/// <summary>Finds an account with the specified id.</summary>
 	/// <param name="id">The id by which to search for an account.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The account with the specified id.</returns>
-	Task<Account> GetAccountAsync(Guid id);
+	Task<Account> GetAccountAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all accounts.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all accounts.</returns>
-	Task<List<Account>> GetAccountsAsync();
+	Task<List<Account>> GetAccountsAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all currently active accounts.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all currently active accounts.</returns>
-	Task<List<Account>> GetActiveAccountsAsync();
+	Task<List<Account>> GetActiveAccountsAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Creates a new account.</summary>
 	/// <param name="account">Information for creating the account.</param>
@@ -81,8 +87,9 @@ public interface IAccountClient
 	Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId);
 
 	/// <summary>Gets all currencies.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all currencies.</returns>
-	Task<List<Currency>> GetCurrenciesAsync();
+	Task<List<Currency>> GetCurrenciesAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the current balance of the specified account.</summary>
 	/// <param name="id">The id of the account for which to get the balance for.</param>

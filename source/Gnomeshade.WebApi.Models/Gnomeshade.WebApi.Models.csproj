@@ -13,4 +13,9 @@
 		<PackageReference Include="NodaTime"/>
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Gnomeshade.WebApi"/>
+		<InternalsVisibleTo Include="Gnomeshade.WebApi.Client"/>
+	</ItemGroup>
+
 </Project>

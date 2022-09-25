@@ -15,11 +15,11 @@ public sealed record CategoryCreation : Creation
 {
 	/// <inheritdoc cref="Category.Name"/>
 	[Required]
-	public string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 
 	/// <inheritdoc cref="Category.Description"/>
-	public string? Description { get; init; }
+	public string? Description { get; set; }
 
 	/// <inheritdoc cref="Category.CategoryId"/>
-	public Guid? CategoryId { get; init; }
+	public Guid? CategoryId { get; set; }
 }

@@ -19,11 +19,11 @@ public sealed record Login
 	/// The username to log in with. Required.
 	/// </summary>
 	[Required(AllowEmptyStrings = false)]
-	public string? Username { get; init; }
+	public string? Username { get; set; }
 
 	/// <summary>
 	/// The password to log in with. Required.
 	/// </summary>
 	[Required(AllowEmptyStrings = false)]
-	public string? Password { get; init; }
+	public string? Password { get; set; }
 }

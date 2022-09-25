@@ -11,7 +11,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Gnomeshade.WebApi.Models.Authentication;
+using Gnomeshade.WebApi.Models;
 
 using IdentityModel.OidcClient;
 
@@ -21,7 +21,7 @@ namespace Gnomeshade.WebApi.Client;
 public sealed class TokenDelegatingHandler : DelegatingHandler
 {
 	private readonly GnomeshadeTokenCache _tokenCache;
-	private readonly JsonSerializerOptions _jsonSerializerOptions;
+	private readonly GnomeshadeSerializerContext _context;
 	private readonly OidcClient _oidcClient;
 
 	/// <summary>Initializes a new instance of the <see cref="TokenDelegatingHandler"/> class.</summary>
@@ -34,7 +34,7 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 		OidcClient oidcClient)
 	{
 		_tokenCache = tokenCache;
-		_jsonSerializerOptions = jsonSerializerOptions.Options;
+		_context = jsonSerializerOptions.Context;
 		_oidcClient = oidcClient;
 	}
 
@@ -58,12 +58,12 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 		}
 
 		var login = await loginResponse.Content
-			.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions, cancellationToken)
+			.ReadFromJsonAsync(_context.LoginResponse, cancellationToken)
 			.ConfigureAwait(false);
 
 		_tokenCache.SetRefreshToken(login!.Token, login.Token, login.ValidTo.ToDateTimeOffset());
 
-		loginResponse.Content = new StringContent(JsonSerializer.Serialize(login, _jsonSerializerOptions), Encoding.UTF8, MediaTypeNames.Application.Json);
+		loginResponse.Content = new StringContent(JsonSerializer.Serialize(login, _context.LoginResponse), Encoding.UTF8, MediaTypeNames.Application.Json);
 		return loginResponse;
 	}
 

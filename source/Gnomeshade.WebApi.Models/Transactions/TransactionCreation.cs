@@ -18,24 +18,24 @@ public sealed record TransactionCreation : Creation
 {
 	/// <inheritdoc cref="Transaction.BookedAt"/>
 	[RequiredIfNull(nameof(ValuedAt))]
-	public Instant? BookedAt { get; init; }
+	public Instant? BookedAt { get; set; }
 
 	/// <inheritdoc cref="Transaction.ValuedAt"/>
 	[RequiredIfNull(nameof(BookedAt))]
-	public Instant? ValuedAt { get; init; }
+	public Instant? ValuedAt { get; set; }
 
 	/// <inheritdoc cref="Transaction.Description"/>
-	public string? Description { get; init; }
+	public string? Description { get; set; }
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
-	public Instant? ReconciledAt { get; init; }
+	public Instant? ReconciledAt { get; set; }
 
 	/// <summary>SHA512 hash of the imported data.</summary>
 	[MinLength(64)]
 	[MaxLength(64)]
 	[UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = $"Implements {nameof(ICollection)}")]
-	public byte[]? ImportHash { get; init; }
+	public byte[]? ImportHash { get; set; }
 
 	/// <inheritdoc cref="Transaction.ImportedAt"/>
-	public Instant? ImportedAt { get; init; }
+	public Instant? ImportedAt { get; set; }
 }

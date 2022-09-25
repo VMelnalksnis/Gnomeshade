@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -30,6 +31,7 @@ public static class ServiceCollectionExtensions
 	/// <param name="serviceCollection">The service collection in which to register the services.</param>
 	/// <param name="configuration">The configuration to which to bind options models.</param>
 	/// <returns>The <see cref="IHttpClientBuilder"/> for the <see cref="HttpClient"/> used by <see cref="IGnomeshadeClient"/>.</returns>
+	[UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = $"{nameof(GnomeshadeOptions)} contains only system types.")]
 	public static IHttpClientBuilder AddGnomeshadeClient(
 		this IServiceCollection serviceCollection,
 		IConfiguration configuration)

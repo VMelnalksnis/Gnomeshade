@@ -18,28 +18,28 @@ public sealed record AccountCreation : Creation
 {
 	/// <inheritdoc cref="Account.Name"/>
 	[Required]
-	public string? Name { get; init; }
+	public string? Name { get; set; }
 
 	/// <inheritdoc cref="Account.CounterpartyId"/>
 	[Required]
-	public Guid? CounterpartyId { get; init; }
+	public Guid? CounterpartyId { get; set; }
 
 	/// <summary>The id of the preferred currency of the account.</summary>
 	[Required]
-	public Guid? PreferredCurrencyId { get; init; }
+	public Guid? PreferredCurrencyId { get; set; }
 
 	/// <inheritdoc cref="Account.Bic"/>
-	public string? Bic { get; init; }
+	public string? Bic { get; set; }
 
 	/// <inheritdoc cref="Account.Iban"/>
-	public string? Iban { get; init; }
+	public string? Iban { get; set; }
 
 	/// <inheritdoc cref="Account.AccountNumber"/>
-	public string? AccountNumber { get; init; }
+	public string? AccountNumber { get; set; }
 
 	/// <inheritdoc cref="Account.Currencies"/>
 	[Required]
 	[MinLength(1)]
 	[UnconditionalSuppressMessage("ReflectionAnalysis", "IL2026", Justification = $"Implements {nameof(ICollection)}")]
-	public List<AccountInCurrencyCreation>? Currencies { get; init; }
+	public List<AccountInCurrencyCreation>? Currencies { get; set; }
 }

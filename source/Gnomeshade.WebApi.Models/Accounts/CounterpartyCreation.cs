@@ -14,5 +14,5 @@ public sealed record CounterpartyCreation : Creation
 {
 	/// <inheritdoc cref="Counterparty.Name"/>
 	[Required]
-	public string? Name { get; init; }
+	public string? Name { get; set; }
 }

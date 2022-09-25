@@ -10,5 +10,5 @@ namespace Gnomeshade.WebApi.Models;
 public abstract record Creation
 {
 	/// <summary>The id of the owner of the resource.</summary>
-	public Guid? OwnerId { get; init; }
+	public Guid? OwnerId { get; set; }
 }

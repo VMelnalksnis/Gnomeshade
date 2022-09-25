@@ -16,9 +16,9 @@ public sealed record Iso20022Report
 {
 	/// <summary>The ISO20022 report content.</summary>
 	[Required]
-	public IFormFile Report { get; init; } = null!;
+	public IFormFile Report { get; set; } = null!;
 
 	/// <summary>The timezone which will be assumed for all unspecified dates in the report.</summary>
 	[Required]
-	public string TimeZone { get; init; } = null!;
+	public string TimeZone { get; set; } = null!;
 }

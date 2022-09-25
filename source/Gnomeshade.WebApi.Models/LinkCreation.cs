@@ -14,5 +14,5 @@ namespace Gnomeshade.WebApi.Models;
 public sealed record LinkCreation : Creation
 {
 	/// <inheritdoc cref="Link.Uri"/>
-	public Uri? Uri { get; init; }
+	public Uri? Uri { get; set; }
 }

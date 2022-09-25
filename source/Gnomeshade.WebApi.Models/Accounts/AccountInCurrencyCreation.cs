@@ -15,5 +15,5 @@ public sealed record AccountInCurrencyCreation : Creation
 {
 	/// <summary>The id of the currency to add to an account.</summary>
 	[Required]
-	public Guid? CurrencyId { get; init; }
+	public Guid? CurrencyId { get; set; }
 }

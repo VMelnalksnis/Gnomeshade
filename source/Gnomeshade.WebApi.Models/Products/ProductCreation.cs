@@ -15,17 +15,17 @@ public sealed record ProductCreation : Creation
 {
 	/// <inheritdoc cref="Product.Name"/>
 	[Required]
-	public string? Name { get; init; }
+	public string? Name { get; set; }
 
 	/// <inheritdoc cref="Product.Sku"/>
-	public string? Sku { get; init; }
+	public string? Sku { get; set; }
 
 	/// <inheritdoc cref="Product.Description"/>
-	public string? Description { get; init; }
+	public string? Description { get; set; }
 
 	/// <inheritdoc cref="Product.UnitId"/>
-	public Guid? UnitId { get; init; }
+	public Guid? UnitId { get; set; }
 
 	/// <inheritdoc cref="Product.CategoryId"/>
-	public Guid? CategoryId { get; init; }
+	public Guid? CategoryId { get; set; }
 }

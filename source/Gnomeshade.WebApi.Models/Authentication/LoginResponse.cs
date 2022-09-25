@@ -13,8 +13,8 @@ namespace Gnomeshade.WebApi.Models.Authentication;
 public sealed record LoginResponse(string Token, Instant ValidTo)
 {
 	/// <summary>A JWT for authenticating the session.</summary>
-	public string Token { get; init; } = Token;
+	public string Token { get; set; } = Token;
 
 	/// <summary>The point in time until which the session is valid.</summary>
-	public Instant ValidTo { get; init; } = ValidTo;
+	public Instant ValidTo { get; set; } = ValidTo;
 }

@@ -13,8 +13,8 @@ namespace Gnomeshade.WebApi.Models.Owners;
 public sealed record Access
 {
 	/// <summary>The id of the access.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>The name of the access.</summary>
-	public string Name { get; init; } = null!;
+	public string Name { get; set; } = null!;
 }

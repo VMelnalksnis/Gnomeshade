@@ -20,6 +20,7 @@ using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
+using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.V1;
 using Gnomeshade.WebApi.V1.Importing;
 
@@ -68,6 +69,7 @@ public class Startup
 			{
 				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
+				options.JsonSerializerOptions.AddContext<GnomeshadeSerializerContext>();
 			});
 
 		services.AddRepositories();

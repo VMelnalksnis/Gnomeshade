@@ -15,16 +15,16 @@ public sealed record UnitCreation : Creation
 {
 	/// <inheritdoc cref="Unit.Name"/>
 	[Required]
-	public string? Name { get; init; }
+	public string? Name { get; set; }
 
 	/// <inheritdoc cref="Unit.Symbol"/>
-	public string? Symbol { get; init; }
+	public string? Symbol { get; set; }
 
 	/// <inheritdoc cref="Unit.ParentUnitId"/>
 	[RequiredIfNotNull(nameof(Multiplier))]
-	public Guid? ParentUnitId { get; init; }
+	public Guid? ParentUnitId { get; set; }
 
 	/// <inheritdoc cref="Unit.Multiplier"/>
 	[RequiredIfNotNull(nameof(ParentUnitId))]
-	public decimal? Multiplier { get; init; }
+	public decimal? Multiplier { get; set; }
 }

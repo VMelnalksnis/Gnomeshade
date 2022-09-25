@@ -13,25 +13,25 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 public sealed record DetailedTransaction : Transaction
 {
 	/// <summary>All transfers in the transaction.</summary>
-	public List<Transfer> Transfers { get; init; } = null!;
+	public List<Transfer> Transfers { get; set; } = null!;
 
 	/// <summary>The total balance of the transfers for the user.</summary>
-	public decimal TransferBalance { get; init; }
+	public decimal TransferBalance { get; set; }
 
 	/// <summary>All the purchases in the transaction.</summary>
-	public List<Purchase> Purchases { get; init; } = null!;
+	public List<Purchase> Purchases { get; set; } = null!;
 
 	/// <summary>The sum of all the prices from <see cref="Purchases"/>.</summary>
-	public decimal PurchaseTotal { get; init; }
+	public decimal PurchaseTotal { get; set; }
 
 	/// <summary>All the loans in the transaction.</summary>
-	public List<Loan> Loans { get; init; } = null!;
+	public List<Loan> Loans { get; set; } = null!;
 
 	/// <summary>The sum of all the amounts from <see cref="Loans"/>.</summary>
-	public decimal LoanTotal { get; init; }
+	public decimal LoanTotal { get; set; }
 
 	/// <summary>All the links attached to the transaction.</summary>
-	public List<Link> Links { get; init; } = null!;
+	public List<Link> Links { get; set; } = null!;
 
 	/// <summary>Creates a new instance of <see cref="DetailedTransaction"/> from a <see cref="Transaction"/>.</summary>
 	/// <param name="transaction">The transaction from which to copy values.</param>

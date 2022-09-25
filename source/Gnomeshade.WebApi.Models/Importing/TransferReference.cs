@@ -13,8 +13,8 @@ namespace Gnomeshade.WebApi.Models.Importing;
 public sealed record TransferReference
 {
 	/// <summary>Whether or not the transfer was created during import.</summary>
-	public bool Created { get; init; }
+	public bool Created { get; set; }
 
 	/// <summary>The referenced transfer.</summary>
-	public Transfer Transfer { get; init; } = null!;
+	public Transfer Transfer { get; set; } = null!;
 }

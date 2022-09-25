@@ -18,7 +18,7 @@ public sealed record PurchaseCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Purchase.TransactionId"/>
 	[Required]
-	public override Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; set; }
 
 	/// <inheritdoc cref="Purchase.Price"/>
 	[Required]

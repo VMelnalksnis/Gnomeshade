@@ -13,8 +13,8 @@ namespace Gnomeshade.WebApi.Models.Importing;
 public sealed record AccountReference
 {
 	/// <summary>Whether or not the account was created during import.</summary>
-	public bool Created { get; init; }
+	public bool Created { get; set; }
 
 	/// <summary>The referenced account.</summary>
-	public Account Account { get; init; } = null!;
+	public Account Account { get; set; } = null!;
 }

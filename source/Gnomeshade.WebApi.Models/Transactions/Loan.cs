@@ -17,39 +17,39 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 public sealed record Loan
 {
 	/// <summary>The id of the loan.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>The id of the owner of the loan.</summary>
-	public Guid OwnerId { get; init; }
+	public Guid OwnerId { get; set; }
 
 	/// <summary>The point in time when the loan was created.</summary>
-	public Instant CreatedAt { get; init; }
+	public Instant CreatedAt { get; set; }
 
 	/// <summary>The id of the user that created this loan.</summary>
-	public Guid CreatedByUserId { get; init; }
+	public Guid CreatedByUserId { get; set; }
 
 	/// <summary>The point in the when the loan was last modified.</summary>
-	public Instant ModifiedAt { get; init; }
+	public Instant ModifiedAt { get; set; }
 
 	/// <summary>The id of the user that last modified this loan.</summary>
-	public Guid ModifiedByUserId { get; init; }
+	public Guid ModifiedByUserId { get; set; }
 
 	/// <summary>The id of the the transaction this loan is a part of.</summary>
 	/// <seealso cref="Transaction"/>
-	public Guid TransactionId { get; init; }
+	public Guid TransactionId { get; set; }
 
 	/// <summary>The id of the counterparty the gave (issued) the loan to <see cref="ReceivingCounterpartyId"/>.</summary>
 	/// <seealso cref="Counterparty"/>
-	public Guid IssuingCounterpartyId { get; init; }
+	public Guid IssuingCounterpartyId { get; set; }
 
 	/// <summary>The id of the counterparty the received the loan from <see cref="IssuingCounterpartyId"/>.</summary>
 	/// <seealso cref="Counterparty"/>
-	public Guid ReceivingCounterpartyId { get; init; }
+	public Guid ReceivingCounterpartyId { get; set; }
 
 	/// <summary>The amount that was loaned or payed back.</summary>
-	public decimal Amount { get; init; }
+	public decimal Amount { get; set; }
 
 	/// <summary>The id of the currency of the <see cref="Amount"/>.</summary>
 	/// <seealso cref="Currency"/>
-	public Guid CurrencyId { get; init; }
+	public Guid CurrencyId { get; set; }
 }

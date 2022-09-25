@@ -13,5 +13,5 @@ namespace Gnomeshade.WebApi.Models.Owners;
 public sealed record Owner
 {
 	/// <summary>The id of the owner.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 }

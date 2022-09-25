@@ -13,14 +13,14 @@ namespace Gnomeshade.WebApi.Models.Owners;
 public sealed record Ownership
 {
 	/// <summary>The id of the ownership.</summary>
-	public Guid Id { get; init; }
+	public Guid Id { get; set; }
 
 	/// <summary>The id of the owner.</summary>
-	public Guid OwnerId { get; init; }
+	public Guid OwnerId { get; set; }
 
 	/// <summary>The id of the user that has the access.</summary>
-	public Guid UserId { get; init; }
+	public Guid UserId { get; set; }
 
 	/// <summary>The id of the access level.</summary>
-	public Guid AccessId { get; init; }
+	public Guid AccessId { get; set; }
 }

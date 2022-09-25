@@ -205,16 +205,18 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		return Task.CompletedTask;
 	}
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<Counterparty> GetMyCounterpartyAsync() =>
+	public Task<Counterparty> GetMyCounterpartyAsync(CancellationToken cancellationToken = default) =>
 		Task.FromResult(_counterparties.Single(counterparty => counterparty.Id == Guid.Empty));
 
 	/// <inheritdoc />
-	public Task<Counterparty> GetCounterpartyAsync(Guid id) =>
+	public Task<Counterparty> GetCounterpartyAsync(Guid id, CancellationToken cancellationToken = default) =>
 		Task.FromResult(_counterparties.Single(counterparty => counterparty.Id == id));
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Counterparty>> GetCounterpartiesAsync() => Task.FromResult(_counterparties.ToList());
+	public Task<List<Counterparty>> GetCounterpartiesAsync(CancellationToken cancellationToken = default) => Task.FromResult(_counterparties.ToList());
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
@@ -255,7 +257,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Transaction> GetTransactionAsync(Guid id)
+	public Task<Transaction> GetTransactionAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_transactions.Single(transaction => transaction.Id == id));
 	}
@@ -263,7 +265,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public async Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default)
 	{
-		var transaction = await GetTransactionAsync(id);
+		var transaction = await GetTransactionAsync(id, cancellationToken);
 		return DetailedTransaction.FromTransaction(transaction) with
 		{
 			Transfers = await GetTransfersAsync(cancellationToken),
@@ -274,7 +276,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(Interval interval)
+	public Task<List<Transaction>> GetTransactionsAsync(
+		Interval interval,
+		CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_transactions.ToList());
 	}
@@ -455,19 +459,21 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<Account> GetAccountAsync(Guid id)
+	public Task<Account> GetAccountAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));
 	}
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Account>> GetAccountsAsync()
+	public Task<List<Account>> GetAccountsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_accounts.ToList());
 	}
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Account>> GetActiveAccountsAsync()
+	public Task<List<Account>> GetActiveAccountsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
 	}
@@ -486,8 +492,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task RemoveCurrencyFromAccountAsync(Guid id, Guid currencyId) =>
 		throw new NotImplementedException();
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Currency>> GetCurrenciesAsync()
+	public Task<List<Currency>> GetCurrenciesAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_currencies.ToList());
 	}
@@ -509,26 +516,28 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		return Task.FromResult(balances);
 	}
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Product>> GetProductsAsync()
+	public Task<List<Product>> GetProductsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_products.ToList());
 	}
 
 	/// <inheritdoc />
-	public Task<Product> GetProductAsync(Guid id)
+	public Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_products.Single(product => product.Id == id));
 	}
 
 	/// <inheritdoc />
-	public Task<Unit> GetUnitAsync(Guid id)
+	public Task<Unit> GetUnitAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_units.Single(unit => unit.Id == id));
 	}
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Unit>> GetUnitsAsync()
+	public Task<List<Unit>> GetUnitsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_units.ToList());
 	}
@@ -590,11 +599,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task AddPurchasesFromDocument(Guid transactionId, Guid linkId) => throw new NotImplementedException();
 
+	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Category>> GetCategoriesAsync() => Task.FromResult(_categories.ToList());
+	public Task<List<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default) => Task.FromResult(_categories.ToList());
 
 	/// <inheritdoc />
-	public Task<Category> GetCategoryAsync(Guid id)
+	public Task<Category> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_categories.Single(category => category.Id == id));
 	}

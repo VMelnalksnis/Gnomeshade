@@ -16,22 +16,26 @@ namespace Gnomeshade.WebApi.Client;
 public interface IProductClient
 {
 	/// <summary>Gets all products.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all products.</returns>
-	Task<List<Product>> GetProductsAsync();
+	Task<List<Product>> GetProductsAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the specified product.</summary>
 	/// <param name="id">The id of the product to get.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The product with the specified id.</returns>
-	Task<Product> GetProductAsync(Guid id);
+	Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the specified unit.</summary>
 	/// <param name="id">The id of the unit to get.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The unit with the specified id.</returns>
-	Task<Unit> GetUnitAsync(Guid id);
+	Task<Unit> GetUnitAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all units.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all units.</returns>
-	Task<List<Unit>> GetUnitsAsync();
+	Task<List<Unit>> GetUnitsAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Creates a new product or replaces an existing one if one exists with the specified id.</summary>
 	/// <param name="id">The id of the product.</param>
@@ -46,13 +50,15 @@ public interface IProductClient
 	Task PutUnitAsync(Guid id, UnitCreation unit);
 
 	/// <summary>Gets all categories.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all categories.</returns>
-	Task<List<Category>> GetCategoriesAsync();
+	Task<List<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default);
 
 	/// <summary>Gets the category with the specified id.</summary>
 	/// <param name="id">The id by which to search for the category.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>The category with the specified id.</returns>
-	Task<Category> GetCategoryAsync(Guid id);
+	Task<Category> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default);
 
 	/// <summary>Creates a new category.</summary>
 	/// <param name="category">The category to create.</param>

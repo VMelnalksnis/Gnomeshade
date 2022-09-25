@@ -10,11 +10,11 @@ namespace Gnomeshade.WebApi.Models.Accounts;
 public sealed record Balance
 {
 	/// <summary>The id of the <see cref="AccountInCurrency"/> for which the balance was calculated for.</summary>
-	public Guid AccountInCurrencyId { get; init; }
+	public Guid AccountInCurrencyId { get; set; }
 
 	/// <summary>The total amount withdrawn from the account.</summary>
-	public decimal SourceAmount { get; init; }
+	public decimal SourceAmount { get; set; }
 
 	/// <summary>The total amount deposited to the account.</summary>
-	public decimal TargetAmount { get; init; }
+	public decimal TargetAmount { get; set; }
 }

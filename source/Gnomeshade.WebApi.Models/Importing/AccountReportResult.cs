@@ -15,14 +15,14 @@ namespace Gnomeshade.WebApi.Models.Importing;
 public sealed record AccountReportResult
 {
 	/// <summary>The user account of the imported report.</summary>
-	public Account UserAccount { get; init; } = null!;
+	public Account UserAccount { get; set; } = null!;
 
 	/// <summary>The accounts created or referenced during the import.</summary>
-	public List<AccountReference> AccountReferences { get; init; } = new();
+	public List<AccountReference> AccountReferences { get; set; } = new();
 
 	/// <summary>The transfers created or referenced during the import.</summary>
-	public List<TransferReference> TransferReferences { get; init; } = new();
+	public List<TransferReference> TransferReferences { get; set; } = new();
 
 	/// <summary>The transactions created or referenced during the import.</summary>
-	public List<TransactionReference> TransactionReferences { get; init; } = new();
+	public List<TransactionReference> TransactionReferences { get; set; } = new();
 }

@@ -16,21 +16,21 @@ public sealed record LoanCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Loan.TransactionId"/>
 	[Required]
-	public override Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; set; }
 
 	/// <inheritdoc cref="Loan.IssuingCounterpartyId"/>
 	[Required]
-	public Guid? IssuingCounterpartyId { get; init; }
+	public Guid? IssuingCounterpartyId { get; set; }
 
 	/// <inheritdoc cref="Loan.ReceivingCounterpartyId"/>
 	[Required]
-	public Guid? ReceivingCounterpartyId { get; init; }
+	public Guid? ReceivingCounterpartyId { get; set; }
 
 	/// <inheritdoc cref="Loan.Amount"/>
 	[Required]
-	public decimal? Amount { get; init; }
+	public decimal? Amount { get; set; }
 
 	/// <inheritdoc cref="Loan.CurrencyId"/>
 	[Required]
-	public Guid? CurrencyId { get; init; }
+	public Guid? CurrencyId { get; set; }
 }

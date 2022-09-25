@@ -16,30 +16,30 @@ public sealed record TransferCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Transfer.TransactionId"/>
 	[Required]
-	public override Guid? TransactionId { get; init; }
+	public override Guid? TransactionId { get; set; }
 
 	/// <inheritdoc cref="Transfer.SourceAmount"/>
 	[Required]
-	public decimal? SourceAmount { get; init; }
+	public decimal? SourceAmount { get; set; }
 
 	/// <inheritdoc cref="Transfer.SourceAccountId"/>
 	[Required]
-	public Guid? SourceAccountId { get; init; }
+	public Guid? SourceAccountId { get; set; }
 
 	/// <inheritdoc cref="Transfer.TargetAmount"/>
 	[Required]
-	public decimal? TargetAmount { get; init; }
+	public decimal? TargetAmount { get; set; }
 
 	/// <inheritdoc cref="Transfer.TargetAccountId"/>
 	[Required]
-	public Guid? TargetAccountId { get; init; }
+	public Guid? TargetAccountId { get; set; }
 
 	/// <inheritdoc cref="Transfer.BankReference"/>
-	public string? BankReference { get; init; }
+	public string? BankReference { get; set; }
 
 	/// <inheritdoc cref="Transfer.ExternalReference"/>
-	public string? ExternalReference { get; init; }
+	public string? ExternalReference { get; set; }
 
 	/// <inheritdoc cref="Transfer.InternalReference"/>
-	public string? InternalReference { get; init; }
+	public string? InternalReference { get; set; }
 }
