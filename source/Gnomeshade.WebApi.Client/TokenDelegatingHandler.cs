@@ -4,8 +4,14 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Gnomeshade.WebApi.Models.Authentication;
 
 using IdentityModel.OidcClient;
 
@@ -15,19 +21,53 @@ namespace Gnomeshade.WebApi.Client;
 public sealed class TokenDelegatingHandler : DelegatingHandler
 {
 	private readonly GnomeshadeTokenCache _tokenCache;
+	private readonly JsonSerializerOptions _jsonSerializerOptions;
 	private readonly OidcClient _oidcClient;
 
 	/// <summary>Initializes a new instance of the <see cref="TokenDelegatingHandler"/> class.</summary>
 	/// <param name="tokenCache">Gnomeshade API token cache for preserving tokens between requests.</param>
+	/// <param name="jsonSerializerOptions">Gnomeshade specific instance of <see cref="JsonSerializerOptions"/>.</param>
 	/// <param name="oidcClient">OIDC client for token management.</param>
-	public TokenDelegatingHandler(GnomeshadeTokenCache tokenCache, OidcClient oidcClient)
+	public TokenDelegatingHandler(
+		GnomeshadeTokenCache tokenCache,
+		GnomeshadeJsonSerializerOptions jsonSerializerOptions,
+		OidcClient oidcClient)
 	{
 		_tokenCache = tokenCache;
+		_jsonSerializerOptions = jsonSerializerOptions.Options;
 		_oidcClient = oidcClient;
 	}
 
 	/// <inheritdoc />
-	protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+	protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+	{
+		if (request.RequestUri?.ToString().EndsWith(Routes._loginUri) ?? false)
+		{
+			return HandleBuiltInUsers(request, cancellationToken);
+		}
+
+		return HandleOAuth(request, cancellationToken);
+	}
+
+	private async Task<HttpResponseMessage> HandleBuiltInUsers(HttpRequestMessage request, CancellationToken cancellationToken)
+	{
+		var loginResponse = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+		if (loginResponse.StatusCode is not HttpStatusCode.OK)
+		{
+			return loginResponse;
+		}
+
+		var login = await loginResponse.Content
+			.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions, cancellationToken)
+			.ConfigureAwait(false);
+
+		_tokenCache.SetRefreshToken(login!.Token, login.Token, login.ValidTo.ToDateTimeOffset());
+
+		loginResponse.Content = new StringContent(JsonSerializer.Serialize(login, _jsonSerializerOptions), Encoding.UTF8, MediaTypeNames.Application.Json);
+		return loginResponse;
+	}
+
+	private async Task<HttpResponseMessage> HandleOAuth(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
 		if (_tokenCache.Access is null)
 		{

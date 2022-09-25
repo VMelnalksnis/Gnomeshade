@@ -133,7 +133,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	private async Task<IGnomeshadeClient> CreateAuthorizedClientAsync(Login login)
 	{
-		var client = CreateUnauthorizedClient();
+		var client = CreateUnauthorizedClient(new TokenDelegatingHandler(new(SystemClock.Instance), new(DateTimeZoneProviders.Tzdb), null!));
 		var loginResult = await client.LogInAsync(login);
 		if (loginResult is not SuccessfulLogin)
 		{

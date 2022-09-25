@@ -58,6 +58,7 @@ public sealed class AuthorizationTests : WebserverTests
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
 			.AddSingleton<GnomeshadeTokenCache>()
+			.AddSingleton<GnomeshadeJsonSerializerOptions>()
 			.AddTransient<TokenDelegatingHandler>();
 
 		var provider = services.BuildServiceProvider();

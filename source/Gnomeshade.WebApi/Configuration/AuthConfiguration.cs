@@ -12,9 +12,11 @@ using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace Gnomeshade.WebApi.Configuration;
 
@@ -85,7 +87,14 @@ internal static class AuthConfiguration
 					IssuerSigningKey = jwtOptions.SecurityKey,
 					ClockSkew = TimeSpan.Zero,
 				};
+
+				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, authenticationSchemes);
 			});
+		}
+		else
+		{
+			authenticationBuilder.AddJwtBearer(options =>
+				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, authenticationSchemes));
 		}
 
 		foreach (var providerName in providerNames)
@@ -113,5 +122,26 @@ internal static class AuthConfiguration
 		}
 
 		return services;
+	}
+
+	private static string? ForwardDefaultSelector(HttpContext context, IEnumerable<string> authenticationSchemes)
+	{
+		string authorization = context.Request.Headers[HeaderNames.Authorization];
+		if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
+		{
+			return null;
+		}
+
+		var token = authorization[JwtBearerDefaults.AuthenticationScheme.Length..];
+		var handler = new JwtSecurityTokenHandler();
+		if (!handler.CanReadToken(token))
+		{
+			return null;
+		}
+
+		var jwtToken = handler.ReadToken(token);
+		return authenticationSchemes.Contains(jwtToken.Issuer)
+			? jwtToken.Issuer
+			: null;
 	}
 }

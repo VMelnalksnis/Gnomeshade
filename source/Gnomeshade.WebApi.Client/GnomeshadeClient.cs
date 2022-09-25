@@ -52,9 +52,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login, _jsonSerializerOptions).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
-				var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>(_jsonSerializerOptions).ConfigureAwait(false);
-				_httpClient.DefaultRequestHeaders.Authorization = new("Bearer", loginResponse!.Token);
-				return new SuccessfulLogin(loginResponse);
+				return new SuccessfulLogin();
 			}
 
 			var errorResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
