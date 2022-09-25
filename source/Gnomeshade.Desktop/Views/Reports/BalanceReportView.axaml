@@ -7,14 +7,14 @@
 	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static design:DesignTimeData.CategoryReportViewModel}"
-	x:Class="Gnomeshade.Desktop.Views.Reports.CategoryReportView"
+	d:DataContext="{x:Static design:DesignTimeData.BalanceReportViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Reports.BalanceReportView"
 	x:CompileBindings="True"
-	x:DataType="reports:CategoryReportViewModel">
+	x:DataType="reports:BalanceReportViewModel">
 
 	<Grid RowDefinitions="*">
 		<liveChartsCore:CartesianChart
 			Series="{Binding Series}" XAxes="{Binding XAxes}"
-			ZoomMode="X" LegendPosition="Bottom" TooltipPosition="Top" />
+			ZoomMode="X" TooltipPosition="Hidden" />
 	</Grid>
 </UserControl>

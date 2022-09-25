@@ -151,6 +151,10 @@ public static class DesignTimeData
 	public static ProductReportViewModel ProductReportViewModel { get; } =
 		InitializeViewModel(new ProductReportViewModel(GnomeshadeClient, Clock, DateTimeZoneProvider));
 
+	/// <summary>Gets an instance of <see cref="BalanceReportViewModel"/> for use during design time.</summary>
+	public static BalanceReportViewModel BalanceReportViewModel { get; } =
+		InitializeViewModel(new BalanceReportViewModel(GnomeshadeClient, Clock, DateTimeZoneProvider));
+
 	/// <summary>Gets an instance of <see cref="TransactionSummary"/> for use during design time.</summary>
 	public static TransactionSummary TransactionSummary { get; } = new();
 

@@ -14,9 +14,7 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
-using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
 
 using NodaTime;
 
@@ -31,7 +29,6 @@ public sealed class CategoryReportViewModel : ViewModelBase
 
 	private List<StackedColumnSeries<DateTimePoint>> _series;
 	private List<ICartesianAxis> _xAxes;
-	private int? _currentYear;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
@@ -78,43 +75,6 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		return viewModel;
 	}
 
-	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the next year.</summary>
-	public void NextYear()
-	{
-		var maxYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
-			.Max(values => values.DateTime).Year;
-		_currentYear ??= maxYear;
-		if (_currentYear != maxYear)
-		{
-			_currentYear++;
-		}
-
-		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
-		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
-	}
-
-	/// <summary>Set limit for first axis from <see cref="XAxes"/> to the previous year.</summary>
-	public void PreviousYear()
-	{
-		var minYear = Series.SelectMany(series => series.Values ?? Array.Empty<DateTimePoint>())
-			.Min(values => values.DateTime).Year;
-		_currentYear ??= minYear;
-		if (_currentYear != minYear)
-		{
-			_currentYear--;
-		}
-
-		XAxes[0].MinLimit = new DateTime(_currentYear!.Value, 1, 1).AddDays(-15).Ticks;
-		XAxes[0].MaxLimit = new DateTime(_currentYear.Value, 12, 31).AddDays(-15).Ticks;
-	}
-
-	/// <summary>Clear limits for first axis from <see cref="XAxes"/>.</summary>
-	public void Clear()
-	{
-		XAxes[0].MinLimit = null;
-		XAxes[0].MaxLimit = null;
-	}
-
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
@@ -142,7 +102,6 @@ public sealed class CategoryReportViewModel : ViewModelBase
 				Labeler = value => new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString("yyyy MM"),
 				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
 				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-				LabelsRotation = 90,
 			},
 		};
 
@@ -194,12 +153,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 						(double?)categoryGrouping
 							.Where(grouping => grouping.date.Year == split.Year && grouping.date.Month == split.Month)
 							.Sum(grouping => grouping.purchase.Price))),
-				Stroke = null,
-				DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
-				DataLabelsSize = 12,
-				DataLabelsPosition = DataLabelsPosition.Middle,
 				Name = categoryGrouping.Key?.Name ?? "Uncategorized",
-				EasingFunction = null,
 			})
 			.ToList();
 

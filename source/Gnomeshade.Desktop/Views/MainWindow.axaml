@@ -81,6 +81,9 @@
 						x:Name="CategoryReport" Header="Cate_gories"
 						Command="{ReflectionBinding SwitchToCategoryReportAsync}" />
 					<MenuItem
+						x:Name="BalanceReport" Header="_Balance"
+						Command="{ReflectionBinding SwitchToBalanceReportAsync}" />
+					<MenuItem
 						x:Name="ProductReport" Header="_Products"
 						Command="{ReflectionBinding SwitchToProductReportAsync}" />
 				</MenuItem>

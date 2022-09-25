@@ -117,18 +117,11 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task MergeCounterpartiesAsync()
+	public Task MergeCounterpartiesAsync() => SwitchTo<CounterpartyMergeViewModel>(() =>
 	{
-		if (ActiveView is CounterpartyMergeViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var counterpartyMergeViewModel = new CounterpartyMergeViewModel(gnomeshadeClient);
-		ActiveView = counterpartyMergeViewModel;
-		await counterpartyMergeViewModel.RefreshAsync();
-	}
+		return new(gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -148,78 +141,43 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToCategoriesAsync()
+	public Task SwitchToCategoriesAsync() => SwitchTo<CategoryViewModel>(() =>
 	{
-		if (ActiveView is CategoryViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var categoryViewModel = new CategoryViewModel(gnomeshadeClient);
-		ActiveView = categoryViewModel;
-		await ActiveView.RefreshAsync();
-	}
+		return new(gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToAccountOverviewAsync()
+	public Task SwitchToAccountOverviewAsync() => SwitchTo<AccountViewModel>(() =>
 	{
-		if (ActiveView is AccountViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var accountViewModel = new AccountViewModel(gnomeshadeClient);
-		ActiveView = accountViewModel;
-		await ActiveView.RefreshAsync();
-	}
+		return new(gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToCounterpartiesAsync()
+	public Task SwitchToCounterpartiesAsync() => SwitchTo<CounterpartyViewModel>(() =>
 	{
-		if (ActiveView is CounterpartyViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var counterpartyViewModel = new CounterpartyViewModel(gnomeshadeClient);
-		ActiveView = counterpartyViewModel;
-		await ActiveView.RefreshAsync();
-	}
+		return new(gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToImportAsync()
+	public Task SwitchToImportAsync() => SwitchTo<ImportViewModel>(() =>
 	{
-		if (ActiveView is ImportViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var importViewModel = new ImportViewModel(gnomeshadeClient);
-		ActiveView = importViewModel;
-		await importViewModel.RefreshAsync();
-	}
+		return new(gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToProductAsync()
+	public Task SwitchToProductAsync() => SwitchTo<ProductViewModel>(() =>
 	{
-		if (ActiveView is ProductViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var productViewModel = new ProductViewModel(gnomeshadeClient, _dateTimeZoneProvider);
-		ActiveView = productViewModel;
-		await ActiveView.RefreshAsync();
-	}
+		return new(gnomeshadeClient, _dateTimeZoneProvider);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -237,33 +195,27 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryReportViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToCategoryReportAsync()
+	public Task SwitchToCategoryReportAsync() => SwitchTo<CategoryReportViewModel>(() =>
 	{
-		if (ActiveView is CategoryReportViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var viewModel = new CategoryReportViewModel(gnomeshadeClient, _clock, _dateTimeZoneProvider);
-		ActiveView = viewModel;
-		await viewModel.RefreshAsync();
-	}
+		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+	});
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="BalanceReportViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToBalanceReportAsync() => SwitchTo<BalanceReportViewModel>(() =>
+	{
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductReportViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToProductReportAsync()
+	public Task SwitchToProductReportAsync() => SwitchTo<ProductReportViewModel>(() =>
 	{
-		if (ActiveView is ProductReportViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var viewModel = new ProductReportViewModel(gnomeshadeClient, _clock, _dateTimeZoneProvider);
-		ActiveView = viewModel;
-		await viewModel.RefreshAsync();
-	}
+		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+	});
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
 	{
@@ -315,41 +267,52 @@ public sealed class MainWindowViewModel : ViewModelBase
 		SwitchToLogin();
 	}
 
-	private async Task SwitchToTransactionOverviewAsync()
+	private Task SwitchToTransactionOverviewAsync() => SwitchTo<TransactionViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
 		var dialogService = _serviceProvider.GetRequiredService<IDialogService>();
-		var transactionViewModel = new TransactionViewModel(gnomeshadeClient, dialogService, _clock, _dateTimeZoneProvider);
-		ActiveView = transactionViewModel;
-		await transactionViewModel.RefreshAsync();
-	}
+		return new(gnomeshadeClient, dialogService, _clock, _dateTimeZoneProvider);
+	});
 
-	private void OnUserLoggedIn(object? sender, EventArgs e)
+	private Task SwitchTo<TViewModel>(Func<TViewModel> factory)
+		where TViewModel : ViewModelBase
 	{
-		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+		if (ActiveView is TViewModel)
+		{
+			return Task.CompletedTask;
+		}
+
+		var viewModel = factory();
+		ActiveView = viewModel;
+		return viewModel.RefreshAsync();
 	}
 
-	private void OnAccountUpserted(object? sender, UpsertedEventArgs e)
+	private async void OnUserLoggedIn(object? sender, EventArgs e)
 	{
-		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+		await SwitchToTransactionOverviewAsync();
 	}
 
-	private void OnProductUpserted(object? sender, UpsertedEventArgs e)
+	private async void OnAccountUpserted(object? sender, UpsertedEventArgs e)
+	{
+		await SwitchToTransactionOverviewAsync();
+	}
+
+	private async void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{
 		if (PreviousView is ImportViewModel importViewModel)
 		{
-			Task.Run(() => importViewModel.RefreshAsync()).Wait();
+			await importViewModel.RefreshAsync();
 			ActiveView = importViewModel;
 		}
 		else
 		{
-			Task.Run(SwitchToTransactionOverviewAsync).Wait();
+			await SwitchToTransactionOverviewAsync();
 		}
 	}
 
-	private void OnUnitUpserted(object? sender, UpsertedEventArgs e)
+	private async void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
-		Task.Run(SwitchToTransactionOverviewAsync).Wait();
+		await SwitchToTransactionOverviewAsync();
 	}
 
 	private void Unsubscribe(ViewModelBase? viewModel)
