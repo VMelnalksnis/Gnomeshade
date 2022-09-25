@@ -29,7 +29,7 @@ public sealed class CurrencyRepositoryTests
 		var currencies = await _repository.GetAllAsync();
 		var expectedCurrencies = new List<string>
 		{
-			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD", "HRD",
+			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD", "HRD", "SEK",
 		};
 		currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
 
