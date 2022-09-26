@@ -1326,95 +1326,95 @@
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
-          "Dapper": "[2.0.123, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "Microsoft.AspNetCore.Identity": "[2.2.0, )",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.9, )",
-          "Microsoft.Extensions.Identity.Stores": "[6.0.9, )",
-          "NodaTime": "[3.1.2, )",
-          "System.Security.Cryptography.Xml": "[6.0.1, )",
-          "System.Text.Encodings.Web": "[6.0.0, )",
-          "dbup-core": "[4.6.3, )"
+          "Dapper": "2.0.123",
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Microsoft.AspNetCore.Identity": "2.2.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.9",
+          "Microsoft.Extensions.Identity.Stores": "6.0.9",
+          "NodaTime": "3.1.3",
+          "System.Security.Cryptography.Xml": "6.0.1",
+          "System.Text.Encodings.Web": "6.0.0",
+          "dbup-core": "4.6.3"
         }
       },
       "gnomeshade.data.postgresql": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "Gnomeshade.Data": "[1.0.0, )",
-          "Npgsql": "[6.0.7, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[6.0.7, )",
-          "Npgsql.NodaTime": "[6.0.7, )",
-          "dbup-postgresql": "[4.5.0, )"
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Gnomeshade.Data": "1.0.0",
+          "Npgsql": "6.0.7",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.7",
+          "Npgsql.NodaTime": "6.0.7",
+          "dbup-postgresql": "4.5.0"
         }
       },
       "gnomeshade.data.sqlite": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "Gnomeshade.Data": "[1.0.0, )",
-          "Microsoft.Data.Sqlite": "[6.0.9, )",
-          "Microsoft.EntityFrameworkCore.Sqlite": "[6.0.9, )",
-          "System.Net.Http": "[4.3.4, )",
-          "System.Text.RegularExpressions": "[4.3.1, )",
-          "dbup-sqlite": "[4.6.0, )"
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Gnomeshade.Data": "1.0.0",
+          "Microsoft.Data.Sqlite": "6.0.9",
+          "Microsoft.EntityFrameworkCore.Sqlite": "6.0.9",
+          "System.Net.Http": "4.3.4",
+          "System.Text.RegularExpressions": "4.3.1",
+          "dbup-sqlite": "4.6.0"
         }
       },
       "gnomeshade.webapi": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.SmartEnum": "[2.1.0, )",
-          "AutoMapper": "[11.0.1, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "Elastic.Apm.AspNetCore": "[1.17.0, )",
-          "Elastic.Apm.Elasticsearch": "[1.17.0, )",
-          "Elastic.Apm.EntityFrameworkCore": "[1.17.0, )",
-          "Elastic.Apm.SerilogEnricher": "[1.5.3, )",
-          "Elastic.CommonSchema.Serilog": "[1.5.3, )",
-          "FuzzySharp": "[2.0.2, )",
-          "Gnomeshade.Data.PostgreSQL": "[1.0.0, )",
-          "Gnomeshade.Data.Sqlite": "[1.0.0, )",
-          "Gnomeshade.WebApi.Client": "[1.0.0, )",
-          "Gnomeshade.WebApi.Models": "[1.0.0, )",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "[6.0.9, )",
-          "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
-          "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
-          "NodaTime": "[3.1.2, )",
-          "NodaTime.Serialization.SystemTextJson": "[1.0.0, )",
-          "Serilog": "[2.12.0, )",
-          "Serilog.AspNetCore": "[6.0.1, )",
-          "Serilog.Sinks.Console": "[4.1.0, )",
-          "Serilog.Sinks.Elasticsearch": "[8.4.1, )",
-          "Swashbuckle.AspNetCore": "[6.4.0, )",
-          "Swashbuckle.AspNetCore.Annotations": "[6.4.0, )",
-          "System.Linq.Async": "[6.0.1, )",
-          "VMelnalksnis.ISO20022DotNet": "[0.3.2, )",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.0.0, )",
-          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.1.0, )"
+          "Ardalis.SmartEnum": "2.1.0",
+          "AutoMapper": "11.0.1",
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Elastic.Apm.AspNetCore": "1.17.0",
+          "Elastic.Apm.Elasticsearch": "1.17.0",
+          "Elastic.Apm.EntityFrameworkCore": "1.17.0",
+          "Elastic.Apm.SerilogEnricher": "1.5.3",
+          "Elastic.CommonSchema.Serilog": "1.5.3",
+          "FuzzySharp": "2.0.2",
+          "Gnomeshade.Data.PostgreSQL": "1.0.0",
+          "Gnomeshade.Data.Sqlite": "1.0.0",
+          "Gnomeshade.WebApi.Client": "1.0.0",
+          "Gnomeshade.WebApi.Models": "1.0.0",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
+          "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0",
+          "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "5.0.0",
+          "NodaTime": "3.1.3",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0",
+          "Serilog": "2.12.0",
+          "Serilog.AspNetCore": "6.0.1",
+          "Serilog.Sinks.Console": "4.1.0",
+          "Serilog.Sinks.Elasticsearch": "8.4.1",
+          "Swashbuckle.AspNetCore": "6.4.0",
+          "Swashbuckle.AspNetCore.Annotations": "6.4.0",
+          "System.Linq.Async": "6.0.1",
+          "VMelnalksnis.ISO20022DotNet": "0.3.2",
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "1.0.0",
+          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "0.1.0"
         }
       },
       "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "Gnomeshade.WebApi.Models": "[1.0.0, )",
-          "IdentityModel.OidcClient": "[5.0.2, )",
-          "Microsoft.Extensions.Configuration": "[6.0.1, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
-          "Microsoft.Extensions.Http": "[6.0.0, )",
-          "Microsoft.Extensions.Options": "[6.0.0, )",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "[6.0.0, )",
-          "Microsoft.Extensions.Options.DataAnnotations": "[6.0.0, )",
-          "NodaTime.Serialization.SystemTextJson": "[1.0.0, )"
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "Gnomeshade.WebApi.Models": "1.0.0",
+          "IdentityModel.OidcClient": "5.0.2",
+          "Microsoft.Extensions.Configuration": "6.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Http": "6.0.0",
+          "Microsoft.Extensions.Options": "6.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
+          "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
       "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "JetBrains.Annotations": "[2022.1.0, )",
-          "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
-          "NodaTime": "[3.1.2, )"
+          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
+          "JetBrains.Annotations": "2022.1.0",
+          "Microsoft.AspNetCore.Http.Features": "5.0.17",
+          "NodaTime": "3.1.3"
         }
       },
       "Ardalis.SmartEnum": {
@@ -1695,9 +1695,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.2, )",
-        "resolved": "3.1.2",
-        "contentHash": "KAlnzQ2EtrrRhFoVePf2kMc24CXX3mAslfp+LmVQnk6HSZ8whgsHNpfUfO+jWCdMgGKQQKMjNCDgmTopjTPFFA==",
+        "requested": "[3.1.3, )",
+        "resolved": "3.1.3",
+        "contentHash": "uuoPNL26Rvxa1YuLWt5fs6Sc8ItiuUY5CSD0NfHb7Z4ITCgmT4HkwB4vrYlzqWP/gSN9wP/lCawc5/G5ecWERw==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
