@@ -28,7 +28,14 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		("\"", string.Empty),
 	};
 
-	private static readonly string[] _endIdentifiers = { "Citas akcijas", "ATLALDES", "Makeajanu karte" };
+	// todo need a better way to catch all parsing errors
+	private static readonly string[] _endIdentifiers =
+	{
+		"ATLALDES",
+		"Citas akcijas",
+		"Makeajanu karte",
+		"Makeajamu karte",
+	};
 
 	private readonly ILogger<RimiReceiptParser> _logger;
 
@@ -68,7 +75,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 			productPart = productPart[start..end];
 		}
 
-		_logger.LogTrace("Extracted products from document content {ProductPart}", productPart);
+		_logger.LogDebug("Extracted products from document content {ProductPart}", productPart);
 
 		// Filter lines that don't contain any text, only OCR artifacts
 		var lines = productPart
@@ -98,7 +105,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 			lines = lines.Skip(index + 1).ToList();
 		}
 
-		_logger.LogTrace("Extracted products {RawProducts} from document content", rawProducts);
+		_logger.LogDebug("Extracted products {RawProducts} from document content", rawProducts);
 
 		return rawProducts;
 	}
