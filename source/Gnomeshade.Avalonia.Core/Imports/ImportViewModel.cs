@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.WebApi.Client;
 
 namespace Gnomeshade.Avalonia.Core.Imports;
@@ -78,7 +79,11 @@ public sealed class ImportViewModel : ViewModelBase
 			}
 			else if (SelectedInstitution is not null)
 			{
-				await _gnomeshadeClient.ImportAsync(SelectedInstitution);
+				var result = await _gnomeshadeClient.ImportAsync(SelectedInstitution);
+				if (result is NewRequisition newRequisition)
+				{
+					SystemBrowser.OpenBrowser(newRequisition.RequisitionUri.ToString());
+				}
 			}
 		}
 		finally

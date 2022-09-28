@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -312,13 +313,23 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync(Nordigen.Institutions(countryCode), _context.ListString, cancellationToken);
 
 	/// <inheritdoc />
-	public async Task<List<AccountReportResult>> ImportAsync(string id)
+	public async Task<ImportResult> ImportAsync(string id)
 	{
 		var timeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
 		using var importResponse = await _httpClient.PostAsync(Nordigen.Import(id, timeZone), null);
-		await ThrowIfNotSuccessCode(importResponse);
+		if (importResponse.IsSuccessStatusCode)
+		{
+			return new SuccessfulImport();
+		}
 
-		return (await importResponse.Content.ReadFromJsonAsync(_context.ListAccountReportResult))!;
+		if (importResponse.StatusCode is HttpStatusCode.Found)
+		{
+			var redirectUrl = importResponse.Headers.Location!;
+			return new NewRequisition(redirectUrl);
+		}
+
+		var message = await importResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+		throw new HttpRequestException($"Failed with message: {message}", null, importResponse.StatusCode);
 	}
 
 	/// <inheritdoc />

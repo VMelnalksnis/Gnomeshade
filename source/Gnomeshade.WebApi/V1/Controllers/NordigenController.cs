@@ -33,6 +33,7 @@ using VMelnalksnis.ISO20022DotNet.MessageSets.BankToCustomerCashManagement.V2.Ac
 using VMelnalksnis.NordigenDotNet;
 using VMelnalksnis.NordigenDotNet.Accounts;
 using VMelnalksnis.NordigenDotNet.Institutions;
+using VMelnalksnis.NordigenDotNet.Requisitions;
 
 using static Gnomeshade.WebApi.V1.Importing.TransactionCodes.Family;
 using static Gnomeshade.WebApi.V1.Importing.TransactionCodes.SubFamily;
@@ -130,7 +131,8 @@ public sealed class NordigenController : ControllerBase
 		}
 
 		_logger.LogDebug("Getting requisition for {InstitutionId}", id);
-		var existing = await _nordigenClient.Requisitions.Get().SingleOrDefaultAsync(r => r.InstitutionId == id);
+		var existing = await _nordigenClient.Requisitions.Get().SingleOrDefaultAsync(r =>
+			r.InstitutionId == id && r.Status is RequisitionStatus.Ln);
 		if (existing is null)
 		{
 			_logger.LogDebug("Creating new requisition for {InstitutionId}", id);

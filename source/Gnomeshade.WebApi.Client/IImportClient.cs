@@ -30,7 +30,7 @@ public interface IImportClient
 	/// <summary>Imports all transactions from the specified institution.</summary>
 	/// <param name="id">The institution id.</param>
 	/// <returns>A summary of the imported data.</returns>
-	Task<List<AccountReportResult>> ImportAsync(string id);
+	Task<ImportResult> ImportAsync(string id);
 
 	/// <summary>Adds purchases from the document from <paramref name="linkId"/> to the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction to which to add the purchases.</param>
