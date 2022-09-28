@@ -317,7 +317,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		var timeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault().Id;
 		using var importResponse = await _httpClient.PostAsync(Nordigen.Import(id, timeZone), null);
-		if (importResponse.IsSuccessStatusCode)
+		if (importResponse.StatusCode is HttpStatusCode.OK)
 		{
 			return new SuccessfulImport();
 		}
