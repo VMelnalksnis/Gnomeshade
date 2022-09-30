@@ -9,7 +9,7 @@
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="ContinuousIntegrationBuild != true">
+	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
 		<UserSecretsId>d04b4465-36e6-48eb-86c4-a1b1ccb1b023</UserSecretsId>
 	</PropertyGroup>
 

@@ -17,6 +17,10 @@
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' == 'true'">
+		<RestoreLockedMode>true</RestoreLockedMode>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="StyleCop.Analyzers">
 			<PrivateAssets>all</PrivateAssets>
