@@ -31,11 +31,6 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: Cache Docker images
-        uses: ScribeMD/docker-cache@0.2.3
-        with:
-          key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
-
       - name: Restore dependencies
         run: dotnet restore
 
