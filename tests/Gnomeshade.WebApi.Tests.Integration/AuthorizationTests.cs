@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
@@ -41,16 +42,18 @@ public sealed class AuthorizationTests : WebserverTests
 	{
 		var services = new ServiceCollection();
 
+		var redirectUri = $"http://localhost:{Fixture.RedirectPort}/";
 		services
 			.AddHttpClient()
 			.AddLogging()
 			.AddSingleton<IBrowser, MockBrowser>()
+			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(redirectUri))
 			.AddTransient<OidcClient>(provider => new(new()
 			{
 				Authority = $"http://localhost:{Fixture.KeycloakPort}/realms/gnomeshade/",
 				ClientId = "gnomeshade",
 				Scope = "openid profile",
-				RedirectUri = $"http://localhost:{Fixture.RedirectPort}/",
+				RedirectUri = redirectUri,
 				Browser = provider.GetRequiredService<IBrowser>(),
 				LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
 				HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),

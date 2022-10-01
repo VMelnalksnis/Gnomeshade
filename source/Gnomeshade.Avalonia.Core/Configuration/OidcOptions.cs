@@ -24,9 +24,11 @@ public sealed class OidcOptions
 	public string? ClientSecret { get; set; }
 
 	/// <inheritdoc cref="OidcClientOptions.RedirectUri"/>
-	public Uri RedirectUri => new("http://localhost:8297");
+	[Required]
+	public Uri RedirectUri { get; set; } = null!;
 
 	/// <inheritdoc cref="OidcClientOptions.Scope"/>
+	[Required]
 	public string Scope => "openid profile";
 
 	/// <summary>Gets or sets the time in seconds to wait until OIDC signin is completed by the user.</summary>

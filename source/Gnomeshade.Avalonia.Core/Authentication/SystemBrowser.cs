@@ -14,9 +14,10 @@ namespace Gnomeshade.Avalonia.Core.Authentication;
 public sealed class SystemBrowser : Browser
 {
 	/// <summary>Initializes a new instance of the <see cref="SystemBrowser"/> class.</summary>
+	/// <param name="gnomeshadeProtocolHandler">Handler for gnomeshade protocol requests.</param>
 	/// <param name="timeout">The time to wait until user completes signin.</param>
-	public SystemBrowser(TimeSpan timeout)
-		: base(timeout)
+	public SystemBrowser(IGnomeshadeProtocolHandler gnomeshadeProtocolHandler, TimeSpan timeout)
+		: base(gnomeshadeProtocolHandler, timeout)
 	{
 	}
 

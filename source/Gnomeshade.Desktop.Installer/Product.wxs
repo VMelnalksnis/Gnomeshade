@@ -36,6 +36,7 @@
 			<ComponentGroupRef Id="ProductComponents"/>
 			<ComponentRef Id="ApplicationShortcut"/>
 			<ComponentRef Id="ComponentDesktopShortcut"/>
+			<ComponentRef Id="RegistryEntries" />
 		</Feature>
 	</Product>
 
@@ -66,7 +67,7 @@
 			<Component Id="Gnomeshade.Desktop.exe" Guid="*">
 				<File Id="Gnomeshade.Desktop.exe" Name="Gnomeshade.Desktop.exe"
 					  Source="$(var.BuildDir)Gnomeshade.Desktop.exe"/>
-				
+
 				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
 				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
 			</Component>
@@ -117,6 +118,20 @@
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
 				<RegistryValue Root="HKCU" Key="Software\$(var.Name)"
 							   Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+
+	<Fragment>
+		<DirectoryRef Id="TARGETDIR">
+			<Component Id="RegistryEntries" Guid="*">
+				<RegistryKey Root="HKCU" Key="SOFTWARE\Classes\gnomeshade" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="URL:gnomeshade"/>
+					<RegistryValue Type="string" Value="" Name="URL Protocol" KeyPath="yes"/>
+					<RegistryKey Key="shell\open\command" Action="createAndRemoveOnUninstall">
+						<RegistryValue Type="string" Value="&quot;[INSTALLFOLDER]Gnomeshade.Desktop.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
 			</Component>
 		</DirectoryRef>
 	</Fragment>

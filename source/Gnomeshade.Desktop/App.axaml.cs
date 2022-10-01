@@ -14,6 +14,7 @@ using Avalonia.Markup.Xaml;
 using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
+using Gnomeshade.Desktop.Authentication;
 using Gnomeshade.Desktop.Views;
 using Gnomeshade.WebApi.Client;
 
@@ -67,10 +68,12 @@ public sealed class App : Application
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
+			.AddSingleton<IGnomeshadeProtocolHandler, WindowsProtocolHandler>()
 			.AddSingleton<IBrowser, SystemBrowser>(provider =>
 			{
+				var protocolHandler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue;
-				return new(options.SigninTimeout);
+				return new(protocolHandler, options.SigninTimeout);
 			});
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
