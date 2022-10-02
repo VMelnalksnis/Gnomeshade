@@ -44,4 +44,8 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
+
+	<ItemGroup>
+		<TrimmerRootAssembly Include="mscorlib" />
+	</ItemGroup>
 </Project>
