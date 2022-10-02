@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -68,13 +69,23 @@ public sealed class App : Application
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
-			.AddSingleton<IGnomeshadeProtocolHandler, WindowsProtocolHandler>()
 			.AddSingleton<IBrowser, SystemBrowser>(provider =>
 			{
 				var protocolHandler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue;
 				return new(protocolHandler, options.SigninTimeout);
 			});
+
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		{
+			serviceCollection
+				.AddSingleton<IGnomeshadeProtocolHandler, WindowsProtocolHandler>()
+				.AddSingleton<ICredentialStorageService, WindowsCredentialStorageService>();
+		}
+		else
+		{
+			throw new PlatformNotSupportedException($"{RuntimeInformation.OSDescription} is not supported");
+		}
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
 		{

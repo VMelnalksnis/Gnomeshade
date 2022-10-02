@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ using Gnomeshade.Avalonia.Core.Authentication;
 namespace Gnomeshade.Desktop.Authentication;
 
 /// <inheritdoc />
+[SupportedOSPlatform("windows")]
 public sealed class WindowsProtocolHandler : IGnomeshadeProtocolHandler
 {
 	internal const string Name = "gnomeshade";

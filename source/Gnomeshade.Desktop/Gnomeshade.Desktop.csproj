@@ -7,6 +7,7 @@
 		<TrimMode>copyused</TrimMode>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
@@ -14,6 +15,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AdysTech.CredentialManager" />
 		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Desktop" />
 		<PackageReference Include="Avalonia.Diagnostics" />

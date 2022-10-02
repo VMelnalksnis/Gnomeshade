@@ -1,6 +1,7 @@
 <Project>
 	<ItemGroup>
 		<PackageVersion Include="Ardalis.SmartEnum" Version="2.1.0"/>
+		<PackageVersion Include="AdysTech.CredentialManager" Version="2.6.0"/>
 		<PackageVersion Include="AutoMapper" Version="11.0.1"/>
 		<PackageVersion Include="Avalonia" Version="0.10.18"/>
 		<PackageVersion Include="Avalonia.Controls.DataGrid" Version="0.10.18"/>

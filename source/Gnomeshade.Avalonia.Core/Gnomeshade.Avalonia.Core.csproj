@@ -22,8 +22,4 @@
 		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Include="Authentication\SuccessfulResponsePage.html" />
-	</ItemGroup>
-
 </Project>

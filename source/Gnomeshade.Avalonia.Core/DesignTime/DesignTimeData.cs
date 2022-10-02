@@ -38,7 +38,7 @@ public static class DesignTimeData
 	private static IDialogService DialogService { get; } = new DesignTimeDialogService();
 
 	private static IAuthenticationService AuthenticationService { get; } =
-		new AuthenticationService(GnomeshadeClient);
+		new AuthenticationService(GnomeshadeClient, new(Clock), new DesignTimeCredentialStorage());
 
 	// Static member order is important due to initialization order
 #pragma warning disable SA1202

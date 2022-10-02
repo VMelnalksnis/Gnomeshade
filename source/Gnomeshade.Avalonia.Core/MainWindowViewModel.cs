@@ -96,7 +96,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 		if (isValid)
 		{
-			SwitchToLogin();
+			await SwitchToLogin();
 		}
 		else
 		{
@@ -112,7 +112,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
 		await authenticationService.Logout();
-		SwitchToLogin();
+		await SwitchToLogin();
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>
@@ -245,13 +245,24 @@ public sealed class MainWindowViewModel : ViewModelBase
 		return new NullReferenceException(message);
 	}
 
-	private void SwitchToLogin()
+	private async Task SwitchToLogin()
 	{
+		var credentialStorageService = _serviceProvider.GetRequiredService<ICredentialStorageService>();
 		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
 		var loginViewModel = new LoginViewModel(authenticationService);
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
-
 		ActiveView = loginViewModel;
+
+		if (credentialStorageService.TryGetRefreshToken(out _))
+		{
+			await loginViewModel.AuthenticateExternallyAsync();
+		}
+		else if (credentialStorageService.TryGetCredentials(out var username, out var password))
+		{
+			loginViewModel.Username = username;
+			loginViewModel.Password = password;
+			await loginViewModel.LogInAsync();
+		}
 	}
 
 	private void SwitchToSetup()
@@ -262,9 +273,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 		ActiveView = initialSetupViewModel;
 	}
 
-	private void InitialSetupViewModelOnUpdated(object? sender, EventArgs e)
+	private async void InitialSetupViewModelOnUpdated(object? sender, EventArgs e)
 	{
-		SwitchToLogin();
+		await SwitchToLogin();
 	}
 
 	private Task SwitchToTransactionOverviewAsync() => SwitchTo<TransactionViewModel>(() =>

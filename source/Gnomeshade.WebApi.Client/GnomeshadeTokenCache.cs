@@ -21,6 +21,12 @@ public sealed class GnomeshadeTokenCache
 		_clock = clock;
 	}
 
+	/// <summary>Raised when a new refresh token has been set.</summary>
+	public event EventHandler<RefreshTokenChangedEventArgs>? RefreshTokenChanged;
+
+	/// <summary>Gets the refresh token.</summary>
+	public string? Refresh { get; private set; }
+
 	internal string? Access { get; private set; }
 
 	internal bool IsAccessExpired =>
@@ -28,13 +34,20 @@ public sealed class GnomeshadeTokenCache
 		AccessExpiresAt is not null &&
 		_clock.GetCurrentInstant() > AccessExpiresAt;
 
-	internal string? Refresh { get; private set; }
-
 	private Instant? AccessExpiresAt { get; set; }
+
+	/// <summary>Sets the <see cref="Refresh"/> token.</summary>
+	/// <param name="refresh">The refresh token to set.</param>
+	public void SetRefreshToken(string refresh)
+	{
+		Refresh = refresh;
+		RefreshTokenChanged?.Invoke(this, new(refresh));
+	}
 
 	internal void SetRefreshToken(string refresh, string access, DateTimeOffset accessExpires)
 	{
 		Refresh = refresh;
+		RefreshTokenChanged?.Invoke(this, new(refresh));
 		Access = access;
 		var currentInstant = _clock.GetCurrentInstant();
 		AccessExpiresAt = currentInstant + ((accessExpires.ToInstant() - currentInstant) / 2);

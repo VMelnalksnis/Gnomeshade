@@ -71,12 +71,18 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 	{
 		if (_tokenCache.Access is null)
 		{
-			await CreateNewToken(cancellationToken).ConfigureAwait(false);
+			if (_tokenCache.Refresh is null)
+			{
+				await CreateNewToken(cancellationToken).ConfigureAwait(false);
+			}
+			else
+			{
+				await RefreshToken(cancellationToken).ConfigureAwait(false);
+			}
 		}
 		else if (_tokenCache.IsAccessExpired)
 		{
-			var refreshTokenResult = await _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken).ConfigureAwait(false);
-			_tokenCache.SetRefreshToken(refreshTokenResult.RefreshToken, refreshTokenResult.AccessToken, refreshTokenResult.AccessTokenExpiration);
+			await RefreshToken(cancellationToken).ConfigureAwait(false);
 		}
 
 		request.Headers.Authorization = new("Bearer", _tokenCache.Access);
@@ -96,5 +102,11 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 	{
 		var loginResult = await _oidcClient.LoginAsync(new(), cancellationToken).ConfigureAwait(false);
 		_tokenCache.SetRefreshToken(loginResult.RefreshToken, loginResult.AccessToken, loginResult.AccessTokenExpiration);
+	}
+
+	private async Task RefreshToken(CancellationToken cancellationToken)
+	{
+		var refreshTokenResult = await _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken).ConfigureAwait(false);
+		_tokenCache.SetRefreshToken(refreshTokenResult.RefreshToken, refreshTokenResult.AccessToken, refreshTokenResult.AccessTokenExpiration);
 	}
 }

@@ -29,7 +29,7 @@ public sealed class OidcOptions
 
 	/// <inheritdoc cref="OidcClientOptions.Scope"/>
 	[Required]
-	public string Scope => "openid profile";
+	public string Scope => "openid profile offline_access";
 
 	/// <summary>Gets or sets the time in seconds to wait until OIDC signin is completed by the user.</summary>
 	public int? SigninTimeoutSeconds { get; set; }
