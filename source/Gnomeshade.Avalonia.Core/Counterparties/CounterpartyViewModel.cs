@@ -18,11 +18,13 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 	private CounterpartyUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public CounterpartyViewModel(IGnomeshadeClient gnomeshadeClient)
+	public CounterpartyViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_details = new(gnomeshadeClient, null);
+		_details = new(activityService, gnomeshadeClient, null);
 
 		_details.Upserted += DetailsOnUpserted;
 	}
@@ -42,7 +44,7 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, Selected?.Id);
 		return Details.RefreshAsync();
 	}
 

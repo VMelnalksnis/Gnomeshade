@@ -16,7 +16,7 @@ public sealed class CategoryViewModelTests
 	[Test]
 	public async Task Test()
 	{
-		var viewModel = new CategoryViewModel(new DesignTimeGnomeshadeClient());
+		var viewModel = new CategoryViewModel(new ActivityService(), new DesignTimeGnomeshadeClient());
 		await viewModel.RefreshAsync();
 
 		viewModel.Details.CanSave.Should().BeFalse();

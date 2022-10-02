@@ -31,21 +31,23 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	private LoanViewModel? _loans;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="id">The id of the transaction to edit.</param>
 	public TransactionUpsertionViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
-		: base(gnomeshadeClient)
+		: base(activityService, gnomeshadeClient)
 	{
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_id = id;
-		Properties = new();
+		Properties = new(activityService);
 
 		Properties.PropertyChanged += PropertiesOnPropertyChanged;
 	}
@@ -140,10 +142,10 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
-		Transfers ??= new(GnomeshadeClient, _id.Value);
-		Purchases ??= new(GnomeshadeClient, _dialogService, _dateTimeZoneProvider, _id.Value);
-		Links ??= new(GnomeshadeClient, _id.Value);
-		Loans ??= new(GnomeshadeClient, _id.Value);
+		Transfers ??= new(ActivityService, GnomeshadeClient, _id.Value);
+		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, _id.Value);
+		Links ??= new(ActivityService, GnomeshadeClient, _id.Value);
+		Loans ??= new(ActivityService, GnomeshadeClient, _id.Value);
 
 		await Task.WhenAll(
 				Transfers.RefreshAsync(),

@@ -34,10 +34,11 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 	private List<Currency> _currencies;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="id">The id of the account to view.</param>
-	public AccountUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid? id)
-		: base(gnomeshadeClient)
+	public AccountUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_id = id;
 

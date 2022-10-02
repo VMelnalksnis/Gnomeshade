@@ -23,9 +23,11 @@ public sealed class UnitViewModel : ViewModelBase
 	private DataGridItemCollectionView<UnitRow> _units;
 
 	private UnitViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IEnumerable<UnitRow> unitRows,
 		UnitCreationViewModel unitCreationViewModel)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_unit = unitCreationViewModel;
@@ -66,14 +68,15 @@ public sealed class UnitViewModel : ViewModelBase
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="UnitViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of the <see cref="UnitViewModel"/> class.</returns>
-	public static async Task<UnitViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient)
+	public static async Task<UnitViewModel> CreateAsync(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
 	{
 		var productRows = await gnomeshadeClient.GetUnitRowsAsync();
-		var productCreation = await UnitCreationViewModel.CreateAsync(gnomeshadeClient);
+		var productCreation = await UnitCreationViewModel.CreateAsync(activityService, gnomeshadeClient);
 
-		return new(gnomeshadeClient, productRows, productCreation);
+		return new(activityService, gnomeshadeClient, productRows, productCreation);
 	}
 
 	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -83,13 +86,13 @@ public sealed class UnitViewModel : ViewModelBase
 			return;
 		}
 
-		Unit = await UnitCreationViewModel.CreateAsync(_gnomeshadeClient, SelectedUnit?.Id);
+		Unit = await UnitCreationViewModel.CreateAsync(ActivityService, _gnomeshadeClient, SelectedUnit?.Id);
 	}
 
 	private async void OnUnitUpserted(object? sender, UpsertedEventArgs e)
 	{
 		var unitRowsTask = _gnomeshadeClient.GetUnitRowsAsync();
-		var unitCreationTask = UnitCreationViewModel.CreateAsync(_gnomeshadeClient);
+		var unitCreationTask = UnitCreationViewModel.CreateAsync(ActivityService, _gnomeshadeClient);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		var units = (await unitRowsTask).ToList();

@@ -26,14 +26,14 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	private decimal? _multiplier;
 	private string? _symbol;
 
-	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units)
-		: base(gnomeshadeClient)
+	private UnitCreationViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+		: base(activityService, gnomeshadeClient)
 	{
 		Units = units;
 	}
 
-	private UnitCreationViewModel(IGnomeshadeClient gnomeshadeClient, List<Unit> units, Unit existingUnit)
-		: this(gnomeshadeClient, units)
+	private UnitCreationViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, List<Unit> units, Unit existingUnit)
+		: this(activityService, gnomeshadeClient, units)
 	{
 		_existingUnit = existingUnit;
 
@@ -84,19 +84,20 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 		((ParentUnit is null && Multiplier is null) || (ParentUnit is not null && Multiplier is not null));
 
 	/// <summary>Asynchronously creates a new instance of the <see cref="UnitCreationViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="unitId">The id of the unit to edit.</param>
 	/// <returns>A new instance of the <see cref="UnitCreationViewModel"/> class.</returns>
-	public static async Task<UnitCreationViewModel> CreateAsync(IGnomeshadeClient gnomeshadeClient, Guid? unitId = null)
+	public static async Task<UnitCreationViewModel> CreateAsync(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? unitId = null)
 	{
 		var units = await gnomeshadeClient.GetUnitsAsync();
 		if (unitId is null)
 		{
-			return new(gnomeshadeClient, units);
+			return new(activityService, gnomeshadeClient, units);
 		}
 
 		var existingUnit = units.Single(unit => unit.Id == unitId.Value);
-		return new(gnomeshadeClient, units, existingUnit);
+		return new(activityService, gnomeshadeClient, units, existingUnit);
 	}
 
 	/// <inheritdoc />

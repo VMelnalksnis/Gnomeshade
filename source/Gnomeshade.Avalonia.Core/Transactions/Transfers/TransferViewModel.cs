@@ -22,13 +22,15 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	private TransferUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
-	public TransferViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public TransferViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = new(gnomeshadeClient, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -52,7 +54,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		SetDefaultCurrency(this);
 	}

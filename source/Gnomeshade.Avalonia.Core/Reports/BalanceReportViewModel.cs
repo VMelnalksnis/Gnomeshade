@@ -28,13 +28,16 @@ public sealed class BalanceReportViewModel : ViewModelBase
 	private List<ICartesianAxis> _xAxes;
 
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public BalanceReportViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_clock = clock;

@@ -19,11 +19,13 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	private ObservableCollection<CategoryNode> _nodes;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public CategoryViewModel(IGnomeshadeClient gnomeshadeClient)
+	public CategoryViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_details = new(_gnomeshadeClient, null);
+		_details = new(activityService, _gnomeshadeClient, null);
 		_nodes = new();
 
 		Details.Upserted += OnCategoryUpserted;
@@ -51,7 +53,7 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, Selected?.Id);
 		return Details.RefreshAsync();
 	}
 

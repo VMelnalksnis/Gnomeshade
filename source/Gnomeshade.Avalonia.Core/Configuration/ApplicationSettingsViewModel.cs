@@ -27,13 +27,16 @@ public sealed class ApplicationSettingsViewModel : ViewModelBase
 	private string? _oidcClientSecret;
 
 	/// <summary>Initializes a new instance of the <see cref="ApplicationSettingsViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="userConfiguration">The current value of user configuration.</param>
 	/// <param name="userConfigurationWriter">Used to persist user configuration.</param>
 	/// <param name="validator">User configuration validator.</param>
 	public ApplicationSettingsViewModel(
+		IActivityService activityService,
 		IOptions<UserConfiguration> userConfiguration,
 		UserConfigurationWriter userConfigurationWriter,
 		UserConfigurationValidator validator)
+		: base(activityService)
 	{
 		_userConfigurationWriter = userConfigurationWriter;
 		_validator = validator;
@@ -116,6 +119,7 @@ public sealed class ApplicationSettingsViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateConfiguration()
 	{
+		using var activity = BeginActivity();
 		await _userConfigurationWriter.Write(Configuration);
 		Updated?.Invoke(this, EventArgs.Empty);
 	}

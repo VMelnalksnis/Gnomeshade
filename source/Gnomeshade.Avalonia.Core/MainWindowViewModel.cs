@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -41,6 +40,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="serviceProvider">Dependency injection service provider.</param>
 	public MainWindowViewModel(IServiceProvider serviceProvider)
+		: base(serviceProvider.GetRequiredService<IActivityService>())
 	{
 		_serviceProvider = serviceProvider;
 
@@ -48,8 +48,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		_userConfigurationWriter = serviceProvider.GetRequiredService<UserConfigurationWriter>();
 		_dateTimeZoneProvider = serviceProvider.GetRequiredService<IDateTimeZoneProvider>();
 		_clock = serviceProvider.GetRequiredService<IClock>();
-
-		PropertyChanged += OnPropertyChanged;
 
 		_validator = serviceProvider.GetRequiredService<UserConfigurationValidator>();
 	}
@@ -91,7 +89,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		IsBusy = true;
+		using var activity = BeginActivity();
 		var isValid = await _validator.IsValid(_userConfiguration.Value);
 
 		if (isValid)
@@ -102,8 +100,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		{
 			SwitchToSetup();
 		}
-
-		IsBusy = false;
 	}
 
 	/// <summary>Logs out the current user.</summary>
@@ -120,7 +116,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task MergeCounterpartiesAsync() => SwitchTo<CounterpartyMergeViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient);
+		return new(ActivityService, gnomeshadeClient);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
@@ -133,7 +129,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(gnomeshadeClient);
+		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(ActivityService, gnomeshadeClient);
 		unitCreationViewModel.Upserted += OnUnitUpserted;
 
 		ActiveView = unitCreationViewModel;
@@ -144,7 +140,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToCategoriesAsync() => SwitchTo<CategoryViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient);
+		return new(ActivityService, gnomeshadeClient);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.</summary>
@@ -152,7 +148,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToAccountOverviewAsync() => SwitchTo<AccountViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient);
+		return new(ActivityService, gnomeshadeClient);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyViewModel"/>.</summary>
@@ -160,7 +156,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToCounterpartiesAsync() => SwitchTo<CounterpartyViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient);
+		return new(ActivityService, gnomeshadeClient);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ImportViewModel"/>.</summary>
@@ -168,7 +164,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToImportAsync() => SwitchTo<ImportViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient);
+		return new(ActivityService, gnomeshadeClient);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>
@@ -176,7 +172,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToProductAsync() => SwitchTo<ProductViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient, _dateTimeZoneProvider);
+		return new(ActivityService, gnomeshadeClient, _dateTimeZoneProvider);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitViewModel"/>.</summary>
@@ -189,7 +185,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		}
 
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var unitViewModel = await UnitViewModel.CreateAsync(gnomeshadeClient);
+		var unitViewModel = await UnitViewModel.CreateAsync(ActivityService, gnomeshadeClient);
 		ActiveView = unitViewModel;
 	}
 
@@ -198,7 +194,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToCategoryReportAsync() => SwitchTo<CategoryReportViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		return new(ActivityService, gnomeshadeClient, _clock, _dateTimeZoneProvider);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="BalanceReportViewModel"/>.</summary>
@@ -206,7 +202,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToBalanceReportAsync() => SwitchTo<BalanceReportViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		return new(ActivityService, gnomeshadeClient, _clock, _dateTimeZoneProvider);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductReportViewModel"/>.</summary>
@@ -214,7 +210,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToProductReportAsync() => SwitchTo<ProductReportViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(gnomeshadeClient, _clock, _dateTimeZoneProvider);
+		return new(ActivityService, gnomeshadeClient, _clock, _dateTimeZoneProvider);
 	});
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
@@ -249,7 +245,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		var credentialStorageService = _serviceProvider.GetRequiredService<ICredentialStorageService>();
 		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
-		var loginViewModel = new LoginViewModel(authenticationService);
+		var loginViewModel = new LoginViewModel(ActivityService, authenticationService);
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 		ActiveView = loginViewModel;
 
@@ -267,7 +263,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	private void SwitchToSetup()
 	{
-		var initialSetupViewModel = new ApplicationSettingsViewModel(_userConfiguration, _userConfigurationWriter, _validator);
+		var initialSetupViewModel = new ApplicationSettingsViewModel(ActivityService, _userConfiguration, _userConfigurationWriter, _validator);
 		initialSetupViewModel.Updated += InitialSetupViewModelOnUpdated;
 
 		ActiveView = initialSetupViewModel;
@@ -282,7 +278,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
 		var dialogService = _serviceProvider.GetRequiredService<IDialogService>();
-		return new(gnomeshadeClient, dialogService, _clock, _dateTimeZoneProvider);
+		return new(ActivityService, gnomeshadeClient, dialogService, _clock, _dateTimeZoneProvider);
 	});
 
 	private Task SwitchTo<TViewModel>(Func<TViewModel> factory)
@@ -345,22 +341,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 			case UnitCreationViewModel unitCreationViewModel:
 				unitCreationViewModel.Upserted -= OnUnitUpserted;
 				break;
-		}
-	}
-
-	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName is nameof(ActiveView) && ActiveView is not null)
-		{
-			ActiveView.PropertyChanged += ActiveViewOnPropertyChanged;
-		}
-	}
-
-	private void ActiveViewOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName is nameof(IsBusy))
-		{
-			IsBusy = ActiveView?.IsBusy ?? false;
 		}
 	}
 }

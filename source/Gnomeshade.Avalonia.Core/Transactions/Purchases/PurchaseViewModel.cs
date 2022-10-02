@@ -26,21 +26,24 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	private PurchaseUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
 	public PurchaseViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = new(gnomeshadeClient, _dialogService, dateTimeZoneProvider, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, _dialogService, dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -64,7 +67,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		await SetDefaultCurrency();
 	}
@@ -109,7 +112,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	protected override async Task DeleteAsync(PurchaseOverview row)
 	{
 		await _gnomeshadeClient.DeletePurchaseAsync(row.Id);
-		await Refresh();
+		await RefreshAsync();
 	}
 
 	private async Task SetDefaultCurrency()

@@ -24,8 +24,10 @@ public sealed class ImportViewModel : ViewModelBase
 	private string _country;
 
 	/// <summary>Initializes a new instance of the <see cref="ImportViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public ImportViewModel(IGnomeshadeClient gnomeshadeClient)
+	public ImportViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_institutions = new();
@@ -68,27 +70,20 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ImportAsync()
 	{
-		try
+		using var activity = BeginActivity();
+		if (FilePath is not null)
 		{
-			IsBusy = true;
-			if (FilePath is not null)
-			{
-				var file = new FileInfo(FilePath);
-				await using var stream = file.OpenRead();
-				await _gnomeshadeClient.Import(stream, file.Name);
-			}
-			else if (SelectedInstitution is not null)
-			{
-				var result = await _gnomeshadeClient.ImportAsync(SelectedInstitution);
-				if (result is NewRequisition newRequisition)
-				{
-					SystemBrowser.OpenBrowser(newRequisition.RequisitionUri.ToString());
-				}
-			}
+			var file = new FileInfo(FilePath);
+			await using var stream = file.OpenRead();
+			await _gnomeshadeClient.Import(stream, file.Name);
 		}
-		finally
+		else if (SelectedInstitution is not null)
 		{
-			IsBusy = false;
+			var result = await _gnomeshadeClient.ImportAsync(SelectedInstitution);
+			if (result is NewRequisition newRequisition)
+			{
+				SystemBrowser.OpenBrowser(newRequisition.RequisitionUri.ToString());
+			}
 		}
 
 		throw new InvalidOperationException("Could not import");
@@ -97,15 +92,7 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		try
-		{
-			IsBusy = true;
-			Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country);
-			SelectedInstitution = Institutions.First();
-		}
-		finally
-		{
-			IsBusy = false;
-		}
+		Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country);
+		SelectedInstitution = Institutions.First();
 	}
 }

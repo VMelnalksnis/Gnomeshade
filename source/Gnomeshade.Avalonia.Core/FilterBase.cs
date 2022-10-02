@@ -8,6 +8,13 @@ namespace Gnomeshade.Avalonia.Core;
 /// <typeparam name="TRow">The row type to filter.</typeparam>
 public abstract class FilterBase<TRow> : ViewModelBase
 {
+	/// <summary>Initializes a new instance of the <see cref="FilterBase{TRow}"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
+	protected FilterBase(IActivityService activityService)
+		: base(activityService)
+	{
+	}
+
 	/// <summary>Predicate for determining if an item is suitable for inclusion in the view.</summary>
 	/// <param name="item">The item to check against the filters set in this viewmodel.</param>
 	/// <returns><see langword="true"/> if <paramref name="item"/> matches the filters set in this viewmodel; otherwise <see langword="false"/>.</returns>

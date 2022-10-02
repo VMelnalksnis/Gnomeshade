@@ -19,13 +19,15 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	private LinkUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="LinkViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="transactionId">The transaction for which to create a link overview.</param>
-	public LinkViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public LinkViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = new(gnomeshadeClient, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, transactionId, null);
 
 		_details.Upserted += DetailsOnUpserted;
 	}
@@ -45,7 +47,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 
@@ -81,7 +83,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	protected override async Task DeleteAsync(LinkOverview row)
 	{
 		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id);
-		await Refresh();
+		await RefreshAsync();
 	}
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)

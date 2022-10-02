@@ -18,6 +18,13 @@ public sealed class ProductFilter : FilterBase<ProductRow>
 	private List<Category> _categories = new();
 	private Category? _selectedCategory;
 
+	/// <summary>Initializes a new instance of the <see cref="ProductFilter"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
+	public ProductFilter(IActivityService activityService)
+		: base(activityService)
+	{
+	}
+
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 

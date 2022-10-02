@@ -23,8 +23,10 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 	private CounterpartyRow? _targetCounterparty;
 
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyMergeViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public CounterpartyMergeViewModel(IGnomeshadeClient gnomeshadeClient)
+	public CounterpartyMergeViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_sourceCounterparties = new(Array.Empty<CounterpartyRow>());
@@ -81,6 +83,7 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
+		using var activity = BeginActivity();
 		await _gnomeshadeClient.MergeCounterpartiesAsync(TargetCounterparty.Id, SourceCounterparty.Id);
 		await RefreshAsync();
 	}

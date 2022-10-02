@@ -21,7 +21,7 @@ public sealed class LinkUpsertionViewModelTests
 
 		for (var i = 0; i < 2; i++)
 		{
-			var viewModel = new LinkUpsertionViewModel(client, Guid.Empty, null);
+			var viewModel = new LinkUpsertionViewModel(new ActivityService(), client, Guid.Empty, null);
 			await viewModel.RefreshAsync();
 
 			viewModel.UriValue = linkValue;

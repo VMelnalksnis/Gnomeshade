@@ -26,6 +26,13 @@ public sealed class TransactionProperties : ViewModelBase
 	private string? _description;
 	private bool _reconciled;
 
+	/// <summary>Initializes a new instance of the <see cref="TransactionProperties"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
+	public TransactionProperties(IActivityService activityService)
+		: base(activityService)
+	{
+	}
+
 	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
 	public DateTimeOffset? BookingDate
 	{

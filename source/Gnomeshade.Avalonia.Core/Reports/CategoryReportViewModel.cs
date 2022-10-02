@@ -31,13 +31,16 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	private List<ICartesianAxis> _xAxes;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public CategoryReportViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
@@ -61,16 +64,18 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	}
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <returns>A new instance of the <see cref="CategoryReportViewModel"/> class.</returns>
 	public static async Task<CategoryReportViewModel> CreateAsync(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
-		var viewModel = new CategoryReportViewModel(gnomeshadeClient, clock, dateTimeZoneProvider);
+		var viewModel = new CategoryReportViewModel(activityService, gnomeshadeClient, clock, dateTimeZoneProvider);
 		await viewModel.RefreshAsync();
 		return viewModel;
 	}

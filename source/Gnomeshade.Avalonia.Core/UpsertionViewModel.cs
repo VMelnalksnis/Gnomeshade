@@ -19,8 +19,10 @@ public abstract class UpsertionViewModel : ViewModelBase
 	private string? _errorMessage;
 
 	/// <summary>Initializes a new instance of the <see cref="UpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">The strongly typed API client.</param>
-	protected UpsertionViewModel(IGnomeshadeClient gnomeshadeClient)
+	protected UpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		GnomeshadeClient = gnomeshadeClient;
 	}
@@ -51,6 +53,7 @@ public abstract class UpsertionViewModel : ViewModelBase
 			return;
 		}
 
+		using var activity = BeginActivity();
 		try
 		{
 			var id = await SaveValidatedAsync();

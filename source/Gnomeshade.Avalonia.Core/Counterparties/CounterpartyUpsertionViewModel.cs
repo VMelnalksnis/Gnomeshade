@@ -17,10 +17,11 @@ public sealed class CounterpartyUpsertionViewModel : UpsertionViewModel
 	private string? _name;
 
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="id">The id of the counterparty to edit.</param>
-	public CounterpartyUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid? id)
-		: base(gnomeshadeClient)
+	public CounterpartyUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_id = id;
 	}

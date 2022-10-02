@@ -21,7 +21,7 @@ public sealed class CounterpartyViewModelTests
 	public async Task SetUp()
 	{
 		_gnomeshadeClient = new DesignTimeGnomeshadeClient();
-		_viewModel = new(_gnomeshadeClient);
+		_viewModel = new(new ActivityService(), _gnomeshadeClient);
 		await _viewModel.RefreshAsync();
 	}
 

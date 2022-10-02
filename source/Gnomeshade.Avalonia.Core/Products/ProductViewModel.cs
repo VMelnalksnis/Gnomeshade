@@ -22,15 +22,20 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 	private ProductUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	public ProductViewModel(IGnomeshadeClient gnomeshadeClient, IDateTimeZoneProvider dateTimeZoneProvider)
+	public ProductViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = new(_gnomeshadeClient, _dateTimeZoneProvider, null);
+		_details = new(activityService, _gnomeshadeClient, _dateTimeZoneProvider, null);
 
-		Filter = new();
+		Filter = new(activityService);
 
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		Details.Upserted += OnProductUpserted;
@@ -54,7 +59,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
 		return Details.RefreshAsync();
 	}
 

@@ -25,6 +25,13 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 	private TRow? _selected;
 	private bool _isReadOnly = true;
 
+	/// <summary>Initializes a new instance of the <see cref="OverviewViewModel{TRow, TUpsertion}"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
+	protected OverviewViewModel(IActivityService activityService)
+		: base(activityService)
+	{
+	}
+
 	/// <summary>Gets the grid view of all <see cref="Rows"/>.</summary>
 	public DataGridCollectionView DataGridView => Rows;
 
@@ -64,6 +71,7 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
+		using var activity = BeginActivity();
 		await DeleteAsync(Selected);
 	}
 

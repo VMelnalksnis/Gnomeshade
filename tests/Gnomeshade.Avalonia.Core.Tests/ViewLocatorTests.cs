@@ -12,7 +12,7 @@ public sealed class ViewLocatorTests
 	public void Build_ShouldReturnExpected()
 	{
 		var viewLocator = new ViewLocator<TestView>();
-		var viewModel = new TestViewModel();
+		var viewModel = new TestViewModel(new ActivityService());
 
 		var accountView = viewLocator.Build(viewModel);
 		accountView.Should().BeOfType<TestView>();
@@ -23,6 +23,10 @@ public sealed class ViewLocatorTests
 
 	private sealed class TestViewModel : ViewModelBase
 	{
+		public TestViewModel(IActivityService activityService)
+			: base(activityService)
+		{
+		}
 	}
 
 	private sealed class TestView : UserControl, IView<TestView, TestViewModel>

@@ -20,11 +20,12 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	private string? _uriValue;
 
 	/// <summary>Initializes a new instance of the <see cref="LinkUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">The strongly typed API client.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the link.</param>
 	/// <param name="id">The id of the link to update.</param>
-	public LinkUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
-		: base(gnomeshadeClient)
+	public LinkUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
 		_id = id;

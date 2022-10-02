@@ -36,9 +36,11 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	private bool _invertProduct;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	public TransactionFilter(IClock clock, IDateTimeZoneProvider dateTimeZoneProvider)
+	public TransactionFilter(IActivityService activityService, IClock clock, IDateTimeZoneProvider dateTimeZoneProvider)
+		: base(activityService)
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_clock = clock.InZone(dateTimeZoneProvider.GetSystemDefault());

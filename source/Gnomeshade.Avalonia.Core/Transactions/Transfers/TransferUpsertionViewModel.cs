@@ -37,11 +37,12 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	private List<Currency> _currencies;
 
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
 	/// <param name="id">The id of the transfer to edit.</param>
-	public TransferUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
-		: base(gnomeshadeClient)
+	public TransferUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
 		_id = id;

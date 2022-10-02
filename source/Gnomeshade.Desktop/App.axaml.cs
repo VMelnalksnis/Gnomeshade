@@ -69,6 +69,7 @@ public sealed class App : Application
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
+			.AddSingleton<IActivityService, ActivityService>()
 			.AddSingleton<IBrowser, SystemBrowser>(provider =>
 			{
 				var protocolHandler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();

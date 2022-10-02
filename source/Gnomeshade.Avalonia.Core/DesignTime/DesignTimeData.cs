@@ -33,6 +33,8 @@ public static class DesignTimeData
 
 	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
 
+	private static IActivityService ActivityService => new ActivityService();
+
 	private static DesignTimeGnomeshadeClient GnomeshadeClient => new();
 
 	private static IDialogService DialogService { get; } = new DesignTimeDialogService();
@@ -49,117 +51,117 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="AccountUpsertionViewModel"/> for use during design time.</summary>
 	public static AccountUpsertionViewModel AccountUpsertionViewModel { get; } =
-		InitializeViewModel(new AccountUpsertionViewModel(GnomeshadeClient, null));
+		InitializeViewModel(new AccountUpsertionViewModel(ActivityService, GnomeshadeClient, null));
 
 	/// <summary>Gets an instance of <see cref="AccountViewModel"/> for use during design time.</summary>
 	public static AccountViewModel AccountViewModel { get; } =
-		InitializeViewModel<AccountViewModel, AccountOverviewRow, AccountUpsertionViewModel>(new(GnomeshadeClient));
+		InitializeViewModel<AccountViewModel, AccountOverviewRow, AccountUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="CounterpartyViewModel"/> for use during design time.</summary>
 	public static CounterpartyViewModel CounterpartyViewModel { get; } =
-		InitializeViewModel(new CounterpartyViewModel(GnomeshadeClient));
+		InitializeViewModel(new CounterpartyViewModel(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="CounterpartyMergeViewModel"/> for use during design time.</summary>
 	public static CounterpartyMergeViewModel CounterpartyMergeViewModel { get; } =
-		InitializeViewModel(new CounterpartyMergeViewModel(GnomeshadeClient));
+		InitializeViewModel(new CounterpartyMergeViewModel(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="CounterpartyUpsertionViewModel"/> for use during design time.</summary>
 	public static CounterpartyUpsertionViewModel CounterpartyUpsertionViewModel { get; } =
-		InitializeViewModel(new CounterpartyUpsertionViewModel(GnomeshadeClient, Guid.Empty));
+		InitializeViewModel(new CounterpartyUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="ImportViewModel"/> for use during design time.</summary>
-	public static ImportViewModel ImportViewModel { get; } = new(GnomeshadeClient);
+	public static ImportViewModel ImportViewModel { get; } = new(ActivityService, GnomeshadeClient);
 
 	/// <summary>Gets an instance of <see cref="LoginViewModel"/> for use during design time.</summary>
-	public static LoginViewModel LoginViewModel { get; } = new(AuthenticationService);
+	public static LoginViewModel LoginViewModel { get; } = new(ActivityService, AuthenticationService);
 
 	/// <summary>Gets an instance of <see cref="ProductUpsertionViewModel"/> for use during design time.</summary>
 	public static ProductUpsertionViewModel ProductUpsertionViewModel { get; } =
-		InitializeViewModel(new ProductUpsertionViewModel(GnomeshadeClient, DateTimeZoneProvider, null));
+		InitializeViewModel(new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, DateTimeZoneProvider, null));
 
 	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
 	public static UnitCreationViewModel UnitCreationViewModel { get; } =
-		UnitCreationViewModel.CreateAsync(GnomeshadeClient).Result;
+		UnitCreationViewModel.CreateAsync(ActivityService, GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="CategoryUpsertionViewModel"/> for use during design time.</summary>
 	public static CategoryUpsertionViewModel CategoryUpsertionViewModel { get; } =
-		InitializeViewModel(new CategoryUpsertionViewModel(GnomeshadeClient, null));
+		InitializeViewModel(new CategoryUpsertionViewModel(ActivityService, GnomeshadeClient, null));
 
 	/// <summary>Gets an instance of <see cref="CategoryViewModel"/> for use during design time.</summary>
 	public static CategoryViewModel CategoryViewModel { get; } =
-		InitializeViewModel<CategoryViewModel, CategoryRow, CategoryUpsertionViewModel>(new(GnomeshadeClient));
+		InitializeViewModel<CategoryViewModel, CategoryRow, CategoryUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="TransactionProperties"/> for use during design time.</summary>
-	public static TransactionProperties TransactionProperties { get; } = new();
+	public static TransactionProperties TransactionProperties { get; } = new(ActivityService);
 
 	/// <summary>Gets an instance of <see cref="ProductViewModel"/> for use during design time.</summary>
 	public static ProductViewModel ProductViewModel { get; } =
-		InitializeViewModel<ProductViewModel, ProductRow, ProductUpsertionViewModel>(new(GnomeshadeClient, DateTimeZoneProvider));
+		InitializeViewModel<ProductViewModel, ProductRow, ProductUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="UnitViewModel"/> for use during design time.</summary>
 	public static UnitViewModel UnitViewModel { get; } =
-		UnitViewModel.CreateAsync(GnomeshadeClient).Result;
+		UnitViewModel.CreateAsync(ActivityService, GnomeshadeClient).Result;
 
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
 	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
-		InitializeViewModel(new TransferUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
+		InitializeViewModel(new TransferUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="TransferViewModel"/> for use during design time.</summary>
 	public static TransferViewModel TransferViewModel { get; } =
-		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
+		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="PurchaseUpsertionViewModel"/> for use during design time.</summary>
 	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel { get; } =
-		InitializeViewModel(new PurchaseUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
+		InitializeViewModel(new PurchaseUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="PurchaseViewModel"/> for use during design time.</summary>
 	public static PurchaseViewModel PurchaseViewModel { get; } =
-		InitializeViewModel<PurchaseViewModel, PurchaseOverview, PurchaseUpsertionViewModel>(new(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel<PurchaseViewModel, PurchaseOverview, PurchaseUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
+		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
-	public static TransactionFilter TransactionFilter { get; } = new(Clock, DateTimeZoneProvider);
+	public static TransactionFilter TransactionFilter { get; } = new(ActivityService, Clock, DateTimeZoneProvider);
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		InitializeViewModel(new TransactionUpsertionViewModel(GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel(new TransactionUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =
-		InitializeViewModel(new LinkUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
+		InitializeViewModel(new LinkUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="LinkViewModel"/> for use during design time.</summary>
 	public static LinkViewModel LinkViewModel { get; } =
-		InitializeViewModel<LinkViewModel, LinkOverview, LinkUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
+		InitializeViewModel<LinkViewModel, LinkOverview, LinkUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LoanUpsertionViewModel"/> for use during design time.</summary>
 	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
-		InitializeViewModel(new LoanUpsertionViewModel(GnomeshadeClient, Guid.Empty, null));
+		InitializeViewModel(new LoanUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="LoanViewModel"/> for use during design time.</summary>
 	public static LoanViewModel LoanViewModel { get; } =
-		InitializeViewModel<LoanViewModel, LoanOverview, LoanUpsertionViewModel>(new(GnomeshadeClient, Guid.Empty));
+		InitializeViewModel<LoanViewModel, LoanOverview, LoanUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="CategoryReportViewModel"/> for use during design time.</summary>
 	public static CategoryReportViewModel CategoryReportViewModel { get; } =
-		CategoryReportViewModel.CreateAsync(GnomeshadeClient, Clock, DateTimeZoneProvider).Result;
+		CategoryReportViewModel.CreateAsync(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider).Result;
 
 	/// <summary>Gets an instance of <see cref="ProductReportViewModel"/> for use during design time.</summary>
 	public static ProductReportViewModel ProductReportViewModel { get; } =
-		InitializeViewModel(new ProductReportViewModel(GnomeshadeClient, Clock, DateTimeZoneProvider));
+		InitializeViewModel(new ProductReportViewModel(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="BalanceReportViewModel"/> for use during design time.</summary>
 	public static BalanceReportViewModel BalanceReportViewModel { get; } =
-		InitializeViewModel(new BalanceReportViewModel(GnomeshadeClient, Clock, DateTimeZoneProvider));
+		InitializeViewModel(new BalanceReportViewModel(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionSummary"/> for use during design time.</summary>
-	public static TransactionSummary TransactionSummary { get; } = new();
+	public static TransactionSummary TransactionSummary { get; } = new(ActivityService);
 
 	/// <summary>Gets an instance of <see cref="ProductFilter"/> for use during design time.</summary>
-	public static ProductFilter ProductFilter { get; } = new();
+	public static ProductFilter ProductFilter { get; } = new(ActivityService);
 
 	/// <summary>Gets an instance of <see cref="ApplicationSettingsViewModel"/> for use during design time.</summary>
 	public static ApplicationSettingsViewModel ApplicationSettingsViewModel { get; } =
@@ -187,6 +189,7 @@ public static class DesignTimeData
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
 			.AddSingleton<UserConfigurationValidator>()
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
+			.AddSingleton<IActivityService, ActivityService>()
 			.AddTransient<ApplicationSettingsViewModel>()
 			.AddHttpClient();
 

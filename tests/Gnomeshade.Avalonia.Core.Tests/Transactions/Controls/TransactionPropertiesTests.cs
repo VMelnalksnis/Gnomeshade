@@ -21,19 +21,19 @@ public class TransactionPropertiesTests
 	private static IEnumerable IsValidTestCaseSource()
 	{
 		yield return new TestCaseData(
-			new TransactionProperties(),
+			new TransactionProperties(new ActivityService()),
 			false);
 
 		yield return new TestCaseData(
-			new TransactionProperties { BookingDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties(new ActivityService()) { BookingDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
 			false);
 
 		yield return new TestCaseData(
-			new TransactionProperties { BookingDate = DateTime.UtcNow, BookingTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties(new ActivityService()) { BookingDate = DateTime.UtcNow, BookingTime = TimeSpan.FromSeconds(1) },
 			true);
 
 		yield return new TestCaseData(
-			new TransactionProperties { ValueDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
+			new TransactionProperties(new ActivityService()) { ValueDate = DateTime.UtcNow, ValueTime = TimeSpan.FromSeconds(1) },
 			true);
 	}
 }

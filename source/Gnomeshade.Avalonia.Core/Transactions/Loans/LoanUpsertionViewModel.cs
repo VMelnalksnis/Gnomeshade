@@ -29,11 +29,12 @@ public sealed class LoanUpsertionViewModel : UpsertionViewModel
 	private Currency? _currency;
 
 	/// <summary>Initializes a new instance of the <see cref="LoanUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the loan.</param>
 	/// <param name="id">The id of the loan to edit.</param>
-	public LoanUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
-		: base(gnomeshadeClient)
+	public LoanUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
 		_id = id;

@@ -19,7 +19,7 @@ public sealed class ProductViewModelTests
 	[Test]
 	public async Task Product_SaveAsync_ShouldUpdateDataGridView()
 	{
-		var viewModel = new ProductViewModel(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
+		var viewModel = new ProductViewModel(new ActivityService(), new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 		await viewModel.RefreshAsync();
 
 		viewModel.Rows.Should().HaveCount(2);
@@ -34,7 +34,7 @@ public sealed class ProductViewModelTests
 	[Test]
 	public async Task SelectedProduct_ShouldUpdateProductCreationViewModel()
 	{
-		var viewModel = new ProductViewModel(new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
+		var viewModel = new ProductViewModel(new ActivityService(), new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 		await viewModel.RefreshAsync();
 
 		viewModel.Details.Name.Should().BeNullOrWhiteSpace();

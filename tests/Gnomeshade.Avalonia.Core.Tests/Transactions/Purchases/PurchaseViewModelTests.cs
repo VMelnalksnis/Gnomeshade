@@ -21,7 +21,7 @@ public class PurchaseViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), DateTimeZoneProviders.Tzdb, Guid.Empty);
+		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), DateTimeZoneProviders.Tzdb, Guid.Empty);
 		await _viewModel.RefreshAsync();
 	}
 

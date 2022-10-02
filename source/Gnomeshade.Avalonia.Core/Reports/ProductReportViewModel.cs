@@ -40,13 +40,16 @@ public sealed class ProductReportViewModel : ViewModelBase
 	private ICalculationFunction? _calculationFunction;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductReportViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public ProductReportViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_clock = clock;
@@ -138,7 +141,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 			return;
 		}
 
-		IsBusy = true;
+		using var activity = BeginActivity();
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
@@ -147,7 +150,6 @@ public sealed class ProductReportViewModel : ViewModelBase
 		var detailedTransactions = transactionsTask.Result;
 		var units = unitsTask.Result;
 		AddSeriesForProduct(SelectedProduct, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
-		IsBusy = false;
 	}
 
 	/// <summary>Updates all <see cref="Series"/> with the current value of <see cref="SelectedAggregate"/>.</summary>
@@ -160,7 +162,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 			return;
 		}
 
-		IsBusy = true;
+		using var activity = BeginActivity();
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
@@ -176,8 +178,6 @@ public sealed class ProductReportViewModel : ViewModelBase
 		{
 			AddSeriesForProduct(product, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
 		}
-
-		IsBusy = false;
 	}
 
 	/// <inheritdoc />

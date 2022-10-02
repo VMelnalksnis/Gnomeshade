@@ -17,11 +17,13 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	private AccountUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public AccountViewModel(IGnomeshadeClient gnomeshadeClient)
+	public AccountViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_details = new(_gnomeshadeClient, null);
+		_details = new(activityService, _gnomeshadeClient, null);
 
 		Details.Upserted += DetailsOnUpserted;
 	}
@@ -41,7 +43,7 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, Selected?.Id);
 		return Details.RefreshAsync();
 	}
 

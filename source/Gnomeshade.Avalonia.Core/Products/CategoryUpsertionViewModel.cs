@@ -24,10 +24,11 @@ public sealed class CategoryUpsertionViewModel : UpsertionViewModel
 	private List<Category> _categories;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">API client for getting category data.</param>
 	/// <param name="id">The id of the category to edit.</param>
-	public CategoryUpsertionViewModel(IGnomeshadeClient gnomeshadeClient, Guid? id)
-		: base(gnomeshadeClient)
+	public CategoryUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
+		: base(activityService, gnomeshadeClient)
 	{
 		_id = id;
 

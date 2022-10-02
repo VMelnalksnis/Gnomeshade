@@ -19,13 +19,15 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	private LoanUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="transactionId">The transaction for which to create a loan overview.</param>
-	public LoanViewModel(IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public LoanViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_transactionId = transactionId;
-		_details = new(gnomeshadeClient, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 	}
@@ -43,7 +45,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(_gnomeshadeClient, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 

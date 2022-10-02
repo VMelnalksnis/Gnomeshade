@@ -20,8 +20,10 @@ public sealed class LoginViewModel : ViewModelBase
 	private string? _password;
 
 	/// <summary>Initializes a new instance of the <see cref="LoginViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="authenticationService">Service for handling authentication.</param>
-	public LoginViewModel(IAuthenticationService authenticationService)
+	public LoginViewModel(IActivityService activityService, IAuthenticationService authenticationService)
+		: base(activityService)
 	{
 		_authenticationService = authenticationService;
 	}
@@ -60,16 +62,14 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AuthenticateExternallyAsync()
 	{
+		using var activity = BeginActivity();
 		try
 		{
-			IsBusy = true;
 			await _authenticationService.SocialLogin();
-			IsBusy = false;
 			OnUserLoggedIn();
 		}
 		catch (Exception e)
 		{
-			IsBusy = false;
 			ErrorMessage = e.Message;
 		}
 	}
@@ -79,6 +79,7 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
 	public async Task LogInAsync()
 	{
+		using var activity = BeginActivity();
 		ErrorMessage = string.Empty;
 
 		var login = new Login { Username = Username!, Password = Password! };

@@ -33,14 +33,16 @@ public sealed class ProductUpsertionViewModel : UpsertionViewModel
 	private List<PurchaseOverview> _purchases;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="id">The id of the product to edit.</param>
 	public ProductUpsertionViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
-		: base(gnomeshadeClient)
+		: base(activityService, gnomeshadeClient)
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_id = id;

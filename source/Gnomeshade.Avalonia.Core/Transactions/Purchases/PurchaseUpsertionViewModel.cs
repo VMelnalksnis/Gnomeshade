@@ -39,18 +39,20 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private string? _unitName;
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
 	/// <param name="id">The id of the purchase to edit.</param>
 	public PurchaseUpsertionViewModel(
+		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
 		Guid? id)
-		: base(gnomeshadeClient)
+		: base(activityService, gnomeshadeClient)
 	{
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
@@ -143,7 +145,8 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ShowNewProductDialog(Window window)
 	{
-		var viewModel = new ProductUpsertionViewModel(GnomeshadeClient, _dateTimeZoneProvider, null);
+		using var activity = BeginActivity();
+		var viewModel = new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, _dateTimeZoneProvider, null);
 		await viewModel.RefreshAsync();
 
 		var result = await _dialogService.ShowDialogValue<ProductUpsertionViewModel, Guid>(window, viewModel, dialog =>

@@ -13,6 +13,13 @@ public sealed class TransactionSummary : ViewModelBase
 	private decimal _received;
 	private decimal _withdrawn;
 
+	/// <summary>Initializes a new instance of the <see cref="TransactionSummary"/> class.</summary>
+	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
+	public TransactionSummary(IActivityService activityService)
+		: base(activityService)
+	{
+	}
+
 	/// <summary>Gets the total amount deposited into users accounts.</summary>
 	public decimal Received
 	{

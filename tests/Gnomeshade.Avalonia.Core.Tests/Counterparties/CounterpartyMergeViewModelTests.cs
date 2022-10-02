@@ -18,7 +18,7 @@ public sealed class CounterpartyMergeViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new DesignTimeGnomeshadeClient());
+		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient());
 		await _viewModel.RefreshAsync();
 	}
 
