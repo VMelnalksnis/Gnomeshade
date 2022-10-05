@@ -374,7 +374,11 @@ public sealed class NordigenController : ControllerBase
 			"CARD FEE" => CreditDebitCode.DBIT,
 			"OUTWARD TRANSFER" => CreditDebitCode.DBIT,
 			"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
-			_ => throw new ArgumentOutOfRangeException(nameof(bookedTransaction.AdditionalInformation), bookedTransaction.AdditionalInformation, string.Empty),
+			_ => bookedTransaction.BankTransactionCode switch
+			{
+				"PMNT" => CreditDebitCode.DBIT,
+				_ => throw new ArgumentOutOfRangeException(nameof(bookedTransaction.AdditionalInformation), bookedTransaction.AdditionalInformation, string.Empty),
+			},
 		};
 
 		_logger.LogTrace("Credit or debit indicator {CreditDebit}", creditDebit);
@@ -551,8 +555,8 @@ public sealed class NordigenController : ControllerBase
 		var codes = bookedTransaction.BankTransactionCode.Split('-');
 
 		var domain = Domain.FromName(codes[0], true);
-		var family = Family.FromName(codes[1], true);
-		var subFamily = SubFamily.FromName(codes[2], true);
+		var family = codes.Length > 1 ? Family.FromName(codes[1], true) : Other;
+		var subFamily = codes.Length > 2 ? SubFamily.FromName(codes[2], true) : SubFamily.NotAvailable;
 
 		if (domain.Equals(Domain.Extended))
 		{
