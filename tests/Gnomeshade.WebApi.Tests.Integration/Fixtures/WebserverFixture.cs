@@ -80,6 +80,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 					{ "Oidc:Keycloak:ServerRealm", $"http://localhost:{KeycloakPort}/realms/gnomeshade" },
 					{ "Oidc:Keycloak:Metadata", $"http://localhost:{KeycloakPort}/realms/gnomeshade/.well-known/openid-configuration" },
 					{ "Oidc:Keycloak:ClientId", "gnomeshade" },
+					{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
 				})
 				.AddEnvironmentVariables()
 				.Build();

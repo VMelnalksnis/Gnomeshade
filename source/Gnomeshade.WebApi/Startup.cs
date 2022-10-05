@@ -13,6 +13,7 @@ using Elastic.Apm.Elasticsearch;
 using Elastic.Apm.EntityFrameworkCore;
 
 using Gnomeshade.Data;
+using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Sqlite;
 using Gnomeshade.WebApi.Configuration;
@@ -26,6 +27,7 @@ using Gnomeshade.WebApi.V1.Importing;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,8 +65,7 @@ public class Startup
 			.AddSingleton(DateTimeZoneProviders.Tzdb);
 
 		services
-			.AddControllers()
-			.AddControllersAsServices()
+			.AddControllersWithViews()
 			.AddJsonOptions(options =>
 			{
 				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
@@ -78,11 +79,19 @@ public class Startup
 		{
 			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
 				.AddPostgreSQL(_configuration, new SerilogNpgsqlLoggingProvider())
-				.AddPostgreSQLIdentity(),
+				.AddPostgreSQLIdentityContext()
+				.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddPostgreSQLIdentity()
+				.AddDefaultUI()
+				.AddDefaultTokenProviders(),
 
 			_ when databaseProvider.Equals(DatabaseProvider.Sqlite.Name, StringComparison.OrdinalIgnoreCase) => services
 				.AddSqlite(_configuration)
-				.AddSqliteIdentity(),
+				.AddSqliteIdentityContext()
+				.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddSqliteIdentity()
+				.AddDefaultUI()
+				.AddDefaultTokenProviders(),
 
 			_ => throw new ArgumentOutOfRangeException(nameof(databaseProvider), databaseProvider, "Unsupported database provider"),
 		};
@@ -125,6 +134,7 @@ public class Startup
 			application.UseDeveloperExceptionPage();
 		}
 
+		application.UseStaticFiles();
 		application.UseSerilogRequestLogging();
 
 		application.UseRouting();
@@ -134,6 +144,7 @@ public class Startup
 
 		application.UseEndpoints(builder =>
 		{
+			builder.MapRazorPages();
 			builder.MapControllers().RequireAuthorization();
 			builder.MapHealthChecks("/health").AllowAnonymous();
 		});

@@ -37,6 +37,14 @@ internal static class ConfigurationExtensions
 		where TOptions : notnull, new()
 	{
 		var sectionName = typeof(TOptions).GetSectionName();
+		return configuration.GetValid<TOptions>(sectionName);
+	}
+
+	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(
+		this IConfiguration configuration,
+		string sectionName)
+		where TOptions : notnull, new()
+	{
 		return (configuration.GetSection(sectionName).Get<TOptions>() ?? new()).ValidateAndThrow();
 	}
 

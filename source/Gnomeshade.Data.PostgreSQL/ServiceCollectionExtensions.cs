@@ -59,12 +59,12 @@ public static class ServiceCollectionExtensions
 	/// <summary>Adds <see cref="IdentityContext"/> to service collection.</summary>
 	/// <param name="services">The <see cref="IServiceCollection"/> to which to add the context.</param>
 	/// <returns>The current <see cref="IdentityBuilder"/>.</returns>
-	public static IdentityBuilder AddPostgreSQLIdentity(this IServiceCollection services)
-	{
-		return services
-			.AddDbContext<IdentityContext, PostgreSQLIdentityContext>()
-			.AddIdentity<ApplicationUser, IdentityRole>()
-			.AddEntityFrameworkStores<PostgreSQLIdentityContext>()
-			.AddDefaultTokenProviders();
-	}
+	public static IServiceCollection AddPostgreSQLIdentityContext(this IServiceCollection services) => services
+		.AddDbContext<IdentityContext, PostgreSQLIdentityContext>();
+
+	/// <summary>Adds an Entity Framework implementation of identity information stores for PostgreSQL.</summary>
+	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
+	/// <returns><paramref name="identityBuilder"/> with identity stored added.</returns>
+	public static IdentityBuilder AddPostgreSQLIdentity(this IdentityBuilder identityBuilder) => identityBuilder
+		.AddEntityFrameworkStores<PostgreSQLIdentityContext>();
 }

@@ -54,12 +54,12 @@ public static class ServiceCollectionExtensions
 	/// <summary>Adds <see cref="IdentityContext"/> to service collection.</summary>
 	/// <param name="services">The <see cref="IServiceCollection"/> to which to add the context.</param>
 	/// <returns>The current <see cref="IdentityBuilder"/>.</returns>
-	public static IdentityBuilder AddSqliteIdentity(this IServiceCollection services)
-	{
-		return services
-			.AddDbContext<IdentityContext, SqliteIdentityContext>()
-			.AddIdentity<ApplicationUser, IdentityRole>()
-			.AddEntityFrameworkStores<SqliteIdentityContext>()
-			.AddDefaultTokenProviders();
-	}
+	public static IServiceCollection AddSqliteIdentityContext(this IServiceCollection services) => services
+		.AddDbContext<IdentityContext, SqliteIdentityContext>();
+
+	/// <summary>Adds an Entity Framework implementation of identity information stores for Sqlite.</summary>
+	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
+	/// <returns><paramref name="identityBuilder"/> with identity stored added.</returns>
+	public static IdentityBuilder AddSqliteIdentity(this IdentityBuilder identityBuilder) => identityBuilder
+		.AddEntityFrameworkStores<SqliteIdentityContext>();
 }

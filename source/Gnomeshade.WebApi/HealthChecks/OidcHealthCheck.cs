@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.WebApi.HealthChecks;
 
-/// <summary>Checks that all OIDC providers configured in <see cref="AuthConfiguration.OidcProviderSectionName"/> section.</summary>
+/// <summary>Checks that all OIDC providers configured in <see cref="OidcProviderOptions.OidcProviderSectionName"/> section.</summary>
 public sealed class OidcHealthCheck : IHealthCheck
 {
 	private readonly ILogger<OidcHealthCheck> _logger;
@@ -42,7 +42,7 @@ public sealed class OidcHealthCheck : IHealthCheck
 	{
 		try
 		{
-			var providerSection = _configuration.GetSection(AuthConfiguration.OidcProviderSectionName);
+			var providerSection = _configuration.GetSection(OidcProviderOptions.OidcProviderSectionName);
 			var providerNames = providerSection.GetChildren().Select(section => section.Key);
 			foreach (var providerName in providerNames)
 			{
@@ -67,7 +67,7 @@ public sealed class OidcHealthCheck : IHealthCheck
 		string providerName,
 		CancellationToken cancellationToken)
 	{
-		var keycloakOptions = providerSection.GetValid<KeycloakOptions>();
+		var keycloakOptions = providerSection.GetValid<OidcProviderOptions>(providerName);
 		var response = await _httpClient.GetAsync(keycloakOptions.Metadata, cancellationToken);
 		if (response.IsSuccessStatusCode)
 		{

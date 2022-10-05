@@ -6,24 +6,28 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
+
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace Gnomeshade.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
-	internal const string OidcProviderSectionName = "Oidc";
-
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,
 		IConfiguration configuration)
@@ -38,7 +42,7 @@ internal static class AuthConfiguration
 			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 		}
 
-		var providerSection = configuration.GetSection(OidcProviderSectionName);
+		var providerSection = configuration.GetSection(OidcProviderOptions.OidcProviderSectionName);
 		var providerNames = providerSection.GetChildren().Select(section => section.Key).ToList();
 
 		authenticationSchemes.AddRange(providerNames);
@@ -99,13 +103,13 @@ internal static class AuthConfiguration
 
 		foreach (var providerName in providerNames)
 		{
-			var keycloakOptions = providerSection.GetValid<KeycloakOptions>();
+			var providerOptions = providerSection.GetValid<OidcProviderOptions>(providerName);
 			authenticationBuilder.AddJwtBearer(providerName, options =>
 			{
-				options.Authority = keycloakOptions.ServerRealm.AbsoluteUri;
-				options.MetadataAddress = keycloakOptions.Metadata.AbsoluteUri;
-				options.Audience = keycloakOptions.ClientId;
-				options.RequireHttpsMetadata = false;
+				options.Authority = providerOptions.ServerRealm.AbsoluteUri;
+				options.MetadataAddress = providerOptions.Metadata.AbsoluteUri;
+				options.Audience = providerOptions.ClientId;
+				options.RequireHttpsMetadata = providerOptions.RequireHttpsMetadata;
 				options.SaveToken = true;
 
 				options.TokenValidationParameters = new()
@@ -114,7 +118,41 @@ internal static class AuthConfiguration
 					ValidateAudience = true,
 					ValidateLifetime = true,
 					ValidateIssuerSigningKey = true,
-					ValidAudience = keycloakOptions.ClientId,
+					ValidAudience = providerOptions.ClientId,
+					ClockSkew = TimeSpan.Zero,
+					AuthenticationType = providerName,
+				};
+			});
+
+			var displayName = providerOptions.DisplayName ?? providerName;
+			authenticationBuilder.AddOpenIdConnect($"{providerName}_oidc", displayName, options =>
+			{
+				options.SignInScheme = IdentityConstants.ExternalScheme;
+				options.Authority = providerOptions.ServerRealm.AbsoluteUri;
+				options.ClientId = providerOptions.ClientId;
+				options.ClientSecret = providerOptions.ClientSecret;
+				options.MetadataAddress = providerOptions.Metadata.AbsoluteUri;
+				options.RequireHttpsMetadata = providerOptions.RequireHttpsMetadata;
+				options.GetClaimsFromUserInfoEndpoint = true;
+				options.Scope.Add("openid");
+				options.Scope.Add("profile");
+				options.SaveTokens = true;
+				options.ResponseType = OpenIdConnectResponseType.Code;
+				options.NonceCookie.SameSite = SameSiteMode.Unspecified;
+				options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
+				options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
+				options.SaveTokens = true;
+				options.NonceCookie.SameSite = SameSiteMode.Unspecified;
+				options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
+				options.TokenValidationParameters = new()
+				{
+					NameClaimType = "name",
+					RoleClaimType = ClaimTypes.Role,
+					ValidateIssuer = true,
+					ValidateAudience = true,
+					ValidateLifetime = true,
+					ValidateIssuerSigningKey = true,
+					ValidAudience = providerOptions.ClientId,
 					ClockSkew = TimeSpan.Zero,
 					AuthenticationType = providerName,
 				};
@@ -126,6 +164,11 @@ internal static class AuthConfiguration
 
 	private static string? ForwardDefaultSelector(HttpContext context, IEnumerable<string> authenticationSchemes)
 	{
+		if (context.Request.Cookies.Keys.Any(key => key.EndsWith(IdentityConstants.ApplicationScheme)))
+		{
+			return IdentityConstants.ApplicationScheme;
+		}
+
 		string authorization = context.Request.Headers[HeaderNames.Authorization];
 		if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
 		{
