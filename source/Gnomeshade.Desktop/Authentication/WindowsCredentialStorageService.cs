@@ -28,6 +28,7 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 		credentials.TargetName = _credentialName;
 		credentials.CredentialBlob = token;
 		credentials.Attributes = new Dictionary<string, object> { { _tokenAttributeName, true } };
+		credentials.Persistance = Persistance.LocalMachine;
 		credentials.SaveCredential(true);
 	}
 
