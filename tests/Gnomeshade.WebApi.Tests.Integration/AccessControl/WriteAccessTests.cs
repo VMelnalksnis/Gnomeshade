@@ -22,14 +22,14 @@ namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 [TestFixtureSource(typeof(OwnerTestFixtureSource))]
 public sealed class WriteAccessTests : WebserverTests
 {
-	private readonly Func<WebserverFixture, Task<Guid>> _ownerIdFunc;
+	private readonly Func<IGnomeshadeClient, Task<Guid>> _ownerIdFunc;
 	private readonly Guid _writeOwnershipId = Guid.NewGuid();
 
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
 	private Guid? _ownerId;
 
-	public WriteAccessTests(Func<WebserverFixture, Task<Guid>> ownerIdFunc, WebserverFixture fixture)
+	public WriteAccessTests(Func<IGnomeshadeClient, Task<Guid>> ownerIdFunc, WebserverFixture fixture)
 		: base(fixture)
 	{
 		_ownerIdFunc = ownerIdFunc;
@@ -39,13 +39,13 @@ public sealed class WriteAccessTests : WebserverTests
 	public async Task OneTimeSetUp()
 	{
 		_client = await Fixture.CreateAuthorizedClientAsync();
-		_otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
+		_otherClient = await Fixture.CreateAuthorizedClientAsync();
 
 		var counterparty = await _client.GetMyCounterpartyAsync();
 		var otherCounterparty = await _otherClient.GetMyCounterpartyAsync();
 		var accesses = await _client.GetAccessesAsync();
 		var writeAccess = accesses.Single(access => access.Name == "Write");
-		var ownerId = await _ownerIdFunc(Fixture);
+		var ownerId = await _ownerIdFunc(_client);
 		var writeOwnership = new OwnershipCreation
 		{
 			AccessId = writeAccess.Id,

@@ -31,7 +31,7 @@ public sealed class PrivateByDefaultTests : WebserverTests
 	public async Task OneTimeSetUp()
 	{
 		_client = await Fixture.CreateAuthorizedClientAsync();
-		_otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
+		_otherClient = await Fixture.CreateAuthorizedClientAsync();
 	}
 
 	[Test]

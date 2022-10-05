@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Linq;
 
+using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
@@ -18,9 +19,8 @@ internal sealed class OwnerTestFixtureSource : IEnumerable
 		foreach (var webserverFixture in DatabaseFixtureSource.Fixtures)
 		{
 			yield return new TestFixtureData(
-					async (WebserverFixture fixture) =>
+					async (IGnomeshadeClient client) =>
 					{
-						var client = await fixture.CreateAuthorizedClientAsync();
 						var counterparty = await client.GetMyCounterpartyAsync();
 						return counterparty.OwnerId;
 					},
@@ -28,9 +28,8 @@ internal sealed class OwnerTestFixtureSource : IEnumerable
 				.SetArgDisplayNames("Original owner", webserverFixture.Name);
 
 			yield return new TestFixtureData(
-					async (WebserverFixture fixture) =>
+					async (IGnomeshadeClient client) =>
 					{
-						var client = await fixture.CreateAuthorizedClientAsync();
 						var counterparty = await client.GetMyCounterpartyAsync();
 						var ownerAccess = (await client.GetAccessesAsync()).Single(access => access.Name == "Owner");
 						var ownerId = Guid.NewGuid();

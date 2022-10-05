@@ -32,8 +32,6 @@ public abstract class WebserverFixture : IAsyncDisposable
 {
 	private const int _keycloakPort = 8080;
 	private WebApplicationFactory<Startup> _webApplicationFactory = null!;
-	private Login _login = null!;
-	private Login _secondLogin = null!;
 
 	internal abstract string Name { get; }
 
@@ -86,16 +84,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 				.Build();
 
 		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration);
-
-		var client = _webApplicationFactory.CreateClient();
-		var registrationFaker = new Faker<RegistrationModel>()
-			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
-			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
-			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
-			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
-
-		_login = await RegisterUser(client, registrationFaker.Generate());
-		_secondLogin = await RegisterUser(client, registrationFaker.Generate());
+		_webApplicationFactory.CreateClient();
 	}
 
 	internal HttpClient CreateHttpClient(params DelegatingHandler[] handlers) =>
@@ -107,10 +96,18 @@ public abstract class WebserverFixture : IAsyncDisposable
 		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
 	}
 
-	internal Task<IGnomeshadeClient> CreateAuthorizedClientAsync() => CreateAuthorizedClientAsync(_login);
+	internal async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+	{
+		var client = _webApplicationFactory.CreateClient();
+		var registrationFaker = new Faker<RegistrationModel>()
+			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
+			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
+			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
+			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
 
-	internal Task<IGnomeshadeClient> CreateAuthorizedSecondClientAsync() =>
-		CreateAuthorizedClientAsync(_secondLogin);
+		var login = await RegisterUser(client, registrationFaker.Generate());
+		return await CreateAuthorizedClientAsync(login);
+	}
 
 	internal IServiceScope CreateScope() => _webApplicationFactory.Services.CreateScope();
 

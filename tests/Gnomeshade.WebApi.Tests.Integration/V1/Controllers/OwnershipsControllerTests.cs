@@ -35,7 +35,7 @@ public sealed class OwnershipsControllerTests : WebserverTests
 	public async Task PutDelete()
 	{
 		var client = await Fixture.CreateAuthorizedClientAsync();
-		var otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
+		var otherClient = await Fixture.CreateAuthorizedClientAsync();
 
 		var counterparty = await client.GetMyCounterpartyAsync();
 		var otherCounterparty = await otherClient.GetMyCounterpartyAsync();

@@ -105,7 +105,7 @@ public sealed class AccountsControllerTests : WebserverTests
 		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
 		await _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel);
 
-		var differentCounterparty = await (await Fixture.CreateAuthorizedSecondClientAsync()).GetMyCounterpartyAsync();
+		var differentCounterparty = await (await Fixture.CreateAuthorizedClientAsync()).GetMyCounterpartyAsync();
 		var secondAccount = accountCreationModel with
 		{
 			CounterpartyId = differentCounterparty.Id,

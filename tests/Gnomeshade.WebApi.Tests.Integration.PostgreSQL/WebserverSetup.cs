@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
+
 namespace Gnomeshade.WebApi.Tests.Integration;
 
 [SetUpFixture]

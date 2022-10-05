@@ -4,6 +4,7 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Authentication;
@@ -22,6 +23,10 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 
 public sealed class AuthorizationTests : WebserverTests
 {
+	// [NonParallelizable] currenly does not correctly override [Parallelizable] at assembly level
+	// see https://github.com/nunit/nunit/issues/3371
+	private static readonly SemaphoreSlim _lock = new(1, 1);
+
 	public AuthorizationTests(WebserverFixture fixture)
 		: base(fixture)
 	{
@@ -40,38 +45,47 @@ public sealed class AuthorizationTests : WebserverTests
 	[Test]
 	public async Task SocialRegister()
 	{
-		var services = new ServiceCollection();
+		await _lock.WaitAsync();
 
-		var redirectUri = $"http://localhost:{Fixture.RedirectPort}/";
-		services
-			.AddHttpClient()
-			.AddLogging()
-			.AddSingleton<IBrowser, MockBrowser>()
-			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(redirectUri))
-			.AddTransient<OidcClient>(provider => new(new()
-			{
-				Authority = $"http://localhost:{Fixture.KeycloakPort}/realms/gnomeshade/",
-				ClientId = "gnomeshade",
-				Scope = "openid profile",
-				RedirectUri = redirectUri,
-				Browser = provider.GetRequiredService<IBrowser>(),
-				LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
-				HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),
-			}))
-			.AddSingleton<IClock>(SystemClock.Instance)
-			.AddSingleton(DateTimeZoneProviders.Tzdb)
-			.AddSingleton<GnomeshadeTokenCache>()
-			.AddSingleton<GnomeshadeJsonSerializerOptions>()
-			.AddTransient<TokenDelegatingHandler>();
+		try
+		{
+			var services = new ServiceCollection();
 
-		var provider = services.BuildServiceProvider();
+			var redirectUri = $"http://localhost:{Fixture.RedirectPort}/";
+			services
+				.AddHttpClient()
+				.AddLogging()
+				.AddSingleton<IBrowser, MockBrowser>()
+				.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(redirectUri))
+				.AddTransient<OidcClient>(provider => new(new()
+				{
+					Authority = $"http://localhost:{Fixture.KeycloakPort}/realms/gnomeshade/",
+					ClientId = "gnomeshade",
+					Scope = "openid profile",
+					RedirectUri = redirectUri,
+					Browser = provider.GetRequiredService<IBrowser>(),
+					LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
+					HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),
+				}))
+				.AddSingleton<IClock>(SystemClock.Instance)
+				.AddSingleton(DateTimeZoneProviders.Tzdb)
+				.AddSingleton<GnomeshadeTokenCache>()
+				.AddSingleton<GnomeshadeJsonSerializerOptions>()
+				.AddTransient<TokenDelegatingHandler>();
 
-		var handler = provider.GetRequiredService<TokenDelegatingHandler>();
-		var gnomeshadeClient = Fixture.CreateUnauthorizedClient(handler);
+			var provider = services.BuildServiceProvider();
 
-		await gnomeshadeClient.SocialRegister();
+			var handler = provider.GetRequiredService<TokenDelegatingHandler>();
+			var gnomeshadeClient = Fixture.CreateUnauthorizedClient(handler);
 
-		var counterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
-		counterparty.Name.Should().Be("John Doe");
+			await gnomeshadeClient.SocialRegister();
+
+			var counterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
+			counterparty.Name.Should().Be("John Doe");
+		}
+		finally
+		{
+			_lock.Release();
+		}
 	}
 }

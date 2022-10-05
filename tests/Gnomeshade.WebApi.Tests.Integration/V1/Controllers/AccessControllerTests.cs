@@ -21,7 +21,7 @@ public sealed class AccessControllerTests : WebserverTests
 	public async Task Get_ShouldReturnExpected()
 	{
 		var client = await Fixture.CreateAuthorizedClientAsync();
-		var otherClient = await Fixture.CreateAuthorizedSecondClientAsync();
+		var otherClient = await Fixture.CreateAuthorizedClientAsync();
 
 		var accesses = await client.GetAccessesAsync();
 		accesses.Should().HaveCount(4);
