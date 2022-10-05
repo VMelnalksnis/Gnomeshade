@@ -24,7 +24,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: actions/setup-dotnet@v3.0.0
+      - uses: actions/setup-dotnet@v3.0.1
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.10
