@@ -23,6 +23,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions;
 public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDialogService _dialogService;
+	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private Guid? _id;
 	private TransferViewModel? _transfers;
@@ -34,17 +35,20 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
+	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="id">The id of the transaction to edit.</param>
 	public TransactionUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
+		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
 		_dialogService = dialogService;
+		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_id = id;
 		Properties = new(activityService);
@@ -85,6 +89,24 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 	/// <inheritdoc />
 	public override bool CanSave => Properties.IsValid;
+
+	/// <summary>Marks the current transaction as reconciled at the current time.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task Reconcile()
+	{
+		if (!CanSave)
+		{
+			return;
+		}
+
+		var currentZone = _dateTimeZoneProvider.GetSystemDefault();
+		var currentTime = _clock.GetCurrentInstant().InZone(currentZone).LocalDateTime;
+
+		Properties.ReconciliationDate = currentTime.ToDateTimeUnspecified();
+		Properties.ReconciliationTime = currentTime.TimeOfDay.ToTimeOnly().ToTimeSpan();
+
+		await SaveAsync();
+	}
 
 	/// <summary>Removed reconciled status from a transaction.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -148,11 +170,10 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 		Loans ??= new(ActivityService, GnomeshadeClient, _id.Value);
 
 		await Task.WhenAll(
-				Transfers.RefreshAsync(),
-				Purchases.RefreshAsync(),
-				Links.RefreshAsync(),
-				Loans.RefreshAsync())
-			;
+			Transfers.RefreshAsync(),
+			Purchases.RefreshAsync(),
+			Links.RefreshAsync(),
+			Loans.RefreshAsync());
 
 		if (!transaction.Reconciled)
 		{

@@ -22,6 +22,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDialogService _dialogService;
+	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private TransactionUpsertionViewModel _details;
@@ -42,8 +43,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dialogService = dialogService;
+		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = new(activityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, null);
+		_details = new(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanged += OnPropertyChanged;
@@ -87,7 +89,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 

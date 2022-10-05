@@ -127,7 +127,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		InitializeViewModel(new TransactionUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel(new TransactionUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =

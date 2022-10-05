@@ -14,15 +14,16 @@ using NodaTime;
 namespace Gnomeshade.Avalonia.Core.Tests.Transactions;
 
 [TestOf(typeof(TransactionUpsertionViewModel))]
-public class TransactionDetailViewModelTests
+public sealed class TransactionDetailViewModelTests
 {
+	private readonly IClock _clock = SystemClock.Instance;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider = DateTimeZoneProviders.Tzdb;
 
 	[Test]
 	public async Task SaveAsync_ShouldUpdate()
 	{
 		var client = new DesignTimeGnomeshadeClient();
-		var viewModel = new TransactionUpsertionViewModel(new ActivityService(), client, new DesignTimeDialogService(), _dateTimeZoneProvider, Guid.Empty);
+		var viewModel = new TransactionUpsertionViewModel(new ActivityService(), client, new DesignTimeDialogService(), _clock, _dateTimeZoneProvider, Guid.Empty);
 		await viewModel.RefreshAsync();
 
 		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));

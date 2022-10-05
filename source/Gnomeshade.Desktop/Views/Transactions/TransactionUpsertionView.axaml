@@ -21,6 +21,13 @@
 				</Button>
 				
 				<Button 
+					IsVisible="{Binding !Transfers.IsReadOnly, FallbackValue=false}"
+					IsEnabled="{Binding CanSave}"
+					Command="{ReflectionBinding Reconcile}">
+					Reconcile
+				</Button>
+				
+				<Button 
 					IsVisible="{Binding Transfers.IsReadOnly, FallbackValue=false}"
 					Command="{ReflectionBinding Edit}">
 					Edit
