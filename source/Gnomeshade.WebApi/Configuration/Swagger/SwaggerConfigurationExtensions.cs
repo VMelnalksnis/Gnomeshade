@@ -27,6 +27,7 @@ internal static class SwaggerConfigurationExtensions
 
 			options.SchemaFilter<ValidationProblemDetailsFilter>();
 			options.SchemaFilter<ValidationProblemDetailsSchemaFilter>();
+			options.SchemaFilter<InstantSchemaFilter>();
 			options.OperationFilter<ValidationProblemDetailsFilter>();
 			options.OperationFilter<InternalServerErrorOperationFilter>();
 			options.OperationFilter<UnauthorizedOperationFilter>();
