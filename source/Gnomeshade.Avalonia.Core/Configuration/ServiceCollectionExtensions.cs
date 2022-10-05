@@ -26,6 +26,10 @@ public static class ServiceCollectionExtensions
 			.Bind(configuration);
 
 		serviceCollection
+			.AddOptions<PreferencesOptions>()
+			.Bind(configuration.GetSection(nameof(UserConfiguration.Preferences)));
+
+		serviceCollection
 			.AddOptions<OidcOptions>()
 			.Bind(configuration.GetSection(nameof(UserConfiguration.Oidc)))
 			.ValidateDataAnnotations();

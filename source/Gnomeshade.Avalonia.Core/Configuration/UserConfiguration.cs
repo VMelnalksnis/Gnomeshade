@@ -12,9 +12,12 @@ namespace Gnomeshade.Avalonia.Core.Configuration;
 [UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
 public sealed class UserConfiguration
 {
-	/// <summary>Gets or sets oIDC settings.</summary>
+	/// <summary>Gets or sets OIDC settings.</summary>
 	public OidcOptions? Oidc { get; set; }
 
 	/// <summary>Gets or sets gnomeshade settings.</summary>
 	public GnomeshadeOptions? Gnomeshade { get; set; }
+
+	/// <summary>Gets or sets user preferences.</summary>
+	public PreferencesOptions? Preferences { get; set; }
 }

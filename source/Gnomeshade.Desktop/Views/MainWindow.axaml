@@ -40,6 +40,9 @@
 						x:Name="Settings" Header="_Settings"
 						Command="{ReflectionBinding SwitchToSetup}" />
 					<MenuItem
+						x:Name="Preferences" Header="_Preferences"
+						Command="{ReflectionBinding SwitchToPreferences}" />
+					<MenuItem
 						x:Name="Exit" Header="E_xit"
 						Command="{ReflectionBinding Exit}" />
 				</MenuItem>

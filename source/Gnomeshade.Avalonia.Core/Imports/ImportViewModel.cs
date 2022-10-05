@@ -9,7 +9,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Authentication;
+using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.WebApi.Client;
+
+using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.Avalonia.Core.Imports;
 
@@ -17,6 +20,7 @@ namespace Gnomeshade.Avalonia.Core.Imports;
 public sealed class ImportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IOptionsMonitor<PreferencesOptions> _optionsMonitor;
 
 	private string? _filePath;
 	private List<string> _institutions;
@@ -26,12 +30,18 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <summary>Initializes a new instance of the <see cref="ImportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	public ImportViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+	/// <param name="optionsMonitor">Options monitor of user preferences.</param>
+	public ImportViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		IOptionsMonitor<PreferencesOptions> optionsMonitor)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_optionsMonitor = optionsMonitor;
 		_institutions = new();
-		_country = "LV"; // todo - read from user config
+		_country = _optionsMonitor.CurrentValue?.NordigenCountry ?? "LV";
+		_selectedInstitution = _optionsMonitor.CurrentValue?.NoridgenInstitutionId;
 	}
 
 	/// <summary>Gets or sets the local path of the report file to import.</summary>
@@ -93,6 +103,13 @@ public sealed class ImportViewModel : ViewModelBase
 	protected override async Task Refresh()
 	{
 		Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country);
-		SelectedInstitution = Institutions.First();
+		if (_optionsMonitor.CurrentValue?.NoridgenInstitutionId is { } institutionId)
+		{
+			SelectedInstitution = Institutions.SingleOrDefault(id => id == institutionId) ?? Institutions.First();
+		}
+		else
+		{
+			SelectedInstitution = Institutions.First();
+		}
 	}
 }

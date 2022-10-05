@@ -19,6 +19,7 @@ using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.WebApi.Client;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using NodaTime;
@@ -164,7 +165,8 @@ public sealed class MainWindowViewModel : ViewModelBase
 	public Task SwitchToImportAsync() => SwitchTo<ImportViewModel>(() =>
 	{
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		return new(ActivityService, gnomeshadeClient);
+		var optionsMonitor = _serviceProvider.GetRequiredService<IOptionsMonitor<PreferencesOptions>>();
+		return new(ActivityService, gnomeshadeClient, optionsMonitor);
 	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProductViewModel"/>.</summary>
@@ -213,6 +215,25 @@ public sealed class MainWindowViewModel : ViewModelBase
 		return new(ActivityService, gnomeshadeClient, _clock, _dateTimeZoneProvider);
 	});
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ApplicationSettingsViewModel"/>.</summary>
+	public void SwitchToSetup()
+	{
+		var initialSetupViewModel = new ApplicationSettingsViewModel(ActivityService, _userConfiguration, _userConfigurationWriter, _validator);
+		initialSetupViewModel.Updated += InitialSetupViewModelOnUpdated;
+
+		ActiveView = initialSetupViewModel;
+	}
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="PreferencesViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToPreferences() => SwitchTo<PreferencesViewModel>(() =>
+	{
+		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
+		var optionsMonitor = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>();
+		var logger = _serviceProvider.GetRequiredService<ILogger<PreferencesViewModel>>();
+		return new(ActivityService, optionsMonitor, _userConfigurationWriter, gnomeshadeClient, logger);
+	});
+
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
 	{
 		if (Application.Current is null)
@@ -259,14 +280,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 			loginViewModel.Password = password;
 			await loginViewModel.LogInAsync();
 		}
-	}
-
-	private void SwitchToSetup()
-	{
-		var initialSetupViewModel = new ApplicationSettingsViewModel(ActivityService, _userConfiguration, _userConfigurationWriter, _validator);
-		initialSetupViewModel.Updated += InitialSetupViewModelOnUpdated;
-
-		ActiveView = initialSetupViewModel;
 	}
 
 	private async void InitialSetupViewModelOnUpdated(object? sender, EventArgs e)

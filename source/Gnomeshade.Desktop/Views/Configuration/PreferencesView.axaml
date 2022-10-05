@@ -1,0 +1,29 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:configuration="clr-namespace:Gnomeshade.Avalonia.Core.Configuration;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="300"
+	d:DataContext="{x:Static dd:DesignTimeData.PreferencesViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Configuration.PreferencesView"
+	x:CompileBindings="True"
+	x:DataType="configuration:PreferencesViewModel">
+
+	<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto">
+
+		<TextBox Grid.Row="0" Grid.Column="0" Watermark="Nordigen Country" Text="{Binding NordigenCountry}" />
+		
+		<AutoCompleteBox
+			Grid.Row="1" Grid.Column="0"
+			Watermark="Nordigen Institution"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+			Items="{Binding Institutions}"
+			SelectedItem="{Binding SelectedInstitutionId}" />
+
+		<Button Grid.Row="2" Grid.Column="0" Command="{ReflectionBinding Save}">
+			Save
+		</Button>
+	</Grid>
+</UserControl>

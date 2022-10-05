@@ -18,9 +18,12 @@ using Gnomeshade.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
 using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
+using Gnomeshade.WebApi.Client;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -70,7 +73,7 @@ public static class DesignTimeData
 		InitializeViewModel(new CounterpartyUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="ImportViewModel"/> for use during design time.</summary>
-	public static ImportViewModel ImportViewModel { get; } = new(ActivityService, GnomeshadeClient);
+	public static ImportViewModel ImportViewModel { get; } = new(ActivityService, GnomeshadeClient, new DesignTimeOptionsMonitor<PreferencesOptions>());
 
 	/// <summary>Gets an instance of <see cref="LoginViewModel"/> for use during design time.</summary>
 	public static LoginViewModel LoginViewModel { get; } = new(ActivityService, AuthenticationService);
@@ -167,6 +170,10 @@ public static class DesignTimeData
 	public static ApplicationSettingsViewModel ApplicationSettingsViewModel { get; } =
 		GetServiceProvider().GetRequiredService<ApplicationSettingsViewModel>();
 
+	/// <summary>Gets an instance of <see cref="PreferencesViewModel"/> for use during design time.</summary>
+	public static PreferencesViewModel PreferencesViewModel { get; } =
+		GetServiceProvider().GetRequiredService<PreferencesViewModel>();
+
 	[UnconditionalSuppressMessage(
 		"Trimming",
 		"IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
@@ -191,6 +198,9 @@ public static class DesignTimeData
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
 			.AddSingleton<IActivityService, ActivityService>()
 			.AddTransient<ApplicationSettingsViewModel>()
+			.AddTransient<PreferencesViewModel>()
+			.AddTransient<ILogger<PreferencesViewModel>>(_ => NullLogger<PreferencesViewModel>.Instance)
+			.AddTransient<IGnomeshadeClient>(_ => GnomeshadeClient)
 			.AddHttpClient();
 
 		return serviceCollection.BuildServiceProvider();
