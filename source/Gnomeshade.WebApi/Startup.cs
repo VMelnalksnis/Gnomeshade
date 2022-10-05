@@ -73,7 +73,10 @@ public class Startup
 				options.JsonSerializerOptions.AddContext<GnomeshadeSerializerContext>();
 			});
 
-		services.AddRepositories();
+		services
+			.AddRepositories()
+			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
+
 		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
 		_ = databaseProvider switch
 		{

@@ -4,7 +4,6 @@
 
 using Gnomeshade.Data.Repositories;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gnomeshade.Data;
@@ -36,7 +35,6 @@ public static class ServiceCollectionExtensions
 			.AddScoped<AccountUnitOfWork>()
 			.AddScoped<CategoryRepository>()
 			.AddScoped<TransactionUnitOfWork>()
-			.AddScoped<UserUnitOfWork>()
-			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
+			.AddScoped<UserUnitOfWork>();
 	}
 }
