@@ -21,9 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3.0.1
+      - uses: actions/setup-dotnet@v3.0.1
+      - uses: actions/setup-node@v3.5.0
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.10
@@ -31,8 +34,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - run: dotnet restore
 
       - name: Build
         run: >
@@ -69,9 +71,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3.0.1
+      - uses: actions/setup-dotnet@v3.0.1
+      - uses: actions/setup-node@v3.5.0
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.10
@@ -79,14 +84,13 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - run: dotnet restore
 
       - name: Build
         run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
 
       - name: ReSharper annotations
-        uses: VMelnalksnis/resharper-inspect-action@v0.2.3
+        uses: VMelnalksnis/resharper-inspect-action@v0.2.4
         with:
           solution: Gnomeshade.sln
           resharper-version: 2022.1.2

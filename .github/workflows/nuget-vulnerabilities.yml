@@ -25,6 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3.1.0
       - uses: actions/setup-dotnet@v3.0.1
+      - uses: actions/setup-node@v3.5.0
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.10
@@ -32,8 +37,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - run: dotnet restore
 
       - name: Check vulnerable packages
         id: packages
