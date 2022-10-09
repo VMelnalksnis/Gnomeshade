@@ -1,7 +1,5 @@
 ﻿{
-	"name": "gnomeshade.webapi",
-	"version": "1.0.0",
-	"private": true,
+	"name": "gnomeshade",
 	"devDependencies": {
 		"gulp": "4.0.2"
 	},
