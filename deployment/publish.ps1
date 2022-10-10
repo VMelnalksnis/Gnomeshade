@@ -23,6 +23,7 @@ $dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.csproj"
 $dotnetArgs = $dotnetArgs + "--runtime" + $Runtime
 $dotnetArgs = $dotnetArgs + "--configuration" + "Release"
 $dotnetArgs = $dotnetArgs + "--self-contained"
+$dotnetArgs = $dotnetArgs + "--no-restore"
 $dotnetArgs = $dotnetArgs + "-p:PublishSingleFile=true"
 $dotnetArgs = $dotnetArgs + "-p:AssemblyVersion=$version.$RunNumber"
 $dotnetArgs = $dotnetArgs + "-p:InformationalVersion=$version$Tag+$Runtime"

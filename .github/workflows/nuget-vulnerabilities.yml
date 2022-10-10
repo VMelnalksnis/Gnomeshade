@@ -37,7 +37,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore
+      - run: dotnet restore --locked-mode
 
       - name: Check vulnerable packages
         id: packages

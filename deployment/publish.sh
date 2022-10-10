@@ -8,6 +8,7 @@ dotnet publish \
 	--runtime "$2" \
 	--configuration Release \
 	--self-contained \
+	--no-restore \
 	-p:PublishSingleFile=true \
 	-p:AssemblyVersion="$version"."$3" \
 	-p:InformationalVersion="$version""$4"+"$2" \

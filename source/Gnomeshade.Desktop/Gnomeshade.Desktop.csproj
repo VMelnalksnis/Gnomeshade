@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
+		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
