@@ -1,0 +1,44 @@
+name: NuGet restore
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  nuget-restore:
+    name: NuGet restore
+    if: contains(github.head_ref, 'dependabot')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.PAT }}
+
+      - uses: actions/setup-dotnet@v3.0.1
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.0.10
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: dotnet restore --force-evaluate
+        
+      - id: diff
+        continue-on-error: true
+        run: git diff --name-only --exit-code
+
+      - if: steps.diff.outcome == 'failure'
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git commit --amend
+          git push --force-with-lease
