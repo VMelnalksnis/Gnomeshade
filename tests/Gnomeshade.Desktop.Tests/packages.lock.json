@@ -902,59 +902,59 @@
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "0.10.18",
-          "Avalonia.Controls.DataGrid": "0.10.18",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.WebApi.Client": "1.0.0",
-          "IdentityModel.OidcClient": "5.0.2",
-          "LiveChartsCore.SkiaSharpView.Avalonia": "2.0.0-beta.401",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.1",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Http": "6.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
-          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0"
+          "Avalonia": "[0.10.18, )",
+          "Avalonia.Controls.DataGrid": "[0.10.18, )",
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Gnomeshade.WebApi.Client": "[1.0.0, )",
+          "IdentityModel.OidcClient": "[5.1.0, )",
+          "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-beta.401, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.Extensions.Configuration.EnvironmentVariables": "[6.0.1, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
+          "Microsoft.Extensions.Http": "[6.0.0, )",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "[6.0.0, )",
+          "Microsoft.Extensions.Options.DataAnnotations": "[6.0.0, )"
         }
       },
       "gnomeshade.desktop": {
         "type": "Project",
         "dependencies": {
-          "AdysTech.CredentialManager": "2.6.0",
-          "Avalonia": "0.10.18",
-          "Avalonia.Desktop": "0.10.18",
-          "Avalonia.Diagnostics": "0.10.18",
-          "Avalonia.Xaml.Behaviors": "0.10.18",
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.Avalonia.Core": "1.0.0",
-          "Microsoft.Extensions.Configuration.Json": "6.0.0",
-          "Serilog": "2.12.0",
-          "Serilog.Extensions.Hosting": "5.0.1",
-          "Serilog.Sinks.File": "5.0.0",
-          "Serilog.Sinks.Trace": "3.0.0"
+          "AdysTech.CredentialManager": "[2.6.0, )",
+          "Avalonia": "[0.10.18, )",
+          "Avalonia.Desktop": "[0.10.18, )",
+          "Avalonia.Diagnostics": "[0.10.18, )",
+          "Avalonia.Xaml.Behaviors": "[0.10.18, )",
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Gnomeshade.Avalonia.Core": "[1.0.0, )",
+          "Microsoft.Extensions.Configuration.Json": "[6.0.0, )",
+          "Serilog": "[2.12.0, )",
+          "Serilog.Extensions.Hosting": "[5.0.1, )",
+          "Serilog.Sinks.File": "[5.0.0, )",
+          "Serilog.Sinks.Trace": "[3.0.0, )"
         }
       },
       "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "Gnomeshade.WebApi.Models": "1.0.0",
-          "IdentityModel.OidcClient": "5.0.2",
-          "Microsoft.Extensions.Configuration": "6.0.1",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
-          "Microsoft.Extensions.Http": "6.0.0",
-          "Microsoft.Extensions.Options": "6.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "6.0.0",
-          "Microsoft.Extensions.Options.DataAnnotations": "6.0.0",
-          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "Gnomeshade.WebApi.Models": "[1.0.0, )",
+          "IdentityModel.OidcClient": "[5.1.0, )",
+          "Microsoft.Extensions.Configuration": "[6.0.1, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[6.0.0, )",
+          "Microsoft.Extensions.Http": "[6.0.0, )",
+          "Microsoft.Extensions.Options": "[6.0.0, )",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "[6.0.0, )",
+          "Microsoft.Extensions.Options.DataAnnotations": "[6.0.0, )",
+          "NodaTime.Serialization.SystemTextJson": "[1.0.0, )"
         }
       },
       "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "1.1.1",
-          "JetBrains.Annotations": "2022.1.0",
-          "Microsoft.AspNetCore.Http.Features": "5.0.17",
-          "NodaTime": "3.1.3"
+          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
+          "JetBrains.Annotations": "[2022.1.0, )",
+          "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
+          "NodaTime": "[3.1.3, )"
         }
       },
       "AdysTech.CredentialManager": {
@@ -1028,9 +1028,9 @@
       },
       "IdentityModel.OidcClient": {
         "type": "CentralTransitive",
-        "requested": "[5.0.2, )",
-        "resolved": "5.0.2",
-        "contentHash": "oOB0ZqNHkXOWqKYR9Wi9rT3owfcXaQLCVckZW3xWHahOhL9wAFdlxZhdZszYQyFVgo6pXfRy5LAdaeeTHEp/GQ==",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "hTyT7TRhG1+/6xcIh69YlWhyKtQa0eN3PrfraxxP1zMDhDFqKiGoNjMGwXsDMITUOLNhjJYJpq8C53sUJ7ipnQ==",
         "dependencies": {
           "IdentityModel": "5.2.0",
           "Microsoft.Extensions.Logging": "6.0.0"
