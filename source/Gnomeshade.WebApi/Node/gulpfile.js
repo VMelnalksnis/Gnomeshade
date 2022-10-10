@@ -1,4 +1,4 @@
-﻿var gulp = require('gulp');
+var gulp = require('gulp');
 
 var nodeRoot = './node_modules/';
 var targetPath = './../wwwroot/lib/';
