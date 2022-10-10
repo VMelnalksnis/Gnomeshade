@@ -1,12 +1,14 @@
 ﻿{
 	"name": "gnomeshade",
 	"devDependencies": {
-		"gulp": "4.0.2"
+		"gulp": "4.0.2",
+		"glob-parent": ">=5.1.2"
 	},
 	"dependencies": {
 		"bootstrap": "5.2.2",
 		"jquery": "3.6.1",
 		"jquery-validation": "1.19.5",
-		"jquery-validation-unobtrusive": "4.0.0"
+		"jquery-validation-unobtrusive": "4.0.0",
+		"glob-parent": ">=5.1.2"
 	}
 }
