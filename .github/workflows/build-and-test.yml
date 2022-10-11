@@ -34,7 +34,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode
+      - run: dotnet restore --locked-mode /p:Configuration="Release"
 
       - name: Build
         run: >
@@ -84,7 +84,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode
+      - run: dotnet restore --locked-mode /p:Configuration="Release"
 
       - name: Build
         run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
