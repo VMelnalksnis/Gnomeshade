@@ -16,7 +16,7 @@ namespace Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
 public sealed class RimiReceiptParser : IPaperlessDocumentParser
 {
 	private const StringComparison _comparison = StringComparison.OrdinalIgnoreCase;
-	private const string _startIdentifier = "KLIENT";
+	private const string _startIdentifier = "\n\n\n\n\n";
 
 	private static readonly (string, string)[] _replace =
 	{
@@ -35,6 +35,13 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		"Citas akcijas",
 		"Makeajanu karte",
 		"Makeajamu karte",
+	};
+
+	private static readonly string[] _discountIdentifiers =
+	{
+		"Atl. ",
+		"Atl ",
+		"ati",
 	};
 
 	private readonly ILogger<RimiReceiptParser> _logger;
@@ -59,21 +66,12 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 			.Select(filter => content.LastIndexOf(filter, _comparison))
 			.FirstOrDefault(index => index is not -1);
 
-		var productPart = content[start..end];
-
-		// Remove extra whitespace
-		var newStart = productPart.IndexOf("\n\n", _comparison);
-		if (newStart is not -1)
+		if (start > end)
 		{
-			start = newStart;
+			start = content.IndexOf(_startIdentifier[..^1], _comparison) + _startIdentifier.Length;
 		}
 
-		var newEnd = productPart.LastIndexOf("\n\n", _comparison);
-		if (newEnd is not -1)
-		{
-			end = newEnd;
-			productPart = productPart[start..end];
-		}
+		var productPart = content[start..end].Trim('\n');
 
 		_logger.LogDebug("Extracted products from document content {ProductPart}", productPart);
 
@@ -96,7 +94,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 
 			// Check if next line contains discounted price
 			if (index != lines.Count - 1 &&
-				(lines[index + 1].Contains("Atl. ", _comparison) || lines[index + 1].Contains("Atl ", _comparison)))
+				_discountIdentifiers.Any(identifier => lines[index + 1].Contains(identifier, _comparison)))
 			{
 				index++;
 			}
