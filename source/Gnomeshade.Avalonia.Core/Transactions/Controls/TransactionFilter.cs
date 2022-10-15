@@ -184,6 +184,32 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		ToDate = new LocalDate(date.Year, lastMonth, lastDayOfMonth, date.Calendar);
 	}
 
+	/// <summary>Extends the selected interval one month into the past.</summary>
+	public void ExtendOneMonthBack()
+	{
+		FromDate = FromDate?.PlusMonths(-1);
+	}
+
+	/// <summary>Moves the selected interval one month into the past.</summary>
+	public void MoveOneMonthBack()
+	{
+		FromDate = FromDate?.PlusMonths(-1);
+		ToDate = ToDate?.PlusMonths(-1);
+	}
+
+	/// <summary>Extends the selected interval one month into the future.</summary>
+	public void ExtendOneMonthForward()
+	{
+		ToDate = ToDate?.PlusMonths(1);
+	}
+
+	/// <summary>Moves the selected interval one month into the future.</summary>
+	public void MoveOneMonthForward()
+	{
+		FromDate = FromDate?.PlusMonths(1);
+		ToDate = ToDate?.PlusMonths(1);
+	}
+
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
