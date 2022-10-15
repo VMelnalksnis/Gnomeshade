@@ -42,7 +42,7 @@
 			</Button>
 		</Grid>
 
-		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto">
+		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />
 			<AutoCompleteBox
 				Grid.Row="0" Grid.Column="1"
@@ -90,6 +90,9 @@
 					</DataTemplate>
 				</AutoCompleteBox.ItemTemplate>
 			</AutoCompleteBox>
+
+			<CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding Reconciled}" IsThreeState="True" />
+			<TextBlock Grid.Row="6" Grid.Column="1" Text="Reconciled" VerticalAlignment="Center" />
 		</Grid>
 
 	</StackPanel>

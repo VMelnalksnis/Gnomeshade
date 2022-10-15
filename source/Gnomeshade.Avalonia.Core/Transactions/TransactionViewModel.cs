@@ -162,7 +162,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			nameof(TransactionFilter.SelectedCounterparty) or
 			nameof(TransactionFilter.InvertCounterparty) or
 			nameof(TransactionFilter.SelectedProduct) or
-			nameof(TransactionFilter.InvertProduct))
+			nameof(TransactionFilter.InvertProduct) or
+			nameof(TransactionFilter.Reconciled))
 		{
 			DataGridView.Refresh();
 			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());

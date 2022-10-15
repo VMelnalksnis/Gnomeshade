@@ -34,6 +34,7 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	private bool _invertAccount;
 	private bool _invertCounterparty;
 	private bool _invertProduct;
+	private bool? _reconciled;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -136,6 +137,13 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		set => SetAndNotify(ref _invertProduct, value);
 	}
 
+	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions. </summary>
+	public bool? Reconciled
+	{
+		get => _reconciled;
+		set => SetAndNotify(ref _reconciled, value);
+	}
+
 	internal Interval Interval
 	{
 		get
@@ -170,12 +178,16 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null)
+		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && Reconciled is null)
 		{
 			return true;
 		}
 
-		return IsAccountSelected(overview) && IsCounterpartySelected(overview) && IsProductSelected(overview);
+		return
+			IsAccountSelected(overview) &&
+			IsCounterpartySelected(overview) &&
+			IsProductSelected(overview) &&
+			IsReconciled(overview);
 	}
 
 	private bool IsAccountSelected(TransactionOverview overview)
@@ -214,5 +226,15 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		return InvertProduct
 			? overview.Purchases.All(purchase => purchase.ProductId != SelectedProduct.Id)
 			: overview.Purchases.Any(purchase => purchase.ProductId == SelectedProduct.Id);
+	}
+
+	private bool IsReconciled(TransactionOverview overview)
+	{
+		if (Reconciled is not { } reconciled)
+		{
+			return true;
+		}
+
+		return overview.ReconciledAt is not null == reconciled;
 	}
 }
