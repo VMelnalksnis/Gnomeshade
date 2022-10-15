@@ -52,17 +52,28 @@ public static class Program
 	/// <returns>A configured web host builder.</returns>
 	/// <seealso href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host#set-up-a-host"/>
 	[PublicAPI]
-	public static IHostBuilder CreateHostBuilder(string[] args)
-	{
-		return Host
-			.CreateDefaultBuilder(args)
-			.ConfigureWebHostDefaults(builder =>
+	public static IHostBuilder CreateHostBuilder(string[] args) => Host
+		.CreateDefaultBuilder(args)
+		.ConfigureWebHostDefaults(builder =>
+		{
+			builder.UseStartup<Startup>();
+			builder.ConfigureKestrel((context, kestrelOptions) =>
 			{
-				builder.UseStartup<Startup>();
-				builder.ConfigureKestrel((context, kestrelOptions) =>
-				{
-					kestrelOptions.ConfigureHttpsDefaults(options => options.ConfigureCipherSuites(context));
-				});
+				kestrelOptions.ConfigureHttpsDefaults(options => options.ConfigureCipherSuites(context));
 			});
-	}
+
+			if (GetContentRoot() is { } contentRoot)
+			{
+				builder.UseContentRoot(contentRoot);
+			}
+
+			if (GetWebRoot() is { } webRoot)
+			{
+				builder.UseWebRoot(webRoot);
+			}
+		});
+
+	private static string? GetContentRoot() => Environment.GetEnvironmentVariable("ASPNETCORE_CONTENTROOT");
+
+	private static string? GetWebRoot() => Environment.GetEnvironmentVariable("ASPNETCORE_WEBROOT");
 }
