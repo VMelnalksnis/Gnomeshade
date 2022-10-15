@@ -42,6 +42,9 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE t.deleted_at IS NULL AND t.id = @id";
 
+	/// <inheritdoc />
+	protected override string NotDeleted => "t.deleted_at IS NULL";
+
 	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
 	/// <param name="from">The start of the time range.</param>
 	/// <param name="to">The end of the time range.</param>

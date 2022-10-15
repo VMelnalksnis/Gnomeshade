@@ -118,7 +118,10 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		CancellationToken cancellation)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
+		var transactions = (timeRange.From is null && timeRange.To is null) || (timeRange.From == Instant.MinValue && timeRange.To == Instant.MaxValue)
+			? await Repository.GetAllAsync(ApplicationUser.Id, cancellation)
+			: await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
+
 		return transactions.Select(MapToModel).ToList();
 	}
 
@@ -134,7 +137,10 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-		var transactions = await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
+		var transactions = (timeRange.From is null && timeRange.To is null) || (timeRange.From == Instant.MinValue && timeRange.To == Instant.MaxValue)
+			? await Repository.GetAllAsync(ApplicationUser.Id, cancellationToken)
+			: await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
+
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
 
 		foreach (var transaction in transactions)
