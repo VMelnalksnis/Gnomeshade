@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,6 +36,7 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	private bool _invertCounterparty;
 	private bool _invertProduct;
 	private bool? _reconciled;
+	private bool? _uncategorized;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -137,11 +139,18 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		set => SetAndNotify(ref _invertProduct, value);
 	}
 
-	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions. </summary>
+	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions.</summary>
 	public bool? Reconciled
 	{
 		get => _reconciled;
 		set => SetAndNotify(ref _reconciled, value);
+	}
+
+	/// <summary>Gets or sets a value indicating whether to filter categorized/uncategorized transactions.</summary>
+	public bool? Uncategorized
+	{
+		get => _uncategorized;
+		set => SetAndNotify(ref _uncategorized, value);
 	}
 
 	internal Interval Interval
@@ -178,7 +187,7 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && Reconciled is null)
+		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && Reconciled is null && Uncategorized is null)
 		{
 			return true;
 		}
@@ -187,7 +196,8 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 			IsAccountSelected(overview) &&
 			IsCounterpartySelected(overview) &&
 			IsProductSelected(overview) &&
-			IsReconciled(overview);
+			IsReconciled(overview) &&
+			IsUncategorized(overview);
 	}
 
 	private bool IsAccountSelected(TransactionOverview overview)
@@ -236,5 +246,31 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		}
 
 		return overview.ReconciledAt is not null == reconciled;
+	}
+
+	private bool IsUncategorized(TransactionOverview overview)
+	{
+		if (Uncategorized is not { } uncategorized)
+		{
+			return true;
+		}
+
+		var transferSums = overview.Transfers
+			.GroupBy(transfer => transfer.OtherCurrency)
+			.Select(grouping => (grouping.Key, grouping.Sum(transfer => transfer.Direction is "→" ? transfer.OtherAmount : -transfer.OtherAmount)))
+			.OrderBy(tuple => tuple.Item2)
+			.ToList();
+
+		var purchaseSums = overview.Purchases
+			.GroupBy(purchase => purchase.CurrencyId)
+			.Select(grouping => (grouping.Key, grouping.Sum(purchase => purchase.Price)))
+			.OrderBy(tuple => tuple.Item2)
+			.ToList();
+
+		var categorized =
+			(transferSums.All(sum => sum.Item2 is 0) && purchaseSums.All(sum => sum.Item2 is 0)) ||
+			(transferSums.Count == purchaseSums.Count && transferSums.Zip(purchaseSums).All(tuple => Math.Abs(tuple.First.Item2) == Math.Abs(tuple.Second.Item2)));
+
+		return uncategorized ? !categorized : categorized;
 	}
 }
