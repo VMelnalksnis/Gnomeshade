@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -84,7 +83,11 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 	}
 
 	/// <inheritdoc />
-	protected override Task DeleteAsync(ProductRow row) => throw new NotImplementedException();
+	protected override async Task DeleteAsync(ProductRow row)
+	{
+		await _gnomeshadeClient.DeleteProductAsync(row.Id);
+		await RefreshAsync();
+	}
 
 	private async void OnProductUpserted(object? sender, UpsertedEventArgs e)
 	{

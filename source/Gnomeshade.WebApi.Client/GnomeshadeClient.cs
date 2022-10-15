@@ -278,6 +278,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync(Products.IdUri(id), _context.Product, cancellationToken);
 
 	/// <inheritdoc />
+	public Task DeleteProductAsync(Guid id) =>
+		DeleteAsync(Products.IdUri(id));
+
+	/// <inheritdoc />
 	public Task<Unit> GetUnitAsync(Guid id, CancellationToken cancellationToken = default) =>
 		GetAsync(UnitIdUri(id), _context.Unit, cancellationToken);
 

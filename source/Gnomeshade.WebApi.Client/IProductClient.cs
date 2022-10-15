@@ -26,6 +26,17 @@ public interface IProductClient
 	/// <returns>The product with the specified id.</returns>
 	Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default);
 
+	/// <summary>Creates a new product or replaces an existing one if one exists with the specified id.</summary>
+	/// <param name="id">The id of the product.</param>
+	/// <param name="product">The product to create or replace.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task PutProductAsync(Guid id, ProductCreation product);
+
+	/// <summary>Deletes the specified transaction.</summary>
+	/// <param name="id">The id of the transaction to delete.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task DeleteProductAsync(Guid id);
+
 	/// <summary>Gets the specified unit.</summary>
 	/// <param name="id">The id of the unit to get.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -36,12 +47,6 @@ public interface IProductClient
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
 	/// <returns>A collection with all units.</returns>
 	Task<List<Unit>> GetUnitsAsync(CancellationToken cancellationToken = default);
-
-	/// <summary>Creates a new product or replaces an existing one if one exists with the specified id.</summary>
-	/// <param name="id">The id of the product.</param>
-	/// <param name="product">The product to create or replace.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutProductAsync(Guid id, ProductCreation product);
 
 	/// <summary>Creates a new unit or replaces an existing one if one exists with the specified id.</summary>
 	/// <param name="id">The id of the unit.</param>

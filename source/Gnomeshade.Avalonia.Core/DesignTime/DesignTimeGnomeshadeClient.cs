@@ -530,6 +530,13 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task DeleteProductAsync(Guid id)
+	{
+		_products.Remove(_products.Single(product => product.Id == id));
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
 	public Task<Unit> GetUnitAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_units.Single(unit => unit.Id == id));
