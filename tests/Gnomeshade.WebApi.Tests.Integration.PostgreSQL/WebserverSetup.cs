@@ -15,9 +15,9 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 [SetUpFixture]
 public static class WebserverSetup
 {
-	internal static List<WebserverFixture> WebserverFixtures { get; } = new List<PostgreSQLFixture>()
+	internal static List<WebserverFixture> WebserverFixtures { get; } = new List<PostgreSQLFixture>
 	{
-		new("15beta3"),
+		new("15"),
 		new("14"),
 		new("13"),
 		new("12"),
