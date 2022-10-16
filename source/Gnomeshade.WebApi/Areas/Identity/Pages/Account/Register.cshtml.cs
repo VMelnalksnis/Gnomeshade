@@ -58,9 +58,9 @@ public sealed class Register : PageModel
 		_userUnitOfWork = userUnitOfWork;
 	}
 
-	/// <summary>Gets the data needed to register a user.</summary>
+	/// <summary>Gets or sets the data needed to register a user.</summary>
 	[BindProperty]
-	public InputModel Input { get; } = new();
+	public InputModel Input { get; set; } = null!;
 
 	/// <summary>Gets the return url parameter.</summary>
 	public string? ReturnUrl { get; private set; }
