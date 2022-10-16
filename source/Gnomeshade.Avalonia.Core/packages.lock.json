@@ -493,7 +493,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "JetBrains.Annotations": "[2022.1.0, )",
           "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
-          "NodaTime": "[3.1.3, )"
+          "NodaTime": "[3.1.4, )"
         }
       },
       "Avalonia.Desktop": {
@@ -537,9 +537,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.3, )",
-        "resolved": "3.1.3",
-        "contentHash": "uuoPNL26Rvxa1YuLWt5fs6Sc8ItiuUY5CSD0NfHb7Z4ITCgmT4HkwB4vrYlzqWP/gSN9wP/lCawc5/G5ecWERw==",
+        "requested": "[3.1.4, )",
+        "resolved": "3.1.4",
+        "contentHash": "ZibE6uZCliPPQMsZuzNxppIDEEc3jdTiyOog/hmnc/DzBavBT4pAt01BVQXGwBWK52mIbJLcwL7wxl6YX5XILQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
