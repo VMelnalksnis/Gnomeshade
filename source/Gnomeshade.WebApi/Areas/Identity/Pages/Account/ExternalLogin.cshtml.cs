@@ -226,7 +226,7 @@ public sealed class ExternalLogin : PageModel
 	}
 
 	/// <summary>Data needed to register a user from an external provider.</summary>
-	public class InputModel
+	public sealed class InputModel
 	{
 		/// <summary>Gets or sets the email of the user.</summary>
 		[Required]
