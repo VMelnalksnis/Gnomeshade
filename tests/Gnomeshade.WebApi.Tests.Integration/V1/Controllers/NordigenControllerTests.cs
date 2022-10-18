@@ -27,7 +27,7 @@ public sealed class NordigenControllerTests : WebserverTests
 
 		var institutions = await client.GetInstitutionsAsync("LV");
 
-		institutions.Should().HaveCount(16);
+		institutions.Should().ContainEquivalentOf("CITADELE_PARXLV22");
 	}
 
 	[Test]
