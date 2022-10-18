@@ -1,10 +1,10 @@
 name: NuGet restore
 
-on:
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-      - '**.md'
+#on:
+#  pull_request:
+#    branches: [ master ]
+#    paths-ignore:
+#      - '**.md'
 
 env:
   DOTNET_NOLOGO: true
@@ -30,7 +30,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --force-evaluate
+      - run: dotnet restore --force-evaluate /p:Configuration="Release"
         
       - id: diff
         continue-on-error: true
@@ -40,5 +40,5 @@ jobs:
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git commit --amend
+          git commit --amend --no-edit
           git push --force-with-lease
