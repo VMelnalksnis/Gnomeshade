@@ -11,7 +11,8 @@
 	   purchases.currency_id         AS CurrencyId,
 	   purchases.product_id          AS ProductId,
 	   purchases.amount              AS Amount,
-	   purchases.delivery_date       AS DeliveryDate
+	   purchases.delivery_date       AS DeliveryDate,
+	   purchases."order"             AS "Order"
 FROM purchases
 		 INNER JOIN owners ON owners.id = purchases.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id

@@ -95,7 +95,7 @@ public sealed class PaperlessService : IPaperlessService
 
 		var identifiedPurchases = rawPurchases
 			.Select(raw => _purchaseIdentifier.IdentifyPurchase(raw, products, currencies, units))
-			.Select(async purchase =>
+			.Select(async (purchase, index) =>
 			{
 				// ReSharper disable once AccessToDisposedClosure
 				var product = purchase.Score > 50
@@ -111,6 +111,7 @@ public sealed class PaperlessService : IPaperlessService
 					CurrencyId = currency.Id,
 					ProductId = product.Id,
 					Amount = purchase.Amount,
+					Order = (uint)index,
 				};
 			});
 

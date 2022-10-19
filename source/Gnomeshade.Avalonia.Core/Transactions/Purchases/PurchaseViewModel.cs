@@ -88,7 +88,8 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var units = unitsTask.Result;
 
 		var overviews = transaction.Purchases
-			.OrderBy(purchase => purchase.CreatedAt)
+			.OrderBy(purchase => purchase.Order)
+			.ThenBy(purchase => purchase.ModifiedAt)
 			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
 
 		var sort = DataGridView.SortDescriptions;

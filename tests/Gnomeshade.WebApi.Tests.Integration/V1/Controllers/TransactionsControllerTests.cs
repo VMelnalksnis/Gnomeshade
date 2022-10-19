@@ -112,6 +112,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			SourceAccountId = _account1.Currencies.First().Id,
 			TargetAmount = 1,
 			TargetAccountId = _account2.Currencies.First().Id,
+			Order = 2,
 		};
 
 		await _client.PutTransferAsync(transferId, transferCreation);
@@ -177,6 +178,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			CurrencyId = _account1.Currencies.First().Currency.Id,
 			ProductId = _productId,
 			Amount = 1,
+			Order = 2,
 		};
 
 		await _client.PutPurchaseAsync(purchaseId, purchaseCreation);

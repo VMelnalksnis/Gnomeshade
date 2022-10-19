@@ -14,7 +14,7 @@
 	x:CompileBindings="True"
 	x:DataType="purchases:PurchaseUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,2*,Auto,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="0"
 			Watermark="Product"
@@ -78,14 +78,16 @@
 			Text="{Binding DeliveryTime, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
 			Watermark="Time" />
 
+		<NumericUpDown Grid.Column="1" Grid.Row="3" Minimum="0" Value="{Binding Order}"/>
+		
 		<Button
-			Grid.Column="0" Grid.Row="3"
+			Grid.Column="0" Grid.Row="4"
 			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 		<TextBlock
-			Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"
+			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"
 			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

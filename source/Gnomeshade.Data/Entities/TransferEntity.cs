@@ -11,7 +11,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents a transfer between two accounts.</summary>
-public sealed record TransferEntity : Entity, IOwnableEntity, IModifiableEntity
+public sealed record TransferEntity : Entity, IOwnableEntity, IModifiableEntity, ISortableEntity
 {
 	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
@@ -48,4 +48,7 @@ public sealed record TransferEntity : Entity, IOwnableEntity, IModifiableEntity
 
 	/// <summary>Gets or sets a reference id issued by the user.</summary>
 	public string? InternalReference { get; set; }
+
+	/// <inheritdoc />
+	public uint? Order { get; set; }
 }

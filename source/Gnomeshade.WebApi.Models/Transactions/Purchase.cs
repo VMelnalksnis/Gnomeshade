@@ -55,4 +55,7 @@ public sealed record Purchase
 
 	/// <summary>The date when the <see cref="ProductId"/> was delivered.</summary>
 	public Instant? DeliveryDate { get; set; }
+
+	/// <summary>The order of the purchase within a transaction.</summary>
+	public uint? Order { get; set; }
 }

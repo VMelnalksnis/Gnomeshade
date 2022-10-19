@@ -10,7 +10,8 @@
      target_account_id,
      bank_reference,
      external_reference,
-     internal_reference)
+     internal_reference,
+     "order")
 VALUES
     (@Id,
      @OwnerId,
@@ -23,5 +24,6 @@ VALUES
      @TargetAccountId,
      @BankReference,
      @ExternalReference,
-     @InternalReference)
+     @InternalReference,
+     @Order)
 RETURNING id;

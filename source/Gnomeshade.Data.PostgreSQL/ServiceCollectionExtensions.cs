@@ -49,6 +49,9 @@ public static class ServiceCollectionExtensions
 		NpgsqlLogManager.IsParameterLoggingEnabled = enableParameterLogging;
 		NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
 		SqlMapper.AddTypeHandler(typeof(Instant?), new NullableInstantTypeHandler());
+		SqlMapper.AddTypeHandler(new UnsignedIntegerTypeHandler());
+		SqlMapper.RemoveTypeMap(typeof(uint));
+		SqlMapper.RemoveTypeMap(typeof(uint?));
 
 		return services
 			.AddTransient<IDatabaseMigrator, PostgreSQLDatabaseMigrator>()

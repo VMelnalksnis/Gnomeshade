@@ -38,4 +38,7 @@ public sealed record PurchaseCreation : TransactionItemCreation
 
 	/// <inheritdoc cref="Purchase.DeliveryDate"/>
 	public Instant? DeliveryDate { get; set; }
+
+	/// <inheritdoc cref="Purchase.Order"/>
+	public uint? Order { get; set; }
 }

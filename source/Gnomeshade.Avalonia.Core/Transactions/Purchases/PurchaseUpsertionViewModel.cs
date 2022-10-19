@@ -37,6 +37,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	private List<Currency> _currencies;
 	private List<Product> _products;
 	private string? _unitName;
+	private uint? _order;
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -133,6 +134,13 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 		set => SetAndNotify(ref _deliveryTime, value);
 	}
 
+	/// <summary>Gets or sets the order of the purchase within a transaction.</summary>
+	public uint? Order
+	{
+		get => _order;
+		set => SetAndNotify(ref _order, value);
+	}
+
 	/// <inheritdoc />
 	public override bool CanSave =>
 		Price is not null &&
@@ -183,6 +191,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			Product = Products.Single(product => product.Id == purchase.ProductId);
 			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
 			DeliveryTime = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
+			Order = purchase.Order;
 		}
 	}
 
@@ -207,6 +216,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			Amount = Amount,
 			ProductId = Product!.Id,
 			DeliveryDate = deliveryDate?.ToInstant(),
+			Order = Order,
 		};
 
 		var id = _id ?? Guid.NewGuid(); // todo should this be saved?

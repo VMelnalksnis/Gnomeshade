@@ -35,6 +35,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	private string? _internalReference;
 	private List<Account> _accounts;
 	private List<Currency> _currencies;
+	private uint? _order;
 
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -136,6 +137,13 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		set => SetAndNotify(ref _internalReference, value);
 	}
 
+	/// <summary>Gets or sets the order of the item within a transaction.</summary>
+	public uint? Order
+	{
+		get => _order;
+		set => SetAndNotify(ref _order, value);
+	}
+
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>
 	public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;
 
@@ -177,6 +185,8 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		BankReference = transfer.BankReference;
 		ExternalReference = transfer.ExternalReference;
 		InternalReference = transfer.InternalReference;
+
+		Order = transfer.Order;
 	}
 
 	/// <inheritdoc />
@@ -192,6 +202,7 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 			BankReference = BankReference,
 			ExternalReference = ExternalReference,
 			InternalReference = InternalReference,
+			Order = Order,
 		};
 
 		var id = _id ?? Guid.NewGuid();

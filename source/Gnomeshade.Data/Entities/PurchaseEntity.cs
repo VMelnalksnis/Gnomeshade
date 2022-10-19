@@ -11,7 +11,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents the purchasing of a product or a service.</summary>
-public sealed record PurchaseEntity : Entity, IOwnableEntity, IModifiableEntity
+public sealed record PurchaseEntity : Entity, IOwnableEntity, IModifiableEntity, ISortableEntity
 {
 	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
@@ -42,4 +42,7 @@ public sealed record PurchaseEntity : Entity, IOwnableEntity, IModifiableEntity
 
 	/// <summary>Gets or sets the date when the <see cref="ProductId"/> was delivered.</summary>
 	public Instant? DeliveryDate { get; set; }
+
+	/// <inheritdoc />
+	public uint? Order { get; set; }
 }

@@ -42,4 +42,7 @@ public sealed record TransferCreation : TransactionItemCreation
 
 	/// <inheritdoc cref="Transfer.InternalReference"/>
 	public string? InternalReference { get; set; }
+
+	/// <inheritdoc cref="Transfer.Order"/>
+	public uint? Order { get; set; }
 }

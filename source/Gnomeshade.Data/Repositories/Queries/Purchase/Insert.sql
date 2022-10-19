@@ -8,7 +8,8 @@
      currency_id,
      product_id,
      amount,
-     delivery_date)
+     delivery_date,
+     "order")
 VALUES
     (@Id,
      @OwnerId,
@@ -19,5 +20,6 @@ VALUES
      @CurrencyId,
      @ProductId,
      @Amount,
-     @DeliveryDate)
+     @DeliveryDate,
+     @Order)
 RETURNING id;

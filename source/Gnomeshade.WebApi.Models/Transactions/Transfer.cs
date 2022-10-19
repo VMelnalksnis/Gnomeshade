@@ -61,4 +61,7 @@ public sealed record Transfer
 
 	/// <summary>The reference id issued by the user.</summary>
 	public string? InternalReference { get; set; }
+
+	/// <summary>The order of the transfer within a transaction.</summary>
+	public uint? Order { get; set; }
 }

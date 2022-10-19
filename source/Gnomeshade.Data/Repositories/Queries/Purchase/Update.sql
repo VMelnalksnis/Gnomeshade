@@ -14,6 +14,7 @@ SET modified_at         = CURRENT_TIMESTAMP,
 	currency_id         = @CurrencyId,
 	product_id          = @ProductId,
 	amount              = @Amount,
-	delivery_date       = @DeliveryDate
+	delivery_date       = @DeliveryDate,
+	"order"             = @Order
 FROM p
 WHERE purchases.id IN (SELECT id FROM p);

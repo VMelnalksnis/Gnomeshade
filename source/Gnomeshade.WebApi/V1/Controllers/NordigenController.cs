@@ -488,6 +488,7 @@ public sealed class NordigenController : ControllerBase
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			BankReference = bankReference,
+			Order = 0,
 		};
 
 		transfer = creditDebit is CreditDebitCode.CRDT

@@ -492,6 +492,7 @@ public sealed class Iso20022Controller : ControllerBase
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
 			BankReference = bankReference,
+			Order = 0,
 		};
 
 		transfer = creditDebit == CreditDebitCode.CRDT

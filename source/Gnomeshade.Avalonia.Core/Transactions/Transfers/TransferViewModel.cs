@@ -71,7 +71,8 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		IsReadOnly = transaction.Reconciled;
 
 		var overviews = transaction.Transfers
-			.OrderBy(transfer => transfer.CreatedAt)
+			.OrderBy(transfer => transfer.Order)
+			.ThenBy(transfer => transfer.ModifiedAt)
 			.Select(transfer => transfer.ToOverview(accounts));
 
 		var selected = Selected;

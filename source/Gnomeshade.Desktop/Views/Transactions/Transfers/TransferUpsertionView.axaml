@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="transfers:TransferUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,2*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,2*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
 			Margin="5" VerticalAlignment="Center"
@@ -115,14 +115,21 @@
 			Watermark="Reference number"
 			Text="{Binding InternalReference}" />
 
-		<Button
+		<TextBlock
 			Grid.Column="0" Grid.Row="5"
+			Margin="5" VerticalAlignment="Center"
+			Text="Order:" />
+		
+		<NumericUpDown Grid.Column="1" Grid.Row="5" Minimum="0" Value="{Binding Order}"/>
+
+		<Button
+			Grid.Column="0" Grid.Row="6"
 			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 		<TextBlock
-			Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="3"
+			Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="3"
 			TextAlignment="Left"
 			Text="{Binding ErrorMessage}" />
 	</Grid>

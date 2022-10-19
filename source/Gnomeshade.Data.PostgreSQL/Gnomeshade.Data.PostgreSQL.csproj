@@ -6,14 +6,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.Data\Gnomeshade.Data.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="dbup-postgresql"/>
-		<PackageReference Include="Npgsql"/>
-		<PackageReference Include="Npgsql.NodaTime"/>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+		<PackageReference Include="dbup-postgresql" />
+		<PackageReference Include="Npgsql" />
+		<PackageReference Include="Npgsql.NodaTime" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -71,8 +71,9 @@
 		<EmbeddedResource Include="Migrations\00000018_add_base_columns.sql">
 			<LogicalName>Gnomeshade.Data.Migrations.00000018_add_base_columns.sql</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="Migrations\00000019_unit_symbol.sql"/>
-		<EmbeddedResource Include="Migrations\00000020_sek.sql"/>
+		<EmbeddedResource Include="Migrations\00000019_unit_symbol.sql" />
+		<EmbeddedResource Include="Migrations\00000020_sek.sql" />
+		<EmbeddedResource Include="Migrations\00000021_order.sql" />
 	</ItemGroup>
 
 </Project>

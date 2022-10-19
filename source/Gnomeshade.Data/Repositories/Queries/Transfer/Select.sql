@@ -13,7 +13,8 @@
 	   transfers.target_account_id   AS TargetAccountId,
 	   transfers.bank_reference      AS BankReference,
 	   transfers.external_reference  AS ExternalReference,
-	   transfers.internal_reference  AS InternalReference
+	   transfers.internal_reference  AS InternalReference,
+	   transfers."order"             AS "Order"
 FROM transfers
 		 INNER JOIN owners ON owners.id = transfers.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id
