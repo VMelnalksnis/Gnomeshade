@@ -36,8 +36,7 @@ internal static class SerilogHostConfiguration
 		configuration
 			.ReadFrom.Configuration(context.Configuration)
 			.Enrich.FromLogContext()
-			.Enrich.WithElasticApmCorrelationInfo()
-			.WriteTo.Console();
+			.Enrich.WithElasticApmCorrelationInfo();
 
 		if (!context.Configuration.GetValidIfDefined<ElasticSearchLoggingOptions>(out var options))
 		{
