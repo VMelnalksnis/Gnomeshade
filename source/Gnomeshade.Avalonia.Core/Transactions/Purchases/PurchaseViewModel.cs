@@ -154,6 +154,9 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var deliveryDate = Rows.Select(purchase => purchase.DeliveryDate).LastOrDefault(date => date is not null);
 		Details.DeliveryDate = deliveryDate?.Date;
 		Details.DeliveryTime = deliveryDate?.TimeOfDay;
+
+		var lastOrder = Rows.Select(purchase => purchase.Order).Max() ?? default;
+		Details.Order = lastOrder + 1;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -29,7 +29,8 @@ internal static class TransferExtensions
 			targetCurrency.AlphabeticCode,
 			transfer.BankReference,
 			transfer.ExternalReference,
-			transfer.InternalReference);
+			transfer.InternalReference,
+			transfer.Order);
 	}
 
 	internal static TransferSummary ToSummary(

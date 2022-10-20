@@ -22,6 +22,7 @@ public sealed class TransferOverview : PropertyChangedBase
 	/// <param name="bankReference">The bank reference code of this transfer.</param>
 	/// <param name="externalReference">The external reference code of this transfer.</param>
 	/// <param name="internalReference">The internal reference code of this transfer.</param>
+	/// <param name="order">The order of the transfer within a transaction.</param>
 	public TransferOverview(
 		Guid id,
 		decimal sourceAmount,
@@ -32,7 +33,8 @@ public sealed class TransferOverview : PropertyChangedBase
 		string targetCurrency,
 		string? bankReference,
 		string? externalReference,
-		string? internalReference)
+		string? internalReference,
+		uint? order)
 	{
 		Id = id;
 		SourceAmount = sourceAmount;
@@ -44,6 +46,7 @@ public sealed class TransferOverview : PropertyChangedBase
 		BankReference = bankReference;
 		ExternalReference = externalReference;
 		InternalReference = internalReference;
+		Order = order;
 	}
 
 	/// <summary>Gets the id of the transfer.</summary>
@@ -75,4 +78,7 @@ public sealed class TransferOverview : PropertyChangedBase
 
 	/// <summary>Gets the internal reference code of this transfer.</summary>
 	public string? InternalReference { get; }
+
+	/// <summary>Gets the order of the transfer within a transaction.</summary>
+	public uint? Order { get; }
 }

@@ -86,6 +86,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		if (Selected is null)
 		{
 			await Details.RefreshAsync();
+			SetDefaultCurrency(this);
 		}
 	}
 
@@ -109,6 +110,9 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 			var currencyName = viewModel.Rows.First().TargetCurrency;
 			viewModel.Details.TargetCurrency = viewModel.Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
 		}
+
+		var lastOrder = viewModel.Rows.Select(transfer => transfer.Order).Max() ?? default;
+		viewModel.Details.Order = lastOrder + 1;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

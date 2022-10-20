@@ -19,6 +19,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 	/// <param name="amount">The amount of <see cref="ProductName"/> that was purchased.</param>
 	/// <param name="unitName">The name of the unit in which <see cref="Amount"/> is expressed in.</param>
 	/// <param name="deliveryDate">The date when the <see cref="ProductName"/> was delivered.</param>
+	/// <param name="order">The order of the purchase within a transaction.</param>
 	public PurchaseOverview(
 		Guid id,
 		decimal price,
@@ -26,7 +27,8 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		string productName,
 		decimal amount,
 		string? unitName,
-		DateTimeOffset? deliveryDate)
+		DateTimeOffset? deliveryDate,
+		uint? order)
 	{
 		Id = id;
 		Price = price;
@@ -35,6 +37,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		Amount = amount;
 		UnitName = unitName;
 		DeliveryDate = deliveryDate;
+		Order = order;
 	}
 
 	/// <summary>Gets the id of the purchase.</summary>
@@ -57,4 +60,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 
 	/// <summary>Gets the date when the <see cref="ProductName"/> was delivered.</summary>
 	public DateTimeOffset? DeliveryDate { get; }
+
+	/// <summary>Gets the order of the purchase within a transaction.</summary>
+	public uint? Order { get; }
 }

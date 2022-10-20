@@ -36,6 +36,7 @@ public class PurchaseViewModelTests
 			_viewModel.Selected.Should().BeNull();
 			_viewModel.Details.Should().NotBeNull();
 			_viewModel.Details.CanSave.Should().BeFalse();
+			_viewModel.Details.Order.Should().Be(1);
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
