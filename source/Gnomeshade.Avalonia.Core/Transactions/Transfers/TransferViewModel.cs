@@ -112,7 +112,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		}
 
 		var lastOrder = viewModel.Rows.Select(transfer => transfer.Order).Max() ?? default;
-		viewModel.Details.Order = lastOrder + 1;
+		viewModel.Details.Order ??= lastOrder + 1;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
