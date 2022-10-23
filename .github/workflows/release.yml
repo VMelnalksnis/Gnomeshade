@@ -132,10 +132,9 @@ jobs:
       - name: Pack package
         id: pack
         run: >
-          deployment/pack.sh
+          deployment/pack-nightly.sh
           "Gnomeshade.WebApi.Client"
           "${{ github.run_number }}"
-          "-nightly"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3.1.0
