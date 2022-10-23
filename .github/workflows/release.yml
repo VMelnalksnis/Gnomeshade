@@ -43,7 +43,7 @@ jobs:
         env:
           BUILD_NUMBER: ${{ github.run_number }}
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
@@ -84,7 +84,7 @@ jobs:
           "${{ github.run_number }}"
           "-nightly"
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
@@ -110,7 +110,7 @@ jobs:
           "${{ steps.download.outputs.download-path }}/Gnomeshade.WebApi_linux-x64.zip"
           "${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3.1.1
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
