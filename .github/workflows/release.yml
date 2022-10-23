@@ -151,6 +151,7 @@ jobs:
 
   nuget-publish:
     name: Publish NuGet packages
+    needs: nuget-pack
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3.0.1
