@@ -5,6 +5,14 @@
 		
 		<IsTrimmable>true</IsTrimmable>
 		<RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+
+		<Product>Gnomeshade.WebApi.Client</Product>
+		<ProductId>Gnomeshade.WebApi.Client</ProductId>
+		<Description>.NET API client for Gnomeshade</Description>
+		<PackageTags>gnomeshade</PackageTags>
+		<IsPackable>true</IsPackable>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
