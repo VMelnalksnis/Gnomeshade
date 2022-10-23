@@ -96,7 +96,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3.1.0
 
-      - uses: actions/download-artifact@v3.0.0
+      - uses: actions/download-artifact@v3.0.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -151,7 +151,7 @@ jobs:
       AZURE_APP_NAME: gnomeshade-demo
       AZURE_APP_DOMAIN: 'https://gnomeshade-demo.azurewebsites.net/'
     steps:
-      - uses: actions/download-artifact@v3.0.0
+      - uses: actions/download-artifact@v3.0.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -210,7 +210,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
     steps:
-      - uses: actions/download-artifact@v3.0.0
+      - uses: actions/download-artifact@v3.0.1
         id: download
         with:
           path: artifacts
@@ -235,7 +235,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     steps:
-      - uses: actions/download-artifact@v3.0.0
+      - uses: actions/download-artifact@v3.0.1
         id: download
         with:
           path: artifacts
