@@ -115,6 +115,57 @@ jobs:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
 
+  nuget-pack:
+    name: Pack NuGet packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-dotnet@v3.0.2
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.0.11
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: dotnet restore --locked-mode /p:Configuration="Release"
+      - name: Pack package
+        id: pack
+        run: >
+          deployment/pack.sh
+          "Gnomeshade.WebApi.Client"
+          "${{ github.run_number }}"
+          "-nightly"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: ${{ steps.pack.outputs.artifact-name }}
+          path: ${{ steps.pack.outputs.artifact }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: ${{ steps.pack.outputs.symbols-name }}
+          path: ${{ steps.pack.outputs.symbols }}
+
+  nuget-publish:
+    name: Publish NuGet packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3.0.1
+        id: download
+        with:
+          path: artifacts
+
+      - name: NuGet Push
+        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+        working-directory: ${{ steps.download.outputs.download-path }}
+
+      - name: NuGet Push Symbols
+        run: dotnet nuget push "**/*.snupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+        working-directory: ${{ steps.download.outputs.download-path }}
+
   deploy-demo:
     name: Deploy demo app
     needs: build-linux
@@ -172,7 +223,7 @@ jobs:
                     "slotSetting": false
                 }
             ]
-  
+
   update-nightly:
     name: Update nightly release
     needs:
@@ -197,7 +248,7 @@ jobs:
             ${{ steps.download.outputs.download-path }}/**/*.zip
             ${{ steps.download.outputs.download-path }}/**/*.deb
             ${{ steps.download.outputs.download-path }}/**/*.msi
-  
+
   create-release:
     name: Create release
     needs:
