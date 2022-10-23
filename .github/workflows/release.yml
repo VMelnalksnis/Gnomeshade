@@ -115,8 +115,8 @@ jobs:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
 
-  nuget-pack:
-    name: Pack NuGet packages
+  nightly-nuget:
+    name: Publish NuGet packages to GitHub
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
@@ -129,42 +129,19 @@ jobs:
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - run: dotnet restore --locked-mode /p:Configuration="Release"
-      - name: Pack package
+
+      - name: NuGet Pack
         id: pack
         run: >
           deployment/pack-nightly.sh
           "Gnomeshade.WebApi.Client"
           "${{ github.run_number }}"
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: ${{ steps.pack.outputs.artifact-name }}
-          path: ${{ steps.pack.outputs.artifact }}
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
-        with:
-          name: ${{ steps.pack.outputs.symbols-name }}
-          path: ${{ steps.pack.outputs.symbols }}
-
-  nuget-publish:
-    name: Publish NuGet packages
-    needs: nuget-pack
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v3.0.1
-        id: download
-        with:
-          path: artifacts
-
       - name: NuGet Push
-        run: dotnet nuget push "**/*.nupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/VMelnalksnis/index.json
-        working-directory: ${{ steps.download.outputs.download-path }}
-
-      - name: NuGet Push Symbols
-        run: dotnet nuget push "**/*.snupkg" --api-key ${{ secrets.GITHUB_TOKEN }} --source https://nuget.pkg.github.com/VMelnalksnis/index.json
-        working-directory: ${{ steps.download.outputs.download-path }}
+        run: >
+          dotnet nuget push "${{ steps.pack.outputs.artifact }}"
+          --api-key ${{ secrets.GITHUB_TOKEN }}
+          --source https://nuget.pkg.github.com/VMelnalksnis/index.json
 
   deploy-demo:
     name: Deploy demo app
