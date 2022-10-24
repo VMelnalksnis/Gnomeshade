@@ -5,12 +5,20 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 100
+    assignees:
+      - "VMelnalksnis"
+    reviewers:
+      - "VMelnalksnis"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 100
+    assignees:
+      - "VMelnalksnis"
+    reviewers:
+      - "VMelnalksnis"
 
   - package-ecosystem: "npm"
     directory: "/source/Gnomeshade.WebApi/Node"
@@ -18,3 +26,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 100
     versioning-strategy: "increase"
+    assignees:
+      - "VMelnalksnis"
+    reviewers:
+      - "VMelnalksnis"
