@@ -35,6 +35,8 @@ using Microsoft.Extensions.Hosting;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
+using Polly;
+
 using Serilog;
 
 using VMelnalksnis.NordigenDotNet.DependencyInjection;
@@ -116,7 +118,12 @@ public class Startup
 			.AddGnomeshadeHealthChecks();
 
 		services.AddV1ImportingServices();
-		services.AddNordigenDotNet(_configuration);
+		services
+			.AddNordigenDotNet(_configuration)
+			.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(3, retry =>
+				TimeSpan.FromSeconds(Math.Pow(2, retry)) + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1000))))
+			.AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(10, TimeSpan.FromMinutes(5)));
+
 		services.AddPaperlessDotNet(_configuration);
 	}
 

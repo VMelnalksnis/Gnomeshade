@@ -489,6 +489,19 @@
         "resolved": "5.11.0",
         "contentHash": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q=="
       },
+      "Polly": {
+        "type": "Transitive",
+        "resolved": "7.2.2",
+        "contentHash": "E6CeKyS513j7taKAq4q2MESDBvzuzWnR1rQ2Y2zqJvpiVtKMm699Aubb20MUPBDmb0Ov8PmcLHTCVFdCjoy2kA=="
+      },
+      "Polly.Extensions.Http": {
+        "type": "Transitive",
+        "resolved": "3.0.0",
+        "contentHash": "drrG+hB3pYFY7w1c3BD+lSGYvH2oIclH8GRSehgfyP5kjnFnHKQuuBhuHLv+PWyFuaTDyk/vfRpnxOzd11+J8g==",
+        "dependencies": {
+          "Polly": "7.1.0"
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
         "resolved": "4.3.2",
@@ -1250,6 +1263,7 @@
           "Microsoft.AspNetCore.Identity.UI": "[6.0.10, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
+          "Microsoft.Extensions.Http.Polly": "[6.0.10, )",
           "NodaTime": "[3.1.4, )",
           "NodaTime.Serialization.SystemTextJson": "[1.0.0, )",
           "Serilog": "[2.12.0, )",
@@ -1524,6 +1538,17 @@
           "Microsoft.Extensions.Logging": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
           "Microsoft.Extensions.Options": "6.0.0"
+        }
+      },
+      "Microsoft.Extensions.Http.Polly": {
+        "type": "CentralTransitive",
+        "requested": "[6.0.10, )",
+        "resolved": "6.0.10",
+        "contentHash": "vF3/CUIlw4+h6/B+3RGENh3s9dTHW7y2ntdOse3SUG22mk5KmBGirzAiKGoEPUflxINdy+0VUO5re8kmXU0gyw==",
+        "dependencies": {
+          "Microsoft.Extensions.Http": "6.0.0",
+          "Polly": "7.2.2",
+          "Polly.Extensions.Http": "3.0.0"
         }
       },
       "Microsoft.Extensions.Identity.Stores": {
