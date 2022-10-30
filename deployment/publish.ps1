@@ -36,5 +36,5 @@ Push-Location $publish_dir
 & 7z a -mx9 -r -w $archive_name
 Pop-Location
 
-$env:GITHUB_OUTPUT += "`nartifact-name=$archive_name"
-$env:GITHUB_OUTPUT += "`nartifact=$publish_dir\$archive_name"
+"artifact-name=$archive_name" >> $env:GITHUB_OUTPUT
+"artifact=$publish_dir\$archive_name" >> $env:GITHUB_OUTPUT
