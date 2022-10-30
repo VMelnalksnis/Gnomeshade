@@ -22,7 +22,7 @@ jobs:
           - Gnomeshade.Desktop.Installer
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: actions/setup-dotnet@v3.0.2
+      - uses: actions/setup-dotnet@v3.0.3
       - uses: microsoft/setup-msbuild@v1.1
 
       - run: $env:BUILD_TAG = "-nightly"
@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: actions/setup-dotnet@v3.0.2
+      - uses: actions/setup-dotnet@v3.0.3
       - uses: actions/setup-node@v3.5.1
         with:
           node-version: 18
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
-      - uses: actions/setup-dotnet@v3.0.2
+      - uses: actions/setup-dotnet@v3.0.3
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.11

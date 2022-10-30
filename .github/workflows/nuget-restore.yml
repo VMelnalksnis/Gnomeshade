@@ -22,7 +22,7 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.PAT }}
 
-      - uses: actions/setup-dotnet@v3.0.2
+      - uses: actions/setup-dotnet@v3.0.3
 
       - name: Cache NuGet packages
         uses: actions/cache@v3.0.11
