@@ -90,7 +90,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
 
       - name: ReSharper annotations
-        uses: VMelnalksnis/resharper-inspect-action@v0.2.4
+        uses: VMelnalksnis/resharper-inspect-action@v0.2.5
         with:
           solution: Gnomeshade.sln
           resharper-version: 2022.1.2
