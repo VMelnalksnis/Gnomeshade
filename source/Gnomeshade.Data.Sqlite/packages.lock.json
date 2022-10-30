@@ -1185,7 +1185,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.10, )",
           "Microsoft.Extensions.Identity.Stores": "[6.0.10, )",
-          "NodaTime": "[3.1.4, )",
+          "NodaTime": "[3.1.5, )",
           "System.Security.Cryptography.Xml": "[6.0.1, )",
           "System.Text.Encodings.Web": "[6.0.0, )",
           "dbup-core": "[4.6.3, )"
@@ -1246,9 +1246,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.4, )",
-        "resolved": "3.1.4",
-        "contentHash": "ZibE6uZCliPPQMsZuzNxppIDEEc3jdTiyOog/hmnc/DzBavBT4pAt01BVQXGwBWK52mIbJLcwL7wxl6YX5XILQ==",
+        "requested": "[3.1.5, )",
+        "resolved": "3.1.5",
+        "contentHash": "z+mbQdY9mHL+JpW7WDImN9debJhqORy5jOdFnKOTeDQzwXMSEnjXE4f+UVdKnPabSLABzWz+nKz+7uUXK2Sq6Q==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }

@@ -1213,7 +1213,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.10, )",
           "Microsoft.Extensions.Identity.Stores": "[6.0.10, )",
-          "NodaTime": "[3.1.4, )",
+          "NodaTime": "[3.1.5, )",
           "System.Security.Cryptography.Xml": "[6.0.1, )",
           "System.Text.Encodings.Web": "[6.0.0, )",
           "dbup-core": "[4.6.3, )"
@@ -1264,7 +1264,7 @@
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[6.0.10, )",
-          "NodaTime": "[3.1.4, )",
+          "NodaTime": "[3.1.5, )",
           "NodaTime.Serialization.SystemTextJson": "[1.0.0, )",
           "Serilog": "[2.12.0, )",
           "Serilog.AspNetCore": "[6.0.1, )",
@@ -1299,7 +1299,7 @@
           "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "JetBrains.Annotations": "[2022.1.0, )",
           "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
-          "NodaTime": "[3.1.4, )"
+          "NodaTime": "[3.1.5, )"
         }
       },
       "Ardalis.SmartEnum": {
@@ -1598,9 +1598,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.4, )",
-        "resolved": "3.1.4",
-        "contentHash": "ZibE6uZCliPPQMsZuzNxppIDEEc3jdTiyOog/hmnc/DzBavBT4pAt01BVQXGwBWK52mIbJLcwL7wxl6YX5XILQ==",
+        "requested": "[3.1.5, )",
+        "resolved": "3.1.5",
+        "contentHash": "z+mbQdY9mHL+JpW7WDImN9debJhqORy5jOdFnKOTeDQzwXMSEnjXE4f+UVdKnPabSLABzWz+nKz+7uUXK2Sq6Q==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
