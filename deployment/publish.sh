@@ -19,8 +19,5 @@ pushd "$publish_dir" || exit
 zip -r -9 "$archive_name" .
 popd || exit
 
-echo
-{
-	"artifact-name=$archive_name"
-	"artifact=$publish_dir/$archive_name"
-} >>"$GITHUB_OUTPUT"
+echo "artifact-name=$archive_name" >> "$GITHUB_OUTPUT"
+echo "artifact=$publish_dir/$archive_name" >> "$GITHUB_OUTPUT"

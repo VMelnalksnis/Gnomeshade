@@ -36,8 +36,5 @@ Push-Location $publish_dir
 & 7z a -mx9 -r -w $archive_name
 Pop-Location
 
-Write-Output
-{
-    "artifact-name=$archive_name"
-    "artifact=$publish_dir\$archive_name"
-} >> "$GITHUB_OUTPUT"
+Write-Output "artifact-name=$archive_name" >> "$GITHUB_OUTPUT"
+Write-Output "artifact=$publish_dir\$archive_name" >> "$GITHUB_OUTPUT"
