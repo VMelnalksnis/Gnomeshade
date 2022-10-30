@@ -18,8 +18,10 @@ dotnet pack \
 	/nologo ||
 	exit
 
-echo "::set-output name=artifact-name::$package_name"
-echo "::set-output name=artifact::$publish_dir/$package_name"
-
-echo "::set-output name=symbols-name::$symbols_name"
-echo "::set-output name=symbols::$publish_dir/$symbols_name"
+echo
+{
+	"artifact-name=$package_name"
+	"artifact=$publish_dir/$package_name"
+	"symbols-name=$symbols_name"
+	"symbols=$publish_dir/$symbols_name"
+} >>"$GITHUB_OUTPUT"

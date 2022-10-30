@@ -14,5 +14,8 @@ $dotnetArgs = $dotnetArgs + "/nologo"
 
 & msbuild $dotnetArgs
 
-Write-Output "::set-output name=artifact-name::$archive_name"
-Write-Output "::set-output name=artifact::$publish_dir\$archive_name"
+Write-Output
+{
+    "artifact-name=$archive_name"
+    "artifact=$publish_dir\$archive_name"
+} >> "$GITHUB_OUTPUT"
