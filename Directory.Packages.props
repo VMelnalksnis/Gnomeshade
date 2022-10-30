@@ -12,7 +12,7 @@
 		<PackageVersion Include="coverlet.msbuild" Version="3.2.0"/>
 		<PackageVersion Include="Dapper" Version="2.0.123"/>
 		<PackageVersion Include="dbup-core" Version="4.6.3"/>
-		<PackageVersion Include="dbup-postgresql" Version="4.5.0"/>
+		<PackageVersion Include="dbup-postgresql" Version="4.6.3"/>
 		<PackageVersion Include="dbup-sqlite" Version="4.6.0"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.1.1"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds.Isolated" Version="1.1.1"/>

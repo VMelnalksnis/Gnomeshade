@@ -4,12 +4,12 @@
     "net6.0": {
       "dbup-postgresql": {
         "type": "Direct",
-        "requested": "[4.5.0, )",
-        "resolved": "4.5.0",
-        "contentHash": "ueGb+JXnwssIiJAP8a3t1mitebDgw+x18pRbJTQbnbuR5F2vZrgrW12PfjwM3HdF8x9bjfMMyR5XbgVAVTSuag==",
+        "requested": "[4.6.3, )",
+        "resolved": "4.6.3",
+        "contentHash": "YpsZoVLBM4Urcphr0EOACIqzYiV3SmEdckGKAVRWKjrYtH6dovmEIXKcn96kHw8i+HEA7fTe4JLFUZ2wD9xHbw==",
         "dependencies": {
-          "Npgsql": "3.2.6",
-          "dbup-core": "4.5.0"
+          "Npgsql": "3.2.7",
+          "dbup-core": "4.6.3"
         }
       },
       "DotNet.ReproducibleBuilds": {
