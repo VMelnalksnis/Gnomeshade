@@ -20,6 +20,17 @@ namespace Gnomeshade.Avalonia.Core.Transactions;
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
 public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
 {
+	private static readonly DataGridSortDescription[] _sortDescriptions =
+	{
+		DataGridSortDescription.FromComparer(
+			new TransactionOverviewComparer(overview => overview?.Date),
+			ListSortDirection.Descending),
+
+		DataGridSortDescription.FromComparer(
+			new TransactionOverviewComparer(overview => overview?.ReconciledAt),
+			ListSortDirection.Descending),
+	};
+
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
@@ -54,14 +65,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Filter = new(ActivityService, clock, dateTimeZoneProvider);
 		Filter.PropertyChanged += FilterOnPropertyChanged;
 		DataGridView.Filter = Filter.Filter;
-		DataGridView.SortDescriptions.Add(
-			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.Date),
-				ListSortDirection.Descending));
-		DataGridView.SortDescriptions.Add(
-			new DataGridComparerSortDesctiption(
-				new TransactionOverviewComparer(overview => overview?.ReconciledAt),
-				ListSortDirection.Descending));
+		DataGridView.SortDescriptions.AddRange(_sortDescriptions);
 
 		Summary = new(ActivityService);
 		Merge = new(ActivityService, _gnomeshadeClient);

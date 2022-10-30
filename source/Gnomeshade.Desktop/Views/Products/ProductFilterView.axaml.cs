@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Products;
 namespace Gnomeshade.Desktop.Views.Products;
 
 /// <inheritdoc cref="ProductFilter" />
-public sealed class ProductFilterView : UserControl, IView<ProductFilterView, ProductFilter>
+public sealed partial class ProductFilterView : UserControl, IView<ProductFilterView, ProductFilter>
 {
 	/// <summary>Initializes a new instance of the <see cref="ProductFilterView"/> class.</summary>
 	public ProductFilterView()

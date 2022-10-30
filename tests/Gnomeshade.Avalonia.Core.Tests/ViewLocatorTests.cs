@@ -6,19 +6,32 @@ using Avalonia.Controls;
 
 namespace Gnomeshade.Avalonia.Core.Tests;
 
+[TestOf(typeof(ViewLocator<>))]
 public sealed class ViewLocatorTests
 {
+	private readonly ViewLocator<TestView> _viewLocator = new();
+
 	[Test]
 	public void Build_ShouldReturnExpected()
 	{
-		var viewLocator = new ViewLocator<TestView>();
 		var viewModel = new TestViewModel(new ActivityService());
 
-		var accountView = viewLocator.Build(viewModel);
+		var accountView = _viewLocator.Build(viewModel);
 		accountView.Should().BeOfType<TestView>();
 
-		var secondInstanceOfAccountView = viewLocator.Build(viewModel);
+		var secondInstanceOfAccountView = _viewLocator.Build(viewModel);
 		secondInstanceOfAccountView.Should().NotBe(accountView);
+	}
+
+	[Test]
+	public void Match_ShouldMatchOnlyViewModels()
+	{
+		var viewModel = new TestViewModel(new ActivityService());
+
+		using var scope = new AssertionScope();
+		_viewLocator.Match(viewModel).Should().BeTrue();
+		_viewLocator.Match(_viewLocator).Should().BeFalse();
+		_viewLocator.Match(null).Should().BeFalse();
 	}
 
 	private sealed class TestViewModel : ViewModelBase

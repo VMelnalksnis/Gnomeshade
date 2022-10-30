@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Products;
 namespace Gnomeshade.Desktop.Views.Products;
 
 /// <inheritdoc cref="CategoryUpsertionViewModel"/>
-public sealed class CategoryUpsertionView : UserControl, IView<CategoryUpsertionView, CategoryUpsertionViewModel>
+public sealed partial class CategoryUpsertionView : UserControl, IView<CategoryUpsertionView, CategoryUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CategoryUpsertionView"/> class.</summary>
 	public CategoryUpsertionView()

@@ -4,14 +4,15 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using Avalonia.Collections;
 
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Compares <see cref="TransactionOverview"/> by a <see cref="DateTimeOffset"/> property.</summary>
-/// <seealso cref="DataGridComparerSortDesctiption"/>
-public sealed class TransactionOverviewComparer : IComparer
+/// <seealso cref="DataGridComparerSortDescription"/>
+public sealed class TransactionOverviewComparer : IComparer, IComparer<TransactionOverview?>
 {
 	private readonly Func<TransactionOverview?, DateTimeOffset?> _selector;
 
@@ -23,15 +24,19 @@ public sealed class TransactionOverviewComparer : IComparer
 	}
 
 	/// <inheritdoc />
-	public int Compare(object? x, object? y)
+	public int Compare(object? x, object? y) => Compare(x as TransactionOverview, y as TransactionOverview);
+
+	/// <inheritdoc />
+	public int Compare(TransactionOverview? x, TransactionOverview? y)
 	{
-		var first = _selector(x as TransactionOverview);
-		var second = _selector(y as TransactionOverview);
-		return first switch
+		var first = _selector(x);
+		var second = _selector(y);
+
+		return (first, second) switch
 		{
-			null when second is null => 0,
-			null => -1,
-			_ when second is null => 1,
+			(null, null) => 0,
+			(null, _) => -1,
+			(_, null) => 1,
 			_ => first.Value.CompareTo(second.Value),
 		};
 	}

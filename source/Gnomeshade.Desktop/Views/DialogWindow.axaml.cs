@@ -11,7 +11,7 @@ using Avalonia.Markup.Xaml;
 namespace Gnomeshade.Desktop.Views;
 
 /// <summary>The root element of a dialog window.</summary>
-public sealed class DialogWindow : Window
+public sealed partial class DialogWindow : Window
 {
 	/// <summary>Initializes a new instance of the <see cref="DialogWindow"/> class.</summary>
 	public DialogWindow()

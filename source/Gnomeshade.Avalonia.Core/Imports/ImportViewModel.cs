@@ -8,6 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.WebApi.Client;
@@ -21,6 +24,12 @@ namespace Gnomeshade.Avalonia.Core.Imports;
 /// <summary>External data import view model.</summary>
 public sealed partial class ImportViewModel : ViewModelBase
 {
+	private static readonly FilePickerOpenOptions _filePickerOpenOptions = new()
+	{
+		AllowMultiple = false,
+		Title = "Select report file",
+	};
+
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IOptionsMonitor<PreferencesOptions> _optionsMonitor;
 
@@ -59,6 +68,17 @@ public sealed partial class ImportViewModel : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the information needed for <see cref="ImportAsync"/> is valid.</summary>
 	public bool CanImport => !string.IsNullOrWhiteSpace(FilePath) || !string.IsNullOrWhiteSpace(SelectedInstitution);
+
+	/// <summary>Shows a modal dialog for selecting the report to import.</summary>
+	/// <param name="window">The current window.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task ShowFilePicker(Window window)
+	{
+		using var activity = BeginActivity("Waiting for bank report file");
+		var storageFiles = await window.StorageProvider.OpenFilePickerAsync(_filePickerOpenOptions);
+
+		FilePath = storageFiles.SingleOrDefault()?.Name;
+	}
 
 	/// <summary>Imports the located at <see cref="FilePath"/>.</summary>
 	/// <exception cref="InvalidOperationException"><see cref="FilePath"/> is null or whitespace.</exception>

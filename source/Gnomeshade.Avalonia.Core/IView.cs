@@ -20,7 +20,7 @@ namespace Gnomeshade.Avalonia.Core;
 public interface IView<
 	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TView,
 	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TViewModel>
-	where TView : IControl
+	where TView : Control
 	where TViewModel : ViewModelBase
 {
 }

@@ -164,6 +164,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToPreferences() => SwitchTo<PreferencesViewModel>();
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="TransactionViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToTransactionOverviewAsync() => SwitchTo<TransactionViewModel>();
+
 	/// <summary>Event handler for <see cref="IClassicDesktopStyleApplicationLifetime.ShutdownRequested"/>.</summary>
 	/// <param name="sender">The object that sent the event.</param>
 	/// <param name="eventArgs">Event arguments.</param>
@@ -231,8 +235,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	{
 		await SwitchToLogin();
 	}
-
-	private Task SwitchToTransactionOverviewAsync() => SwitchTo<TransactionViewModel>();
 
 	private Task SwitchTo<TViewModel>()
 		where TViewModel : ViewModelBase

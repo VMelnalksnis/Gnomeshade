@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Controls;
 namespace Gnomeshade.Desktop.Views.Transactions.Controls;
 
 /// <inheritdoc cref="TransactionSummary"/>
-public sealed class TransactionSummaryView : UserControl, IView<TransactionSummaryView, TransactionSummary>
+public sealed partial class TransactionSummaryView : UserControl, IView<TransactionSummaryView, TransactionSummary>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionSummaryView"/> class.</summary>
 	public TransactionSummaryView()

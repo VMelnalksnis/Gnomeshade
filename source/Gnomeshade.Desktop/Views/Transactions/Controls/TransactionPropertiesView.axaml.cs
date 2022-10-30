@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Transactions.Controls;
 namespace Gnomeshade.Desktop.Views.Transactions.Controls;
 
 /// <inheritdoc cref="TransactionProperties"/>
-public sealed class TransactionPropertiesView : UserControl, IView<TransactionPropertiesView, TransactionProperties>
+public sealed partial class TransactionPropertiesView : UserControl, IView<TransactionPropertiesView, TransactionProperties>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionPropertiesView"/> class.</summary>
 	public TransactionPropertiesView()

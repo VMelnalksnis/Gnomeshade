@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Reports;
 namespace Gnomeshade.Desktop.Views.Reports;
 
 /// <inheritdoc cref="BalanceReportViewModel"/>
-public sealed class BalanceReportView : UserControl, IView<BalanceReportView, BalanceReportViewModel>
+public sealed partial class BalanceReportView : UserControl, IView<BalanceReportView, BalanceReportViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportView"/> class.</summary>
 	public BalanceReportView()

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Authentication;
 namespace Gnomeshade.Desktop.Views.Authentication;
 
 /// <inheritdoc cref="LoginViewModel"/>
-public sealed class LoginView : UserControl, IView<LoginView, LoginViewModel>
+public sealed partial class LoginView : UserControl, IView<LoginView, LoginViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoginView"/> class.</summary>
 	public LoginView()

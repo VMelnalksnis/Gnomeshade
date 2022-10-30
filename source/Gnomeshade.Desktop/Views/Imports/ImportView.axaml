@@ -15,7 +15,7 @@
 		<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Spacing="10">
 			<TextBox
 				VerticalAlignment="Center"
-				Text="{Binding Country}" AcceptsReturn="False"/>
+				Text="{Binding Country}" AcceptsReturn="False" />
 			<AutoCompleteBox
 				Watermark="Institution"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
@@ -38,17 +38,17 @@
 			</Button>
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
-				Click="SelectFile_OnClick">
+				Command="{ReflectionBinding ShowFilePicker}" CommandParameter="{Binding $parent[Window]}">
 				Select File
-				<Interaction.Behaviors>
-					<FocusOnAttachedToVisualTreeBehavior />
-				</Interaction.Behaviors>
 			</Button>
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
 				IsEnabled="{Binding CanImport}"
 				Command="{ReflectionBinding ImportAsync}">
 				Import
+				<Interaction.Behaviors>
+					<FocusOnAttachedToVisualTreeBehavior />
+				</Interaction.Behaviors>
 			</Button>
 		</StackPanel>
 	</Grid>

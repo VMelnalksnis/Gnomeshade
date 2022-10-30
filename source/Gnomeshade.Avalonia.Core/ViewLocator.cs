@@ -24,8 +24,13 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 	private static readonly Assembly _assembly = typeof(TAssembly).Assembly;
 
 	/// <inheritdoc />
-	public IControl Build(object data)
+	public Control Build(object? data)
 	{
+		if (data is null)
+		{
+			throw new ArgumentNullException(nameof(data));
+		}
+
 		var dataType = data.GetType();
 		if (_viewDictionary.TryGetValue(dataType, out var viewType))
 		{
@@ -38,14 +43,14 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 				i.GetGenericTypeDefinition() == typeof(IView<,>) &&
 				i.GetGenericArguments().Length >= 2 &&
 				i.GetGenericArguments()[1] == dataType) &&
-			type.IsAssignableTo(typeof(IControl)));
+			type.IsAssignableTo(typeof(Control)));
 
 		_viewDictionary.Add(dataType, viewType);
 		return CreateControl(viewType);
 	}
 
 	/// <inheritdoc />
-	public bool Match(object data) => data is ViewModelBase;
+	public bool Match(object? data) => data is ViewModelBase;
 
-	private static IControl CreateControl(Type controlType) => (IControl)Activator.CreateInstance(controlType)!;
+	private static Control CreateControl(Type controlType) => (Control)Activator.CreateInstance(controlType)!;
 }

@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Configuration;
 namespace Gnomeshade.Desktop.Views.Configuration;
 
 /// <inheritdoc cref="AuthenticationConfigurationViewModel"/>
-public sealed class AuthenticationConfigurationView : UserControl, IView<AuthenticationConfigurationView, AuthenticationConfigurationViewModel>
+public sealed partial class AuthenticationConfigurationView : UserControl, IView<AuthenticationConfigurationView, AuthenticationConfigurationViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="AuthenticationConfigurationView"/> class.</summary>
 	public AuthenticationConfigurationView()

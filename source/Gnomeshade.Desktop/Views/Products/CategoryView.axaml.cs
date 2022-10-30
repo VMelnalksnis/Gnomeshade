@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Products;
 namespace Gnomeshade.Desktop.Views.Products;
 
 /// <summary>An overview of of all categories.</summary>
-public sealed class CategoryView : UserControl, IView<CategoryView, CategoryViewModel>
+public sealed partial class CategoryView : UserControl, IView<CategoryView, CategoryViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CategoryView"/> class.</summary>
 	public CategoryView()

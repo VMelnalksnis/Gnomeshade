@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Accounts;
 namespace Gnomeshade.Desktop.Views.Accounts;
 
 /// <inheritdoc cref="AccountViewModel"/>
-public sealed class AccountView : UserControl, IView<AccountView, AccountViewModel>
+public sealed partial class AccountView : UserControl, IView<AccountView, AccountViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="AccountView"/> class.</summary>
 	public AccountView()

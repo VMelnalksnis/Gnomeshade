@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Counterparties;
 namespace Gnomeshade.Desktop.Views.Counterparties;
 
 /// <inheritdoc cref="CounterpartyMergeViewModel"/>
-public sealed class CounterpartyMergeView : UserControl, IView<CounterpartyMergeView, CounterpartyMergeViewModel>
+public sealed partial class CounterpartyMergeView : UserControl, IView<CounterpartyMergeView, CounterpartyMergeViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyMergeView"/> class.</summary>
 	public CounterpartyMergeView()

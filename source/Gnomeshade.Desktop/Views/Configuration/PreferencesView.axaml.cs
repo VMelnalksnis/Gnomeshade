@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Configuration;
 namespace Gnomeshade.Desktop.Views.Configuration;
 
 /// <inheritdoc cref="PreferencesViewModel"/>
-public sealed class PreferencesView : UserControl, IView<PreferencesView, PreferencesViewModel>
+public sealed partial class PreferencesView : UserControl, IView<PreferencesView, PreferencesViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="PreferencesView"/> class.</summary>
 	public PreferencesView()

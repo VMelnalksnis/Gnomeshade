@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Accesses;
 namespace Gnomeshade.Desktop.Views.Accesses;
 
 /// <inheritdoc cref="OwnerUpsertionViewModel"/>
-public sealed class OwnerUpsertionView : UserControl, IView<OwnerUpsertionView, OwnerUpsertionViewModel>
+public sealed partial class OwnerUpsertionView : UserControl, IView<OwnerUpsertionView, OwnerUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="OwnerUpsertionView"/> class.</summary>
 	public OwnerUpsertionView()

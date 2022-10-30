@@ -23,8 +23,8 @@ public sealed class ViewLocatorTests
 	{
 		using (new AssertionScope())
 		{
-			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<IControl, TViewModel>>();
-			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<IControl, ViewModelBase>>();
+			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<Control, TViewModel>>();
+			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<Control, ViewModelBase>>();
 		}
 	}
 

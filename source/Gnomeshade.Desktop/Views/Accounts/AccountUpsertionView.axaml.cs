@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Accounts;
 namespace Gnomeshade.Desktop.Views.Accounts;
 
 /// <inheritdoc cref="AccountUpsertionViewModel"/>
-public sealed class AccountUpsertionView : UserControl, IView<AccountUpsertionView, AccountUpsertionViewModel>
+public sealed partial class AccountUpsertionView : UserControl, IView<AccountUpsertionView, AccountUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionView"/> class.</summary>
 	public AccountUpsertionView()

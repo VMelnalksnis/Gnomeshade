@@ -11,7 +11,7 @@ using Gnomeshade.Avalonia.Core.Configuration;
 namespace Gnomeshade.Desktop.Views.Configuration;
 
 /// <inheritdoc cref="ConfigurationWizardViewModel"/>
-public sealed class ConfigurationWizardView : UserControl, IView<ConfigurationWizardView, ConfigurationWizardViewModel>
+public sealed partial class ConfigurationWizardView : UserControl, IView<ConfigurationWizardView, ConfigurationWizardViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="ConfigurationWizardView"/> class.</summary>
 	public ConfigurationWizardView()
