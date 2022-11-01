@@ -234,11 +234,19 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		}
 
 		var account = await GnomeshadeClient.GetAccountAsync(_id.Value);
-		var missingCurrencies =
-			currencyIds.Where(currencyId => account.Currencies.All(c => c.Currency.Id != currencyId));
+		var missingCurrencies = currencyIds
+			.Where(currencyId => account.Currencies.All(c => c.Currency.Id != currencyId));
 		foreach (var missingCurrency in missingCurrencies)
 		{
 			await GnomeshadeClient.AddCurrencyToAccountAsync(_id.Value, new() { CurrencyId = missingCurrency });
+		}
+
+		var extraCurrencies = account.Currencies
+			.Where(currency => currencyIds.All(id => id != currency.Currency.Id));
+
+		foreach (var extraCurrency in extraCurrencies)
+		{
+			await GnomeshadeClient.RemoveCurrencyFromAccountAsync(account.Id, extraCurrency.Id);
 		}
 
 		return _id.Value;

@@ -54,15 +54,19 @@ public sealed class AccountsControllerTests : WebserverTests
 
 		var account = await _client.GetAccountAsync(accountId);
 		var accounts = await _client.GetAccountsAsync();
-		accounts.Should().Contain(a => a.Id == account.Id);
+		accounts.Should().Contain(a => a.Id == accountId);
 
 		addCurrencyId.Should().Be(accountId);
-		account.Currencies
-			.OrderBy(c => c.CreatedAt)
+		var currencies = account.Currencies.OrderBy(c => c.CreatedAt).ToArray();
+		currencies
 			.Should()
 			.SatisfyRespectively(
 				inCurrency => inCurrency.Currency.Id.Should().Be(_firstCurrency.Id),
 				inCurrency => inCurrency.Currency.Id.Should().Be(_secondCurrency.Id));
+
+		await _client.RemoveCurrencyFromAccountAsync(accountId, currencies.First().Id);
+		account = await _client.GetAccountAsync(accountId);
+		account.Currencies.Should().ContainSingle().Which.Currency.Id.Should().Be(_secondCurrency.Id);
 	}
 
 	[Test]

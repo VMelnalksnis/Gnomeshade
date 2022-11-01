@@ -62,7 +62,7 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 		DataGridView.GroupDescriptions.Add(group);
 		DataGridView.SortDescriptions.AddRange(sort);
 
-		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id && overview.InCurrencyId == selected.InCurrencyId);
 
 		if (Details.Counterparties.Count is 0)
 		{

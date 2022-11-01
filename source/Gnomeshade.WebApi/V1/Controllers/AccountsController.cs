@@ -148,13 +148,13 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> RemoveCurrency(Guid id, Guid currencyId)
 	{
-		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Delete);
 		if (account is null)
 		{
 			return NotFound();
 		}
 
-		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id);
+		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id, AccessLevel.Delete);
 		if (currency is null)
 		{
 			return NotFound();

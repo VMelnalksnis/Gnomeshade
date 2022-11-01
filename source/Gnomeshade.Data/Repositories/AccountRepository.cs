@@ -37,16 +37,16 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	protected override string SelectSql => Queries.Account.Select;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE a.deleted_at IS NULL AND a.id = @id";
+	protected override string FindSql => "WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.id = @id";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Account.Update;
 
 	/// <inheritdoc />
-	protected override string NotDeleted => "a.deleted_at IS NULL";
+	protected override string NotDeleted => "a.deleted_at IS NULL AND aic.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE a.deleted_at IS NULL AND a.normalized_name = upper(@name)";
+	protected override string NameSql => "WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.normalized_name = upper(@name)";
 
 	/// <summary>Finds an account with the specified IBAN.</summary>
 	/// <param name="iban">The IBAN for which to search for.</param>
@@ -55,7 +55,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND a.iban = @iban AND {AccessSql};";
+		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.iban = @iban AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { iban, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -67,7 +67,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND a.bic = @bic AND {AccessSql};";
+		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.bic = @bic AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { bic, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -78,7 +78,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>A collection of all active accounts.</returns>
 	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
-		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {AccessSql} ORDER BY a.created_at;";
+		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {AccessSql} ORDER BY a.created_at;";
 		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
