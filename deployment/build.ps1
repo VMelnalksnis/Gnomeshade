@@ -15,4 +15,6 @@ $dotnetArgs = $dotnetArgs + "/nologo"
 & msbuild $dotnetArgs
 
 "artifact-name=$archive_name" >> $env:GITHUB_OUTPUT
-"artifact=$publish_dir\$archive_name" >> $env:GITHUB_OUTPUT
+"artifact<<EOF" >> $env:GITHUB_OUTPUT
+"$publish_dir\$archive_name" >> $env:GITHUB_OUTPUT
+"EOF" >> $env:GITHUB_OUTPUT

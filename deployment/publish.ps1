@@ -35,6 +35,3 @@ $dotnetArgs = $dotnetArgs + "/nologo"
 Push-Location $publish_dir
 & 7z a -mx9 -r -w $archive_name
 Pop-Location
-
-"artifact-name=$archive_name" >> $env:GITHUB_OUTPUT
-"artifact=$publish_dir\$archive_name" >> $env:GITHUB_OUTPUT
