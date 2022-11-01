@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Gnomeshade.WebApi.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject ApplicationVersionService ApplicationVersionService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8"/>
@@ -12,8 +16,8 @@
 	<nav class="navbar navbar-expand-sm bg-white border-bottom mb-3">
 		<div class="container-fluid">
 			<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Gnomeshade</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-			        aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+			        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -35,12 +39,13 @@
 
 <footer class="border-top footer text-muted">
 	<div class="container">
-		&copy; 2022 - Gnomeshade
+		&copy; 2022 - Gnomeshade @ApplicationVersionService.Version
+		|
+		<a href="https://github.com/VMelnalksnis/Gnomeshade">GitHub</a>
 	</div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

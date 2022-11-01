@@ -22,6 +22,7 @@ using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Logging;
 using Gnomeshade.WebApi.Models;
+using Gnomeshade.WebApi.Services;
 using Gnomeshade.WebApi.V1;
 using Gnomeshade.WebApi.V1.Importing;
 
@@ -74,6 +75,8 @@ public class Startup
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
 				options.JsonSerializerOptions.AddContext<GnomeshadeSerializerContext>();
 			});
+
+		services.AddSingleton<ApplicationVersionService>();
 
 		services
 			.AddRepositories()
