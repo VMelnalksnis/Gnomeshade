@@ -14,12 +14,12 @@
 )
 
 $version = Get-Content version
-$publish_dir = "source\$Project\bin\Release\net6.0\$Runtime\publish"
+$publish_dir = "source/$Project/bin/Release/net6.0/$Runtime/publish"
 $archive_name = "${Project}_$Runtime.zip"
 
 $dotnetArgs = @()
 $dotnetArgs = $dotnetArgs + "publish"
-$dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.csproj"
+$dotnetArgs = $dotnetArgs + "./source/$Project/$Project.csproj"
 $dotnetArgs = $dotnetArgs + "--runtime" + $Runtime
 $dotnetArgs = $dotnetArgs + "--configuration" + "Release"
 $dotnetArgs = $dotnetArgs + "--self-contained"
@@ -37,4 +37,4 @@ Push-Location $publish_dir
 Pop-Location
 
 "artifact-name=$archive_name" >> $env:GITHUB_OUTPUT
-"artifact=$publish_dir\$archive_name" >> $env:GITHUB_OUTPUT
+"artifact=$publish_dir/$archive_name" >> $env:GITHUB_OUTPUT
