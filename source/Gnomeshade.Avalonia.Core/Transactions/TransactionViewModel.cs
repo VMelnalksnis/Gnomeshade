@@ -63,6 +63,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				ListSortDirection.Descending));
 
 		Summary = new(ActivityService);
+		Merge = new(ActivityService, _gnomeshadeClient);
 	}
 
 	/// <summary>Gets the transaction filter.</summary>
@@ -70,6 +71,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Gets the summary of displayed transactions.</summary>
 	public TransactionSummary Summary { get; }
+
+	/// <summary>Gets the model for merging transactions.</summary>
+	public TransactionMerge Merge { get; }
 
 	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
 	public bool CanRefresh => Filter.IsValid;
@@ -86,11 +90,30 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		}
 	}
 
+	/// <summary>Gets a value indicating whether the source transaction for merging can be selected.</summary>
+	public bool CanSelectSource => Selected is not null;
+
+	/// <summary>Gets a value indicating whether the target transaction for merging can be selected.</summary>
+	public bool CanSelectTarget => Selected is not null;
+
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
 		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync();
+	}
+
+	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the source for merging.</summary>
+	public void SelectSource() => Merge.Source = Selected;
+
+	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the target for merging.</summary>
+	public void SelectTarget() => Merge.Target = Selected;
+
+	/// <summary>Clears mergeable transactions.</summary>
+	public void ClearMerge()
+	{
+		Merge.Source = null;
+		Merge.Target = null;
 	}
 
 	/// <inheritdoc />
@@ -146,6 +169,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		if (e.PropertyName is nameof(DataGridView))
 		{
 			DataGridView.Filter = Filter.Filter;
+		}
+
+		if (e.PropertyName is nameof(Selected))
+		{
+			OnPropertyChanged(nameof(CanSelectSource));
+			OnPropertyChanged(nameof(CanSelectTarget));
 		}
 	}
 

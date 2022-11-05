@@ -15,16 +15,39 @@
 		<StackPanel Orientation="Vertical" Spacing="5">
 			<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
-			<Grid ColumnDefinitions="*, *">
+			<Grid ColumnDefinitions="*, *" RowDefinitions="Auto, 5, Auto, Auto">
 				<Button
+					Grid.Row="0" Grid.Column="0"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
 					Refresh
 				</Button>
 				<Button
-					Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
 					Delete Selected
+				</Button>
+				<Button
+					Grid.Row="2" Grid.Column="0"
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					IsEnabled="{Binding CanSelectSource}" Command="{ReflectionBinding SelectSource}">
+					Select Source
+				</Button>
+				<Button
+					Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					IsEnabled="{Binding CanSelectTarget}" Command="{ReflectionBinding SelectTarget}">
+					Select Target
+				</Button>
+				<Button
+					Grid.Row="3" Grid.Column="0"
+					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					Command="{ReflectionBinding ClearMerge}">
+					Clear
+				</Button>
+				<Button
+					Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					IsEnabled="{Binding Merge.CanMerge}" Command="{ReflectionBinding Merge.MergeAsync}">
+					Merge
 				</Button>
 			</Grid>
 		</StackPanel>
