@@ -81,6 +81,27 @@ public static class GnomeshadeClientExtensions
 		return await productClient.GetCategoryAsync(categoryId);
 	}
 
+	public static async Task<DetailedTransaction> CreateDetailedTransactionAsync(
+		this IGnomeshadeClient gnomeshadeClient,
+		Guid account1Id,
+		Guid account2Id,
+		Guid productId,
+		Guid issuingId,
+		Guid receivingId,
+		Guid? ownerId = null)
+	{
+		var transaction = await gnomeshadeClient.CreateTransactionAsync(ownerId);
+		_ = await gnomeshadeClient.CreateTransferAsync(transaction.Id, account1Id, account2Id, ownerId);
+		_ = await gnomeshadeClient.CreatePurchaseAsync(transaction.Id, productId, ownerId);
+		_ = await gnomeshadeClient.CreateLoanAsync(transaction.Id, issuingId, receivingId, ownerId);
+
+		var linkId = Guid.NewGuid();
+		await gnomeshadeClient.PutLinkAsync(linkId, new() { OwnerId = ownerId, Uri = new($"https://localhost/{Guid.NewGuid().ToString()}") });
+		await gnomeshadeClient.AddLinkToTransactionAsync(transaction.Id, linkId);
+
+		return await gnomeshadeClient.GetDetailedTransactionAsync(transaction.Id);
+	}
+
 	public static async Task<Transaction> CreateTransactionAsync(
 		this ITransactionClient transactionClient,
 		Guid? ownerId = null)

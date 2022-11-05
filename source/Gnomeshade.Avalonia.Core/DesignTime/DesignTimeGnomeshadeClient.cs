@@ -304,6 +304,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task MergeTransactionsAsync(Guid targetId, Guid sourceId) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default)
 	{
 		var links = _transactionLinks

@@ -55,6 +55,7 @@
 		<EmbeddedResource Include="Repositories\Queries\Category\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Category\Update.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Merge.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>

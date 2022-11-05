@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data.Entities.Abstractions;
+using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
@@ -91,7 +91,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
 		var identicalTransaction = await _client.GetTransactionAsync(transactionId);
 
-		transaction.Should().BeEquivalentTo(identicalTransaction, WithoutModifiedAt);
+		transaction.Should().BeEquivalentTo(identicalTransaction, options => options.WithoutModifiedAt());
 	}
 
 	[Test]
@@ -335,12 +335,56 @@ public sealed class TransactionsControllerTests : WebserverTests
 			.Be(HttpStatusCode.NotFound);
 	}
 
-	private static EquivalencyAssertionOptions<Transaction> WithoutModifiedAt(
-		EquivalencyAssertionOptions<Transaction> options)
+	[Test]
+	public async Task Merge()
 	{
-		return options
-			.ComparingByMembers<Transaction>()
-			.Excluding(info => info.Name == nameof(IModifiableEntity.ModifiedAt));
+		var counterparties = await _client.GetCounterpartiesAsync();
+		var receiver = await _client.GetMyCounterpartyAsync();
+		var issuer = counterparties.First(counterparty => counterparty.Id != receiver.Id);
+
+		var sourceTransaction = await _client.CreateDetailedTransactionAsync(
+			_account1.Id,
+			_account2.Id,
+			_productId,
+			issuer.Id,
+			receiver.Id);
+
+		var targetTransaction = await _client.CreateDetailedTransactionAsync(
+			_account2.Id,
+			_account1.Id,
+			_productId,
+			receiver.Id,
+			issuer.Id);
+
+		await _client.MergeTransactionsAsync(targetTransaction.Id, sourceTransaction.Id);
+
+		using (new AssertionScope())
+		{
+			(await FluentActions
+					.Awaiting(() => _client.GetTransactionAsync(sourceTransaction.Id))
+					.Should()
+					.ThrowExactlyAsync<HttpRequestException>())
+				.Which.StatusCode.Should()
+				.Be(HttpStatusCode.NotFound);
+
+			var mergedTransaction = await _client.GetDetailedTransactionAsync(targetTransaction.Id);
+
+			mergedTransaction.Transfers.Should()
+				.ContainEquivalentOf(sourceTransaction.Transfers.Single(), options => options.WithoutTransaction())
+				.And.ContainEquivalentOf(targetTransaction.Transfers.Single(), options => options.WithoutTransaction());
+
+			mergedTransaction.Purchases.Should()
+				.ContainEquivalentOf(sourceTransaction.Purchases.Single(), options => options.WithoutTransaction())
+				.And.ContainEquivalentOf(targetTransaction.Purchases.Single(), options => options.WithoutTransaction());
+
+			mergedTransaction.Loans.Should()
+				.ContainEquivalentOf(sourceTransaction.Loans.Single(), options => options.WithoutTransaction())
+				.And.ContainEquivalentOf(targetTransaction.Loans.Single(), options => options.WithoutTransaction());
+
+			mergedTransaction.Links.Should()
+				.ContainEquivalentOf(sourceTransaction.Links.Single(), options => options.WithoutModifiedAt())
+				.And.ContainEquivalentOf(targetTransaction.Links.Single(), options => options.WithoutModifiedAt());
+		}
 	}
 
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)

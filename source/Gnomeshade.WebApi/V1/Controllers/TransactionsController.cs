@@ -252,6 +252,18 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
 	}
 
+	/// <inheritdoc cref="ITransactionClient.MergeTransactionsAsync"/>
+	/// <response code="204">Transactions were successfully merged.</response>
+	[HttpPost("{targetId:guid}/Merge/{sourceId:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> Merge(Guid targetId, Guid sourceId)
+	{
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		await Repository.MergeAsync(targetId, sourceId, ApplicationUser.Id, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return NoContent();
+	}
+
 	/// <inheritdoc />
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,

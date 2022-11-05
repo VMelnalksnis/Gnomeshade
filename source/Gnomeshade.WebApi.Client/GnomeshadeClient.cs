@@ -119,11 +119,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PutAsync(CounterpartyIdUri(id), counterparty, _context.CounterpartyCreation);
 
 	/// <inheritdoc />
-	public async Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId)
-	{
-		using var response = await _httpClient.PostAsync(CounterpartyMergeUri(targetId, sourceId), null);
-		await ThrowIfNotSuccessCode(response);
-	}
+	public Task MergeCounterpartiesAsync(Guid targetId, Guid sourceId) =>
+		PostAsync(CounterpartyMergeUri(targetId, sourceId));
 
 	/// <inheritdoc/>
 	public Task<Guid> CreateTransactionAsync(TransactionCreation transaction) =>
@@ -156,6 +153,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task DeleteTransactionAsync(Guid id) =>
 		DeleteAsync(Transactions.IdUri(id));
+
+	/// <inheritdoc />
+	public Task MergeTransactionsAsync(Guid targetId, Guid sourceId) =>
+		PostAsync(Transactions.MergeUri(targetId, sourceId));
 
 	/// <inheritdoc />
 	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
@@ -419,6 +420,12 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		await ThrowIfNotSuccessCode(response);
 
 		return await response.Content.ReadFromJsonAsync(_context.Guid).ConfigureAwait(false);
+	}
+
+	private async Task PostAsync(string requestUri)
+	{
+		using var response = await _httpClient.PostAsync(requestUri, null);
+		await ThrowIfNotSuccessCode(response);
 	}
 
 	private async Task PutAsync(string requestUri)

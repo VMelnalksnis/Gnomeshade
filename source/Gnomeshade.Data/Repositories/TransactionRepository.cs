@@ -115,4 +115,17 @@ WHERE transaction_links.transaction_id = @id
 		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
 		return DbConnection.ExecuteAsync(command);
 	}
+
+	/// <summary>Merges one transaction into another.</summary>
+	/// <param name="targetId">The id of the transaction into which to merge.</param>
+	/// <param name="sourceId">The id of the transaction which to merge into the other one.</param>
+	/// <param name="ownerId">The id of the owner of the transactions.</param>
+	/// <param name="dbTransaction">The database transaction to use for the query.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
+	{
+		var moveDetailsCommand = new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
+		await DbConnection.ExecuteAsync(moveDetailsCommand);
+		await DeleteAsync(sourceId, ownerId, dbTransaction);
+	}
 }
