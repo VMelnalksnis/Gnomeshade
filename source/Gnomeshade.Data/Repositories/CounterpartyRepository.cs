@@ -50,9 +50,10 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <param name="ownerId">The id of the owner of the counterparties.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, IDbTransaction dbTransaction)
+	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, IDbTransaction dbTransaction)
 	{
-		var command = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
-		return DbConnection.ExecuteAsync(command);
+		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
+		await DbConnection.ExecuteAsync(mergeCommand);
+		await DeleteAsync(sourceId, ownerId, dbTransaction);
 	}
 }
