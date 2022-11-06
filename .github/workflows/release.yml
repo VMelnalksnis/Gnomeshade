@@ -115,8 +115,8 @@ jobs:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
 
-  nightly-nuget:
-    name: Publish NuGet packages to GitHub
+  nuget:
+    name: Publish NuGet packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
@@ -130,17 +130,28 @@ jobs:
 
       - run: dotnet restore --locked-mode /p:Configuration="Release"
 
-      - name: NuGet Pack
+      - name: Pack package
         id: pack
-        run: >
-          deployment/pack-nightly.sh
-          "Gnomeshade.WebApi.Client"
-          "${{ github.run_number }}"
+        run: deployment/pack-nightly.sh "Gnomeshade.WebApi.Client" "${{ github.run_number }}" "${{ github.ref }}"
 
-      - name: NuGet Push
+      - name: Push package to GitHub
         run: >
           dotnet nuget push "${{ steps.pack.outputs.artifact }}"
           --api-key ${{ secrets.GITHUB_TOKEN }}
+          --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+
+      - name: Push package to NuGet
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: >
+          dotnet nuget push "${{ steps.pack.outputs.artifact }}"
+          --api-key ${{ secrets.NUGET_KEY }}
+          --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+
+      - name: Push symbols to NuGet
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: >
+          dotnet nuget push "${{ steps.pack.outputs.symbols }}"
+          --api-key ${{ secrets.NUGET_KEY }}
           --source https://nuget.pkg.github.com/VMelnalksnis/index.json
 
   deploy-demo:

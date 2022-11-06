@@ -2,17 +2,20 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		
+
+		<DebugType>portable</DebugType>
 		<IsTrimmable>true</IsTrimmable>
 		<RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
 
-		<Product>Gnomeshade.WebApi.Client</Product>
-		<ProductId>Gnomeshade.WebApi.Client</ProductId>
-		<Description>.NET API client for Gnomeshade</Description>
-		<PackageTags>gnomeshade</PackageTags>
+		<Product>Gnomeshade.ApiClient</Product>
+		<ProductId>Gnomeshade.ApiClient</ProductId>
+		<Description>Gnomeshade API client</Description>
+		<PackageTags>gnomeshade client</PackageTags>
 		<IsPackable>true</IsPackable>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
