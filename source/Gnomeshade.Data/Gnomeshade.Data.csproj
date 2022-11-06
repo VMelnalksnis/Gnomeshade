@@ -3,73 +3,77 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<IsTrimmable>true</IsTrimmable>
+
+		<NoWarn>CS8002</NoWarn>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dapper"/>
-		<PackageReference Include="dbup-core"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
-		<PackageReference Include="Microsoft.Extensions.Identity.Stores"/>
-		<PackageReference Include="NodaTime"/>
-		<PackageReference Include="System.Security.Cryptography.Xml"/>
-		<PackageReference Include="System.Text.Encodings.Web"/>
+		<PackageReference Include="Dapper" />
+		<PackageReference Include="dbup-core" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" />
+		<PackageReference Include="NodaTime" />
+		<PackageReference Include="System.Security.Cryptography.Xml" />
+		<PackageReference Include="System.Text.Encodings.Web" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Account\Balance.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Account\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Account\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Account\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Account\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Category\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Counterparty\Merge.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Currency\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Link\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Link\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Link\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Link\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Loan\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Loan\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Loan\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Loan\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Ownership\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Ownership\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Ownership\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Product\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Product\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Product\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Product\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Purchase\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Purchase\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Purchase\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Purchase\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Category\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Category\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Category\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transaction\Merge.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transfer\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Transfer\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Unit\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\Unit\Update.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\User\Insert.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\User\Select.sql"/>
-		<EmbeddedResource Include="Repositories\Queries\User\Update.sql"/>
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Account\Balance.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Account\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Account\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Account\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Account\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Category\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Merge.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Counterparty\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Currency\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Link\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Link\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Link\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Link\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Loan\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Loan\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Loan\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Loan\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Ownership\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Product\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Product\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Product\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Product\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Purchase\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Category\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Category\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Category\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Merge.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transfer\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Unit\Delete.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Unit\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Unit\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Unit\Update.sql" />
+		<EmbeddedResource Include="Repositories\Queries\User\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\User\Select.sql" />
+		<EmbeddedResource Include="Repositories\Queries\User\Update.sql" />
 	</ItemGroup>
 
 </Project>
