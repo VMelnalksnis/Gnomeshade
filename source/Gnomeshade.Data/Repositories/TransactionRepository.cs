@@ -128,4 +128,48 @@ WHERE transaction_links.transaction_id = @id
 		await DbConnection.ExecuteAsync(moveDetailsCommand);
 		await DeleteAsync(sourceId, ownerId, dbTransaction);
 	}
+
+	public Task<IEnumerable<TransactionEntity>> GetRelatedAsync(
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = @$"WITH r AS (SELECT ""second"" FROM related_transactions WHERE related_transactions.first = @id)
+{SelectSql}
+WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
+		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
+		return DbConnection.QueryAsync<TransactionEntity>(command);
+	}
+
+	public async Task AddRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
+	{
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, AccessLevel.Write);
+		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
+		if (transaction is null || relatedTransaction is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		const string sql = "INSERT INTO related_transactions(first, second) VALUES (@id, @relatedId);";
+		var command = new CommandDefinition(sql, new { id, relatedId }, dbTransaction);
+		await DbConnection.ExecuteAsync(command);
+		await dbTransaction.CommitAsync();
+	}
+
+	public async Task RemoveRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
+	{
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, AccessLevel.Write);
+		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
+		if (transaction is null || relatedTransaction is null)
+		{
+			throw new InvalidOperationException();
+		}
+
+		const string sql = "DELETE FROM related_transactions WHERE first = @id AND second = @relatedId;";
+		var command = new CommandDefinition(sql, new { id, relatedId }, dbTransaction);
+		await DbConnection.ExecuteAsync(command);
+		await dbTransaction.CommitAsync();
+	}
 }

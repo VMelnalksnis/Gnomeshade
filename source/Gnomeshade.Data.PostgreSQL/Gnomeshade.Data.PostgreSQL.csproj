@@ -74,6 +74,7 @@
 		<EmbeddedResource Include="Migrations\00000019_unit_symbol.sql" />
 		<EmbeddedResource Include="Migrations\00000020_sek.sql" />
 		<EmbeddedResource Include="Migrations\00000021_order.sql" />
+		<EmbeddedResource Include="Migrations\00000022_related_transactions.sql" />
 	</ItemGroup>
 
 </Project>

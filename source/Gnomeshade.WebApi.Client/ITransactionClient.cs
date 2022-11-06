@@ -172,4 +172,22 @@ public interface ITransactionClient
 	/// <param name="id">The id of the loan to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteLoanAsync(Guid id);
+
+	/// <summary>Gets all related transactions for the specified transaction.</summary>
+	/// <param name="id">The id of the transaction for which to get related transactions.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All related transactions for the specified transaction.</returns>
+	Task<List<Transaction>> GetRelatedTransactionAsync(Guid id, CancellationToken cancellationToken = default);
+
+	/// <summary>Adds a related transaction.</summary>
+	/// <param name="id">The id of the transaction to which to add the relation.</param>
+	/// <param name="relatedId">The id of the related transaction.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task AddRelatedTransactionAsync(Guid id, Guid relatedId);
+
+	/// <summary>Removes a related transaction.</summary>
+	/// <param name="id">The id of the transaction from which to remove the relation.</param>
+	/// <param name="relatedId">The id of the related transaction.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId);
 }

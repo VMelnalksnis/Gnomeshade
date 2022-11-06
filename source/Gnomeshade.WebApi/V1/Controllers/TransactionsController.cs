@@ -264,6 +264,36 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return NoContent();
 	}
 
+	/// <inheritdoc cref="ITransactionClient.GetRelatedTransactionAsync"/>
+	/// <response code="200">Successfully got all related transactions.</response>
+	[HttpGet("{id:guid}/Related")]
+	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
+	public async Task<IEnumerable<Transaction>> GetRelated(Guid id, CancellationToken cancellationToken)
+	{
+		var transactions = await Repository.GetRelatedAsync(id, ApplicationUser.Id, cancellationToken);
+		return transactions.Select(MapToModel);
+	}
+
+	/// <inheritdoc cref="ITransactionClient.AddRelatedTransactionAsync"/>
+	/// <response code="204">Related transaction was successfully added.</response>
+	[HttpPost("{id:guid}/Related/{relatedId:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> AddRelated(Guid id, Guid relatedId)
+	{
+		await Repository.AddRelatedAsync(id, relatedId, ApplicationUser.Id);
+		return NoContent();
+	}
+
+	/// <inheritdoc cref="ITransactionClient.RemoveRelatedTransactionAsync"/>
+	/// <response code="204">Related transaction was successfully removed.</response>
+	[HttpDelete("{id:guid}/Related/{relatedId:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	public async Task<ActionResult> RemoveRelated(Guid id, Guid relatedId)
+	{
+		await Repository.RemoveRelatedAsync(id, relatedId, ApplicationUser.Id);
+		return NoContent();
+	}
+
 	/// <inheritdoc />
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,

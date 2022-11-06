@@ -463,6 +463,18 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public Task<List<Transaction>> GetRelatedTransactionAsync(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task AddRelatedTransactionAsync(Guid id, Guid relatedId) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_accounts.Single(account => account.Id == id));

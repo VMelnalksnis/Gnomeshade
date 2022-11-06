@@ -88,6 +88,10 @@ public static class Routes
 
 		internal static string MergeUri(Guid targetId, Guid sourceId) => $"{IdUri(targetId)}/Merge/{Format(sourceId)}";
 
+		internal static string RelatedUri(Guid id) => $"{IdUri(id)}/Related";
+
+		internal static string RelatedUri(Guid id, Guid relatedId) => $"{RelatedUri(id)}/{Format(relatedId)}";
+
 		private static string DateRangeUri(string baseUri, Interval interval)
 		{
 			var keyValues = new List<KeyValuePair<Instant, string>>(2);

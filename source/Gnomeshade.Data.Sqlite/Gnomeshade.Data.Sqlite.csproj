@@ -23,6 +23,7 @@
 		<EmbeddedResource Include="Migrations\00000004_unit_symbol.sql" />
 		<EmbeddedResource Include="Migrations\00000005_sek.sql" />
 		<EmbeddedResource Include="Migrations\00000006_order.sql" />
+		<EmbeddedResource Include="Migrations\00000007_related_transactions.sql" />
 	</ItemGroup>
 
 </Project>

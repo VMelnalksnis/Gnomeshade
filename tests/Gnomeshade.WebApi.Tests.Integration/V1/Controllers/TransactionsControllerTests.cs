@@ -387,6 +387,27 @@ public sealed class TransactionsControllerTests : WebserverTests
 		}
 	}
 
+	[Test]
+	public async Task Related()
+	{
+		var transaction = await _client.CreateTransactionAsync();
+		var relatedTransaction = await _client.CreateTransactionAsync();
+
+		(await _client.GetRelatedTransactionAsync(transaction.Id)).Should().BeEmpty();
+
+		await _client.AddRelatedTransactionAsync(transaction.Id, relatedTransaction.Id);
+
+		(await _client.GetRelatedTransactionAsync(transaction.Id))
+			.Should()
+			.ContainSingle()
+			.Which.Should()
+			.BeEquivalentTo(relatedTransaction, options => options.WithoutModifiedAt());
+
+		await _client.RemoveRelatedTransactionAsync(transaction.Id, relatedTransaction.Id);
+
+		(await _client.GetRelatedTransactionAsync(transaction.Id)).Should().BeEmpty();
+	}
+
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
 	{
 		var creationModel = new AccountCreation
