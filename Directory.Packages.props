@@ -29,7 +29,7 @@
 		<PackageVersion Include="JetBrains.Annotations" Version="2022.1.0"/>
 		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-beta.501"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.10"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.10"/>
