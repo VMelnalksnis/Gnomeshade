@@ -98,7 +98,8 @@ public sealed class Register : PageModel
 			{
 				_logger.LogInformation("User created a new account with password");
 
-				var identityUser = await _userManager.FindByNameAsync(user.UserName);
+				var identityUser = await _userManager.FindByNameAsync(user.UserName)
+					?? throw new NullReferenceException();
 
 				try
 				{

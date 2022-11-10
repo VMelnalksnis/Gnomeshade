@@ -38,7 +38,7 @@ public class DatabaseInitialization
 		_postgreSqlTestcontainer.StartAsync().GetAwaiter().GetResult();
 
 		var configuration = new ConfigurationBuilder()
-			.AddInMemoryCollection(new Dictionary<string, string>
+			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
 				{ "ConnectionStrings:Gnomeshade", _postgreSqlTestcontainer.ConnectionString },
 			})

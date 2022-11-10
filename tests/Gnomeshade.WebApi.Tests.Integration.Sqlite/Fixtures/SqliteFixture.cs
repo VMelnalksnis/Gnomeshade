@@ -23,7 +23,7 @@ internal sealed class SqliteFixture : WebserverFixture
 	internal override int RedirectPort => 8298;
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
-		.AddInMemoryCollection(new Dictionary<string, string>
+		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
 			{ "ConnectionStrings:Gnomeshade", $"Data Source={_databasePath}" },
 			{ "Database:Provider", "Sqlite" },

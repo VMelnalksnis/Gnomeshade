@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Reflection;
 
 using DbUp;
 using DbUp.Builder;
@@ -17,27 +18,41 @@ namespace Gnomeshade.Data.PostgreSQL.Migrations;
 
 internal sealed class PostgreSQLDatabaseMigrator : DatabaseMigrator<NpgsqlConnection>
 {
-	public PostgreSQLDatabaseMigrator(ILogger<PostgreSQLDatabaseMigrator> logger, NpgsqlConnection connection)
-		: base(logger, connection)
+	private readonly NpgsqlDataSource _dataSource;
+
+	public PostgreSQLDatabaseMigrator(ILogger<PostgreSQLDatabaseMigrator> logger, NpgsqlDataSource dataSource)
+		: base(logger)
 	{
+		_dataSource = dataSource;
 	}
 
 	/// <inheritdoc />
 	protected override void CheckDatabase(SupportedDatabasesForEnsureDatabase supportedDatabases)
 	{
-		supportedDatabases.PostgresqlDatabase(Connection.Settings.ToString(), UpgradeLog);
+		var connectionStringBuilder = GetConnectionStringBuilder();
+		supportedDatabases.PostgresqlDatabase(connectionStringBuilder.ToString(), UpgradeLog);
 	}
 
 	/// <inheritdoc />
 	protected override UpgradeEngineBuilder GetBuilder(SupportedDatabases supportedDatabases)
 	{
-		return supportedDatabases.PostgresqlDatabase(Connection.Settings.ToString());
+		var connectionStringBuilder = GetConnectionStringBuilder();
+		return supportedDatabases.PostgresqlDatabase(connectionStringBuilder.ToString());
 	}
 
 	/// <inheritdoc />
 	protected override bool ScriptFilter(string filepath)
 	{
-		return base.ScriptFilter(filepath)
-			|| filepath.Contains("Gnomeshade.Data.Migrations", StringComparison.OrdinalIgnoreCase);
+		return base.ScriptFilter(filepath) ||
+			filepath.Contains("Gnomeshade.Data.Migrations", StringComparison.OrdinalIgnoreCase);
+	}
+
+	private NpgsqlConnectionStringBuilder GetConnectionStringBuilder()
+	{
+		var property = typeof(NpgsqlDataSource)
+				.GetProperty("Settings", BindingFlags.Instance | BindingFlags.NonPublic) ??
+			throw new MissingMemberException(typeof(NpgsqlDataSource).FullName, "Settings");
+
+		return (NpgsqlConnectionStringBuilder)property.GetValue(_dataSource)!;
 	}
 }

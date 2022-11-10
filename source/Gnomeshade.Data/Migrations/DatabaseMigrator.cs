@@ -21,20 +21,14 @@ public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
 
 	/// <summary>Initializes a new instance of the <see cref="DatabaseMigrator{TConnection}"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	/// <param name="connection">A connection to the database to which to apply migrations to.</param>
-	protected DatabaseMigrator(ILogger<DatabaseMigrator<TConnection>> logger, TConnection connection)
+	protected DatabaseMigrator(ILogger<DatabaseMigrator<TConnection>> logger)
 	{
-		Connection = connection;
 		_logger = logger;
-
 		UpgradeLog = new DatabaseUpgradeLogger<DatabaseMigrator<TConnection>>(logger);
 	}
 
 	/// <summary>Gets the database migration logger.</summary>
 	protected IUpgradeLog UpgradeLog { get; }
-
-	/// <summary>Gets a connection to the database to which to apply migrations to.</summary>
-	protected TConnection Connection { get; }
 
 	/// <inheritdoc />
 	public void Migrate()

@@ -15,9 +15,12 @@ namespace Gnomeshade.Data.Sqlite.Migrations;
 
 internal sealed class SqliteDatabaseMigrator : DatabaseMigrator<SqliteConnection>
 {
+	private readonly SqliteConnection _connection;
+
 	public SqliteDatabaseMigrator(ILogger<SqliteDatabaseMigrator> logger, SqliteConnection connection)
-		: base(logger, connection)
+		: base(logger)
 	{
+		_connection = connection;
 	}
 
 	/// <inheritdoc />
@@ -28,6 +31,6 @@ internal sealed class SqliteDatabaseMigrator : DatabaseMigrator<SqliteConnection
 	/// <inheritdoc />
 	protected override UpgradeEngineBuilder GetBuilder(SupportedDatabases supportedDatabases)
 	{
-		return supportedDatabases.SQLiteDatabase(new SharedConnection(Connection));
+		return supportedDatabases.SQLiteDatabase(new SharedConnection(_connection));
 	}
 }

@@ -37,7 +37,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 	internal override int RedirectPort => 8297;
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
-		.AddInMemoryCollection(new Dictionary<string, string>
+		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
 			{ "ConnectionStrings:Gnomeshade", _databaseContainer.ConnectionString },
 			{ "Database:Provider", "PostgreSQL" },

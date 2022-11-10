@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<IsTrimmable>true</IsTrimmable>
 
 		<NoWarn>CS8002</NoWarn>
@@ -16,8 +16,9 @@
 	<ItemGroup>
 		<PackageReference Include="dbup-postgresql" />
 		<PackageReference Include="Npgsql" />
-		<PackageReference Include="Npgsql.NodaTime" />
+		<PackageReference Include="Npgsql.DependencyInjection" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+		<PackageReference Include="Npgsql.NodaTime" />
 	</ItemGroup>
 
 	<ItemGroup>

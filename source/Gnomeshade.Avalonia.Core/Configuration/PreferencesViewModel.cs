@@ -46,8 +46,8 @@ public sealed class PreferencesViewModel : ViewModelBase
 		_logger = logger;
 
 		_institutions = new();
-		_nordigenCountry = _optionsMonitor.CurrentValue?.Preferences?.NordigenCountry;
-		_selectedInstitutionId = _optionsMonitor.CurrentValue?.Preferences?.NoridgenInstitutionId;
+		_nordigenCountry = _optionsMonitor.CurrentValue.Preferences?.NordigenCountry;
+		_selectedInstitutionId = _optionsMonitor.CurrentValue.Preferences?.NoridgenInstitutionId;
 
 		PropertyChanged += OnPropertyChanged;
 	}
@@ -77,7 +77,7 @@ public sealed class PreferencesViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task Save()
 	{
-		var userConfiguration = _optionsMonitor.CurrentValue ?? new();
+		var userConfiguration = _optionsMonitor.CurrentValue;
 		userConfiguration.Preferences = new()
 		{
 			NordigenCountry = NordigenCountry,

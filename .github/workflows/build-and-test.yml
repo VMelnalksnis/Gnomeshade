@@ -35,26 +35,8 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - run: dotnet restore --locked-mode /p:Configuration="Release"
-
-      - name: Build
-        run: >
-          dotnet build 
-          --configuration Release 
-          --no-restore
-          /warnAsError
-          /nologo
-          /clp:NoSummary
-
-      - name: Run Tests
-        run: >
-          dotnet test
-          -p:CollectCoverage=true
-          -p:CoverletOutput=TestResults/
-          -p:CoverletOutputFormat=opencover
-          -p:BuildInParallel=true
-          -m:8
-          --configuration Release
-          --no-build
+      - run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
+      - run: dotnet test -p:CollectCoverage=true -p:BuildInParallel=true -m:8 --configuration Release --no-build
         env:
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
           Nordigen:SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
@@ -69,6 +51,7 @@ jobs:
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
+    if: false # ReSharper does not support .NET 7.0
     steps:
       - uses: actions/checkout@v3.1.0
       - uses: actions/setup-dotnet@v3.0.3

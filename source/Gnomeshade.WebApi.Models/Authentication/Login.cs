@@ -9,21 +9,15 @@ using JetBrains.Annotations;
 #pragma warning disable SA1623
 namespace Gnomeshade.WebApi.Models.Authentication;
 
-/// <summary>
-/// The information needed to log in.
-/// </summary>
+/// <summary>The information needed to log in.</summary>
 [PublicAPI]
 public sealed record Login
 {
-	/// <summary>
-	/// The username to log in with. Required.
-	/// </summary>
-	[Required(AllowEmptyStrings = false)]
-	public string? Username { get; set; }
+	/// <summary>The username to log in with. Required.</summary>
+	[Required]
+	public string Username { get; set; } = null!;
 
-	/// <summary>
-	/// The password to log in with. Required.
-	/// </summary>
-	[Required(AllowEmptyStrings = false)]
-	public string? Password { get; set; }
+	/// <summary>The password to log in with. Required.</summary>
+	[Required]
+	public string Password { get; set; } = null!;
 }

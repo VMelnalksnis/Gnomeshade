@@ -15,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Npgsql;
-using Npgsql.Logging;
 
 namespace Gnomeshade.Data.Tests.Integration;
 
@@ -30,9 +29,7 @@ public class PostgresInitializer
 	public PostgresInitializer(IConfiguration configuration)
 	{
 		var services = new ServiceCollection();
-		services
-			.AddLogging()
-			.AddPostgreSQL(configuration, new ConsoleLoggingProvider(), true);
+		services.AddLogging().AddPostgreSQL(configuration);
 		_serviceProvider = services.BuildServiceProvider();
 	}
 

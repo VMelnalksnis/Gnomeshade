@@ -14,18 +14,18 @@ public sealed record RegistrationModel
 {
 	/// <inheritdoc cref="UserModel.Username"/>
 	[Required]
-	public string Username { get; init; } = null!;
+	public string Username { get; set; } = null!;
 
 	/// <inheritdoc cref="UserModel.Email"/>
 	[EmailAddress]
 	[Required]
-	public string Email { get; init; } = null!;
+	public string Email { get; set; } = null!;
 
 	/// <summary>The password of the user.</summary>
 	[Required]
-	public string Password { get; init; } = null!;
+	public string Password { get; set; } = null!;
 
 	/// <summary>The full name of the user.</summary>
 	[Required]
-	public string FullName { get; init; } = null!;
+	public string FullName { get; set; } = null!;
 }

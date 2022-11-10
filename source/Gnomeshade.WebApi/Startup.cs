@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Text.Json.Serialization.Metadata;
 
 using AutoMapper;
 
@@ -20,7 +21,6 @@ using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
-using Gnomeshade.WebApi.Logging;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Services;
 using Gnomeshade.WebApi.V1;
@@ -73,7 +73,8 @@ public class Startup
 			{
 				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
-				options.JsonSerializerOptions.AddContext<GnomeshadeSerializerContext>();
+				options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver
+					.Combine(GnomeshadeSerializerContext.Default, new DefaultJsonTypeInfoResolver());
 			});
 
 		services.AddSingleton<ApplicationVersionService>();
@@ -86,7 +87,7 @@ public class Startup
 		_ = databaseProvider switch
 		{
 			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
-				.AddPostgreSQL(_configuration, new SerilogNpgsqlLoggingProvider())
+				.AddPostgreSQL(_configuration)
 				.AddPostgreSQLIdentityContext()
 				.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddPostgreSQLIdentity()

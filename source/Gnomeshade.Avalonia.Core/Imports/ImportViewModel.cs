@@ -40,8 +40,8 @@ public sealed class ImportViewModel : ViewModelBase
 		_gnomeshadeClient = gnomeshadeClient;
 		_optionsMonitor = optionsMonitor;
 		_institutions = new();
-		_country = _optionsMonitor.CurrentValue?.NordigenCountry ?? "LV";
-		_selectedInstitution = _optionsMonitor.CurrentValue?.NoridgenInstitutionId;
+		_country = _optionsMonitor.CurrentValue.NordigenCountry ?? "LV";
+		_selectedInstitution = _optionsMonitor.CurrentValue.NoridgenInstitutionId;
 	}
 
 	/// <summary>Gets or sets the local path of the report file to import.</summary>
@@ -103,7 +103,7 @@ public sealed class ImportViewModel : ViewModelBase
 	protected override async Task Refresh()
 	{
 		Institutions = await _gnomeshadeClient.GetInstitutionsAsync(_country);
-		if (_optionsMonitor.CurrentValue?.NoridgenInstitutionId is { } institutionId)
+		if (_optionsMonitor.CurrentValue.NoridgenInstitutionId is { } institutionId)
 		{
 			SelectedInstitution = Institutions.SingleOrDefault(id => id == institutionId) ?? Institutions.First();
 		}
