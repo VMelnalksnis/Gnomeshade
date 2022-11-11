@@ -11,8 +11,6 @@ time="Fri, 24 Jun 2022 19:28:01 +0200"
 mkdir -p gnomeshade/opt/gnomeshade || exit
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade || exit
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
-objdump -t gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
-objdump -s gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
 objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/libe_sqlite3.so || exit
 
 mkdir -p gnomeshade/DEBIAN || exit
@@ -42,4 +40,4 @@ mkdir -p gnomeshade/lib/systemd/system || exit
 cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service || exit
 
 dpkg-deb --root-owner-group --build gnomeshade || exit
-lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt gnomeshade.deb || exit
+lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt,unstripped-binary-or-object gnomeshade.deb || exit
