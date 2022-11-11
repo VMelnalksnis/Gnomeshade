@@ -3,6 +3,7 @@
 		"EndpointDefaults": {
 			"Protocols": "Http1AndHttp2"
 		},
+{% if gnomeshade_url.startswith('https://') %}
 		"Endpoints": {
 			"Https": {
 				"Url": "{{ gnomeshade_url }}",
@@ -18,6 +19,13 @@
 				"Password": "{{ gnomeshade_certificate_password }}"
 			}
 		}
+{% else %}
+		"Endpoints": {	
+			"Http": {
+				"Url": "{{ gnomeshade_url }}",
+			}
+		}
+{% endif %}
 	},
 	"Tls": {
 		"CipherSuites": [
@@ -27,23 +35,26 @@
 		]
 	},
 {% if gnomeshade_elasticapm is not defined %}
-    "ElasticApm": {
-        "Enabled": false
-    },
+	"ElasticApm": {
+		"Enabled": false
+	},
 {% endif %}
-    "ConnectionStrings": {
-        "Gnomeshade": "{{ gnomeshade_connection_string }}"
-    },
-    "AllowedHosts": "{{ gnomeshade_allowed_hosts }}",
-    "Jwt": {
-        "ValidAudience": "{{ gnomeshade_jwt_valid_audience }}",
-        "ValidIssuer": "{{ gnomeshade_jwt_valid_issuer }}",
-        "Secret": "{{ gnomeshade_jwt_secret }}"
-    },
+	"ConnectionStrings": {
+		"Gnomeshade": "{{ gnomeshade_connection_string }}"
+	},
+	"Database": {
+		"Provider": "{{ gnomeshade_database_provider }}"
+	},
+	"AllowedHosts": "{{ gnomeshade_allowed_hosts }}",
+	"Jwt": {
+		"ValidAudience": "{{ gnomeshade_jwt_valid_audience }}",
+		"ValidIssuer": "{{ gnomeshade_jwt_valid_issuer }}",
+		"Secret": "{{ gnomeshade_jwt_secret }}"
+	},
 {% if gnomeshade_oauth2_providers is defined %}
-    "OAuth2Providers": {
+	"OAuth2Providers": {
 {% for provider in gnomeshade_oauth2_providers %}
-        "{{ provider.name }}": {
+		"{{ provider.name }}": {
 			"ServerRealm": "{{ provider.server_realm }}",
 			"Metadata": "{{ provider.metadata }}",
 			"ClientId": "{{ provider.client_id }}",

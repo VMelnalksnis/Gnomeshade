@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    gnomeshade_binary_url: 'https://github.com/VMelnalksnis/Gnomeshade/releases/download/nightly/gnomeshade.deb'
+    gnomeshade_oauth2_providers: []
+  tasks:
+    - name: 'Include gnomeshade.gnomeshade'
+      include_role:
+        name: 'gnomeshade.gnomeshade'

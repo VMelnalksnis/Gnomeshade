@@ -1,23 +1,26 @@
-gnomeshade_binary_url: 'https://github.com/VMelnalksnis/Gnomeshade/releases/download/nightly/gnomeshade_linux-x64.zip'
+gnomeshade_binary_url: 'https://github.com/VMelnalksnis/Gnomeshade/releases/download/v0.4.0/gnomeshade.deb'
 
 gnomeshade_install_directory: '/opt/gnomeshade'
 gnomeshade_install_filepath: '{{ gnomeshade_install_directory }}/gnomeshade'
 
 gnomeshade_config_directory: '/etc/opt/gnomeshade'
-gnomeshade_config_filepath: '{{ gnomeshade_config_directory }}/appsettings.json'
+gnomeshade_config_filepath: '{{ gnomeshade_config_directory }}/appsettings.Production.json'
+
+gnomeshade_webroot: '{{ gnomeshade_install_directory }}/wwwroot'
 
 gnomeshade_user: 'gnomeshade'
 gnomeshade_group: 'gnomeshade'
 
-gnomeshade_url: 'https://localhost:8297'
+gnomeshade_url: 'http://localhost:8297'
 gnomeshade_certificate_path: 'certificate.pfx'
 gnomeshade_certificate_password: 'changeme'
 
-gnomeshade_connection_string: 'Server = localhost; Port = 5432; Database = gnomeshade; User Id = gnomeshade; Include Error Detail = true;'
+gnomeshade_connection_string: 'Data Source=gnomeshade.db'
+gnomeshade_database_provider: 'Sqlite'
 
 gnomeshade_allowed_hosts: '*'
-gnomeshade_jwt_valid_audience: '{{ gnomeshade_urls }}'
-gnomeshade_jwt_valid_issuer: '{{ gnomeshade_urls }}'
+gnomeshade_jwt_valid_audience: '{{ gnomeshade_url }}'
+gnomeshade_jwt_valid_issuer: '{{ gnomeshade_url }}'
 gnomeshade_jwt_secret: '00000000000000000000000000000000'
 
 gnomeshade_oauth2_providers:

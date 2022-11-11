@@ -1,0 +1,21 @@
+- name: apt update
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install Gnomeshade
+  apt:
+    deb: '{{ gnomeshade_binary_url }}'
+  notify:
+    - Restart gnomeshade
+
+- name: Create configuration
+  become: true
+  template:
+    src: 'templates/appsettings.json.j2'
+    dest: '{{ gnomeshade_config_filepath }}'
+    owner: '{{ gnomeshade_user }}'
+    group: '{{ gnomeshade_group }}'
+    mode: '0640'
+  notify:
+    - Restart gnomeshade

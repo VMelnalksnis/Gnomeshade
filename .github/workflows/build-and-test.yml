@@ -64,6 +64,25 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+  ansible:
+    name: Test ansible role
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - debian10
+          - debian11
+          - ubuntu1804
+          - ubuntu2004
+          - ubuntu2204
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: gofrolist/molecule-action@v2.3.4
+        with:
+          molecule_working_dir: './deployment/ansible/gnomeshade'
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }} 
+
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
