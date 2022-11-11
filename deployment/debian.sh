@@ -11,7 +11,6 @@ time="Fri, 24 Jun 2022 19:28:01 +0200"
 mkdir -p gnomeshade/opt/gnomeshade || exit
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade || exit
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
-objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/Gnomeshade.WebApi || exit
 objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/libe_sqlite3.so || exit
 
 mkdir -p gnomeshade/DEBIAN || exit
