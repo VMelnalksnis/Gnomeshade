@@ -4,7 +4,6 @@
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 
-		<StripSymbols>true</StripSymbols>
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
