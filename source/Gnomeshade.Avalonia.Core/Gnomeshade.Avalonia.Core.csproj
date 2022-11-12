@@ -14,7 +14,6 @@
 		<PackageReference Include="Avalonia.Controls.DataGrid" />
 		<PackageReference Include="IdentityModel.OidcClient" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Http" />

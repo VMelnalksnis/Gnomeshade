@@ -15,8 +15,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" />
 		<PackageReference Include="NodaTime" />
-		<PackageReference Include="System.Security.Cryptography.Xml" />
-		<PackageReference Include="System.Text.Encodings.Web" />
 	</ItemGroup>
 
 	<ItemGroup>

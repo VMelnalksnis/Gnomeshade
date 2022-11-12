@@ -8,8 +8,4 @@
 		<ProjectReference Include="..\..\source\Gnomeshade.Desktop\Gnomeshade.Desktop.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Moq" />
-	</ItemGroup>
-
 </Project>

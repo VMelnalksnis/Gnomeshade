@@ -20,7 +20,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="IdentityModel.OidcClient" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Http" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
