@@ -17,5 +17,4 @@ fi
 chown gnomeshade /etc/opt/gnomeshade --recursive
 chown gnomeshade /opt/gnomeshade --recursive
 
-deb-systemd-invoke daemon-reload
 deb-systemd-invoke enable gnomeshade.service
