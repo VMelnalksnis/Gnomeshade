@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
-systemctl stop gnomeshade.service || exit
-systemctl disable gnomeshade.service || exit
+deb-systemd-invoke stop gnomeshade.service
+deb-systemd-invoke disable gnomeshade.service

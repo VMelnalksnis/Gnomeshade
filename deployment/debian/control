@@ -4,6 +4,8 @@ Section: misc
 Priority: optional
 Architecture: amd64
 Maintainer: ${MAINTAINER}
-Description: The Gnomeshade server
+Description: Gnomeshade server
  Personal finance tracker server
 Homepage: https://gnomeshade.org
+Depends:
+ adduser

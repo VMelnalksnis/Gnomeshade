@@ -1,14 +1,21 @@
 #!/bin/bash
+set -e
 
-if id gnomeshade &>/dev/null; then
-	echo 'user gnomeshade exists'
-else
-	echo 'user gnomeshade does not exist, creating'
-	adduser --system --no-create-home --home /nonexistent --disabled-login --shell=/bin/false gnomeshade || exit
+GNOMESHADE_USER=gnomeshade
+
+if [[ -z "$(getent group ${GNOMESHADE_USER})" ]]; then
+	addgroup --system ${GNOMESHADE_USER}
 fi
 
-chown gnomeshade /etc/opt/gnomeshade --recursive || exit
-chown gnomeshade /opt/gnomeshade --recursive || exit
+if [[ -z "$(getent passwd ${GNOMESHADE_USER})" ]]; then
+	adduser \
+		--system --ingroup ${GNOMESHADE_USER} ${GNOMESHADE_USER} \
+		--no-create-home --home /nonexistent \
+		--gecos "Gnomeshade default user"
+fi
 
-systemctl daemon-reload || exit
-systemctl enable gnomeshade.service || exit
+chown gnomeshade /etc/opt/gnomeshade --recursive
+chown gnomeshade /opt/gnomeshade --recursive
+
+deb-systemd-invoke daemon-reload
+deb-systemd-invoke enable gnomeshade.service
