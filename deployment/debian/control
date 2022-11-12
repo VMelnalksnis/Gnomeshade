@@ -7,5 +7,4 @@ Maintainer: ${MAINTAINER}
 Description: Gnomeshade server
  Personal finance tracker server
 Homepage: https://gnomeshade.org
-Depends:
- adduser
+Depends: adduser
