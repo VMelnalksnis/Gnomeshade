@@ -58,6 +58,10 @@
 		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
 	</ItemGroup>
 	
+	<ItemGroup>
+		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Mvc.Core" />
+	</ItemGroup>
+	
 	<Target Name="JavascriptLibraries" BeforeTargets="Build">
 		<Exec WorkingDirectory="./Node" Command="npm ci" />
 		<Exec WorkingDirectory="./Node" Command="node ./node_modules/gulp/bin/gulp.js build" />
