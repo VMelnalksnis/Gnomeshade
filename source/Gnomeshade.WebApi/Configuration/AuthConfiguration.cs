@@ -169,7 +169,7 @@ internal static class AuthConfiguration
 			return IdentityConstants.ApplicationScheme;
 		}
 
-		string authorization = context.Request.Headers[HeaderNames.Authorization];
+		string? authorization = context.Request.Headers[HeaderNames.Authorization];
 		if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
 		{
 			return null;

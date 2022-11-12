@@ -7,6 +7,7 @@
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
 		<NoWarn>CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>

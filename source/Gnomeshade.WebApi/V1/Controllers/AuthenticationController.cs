@@ -84,7 +84,7 @@ public sealed class AuthenticationController : ControllerBase
 		var claims = new List<Claim>
 		{
 			new(ClaimTypes.NameIdentifier, user.Id),
-			new(ClaimTypes.Name, user.UserName),
+			new(ClaimTypes.Name, user.FullName),
 			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 		};
 
@@ -123,6 +123,10 @@ public sealed class AuthenticationController : ControllerBase
 		}
 
 		var identityUser = await _userManager.FindByNameAsync(registration.Username);
+		if (identityUser is null)
+		{
+			throw new InvalidOperationException("Could not find user by name after creating it");
+		}
 
 		try
 		{

@@ -58,9 +58,21 @@ public sealed class ExternalAuthenticationController : ControllerBase
 		var applicationUser = new ApplicationUser
 		{
 			Email = User.FindFirstValue(ClaimTypes.Email),
-			FullName = User.FindFirstValue(ClaimTypes.Name),
 			UserName = User.FindFirstValue("preferred_username"),
 		};
+
+		if (User.TryGetFirstClaimValue(ClaimTypes.Name, out var fullName))
+		{
+			applicationUser.FullName = fullName;
+		}
+		else if (User.TryGetFirstClaimValue("name", out var alternativeFullName))
+		{
+			applicationUser.FullName = alternativeFullName;
+		}
+		else
+		{
+			throw new ArgumentException("User does not have a name claim", nameof(User));
+		}
 
 		var userCreationResult = await _userManager.CreateAsync(applicationUser);
 		if (!userCreationResult.Succeeded)
@@ -77,8 +89,11 @@ public sealed class ExternalAuthenticationController : ControllerBase
 			return BadRequest(problemDetails);
 		}
 
-		var identityUser =
-			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+		var identityUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+		if (identityUser is null)
+		{
+			throw new InvalidOperationException("Could not find user by login after creating and adding the login");
+		}
 
 		try
 		{

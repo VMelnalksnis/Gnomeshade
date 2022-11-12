@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -121,21 +122,25 @@ public sealed class ExternalLogin : PageModel
 
 		// If the user does not have an account, then ask the user to create an account.
 		ReturnUrl = returnUrl;
-		ProviderDisplayName = info.ProviderDisplayName;
+		ProviderDisplayName = info.ProviderDisplayName ?? info.LoginProvider;
 		Input = new();
-		if (info.Principal.HasClaim(c => c.Type is ClaimTypes.Email))
+		if (info.Principal.TryGetFirstClaimValue(ClaimTypes.Email, out var email))
 		{
-			Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
+			Input.Email = email;
 		}
 
-		if (info.Principal.HasClaim(c => c.Type is ClaimTypes.Name))
+		if (info.Principal.TryGetFirstClaimValue(ClaimTypes.Name, out var fullName))
 		{
-			Input.FullName = info.Principal.FindFirstValue(ClaimTypes.Name);
+			Input.FullName = fullName;
+		}
+		else if (info.Principal.TryGetFirstClaimValue("name", out var alternativeFullName))
+		{
+			Input.FullName = alternativeFullName;
 		}
 
-		if (info.Principal.HasClaim(c => c.Type is "preferred_username"))
+		if (info.Principal.TryGetFirstClaimValue("preferred_username", out var username))
 		{
-			Input.UserName = info.Principal.FindFirstValue("preferred_username");
+			Input.UserName = username;
 		}
 
 		return Page();
@@ -173,6 +178,10 @@ public sealed class ExternalLogin : PageModel
 					_logger.LogInformation("User created an account using {Name} provider", info.LoginProvider);
 
 					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+					if (identityUser is null)
+					{
+						throw new InvalidOperationException("Could not find user by login after creating and adding the login");
+					}
 
 					try
 					{
@@ -220,7 +229,7 @@ public sealed class ExternalLogin : PageModel
 			}
 		}
 
-		ProviderDisplayName = info.ProviderDisplayName;
+		ProviderDisplayName = info.ProviderDisplayName ?? info.LoginProvider;
 		ReturnUrl = returnUrl;
 		return Page();
 	}

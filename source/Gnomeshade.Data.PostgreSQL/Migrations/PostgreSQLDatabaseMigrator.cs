@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Reflection;
 
 using DbUp;
 using DbUp.Builder;
@@ -17,27 +18,40 @@ namespace Gnomeshade.Data.PostgreSQL.Migrations;
 
 internal sealed class PostgreSQLDatabaseMigrator : DatabaseMigrator<NpgsqlConnection>
 {
-	public PostgreSQLDatabaseMigrator(ILogger<PostgreSQLDatabaseMigrator> logger, NpgsqlConnection connection)
+	private readonly NpgsqlDataSource _dataSource;
+
+	public PostgreSQLDatabaseMigrator(
+		ILogger<PostgreSQLDatabaseMigrator> logger,
+		NpgsqlConnection connection,
+		NpgsqlDataSource dataSource)
 		: base(logger, connection)
 	{
+		_dataSource = dataSource;
 	}
 
 	/// <inheritdoc />
 	protected override void CheckDatabase(SupportedDatabasesForEnsureDatabase supportedDatabases)
 	{
-		supportedDatabases.PostgresqlDatabase(Connection.Settings.ToString(), UpgradeLog);
+		supportedDatabases.PostgresqlDatabase(GetConnectionString(), UpgradeLog);
 	}
 
 	/// <inheritdoc />
 	protected override UpgradeEngineBuilder GetBuilder(SupportedDatabases supportedDatabases)
 	{
-		return supportedDatabases.PostgresqlDatabase(Connection.Settings.ToString());
+		return supportedDatabases.PostgresqlDatabase(GetConnectionString());
 	}
 
 	/// <inheritdoc />
-	protected override bool ScriptFilter(string filepath)
+	protected override bool ScriptFilter(string filepath) =>
+		base.ScriptFilter(filepath) ||
+		filepath.Contains("Gnomeshade.Data.Migrations", StringComparison.OrdinalIgnoreCase);
+
+	private string GetConnectionString()
 	{
-		return base.ScriptFilter(filepath)
-			|| filepath.Contains("Gnomeshade.Data.Migrations", StringComparison.OrdinalIgnoreCase);
+		var property =
+			typeof(NpgsqlDataSource).GetProperty("Settings", BindingFlags.Instance | BindingFlags.NonPublic) ??
+			throw new MissingMemberException(typeof(NpgsqlDataSource).FullName, "Settings");
+		var builder = (NpgsqlConnectionStringBuilder)property.GetValue(_dataSource)!;
+		return builder.ToString();
 	}
 }

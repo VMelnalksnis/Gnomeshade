@@ -3,6 +3,9 @@
 
 	<PropertyGroup>
 		<IsPackable>false</IsPackable>
+
+		<CoverletOutputFormat>opencover</CoverletOutputFormat>
+		<CoverletOutput>$(MSBuildThisFileDirectory)TestResults/$(MSBuildProjectName)/$(TargetFramework)/</CoverletOutput>
 	</PropertyGroup>
 
 	<ItemGroup>

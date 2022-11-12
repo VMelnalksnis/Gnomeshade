@@ -6,34 +6,34 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bogus"/>
-		<PackageReference Include="FluentAssertions.NodaTime"/>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
-		<PackageReference Include="Testcontainers"/>
-		<PackageReference Include="IdentityModel.OidcClient"/>
-		<PackageReference Include="Serilog.Sinks.NUnit"/>
-		<PackageReference Include="HtmlAgilityPack"/>
+		<PackageReference Include="Bogus" />
+		<PackageReference Include="FluentAssertions.NodaTime" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+		<PackageReference Include="Testcontainers" />
+		<PackageReference Include="IdentityModel.OidcClient" />
+		<PackageReference Include="Serilog.Sinks.NUnit" />
+		<PackageReference Include="HtmlAgilityPack" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj"/>
-		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj"/>
-		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj" />
+		<ProjectReference Include="..\Gnomeshade.TestingHelpers\Gnomeshade.TestingHelpers.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\Gnomeshade.WebApi.Tests.Integration\**\*.cs"/>
-		<EmbeddedResource Include="..\Gnomeshade.WebApi.Tests.Integration\**\*.xml"/>
+		<Compile Include="..\Gnomeshade.WebApi.Tests.Integration\**\*.cs" />
+		<EmbeddedResource Include="..\Gnomeshade.WebApi.Tests.Integration\**\*.xml" />
 		<None Include="..\Gnomeshade.WebApi.Tests.Integration\realm-export.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 
-		<EmbeddedResource Remove="**\obj\**"/>
-		<EmbeddedResource Remove="**\bin\**"/>
-		<Compile Remove="**\obj\**"/>
-		<Compile Remove="**\bin\**"/>
+		<EmbeddedResource Remove="**\obj\**" />
+		<EmbeddedResource Remove="**\bin\**" />
+		<Compile Remove="**\obj\**" />
+		<Compile Remove="**\bin\**" />
 	</ItemGroup>
 
 </Project>
