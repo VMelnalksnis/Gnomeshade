@@ -73,7 +73,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 		var configuration =
 			new ConfigurationBuilder()
 				.AddConfiguration(GetAdditionalConfiguration())
-				.AddInMemoryCollection(new Dictionary<string, string?>
+				.AddInMemoryCollection(new Dictionary<string, string>
 				{
 					{ "Oidc:Keycloak:ServerRealm", $"http://localhost:{KeycloakPort}/realms/gnomeshade" },
 					{ "Oidc:Keycloak:Metadata", $"http://localhost:{KeycloakPort}/realms/gnomeshade/.well-known/openid-configuration" },

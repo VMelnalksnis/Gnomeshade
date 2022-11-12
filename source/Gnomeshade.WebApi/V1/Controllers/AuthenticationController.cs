@@ -84,13 +84,9 @@ public sealed class AuthenticationController : ControllerBase
 		var claims = new List<Claim>
 		{
 			new(ClaimTypes.NameIdentifier, user.Id),
+			new(ClaimTypes.Name, user.UserName),
 			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 		};
-
-		if (!string.IsNullOrWhiteSpace(user.UserName))
-		{
-			claims.Add(new(ClaimTypes.Name, user.UserName));
-		}
 
 		var roles = await _userManager.GetRolesAsync(user);
 		var roleClaims = roles.Select(role => new Claim(ClaimTypes.Role, role));
@@ -126,8 +122,7 @@ public sealed class AuthenticationController : ControllerBase
 			return BadRequest(problemDetails);
 		}
 
-		var identityUser = await _userManager.FindByNameAsync(registration.Username)
-			?? throw new NullReferenceException();
+		var identityUser = await _userManager.FindByNameAsync(registration.Username);
 
 		try
 		{

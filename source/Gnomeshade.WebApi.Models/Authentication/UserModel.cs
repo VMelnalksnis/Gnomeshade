@@ -11,11 +11,11 @@ namespace Gnomeshade.WebApi.Models.Authentication;
 public sealed record UserModel
 {
 	/// <summary>The id of the user.</summary>
-	public string Id { get; set; } = null!;
+	public string Id { get; init; } = null!;
 
 	/// <summary>The username of the user.</summary>
-	public string Username { get; set; } = null!;
+	public string Username { get; init; } = null!;
 
 	/// <summary>The primary email address of the user.</summary>
-	public string Email { get; set; } = null!;
+	public string Email { get; init; } = null!;
 }

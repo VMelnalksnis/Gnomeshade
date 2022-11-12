@@ -7,7 +7,6 @@ Wants=network-online.target
 [Service]
 WorkingDirectory=/etc/opt/gnomeshade
 AmbientCapabilities=CAP_NET_BIND_SERVICE
-Environment="ASPNETCORE_CONTENTROOT=/etc/opt/gnomeshade"
 Environment="ASPNETCORE_WEBROOT=/opt/gnomeshade/wwwroot"
 
 ExecStart=/opt/gnomeshade/Gnomeshade.WebApi

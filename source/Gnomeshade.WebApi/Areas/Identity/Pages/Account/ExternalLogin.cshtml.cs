@@ -121,23 +121,19 @@ public sealed class ExternalLogin : PageModel
 
 		// If the user does not have an account, then ask the user to create an account.
 		ReturnUrl = returnUrl;
-		ProviderDisplayName = info.ProviderDisplayName ?? "Unknown";
+		ProviderDisplayName = info.ProviderDisplayName;
 		Input = new();
-		if (info.Principal.HasClaim(claim => claim.Type is ClaimTypes.Email))
+		if (info.Principal.HasClaim(c => c.Type is ClaimTypes.Email))
 		{
-			Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email)!;
+			Input.Email = info.Principal.FindFirstValue(ClaimTypes.Email);
 		}
 
-		if (info.Principal.HasClaim(claim => claim.Type is ClaimTypes.Name))
+		if (info.Principal.HasClaim(c => c.Type is ClaimTypes.Name))
 		{
-			Input.FullName = info.Principal.FindFirstValue(ClaimTypes.Name)!;
-		}
-		else if (info.Principal.HasClaim(claim => claim.Type is "name"))
-		{
-			Input.FullName = info.Principal.FindFirstValue("name")!;
+			Input.FullName = info.Principal.FindFirstValue(ClaimTypes.Name);
 		}
 
-		if (info.Principal.HasClaim(claim => claim.Type is "preferred_username"))
+		if (info.Principal.HasClaim(c => c.Type is "preferred_username"))
 		{
 			Input.UserName = info.Principal.FindFirstValue("preferred_username");
 		}
@@ -176,8 +172,7 @@ public sealed class ExternalLogin : PageModel
 				{
 					_logger.LogInformation("User created an account using {Name} provider", info.LoginProvider);
 
-					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey)
-						?? throw new NullReferenceException();
+					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
 					try
 					{
@@ -225,7 +220,7 @@ public sealed class ExternalLogin : PageModel
 			}
 		}
 
-		ProviderDisplayName = info.ProviderDisplayName ?? "Unknown";
+		ProviderDisplayName = info.ProviderDisplayName;
 		ReturnUrl = returnUrl;
 		return Page();
 	}

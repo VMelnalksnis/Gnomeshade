@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
 		<UserSecretsId>5a532a5d-dea6-499a-aa4d-7c39d0ad6f57</UserSecretsId>
 	</PropertyGroup>

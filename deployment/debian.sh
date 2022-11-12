@@ -42,4 +42,4 @@ mkdir -p gnomeshade/lib/systemd/system
 cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service
 
 dpkg-deb --root-owner-group --build gnomeshade
-lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt,unstripped-binary-or-object gnomeshade.deb
+lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt gnomeshade.deb

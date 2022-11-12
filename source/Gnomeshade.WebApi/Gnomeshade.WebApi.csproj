@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
-		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
@@ -56,10 +55,6 @@
 		<ProjectReference Include="..\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj" />
 		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
 		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Mvc.Core" />
 	</ItemGroup>
 	
 	<Target Name="JavascriptLibraries" BeforeTargets="Build">

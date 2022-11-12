@@ -25,7 +25,7 @@ internal sealed class DesignTimeOptionsMonitor<T> : IOptionsMonitor<T>
 	public T CurrentValue { get; }
 
 	/// <inheritdoc />
-	public T Get(string? name) => throw new NotImplementedException();
+	public T Get(string name) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public IDisposable OnChange(Action<T, string> listener) => throw new NotImplementedException();

@@ -58,7 +58,7 @@ public sealed class ExternalAuthenticationController : ControllerBase
 		var applicationUser = new ApplicationUser
 		{
 			Email = User.FindFirstValue(ClaimTypes.Email),
-			FullName = User.FindFirstValue(ClaimTypes.Name) ?? User.FindFirstValue("name") ?? throw new NullReferenceException(),
+			FullName = User.FindFirstValue(ClaimTypes.Name),
 			UserName = User.FindFirstValue("preferred_username"),
 		};
 
@@ -77,8 +77,8 @@ public sealed class ExternalAuthenticationController : ControllerBase
 			return BadRequest(problemDetails);
 		}
 
-		var identityUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value)
-			?? throw new NullReferenceException();
+		var identityUser =
+			await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
 
 		try
 		{

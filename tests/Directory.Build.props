@@ -2,11 +2,7 @@
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
 		<IsPackable>false</IsPackable>
-
-		<CoverletOutputFormat>opencover</CoverletOutputFormat>
-		<CoverletOutput>$(MSBuildThisFileDirectory)TestResults/$(MSBuildProjectName)/$(TargetFramework)/</CoverletOutput>
 	</PropertyGroup>
 
 	<ItemGroup>
