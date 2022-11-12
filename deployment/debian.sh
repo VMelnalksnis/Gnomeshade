@@ -14,12 +14,6 @@ unzip "$archive_path" -d gnomeshade/opt/gnomeshade
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
 chmod 0755 gnomeshade/opt/gnomeshade/libe_sqlite3.so
 
-pushd gnomeshade
-dpkg-shlibdeps -v -e gnomeshade/opt/gnomeshade/Gnomeshade.WebApi -e gnomeshade/opt/gnomeshade/libe_sqlite3.so
-popd
-
-objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/libe_sqlite3.so
-
 mkdir -p gnomeshade/DEBIAN
 cp deployment/debian/postinst gnomeshade/DEBIAN/postinst
 cp deployment/debian/prerm gnomeshade/DEBIAN/prerm
@@ -27,6 +21,11 @@ cp deployment/debian/prerm gnomeshade/DEBIAN/prerm
 export FULL_VERSION=$full_version
 export MAINTAINER=$maintainer
 envsubst <deployment/debian/control >gnomeshade/DEBIAN/control
+
+pushd gnomeshade
+dpkg-shlibdeps -v -e gnomeshade/opt/gnomeshade/Gnomeshade.WebApi -e gnomeshade/opt/gnomeshade/libe_sqlite3.so
+popd
+objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/libe_sqlite3.so
 
 mkdir -p gnomeshade/etc/opt/gnomeshade
 mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
