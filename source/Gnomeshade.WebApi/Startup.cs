@@ -115,7 +115,7 @@ public class Startup
 		services
 			.AddGnomeshadeApiVersioning()
 			.AddGnomeshadeApiExplorer()
-			.AddGnomeshadeHealthChecks();
+			.AddGnomeshadeHealthChecks(_configuration);
 
 		services.AddV1ImportingServices();
 		services
