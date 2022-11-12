@@ -10,7 +10,7 @@ fi
 if [[ -z "$(getent passwd ${GNOMESHADE_USER})" ]]; then
 	adduser \
 		--system --ingroup ${GNOMESHADE_USER} ${GNOMESHADE_USER} \
-		--no-create-home --home /nonexistent \
+		--no-create-home --home /dev/null \
 		--gecos "Gnomeshade default user"
 fi
 
