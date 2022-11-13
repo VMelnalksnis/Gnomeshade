@@ -101,9 +101,6 @@ jobs:
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
 
-      - name: Install lintian
-        run: sudo apt update && sudo apt install lintian
-
       - name: Build debian package
         run: >
           deployment/debian.sh

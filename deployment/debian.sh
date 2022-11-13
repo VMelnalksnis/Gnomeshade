@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+sudo apt update
+sudo apt install lintian -y
+
 archive_path="$1"
 version=$(cat version)
 full_version="$version.$2"

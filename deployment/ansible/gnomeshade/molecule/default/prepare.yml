@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - command: ls -lah ./
+    - name: Copy deb
+      copy:
+        src: gnomeshade.deb
+        dest: /tmp/gnomeshade.deb

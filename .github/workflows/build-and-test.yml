@@ -64,9 +64,43 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+  build-deb:
+    name: Build debian package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-node@v3.5.1
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
+
+      - run: echo "BUILD_TAG=-test"
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.0.11
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: dotnet restore --locked-mode /p:Configuration="Release"
+      - name: Publish project
+        id: publish
+        run: deployment/publish.sh "Gnomeshade.WebApi" "linux-x64" "${{ github.run_number }}" "-test"
+
+      - name: Build debian package
+        run: deployment/debian.sh "${{ steps.publish.outputs.artifact }}" "${{ github.run_number }}"
+
+      - uses: actions/upload-artifact@v3.1.1
+        with:
+          name: Gnomeshade.WebApi_linux-x64.deb
+          path: "**/*.deb"
+
   ansible:
     name: Test ansible role
     runs-on: ubuntu-latest
+    needs: build-deb
     strategy:
       matrix:
         distro:
@@ -77,11 +111,18 @@ jobs:
           - ubuntu2204
     steps:
       - uses: actions/checkout@v3.1.0
+      - uses: actions/download-artifact@v3.0.1
+        id: download
+        with:
+          name: Gnomeshade.WebApi_linux-x64.deb
+
+      - run: mv ${{ steps.download.outputs.download-path }}/gnomeshade.deb ./deployment/ansible/gnomeshade/molecule/default/gnomeshade.deb
+
       - uses: gofrolist/molecule-action@v2.3.4
         with:
           molecule_working_dir: './deployment/ansible/gnomeshade'
         env:
-          MOLECULE_DISTRO: ${{ matrix.distro }} 
+          MOLECULE_DISTRO: ${{ matrix.distro }}
 
   resharper:
     name: Resharper
