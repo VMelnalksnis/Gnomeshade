@@ -67,6 +67,12 @@
           "Microsoft.Extensions.Logging": "6.0.0"
         }
       },
+      "JetBrains.Annotations": {
+        "type": "Direct",
+        "requested": "[2022.3.1, )",
+        "resolved": "2022.3.1",
+        "contentHash": "11nsS3+lFICGkztVs9PP2NRItxf9fF+qD6xEW/T0YGto52zj07wseUeBdMAU1ah9HNVTDZyRC1u4NWdtJScwhw=="
+      },
       "Microsoft.AspNetCore.Mvc.Testing": {
         "type": "Direct",
         "requested": "[6.0.11, )",
@@ -1627,7 +1633,6 @@
         "dependencies": {
           "Avalonia": "[0.10.18, )",
           "Avalonia.Controls.DataGrid": "[0.10.18, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.1.0, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-beta.501, )",
@@ -1643,7 +1648,6 @@
         "type": "Project",
         "dependencies": {
           "Dapper": "[2.0.123, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.11, )",
           "Microsoft.Extensions.Identity.Stores": "[6.0.11, )",
           "NodaTime": "[3.1.5, )",
@@ -1653,7 +1657,6 @@
       "gnomeshade.data.postgresql": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Gnomeshade.Data": "[1.0.0, )",
           "Npgsql.DependencyInjection": "[7.0.0, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.0, )",
@@ -1664,7 +1667,6 @@
       "gnomeshade.data.sqlite": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Gnomeshade.Data": "[1.0.0, )",
           "Microsoft.Data.Sqlite": "[7.0.0, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[7.0.0, )",
@@ -1677,7 +1679,6 @@
         "type": "Project",
         "dependencies": {
           "Bogus": "[34.0.2, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "FluentAssertions": "[6.8.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
@@ -1692,7 +1693,6 @@
         "dependencies": {
           "Ardalis.SmartEnum": "[2.1.0, )",
           "AutoMapper": "[12.0.0, )",
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Elastic.Apm.AspNetCore": "[1.18.0, )",
           "Elastic.Apm.Elasticsearch": "[1.18.0, )",
           "Elastic.Apm.EntityFrameworkCore": "[1.18.0, )",
@@ -1726,7 +1726,6 @@
       "gnomeshade.webapi.client": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.1.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
@@ -1740,8 +1739,6 @@
       "gnomeshade.webapi.models": {
         "type": "Project",
         "dependencies": {
-          "DotNet.ReproducibleBuilds.Isolated": "[1.1.1, )",
-          "JetBrains.Annotations": "[2022.3.1, )",
           "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
           "NodaTime": "[3.1.5, )"
         }
@@ -1896,12 +1893,6 @@
         "requested": "[2.0.2, )",
         "resolved": "2.0.2",
         "contentHash": "sBKqWxw3g//peYxDZ8JipRlyPbIyBtgzqBVA5GqwHVeqtIrw75maGXAllztf+1aJhchD+drcQIgf2mFho8ZV8A=="
-      },
-      "JetBrains.Annotations": {
-        "type": "CentralTransitive",
-        "requested": "[2022.3.1, )",
-        "resolved": "2022.3.1",
-        "contentHash": "11nsS3+lFICGkztVs9PP2NRItxf9fF+qD6xEW/T0YGto52zj07wseUeBdMAU1ah9HNVTDZyRC1u4NWdtJScwhw=="
       },
       "LiveChartsCore.SkiaSharpView.Avalonia": {
         "type": "CentralTransitive",
