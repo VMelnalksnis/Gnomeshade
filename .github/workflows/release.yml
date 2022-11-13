@@ -142,14 +142,14 @@ jobs:
         run: >
           dotnet nuget push "${{ steps.pack.outputs.artifact }}"
           --api-key ${{ secrets.NUGET_KEY }}
-          --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+          --source https://api.nuget.org/v3/index.json
 
       - name: Push symbols to NuGet
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: >
           dotnet nuget push "${{ steps.pack.outputs.symbols }}"
           --api-key ${{ secrets.NUGET_KEY }}
-          --source https://nuget.pkg.github.com/VMelnalksnis/index.json
+          --source https://api.nuget.org/v3/index.json
 
   deploy-demo:
     name: Deploy demo app
