@@ -62,7 +62,7 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task AuthenticateExternallyAsync()
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Logging in");
 		try
 		{
 			await _authenticationService.SocialLogin();
@@ -79,7 +79,7 @@ public sealed class LoginViewModel : ViewModelBase
 	/// <exception cref="ArgumentOutOfRangeException">Unexpected <see cref="LoginResult"/> type.</exception>
 	public async Task LogInAsync()
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Logging in");
 		ErrorMessage = string.Empty;
 
 		var login = new Login { Username = Username!, Password = Password! };

@@ -153,7 +153,7 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ShowNewProductDialog(Window window)
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Waiting for product creation");
 		var viewModel = new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, _dateTimeZoneProvider, null);
 		await viewModel.RefreshAsync();
 

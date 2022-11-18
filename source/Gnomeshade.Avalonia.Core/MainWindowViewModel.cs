@@ -90,7 +90,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Validating configuration");
 		var isValid = await _validator.IsValid(_userConfiguration.Value);
 
 		if (isValid)

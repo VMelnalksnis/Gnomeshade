@@ -80,7 +80,7 @@ public sealed class ImportViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task ImportAsync()
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Importing transactions");
 		if (FilePath is not null)
 		{
 			var file = new FileInfo(FilePath);

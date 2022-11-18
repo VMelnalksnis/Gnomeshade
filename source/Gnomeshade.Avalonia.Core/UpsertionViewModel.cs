@@ -53,7 +53,7 @@ public abstract class UpsertionViewModel : ViewModelBase
 			return;
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Saving");
 		try
 		{
 			var id = await SaveValidatedAsync();

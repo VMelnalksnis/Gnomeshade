@@ -119,7 +119,7 @@ public sealed class ApplicationSettingsViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateConfiguration()
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Updating configuration");
 		await _userConfigurationWriter.Write(Configuration);
 		Updated?.Invoke(this, EventArgs.Empty);
 	}

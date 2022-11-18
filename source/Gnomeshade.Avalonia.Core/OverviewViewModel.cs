@@ -71,7 +71,7 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Deleting");
 		await DeleteAsync(Selected);
 	}
 

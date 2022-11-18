@@ -83,7 +83,7 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 			throw new InvalidOperationException();
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Merging counterparties");
 		await _gnomeshadeClient.MergeCounterpartiesAsync(TargetCounterparty.Id, SourceCounterparty.Id);
 		await RefreshAsync();
 	}

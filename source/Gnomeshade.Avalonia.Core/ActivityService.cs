@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -24,20 +25,23 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 	public bool IsBusy => _activityScopes.Any();
 
 	/// <inheritdoc />
-	public IDisposable BeginActivity()
+	public IEnumerable<string> Activities => _activityScopes
+		.Select(scope => scope.Name)
+		.Distinct(StringComparer.OrdinalIgnoreCase);
+
+	/// <inheritdoc />
+	public IDisposable BeginActivity(string name)
 	{
-		var scope = new ActivityScope(_activityScopes);
+		var scope = new ActivityScope(_activityScopes, name);
 		return scope;
 	}
 
 	/// <inheritdoc />
-	public void Dispose()
-	{
-		_activityScopes.CollectionChanged -= ValueOnCollectionChanged;
-	}
+	public void Dispose() => _activityScopes.CollectionChanged -= ValueOnCollectionChanged;
 
 	private void ValueOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		OnPropertyChanged(nameof(IsBusy));
+		OnPropertyChanged(nameof(Activities));
 	}
 }

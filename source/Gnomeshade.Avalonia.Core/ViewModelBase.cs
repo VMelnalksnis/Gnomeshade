@@ -22,6 +22,9 @@ public abstract class ViewModelBase : PropertyChangedBase
 	/// <summary>Gets a value indicating whether the viewmodel busy.</summary>
 	public bool IsBusy => ActivityService.IsBusy;
 
+	/// <summary>Gets the name of all current activities.</summary>
+	public string ActivityName => string.Join(", ", ActivityService.Activities);
+
 	/// <summary>
 	/// Gets a service for managing application activity indicators.
 	/// </summary>
@@ -31,7 +34,7 @@ public abstract class ViewModelBase : PropertyChangedBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task RefreshAsync()
 	{
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Refreshing");
 		await Refresh();
 	}
 
@@ -39,14 +42,20 @@ public abstract class ViewModelBase : PropertyChangedBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	protected virtual Task Refresh() => Task.CompletedTask;
 
+	/// <param name="name"></param>
 	/// <inheritdoc cref="IActivityService.BeginActivity"/>
-	protected IDisposable BeginActivity() => ActivityService.BeginActivity();
+	protected IDisposable BeginActivity(string name) => ActivityService.BeginActivity(name);
 
 	private void ActivityServiceOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(IActivityService.IsBusy))
 		{
 			OnPropertyChanged(nameof(IsBusy));
+		}
+
+		if (e.PropertyName is nameof(IActivityService.Activities))
+		{
+			OnPropertyChanged(nameof(ActivityName));
 		}
 	}
 }

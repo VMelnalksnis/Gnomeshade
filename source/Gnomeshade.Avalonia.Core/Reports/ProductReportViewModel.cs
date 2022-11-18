@@ -141,7 +141,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 			return;
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Updating product");
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
@@ -162,7 +162,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 			return;
 		}
 
-		using var activity = BeginActivity();
+		using var activity = BeginActivity("Updating aggregate");
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 

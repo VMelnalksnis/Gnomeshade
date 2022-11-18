@@ -11,15 +11,17 @@ internal readonly struct ActivityScope : IDisposable
 {
 	private readonly ICollection<ActivityScope> _scopes;
 
-	public ActivityScope(ICollection<ActivityScope> scopes)
+	public ActivityScope(ICollection<ActivityScope> scopes, string name)
 	{
 		_scopes = scopes;
+		Name = name;
+
 		_scopes.Add(this);
 	}
 
+	/// <summary>Gets the name of the activity.</summary>
+	public string Name { get; }
+
 	/// <inheritdoc />
-	public void Dispose()
-	{
-		_scopes.Remove(this);
-	}
+	public void Dispose() => _scopes.Remove(this);
 }
