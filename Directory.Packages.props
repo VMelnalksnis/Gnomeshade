@@ -10,6 +10,7 @@
     <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="0.10.18" />
     <PackageVersion Include="Bogus" Version="34.0.2" />
     <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
+    <PackageVersion Include="CsvHelper" Version="30.0.1" />
     <PackageVersion Include="Dapper" Version="2.0.123" />
     <PackageVersion Include="dbup-core" Version="4.6.3" />
     <PackageVersion Include="dbup-postgresql" Version="4.6.3" />

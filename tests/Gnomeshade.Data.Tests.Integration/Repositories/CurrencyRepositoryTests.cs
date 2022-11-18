@@ -31,7 +31,11 @@ public sealed class CurrencyRepositoryTests
 		{
 			"CZK", "EUR", "GBP", "HRK", "LVL", "PLN", "RUB", "USD", "HRD", "SEK",
 		};
-		currencies.Select(currency => currency.AlphabeticCode).Should().BeEquivalentTo(expectedCurrencies);
+		currencies
+			.Select(currency => currency.AlphabeticCode)
+			.Should()
+			.StartWith(expectedCurrencies)
+			.And.HaveCount(223);
 
 		var firstCurrency = currencies.First();
 		var currencyById = await _repository.GetByIdAsync(firstCurrency.Id);

@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Bogus" />
+		<PackageReference Include="CsvHelper" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 		<PackageReference Include="NodaTime.Bogus" />
@@ -19,6 +20,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="currencies.csv" />
 	</ItemGroup>
 
 </Project>
