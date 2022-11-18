@@ -3,6 +3,8 @@ version=$(cat version)
 publish_dir="./source/$1/bin/Release/net6.0/$2/publish"
 archive_name="$1_$2.zip"
 
+./deployment/restore.sh
+
 dotnet publish \
 	./source/"$1"/"$1".csproj \
 	--runtime "$2" \

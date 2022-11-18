@@ -74,7 +74,6 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
       - name: Publish project
         id: publish
         run: >
@@ -124,8 +123,6 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
-
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
 
       - name: Pack package
         id: pack

@@ -34,25 +34,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
-
-      - name: Build
-        run: >
-          dotnet build 
-          --configuration Release 
-          --no-restore
-          /warnAsError
-          /nologo
-          /clp:NoSummary
-
-      - name: Run Tests
-        run: >
-          dotnet test
-          -p:CollectCoverage=true
-          -p:BuildInParallel=true
-          -m:8
-          --configuration Release
-          --no-build
+      - run: ./deployment/test.sh
         env:
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
           Nordigen:SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
@@ -84,7 +66,6 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
       - name: Publish project
         id: publish
         run: deployment/publish.sh "Gnomeshade.WebApi" "linux-x64" "${{ github.run_number }}" "-test"
@@ -142,10 +123,7 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore /warnAsError /nologo /clp:NoSummary
+      - run: ./deployment/build.sh
 
       - name: ReSharper annotations
         uses: VMelnalksnis/resharper-inspect-action@v0.2.5

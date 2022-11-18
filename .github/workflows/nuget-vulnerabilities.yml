@@ -37,16 +37,4 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
 
-      - run: dotnet restore --locked-mode /p:Configuration="Release"
-
-      - name: Check vulnerable packages
-        id: packages
-        run: |
-          packages=$(dotnet list package --include-transitive --vulnerable)
-          echo "PACKAGES<<EOF" >> $GITHUB_ENV
-          echo "$packages" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Found vulnerable packages
-        run: exit 1 
-        if: ${{ contains(env.PACKAGES, 'has the following vulnerable packages') }}
+      - run: ./deployment/nuget_vulnerabilities.sh
