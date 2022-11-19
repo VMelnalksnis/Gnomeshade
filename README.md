@@ -3,6 +3,9 @@
 [![build and test](https://github.com/VMelnalksnis/Gnomeshade/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/VMelnalksnis/Gnomeshade/actions/workflows/build-and-test.yml)
 [![NuGet vulnerabilities](https://github.com/VMelnalksnis/Gnomeshade/actions/workflows/nuget-vulnerabilities.yml/badge.svg)](https://github.com/VMelnalksnis/Gnomeshade/actions/workflows/nuget-vulnerabilities.yml)
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/VMelnalksnis/Gnomeshade)](https://github.com/VMelnalksnis/Gnomeshade/releases/latest)
+[![Nuget](https://img.shields.io/nuget/v/Gnomeshade.WebApi.Client?label=WebApi.Client)](https://www.nuget.org/packages/Gnomeshade.WebApi.Client/)
+
 # Gnomeshade
 
 A free, open source and self-hosted personal finance manager.
@@ -20,6 +23,7 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 ### Server
 
 * A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
+* An unpublished Ansible role ([see issue](https://github.com/VMelnalksnis/Gnomeshade/issues/523)) is also available; for supported platforms see [tests](.github/workflows/build-and-test.yml)
 * The server requires a database, currently the following are supported:
 	* SQLite
 	* PostgreSQL (for [supported versions](https://www.postgresql.org/support/versioning/) see [integration tests](tests/Gnomeshade.WebApi.Tests.Integration.PostgreSQL/WebserverSetup.cs))
@@ -28,10 +32,14 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 * To automatically import data with Nordigen,
   see [Nordigen docs](https://nordigen.com/en/account_information_documenation/integration/quickstart_guide/)
   and [configuration](https://github.com/VMelnalksnis/NordigenDotNet#usage)
+* To import purchases from receipts from [Paperless](https://github.com/paperless-ngx/paperless-ngx),
+  see [configuration](https://github.com/VMelnalksnis/PaperlessDotNet#usage)
+	
 
 ### Client
 
 An `.msi` installer is provided for the windows client application.
+Currently no settings are preserved between updates, [see issue](https://github.com/VMelnalksnis/Gnomeshade/issues/360). 
 
 ## Contributing
 
