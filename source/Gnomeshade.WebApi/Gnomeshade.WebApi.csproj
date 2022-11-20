@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
