@@ -69,8 +69,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public async Task SocialRegister()
 	{
-		using var response = await _httpClient.PostAsync(_socialRegisterUri, new StringContent(string.Empty));
-		response.EnsureSuccessStatusCode();
+		using var response = await _httpClient.PostAsync(_socialRegisterUri, null);
+		await ThrowIfNotSuccessCode(response);
 	}
 
 	/// <inheritdoc />

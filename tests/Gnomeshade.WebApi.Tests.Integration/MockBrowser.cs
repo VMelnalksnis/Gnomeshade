@@ -25,6 +25,10 @@ internal sealed class MockBrowser : Browser
 		_httpClient = httpClient;
 	}
 
+	public string Username { get; init; } = "john.doe";
+
+	public string Password { get; init; } = "test";
+
 	/// <inheritdoc/>
 	protected override async Task StartUserSignin(string startUrl, CancellationToken cancellationToken = default)
 	{
@@ -41,8 +45,8 @@ internal sealed class MockBrowser : Browser
 
 		var formContent = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
 		{
-			new("username", "john.doe"),
-			new("password", "test"),
+			new("username", Username),
+			new("password", Password),
 			new("credentialId", string.Empty),
 		});
 

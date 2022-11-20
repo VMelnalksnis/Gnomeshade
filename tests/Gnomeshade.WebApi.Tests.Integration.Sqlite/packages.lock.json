@@ -156,6 +156,17 @@
           "System.Text.Json": "4.7.2"
         }
       },
+      "VMelnalksnis.Testcontainers.Keycloak": {
+        "type": "Direct",
+        "requested": "[0.1.4, )",
+        "resolved": "0.1.4",
+        "contentHash": "gKC0PLp0BtF/8l8evvv7fTY91+bNHy3Lrc0SGuwOj8Etvme5BlgqZKPL1vt0VpY6g7qKobVX0U21EfaXcImFKg==",
+        "dependencies": {
+          "System.Text.Encodings.Web": "7.0.0",
+          "System.Text.Json": "7.0.0",
+          "Testcontainers": "2.2.0"
+        }
+      },
       "Avalonia.Angle.Windows.Natives": {
         "type": "Transitive",
         "resolved": "2.1.0.2020091801",

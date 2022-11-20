@@ -55,12 +55,18 @@ public sealed class AuthorizationTests : WebserverTests
 			services
 				.AddHttpClient()
 				.AddLogging()
-				.AddSingleton<IBrowser, MockBrowser>()
+				.AddSingleton<IBrowser, MockBrowser>(provider =>
+				{
+					var handler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
+					var httpClient = provider.GetRequiredService<HttpClient>();
+					return new(handler, httpClient) { Username = Fixture.User.Username, Password = Fixture.User.Password };
+				})
 				.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(redirectUri))
 				.AddTransient<OidcClient>(provider => new(new()
 				{
-					Authority = $"http://localhost:{Fixture.KeycloakPort}/realms/gnomeshade/",
-					ClientId = "gnomeshade",
+					Authority = Fixture.Realm.ServerRealm.ToString(),
+					ClientId = Fixture.Client.Name,
+					ClientSecret = Fixture.Client.Secret,
 					Scope = "openid profile",
 					RedirectUri = redirectUri,
 					Browser = provider.GetRequiredService<IBrowser>(),

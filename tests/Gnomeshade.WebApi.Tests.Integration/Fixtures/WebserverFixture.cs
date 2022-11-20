@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -23,19 +22,34 @@ using Gnomeshade.WebApi.Models.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using NodaTime;
+
+using VMelnalksnis.Testcontainers.Keycloak;
+using VMelnalksnis.Testcontainers.Keycloak.Configuration;
+
+using KeycloakClient = VMelnalksnis.Testcontainers.Keycloak.Configuration.Client;
 
 namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 public abstract class WebserverFixture : IAsyncDisposable
 {
-	private const int _keycloakPort = 8080;
 	private WebApplicationFactory<Startup> _webApplicationFactory = null!;
 
 	internal abstract string Name { get; }
 
-	internal int KeycloakPort { get; private set; }
+	internal Realm Realm { get; private set; } = null!;
+
+	internal KeycloakClient Client { get; private set; } = null!;
+
+	internal User User { get; } = new("john.doe", "password123")
+	{
+		Email = "john.doe@example.com",
+		EmailVerified = true,
+		FirstName = "John",
+		LastName = "Doe",
+	};
 
 	internal abstract int RedirectPort { get; }
 
@@ -49,39 +63,35 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	internal async Task Initialize()
 	{
-		var keycloakContainer = new TestcontainersBuilder<TestcontainersContainer>()
-			.WithImage("quay.io/keycloak/keycloak:19.0.1")
-			.WithEnvironment(new Dictionary<string, string>
-			{
-				{ "KEYCLOAK_ADMIN", "admin" },
-				{ "KEYCLOAK_ADMIN_PASSWORD", "admin" },
-			})
-			.WithPortBinding(_keycloakPort, true)
-			.WithBindMount(
-				Path.Combine(Directory.GetCurrentDirectory(), "realm-export.json"),
-				"/opt/keycloak/data/import/realm.json",
-				AccessMode.ReadOnly)
-			.WithCommand("start-dev", "--import-realm")
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(8080))
+		var services = new ServiceCollection().AddLogging(builder => builder.AddConsole());
+		var provider = services.BuildServiceProvider();
+		TestcontainersSettings.Logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("Testcontainers");
+
+		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper");
+		Client = new("gnomeshade", new($"http://localhost:{RedirectPort}/")) { Mappers = new[] { mapper }, Secret = "123" };
+		var realmConfiguration = new RealmConfiguration("demorealm", new List<KeycloakClient> { Client }, new List<User> { User });
+		var keycloakConfiguration = new KeycloakTestcontainerConfiguration { Realms = new[] { realmConfiguration } };
+		var keycloakContainer = new TestcontainersBuilder<KeycloakTestcontainer>()
+			.WithKeycloak(keycloakConfiguration)
 			.Build();
 
 		Containers.Add(keycloakContainer);
 
 		await Task.WhenAll(Containers.Select(container => container.StartAsync()));
 
-		KeycloakPort = keycloakContainer.GetMappedPublicPort(_keycloakPort);
-		var configuration =
-			new ConfigurationBuilder()
-				.AddConfiguration(GetAdditionalConfiguration())
-				.AddInMemoryCollection(new Dictionary<string, string?>
-				{
-					{ "Oidc:Keycloak:ServerRealm", $"http://localhost:{KeycloakPort}/realms/gnomeshade" },
-					{ "Oidc:Keycloak:Metadata", $"http://localhost:{KeycloakPort}/realms/gnomeshade/.well-known/openid-configuration" },
-					{ "Oidc:Keycloak:ClientId", "gnomeshade" },
-					{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
-				})
-				.AddEnvironmentVariables()
-				.Build();
+		Realm = keycloakContainer.Realms.Single();
+		var configuration = new ConfigurationBuilder()
+			.AddConfiguration(GetAdditionalConfiguration())
+			.AddInMemoryCollection(new Dictionary<string, string?>
+			{
+				{ "Oidc:Keycloak:ServerRealm", Realm.ServerRealm.ToString() },
+				{ "Oidc:Keycloak:Metadata", Realm.Metadata.ToString() },
+				{ "Oidc:Keycloak:ClientId", Client.Name },
+				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
+				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
+			})
+			.AddEnvironmentVariables()
+			.Build();
 
 		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration);
 		_webApplicationFactory.CreateClient();
