@@ -1,5 +1,7 @@
-#!/bin/bash
-version=$(cat version)
+#!/bin/sh
+set -e
+
+version=$(tr -d '[:space:]' <version)
 publish_dir="./source/$1/bin/Release/net6.0/$2/publish"
 archive_name="$1_$2.zip"
 
@@ -12,14 +14,19 @@ dotnet publish \
 	--self-contained \
 	--no-restore \
 	-p:PublishSingleFile=true \
-	-p:AssemblyVersion="$version"."$3" \
-	-p:InformationalVersion="$version""$4"+"$2" \
+	-p:AssemblyVersion="$version.$3" \
+	-p:InformationalVersion="$version$4$2" \
 	/warnAsError \
 	/nologo
 
-pushd "$publish_dir" || exit
-zip -r -9 "$archive_name" .
-popd || exit
+(
+	cd "$publish_dir" || exit
+	zip -r -9 "$archive_name" .
+)
 
-echo "artifact-name=$archive_name" >> "$GITHUB_OUTPUT"
-echo "artifact=$publish_dir/$archive_name" >> "$GITHUB_OUTPUT"
+if [ -z "$GITHUB_OUTPUT" ]; then
+	echo "Not in GitHub Actions"
+else
+	echo "artifact-name=$archive_name" >>"$GITHUB_OUTPUT"
+	echo "artifact=$publish_dir/$archive_name" >>"$GITHUB_OUTPUT"
+fi

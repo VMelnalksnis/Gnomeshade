@@ -105,6 +105,23 @@ jobs:
         env:
           MOLECULE_DISTRO: ${{ matrix.distro }}
 
+  docker:
+    name: Test docker container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - run: >
+          docker build
+          --tag ghcr.io/vmelnalksnis/gnomeshade:test
+          --build-arg "BUILD_NUMBER=${{ github.run_number }}"
+          ./
+      - run: docker run --name test -d -p 8000:80 ghcr.io/vmelnalksnis/gnomeshade:test
+      - run: wget --tries=10 --retry-connrefused --waitretry=1 --timeout=15 "http://localhost:8000/health"
+      - run: >
+          [[ $(cat health) = "Healthy" ]] || exit 1
+      - run: docker logs test
+        if: always()
+
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
