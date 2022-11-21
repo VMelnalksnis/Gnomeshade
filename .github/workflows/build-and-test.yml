@@ -34,6 +34,11 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.2.6
+        with:
+          key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
+
       - run: ./deployment/test.sh
         env:
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
