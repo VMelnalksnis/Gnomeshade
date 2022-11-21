@@ -4,7 +4,7 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'deployment/docker/'
+      - 'deployment/docker/**'
 
 jobs:
   docker-build:
