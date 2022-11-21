@@ -1,0 +1,22 @@
+name: Docker build image
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'deployment/docker/'
+
+jobs:
+  docker-build:
+    name: Build docker build image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: docker build --tag ghcr.io/vmelnalksnis/gnomeshade-build:6.0.403 ./deployment/docker/
+      - run: docker push ghcr.io/vmelnalksnis/gnomeshade-build:6.0.403

@@ -60,6 +60,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\release.yml = .github\workflows\release.yml
 		.github\workflows\nuget-vulnerabilities.yml = .github\workflows\nuget-vulnerabilities.yml
 		.github\workflows\nuget-restore.yml = .github\workflows\nuget-restore.yml
+		.github\workflows\docker-build-image.yml = .github\workflows\docker-build-image.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.Avalonia.Core", "source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj", "{9B9585C9-1A8D-434B-BAFC-A8C0AA04F3CB}"
