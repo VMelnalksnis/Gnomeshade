@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache@v3.0.11
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-linux-x64-nuget-${{ hashFiles('**/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - name: Publish project
         id: publish
