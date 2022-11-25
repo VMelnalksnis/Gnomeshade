@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests.Int
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests.Integration.PostgreSQL", "tests\Gnomeshade.WebApi.Tests.Integration.PostgreSQL\Gnomeshade.WebApi.Tests.Integration.PostgreSQL.csproj", "{500AE809-A986-44E8-A53D-18826B41DFEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnomeshade.WebApi.Tests.Integration.Oidc", "tests\Gnomeshade.WebApi.Tests.Integration.Oidc\Gnomeshade.WebApi.Tests.Integration.Oidc.csproj", "{D6EE3E2C-63CB-4819-939A-4C138090D438}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{500AE809-A986-44E8-A53D-18826B41DFEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{500AE809-A986-44E8-A53D-18826B41DFEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{500AE809-A986-44E8-A53D-18826B41DFEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6EE3E2C-63CB-4819-939A-4C138090D438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6EE3E2C-63CB-4819-939A-4C138090D438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6EE3E2C-63CB-4819-939A-4C138090D438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6EE3E2C-63CB-4819-939A-4C138090D438}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{F38BE682-DC57-4090-99A3-C913DB95F109} = {C40963A1-CFE1-4CF8-BAC3-3F3B0A87B7D0}
 		{D42CD300-2BE9-476E-BCA1-81D038BEE748} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 		{500AE809-A986-44E8-A53D-18826B41DFEA} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
+		{D6EE3E2C-63CB-4819-939A-4C138090D438} = {367D9DDB-AB22-4E4B-9A17-9F635D29AF9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F13A7337-C823-41D9-B9A3-AE56853E2C10}

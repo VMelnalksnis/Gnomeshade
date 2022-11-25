@@ -15,6 +15,7 @@ namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 internal sealed class PostgreSQLFixture : WebserverFixture
 {
 	private readonly PostgreSqlTestcontainer _databaseContainer;
+	private readonly ITestcontainersContainer[] _containers;
 
 	internal PostgreSQLFixture(string version)
 	{
@@ -29,12 +30,12 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
 			.Build();
 
-		Containers.Add(_databaseContainer);
+		_containers = new ITestcontainersContainer[] { _databaseContainer };
 	}
 
 	internal override string Name { get; }
 
-	internal override int RedirectPort => 8297;
+	protected override IEnumerable<ITestcontainersContainer> Containers => _containers;
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>

@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 using Bogus;
 
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
 using Gnomeshade.WebApi.Client;
@@ -22,14 +20,8 @@ using Gnomeshade.WebApi.Models.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using NodaTime;
-
-using VMelnalksnis.Testcontainers.Keycloak;
-using VMelnalksnis.Testcontainers.Keycloak.Configuration;
-
-using KeycloakClient = VMelnalksnis.Testcontainers.Keycloak.Configuration.Client;
 
 namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
@@ -39,21 +31,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	internal abstract string Name { get; }
 
-	internal Realm Realm { get; private set; } = null!;
-
-	internal KeycloakClient Client { get; private set; } = null!;
-
-	internal User User { get; } = new("john.doe", "password123")
-	{
-		Email = "john.doe@example.com",
-		EmailVerified = true,
-		FirstName = "John",
-		LastName = "Doe",
-	};
-
-	internal abstract int RedirectPort { get; }
-
-	protected List<ITestcontainersContainer> Containers { get; } = new();
+	protected abstract IEnumerable<ITestcontainersContainer> Containers { get; }
 
 	public async ValueTask DisposeAsync()
 	{
@@ -63,33 +41,10 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	internal async Task Initialize()
 	{
-		var services = new ServiceCollection().AddLogging(builder => builder.AddConsole());
-		var provider = services.BuildServiceProvider();
-		TestcontainersSettings.Logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("Testcontainers");
-
-		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper");
-		Client = new("gnomeshade", new($"http://localhost:{RedirectPort}/")) { Mappers = new[] { mapper }, Secret = "123" };
-		var realmConfiguration = new RealmConfiguration("demorealm", new List<KeycloakClient> { Client }, new List<User> { User });
-		var keycloakConfiguration = new KeycloakTestcontainerConfiguration { Realms = new[] { realmConfiguration } };
-		var keycloakContainer = new TestcontainersBuilder<KeycloakTestcontainer>()
-			.WithKeycloak(keycloakConfiguration)
-			.Build();
-
-		Containers.Add(keycloakContainer);
-
 		await Task.WhenAll(Containers.Select(container => container.StartAsync()));
 
-		Realm = keycloakContainer.Realms.Single();
 		var configuration = new ConfigurationBuilder()
 			.AddConfiguration(GetAdditionalConfiguration())
-			.AddInMemoryCollection(new Dictionary<string, string?>
-			{
-				{ "Oidc:Keycloak:ServerRealm", Realm.ServerRealm.ToString() },
-				{ "Oidc:Keycloak:Metadata", Realm.Metadata.ToString() },
-				{ "Oidc:Keycloak:ClientId", Client.Name },
-				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
-				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
-			})
 			.AddEnvironmentVariables()
 			.Build();
 

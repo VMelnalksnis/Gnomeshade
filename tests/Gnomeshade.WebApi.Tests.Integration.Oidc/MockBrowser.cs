@@ -13,7 +13,7 @@ using Gnomeshade.Avalonia.Core.Authentication;
 
 using HtmlAgilityPack;
 
-namespace Gnomeshade.WebApi.Tests.Integration;
+namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 internal sealed class MockBrowser : Browser
 {

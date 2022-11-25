@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+		<PackageReference Include="IdentityModel.OidcClient" />
+		<PackageReference Include="Serilog.Sinks.NUnit" />
+		<PackageReference Include="HtmlAgilityPack" />
+		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj" />
+	</ItemGroup>
+
+</Project>
