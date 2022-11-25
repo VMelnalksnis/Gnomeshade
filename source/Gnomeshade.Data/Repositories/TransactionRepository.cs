@@ -65,6 +65,37 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return transactions.ToList();
 	}
 
+	public async Task<DetailedTransactionEntity?> FindDetailedAsync(
+		Guid id,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = @$"{Queries.Transaction.SelectDetailed}
+WHERE transactions.deleted_at IS NULL 
+AND transactions.id = @id
+AND {AccessSql} 
+ORDER BY transactions.valued_at DESC";
+		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
+		var transactions = await GetDetailedTransactions(command);
+		return transactions.SingleOrDefault();
+	}
+
+	public Task<IEnumerable<DetailedTransactionEntity>> GetAllDetailedAsync(
+		Instant from,
+		Instant to,
+		Guid ownerId,
+		CancellationToken cancellationToken = default)
+	{
+		var sql = @$"{Queries.Transaction.SelectDetailed}
+WHERE transactions.deleted_at IS NULL 
+AND (transactions.valued_at >= @from OR transactions.booked_at >= @from) 
+AND (transactions.valued_at <= @to OR transactions.booked_at <= @to) 
+AND {AccessSql} 
+ORDER BY transactions.valued_at DESC";
+		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
+		return GetDetailedTransactions(command);
+	}
+
 	/// <summary>Gets all links of the specified transaction.</summary>
 	/// <param name="id">The id of the transaction for which to get all links.</param>
 	/// <param name="ownerId">The id of the owner of the transaction and links.</param>
@@ -124,7 +155,8 @@ WHERE transaction_links.transaction_id = @id
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
 	{
-		var moveDetailsCommand = new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
+		var moveDetailsCommand =
+			new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
 		await DbConnection.ExecuteAsync(moveDetailsCommand);
 		await DeleteAsync(sourceId, ownerId, dbTransaction);
 	}
@@ -171,5 +203,50 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { id, relatedId }, dbTransaction);
 		await DbConnection.ExecuteAsync(command);
 		await dbTransaction.CommitAsync();
+	}
+
+	private async Task<IEnumerable<DetailedTransactionEntity>> GetDetailedTransactions(CommandDefinition command)
+	{
+		var transactions = await DbConnection
+			.QueryAsync<TransactionEntity, PurchaseEntity, TransferEntity, LoanEntity, LinkEntity,
+				DetailedTransactionEntity>(
+				command,
+				(transaction, purchase, transfer, loan, link) =>
+				{
+					var detailed = new DetailedTransactionEntity(transaction);
+
+					if (purchase is not null)
+					{
+						detailed.Purchases.Add(purchase);
+					}
+
+					if (transfer is not null)
+					{
+						detailed.Transfers.Add(transfer);
+					}
+
+					if (loan is not null)
+					{
+						detailed.Loans.Add(loan);
+					}
+
+					if (link is not null)
+					{
+						detailed.Links.Add(link);
+					}
+
+					return detailed;
+				},
+				splitOn: "Id,Id,Id,Id");
+
+		return transactions
+			.GroupBy(transaction => transaction.Id)
+			.Select(grouping => new DetailedTransactionEntity(grouping.First())
+			{
+				Purchases = grouping.SelectMany(detailed => detailed.Purchases).ToList(),
+				Transfers = grouping.SelectMany(detailed => detailed.Transfers).ToList(),
+				Loans = grouping.SelectMany(detailed => detailed.Loans).ToList(),
+				Links = grouping.SelectMany(detailed => detailed.Links).ToList(),
+			});
 	}
 }

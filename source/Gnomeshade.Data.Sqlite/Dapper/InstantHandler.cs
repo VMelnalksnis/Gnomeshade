@@ -14,7 +14,7 @@ namespace Gnomeshade.Data.Sqlite.Dapper;
 internal sealed class InstantHandler : SqlMapper.TypeHandler<Instant>
 {
 	internal static readonly InstantPattern Pattern = InstantPattern.CreateWithInvariantCulture(_sqliteDatetimeFormat);
-	private const string _sqliteDatetimeFormat = "yyyy'-'MM'-'dd' 'HH:mm:ss.FFFFFFFFF";
+	private const string _sqliteDatetimeFormat = "uuuu'-'MM'-'dd' 'HH:mm:ss.FFFFFFFFF";
 
 	/// <inheritdoc/>
 	public override void SetValue(IDbDataParameter parameter, Instant value) => parameter.Value = Pattern.Format(value);

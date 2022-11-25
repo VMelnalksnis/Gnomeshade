@@ -111,7 +111,9 @@ public sealed class PrivateByDefaultTests : WebserverTests
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 		await ShouldBeNotFoundForOthers(client => client.GetDetailedTransactionAsync(transaction.Id));
 		(await _client.GetTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
+		(await _client.GetTransactionsAsync(new(Instant.MinValue, Instant.MaxValue))).Should().ContainSingle(t => t.Id == transaction.Id);
 		(await _client.GetDetailedTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
+		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue))).Should().ContainSingle(t => t.Id == transaction.Id);
 
 		var updatedTransaction = transaction.ToCreation() with { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
 

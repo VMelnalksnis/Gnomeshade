@@ -60,6 +60,7 @@
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Merge.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Select.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\Transaction\SelectDetailed.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Transaction\Update.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Transfer\Delete.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Transfer\Insert.sql" />

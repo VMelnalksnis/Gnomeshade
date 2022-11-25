@@ -11,7 +11,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>A single financial transaction.</summary>
-public sealed record TransactionEntity : Entity, IOwnableEntity, IModifiableEntity
+public record TransactionEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	/// <inheritdoc/>
 	public Guid OwnerId { get; set; }

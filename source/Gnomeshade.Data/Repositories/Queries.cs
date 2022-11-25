@@ -119,6 +119,8 @@ internal static class Queries
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Transaction)}.Select.sql");
 
+		internal static string SelectDetailed { get; } = Read($"Queries.{nameof(Transaction)}.SelectDetailed.sql");
+
 		internal static string Update { get; } = Read($"Queries.{nameof(Transaction)}.Update.sql");
 
 		internal static string Merge { get; } = Read($"Queries.{nameof(Transaction)}.Merge.sql");

@@ -95,14 +95,14 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
 	{
-		var transaction = await Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Read, cancellationToken);
+		var transaction = await Repository.FindDetailedAsync(id, ApplicationUser.Id, cancellationToken);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
-		var detailedTransaction = await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken);
+		var detailedTransaction = ToDetailed(transaction, userAccountsInCurrencyIds);
 		return Ok(detailedTransaction);
 	}
 
@@ -137,15 +137,12 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-		var transactions = (timeRange.From is null && timeRange.To is null) || (timeRange.From == Instant.MinValue && timeRange.To == Instant.MaxValue)
-			? await Repository.GetAllAsync(ApplicationUser.Id, cancellationToken)
-			: await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
-
+		var transactions = await Repository.GetAllDetailedAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
 
 		foreach (var transaction in transactions)
 		{
-			yield return await ToDetailed(transaction, userAccountsInCurrencyIds, cancellationToken);
+			yield return ToDetailed(transaction, userAccountsInCurrencyIds);
 		}
 	}
 
@@ -337,11 +334,9 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			.ToList();
 	}
 
-	private async Task<DetailedTransaction> ToDetailed(TransactionEntity transaction, List<Guid> userAccountsInCurrencyIds, CancellationToken cancellationToken)
+	private DetailedTransaction ToDetailed(DetailedTransactionEntity transaction, List<Guid> userAccountsInCurrencyIds)
 	{
-		var id = transaction.Id;
-		var transfers = await GetTransfers(id, cancellationToken);
-		var transferBalance = transfers.Sum(transfer =>
+		var transferBalance = transaction.Transfers.Sum(transfer =>
 		{
 			var sourceIsUser = userAccountsInCurrencyIds.Contains(transfer.SourceAccountId);
 			var targetIsUser = userAccountsInCurrencyIds.Contains(transfer.TargetAccountId);
@@ -354,22 +349,18 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			};
 		});
 
-		var purchases = await GetPurchases(id, cancellationToken);
-		var purchaseTotal = purchases.Sum(purchase => purchase.Price);
-		var loans = await GetLoans(id, cancellationToken);
-		var loanTotal = loans.Sum(loan => loan.Amount);
-
-		var links = await GetLinks(id, cancellationToken);
+		var purchaseTotal = transaction.Purchases.Sum(purchase => purchase.Price);
+		var loanTotal = transaction.Loans.Sum(loan => loan.Amount);
 
 		return Mapper.Map<DetailedTransaction>(transaction) with
 		{
-			Transfers = transfers,
+			Transfers = transaction.Transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList(),
 			TransferBalance = transferBalance,
-			Purchases = purchases,
+			Purchases = transaction.Purchases.Select(purchase => Mapper.Map<Purchase>(purchase)).ToList(),
 			PurchaseTotal = purchaseTotal,
-			Loans = loans,
+			Loans = transaction.Loans.Select(loan => Mapper.Map<Loan>(loan)).ToList(),
 			LoanTotal = loanTotal,
-			Links = links,
+			Links = transaction.Links.Select(link => Mapper.Map<Link>(link)).ToList(),
 		};
 	}
 }
