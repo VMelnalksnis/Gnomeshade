@@ -4,12 +4,12 @@
     "net6.0": {
       "dbup-postgresql": {
         "type": "Direct",
-        "requested": "[4.6.3, )",
-        "resolved": "4.6.3",
-        "contentHash": "YpsZoVLBM4Urcphr0EOACIqzYiV3SmEdckGKAVRWKjrYtH6dovmEIXKcn96kHw8i+HEA7fTe4JLFUZ2wD9xHbw==",
+        "requested": "[5.0.8, )",
+        "resolved": "5.0.8",
+        "contentHash": "kQP23BBRIHN7rv0UYG/0EQEh8lpI5RYZF20T5cuUk2PFpGCaz6zxLFwYdthfKbZjbYC6fc3i1ZR2nUUTkrdwSw==",
         "dependencies": {
           "Npgsql": "3.2.7",
-          "dbup-core": "4.6.3"
+          "dbup-core": "5.0.8"
         }
       },
       "DotNet.ReproducibleBuilds": {
@@ -97,8 +97,8 @@
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "vvVR/B08YVghQ4jHEloxqw2ZWzEGE1AOA5E0DioUM3ujbXz6FD3AfB/0Jl2ohJPd0nXYGwmPe1En6HTsSriq1A=="
+        "resolved": "4.7.0",
+        "contentHash": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA=="
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
@@ -427,7 +427,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.11, )",
           "Microsoft.Extensions.Identity.Stores": "[6.0.11, )",
           "NodaTime": "[3.1.5, )",
-          "dbup-core": "[4.6.3, )"
+          "dbup-core": "[5.0.10, )"
         }
       },
       "Dapper": {
@@ -438,11 +438,11 @@
       },
       "dbup-core": {
         "type": "CentralTransitive",
-        "requested": "[4.6.3, )",
-        "resolved": "4.6.3",
-        "contentHash": "2Am8Q9dkL11DrjDUR7vd+o4MOTbXCCO09uC51CNXIvhv3/TSmk0kHH6EhRx8e2gA+Gm6DOKYHru7ZBgKQIBZYg==",
+        "requested": "[5.0.10, )",
+        "resolved": "5.0.10",
+        "contentHash": "DDE232iRXV4abbMBDs+UgchKN8hWb61pWH2COgHVTHRLv3QSU00d0kqmX9GYA7x/HRv/CJri/wiyN1mOSQpMiA==",
         "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
+          "Microsoft.CSharp": "4.7.0",
           "System.Diagnostics.TraceSource": "4.3.0"
         }
       },

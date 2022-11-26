@@ -1662,7 +1662,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.11, )",
           "Microsoft.Extensions.Identity.Stores": "[6.0.11, )",
           "NodaTime": "[3.1.5, )",
-          "dbup-core": "[4.6.3, )"
+          "dbup-core": "[5.0.10, )"
         }
       },
       "gnomeshade.data.postgresql": {
@@ -1672,7 +1672,7 @@
           "Npgsql.DependencyInjection": "[7.0.0, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.0, )",
           "Npgsql.NodaTime": "[7.0.0, )",
-          "dbup-postgresql": "[4.6.3, )"
+          "dbup-postgresql": "[5.0.8, )"
         }
       },
       "gnomeshade.data.sqlite": {
@@ -1683,7 +1683,7 @@
           "Microsoft.EntityFrameworkCore.Sqlite": "[7.0.0, )",
           "System.Net.Http": "[4.3.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )",
-          "dbup-sqlite": "[4.6.0, )"
+          "dbup-sqlite": "[5.0.8, )"
         }
       },
       "gnomeshade.testinghelpers": {
@@ -1817,33 +1817,33 @@
       },
       "dbup-core": {
         "type": "CentralTransitive",
-        "requested": "[4.6.3, )",
-        "resolved": "4.6.3",
-        "contentHash": "2Am8Q9dkL11DrjDUR7vd+o4MOTbXCCO09uC51CNXIvhv3/TSmk0kHH6EhRx8e2gA+Gm6DOKYHru7ZBgKQIBZYg==",
+        "requested": "[5.0.10, )",
+        "resolved": "5.0.10",
+        "contentHash": "DDE232iRXV4abbMBDs+UgchKN8hWb61pWH2COgHVTHRLv3QSU00d0kqmX9GYA7x/HRv/CJri/wiyN1mOSQpMiA==",
         "dependencies": {
-          "Microsoft.CSharp": "4.4.0",
+          "Microsoft.CSharp": "4.7.0",
           "System.Diagnostics.TraceSource": "4.3.0"
         }
       },
       "dbup-postgresql": {
         "type": "CentralTransitive",
-        "requested": "[4.6.3, )",
-        "resolved": "4.6.3",
-        "contentHash": "YpsZoVLBM4Urcphr0EOACIqzYiV3SmEdckGKAVRWKjrYtH6dovmEIXKcn96kHw8i+HEA7fTe4JLFUZ2wD9xHbw==",
+        "requested": "[5.0.8, )",
+        "resolved": "5.0.8",
+        "contentHash": "kQP23BBRIHN7rv0UYG/0EQEh8lpI5RYZF20T5cuUk2PFpGCaz6zxLFwYdthfKbZjbYC6fc3i1ZR2nUUTkrdwSw==",
         "dependencies": {
           "Npgsql": "3.2.7",
-          "dbup-core": "4.6.3"
+          "dbup-core": "5.0.8"
         }
       },
       "dbup-sqlite": {
         "type": "CentralTransitive",
-        "requested": "[4.6.0, )",
-        "resolved": "4.6.0",
-        "contentHash": "/gRCp/LuLY3Y2Bq7pghWe1tJvKN6yGHRxF2joEAWZLRomNcNVDUlQTwXI97tVU+2eGo7pNUX4XszTgW0qlmoeA==",
+        "requested": "[5.0.8, )",
+        "resolved": "5.0.8",
+        "contentHash": "OsBTb9riEqoC3IvM7bF+dTo3uDljBtyPkDaCMjjvCVv13WDvq8rqq5+O0FbzWBRsWYeEOvvbSoQNTG8DgajAaA==",
         "dependencies": {
           "Microsoft.Data.Sqlite": "1.0.1",
           "NETStandard.Library": "1.6.1",
-          "dbup-core": "4.6.0"
+          "dbup-core": "5.0.8"
         }
       },
       "Elastic.Apm.AspNetCore": {
