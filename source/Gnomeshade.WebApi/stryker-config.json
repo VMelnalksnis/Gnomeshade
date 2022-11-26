@@ -1,0 +1,20 @@
+{
+	"stryker-config": {
+		"solution": "../../Gnomeshade.sln",
+		"project": "Gnomeshade.WebApi.csproj",
+		"test-projects": [
+			"../../tests/Gnomeshade.WebApi.Tests/Gnomeshade.WebApi.Tests.csproj",
+			"../../tests/Gnomeshade.WebApi.Tests.Integration.Sqlite/Gnomeshade.WebApi.Tests.Integration.Sqlite.csproj"
+		],
+		"project-info": {
+			"module": "WebApi"
+		},
+		"mutation-level": "Complete",
+		"ignore-methods": [
+			"ToString",
+			"ConfigureAwait",
+			"*Exception.ctor",
+			"Log*"
+		]
+	}
+}

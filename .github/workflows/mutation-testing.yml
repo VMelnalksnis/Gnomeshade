@@ -1,0 +1,42 @@
+name: Mutation testing
+
+on:
+  schedule:
+    - cron: "0 0 * * 1-5"
+  push:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - '**.md'
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  mutation-testing:
+    name: Mutation testing
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-node@v3.5.1
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.0.11
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: ./deployment/mutation-test.sh
+        env:
+          STRYKER_API_KEY: ${{ secrets.STRYKER_API_KEY }}
