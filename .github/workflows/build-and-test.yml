@@ -124,6 +124,12 @@ jobs:
       - run: wget --tries=10 --retry-connrefused --waitretry=1 --timeout=15 "http://localhost:8000/health"
       - run: >
           [[ $(cat health) = "Healthy" ]] || exit 1
+      - run: >
+          curl
+          --header "Content-Type: application/json"
+          --request POST
+          --data '{"username":"john.doe", "password": "Password123!", "email": "john.doe@example.com", "fullName": "John Doe" }'
+          http://localhost:8000/Authorization/Register
       - run: docker logs test
         if: always()
 

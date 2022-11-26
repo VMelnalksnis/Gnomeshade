@@ -11,7 +11,8 @@ FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.11-alpine3.16 as gnomeshade
 
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/Gnomeshade.WebApi /gnomeshade/
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/libe_sqlite3.so /gnomeshade/
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/appsettings.json ./gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/appsettings.json /gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/*.xml /gnomeshade/
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net6.0/linux-musl-x64/publish/wwwroot/ /gnomeshade/wwwroot
 
 ENV Database__Provider="Sqlite" \
