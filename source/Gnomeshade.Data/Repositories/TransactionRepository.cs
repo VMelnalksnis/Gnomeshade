@@ -243,10 +243,10 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 			.GroupBy(transaction => transaction.Id)
 			.Select(grouping => new DetailedTransactionEntity(grouping.First())
 			{
-				Purchases = grouping.SelectMany(detailed => detailed.Purchases).ToList(),
-				Transfers = grouping.SelectMany(detailed => detailed.Transfers).ToList(),
-				Loans = grouping.SelectMany(detailed => detailed.Loans).ToList(),
-				Links = grouping.SelectMany(detailed => detailed.Links).ToList(),
+				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id).ToList(),
+				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id).ToList(),
+				Loans = grouping.SelectMany(detailed => detailed.Loans).DistinctBy(loan => loan.Id).ToList(),
+				Links = grouping.SelectMany(detailed => detailed.Links).DistinctBy(link => link.Id).ToList(),
 			});
 	}
 }

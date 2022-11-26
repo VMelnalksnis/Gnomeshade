@@ -408,6 +408,30 @@ public sealed class TransactionsControllerTests : WebserverTests
 		(await _client.GetRelatedTransactionAsync(transaction.Id)).Should().BeEmpty();
 	}
 
+	[Test]
+	public async Task Detailed()
+	{
+		var transaction = await _client.CreateTransactionAsync();
+		var transfer = await _client.CreateTransferAsync(transaction.Id, _account1.Id, _account2.Id);
+		var purchase = await _client.CreatePurchaseAsync(transaction.Id, _productId);
+		await _client.CreatePurchaseAsync(transaction.Id, _productId);
+		var loan = await _client.CreateLoanAsync(transaction.Id, _counterparty.Id, _otherCounterparty.Id);
+		var linkCreation = new LinkCreation { Uri = new($"https://localhost/documents/{Guid.NewGuid()}") };
+		var linkId = Guid.NewGuid();
+		await _client.PutLinkAsync(linkId, linkCreation);
+		await _client.AddLinkToTransactionAsync(transaction.Id, linkId);
+
+		var detailed = await _client.GetDetailedTransactionAsync(transaction.Id);
+		using (new AssertionScope())
+		{
+			detailed.Should().BeEquivalentTo(transaction);
+			detailed.Transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
+			detailed.Purchases.Should().HaveCount(2).And.ContainEquivalentOf(purchase);
+			detailed.Loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+			detailed.Links.Should().ContainSingle().Which.Id.Should().Be(linkId);
+		}
+	}
+
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
 	{
 		var creationModel = new AccountCreation
