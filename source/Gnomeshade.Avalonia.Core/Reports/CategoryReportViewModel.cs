@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Controls;
+
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
@@ -27,8 +29,9 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	private List<Category> _categories;
+	private Category? _selectedCategory;
 	private List<StackedColumnSeries<DateTimePoint>> _series;
-	private List<ICartesianAxis> _xAxes;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -45,8 +48,35 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		_gnomeshadeClient = gnomeshadeClient;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_clock = clock;
+
+		_categories = new();
 		_series = new();
-		_xAxes = new();
+		XAxes = new()
+		{
+			new Axis
+			{
+				Labeler = value => new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString("yyyy MM"),
+				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
+				MinStep = TimeSpan.FromDays(30.4375).Ticks,
+			},
+		};
+	}
+
+	/// <summary>Gets a delegate for formatting an category in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
+
+	/// <summary>Gets all the available categories.</summary>
+	public List<Category> Categories
+	{
+		get => _categories;
+		private set => SetAndNotify(ref _categories, value);
+	}
+
+	/// <summary>Gets or sets the category fort which to display the category breakdown for.</summary>
+	public Category? SelectedCategory
+	{
+		get => _selectedCategory;
+		set => SetAndNotify(ref _selectedCategory, value);
 	}
 
 	/// <summary>Gets the data series of amount spent per month per category.</summary>
@@ -57,11 +87,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> XAxes
-	{
-		get => _xAxes;
-		private set => SetAndNotify(ref _xAxes, value);
-	}
+	public List<ICartesianAxis> XAxes { get; }
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -83,6 +109,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
+		Categories = await _gnomeshadeClient.GetCategoriesAsync();
 		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var transactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
@@ -100,19 +127,9 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = minDate.SplitByMonthUntil(maxDate);
 
-		XAxes = new()
-		{
-			new Axis
-			{
-				Labeler = value => new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString("yyyy MM"),
-				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
-				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-			},
-		};
-
 		var products = await _gnomeshadeClient.GetProductsAsync();
 		var categories = await _gnomeshadeClient.GetCategoriesAsync();
-		var nodes = categories.Where(c => c.CategoryId is null)
+		var nodes = categories.Where(c => c.CategoryId == SelectedCategory?.Id)
 			.Select(category => CategoryNode.FromCategory(category, categories)).ToList();
 
 		var data = transactions
@@ -132,7 +149,7 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			.Select(tuple =>
 			{
 				var purchase = new Purchase { Price = tuple.transaction.TransferBalance - tuple.transaction.PurchaseTotal };
-				return (purchase, tuple.date, category: default(Category));
+				return (purchase, tuple.date, node: default(CategoryNode));
 			})
 			.ToList();
 
@@ -140,16 +157,12 @@ public sealed class CategoryReportViewModel : ViewModelBase
 			.Select(purchase =>
 			{
 				var product = products.SingleOrDefault(product => product.Id == purchase.purchase.ProductId);
-				var category = product?.CategoryId is null
-					? null
-					: categories.Single(category => category.Id == product.CategoryId);
-
-				var node = category is null ? null : nodes.Single(node => node.Contains(category.Id));
-				category = node is null ? category : categories.Single(c => c.Id == node.Id);
-				return (purchase.purchase, purchase.date, category);
+				var node = product?.CategoryId is not { } id ? null : nodes.SingleOrDefault(node => node.Contains(id));
+				return (purchase.purchase, purchase.date, node);
 			})
 			.Concat(uncategorizedTransfers)
-			.GroupBy(tuple => tuple.category)
+			.Where(tuple => SelectedCategory is null || tuple.node is not null)
+			.GroupBy(tuple => tuple.node)
 			.Select(categoryGrouping => new StackedColumnSeries<DateTimePoint>
 			{
 				Values = splits
