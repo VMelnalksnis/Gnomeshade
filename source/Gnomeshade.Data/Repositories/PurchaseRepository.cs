@@ -40,6 +40,8 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	/// <inheritdoc />
 	protected override string FindSql => "WHERE purchases.deleted_at IS NULL AND purchases.id = @id";
 
+	protected override string NotDeleted => "purchases.deleted_at IS NULL";
+
 	/// <inheritdoc />
 	public override Task<IEnumerable<PurchaseEntity>> GetAllAsync(
 		Guid transactionId,
