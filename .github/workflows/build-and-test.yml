@@ -157,5 +157,5 @@ jobs:
         uses: VMelnalksnis/resharper-inspect-action@v0.2.5
         with:
           solution: Gnomeshade.sln
-          resharper-version: 2022.1.2
+          resharper-version: 2022.3.0-eap09
           treat-warnings-as-errors: true
