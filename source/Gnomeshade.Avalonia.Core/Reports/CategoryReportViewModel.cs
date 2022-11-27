@@ -139,8 +139,8 @@ public sealed class CategoryReportViewModel : ViewModelBase
 		var purchasesWithCategories = purchases
 			.Select(purchase =>
 			{
-				var product = products.Single(product => product.Id == purchase.purchase.ProductId);
-				var category = product.CategoryId is null
+				var product = products.SingleOrDefault(product => product.Id == purchase.purchase.ProductId);
+				var category = product?.CategoryId is null
 					? null
 					: categories.Single(category => category.Id == product.CategoryId);
 
