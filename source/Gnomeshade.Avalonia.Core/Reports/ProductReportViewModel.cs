@@ -4,6 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,9 +35,10 @@ public sealed class ProductReportViewModel : ViewModelBase
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private List<Product> _products;
+	private ObservableCollection<Product> _displayedProducts;
 	private Product? _selectedProduct;
-	private List<ColumnSeries<DateTimePoint>> _series;
-	private List<ICartesianAxis> _xAxes;
+	private Product? _selectedDisplayedProduct;
+	private ObservableCollection<LineSeries<DateTimePoint>> _series;
 	private List<ICartesianAxis> _yAxes;
 	private IAggregateFunction? _selectedAggregate;
 	private ICalculationFunction? _calculationFunction;
@@ -62,19 +66,31 @@ public sealed class ProductReportViewModel : ViewModelBase
 		_calculationFunction = Calculators.First();
 
 		_products = new();
-		_xAxes = new();
+		_displayedProducts = new();
+		XAxes = new()
+		{
+			new Axis
+			{
+				Labeler = value => new DateTime((long)value).ToString("yyyy MM"),
+				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
+				MinStep = TimeSpan.FromDays(30.4375).Ticks,
+			},
+		};
+		_yAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
 		_series = new();
-		_yAxes = new();
+
+		PropertyChanged += OnPropertyChanged;
+		DisplayedProducts.CollectionChanged += DisplayedProductsOnCollectionChanged;
 	}
 
 	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
 
 	/// <summary>Gets a delegate for formatting an aggregate function in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> AggregateSelector => (_, item) => ((IAggregateFunction)item).Name;
+	public AutoCompleteSelector<object> AggregateSelector => AutoCompleteSelectors.Aggregate;
 
 	/// <summary>Gets a delegate for formatting a calculation function in an <see cref="AutoCompleteBox"/>.</summary>
-	public AutoCompleteSelector<object> CalculatorSelector => (_, item) => ((ICalculationFunction)item).Name;
+	public AutoCompleteSelector<object> CalculatorSelector => AutoCompleteSelectors.Calculation;
 
 	/// <summary>Gets all available products for <see cref="SelectedProduct"/>.</summary>
 	public List<Product> Products
@@ -83,11 +99,25 @@ public sealed class ProductReportViewModel : ViewModelBase
 		private set => SetAndNotify(ref _products, value);
 	}
 
+	/// <summary>Gets all products displayed in <see cref="Series"/>.</summary>
+	public ObservableCollection<Product> DisplayedProducts
+	{
+		get => _displayedProducts;
+		private set => SetAndNotify(ref _displayedProducts, value);
+	}
+
 	/// <summary>Gets or sets the product for which to display <see cref="Series"/>.</summary>
 	public Product? SelectedProduct
 	{
 		get => _selectedProduct;
 		set => SetAndNotify(ref _selectedProduct, value);
+	}
+
+	/// <summary>Gets or sets the product selected from <see cref="DisplayedProducts"/>.</summary>
+	public Product? SelectedDisplayedProduct
+	{
+		get => _selectedDisplayedProduct;
+		set => SetAndNotify(ref _selectedDisplayedProduct, value);
 	}
 
 	/// <summary>Gets all available aggregate functions.</summary>
@@ -111,24 +141,42 @@ public sealed class ProductReportViewModel : ViewModelBase
 	}
 
 	/// <summary>Gets the data series of average price of <see cref="SelectedProduct"/>.</summary>
-	public List<ColumnSeries<DateTimePoint>> Series
+	public ObservableCollection<LineSeries<DateTimePoint>> Series
 	{
 		get => _series;
 		private set => SetAndNotify(ref _series, value);
 	}
 
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> XAxes
-	{
-		get => _xAxes;
-		private set => SetAndNotify(ref _xAxes, value);
-	}
+	public List<ICartesianAxis> XAxes { get; }
 
 	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
 	public List<ICartesianAxis> YAxes
 	{
 		get => _yAxes;
 		private set => SetAndNotify(ref _yAxes, value);
+	}
+
+	/// <summary>Gets a value indicating whether <see cref="SelectedDisplayedProduct"/> can be removed from <see cref="DisplayedProducts"/>.</summary>
+	public bool CanRemoveProduct => SelectedDisplayedProduct is not null;
+
+	private Func<double, string> Labeler => SelectedCalculator is RelativeTotalPrice or RelativePricePerUnit
+		? value => value.ToString("P0")
+		: value => value.ToString("N2");
+
+	/// <summary>Removes <see cref="SelectedDisplayedProduct"/> from <see cref="DisplayedProducts"/>.</summary>
+	public void RemoveSelectedProduct()
+	{
+		if (SelectedDisplayedProduct is not { } product)
+		{
+			return;
+		}
+
+		DisplayedProducts.Remove(product);
+		if (Series.SingleOrDefault(columnSeries => columnSeries.Name == product.Name) is { } series)
+		{
+			Series.Remove(series);
+		}
 	}
 
 	/// <summary>Adds the <see cref="SelectedProduct"/> to <see cref="Series"/>.</summary>
@@ -149,7 +197,10 @@ public sealed class ProductReportViewModel : ViewModelBase
 
 		var detailedTransactions = transactionsTask.Result;
 		var units = unitsTask.Result;
+		YAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
 		AddSeriesForProduct(SelectedProduct, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
+		DisplayedProducts.Add(SelectedProduct);
+		SelectedProduct = null;
 	}
 
 	/// <summary>Updates all <see cref="Series"/> with the current value of <see cref="SelectedAggregate"/>.</summary>
@@ -166,15 +217,13 @@ public sealed class ProductReportViewModel : ViewModelBase
 		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		var currentProductNames = Series.Select(series => series.Name).ToList();
-		var products = Products.Where(product => currentProductNames.Contains(product.Name));
-
 		await Task.WhenAll(transactionsTask, unitsTask);
 		var detailedTransactions = transactionsTask.Result;
 		var units = unitsTask.Result;
 
 		Series = new();
-		foreach (var product in products)
+		YAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
+		foreach (var product in DisplayedProducts)
 		{
 			AddSeriesForProduct(product, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
 		}
@@ -183,11 +232,26 @@ public sealed class ProductReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var products = await _gnomeshadeClient.GetProductsAsync();
-		Products = products;
+		var productsTask = _gnomeshadeClient.GetProductsAsync();
+		var purchasesTask = _gnomeshadeClient.GetPurchasesAsync();
+		await Task.WhenAll(productsTask, purchasesTask);
+
+		var productCounts = purchasesTask.Result
+			.GroupBy(purchase => purchase.ProductId)
+			.ToDictionary(grouping => grouping.Key, grouping => grouping.Count());
+
+		Products = productsTask.Result
+			.Except(DisplayedProducts)
+			.OrderByDescending(product => productCounts.TryGetValue(product.Id, out var count) ? count : 0)
+			.ToList();
 	}
 
-	private void AddSeriesForProduct(Product productToAdd, IAggregateFunction aggregate, ICalculationFunction calculationFunction, List<DetailedTransaction> detailedTransactions, List<Unit> units)
+	private void AddSeriesForProduct(
+		Product productToAdd,
+		IAggregateFunction aggregate,
+		ICalculationFunction calculationFunction,
+		List<DetailedTransaction> detailedTransactions,
+		List<Unit> units)
 	{
 		var transactions = detailedTransactions
 			.Where(transaction => transaction.Purchases.Any(purchase => purchase.ProductId == productToAdd.Id))
@@ -204,19 +268,6 @@ public sealed class ProductReportViewModel : ViewModelBase
 		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = minDate.SplitByMonthUntil(maxDate);
 
-		XAxes = new()
-		{
-			new Axis
-			{
-				Labeler = value => new DateTime((long)value).ToString("yyyy MM"),
-				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
-				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-				LabelsRotation = 90,
-			},
-		};
-
-		YAxes = new() { new Axis { MinLimit = 0 } };
-
 		var values = transactions
 			.SelectMany(transaction =>
 			{
@@ -225,8 +276,8 @@ public sealed class ProductReportViewModel : ViewModelBase
 					.Where(purchase => purchase.ProductId == productToAdd.Id)
 					.Select(purchase =>
 					{
-						var product = Products.Single(product => product.Id == purchase.ProductId);
-						if (product.UnitId is null)
+						var product = Products.SingleOrDefault(product => product.Id == purchase.ProductId);
+						if (product?.UnitId is null)
 						{
 							return new CalculableValue(purchase, date, 1m);
 						}
@@ -245,17 +296,32 @@ public sealed class ProductReportViewModel : ViewModelBase
 					.Select(calculationFunction.Calculate))))
 			.ToList();
 
-		Series.Add(
-			new()
-			{
-				Values = calculationFunction.Update(dateTimePoints),
-				Stroke = null,
-				DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
-				DataLabelsSize = 12,
-				DataLabelsPosition = DataLabelsPosition.Middle,
-				Name = productToAdd.Name,
-				EasingFunction = null,
-				DataLabelsFormatter = point => point.Model?.Value?.ToString("N2") ?? string.Empty,
-			});
+		Series.Add(new()
+		{
+			Values = calculationFunction.Update(dateTimePoints),
+			Stroke = null,
+			DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
+			DataLabelsSize = 12,
+			DataLabelsPosition = DataLabelsPosition.Middle,
+			GeometrySize = 0,
+			GeometryStroke = null,
+			GeometryFill = null,
+			LineSmoothness = 0,
+			Name = productToAdd.Name,
+			DataLabelsFormatter = point => point.Model?.Value is { } value ? Labeler(value) : string.Empty,
+		});
+	}
+
+	private void DisplayedProductsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		OnPropertyChanged(nameof(DisplayedProducts));
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(SelectedDisplayedProduct))
+		{
+			OnPropertyChanged(nameof(CanRemoveProduct));
+		}
 	}
 }

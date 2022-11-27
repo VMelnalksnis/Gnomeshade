@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
@@ -15,77 +16,99 @@
 	x:CompileBindings="True"
 	x:DataType="reports:ProductReportViewModel">
 
-	<Grid RowDefinitions="Auto,*">
-		<StackPanel Grid.Row="0" Orientation="Horizontal">
-			<AutoCompleteBox
-				x:Name="Product"
-				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-				IsTextCompletionEnabled="True"
-				Watermark="Product"
-				Items="{Binding Products}"
-				ItemSelector="{Binding ProductSelector}"
-				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
-				IsEnabled="{Binding !IsBusy}">
-				<AutoCompleteBox.ItemTemplate>
-					<DataTemplate x:DataType="products:Product">
-						<TextBlock Text="{Binding Name}" />
-					</DataTemplate>
-				</AutoCompleteBox.ItemTemplate>
+	<Grid ColumnDefinitions="Auto,*">
+		<StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" Spacing="5">
+			<StackPanel Orientation="Horizontal" Margin="6" Spacing="5">
+				<AutoCompleteBox
+					x:Name="Aggregate"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					Watermark="Product"
+					Items="{Binding Aggregates}"
+					ItemSelector="{Binding AggregateSelector}"
+					SelectedItem="{Binding SelectedAggregate, Mode=TwoWay}"
+					IsEnabled="{Binding !IsBusy}">
+					<AutoCompleteBox.ItemTemplate>
+						<DataTemplate x:DataType="aggregates:IAggregateFunction">
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</AutoCompleteBox.ItemTemplate>
 
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
-						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedProduct}" />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-			</AutoCompleteBox>
-			
-			<AutoCompleteBox
-				x:Name="Aggregate"
-				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-				IsTextCompletionEnabled="True"
-				Watermark="Product"
-				Items="{Binding Aggregates}"
-				ItemSelector="{Binding AggregateSelector}"
-				SelectedItem="{Binding SelectedAggregate, Mode=TwoWay}"
-				IsEnabled="{Binding !IsBusy}">
-				<AutoCompleteBox.ItemTemplate>
-					<DataTemplate x:DataType="aggregates:IAggregateFunction">
-						<TextBlock Text="{Binding Name}" />
-					</DataTemplate>
-				</AutoCompleteBox.ItemTemplate>
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
+							<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+				</AutoCompleteBox>
 
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
-						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-			</AutoCompleteBox>
-			
-			<AutoCompleteBox
-				x:Name="Calculator"
-				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-				IsTextCompletionEnabled="True"
-				Watermark="Product"
-				Items="{Binding Calculators}"
-				ItemSelector="{Binding CalculatorSelector}"
-				SelectedItem="{Binding SelectedCalculator, Mode=TwoWay}"
-				IsEnabled="{Binding !IsBusy}">
-				<AutoCompleteBox.ItemTemplate>
-					<DataTemplate x:DataType="calculations:ICalculationFunction">
-						<TextBlock Text="{Binding Name}" />
-					</DataTemplate>
-				</AutoCompleteBox.ItemTemplate>
+				<AutoCompleteBox
+					x:Name="Calculator"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					Watermark="Product"
+					Items="{Binding Calculators}"
+					ItemSelector="{Binding CalculatorSelector}"
+					SelectedItem="{Binding SelectedCalculator, Mode=TwoWay}"
+					IsEnabled="{Binding !IsBusy}">
+					<AutoCompleteBox.ItemTemplate>
+						<DataTemplate x:DataType="calculations:ICalculationFunction">
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</AutoCompleteBox.ItemTemplate>
 
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Calculator}">
-						<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-			</AutoCompleteBox>
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Calculator}">
+							<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+				</AutoCompleteBox>
+			</StackPanel>
+			<Border BorderBrush="White" BorderThickness="1" CornerRadius="2">
+				<StackPanel Orientation="Vertical" Margin="5" Spacing="5">
+					<AutoCompleteBox
+						x:Name="Product"
+						MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+						IsTextCompletionEnabled="True"
+						Watermark="Product"
+						Items="{Binding Products}"
+						ItemSelector="{Binding ProductSelector}"
+						SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+						IsEnabled="{Binding !IsBusy}">
+						<AutoCompleteBox.ItemTemplate>
+							<DataTemplate x:DataType="products:Product">
+								<TextBlock Text="{Binding Name}" />
+							</DataTemplate>
+						</AutoCompleteBox.ItemTemplate>
+
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
+								<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedProduct}" />
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+					</AutoCompleteBox>
+
+					<ListBox Items="{Binding DisplayedProducts}" SelectedItem="{Binding SelectedDisplayedProduct, Mode=TwoWay}">
+						<ListBox.ItemTemplate>
+							<DataTemplate x:DataType="products:Product">
+								<TextBlock Text="{Binding Name}" />
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+					<Button
+						HorizontalAlignment="Stretch"
+						IsVisible="{Binding DisplayedProducts, Converter={x:Static core:Converters.IsNotEmptyCollection}}"
+						IsEnabled="{Binding CanRemoveProduct}"
+						Command="{ReflectionBinding RemoveSelectedProduct}">
+						Remove Product
+					</Button>
+				</StackPanel>
+			</Border>
 		</StackPanel>
 
 		<liveChartsCore:CartesianChart
-			Grid.Row="1" Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
-			LegendPosition="Bottom" TooltipPosition="Right" EasingFunction="{x:Null}" />
+			Grid.Column="1" Grid.Row="0"
+			Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+			LegendPosition="Bottom" TooltipPosition="Right" ZoomMode="X" />
 	</Grid>
 </UserControl>

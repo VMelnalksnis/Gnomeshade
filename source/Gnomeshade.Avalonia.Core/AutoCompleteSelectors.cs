@@ -4,6 +4,8 @@
 
 using Avalonia.Controls;
 
+using Gnomeshade.Avalonia.Core.Reports.Aggregates;
+using Gnomeshade.Avalonia.Core.Reports.Calculations;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
 
@@ -22,4 +24,8 @@ internal static class AutoCompleteSelectors
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;
 
 	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;
+
+	internal static AutoCompleteSelector<object> Aggregate { get; } = (_, item) => ((IAggregateFunction)item).Name;
+
+	internal static AutoCompleteSelector<object> Calculation { get; } = (_, item) => ((ICalculationFunction)item).Name;
 }
