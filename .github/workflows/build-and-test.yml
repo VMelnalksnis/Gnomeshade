@@ -20,7 +20,7 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.2.0
       - uses: actions/setup-dotnet@v3.0.3
       - uses: actions/setup-node@v3.5.1
         with:
@@ -55,7 +55,7 @@ jobs:
     name: Build debian package
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.2.0
       - uses: actions/setup-dotnet@v3.0.3
       - uses: actions/setup-node@v3.5.1
         with:
@@ -96,7 +96,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.2.0
       - uses: actions/download-artifact@v3.0.1
         id: download
         with:
@@ -114,7 +114,7 @@ jobs:
     name: Test docker container
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.2.0
       - run: >
           docker build
           --tag ghcr.io/vmelnalksnis/gnomeshade:test
@@ -137,7 +137,7 @@ jobs:
     name: Resharper
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3.2.0
       - uses: actions/setup-dotnet@v3.0.3
       - uses: actions/setup-node@v3.5.1
         with:
