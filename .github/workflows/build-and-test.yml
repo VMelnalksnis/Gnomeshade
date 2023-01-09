@@ -78,7 +78,7 @@ jobs:
       - name: Build debian package
         run: deployment/debian.sh "${{ steps.publish.outputs.artifact }}" "${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v3.1.1
+      - uses: actions/upload-artifact@v3.1.2
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
