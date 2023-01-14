@@ -87,11 +87,11 @@ jobs:
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
-  
+
   build-deb:
     name: Build debian package
     needs: build-linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3.1.0
 
