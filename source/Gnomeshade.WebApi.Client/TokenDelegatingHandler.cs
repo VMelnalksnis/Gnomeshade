@@ -106,7 +106,10 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 
 	private async Task RefreshToken(CancellationToken cancellationToken)
 	{
-		var refreshTokenResult = await _oidcClient.RefreshTokenAsync(_tokenCache.Refresh, null, cancellationToken).ConfigureAwait(false);
+		var refreshTokenResult = await _oidcClient
+			.RefreshTokenAsync(_tokenCache.Refresh, null, _oidcClient.Options.Scope, cancellationToken)
+			.ConfigureAwait(false);
+
 		_tokenCache.SetRefreshToken(refreshTokenResult.RefreshToken, refreshTokenResult.AccessToken, refreshTokenResult.AccessTokenExpiration);
 	}
 }
