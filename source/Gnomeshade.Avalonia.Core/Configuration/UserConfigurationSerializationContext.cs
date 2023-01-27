@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Gnomeshade.Avalonia.Core.Configuration;
 
-/// <inheritdoc />
+/// <inheritdoc cref="System.Text.Json.Serialization.JsonSerializerContext" />
 [JsonSerializable(typeof(UserConfiguration))]
 internal partial class UserConfigurationSerializationContext : JsonSerializerContext
 {

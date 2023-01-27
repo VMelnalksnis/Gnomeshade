@@ -14,7 +14,7 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.WebApi.Models;
 
-/// <inheritdoc />
+/// <inheritdoc cref="System.Text.Json.Serialization.JsonSerializerContext" />
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(List<string>))]
 [JsonSerializable(typeof(List<Link>))]

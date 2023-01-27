@@ -15,6 +15,7 @@ namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Data template for locating the <see cref="IView{TView,TViewModel}"/> from the calling assembly.</summary>
 /// <typeparam name="TAssembly">A type from the assembly in which to search for views.</typeparam>
+[RequiresUnreferencedCode("Uses System.Assembly.GetCallingAssembly().GetTypes()")]
 public sealed class ViewLocator<TAssembly> : IDataTemplate
 {
 	// Instantiated only once on application startup
@@ -23,7 +24,6 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 	private static readonly Assembly _assembly = typeof(TAssembly).Assembly;
 
 	/// <inheritdoc />
-	[RequiresUnreferencedCode("Uses System.Assembly.GetCallingAssembly().GetTypes()")]
 	public IControl Build(object data)
 	{
 		var dataType = data.GetType();

@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 		return services
 			.AddTransient<IDatabaseMigrator, PostgreSQLDatabaseMigrator>()
 			.AddNpgsqlDataSource(
-				configuration.GetConnectionString("Gnomeshade"),
+				configuration.GetConnectionString("Gnomeshade")!,
 				builder => builder.UseNodaTime(),
 				ServiceLifetime.Scoped);
 	}
