@@ -1,7 +1,7 @@
 {
   "version": 2,
   "dependencies": {
-    "net6.0": {
+    "net7.0": {
       "dbup-sqlite": {
         "type": "Direct",
         "requested": "[5.0.8, )",

@@ -2,7 +2,7 @@
 set -e
 
 version=$(tr -d '[:space:]' <version)
-publish_dir="./source/$1/bin/Release/net6.0/$2/publish"
+publish_dir="./source/$1/bin/Release/net7.0/$2/publish"
 archive_name="$1_$2.zip"
 
 ./deployment/restore.sh

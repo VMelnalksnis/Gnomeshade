@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
 
 		<PublishTrimmed>true</PublishTrimmed>
@@ -57,7 +57,7 @@
 		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
 		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
 	</ItemGroup>
-	
+
 	<Target Name="JavascriptLibraries" BeforeTargets="Build">
 		<Exec WorkingDirectory="./Node" Command="npm ci" />
 		<Exec WorkingDirectory="./Node" Command="node ./node_modules/gulp/bin/gulp.js build" />

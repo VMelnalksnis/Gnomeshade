@@ -1,7 +1,7 @@
 {
   "version": 2,
   "dependencies": {
-    "net6.0": {
+    "net7.0": {
       "coverlet.msbuild": {
         "type": "Direct",
         "requested": "[3.2.0, )",
