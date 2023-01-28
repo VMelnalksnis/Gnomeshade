@@ -1222,7 +1222,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.SmartEnum": "[2.1.0, )",
-          "AutoMapper": "[12.0.0, )",
+          "AutoMapper": "[12.0.1, )",
           "Elastic.Apm.AspNetCore": "[1.19.0, )",
           "Elastic.Apm.Elasticsearch": "[1.19.0, )",
           "Elastic.Apm.EntityFrameworkCore": "[1.19.0, )",
@@ -1281,9 +1281,9 @@
       },
       "AutoMapper": {
         "type": "CentralTransitive",
-        "requested": "[12.0.0, )",
-        "resolved": "12.0.0",
-        "contentHash": "0Rmg0zI5AFu1O/y//o9VGyhxKjhggWpk9mOA1tp0DEVx40c61bs+lnQv+0jUq8XbniF7FKgIVvI1perqiMtLrA==",
+        "requested": "[12.0.1, )",
+        "resolved": "12.0.1",
+        "contentHash": "hvV62vl6Hp/WfQ24yzo3Co9+OPl8wH8hApwVtgWpiAynVJkUcs7xvehnSftawL8Pe8FrPffBRM3hwzLQqWDNjA==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0"
         }
