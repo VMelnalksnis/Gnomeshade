@@ -6,6 +6,8 @@
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
+		<!--See https://github.com/dotnet/linker/issues/3039-->
+		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 

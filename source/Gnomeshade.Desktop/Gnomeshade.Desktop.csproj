@@ -6,6 +6,8 @@
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
+		<!--See https://github.com/dotnet/linker/issues/3039-->
+		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
