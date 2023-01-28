@@ -1221,7 +1221,7 @@
       "gnomeshade.webapi": {
         "type": "Project",
         "dependencies": {
-          "Ardalis.SmartEnum": "[2.1.0, )",
+          "Ardalis.SmartEnum": "[7.0.0, )",
           "AutoMapper": "[12.0.1, )",
           "Elastic.Apm.AspNetCore": "[1.19.0, )",
           "Elastic.Apm.Elasticsearch": "[1.19.0, )",
@@ -1275,9 +1275,9 @@
       },
       "Ardalis.SmartEnum": {
         "type": "CentralTransitive",
-        "requested": "[2.1.0, )",
-        "resolved": "2.1.0",
-        "contentHash": "RY3BulzPKbcwGhsY/gYkn8sPQtbipF6XheDHbW/TSVUtyFJ/FKTnY2Tx+34WLL5+e/9UnSQcGd3dOqpdN1QzKA=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "kimfs7iIHTctxUwMyuJH+dXwFVDzYKtRzuxiAFk7Cb8sjhP1QutEYenz+i/UG92nu4AkoZhfqNpmBOn5/RGDMw=="
       },
       "AutoMapper": {
         "type": "CentralTransitive",
