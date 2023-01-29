@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -31,6 +32,7 @@ internal static class SerilogHostConfiguration
 		.MinimumLevel.Verbose()
 		.CreateBootstrapLogger();
 
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The type is primitive")]
 	internal static void Configure(HostBuilderContext context, LoggerConfiguration configuration)
 	{
 		configuration

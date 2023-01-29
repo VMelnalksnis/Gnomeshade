@@ -182,7 +182,8 @@ public sealed class Register : PageModel
 		/// <summary>Gets or sets the password confirmation value.</summary>
 		[DataType(DataType.Password)]
 		[Display(Name = "Confirm password")]
-		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+		[Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Unused otherProperty will have it's own warning")]
 		public string ConfirmPassword { get; set; } = null!;
 	}
 }

@@ -2,8 +2,10 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Security;
 using System.Runtime.InteropServices;
 
@@ -16,6 +18,7 @@ public sealed record TlsOptions : IValidatableObject
 	/// <seealso href="https://github.com/dotnet/runtime/issues/23818#issuecomment-482764511"/>
 	[Required]
 	[MinLength(1)]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"Implements {nameof(ICollection)}")]
 	public List<TlsCipherSuite> CipherSuites { get; init; } = null!;
 
 	/// <inheritdoc />

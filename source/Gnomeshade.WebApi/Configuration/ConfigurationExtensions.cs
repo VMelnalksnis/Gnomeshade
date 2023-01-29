@@ -11,6 +11,8 @@ using JetBrains.Annotations;
 
 using Microsoft.Extensions.Configuration;
 
+using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
+
 using static JetBrains.Annotations.ImplicitUseKindFlags;
 using static JetBrains.Annotations.ImplicitUseTargetFlags;
 
@@ -18,7 +20,7 @@ namespace Gnomeshade.WebApi.Configuration;
 
 internal static class ConfigurationExtensions
 {
-	internal static bool GetValidIfDefined<[MeansImplicitUse(Assign, Members)] TOptions>(
+	internal static bool GetValidIfDefined<[MeansImplicitUse(Assign, Members)] [DynamicallyAccessedMembers(All)] TOptions>(
 		this IConfiguration configuration,
 		[MaybeNullWhen(false)] out TOptions options)
 		where TOptions : notnull, new()
@@ -33,14 +35,16 @@ internal static class ConfigurationExtensions
 		return true;
 	}
 
-	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(this IConfiguration configuration)
+	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] [DynamicallyAccessedMembers(All)] TOptions>(
+		this IConfiguration configuration)
 		where TOptions : notnull, new()
 	{
 		var sectionName = typeof(TOptions).GetSectionName();
 		return configuration.GetValid<TOptions>(sectionName);
 	}
 
-	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] TOptions>(
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(DynamicallyAccessedMembersAttribute)} indicates what is dynamically accessed")]
+	internal static TOptions GetValid<[MeansImplicitUse(Assign, Members)] [DynamicallyAccessedMembers(All)] TOptions>(
 		this IConfiguration configuration,
 		string sectionName)
 		where TOptions : notnull, new()
@@ -61,7 +65,9 @@ internal static class ConfigurationExtensions
 		return configuration.GetChildren().Any(section => section.Key == sectionName);
 	}
 
-	private static TOptions ValidateAndThrow<TOptions>(this TOptions options)
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(DynamicallyAccessedMembersAttribute)} indicates what is dynamically accessed")]
+	private static TOptions ValidateAndThrow<[DynamicallyAccessedMembers(PublicProperties)] TOptions>(
+		this TOptions options)
 		where TOptions : notnull
 	{
 		Validator.ValidateObject(options, new(options), true);
