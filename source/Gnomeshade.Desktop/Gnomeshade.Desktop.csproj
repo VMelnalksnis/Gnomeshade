@@ -4,13 +4,7 @@
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 
-		<PublishTrimmed>true</PublishTrimmed>
-		<TrimMode>copyused</TrimMode>
-		<!--See https://github.com/dotnet/linker/issues/3039-->
-		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
-		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
-		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+		<PublishTrimmed>false</PublishTrimmed>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
@@ -49,9 +43,5 @@
 		<None Include="Assets\avalonia-logo.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<TrimmerRootAssembly Include="mscorlib" />
 	</ItemGroup>
 </Project>
