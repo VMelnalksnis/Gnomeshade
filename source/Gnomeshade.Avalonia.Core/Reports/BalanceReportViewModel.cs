@@ -15,16 +15,23 @@ using LiveChartsCore.SkiaSharpView;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Reports;
 
 /// <summary>Overview of account balance over time.</summary>
-public sealed class BalanceReportViewModel : ViewModelBase
+public sealed partial class BalanceReportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	/// <summary>Gets the data series of balance of the users account over time.</summary>
+	[Notify(Setter.Private)]
 	private List<CandlesticksSeries<FinancialPoint>> _series;
+
+	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
 	private List<ICartesianAxis> _xAxes;
 
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportViewModel"/> class.</summary>
@@ -44,20 +51,6 @@ public sealed class BalanceReportViewModel : ViewModelBase
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_series = new();
 		_xAxes = new();
-	}
-
-	/// <summary>Gets the data series of balance of the users account over time.</summary>
-	public List<CandlesticksSeries<FinancialPoint>> Series
-	{
-		get => _series;
-		private set => SetAndNotify(ref _series, value);
-	}
-
-	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> XAxes
-	{
-		get => _xAxes;
-		private set => SetAndNotify(ref _xAxes, value);
 	}
 
 	/// <inheritdoc />

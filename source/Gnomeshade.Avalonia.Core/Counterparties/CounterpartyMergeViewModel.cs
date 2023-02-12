@@ -10,16 +10,29 @@ using Avalonia.Collections;
 
 using Gnomeshade.WebApi.Client;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Counterparties;
 
 /// <summary>Merges one counterparty and its accounts into another.</summary>
-public sealed class CounterpartyMergeViewModel : ViewModelBase
+public sealed partial class CounterpartyMergeViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
+	/// <summary>Gets a typed collection of counterparties in <see cref="SourceDataGridView"/>.</summary>
+	[Notify(Setter.Private)]
 	private DataGridItemCollectionView<CounterpartyRow> _sourceCounterparties;
+
+	/// <summary>Gets a typed collection of counterparties in <see cref="TargetDataGridView"/>.</summary>
+	[Notify(Setter.Private)]
 	private DataGridItemCollectionView<CounterpartyRow> _targetCounterparties;
+
+	/// <summary>Gets or sets the counterparty to merge.</summary>
+	[Notify]
 	private CounterpartyRow? _sourceCounterparty;
+
+	/// <summary>Gets or sets the counterparty to merge into.</summary>
+	[Notify]
 	private CounterpartyRow? _targetCounterparty;
 
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyMergeViewModel"/> class.</summary>
@@ -36,36 +49,8 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 	/// <summary>Gets a grid view of all counterparties that can be merged.</summary>
 	public DataGridCollectionView SourceDataGridView => SourceCounterparties;
 
-	/// <summary>Gets a typed collection of counterparties in <see cref="SourceDataGridView"/>.</summary>
-	public DataGridItemCollectionView<CounterpartyRow> SourceCounterparties
-	{
-		get => _sourceCounterparties;
-		private set => SetAndNotifyWithGuard(ref _sourceCounterparties, value, nameof(SourceCounterparties), nameof(SourceDataGridView));
-	}
-
-	/// <summary>Gets or sets the counterparty to merge.</summary>
-	public CounterpartyRow? SourceCounterparty
-	{
-		get => _sourceCounterparty;
-		set => SetAndNotifyWithGuard(ref _sourceCounterparty, value, nameof(SourceCounterparty), nameof(CanMerge));
-	}
-
 	/// <summary>Gets a grid view of all counterparties that can be merged into.</summary>
 	public DataGridCollectionView TargetDataGridView => TargetCounterparties;
-
-	/// <summary>Gets a typed collection of counterparties in <see cref="TargetDataGridView"/>.</summary>
-	public DataGridItemCollectionView<CounterpartyRow> TargetCounterparties
-	{
-		get => _targetCounterparties;
-		private set => SetAndNotifyWithGuard(ref _targetCounterparties, value, nameof(TargetCounterparties), nameof(TargetDataGridView));
-	}
-
-	/// <summary>Gets or sets the counterparty to merge into.</summary>
-	public CounterpartyRow? TargetCounterparty
-	{
-		get => _targetCounterparty;
-		set => SetAndNotifyWithGuard(ref _targetCounterparty, value, nameof(TargetCounterparty), nameof(CanMerge));
-	}
 
 	/// <summary>Gets a value indicating whether the counterparties can be merged.</summary>
 	public bool CanMerge =>
@@ -105,6 +90,7 @@ public sealed class CounterpartyMergeViewModel : ViewModelBase
 
 		TargetCounterparties = new(counterpartyRows);
 		TargetDataGridView.SortDescriptions.AddRange(targetSort);
-		TargetCounterparty = TargetCounterparties.SingleOrDefault(counterparty => counterparty.Id == targetCounterparty?.Id);
+		TargetCounterparty = TargetCounterparties
+			.SingleOrDefault(counterparty => counterparty.Id == targetCounterparty?.Id);
 	}
 }

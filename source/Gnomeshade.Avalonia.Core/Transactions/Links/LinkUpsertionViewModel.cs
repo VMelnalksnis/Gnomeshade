@@ -9,14 +9,19 @@ using System.Threading.Tasks;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Links;
 
 /// <summary>Create or update <see cref="Link"/>.</summary>
-public sealed class LinkUpsertionViewModel : UpsertionViewModel
+public sealed partial class LinkUpsertionViewModel : UpsertionViewModel
 {
 	private readonly Guid _transactionId;
 
 	private Guid? _id;
+
+	/// <summary>Gets or sets the link value.</summary>
+	[Notify]
 	private string? _uriValue;
 
 	/// <summary>Initializes a new instance of the <see cref="LinkUpsertionViewModel"/> class.</summary>
@@ -24,18 +29,15 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	/// <param name="gnomeshadeClient">The strongly typed API client.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the link.</param>
 	/// <param name="id">The id of the link to update.</param>
-	public LinkUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+	public LinkUpsertionViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		Guid transactionId,
+		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
 		_id = id;
-	}
-
-	/// <summary>Gets or sets the link value.</summary>
-	public string? UriValue
-	{
-		get => _uriValue;
-		set => SetAndNotifyWithGuard(ref _uriValue, value, nameof(UriValue), CanSaveNames);
 	}
 
 	/// <inheritdoc />
@@ -57,7 +59,8 @@ public sealed class LinkUpsertionViewModel : UpsertionViewModel
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var links = await GnomeshadeClient.GetLinksAsync();
-		var existingLink = links.SingleOrDefault(link => StringComparer.InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
+		var existingLink =
+			links.SingleOrDefault(link => StringComparer.InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
 		if (existingLink is not null)
 		{
 			_id = existingLink.Id;

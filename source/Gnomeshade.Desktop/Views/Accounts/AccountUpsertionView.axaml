@@ -104,13 +104,14 @@
 			AcceptsReturn="False"
 			x:Name="AccountNumber"
 			Text="{Binding AccountNumber}" />
-		
+
 		<Button
 			Grid.Column="0" Grid.Row="6"
-			Command="{ReflectionBinding AddAdditionalCurrency}" IsEnabled="{Binding CanAddAdditionalCurrency}">
+			Command="{ReflectionBinding AddAdditionalCurrency}"
+			IsEnabled="{Binding AddableCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 			Add Currency
 		</Button>
-		
+
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="6"
 			MinWidth="300" Margin="5"
@@ -127,20 +128,21 @@
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
-		
+
 		<Button
 			Grid.Column="0" Grid.Row="7"
-			Command="{ReflectionBinding RemoveAdditionalCurrency}" IsEnabled="{Binding CanRemoveAdditionalCurrency}">
+			Command="{ReflectionBinding RemoveAdditionalCurrency}"
+			IsEnabled="{Binding SelectedCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 			Remove Currency
 		</Button>
-		
+
 		<ListBox
 			Grid.Column="1" Grid.Row="7"
 			Items="{Binding AdditionalCurrencies}"
 			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" SelectionMode="Single,Toggle">
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="accounts:Currency">
-					<TextBlock Text="{Binding Name}"/>
+					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>

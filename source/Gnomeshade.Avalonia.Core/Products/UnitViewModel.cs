@@ -11,15 +11,23 @@ using Avalonia.Collections;
 
 using Gnomeshade.WebApi.Client;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Overview and editing of all units.</summary>
-public sealed class UnitViewModel : ViewModelBase
+public sealed partial class UnitViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
+	/// <summary>Gets or sets the selected unit from <see cref="DataGridView"/>.</summary>
+	[Notify]
 	private UnitRow? _selectedUnit;
+
 	private UnitCreationViewModel _unit;
+
+	/// <summary>Gets a typed collection of all units.</summary>
+	[Notify(Setter.Private)]
 	private DataGridItemCollectionView<UnitRow> _units;
 
 	private UnitViewModel(
@@ -41,20 +49,6 @@ public sealed class UnitViewModel : ViewModelBase
 	/// <summary>Gets the grid view of all units.</summary>
 	public DataGridCollectionView DataGridView => Units;
 
-	/// <summary>Gets a typed collection of all units.</summary>
-	public DataGridItemCollectionView<UnitRow> Units
-	{
-		get => _units;
-		private set => SetAndNotifyWithGuard(ref _units, value, nameof(Units), nameof(DataGridView));
-	}
-
-	/// <summary>Gets or sets the selected unit from <see cref="DataGridView"/>.</summary>
-	public UnitRow? SelectedUnit
-	{
-		get => _selectedUnit;
-		set => SetAndNotify(ref _selectedUnit, value);
-	}
-
 	/// <summary>Gets the current unit creation view model.</summary>
 	public UnitCreationViewModel Unit
 	{
@@ -71,7 +65,9 @@ public sealed class UnitViewModel : ViewModelBase
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <returns>A new instance of the <see cref="UnitViewModel"/> class.</returns>
-	public static async Task<UnitViewModel> CreateAsync(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+	public static async Task<UnitViewModel> CreateAsync(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient)
 	{
 		var productRows = await gnomeshadeClient.GetUnitRowsAsync();
 		var productCreation = await UnitCreationViewModel.CreateAsync(activityService, gnomeshadeClient);

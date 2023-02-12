@@ -12,27 +12,45 @@ using Avalonia.Controls;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Form for creating a single new unit.</summary>
-public sealed class UnitCreationViewModel : UpsertionViewModel
+public sealed partial class UnitCreationViewModel : UpsertionViewModel
 {
-	private static readonly string[] _canCreate = { nameof(CanSave) };
-
 	private readonly Unit? _existingUnit;
 
+	/// <summary>Gets or sets the name of the unit.</summary>
+	[Notify]
 	private string? _name;
+
+	/// <summary>Gets or sets the unit on which this unit is based on.</summary>
+	[Notify]
 	private Unit? _parentUnit;
+
+	/// <summary>Gets or sets a multiplier for converting from this unit to <see cref="ParentUnit"/>.</summary>
+	[Notify]
 	private decimal? _multiplier;
+
+	/// <summary>Gets or sets the symbol of the unit.</summary>
+	[Notify]
 	private string? _symbol;
 
-	private UnitCreationViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, List<Unit> units)
+	private UnitCreationViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		List<Unit> units)
 		: base(activityService, gnomeshadeClient)
 	{
 		Units = units;
 	}
 
-	private UnitCreationViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, List<Unit> units, Unit existingUnit)
+	private UnitCreationViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		List<Unit> units,
+		Unit existingUnit)
 		: this(activityService, gnomeshadeClient, units)
 	{
 		_existingUnit = existingUnit;
@@ -44,39 +62,11 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 		Multiplier = existingUnit.Multiplier;
 	}
 
-	/// <summary>Gets or sets the name of the unit.</summary>
-	public string? Name
-	{
-		get => _name;
-		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), _canCreate);
-	}
-
-	/// <summary>Gets or sets the symbol of the unit.</summary>
-	public string? Symbol
-	{
-		get => _symbol;
-		set => SetAndNotify(ref _symbol, value);
-	}
-
-	/// <summary>Gets or sets the unit on which this unit is based on.</summary>
-	public Unit? ParentUnit
-	{
-		get => _parentUnit;
-		set => SetAndNotifyWithGuard(ref _parentUnit, value, nameof(ParentUnit), _canCreate);
-	}
-
 	/// <summary>Gets a collection of all available units.</summary>
 	public List<Unit> Units { get; }
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
-
-	/// <summary>Gets or sets a multiplier for converting from this unit to <see cref="ParentUnit"/>.</summary>
-	public decimal? Multiplier
-	{
-		get => _multiplier;
-		set => SetAndNotifyWithGuard(ref _multiplier, value, nameof(Multiplier), _canCreate);
-	}
 
 	/// <inheritdoc />
 	public override bool CanSave =>
@@ -88,7 +78,10 @@ public sealed class UnitCreationViewModel : UpsertionViewModel
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
 	/// <param name="unitId">The id of the unit to edit.</param>
 	/// <returns>A new instance of the <see cref="UnitCreationViewModel"/> class.</returns>
-	public static async Task<UnitCreationViewModel> CreateAsync(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? unitId = null)
+	public static async Task<UnitCreationViewModel> CreateAsync(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		Guid? unitId = null)
 	{
 		var units = await gnomeshadeClient.GetUnitsAsync();
 		if (unitId is null)

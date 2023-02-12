@@ -8,15 +8,25 @@ using System.Threading.Tasks;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Authentication;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Authentication;
 
 /// <summary>Form for authenticating the current user.</summary>
-public sealed class LoginViewModel : ViewModelBase
+public sealed partial class LoginViewModel : ViewModelBase
 {
 	private readonly IAuthenticationService _authenticationService;
 
+	/// <summary>Gets or sets the error message to display after a failed log in attempt.</summary>
+	[Notify]
 	private string? _errorMessage;
+
+	/// <summary>Gets or sets the username entered by the user.</summary>
+	[Notify]
 	private string? _username;
+
+	/// <summary>Gets or sets the password entered by the user.</summary>
+	[Notify]
 	private string? _password;
 
 	/// <summary>Initializes a new instance of the <see cref="LoginViewModel"/> class.</summary>
@@ -30,27 +40,6 @@ public sealed class LoginViewModel : ViewModelBase
 
 	/// <summary>Raised when a user has successfully logged in.</summary>
 	public event EventHandler? UserLoggedIn;
-
-	/// <summary>Gets or sets the error message to display after a failed log in attempt.</summary>
-	public string? ErrorMessage
-	{
-		get => _errorMessage;
-		set => SetAndNotify(ref _errorMessage, value);
-	}
-
-	/// <summary>Gets or sets the username entered by the user.</summary>
-	public string? Username
-	{
-		get => _username;
-		set => SetAndNotifyWithGuard(ref _username, value, nameof(Username), nameof(CanLogIn));
-	}
-
-	/// <summary>Gets or sets the password entered by the user.</summary>
-	public string? Password
-	{
-		get => _password;
-		set => SetAndNotifyWithGuard(ref _password, value, nameof(Password), nameof(CanLogIn));
-	}
 
 	/// <summary>Gets a value indicating whether or not the user can log in.</summary>
 	public bool CanLogIn => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);

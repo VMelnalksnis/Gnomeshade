@@ -26,22 +26,48 @@ using LiveChartsCore.SkiaSharpView.Painting;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Reports;
 
 /// <summary>Graphical overview of product prices over time.</summary>
-public sealed class ProductReportViewModel : ViewModelBase
+public sealed partial class ProductReportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
+
+	/// <summary>Gets all available products for <see cref="SelectedProduct"/>.</summary>
+	[Notify(Setter.Private)]
 	private List<Product> _products;
+
+	/// <summary>Gets all products displayed in <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
 	private ObservableCollection<Product> _displayedProducts;
+
+	/// <summary>Gets or sets the product for which to display <see cref="Series"/>.</summary>
+	[Notify]
 	private Product? _selectedProduct;
+
+	/// <summary>Gets or sets the product selected from <see cref="DisplayedProducts"/>.</summary>
+	[Notify]
 	private Product? _selectedDisplayedProduct;
+
+	/// <summary>Gets the data series of average price of <see cref="SelectedProduct"/>.</summary>
+	[Notify(Setter.Private)]
 	private ObservableCollection<LineSeries<DateTimePoint>> _series;
+
+	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
 	private List<ICartesianAxis> _yAxes;
+
+	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
+	[Notify]
 	private IAggregateFunction? _selectedAggregate;
-	private ICalculationFunction? _calculationFunction;
+
+	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
+	[Notify]
+	private ICalculationFunction? _selectedCalculator;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -63,7 +89,7 @@ public sealed class ProductReportViewModel : ViewModelBase
 		Calculators = new() { new RelativePricePerUnit(), new PricePerUnit(), new TotalPrice(), new RelativeTotalPrice() };
 
 		_selectedAggregate = Aggregates.First();
-		_calculationFunction = Calculators.First();
+		_selectedCalculator = Calculators.First();
 
 		_products = new();
 		_displayedProducts = new();
@@ -92,70 +118,14 @@ public sealed class ProductReportViewModel : ViewModelBase
 	/// <summary>Gets a delegate for formatting a calculation function in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CalculatorSelector => AutoCompleteSelectors.Calculation;
 
-	/// <summary>Gets all available products for <see cref="SelectedProduct"/>.</summary>
-	public List<Product> Products
-	{
-		get => _products;
-		private set => SetAndNotify(ref _products, value);
-	}
-
-	/// <summary>Gets all products displayed in <see cref="Series"/>.</summary>
-	public ObservableCollection<Product> DisplayedProducts
-	{
-		get => _displayedProducts;
-		private set => SetAndNotify(ref _displayedProducts, value);
-	}
-
-	/// <summary>Gets or sets the product for which to display <see cref="Series"/>.</summary>
-	public Product? SelectedProduct
-	{
-		get => _selectedProduct;
-		set => SetAndNotify(ref _selectedProduct, value);
-	}
-
-	/// <summary>Gets or sets the product selected from <see cref="DisplayedProducts"/>.</summary>
-	public Product? SelectedDisplayedProduct
-	{
-		get => _selectedDisplayedProduct;
-		set => SetAndNotify(ref _selectedDisplayedProduct, value);
-	}
-
 	/// <summary>Gets all available aggregate functions.</summary>
 	public List<IAggregateFunction> Aggregates { get; }
-
-	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
-	public IAggregateFunction? SelectedAggregate
-	{
-		get => _selectedAggregate;
-		set => SetAndNotify(ref _selectedAggregate, value);
-	}
 
 	/// <summary>Gets all available aggregate functions.</summary>
 	public List<ICalculationFunction> Calculators { get; }
 
-	/// <summary>Gets or sets the aggregate function used to summarize values in each period.</summary>
-	public ICalculationFunction? SelectedCalculator
-	{
-		get => _calculationFunction;
-		set => SetAndNotify(ref _calculationFunction, value);
-	}
-
-	/// <summary>Gets the data series of average price of <see cref="SelectedProduct"/>.</summary>
-	public ObservableCollection<LineSeries<DateTimePoint>> Series
-	{
-		get => _series;
-		private set => SetAndNotify(ref _series, value);
-	}
-
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
 	public List<ICartesianAxis> XAxes { get; }
-
-	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> YAxes
-	{
-		get => _yAxes;
-		private set => SetAndNotify(ref _yAxes, value);
-	}
 
 	/// <summary>Gets a value indicating whether <see cref="SelectedDisplayedProduct"/> can be removed from <see cref="DisplayedProducts"/>.</summary>
 	public bool CanRemoveProduct => SelectedDisplayedProduct is not null;

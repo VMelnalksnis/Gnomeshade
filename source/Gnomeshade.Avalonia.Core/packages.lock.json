@@ -125,6 +125,12 @@
           "Microsoft.Extensions.Options": "7.0.0"
         }
       },
+      "PropertyChanged.SourceGenerator": {
+        "type": "Direct",
+        "requested": "[1.0.8, )",
+        "resolved": "1.0.8",
+        "contentHash": "XufLv9ReskTWjx3assV8aRAfcHfAATAkR/MugYSHkyYm7d2voQJHtQKSncVMNZiVGwXaEg5aGtWgKMweR11TAg=="
+      },
       "StyleCop.Analyzers": {
         "type": "Direct",
         "requested": "[1.2.0-beta.406, )",
@@ -307,10 +313,7 @@
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
         "resolved": "7.0.0",
-        "contentHash": "um1KU5kxcRp3CNuI8o/GrZtD4AIOXDk+RLsytjZ9QPok3ttLUelLKpilVPuaFT3TFjOhSibUAso0odbOaCDj3Q==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
+        "contentHash": "um1KU5kxcRp3CNuI8o/GrZtD4AIOXDk+RLsytjZ9QPok3ttLUelLKpilVPuaFT3TFjOhSibUAso0odbOaCDj3Q=="
       },
       "Microsoft.SourceLink.AzureRepos.Git": {
         "type": "Transitive",
@@ -431,8 +434,8 @@
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
+        "resolved": "4.7.1",
+        "contentHash": "zOHkQmzPCn5zm/BH+cxC1XbUS3P4Yoi3xzW7eRgVpDR2tPGSzyMZ17Ig1iRkfJuY0nhxkQQde8pgePNiA7z7TQ=="
       },
       "System.Security.Principal.Windows": {
         "type": "Transitive",

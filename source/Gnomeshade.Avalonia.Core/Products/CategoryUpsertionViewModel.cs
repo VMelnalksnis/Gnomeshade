@@ -12,15 +12,29 @@ using Avalonia.Controls;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Creating or updating an existing category.</summary>
-public sealed class CategoryUpsertionViewModel : UpsertionViewModel
+public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 {
 	private Guid? _id;
+
+	/// <summary>Gets or sets the name of the category.</summary>
+	[Notify]
 	private string? _name;
+
+	/// <summary>Gets or sets the description of the category.</summary>
+	[Notify]
 	private string? _description;
+
+	/// <summary>Gets or sets the category of this product.</summary>
+	[Notify]
 	private Category? _selectedCategory;
+
+	/// <summary>Gets a collection of all available categories.</summary>
+	[Notify(Setter.Private)]
 	private List<Category> _categories;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryUpsertionViewModel"/> class.</summary>
@@ -33,34 +47,6 @@ public sealed class CategoryUpsertionViewModel : UpsertionViewModel
 		_id = id;
 
 		_categories = new();
-	}
-
-	/// <summary>Gets or sets the name of the category.</summary>
-	public string? Name
-	{
-		get => _name;
-		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
-	}
-
-	/// <summary>Gets or sets the description of the category.</summary>
-	public string? Description
-	{
-		get => _description;
-		set => SetAndNotify(ref _description, value);
-	}
-
-	/// <summary>Gets or sets the category of this product.</summary>
-	public Category? SelectedCategory
-	{
-		get => _selectedCategory;
-		set => SetAndNotify(ref _selectedCategory, value);
-	}
-
-	/// <summary>Gets a collection of all available categories.</summary>
-	public List<Category> Categories
-	{
-		get => _categories;
-		private set => SetAndNotify(ref _categories, value);
 	}
 
 	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>

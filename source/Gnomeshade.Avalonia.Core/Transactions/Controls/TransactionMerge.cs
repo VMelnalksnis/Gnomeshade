@@ -7,14 +7,21 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Merges one transaction into another.</summary>
-public sealed class TransactionMerge : ViewModelBase
+public sealed partial class TransactionMerge : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
+	/// <summary>Gets or sets the transaction which to merge into <see cref="Target"/>.</summary>
+	[Notify]
 	private TransactionOverview? _source;
+
+	/// <summary>Gets or sets the transaction into which to merge the <see cref="Source"/>.</summary>
+	[Notify]
 	private TransactionOverview? _target;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionMerge"/> class.</summary>
@@ -24,20 +31,6 @@ public sealed class TransactionMerge : ViewModelBase
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-	}
-
-	/// <summary>Gets or sets the transaction which to merge into <see cref="Target"/>.</summary>
-	public TransactionOverview? Source
-	{
-		get => _source;
-		set => SetAndNotifyWithGuard(ref _source, value, nameof(Source), nameof(CanMerge));
-	}
-
-	/// <summary>Gets or sets the transaction into which to merge the <see cref="Source"/>.</summary>
-	public TransactionOverview? Target
-	{
-		get => _target;
-		set => SetAndNotifyWithGuard(ref _target, value, nameof(Target), nameof(CanMerge));
 	}
 
 	/// <summary>Gets a value indicating whether the state is valid to call <see cref="MergeAsync"/>.</summary>

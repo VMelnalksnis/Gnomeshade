@@ -14,28 +14,66 @@ using Gnomeshade.WebApi.Models.Products;
 using NodaTime;
 using NodaTime.Extensions;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Values for filtering transactions.</summary>
-public sealed class TransactionFilter : FilterBase<TransactionOverview>
+public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 {
-	private static readonly string[] _isValidNames = { nameof(IsValid) };
-
 	private readonly ZonedClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	/// <summary>Gets or sets the date from which to get transactions.</summary>
+	[Notify]
 	private LocalDate? _fromDate;
+
+	/// <summary>Gets or sets the date until which to ge transactions.</summary>
+	[Notify]
 	private LocalDate? _toDate;
+
+	/// <summary>Gets or sets the selected account from <see cref="Accounts"/>.</summary>
+	[Notify]
 	private Account? _selectedAccount;
+
+	/// <summary>Gets or sets a collection of all active accounts.</summary>
+	[Notify]
 	private List<Account> _accounts = new();
+
+	/// <summary>Gets or sets a collection of all counterparties.</summary>
+	[Notify]
 	private List<Counterparty> _counterparties = new();
+
+	/// <summary>Gets or sets the selected counterparty from <see cref="Counterparties"/>.</summary>
+	[Notify]
 	private Counterparty? _selectedCounterparty;
+
+	/// <summary>Gets or sets a collection of all products.</summary>
+	[Notify]
 	private List<Product> _products = new();
+
+	/// <summary>Gets or sets the selected product from <see cref="Products"/>.</summary>
+	[Notify]
 	private Product? _selectedProduct;
+
+	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedAccount"/>.</summary>
+	[Notify]
 	private bool _invertAccount;
+
+	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedCounterparty"/>.</summary>
+	[Notify]
 	private bool _invertCounterparty;
+
+	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedProduct"/>.</summary>
+	[Notify]
 	private bool _invertProduct;
+
+	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions.</summary>
+	[Notify]
 	private bool? _reconciled;
+
+	/// <summary>Gets or sets a value indicating whether to filter categorized/uncategorized transactions.</summary>
+	[Notify]
 	private bool? _uncategorized;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
@@ -50,20 +88,6 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 		SelectCurrentMonth();
 	}
 
-	/// <summary>Gets or sets the date from which to get transactions.</summary>
-	public LocalDate? FromDate
-	{
-		get => _fromDate;
-		set => SetAndNotifyWithGuard(ref _fromDate, value, nameof(FromDate), _isValidNames);
-	}
-
-	/// <summary>Gets or sets the date until which to ge transactions.</summary>
-	public LocalDate? ToDate
-	{
-		get => _toDate;
-		set => SetAndNotifyWithGuard(ref _toDate, value, nameof(ToDate), _isValidNames);
-	}
-
 	/// <summary>Gets a value indicating whether the current values are valid search parameters.</summary>
 	public bool IsValid => ToDate is null || FromDate is null || ToDate >= FromDate;
 
@@ -76,89 +100,12 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
 
-	/// <summary>Gets or sets a collection of all active accounts.</summary>
-	public List<Account> Accounts
-	{
-		get => _accounts;
-		set => SetAndNotify(ref _accounts, value);
-	}
-
-	/// <summary>Gets or sets the selected account from <see cref="Accounts"/>.</summary>
-	public Account? SelectedAccount
-	{
-		get => _selectedAccount;
-		set => SetAndNotify(ref _selectedAccount, value);
-	}
-
-	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedAccount"/>.</summary>
-	public bool InvertAccount
-	{
-		get => _invertAccount;
-		set => SetAndNotify(ref _invertAccount, value);
-	}
-
-	/// <summary>Gets or sets a collection of all counterparties.</summary>
-	public List<Counterparty> Counterparties
-	{
-		get => _counterparties;
-		set => SetAndNotify(ref _counterparties, value);
-	}
-
-	/// <summary>Gets or sets the selected counterparty from <see cref="Counterparties"/>.</summary>
-	public Counterparty? SelectedCounterparty
-	{
-		get => _selectedCounterparty;
-		set => SetAndNotify(ref _selectedCounterparty, value);
-	}
-
-	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedCounterparty"/>.</summary>
-	public bool InvertCounterparty
-	{
-		get => _invertCounterparty;
-		set => SetAndNotify(ref _invertCounterparty, value);
-	}
-
-	/// <summary>Gets or sets a collection of all products.</summary>
-	public List<Product> Products
-	{
-		get => _products;
-		set => SetAndNotify(ref _products, value);
-	}
-
-	/// <summary>Gets or sets the selected product from <see cref="Products"/>.</summary>
-	public Product? SelectedProduct
-	{
-		get => _selectedProduct;
-		set => SetAndNotify(ref _selectedProduct, value);
-	}
-
-	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedProduct"/>.</summary>
-	public bool InvertProduct
-	{
-		get => _invertProduct;
-		set => SetAndNotify(ref _invertProduct, value);
-	}
-
-	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions.</summary>
-	public bool? Reconciled
-	{
-		get => _reconciled;
-		set => SetAndNotify(ref _reconciled, value);
-	}
-
-	/// <summary>Gets or sets a value indicating whether to filter categorized/uncategorized transactions.</summary>
-	public bool? Uncategorized
-	{
-		get => _uncategorized;
-		set => SetAndNotify(ref _uncategorized, value);
-	}
-
 	internal Interval Interval
 	{
 		get
 		{
-			var start = _fromDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
-			var end = _toDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
+			var start = FromDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
+			var end = ToDate?.AtStartOfDayInZone(_dateTimeZoneProvider.GetSystemDefault()).ToInstant();
 			return new(start, end);
 		}
 	}
@@ -283,7 +230,8 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 
 		var transferSums = overview.Transfers
 			.GroupBy(transfer => transfer.OtherCurrency)
-			.Select(grouping => (grouping.Key, grouping.Sum(transfer => transfer.Direction is "→" ? transfer.OtherAmount : -transfer.OtherAmount)))
+			.Select(grouping => (grouping.Key,
+				grouping.Sum(transfer => transfer.Direction is "→" ? transfer.OtherAmount : -transfer.OtherAmount)))
 			.OrderBy(tuple => tuple.Item2)
 			.ToList();
 
@@ -295,7 +243,8 @@ public sealed class TransactionFilter : FilterBase<TransactionOverview>
 
 		var categorized =
 			(transferSums.All(sum => sum.Item2 is 0) && purchaseSums.All(sum => sum.Item2 is 0)) ||
-			(transferSums.Count == purchaseSums.Count && transferSums.Zip(purchaseSums).All(tuple => Math.Abs(tuple.First.Item2) == Math.Abs(tuple.Second.Item2)));
+			(transferSums.Count == purchaseSums.Count &&
+			transferSums.Zip(purchaseSums).All(tuple => Math.Abs(tuple.First.Item2) == Math.Abs(tuple.Second.Item2)));
 
 		return uncategorized ? !categorized : categorized;
 	}

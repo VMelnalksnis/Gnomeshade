@@ -8,21 +8,28 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Base class for view models which display all available entities of a specific type.</summary>
 /// <typeparam name="TRow">The type of items displayed in data grid.</typeparam>
 /// <typeparam name="TUpsertion">The view model type for creating or updating rows.</typeparam>
 [SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "Better than allocating per call")]
-public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
+public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 	where TRow : PropertyChangedBase
 	where TUpsertion : UpsertionViewModel?
 {
-	private static readonly string[] _dataGridViewNames = { nameof(DataGridView) };
-	private static readonly string[] _selectedGuardNames = { nameof(Details), nameof(CanDelete) };
-
+	/// <summary>Gets or sets a typed collection of items in <see cref="DataGridView"/>.</summary>
+	[Notify(Setter.Protected)]
 	private DataGridItemCollectionView<TRow> _rows = new(Array.Empty<TRow>());
+
+	/// <summary>Gets or sets the select row from <see cref="Rows"/>.</summary>
+	[Notify]
 	private TRow? _selected;
+
+	/// <summary>Gets or sets a value indicating whether this model can be modified.</summary>
+	[Notify]
 	private bool _isReadOnly = true;
 
 	/// <summary>Initializes a new instance of the <see cref="OverviewViewModel{TRow, TUpsertion}"/> class.</summary>
@@ -35,32 +42,11 @@ public abstract class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 	/// <summary>Gets the grid view of all <see cref="Rows"/>.</summary>
 	public DataGridCollectionView DataGridView => Rows;
 
-	/// <summary>Gets or sets a typed collection of items in <see cref="DataGridView"/>.</summary>
-	public DataGridItemCollectionView<TRow> Rows
-	{
-		get => _rows;
-		protected set => SetAndNotifyWithGuard(ref _rows, value, nameof(Rows), _dataGridViewNames);
-	}
-
-	/// <summary>Gets or sets the select row from <see cref="Rows"/>.</summary>
-	public TRow? Selected
-	{
-		get => _selected;
-		set => SetAndNotifyWithGuard(ref _selected, value, nameof(Selected), _selectedGuardNames);
-	}
-
 	/// <summary>Gets or sets the view model for the currently <see cref="Selected"/> row.</summary>
 	public abstract TUpsertion Details { get; set; }
 
 	/// <summary>Gets a value indicating whether <see cref="DeleteSelectedAsync"/> can be called.</summary>
 	public bool CanDelete => Selected is not null;
-
-	/// <summary>Gets or sets a value indicating whether this model can be modified.</summary>
-	public bool IsReadOnly
-	{
-		get => _isReadOnly;
-		set => SetAndNotify(ref _isReadOnly, value);
-	}
 
 	/// <summary>Deletes <see cref="Selected"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

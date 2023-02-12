@@ -5,12 +5,19 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 /// <summary>A summary of a collection of transactions.</summary>
-public sealed class TransactionSummary : ViewModelBase
+public sealed partial class TransactionSummary : ViewModelBase
 {
+	/// <summary>Gets the total amount deposited into users accounts.</summary>
+	[Notify(Setter.Private)]
 	private decimal _received;
+
+	/// <summary>Gets the total amount withdrawn from users accounts.</summary>
+	[Notify(Setter.Private)]
 	private decimal _withdrawn;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionSummary"/> class.</summary>
@@ -18,20 +25,6 @@ public sealed class TransactionSummary : ViewModelBase
 	public TransactionSummary(IActivityService activityService)
 		: base(activityService)
 	{
-	}
-
-	/// <summary>Gets the total amount deposited into users accounts.</summary>
-	public decimal Received
-	{
-		get => _received;
-		private set => SetAndNotifyWithGuard(ref _received, value, nameof(Received), nameof(Total));
-	}
-
-	/// <summary>Gets the total amount withdrawn from users accounts.</summary>
-	public decimal Withdrawn
-	{
-		get => _withdrawn;
-		private set => SetAndNotifyWithGuard(ref _withdrawn, value, nameof(Withdrawn), nameof(Total));
 	}
 
 	/// <summary>Gets the difference between <see cref="Received"/> and <see cref="Withdrawn"/>.</summary>

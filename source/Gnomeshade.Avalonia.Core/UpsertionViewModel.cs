@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Base view model for creating or updating a single entity.</summary>
-public abstract class UpsertionViewModel : ViewModelBase
+public abstract partial class UpsertionViewModel : ViewModelBase
 {
-	/// <summary>Params for <see cref="PropertyChangedBase.SetAndNotifyWithGuard{T}"/> for properties that need to notify <see cref="CanSave"/>.</summary>
-	protected static readonly string[] CanSaveNames = { nameof(CanSave) };
-
+	/// <summary>Gets or sets error message when <see cref="SaveAsync"/> fails.</summary>
+	[Notify(Setter.Protected)]
 	private string? _errorMessage;
 
 	/// <summary>Initializes a new instance of the <see cref="UpsertionViewModel"/> class.</summary>
@@ -32,13 +33,6 @@ public abstract class UpsertionViewModel : ViewModelBase
 
 	/// <summary>Gets a value indicating whether the current state of the view model represents a valid entity.</summary>
 	public abstract bool CanSave { get; }
-
-	/// <summary>Gets or sets error message when <see cref="SaveAsync"/> fails.</summary>
-	public string? ErrorMessage
-	{
-		get => _errorMessage;
-		protected set => SetAndNotify(ref _errorMessage, value);
-	}
 
 	/// <summary>Gets the strongly typed API client.</summary>
 	protected IGnomeshadeClient GnomeshadeClient { get; }

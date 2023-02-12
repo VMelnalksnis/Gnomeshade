@@ -4,11 +4,15 @@
 
 using System;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Accounts;
 
 /// <summary>Single row in account overview.</summary>
-public sealed class AccountOverviewRow : PropertyChangedBase
+public sealed partial class AccountOverviewRow : PropertyChangedBase
 {
+	/// <summary>Gets or sets the balance of the account.</summary>
+	[Notify]
 	private decimal _balance;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountOverviewRow"/> class.</summary>
@@ -19,12 +23,19 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 	/// <param name="disabled">Whether this account is disabled.</param>
 	/// <param name="counterparty">The name of the counterparty of the account.</param>
 	/// <param name="inCurrencyId">The id of the account in currency.</param>
-	public AccountOverviewRow(Guid id, string name, string currency, decimal balance, bool disabled, string counterparty, Guid inCurrencyId)
+	public AccountOverviewRow(
+		Guid id,
+		string name,
+		string currency,
+		decimal balance,
+		bool disabled,
+		string counterparty,
+		Guid inCurrencyId)
 	{
 		Id = id;
 		Name = name;
 		Currency = currency;
-		Balance = balance;
+		_balance = balance;
 		Disabled = disabled;
 		Counterparty = counterparty;
 		InCurrencyId = inCurrencyId;
@@ -38,13 +49,6 @@ public sealed class AccountOverviewRow : PropertyChangedBase
 
 	/// <summary>Gets the currency of the account.</summary>
 	public string Currency { get; }
-
-	/// <summary>Gets or sets the balance of the account.</summary>
-	public decimal Balance
-	{
-		get => _balance;
-		set => SetAndNotify(ref _balance, value);
-	}
 
 	/// <summary>Gets a value indicating whether this account is disabled.</summary>
 	public bool Disabled { get; }

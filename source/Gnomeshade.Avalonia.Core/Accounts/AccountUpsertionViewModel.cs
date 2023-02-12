@@ -14,24 +14,54 @@ using Avalonia.Controls;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Accounts;
 
 /// <summary>Form for viewing and editing a single account.</summary>
-public sealed class AccountUpsertionViewModel : UpsertionViewModel
+public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 {
-	private static readonly string[] _canUpdate = { nameof(CanSave) };
-
 	private Guid? _id;
-	private string? _name;
-	private Counterparty? _counterparty;
-	private Currency? _preferredCurrency;
-	private string? _bic;
-	private string? _iban;
-	private string? _accountNumber;
-	private Currency? _selectedCurrency;
-	private Currency? _addableCurrency;
+
+	/// <summary>Gets a collection of available currencies.</summary>
+	[Notify(Setter.Private)]
 	private List<Counterparty> _counterparties;
+
+	/// <summary>Gets a collection of available currencies.</summary>
+	[Notify(Setter.Private)]
 	private List<Currency> _currencies;
+
+	/// <inheritdoc cref="Account.Name"/>
+	[Notify]
+	private string? _name;
+
+	/// <summary>Gets or sets the preferred current of the account.</summary>
+	[Notify]
+	private Counterparty? _counterparty;
+
+	/// <inheritdoc cref="Account.PreferredCurrency"/>
+	[Notify]
+	private Currency? _preferredCurrency;
+
+	/// <inheritdoc cref="Account.Bic"/>
+	[Notify]
+	private string? _bic;
+
+	/// <inheritdoc cref="Account.Iban"/>
+	[Notify]
+	private string? _iban;
+
+	/// <inheritdoc cref="Account.AccountNumber"/>
+	[Notify]
+	private string? _accountNumber;
+
+	/// <summary>Gets or sets the selected currency from <see cref="AdditionalCurrencies"/>.</summary>
+	[Notify]
+	private Currency? _selectedCurrency;
+
+	/// <summary>Gets or sets the currency to add to <see cref="AdditionalCurrencies"/>.</summary>
+	[Notify]
+	private Currency? _addableCurrency;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -49,80 +79,14 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 		AdditionalCurrencies.CollectionChanged += AdditionalCurrenciesOnCollectionChanged;
 	}
 
-	/// <inheritdoc cref="Account.Name"/>
-	public string? Name
-	{
-		get => _name;
-		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), _canUpdate);
-	}
-
 	/// <summary>Gets a delegate for formatting a counterparty in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CounterpartySelector => AutoCompleteSelectors.Counterparty;
-
-	/// <summary>Gets a collection of available currencies.</summary>
-	public List<Counterparty> Counterparties
-	{
-		get => _counterparties;
-		private set => SetAndNotify(ref _counterparties, value);
-	}
-
-	/// <summary>Gets or sets the preferred current of the account.</summary>
-	public Counterparty? Counterparty
-	{
-		get => _counterparty;
-		set => SetAndNotifyWithGuard(ref _counterparty, value, nameof(Counterparty), _canUpdate);
-	}
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
-	/// <summary>Gets a collection of available currencies.</summary>
-	public List<Currency> Currencies
-	{
-		get => _currencies;
-		private set => SetAndNotify(ref _currencies, value);
-	}
-
-	/// <inheritdoc cref="Account.PreferredCurrency"/>
-	public Currency? PreferredCurrency
-	{
-		get => _preferredCurrency;
-		set => SetAndNotifyWithGuard(ref _preferredCurrency, value, nameof(PreferredCurrency), nameof(CanSave), nameof(AddableCurrencies));
-	}
-
-	/// <inheritdoc cref="Account.Bic"/>
-	public string? Bic
-	{
-		get => _bic;
-		set => SetAndNotify(ref _bic, value);
-	}
-
-	/// <inheritdoc cref="Account.Iban"/>
-	public string? Iban
-	{
-		get => _iban;
-		set => SetAndNotify(ref _iban, value);
-	}
-
-	/// <inheritdoc cref="Account.AccountNumber"/>
-	public string? AccountNumber
-	{
-		get => _accountNumber;
-		set => SetAndNotify(ref _accountNumber, value);
-	}
-
 	/// <summary>Gets a collection of all currencies in the account except for <see cref="PreferredCurrency"/>.</summary>
 	public ObservableCollection<Currency> AdditionalCurrencies { get; }
-
-	/// <summary>Gets or sets the selected currency from <see cref="AdditionalCurrencies"/>.</summary>
-	public Currency? SelectedCurrency
-	{
-		get => _selectedCurrency;
-		set => SetAndNotifyWithGuard(ref _selectedCurrency, value, nameof(SelectedCurrency), nameof(CanRemoveAdditionalCurrency));
-	}
-
-	/// <summary>Gets a value indicating whether <see cref="RemoveAdditionalCurrency"/> can be called.</summary>
-	public bool CanRemoveAdditionalCurrency => SelectedCurrency is not null;
 
 	/// <summary>Gets a collection of all currencies that can be added as additional currencies.</summary>
 	public List<Currency> AddableCurrencies => Currencies
@@ -130,16 +94,6 @@ public sealed class AccountUpsertionViewModel : UpsertionViewModel
 			AdditionalCurrencies.All(additionalCurrency => additionalCurrency.Id != currency.Id) &&
 			currency.Id != PreferredCurrency?.Id)
 		.ToList();
-
-	/// <summary>Gets or sets the currency to add to <see cref="AdditionalCurrencies"/>.</summary>
-	public Currency? AddableCurrency
-	{
-		get => _addableCurrency;
-		set => SetAndNotifyWithGuard(ref _addableCurrency, value, nameof(AddableCurrency), nameof(CanAddAdditionalCurrency));
-	}
-
-	/// <summary>Gets a value indicating whether <see cref="AddAdditionalCurrency"/> can be called.</summary>
-	public bool CanAddAdditionalCurrency => AddableCurrency is not null;
 
 	/// <inheritdoc />
 	public override bool CanSave =>

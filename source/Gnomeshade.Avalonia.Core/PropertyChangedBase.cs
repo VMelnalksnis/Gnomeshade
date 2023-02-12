@@ -70,12 +70,15 @@ public abstract class PropertyChangedBase : INotifyPropertyChanging, INotifyProp
 	/// <summary>Invokes <see cref="PropertyChanged"/> with the name of the calling property.</summary>
 	/// <param name="propertyName">The name of the property that has changed.</param>
 	[NotifyPropertyChangedInvocator]
-	protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+	protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		PropertyChanged?.Invoke(this, new(propertyName));
 	}
 
-	private void OnPropertyChanging([CallerMemberName] string propertyName = "")
+	/// <summary>Invokes <see cref="PropertyChanging"/> with the name of the calling property.</summary>
+	/// <param name="propertyName">The name of the property that will change.</param>
+	[NotifyPropertyChangedInvocator]
+	protected virtual void OnPropertyChanging([CallerMemberName] string propertyName = "")
 	{
 		PropertyChanging?.Invoke(this, new(propertyName));
 	}

@@ -18,25 +18,56 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Create or update a purchase.</summary>
-public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
+public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 	private readonly Guid? _id;
 
+	/// <summary>Gets or sets the amount paid to purchase an <see cref="Amount"/> of <see cref="Product"/>.</summary>
+	[Notify]
 	private decimal? _price;
+
+	/// <summary>Gets or sets the id of the currency of <see cref="Price"/>.</summary>
+	[Notify]
 	private Currency? _currency;
+
+	/// <summary>Gets or sets the id of the purchased product.</summary>
+	[Notify]
 	private Product? _product;
+
+	/// <summary>Gets or sets the amount of <see cref="Product"/> that was purchased.</summary>
+	[Notify]
 	private decimal? _amount;
+
+	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
+	[Notify]
 	private DateTimeOffset? _deliveryDate;
+
+	/// <summary>Gets or sets the time when the <see cref="Product"/> was delivered.</summary>
+	[Notify]
 	private TimeSpan? _deliveryTime;
+
+	/// <summary>Gets a collection of all currencies.</summary>
+	[Notify(Setter.Private)]
 	private List<Currency> _currencies;
+
+	/// <summary>Gets a collection of all products.</summary>
+	[Notify(Setter.Private)]
 	private List<Product> _products;
+
+	/// <summary>Gets the name of the unit of the <see cref="Product"/>.</summary>
+	[Notify(Setter.Private)]
 	private string? _unitName;
+
+	/// <summary>Gets or sets the order of the purchase within a transaction.</summary>
+	[Notify]
 	private uint? _order;
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
@@ -70,76 +101,6 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
-
-	/// <summary>Gets a collection of all currencies.</summary>
-	public List<Currency> Currencies
-	{
-		get => _currencies;
-		private set => SetAndNotify(ref _currencies, value);
-	}
-
-	/// <summary>Gets a collection of all products.</summary>
-	public List<Product> Products
-	{
-		get => _products;
-		private set => SetAndNotify(ref _products, value);
-	}
-
-	/// <summary>Gets or sets the amount paid to purchase an <see cref="Amount"/> of <see cref="Product"/>.</summary>
-	public decimal? Price
-	{
-		get => _price;
-		set => SetAndNotifyWithGuard(ref _price, value, nameof(Price), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the id of the currency of <see cref="Price"/>.</summary>
-	public Currency? Currency
-	{
-		get => _currency;
-		set => SetAndNotifyWithGuard(ref _currency, value, nameof(Currency), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the id of the purchased product.</summary>
-	public Product? Product
-	{
-		get => _product;
-		set => SetAndNotifyWithGuard(ref _product, value, nameof(Product), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the amount of <see cref="Product"/> that was purchased.</summary>
-	public decimal? Amount
-	{
-		get => _amount;
-		set => SetAndNotifyWithGuard(ref _amount, value, nameof(Amount), CanSaveNames);
-	}
-
-	/// <summary>Gets the name of the unit of the <see cref="Product"/>.</summary>
-	public string? UnitName
-	{
-		get => _unitName;
-		private set => SetAndNotify(ref _unitName, value);
-	}
-
-	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate
-	{
-		get => _deliveryDate;
-		set => SetAndNotify(ref _deliveryDate, value);
-	}
-
-	/// <summary>Gets or sets the time when the <see cref="Product"/> was delivered.</summary>
-	public TimeSpan? DeliveryTime
-	{
-		get => _deliveryTime;
-		set => SetAndNotify(ref _deliveryTime, value);
-	}
-
-	/// <summary>Gets or sets the order of the purchase within a transaction.</summary>
-	public uint? Order
-	{
-		get => _order;
-		set => SetAndNotify(ref _order, value);
-	}
 
 	/// <inheritdoc />
 	public override bool CanSave =>
@@ -190,7 +151,8 @@ public sealed class PurchaseUpsertionViewModel : UpsertionViewModel
 			Amount = purchase.Amount;
 			Product = Products.Single(product => product.Id == purchase.ProductId);
 			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-			DeliveryTime = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset().TimeOfDay;
+			DeliveryTime = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset()
+				.TimeOfDay;
 			Order = purchase.Order;
 		}
 	}

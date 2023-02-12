@@ -17,18 +17,32 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Create or update a transaction.</summary>
-public sealed class TransactionUpsertionViewModel : UpsertionViewModel
+public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private Guid? _id;
+
+	/// <summary>Gets view model of all transfers of this transaction.</summary>
+	[Notify(Setter.Private)]
 	private TransferViewModel? _transfers;
+
+	/// <summary>Gets view model of all purchases of this transaction.</summary>
+	[Notify(Setter.Private)]
 	private PurchaseViewModel? _purchases;
+
+	/// <summary>Gets view model of all links of this transaction.</summary>
+	[Notify(Setter.Private)]
 	private LinkViewModel? _links;
+
+	/// <summary>Gets view model of all loans of this transaction.</summary>
+	[Notify(Setter.Private)]
 	private LoanViewModel? _loans;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
@@ -58,34 +72,6 @@ public sealed class TransactionUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets the transaction information.</summary>
 	public TransactionProperties Properties { get; }
-
-	/// <summary>Gets view model of all transfers of this transaction.</summary>
-	public TransferViewModel? Transfers
-	{
-		get => _transfers;
-		private set => SetAndNotify(ref _transfers, value);
-	}
-
-	/// <summary>Gets view model of all purchases of this transaction.</summary>
-	public PurchaseViewModel? Purchases
-	{
-		get => _purchases;
-		private set => SetAndNotify(ref _purchases, value);
-	}
-
-	/// <summary>Gets view model of all links of this transaction.</summary>
-	public LinkViewModel? Links
-	{
-		get => _links;
-		private set => SetAndNotify(ref _links, value);
-	}
-
-	/// <summary>Gets view model of all loans of this transaction.</summary>
-	public LoanViewModel? Loans
-	{
-		get => _loans;
-		private set => SetAndNotify(ref _loans, value);
-	}
 
 	/// <inheritdoc />
 	public override bool CanSave => Properties.IsValid;

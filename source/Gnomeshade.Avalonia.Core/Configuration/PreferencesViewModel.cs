@@ -12,18 +12,28 @@ using Gnomeshade.WebApi.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Configuration;
 
 /// <summary>User preference editor.</summary>
-public sealed class PreferencesViewModel : ViewModelBase
+public sealed partial class PreferencesViewModel : ViewModelBase
 {
 	private readonly IOptionsMonitor<UserConfiguration> _optionsMonitor;
 	private readonly UserConfigurationWriter _userConfigurationWriter;
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly ILogger<PreferencesViewModel> _logger;
 
+	/// <summary>Gets a collection of all available institutions.</summary>
+	[Notify(Setter.Private)]
 	private List<string> _institutions;
+
+	/// <summary>Gets or sets the country for which to get <see cref="Institutions"/>.</summary>
+	[Notify]
 	private string? _nordigenCountry;
+
+	/// <summary>Gets or sets the selected institution from <see cref="Institutions"/>.</summary>
+	[Notify]
 	private string? _selectedInstitutionId;
 
 	/// <summary>Initializes a new instance of the <see cref="PreferencesViewModel"/> class.</summary>
@@ -50,27 +60,6 @@ public sealed class PreferencesViewModel : ViewModelBase
 		_selectedInstitutionId = _optionsMonitor.CurrentValue.Preferences?.NoridgenInstitutionId;
 
 		PropertyChanged += OnPropertyChanged;
-	}
-
-	/// <summary>Gets or sets the country for which to get <see cref="Institutions"/>.</summary>
-	public string? NordigenCountry
-	{
-		get => _nordigenCountry;
-		set => SetAndNotify(ref _nordigenCountry, value);
-	}
-
-	/// <summary>Gets or sets the selected institution from <see cref="Institutions"/>.</summary>
-	public string? SelectedInstitutionId
-	{
-		get => _selectedInstitutionId;
-		set => SetAndNotify(ref _selectedInstitutionId, value);
-	}
-
-	/// <summary>Gets a collection of all available institutions.</summary>
-	public List<string> Institutions
-	{
-		get => _institutions;
-		private set => SetAndNotify(ref _institutions, value);
 	}
 
 	/// <summary>Saves the updates user preferences.</summary>

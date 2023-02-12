@@ -14,17 +14,30 @@ using Gnomeshade.WebApi.Client;
 
 using Microsoft.Extensions.Options;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Imports;
 
 /// <summary>External data import view model.</summary>
-public sealed class ImportViewModel : ViewModelBase
+public sealed partial class ImportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IOptionsMonitor<PreferencesOptions> _optionsMonitor;
 
+	/// <summary>Gets or sets the local path of the report file to import.</summary>
+	[Notify]
 	private string? _filePath;
+
+	/// <summary>Gets a collection of all available institutions.</summary>
+	[Notify(Setter.Private)]
 	private List<string> _institutions;
+
+	/// <summary>Gets or sets the selected institution from <see cref="Institutions"/>.</summary>
+	[Notify]
 	private string? _selectedInstitution;
+
+	/// <summary>Gets or sets the country for which to get <see cref="Institutions"/>.</summary>
+	[Notify]
 	private string _country;
 
 	/// <summary>Initializes a new instance of the <see cref="ImportViewModel"/> class.</summary>
@@ -42,34 +55,6 @@ public sealed class ImportViewModel : ViewModelBase
 		_institutions = new();
 		_country = _optionsMonitor.CurrentValue.NordigenCountry ?? "LV";
 		_selectedInstitution = _optionsMonitor.CurrentValue.NoridgenInstitutionId;
-	}
-
-	/// <summary>Gets or sets the local path of the report file to import.</summary>
-	public string? FilePath
-	{
-		get => _filePath;
-		set => SetAndNotifyWithGuard(ref _filePath, value, nameof(FilePath), nameof(CanImport));
-	}
-
-	/// <summary>Gets or sets the country for which to get <see cref="Institutions"/>.</summary>
-	public string Country
-	{
-		get => _country;
-		set => SetAndNotify(ref _country, value);
-	}
-
-	/// <summary>Gets a collection of all available institutions.</summary>
-	public List<string> Institutions
-	{
-		get => _institutions;
-		private set => SetAndNotify(ref _institutions, value);
-	}
-
-	/// <summary>Gets or sets the selected institution from <see cref="Institutions"/>.</summary>
-	public string? SelectedInstitution
-	{
-		get => _selectedInstitution;
-		set => SetAndNotifyWithGuard(ref _selectedInstitution, value, nameof(SelectedInstitution), nameof(CanImport));
 	}
 
 	/// <summary>Gets a value indicating whether the information needed for <see cref="ImportAsync"/> is valid.</summary>

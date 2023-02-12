@@ -15,21 +15,47 @@ using Gnomeshade.WebApi.Models.Products;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Form for creating a single new product.</summary>
-public sealed class ProductUpsertionViewModel : UpsertionViewModel
+public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private Guid? _id;
+
+	/// <summary>Gets or sets the name of the product.</summary>
+	[Notify]
 	private string? _name;
+
+	/// <summary>Gets or sets the unit in which an amount of this product is measured in.</summary>
+	[Notify]
 	private Unit? _selectedUnit;
+
+	/// <summary>Gets or sets the SKU of the product.</summary>
+	[Notify]
 	private string? _sku;
+
+	/// <summary>Gets or sets the description of the product.</summary>
+	[Notify]
 	private string? _description;
+
+	/// <summary>Gets or sets the category of this product.</summary>
+	[Notify]
 	private Category? _selectedCategory;
+
+	/// <summary>Gets a collection of all available units.</summary>
+	[Notify(Setter.Private)]
 	private List<Unit> _units;
+
+	/// <summary>Gets a collection of all available categories.</summary>
+	[Notify(Setter.Private)]
 	private List<Category> _categories;
+
+	/// <summary>Gets all purchases of this product.</summary>
+	[Notify(Setter.Private)]
 	private List<PurchaseOverview> _purchases;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionViewModel"/> class.</summary>
@@ -52,67 +78,11 @@ public sealed class ProductUpsertionViewModel : UpsertionViewModel
 		_purchases = new();
 	}
 
-	/// <summary>Gets or sets the name of the product.</summary>
-	public string? Name
-	{
-		get => _name;
-		set => SetAndNotifyWithGuard(ref _name, value, nameof(Name), nameof(CanSave));
-	}
-
-	/// <summary>Gets or sets the SKU of the product.</summary>
-	public string? Sku
-	{
-		get => _sku;
-		set => SetAndNotify(ref _sku, value);
-	}
-
-	/// <summary>Gets or sets the description of the product.</summary>
-	public string? Description
-	{
-		get => _description;
-		set => SetAndNotify(ref _description, value);
-	}
-
-	/// <summary>Gets or sets the unit in which an amount of this product is measured in.</summary>
-	public Unit? SelectedUnit
-	{
-		get => _selectedUnit;
-		set => SetAndNotify(ref _selectedUnit, value);
-	}
-
-	/// <summary>Gets or sets the category of this product.</summary>
-	public Category? SelectedCategory
-	{
-		get => _selectedCategory;
-		set => SetAndNotify(ref _selectedCategory, value);
-	}
-
-	/// <summary>Gets a collection of all available units.</summary>
-	public List<Unit> Units
-	{
-		get => _units;
-		private set => SetAndNotify(ref _units, value);
-	}
-
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 
-	/// <summary>Gets a collection of all available categories.</summary>
-	public List<Category> Categories
-	{
-		get => _categories;
-		private set => SetAndNotify(ref _categories, value);
-	}
-
 	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
-
-	/// <summary>Gets all purchases of this product.</summary>
-	public List<PurchaseOverview> Purchases
-	{
-		get => _purchases;
-		private set => SetAndNotify(ref _purchases, value);
-	}
 
 	/// <inheritdoc />
 	public override bool CanSave => !string.IsNullOrWhiteSpace(Name);

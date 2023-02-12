@@ -14,27 +14,62 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 
 /// <summary>Create or update a transfer.</summary>
-public sealed class TransferUpsertionViewModel : UpsertionViewModel
+public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 {
-	private static readonly string[] _targetAmountNames = CanSaveNames.Append(nameof(IsTargetAmountReadOnly)).ToArray();
-
 	private readonly Guid _transactionId;
 	private readonly Guid? _id;
 
+	/// <summary>Gets or sets the amount withdrawn from <see cref="SourceAccount"/>.</summary>
+	[Notify]
 	private decimal? _sourceAmount;
+
+	/// <summary>Gets or sets the source account of the transaction item.</summary>
+	[Notify]
 	private Account? _sourceAccount;
+
+	/// <summary>Gets or sets the currency of <see cref="SourceAmount"/>.</summary>
+	[Notify]
 	private Currency? _sourceCurrency;
+
+	/// <summary>Gets or sets the amount deposited to <see cref="TargetAccount"/>.</summary>
+	[Notify]
 	private decimal? _targetAmount;
+
+	/// <summary>Gets or sets the target account of the transaction item.</summary>
+	[Notify]
 	private Account? _targetAccount;
+
+	/// <summary>Gets or sets the currency of <see cref="TargetAmount"/>.</summary>
+	[Notify]
 	private Currency? _targetCurrency;
+
+	/// <summary>Gets or sets the bank reference of the transaction item.</summary>
+	[Notify]
 	private string? _bankReference;
+
+	/// <summary>Gets or sets the external reference of the transaction item.</summary>
+	[Notify]
 	private string? _externalReference;
+
+	/// <summary>Gets or sets the internal reference of the transaction item.</summary>
+	[Notify]
 	private string? _internalReference;
+
+	/// <summary>Gets a collection of all active accounts.</summary>
+	[Notify(Setter.Private)]
 	private List<Account> _accounts;
+
+	/// <summary>Gets a collection of all currencies.</summary>
+	[Notify(Setter.Private)]
 	private List<Currency> _currencies;
+
+	/// <summary>Gets or sets the order of the item within a transaction.</summary>
+	[Notify]
 	private uint? _order;
 
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
@@ -42,7 +77,11 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
 	/// <param name="id">The id of the transfer to edit.</param>
-	public TransferUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId, Guid? id)
+	public TransferUpsertionViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		Guid transactionId,
+		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
@@ -54,95 +93,11 @@ public sealed class TransferUpsertionViewModel : UpsertionViewModel
 		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>Gets a collection of all active accounts.</summary>
-	public List<Account> Accounts
-	{
-		get => _accounts;
-		private set => SetAndNotify(ref _accounts, value);
-	}
-
-	/// <summary>Gets a collection of all currencies.</summary>
-	public List<Currency> Currencies
-	{
-		get => _currencies;
-		private set => SetAndNotify(ref _currencies, value);
-	}
-
 	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
-
-	/// <summary>Gets or sets the source account of the transaction item.</summary>
-	public Account? SourceAccount
-	{
-		get => _sourceAccount;
-		set => SetAndNotifyWithGuard(ref _sourceAccount, value, nameof(SourceAccount), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the amount withdrawn from <see cref="SourceAccount"/>.</summary>
-	public decimal? SourceAmount
-	{
-		get => _sourceAmount;
-		set => SetAndNotifyWithGuard(ref _sourceAmount, value, nameof(SourceAmount), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the currency of <see cref="SourceAmount"/>.</summary>
-	public Currency? SourceCurrency
-	{
-		get => _sourceCurrency;
-		set => SetAndNotifyWithGuard(ref _sourceCurrency, value, nameof(SourceCurrency), _targetAmountNames);
-	}
-
-	/// <summary>Gets or sets the target account of the transaction item.</summary>
-	public Account? TargetAccount
-	{
-		get => _targetAccount;
-		set => SetAndNotifyWithGuard(ref _targetAccount, value, nameof(TargetAccount), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the amount deposited to <see cref="TargetAccount"/>.</summary>
-	public decimal? TargetAmount
-	{
-		get => _targetAmount;
-		set => SetAndNotifyWithGuard(ref _targetAmount, value, nameof(TargetAmount), CanSaveNames);
-	}
-
-	/// <summary>Gets or sets the currency of <see cref="TargetAmount"/>.</summary>
-	public Currency? TargetCurrency
-	{
-		get => _targetCurrency;
-		set => SetAndNotifyWithGuard(ref _targetCurrency, value, nameof(TargetCurrency), _targetAmountNames);
-	}
-
-	/// <summary>Gets or sets the bank reference of the transaction item.</summary>
-	public string? BankReference
-	{
-		get => _bankReference;
-		set => SetAndNotify(ref _bankReference, value);
-	}
-
-	/// <summary>Gets or sets the external reference of the transaction item.</summary>
-	public string? ExternalReference
-	{
-		get => _externalReference;
-		set => SetAndNotify(ref _externalReference, value);
-	}
-
-	/// <summary>Gets or sets the internal reference of the transaction item.</summary>
-	public string? InternalReference
-	{
-		get => _internalReference;
-		set => SetAndNotify(ref _internalReference, value);
-	}
-
-	/// <summary>Gets or sets the order of the item within a transaction.</summary>
-	public uint? Order
-	{
-		get => _order;
-		set => SetAndNotify(ref _order, value);
-	}
 
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>
 	public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;

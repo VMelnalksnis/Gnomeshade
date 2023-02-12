@@ -1633,6 +1633,7 @@
           "Microsoft.Extensions.Http": "[7.0.0, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[7.0.0, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[7.0.0, )",
+          "PropertyChanged.SourceGenerator": "[1.0.8, )",
           "System.Drawing.Common": "[7.0.0, )"
         }
       },
@@ -2136,6 +2137,12 @@
           "NodaTime": "3.1.5",
           "Npgsql": "7.0.1"
         }
+      },
+      "PropertyChanged.SourceGenerator": {
+        "type": "CentralTransitive",
+        "requested": "[1.0.8, )",
+        "resolved": "1.0.8",
+        "contentHash": "XufLv9ReskTWjx3assV8aRAfcHfAATAkR/MugYSHkyYm7d2voQJHtQKSncVMNZiVGwXaEg5aGtWgKMweR11TAg=="
       },
       "Serilog": {
         "type": "CentralTransitive",

@@ -20,17 +20,27 @@ using LiveChartsCore.SkiaSharpView;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Reports;
 
 /// <summary>Graphical overview of spending in each category.</summary>
-public sealed class CategoryReportViewModel : ViewModelBase
+public sealed partial class CategoryReportViewModel : ViewModelBase
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	/// <summary>Gets all the available categories.</summary>
+	[Notify(Setter.Private)]
 	private List<Category> _categories;
+
+	/// <summary>Gets or sets the category fort which to display the category breakdown for.</summary>
+	[Notify]
 	private Category? _selectedCategory;
+
+	/// <summary>Gets the data series of amount spent per month per category.</summary>
+	[Notify(Setter.Private)]
 	private List<StackedColumnSeries<DateTimePoint>> _series;
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
@@ -64,27 +74,6 @@ public sealed class CategoryReportViewModel : ViewModelBase
 
 	/// <summary>Gets a delegate for formatting an category in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
-
-	/// <summary>Gets all the available categories.</summary>
-	public List<Category> Categories
-	{
-		get => _categories;
-		private set => SetAndNotify(ref _categories, value);
-	}
-
-	/// <summary>Gets or sets the category fort which to display the category breakdown for.</summary>
-	public Category? SelectedCategory
-	{
-		get => _selectedCategory;
-		set => SetAndNotify(ref _selectedCategory, value);
-	}
-
-	/// <summary>Gets the data series of amount spent per month per category.</summary>
-	public List<StackedColumnSeries<DateTimePoint>> Series
-	{
-		get => _series;
-		private set => SetAndNotify(ref _series, value);
-	}
 
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
 	public List<ICartesianAxis> XAxes { get; }
