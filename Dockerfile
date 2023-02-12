@@ -23,4 +23,6 @@ ENV Database__Provider="Sqlite" \
 
 VOLUME /data
 EXPOSE 80
-ENTRYPOINT ["/gnomeshade/Gnomeshade.WebApi"]
+
+WORKDIR /gnomeshade
+ENTRYPOINT ["./Gnomeshade.WebApi"]
