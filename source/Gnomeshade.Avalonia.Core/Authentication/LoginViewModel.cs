@@ -35,11 +35,8 @@ public sealed class LoginViewModel : ViewModelBase
 	public string? ErrorMessage
 	{
 		get => _errorMessage;
-		set => SetAndNotifyWithGuard(ref _errorMessage, value, nameof(ErrorMessage), nameof(IsErrorMessageVisible));
+		set => SetAndNotify(ref _errorMessage, value);
 	}
-
-	/// <summary>Gets a value indicating whether or not the <see cref="ErrorMessage"/> should be visible.</summary>
-	public bool IsErrorMessageVisible => !string.IsNullOrWhiteSpace(ErrorMessage);
 
 	/// <summary>Gets or sets the username entered by the user.</summary>
 	public string? Username
