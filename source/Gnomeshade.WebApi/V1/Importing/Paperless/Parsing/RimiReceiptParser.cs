@@ -23,8 +23,8 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		("_", " "),
 		("é", "ē"),
 		("°", string.Empty),
-		("’", string.Empty),
-		("'", string.Empty),
+		("’", " "),
+		("'", " "),
 		("\"", string.Empty),
 	};
 
@@ -41,7 +41,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 	{
 		"Atl. ",
 		"Atl ",
-		"ati",
+		"ati ",
 	};
 
 	private readonly ILogger<RimiReceiptParser> _logger;
@@ -72,6 +72,12 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		}
 
 		var productPart = content[start..end].Trim('\n');
+		var startIndex = productPart.IndexOf("KLIENT", StringComparison.Ordinal);
+		if (startIndex >= 0)
+		{
+			var newStart = productPart.IndexOf("\n", startIndex + 6, StringComparison.Ordinal);
+			productPart = productPart[newStart..].TrimStart('\n');
+		}
 
 		_logger.LogDebug("Extracted products from document content {ProductPart}", productPart);
 
@@ -94,7 +100,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 
 			// Check if next line contains discounted price
 			if (index != lines.Count - 1 &&
-				_discountIdentifiers.Any(identifier => lines[index + 1].Contains(identifier, _comparison)))
+				_discountIdentifiers.Any(identifier => lines[index + 1].StartsWith(identifier, _comparison)))
 			{
 				index++;
 			}
