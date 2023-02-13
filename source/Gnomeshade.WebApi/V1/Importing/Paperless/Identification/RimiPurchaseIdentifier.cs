@@ -73,7 +73,9 @@ public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
 		return decimal.Parse(amountText, NumberStyles.Float, CultureInfo.GetCultureInfo("lv-LV"));
 	}
 
-	private static (decimal Amount, string? Unit) GetProductAmount(RimiPurchase purchase, IReadOnlyCollection<string> unitAbbr)
+	private static (decimal Amount, string? Unit) GetProductAmount(
+		RimiPurchase purchase,
+		IReadOnlyCollection<string> unitAbbr)
 	{
 		var amountText = Regex.Matches(purchase.AmountAndPrice, @"[\d,]{1,}").First().Value;
 		var amount = decimal.Parse(amountText, NumberStyles.Float, CultureInfo.GetCultureInfo("lv-LV"));
@@ -97,9 +99,17 @@ public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
 		return (amount * unitAmount, unit);
 	}
 
-	private static string GetPurchaseCurrency(RimiPurchase purchase, IEnumerable<string> currencyCodes)
+	private string GetPurchaseCurrency(RimiPurchase purchase, IEnumerable<string> currencyCodes)
 	{
-		return currencyCodes.First(code => purchase.AmountAndPrice.Contains($" {code}", StringComparison.OrdinalIgnoreCase));
+		var currency = currencyCodes
+			.FirstOrDefault(code => purchase.AmountAndPrice.Contains($" {code}", StringComparison.OrdinalIgnoreCase));
+
+		if (currency is null)
+		{
+			throw new InvalidOperationException($"Could not find currency for purchase {purchase}");
+		}
+
+		return currency;
 	}
 
 	private sealed record RimiPurchase(string Product, string AmountAndPrice, string? DiscountAndFinalPrice);

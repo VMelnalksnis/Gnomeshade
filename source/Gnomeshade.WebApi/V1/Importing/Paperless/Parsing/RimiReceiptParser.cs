@@ -26,6 +26,8 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		("’", " "),
 		("'", " "),
 		("\"", string.Empty),
+		("“", string.Empty),
+		("|", string.Empty),
 	};
 
 	// todo need a better way to catch all parsing errors
