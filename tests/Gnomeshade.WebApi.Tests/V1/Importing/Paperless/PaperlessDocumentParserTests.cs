@@ -4,11 +4,12 @@
 
 using System.Collections.Generic;
 
-using Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
+using Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Rimi;
+using Gnomeshade.WebApi.V1.Importing.Paperless;
 
 using VMelnalksnis.PaperlessDotNet.Documents;
 
-namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Parsing;
+namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless;
 
 public sealed class PaperlessDocumentParserTests
 {

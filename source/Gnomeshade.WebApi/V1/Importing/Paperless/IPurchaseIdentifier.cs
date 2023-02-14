@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using Gnomeshade.Data.Entities;
 
-namespace Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
+namespace Gnomeshade.WebApi.V1.Importing.Paperless;
 
 /// <summary>Identifies purchases from text.</summary>
 public interface IPurchaseIdentifier

@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-namespace Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
+namespace Gnomeshade.WebApi.V1.Importing.Paperless;
 
 /// <summary>A purchase that has been identified from text.</summary>
 /// <param name="OriginalName">The exact product name from the parsed text.</param>

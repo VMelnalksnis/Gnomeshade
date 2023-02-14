@@ -6,11 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
+using Gnomeshade.WebApi.V1.Importing.Paperless;
+using Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Identification;
+namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Rimi;
 
 [SuppressMessage("ReSharper", "StringLiteralTypo", Justification = "Contains test data")]
 public sealed class RimiPurchaseIdentifierTestCaseSource : IEnumerable<TestCaseData>
@@ -47,6 +48,36 @@ Or 188 kg X 14,59 EUR/kg 2,748",
 					188,
 					null))
 			.SetName("New product");
+
+		yield return new TestCaseData(
+				identifier,
+				@"Sviests Exporta 82,5% 200g
+1 gab X 3,09 EUR 3,09 A
+Atl -0,50 Gala cena 2,59",
+				new IdentifiedPurchase(
+					"Sviests Exporta 82,5% 200g",
+					"Tostermaize franču Brioche",
+					23,
+					"EUR",
+					2.59m,
+					200,
+					"g"))
+			.SetName("New product with discount");
+
+		yield return new TestCaseData(
+				identifier,
+				@"Sviests Exporta 82,5% 200g
+1 gab X 3,09 EUR 3,09 A
+ati -0,50 Gala cena 2,59",
+				new IdentifiedPurchase(
+					"Sviests Exporta 82,5% 200g",
+					"Tostermaize franču Brioche",
+					23,
+					"EUR",
+					2.59m,
+					200,
+					"g"))
+			.SetName("New product with discount, bad OCR");
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

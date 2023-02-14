@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
-using Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
-using Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
 
 using Microsoft.Extensions.Logging;
 

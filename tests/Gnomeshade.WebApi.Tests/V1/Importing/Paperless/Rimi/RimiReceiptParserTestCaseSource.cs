@@ -6,13 +6,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
+using Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
 using VMelnalksnis.PaperlessDotNet.Documents;
 
-namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Parsing;
+namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Rimi;
 
 [SuppressMessage("ReSharper", "StringLiteralTypo", Justification = "Contains test data")]
 public sealed class RimiReceiptParserTestCaseSource : IEnumerable<TestCaseData>

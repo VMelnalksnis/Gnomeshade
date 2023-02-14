@@ -14,10 +14,12 @@ using Gnomeshade.Data.Entities;
 
 using Microsoft.Extensions.Logging;
 
-namespace Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
+using static Gnomeshade.WebApi.V1.Importing.Paperless.Rimi.Constants;
+
+namespace Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
 
 /// <inheritdoc />
-public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
+public sealed partial class RimiPurchaseIdentifier : IPurchaseIdentifier
 {
 	private readonly ILogger<RimiPurchaseIdentifier> _logger;
 
@@ -51,24 +53,39 @@ public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
 			.Select(name => (name, Fuzz.Ratio(name, purchase.Product)))
 			.MaxBy(tuple => tuple.Item2);
 
-		var identifiedPurchase = new IdentifiedPurchase(purchase.Product, match.name, match.Item2, currency, price, amount.Amount, amount.Unit);
+		var identifiedPurchase = new IdentifiedPurchase(
+			purchase.Product,
+			match.name,
+			match.Item2,
+			currency,
+			price,
+			amount.Amount,
+			amount.Unit);
+
 		_logger.LogTrace("Identified {IdentifiedPurchase} from {RawPurchaseText}", identifiedPurchase, text);
 		return identifiedPurchase;
 	}
 
+	[GeneratedRegex(@"\d{1,},\d{2}", RegexOptions.IgnoreCase)]
+	private static partial Regex PriceRegex();
+
 	private static RimiPurchase GetPurchase(string[] lines) => lines.Length switch
 	{
 		< 2 => throw new ArgumentException("Not enough lines to parse product", nameof(lines)),
+
 		2 => new(lines[0], lines[1], null),
-		_ when !lines[^1].Contains("Atl", StringComparison.OrdinalIgnoreCase) => new(string.Join(" ", lines[..^1]), lines[^1], null),
+
+		_ when DiscountIdentifiers.All(identifier => !lines[^1].StartsWith(identifier, Comparison)) =>
+			new(string.Join(" ", lines[..^1]), lines[^1], null),
+
 		_ => new(string.Join(" ", lines[..^2]), lines[^2], lines[^1]),
 	};
 
 	private static decimal GetPurchasePrice(RimiPurchase purchase)
 	{
 		var amountText = purchase.DiscountAndFinalPrice is null
-			? Regex.Matches(purchase.AmountAndPrice, @"\d{1,},\d{2}").Last().Value
-			: Regex.Matches(purchase.DiscountAndFinalPrice, @"\d{1,},\d{2}").Last().Value;
+			? PriceRegex().Matches(purchase.AmountAndPrice).Last().Value
+			: PriceRegex().Matches(purchase.DiscountAndFinalPrice).Last().Value;
 
 		return decimal.Parse(amountText, NumberStyles.Float, CultureInfo.GetCultureInfo("lv-LV"));
 	}
@@ -82,7 +99,7 @@ public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
 
 		var unit = unitAbbr
 			.FirstOrDefault(abbr =>
-				purchase.Product.EndsWith(abbr, StringComparison.OrdinalIgnoreCase) &&
+				purchase.Product.EndsWith(abbr, Comparison) &&
 				char.IsDigit(purchase.Product[..^abbr.Length].Last()));
 
 		if (unit is null)
@@ -102,7 +119,7 @@ public sealed class RimiPurchaseIdentifier : IPurchaseIdentifier
 	private string GetPurchaseCurrency(RimiPurchase purchase, IEnumerable<string> currencyCodes)
 	{
 		var currency = currencyCodes
-			.FirstOrDefault(code => purchase.AmountAndPrice.Contains($" {code}", StringComparison.OrdinalIgnoreCase));
+			.FirstOrDefault(code => purchase.AmountAndPrice.Contains($" {code}", Comparison));
 
 		if (currency is null)
 		{

@@ -10,12 +10,13 @@ using Microsoft.Extensions.Logging;
 
 using VMelnalksnis.PaperlessDotNet.Documents;
 
-namespace Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
+using static Gnomeshade.WebApi.V1.Importing.Paperless.Rimi.Constants;
+
+namespace Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
 
 /// <inheritdoc />
 public sealed class RimiReceiptParser : IPaperlessDocumentParser
 {
-	private const StringComparison _comparison = StringComparison.OrdinalIgnoreCase;
 	private const string _startIdentifier = "\n\n\n\n\n";
 
 	private static readonly (string, string)[] _replace =
@@ -39,13 +40,6 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		"Makeajamu karte",
 	};
 
-	private static readonly string[] _discountIdentifiers =
-	{
-		"Atl. ",
-		"Atl ",
-		"ati ",
-	};
-
 	private readonly ILogger<RimiReceiptParser> _logger;
 
 	/// <summary>Initializes a new instance of the <see cref="RimiReceiptParser"/> class.</summary>
@@ -63,21 +57,21 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 			.Aggregate(document.Content, (current, tuple) => current.Replace(tuple.Item1, tuple.Item2));
 
 		// Find start and end by expected text before and after list of purchases
-		var start = content.IndexOf(_startIdentifier, _comparison) + _startIdentifier.Length;
+		var start = content.IndexOf(_startIdentifier, Comparison) + _startIdentifier.Length;
 		var end = _endIdentifiers
-			.Select(filter => content.LastIndexOf(filter, _comparison))
+			.Select(filter => content.LastIndexOf(filter, Comparison))
 			.FirstOrDefault(index => index is not -1);
 
 		if (start > end)
 		{
-			start = content.IndexOf(_startIdentifier[..^1], _comparison) + _startIdentifier.Length;
+			start = content.IndexOf(_startIdentifier[..^1], Comparison) + _startIdentifier.Length;
 		}
 
 		var productPart = content[start..end].Trim('\n');
-		var startIndex = productPart.IndexOf("KLIENT", StringComparison.Ordinal);
+		var startIndex = productPart.IndexOf("KLIENT", Comparison);
 		if (startIndex >= 0)
 		{
-			var newStart = productPart.IndexOf("\n", startIndex + 6, StringComparison.Ordinal);
+			var newStart = productPart.IndexOf("\n", startIndex + 6, Comparison);
 			productPart = productPart[newStart..].TrimStart('\n');
 		}
 
@@ -94,7 +88,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		while (lines.Count is not 0)
 		{
 			// Find next line with currency
-			var index = lines.FindIndex(line => line.Contains("EUR", _comparison));
+			var index = lines.FindIndex(line => line.Contains("EUR", Comparison));
 			if (index is -1)
 			{
 				throw new NotSupportedException(string.Join(Environment.NewLine, lines));
@@ -102,7 +96,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 
 			// Check if next line contains discounted price
 			if (index != lines.Count - 1 &&
-				_discountIdentifiers.Any(identifier => lines[index + 1].StartsWith(identifier, _comparison)))
+				DiscountIdentifiers.Any(identifier => lines[index + 1].StartsWith(identifier, Comparison)))
 			{
 				index++;
 			}

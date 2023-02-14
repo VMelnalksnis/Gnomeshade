@@ -3,8 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using Gnomeshade.WebApi.V1.Importing.Paperless;
-using Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
-using Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
+using Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
 
 using Microsoft.Extensions.DependencyInjection;
 

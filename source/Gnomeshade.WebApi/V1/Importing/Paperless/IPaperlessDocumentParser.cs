@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using VMelnalksnis.PaperlessDotNet.Documents;
 
-namespace Gnomeshade.WebApi.V1.Importing.Paperless.Parsing;
+namespace Gnomeshade.WebApi.V1.Importing.Paperless;
 
 /// <summary>Parses information from Paperless <see cref="Document"/>s.</summary>
 public interface IPaperlessDocumentParser

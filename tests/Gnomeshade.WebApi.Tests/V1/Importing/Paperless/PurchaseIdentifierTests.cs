@@ -5,9 +5,10 @@
 using System;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.WebApi.V1.Importing.Paperless.Identification;
+using Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Rimi;
+using Gnomeshade.WebApi.V1.Importing.Paperless;
 
-namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless.Identification;
+namespace Gnomeshade.WebApi.Tests.V1.Importing.Paperless;
 
 public sealed class PurchaseIdentifierTests
 {
