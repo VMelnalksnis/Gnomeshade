@@ -7,8 +7,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="IdentityModel.OidcClient" />
-		<PackageReference Include="Serilog.Settings.Configuration" />
-		<PackageReference Include="Serilog.Sinks.NUnit" />
 		<PackageReference Include="HtmlAgilityPack" />
 		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
 	</ItemGroup>

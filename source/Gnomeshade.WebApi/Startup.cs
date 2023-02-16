@@ -6,12 +6,6 @@ using System;
 
 using AutoMapper;
 
-using Elastic.Apm.AspNetCore;
-using Elastic.Apm.AspNetCore.DiagnosticListener;
-using Elastic.Apm.DiagnosticSource;
-using Elastic.Apm.Elasticsearch;
-using Elastic.Apm.EntityFrameworkCore;
-
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.PostgreSQL;
@@ -36,8 +30,6 @@ using NodaTime.Serialization.SystemTextJson;
 
 using Polly;
 
-using Serilog;
-
 using VMelnalksnis.NordigenDotNet.DependencyInjection;
 using VMelnalksnis.PaperlessDotNet.DependencyInjection;
 
@@ -59,8 +51,6 @@ public class Startup
 	/// <param name="services">Service collection to which to add services to.</param>
 	public void ConfigureServices(IServiceCollection services)
 	{
-		services.AddLogging(builder => builder.AddSerilog());
-
 		services
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb);
@@ -82,13 +72,14 @@ public class Startup
 		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
 		_ = databaseProvider switch
 		{
-			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
-				.AddPostgreSQL(_configuration)
-				.AddPostgreSQLIdentityContext()
-				.AddIdentity<ApplicationUser, IdentityRole>()
-				.AddPostgreSQLIdentity()
-				.AddDefaultUI()
-				.AddDefaultTokenProviders(),
+			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) =>
+				services
+					.AddPostgreSQL(_configuration)
+					.AddPostgreSQLIdentityContext()
+					.AddIdentity<ApplicationUser, IdentityRole>()
+					.AddPostgreSQLIdentity()
+					.AddDefaultUI()
+					.AddDefaultTokenProviders(),
 
 			_ when databaseProvider.Equals(DatabaseProvider.Sqlite.Name, StringComparison.OrdinalIgnoreCase) => services
 				.AddSqlite(_configuration)
@@ -115,7 +106,8 @@ public class Startup
 		services
 			.AddGnomeshadeApiVersioning()
 			.AddGnomeshadeApiExplorer()
-			.AddGnomeshadeHealthChecks(_configuration);
+			.AddGnomeshadeHealthChecks(_configuration)
+			.AddGnomeshadeOpenTelemetry(_configuration);
 
 		services.AddV1ImportingServices();
 		services
@@ -132,20 +124,12 @@ public class Startup
 	/// <param name="environment">The current application environment.</param>
 	public void Configure(IApplicationBuilder application, IWebHostEnvironment environment)
 	{
-		application.UseElasticApm(
-			_configuration,
-			new AspNetCoreDiagnosticSubscriber(),
-			new HttpDiagnosticsSubscriber(),
-			new EfCoreDiagnosticsSubscriber(),
-			new ElasticsearchDiagnosticsSubscriber());
-
 		if (environment.IsDevelopment())
 		{
 			application.UseDeveloperExceptionPage();
 		}
 
 		application.UseStaticFiles();
-		application.UseSerilogRequestLogging();
 
 		application.UseRouting();
 

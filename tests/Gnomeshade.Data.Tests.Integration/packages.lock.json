@@ -426,6 +426,15 @@
         "resolved": "5.11.0",
         "contentHash": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q=="
       },
+      "OpenTelemetry.Api": {
+        "type": "Transitive",
+        "resolved": "1.3.1",
+        "contentHash": "p4ufCQ+afYMEYh1pF8K5huhJ4PnYVvKvje+GjhiDPRrQTmwto5nl8spjeK9N1OXg2HFmGuMXQvc8y90RoNLekg==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "[6.0.0, 8.0.0)",
+          "System.Reflection.Emit.Lightweight": "4.7.0"
+        }
+      },
       "Portable.BouncyCastle": {
         "type": "Transitive",
         "resolved": "1.9.0",
@@ -483,6 +492,14 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Diagnostics.DiagnosticSource": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "frQDfv0rl209cKm1lnwTgFPzNigy2EKk1BS3uAvHvlBVKe5cymGyHO+Sj+NLv5VF/AhHsqPIUUwya5oV4CHMUw==",
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        }
+      },
       "System.Diagnostics.TraceSource": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -533,6 +550,11 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Reflection.Emit.Lightweight": {
+        "type": "Transitive",
+        "resolved": "4.7.0",
+        "contentHash": "a4OLB4IITxAXJeV74MDx49Oq2+PsF6Sml54XAFv+2RyWwtDBcabzoxiiJRhdhx+gaohLh4hEGCLQyBozXoQPqA=="
+      },
       "System.Reflection.Metadata": {
         "type": "Transitive",
         "resolved": "1.6.0",
@@ -571,8 +593,8 @@
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
-        "resolved": "4.7.1",
-        "contentHash": "zOHkQmzPCn5zm/BH+cxC1XbUS3P4Yoi3xzW7eRgVpDR2tPGSzyMZ17Ig1iRkfJuY0nhxkQQde8pgePNiA7z7TQ=="
+        "resolved": "6.0.0",
+        "contentHash": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg=="
       },
       "System.Runtime.Extensions": {
         "type": "Transitive",
@@ -653,6 +675,7 @@
           "Npgsql.DependencyInjection": "[7.0.2, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.3, )",
           "Npgsql.NodaTime": "[7.0.2, )",
+          "Npgsql.OpenTelemetry": "[7.0.2, )",
           "dbup-postgresql": "[5.0.8, )"
         }
       },
@@ -761,6 +784,16 @@
           "Microsoft.EntityFrameworkCore.Abstractions": "[7.0.3, 8.0.0)",
           "Microsoft.EntityFrameworkCore.Relational": "[7.0.3, 8.0.0)",
           "Npgsql": "7.0.2"
+        }
+      },
+      "Npgsql.OpenTelemetry": {
+        "type": "CentralTransitive",
+        "requested": "[7.0.2, )",
+        "resolved": "7.0.2",
+        "contentHash": "ZHXJYk3vkLPmBdh1MeKDWtqobHXW+nLxRMbrGBAEvUZEdHoVj/8iwHIjb+FqvDM2tOMgtLJZ689v69qIgBGAKQ==",
+        "dependencies": {
+          "Npgsql": "7.0.2",
+          "OpenTelemetry.API": "1.3.1"
         }
       }
     }

@@ -3,16 +3,15 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 
 using Gnomeshade.WebApi.Configuration;
 
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.WebApi;
 
@@ -23,24 +22,18 @@ public static class Program
 	/// <param name="args">The command-line arguments of the application.</param>
 	public static void Main(string[] args)
 	{
-		Serilog.Debugging.SelfLog.Enable(output => Debug.WriteLine(output));
-		Log.Logger = SerilogHostConfiguration.CreateBoostrapLogger();
+		var logger = CreateBootstrapLogger();
 
 		try
 		{
 			CreateHostBuilder(args)
-				.UseSerilog(SerilogHostConfiguration.Configure)
 				.Build()
 				.Run();
 		}
 		catch (Exception exception)
 		{
-			Log.Fatal(exception, "Web host terminated unexpectedly");
+			logger.LogCritical(exception, "Web host terminated unexpectedly");
 			throw;
-		}
-		finally
-		{
-			Log.CloseAndFlush();
 		}
 	}
 
@@ -76,4 +69,15 @@ public static class Program
 	private static string? GetContentRoot() => Environment.GetEnvironmentVariable("ASPNETCORE_CONTENTROOT");
 
 	private static string? GetWebRoot() => Environment.GetEnvironmentVariable("ASPNETCORE_WEBROOT");
+
+	private static ILogger CreateBootstrapLogger()
+	{
+		var services = new ServiceCollection();
+		services.AddLogging(builder => builder.AddConsole());
+
+		return services
+			.BuildServiceProvider()
+			.GetRequiredService<ILoggerFactory>()
+			.CreateLogger(typeof(Program).FullName ?? nameof(Program));
+	}
 }
