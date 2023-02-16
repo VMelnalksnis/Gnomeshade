@@ -1,4 +1,4 @@
-FROM ghcr.io/vmelnalksnis/gnomeshade-build:7.0.102 AS build
+FROM ghcr.io/vmelnalksnis/gnomeshade-build:7.0.103 AS build
 
 WORKDIR /gnomeshade
 COPY ./ ./
@@ -7,7 +7,7 @@ RUN ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
 RUN ls /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/ -lah
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:7.0.2-alpine3.17 as gnomeshade
+FROM mcr.microsoft.com/dotnet/runtime-deps:7.0.3-alpine3.17 as gnomeshade
 
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/Gnomeshade.WebApi /gnomeshade/
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/libe_sqlite3.so /gnomeshade/
