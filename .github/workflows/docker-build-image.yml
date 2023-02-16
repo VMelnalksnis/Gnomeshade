@@ -18,5 +18,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker build --tag ghcr.io/vmelnalksnis/gnomeshade-build:7.0.200 ./deployment/docker/
-      - run: docker push ghcr.io/vmelnalksnis/gnomeshade-build:7.0.200
+      - run: docker build --tag ghcr.io/vmelnalksnis/gnomeshade-build:7.0.103 ./deployment/docker/
+      - run: docker push ghcr.io/vmelnalksnis/gnomeshade-build:7.0.103
