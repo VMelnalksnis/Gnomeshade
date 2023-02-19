@@ -27,7 +27,6 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
-	private Guid? _id;
 
 	/// <summary>Gets view model of all transfers of this transaction.</summary>
 	[Notify(Setter.Private)]
@@ -64,7 +63,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 		_dialogService = dialogService;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_id = id;
+		Id = id;
 		Properties = new(activityService);
 
 		Properties.PropertyChanged += PropertiesOnPropertyChanged;
@@ -98,12 +97,12 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task Edit()
 	{
-		if (_id is null)
+		if (Id is not { } transactionId)
 		{
 			return;
 		}
 
-		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value);
+		var transaction = await GnomeshadeClient.GetTransactionAsync(transactionId);
 		if (!transaction.Reconciled)
 		{
 			return;
@@ -119,19 +118,19 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 			ValuedAt = transaction.ValuedAt,
 		};
 
-		await GnomeshadeClient.PutTransactionAsync(_id.Value, creation);
+		await GnomeshadeClient.PutTransactionAsync(transactionId, creation);
 		await RefreshAsync();
 	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		if (_id is null)
+		if (Id is not { } transactionId)
 		{
 			return;
 		}
 
-		var transaction = await GnomeshadeClient.GetTransactionAsync(_id.Value);
+		var transaction = await GnomeshadeClient.GetTransactionAsync(transactionId);
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 
@@ -150,10 +149,10 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
-		Transfers ??= new(ActivityService, GnomeshadeClient, _id.Value);
-		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, _id.Value);
-		Links ??= new(ActivityService, GnomeshadeClient, _id.Value);
-		Loans ??= new(ActivityService, GnomeshadeClient, _id.Value);
+		Transfers ??= new(ActivityService, GnomeshadeClient, transactionId);
+		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
+		Links ??= new(ActivityService, GnomeshadeClient, transactionId);
+		Loans ??= new(ActivityService, GnomeshadeClient, transactionId);
 
 		await Task.WhenAll(
 			Transfers.RefreshAsync(),
@@ -189,11 +188,11 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 			Description = Properties.Description,
 		};
 
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutTransactionAsync(_id.Value, creationModel);
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutTransactionAsync(id, creationModel);
 		await RefreshAsync();
 
-		return _id.Value;
+		return id;
 	}
 
 	private void PropertiesOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

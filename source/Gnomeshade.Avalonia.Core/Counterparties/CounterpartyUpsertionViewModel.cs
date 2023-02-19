@@ -15,8 +15,6 @@ namespace Gnomeshade.Avalonia.Core.Counterparties;
 /// <summary>Updates the values of a single counterparty.</summary>
 public sealed partial class CounterpartyUpsertionViewModel : UpsertionViewModel
 {
-	private Guid? _id;
-
 	/// <summary>Gets or sets the name of the counterparty.</summary>
 	[Notify]
 	private string? _name;
@@ -31,7 +29,7 @@ public sealed partial class CounterpartyUpsertionViewModel : UpsertionViewModel
 		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
-		_id = id;
+		Id = id;
 	}
 
 	/// <inheritdoc />
@@ -40,12 +38,12 @@ public sealed partial class CounterpartyUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		if (_id is null)
+		if (Id is not { } id)
 		{
 			return;
 		}
 
-		var counterparty = await GnomeshadeClient.GetCounterpartyAsync(_id.Value);
+		var counterparty = await GnomeshadeClient.GetCounterpartyAsync(id);
 		Name = counterparty.Name;
 	}
 
@@ -53,8 +51,8 @@ public sealed partial class CounterpartyUpsertionViewModel : UpsertionViewModel
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var counterparty = new CounterpartyCreation { Name = Name };
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutCounterpartyAsync(_id.Value, counterparty);
-		return _id.Value;
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutCounterpartyAsync(id, counterparty);
+		return id;
 	}
 }

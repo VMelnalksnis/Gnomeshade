@@ -11,14 +11,14 @@ using Gnomeshade.WebApi.Models;
 
 using PropertyChanged.SourceGenerator;
 
+using static System.StringComparer;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Links;
 
 /// <summary>Create or update <see cref="Link"/>.</summary>
 public sealed partial class LinkUpsertionViewModel : UpsertionViewModel
 {
 	private readonly Guid _transactionId;
-
-	private Guid? _id;
 
 	/// <summary>Gets or sets the link value.</summary>
 	[Notify]
@@ -37,7 +37,7 @@ public sealed partial class LinkUpsertionViewModel : UpsertionViewModel
 		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
-		_id = id;
+		Id = id;
 	}
 
 	/// <inheritdoc />
@@ -46,12 +46,12 @@ public sealed partial class LinkUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		if (_id is null)
+		if (Id is not { } linkId)
 		{
 			return;
 		}
 
-		var link = await GnomeshadeClient.GetLinkAsync(_id.Value);
+		var link = await GnomeshadeClient.GetLinkAsync(linkId);
 		UriValue = link.Uri;
 	}
 
@@ -59,20 +59,16 @@ public sealed partial class LinkUpsertionViewModel : UpsertionViewModel
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
 		var links = await GnomeshadeClient.GetLinksAsync();
-		var existingLink =
-			links.SingleOrDefault(link => StringComparer.InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
-		if (existingLink is not null)
-		{
-			_id = existingLink.Id;
-		}
-		else
+		var existingLink = links.SingleOrDefault(link => InvariantCultureIgnoreCase.Equals(link.Uri, UriValue));
+
+		var id = existingLink?.Id ?? Id ?? Guid.NewGuid();
+		if (existingLink is null)
 		{
 			var linkCreation = new LinkCreation { Uri = new(UriValue!) };
-			_id ??= Guid.NewGuid();
-			await GnomeshadeClient.PutLinkAsync(_id.Value, linkCreation);
+			await GnomeshadeClient.PutLinkAsync(id, linkCreation);
 		}
 
-		await GnomeshadeClient.AddLinkToTransactionAsync(_transactionId, _id.Value);
-		return _id.Value;
+		await GnomeshadeClient.AddLinkToTransactionAsync(_transactionId, id);
+		return id;
 	}
 }

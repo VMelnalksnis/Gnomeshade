@@ -24,8 +24,6 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
-	private Guid? _id;
-
 	/// <summary>Gets or sets the name of the product.</summary>
 	[Notify]
 	private string? _name;
@@ -71,7 +69,7 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 		: base(activityService, gnomeshadeClient)
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_id = id;
+		Id = id;
 
 		_units = new();
 		_categories = new();
@@ -95,7 +93,7 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 
 		Units = units;
 		Categories = categories;
-		if (_id is not { } productId)
+		if (Id is not { } productId)
 		{
 			Purchases = new();
 			return;
@@ -135,8 +133,8 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 			CategoryId = SelectedCategory?.Id,
 		};
 
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutProductAsync(_id.Value, creationModel);
-		return _id.Value;
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutProductAsync(id, creationModel);
+		return id;
 	}
 }

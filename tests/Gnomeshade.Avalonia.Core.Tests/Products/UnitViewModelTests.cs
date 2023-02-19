@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Products;
 
-using static Gnomeshade.Avalonia.Core.Products.UnitViewModel;
-
 namespace Gnomeshade.Avalonia.Core.Tests.Products;
 
 [TestOf(typeof(UnitViewModel))]
@@ -19,25 +17,27 @@ public class UnitViewModelTests
 	[Test]
 	public async Task Unit_CreateUnitAsync_ShouldUpdateDataGridView()
 	{
-		var viewModel = await CreateAsync(new ActivityService(), new DesignTimeGnomeshadeClient());
-		viewModel.Units.Should().HaveCount(2);
+		var viewModel = new UnitViewModel(new ActivityService(), new DesignTimeGnomeshadeClient());
+		await viewModel.RefreshAsync();
+		viewModel.Rows.Should().HaveCount(2);
 
 		var newUnitName = Guid.NewGuid().ToString("N");
-		viewModel.Unit.Name = newUnitName;
-		await viewModel.Unit.SaveAsync();
+		viewModel.Details.Name = newUnitName;
+		await viewModel.Details.SaveAsync();
 
-		viewModel.Units.Should().HaveCount(3).And.ContainSingle(product => product.Name == newUnitName);
+		viewModel.Rows.Should().HaveCount(3).And.ContainSingle(unit => unit.Name == newUnitName);
 	}
 
 	[Test]
 	public async Task SelectedUnit_ShouldUpdateUnitCreationViewModel()
 	{
-		var viewModel = await CreateAsync(new ActivityService(), new DesignTimeGnomeshadeClient());
-		viewModel.Unit.Name.Should().BeNullOrWhiteSpace();
+		var viewModel = new UnitViewModel(new ActivityService(), new DesignTimeGnomeshadeClient());
+		await viewModel.RefreshAsync();
+		viewModel.Details.Name.Should().BeNullOrWhiteSpace();
 
-		var unitToSelect = viewModel.Units.First();
+		var unitToSelect = viewModel.Rows.First();
 		viewModel.SelectedUnit = unitToSelect;
 
-		viewModel.Unit.Name.Should().Be(unitToSelect.Name);
+		viewModel.Details.Name.Should().Be(unitToSelect.Name);
 	}
 }

@@ -54,6 +54,6 @@
 
 		<UserControl
 			Grid.Column="1" Grid.Row="0"
-			Content="{Binding Unit, Mode=OneWay}"/>
+			Content="{Binding Details, Mode=OneWay}"/>
 	</Grid>
 </UserControl>

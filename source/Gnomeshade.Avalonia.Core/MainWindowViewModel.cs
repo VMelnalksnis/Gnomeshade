@@ -120,21 +120,15 @@ public sealed class MainWindowViewModel : ViewModelBase
 		return new(ActivityService, gnomeshadeClient);
 	});
 
-	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitCreationViewModel"/>.</summary>
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitUpsertionViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task CreateUnitAsync()
+	public Task CreateUnitAsync() => SwitchTo(() =>
 	{
-		if (ActiveView is UnitCreationViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var unitCreationViewModel = await UnitCreationViewModel.CreateAsync(ActivityService, gnomeshadeClient);
+		var unitCreationViewModel = new UnitUpsertionViewModel(ActivityService, gnomeshadeClient, null);
 		unitCreationViewModel.Upserted += OnUnitUpserted;
-
-		ActiveView = unitCreationViewModel;
-	}
+		return unitCreationViewModel;
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -179,17 +173,11 @@ public sealed class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="UnitViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task SwitchToUnitAsync()
+	public Task SwitchToUnitAsync() => SwitchTo<UnitViewModel>(() =>
 	{
-		if (ActiveView is UnitViewModel)
-		{
-			return;
-		}
-
 		var gnomeshadeClient = _serviceProvider.GetRequiredService<IGnomeshadeClient>();
-		var unitViewModel = await UnitViewModel.CreateAsync(ActivityService, gnomeshadeClient);
-		ActiveView = unitViewModel;
-	}
+		return new(ActivityService, gnomeshadeClient);
+	});
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CategoryReportViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -351,7 +339,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 				productCreationViewModel.Upserted -= OnProductUpserted;
 				break;
 
-			case UnitCreationViewModel unitCreationViewModel:
+			case UnitUpsertionViewModel unitCreationViewModel:
 				unitCreationViewModel.Upserted -= OnUnitUpserted;
 				break;
 		}

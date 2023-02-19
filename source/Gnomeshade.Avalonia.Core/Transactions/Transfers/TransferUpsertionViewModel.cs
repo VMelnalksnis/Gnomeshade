@@ -22,7 +22,6 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 {
 	private readonly Guid _transactionId;
-	private readonly Guid? _id;
 
 	/// <summary>Gets or sets the amount withdrawn from <see cref="SourceAccount"/>.</summary>
 	[Notify]
@@ -85,7 +84,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
-		_id = id;
+		Id = id;
 
 		_accounts = new();
 		_currencies = new();
@@ -122,12 +121,12 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		Accounts = accountsTask.Result;
 		Currencies = currenciesTask.Result;
 
-		if (_id is null)
+		if (Id is not { } transferId)
 		{
 			return;
 		}
 
-		var transfer = await GnomeshadeClient.GetTransferAsync(_id.Value);
+		var transfer = await GnomeshadeClient.GetTransferAsync(transferId);
 
 		SourceAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
 		SourceAmount = transfer.SourceAmount;
@@ -160,7 +159,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 			Order = Order,
 		};
 
-		var id = _id ?? Guid.NewGuid();
+		var id = Id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutTransferAsync(id, transferCreation);
 		return id;
 	}

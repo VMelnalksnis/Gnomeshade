@@ -19,8 +19,6 @@ namespace Gnomeshade.Avalonia.Core.Products;
 /// <summary>Creating or updating an existing category.</summary>
 public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 {
-	private Guid? _id;
-
 	/// <summary>Gets or sets the name of the category.</summary>
 	[Notify]
 	private string? _name;
@@ -44,7 +42,7 @@ public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 	public CategoryUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
-		_id = id;
+		Id = id;
 
 		_categories = new();
 	}
@@ -59,7 +57,7 @@ public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 	protected override async Task Refresh()
 	{
 		var categories = await GnomeshadeClient.GetCategoriesAsync();
-		var editedCategory = categories.SingleOrDefault(category => category.Id == _id);
+		var editedCategory = categories.SingleOrDefault(category => category.Id == Id);
 		if (editedCategory is not null)
 		{
 			categories.Remove(editedCategory);
@@ -81,8 +79,8 @@ public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 			CategoryId = SelectedCategory?.Id,
 		};
 
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutCategoryAsync(_id.Value, categoryCreationModel);
-		return _id.Value;
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutCategoryAsync(id, categoryCreationModel);
+		return id;
 	}
 }

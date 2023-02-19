@@ -21,8 +21,6 @@ namespace Gnomeshade.Avalonia.Core.Accounts;
 /// <summary>Form for viewing and editing a single account.</summary>
 public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 {
-	private Guid? _id;
-
 	/// <summary>Gets a collection of available currencies.</summary>
 	[Notify(Setter.Private)]
 	private List<Counterparty> _counterparties;
@@ -70,7 +68,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 	public AccountUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
-		_id = id;
+		Id = id;
 
 		_counterparties = new();
 		_currencies = new();
@@ -133,7 +131,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 		Counterparties = counterparties;
 		Currencies = currencies;
 
-		if (_id is not { } id)
+		if (Id is not { } id)
 		{
 			return;
 		}
@@ -179,31 +177,31 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 			Currencies = currencyIds.Select(id => new AccountInCurrencyCreation { CurrencyId = id }).ToList(),
 		};
 
-		var newAccount = _id is null;
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutAccountAsync(_id.Value, creationModel);
+		var newAccount = Id is null;
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutAccountAsync(id, creationModel);
 		if (newAccount)
 		{
-			return _id.Value;
+			return id;
 		}
 
-		var account = await GnomeshadeClient.GetAccountAsync(_id.Value);
+		var account = await GnomeshadeClient.GetAccountAsync(id);
 		var missingCurrencies = currencyIds
 			.Where(currencyId => account.Currencies.All(c => c.Currency.Id != currencyId));
 		foreach (var missingCurrency in missingCurrencies)
 		{
-			await GnomeshadeClient.AddCurrencyToAccountAsync(_id.Value, new() { CurrencyId = missingCurrency });
+			await GnomeshadeClient.AddCurrencyToAccountAsync(id, new() { CurrencyId = missingCurrency });
 		}
 
 		var extraCurrencies = account.Currencies
-			.Where(currency => currencyIds.All(id => id != currency.Currency.Id));
+			.Where(currency => currencyIds.All(currencyId => currencyId != currency.Currency.Id));
 
 		foreach (var extraCurrency in extraCurrencies)
 		{
 			await GnomeshadeClient.RemoveCurrencyFromAccountAsync(account.Id, extraCurrency.Id);
 		}
 
-		return _id.Value;
+		return id;
 	}
 
 	private void AdditionalCurrenciesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

@@ -82,9 +82,9 @@ public static class DesignTimeData
 	public static ProductUpsertionViewModel ProductUpsertionViewModel { get; } =
 		InitializeViewModel(new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, DateTimeZoneProvider, null));
 
-	/// <summary>Gets an instance of <see cref="UnitCreationViewModel"/> for use during design time.</summary>
-	public static UnitCreationViewModel UnitCreationViewModel { get; } =
-		UnitCreationViewModel.CreateAsync(ActivityService, GnomeshadeClient).Result;
+	/// <summary>Gets an instance of <see cref="UnitUpsertionViewModel"/> for use during design time.</summary>
+	public static UnitUpsertionViewModel UnitUpsertionViewModel { get; } =
+		InitializeViewModel(new UnitUpsertionViewModel(ActivityService, GnomeshadeClient, null));
 
 	/// <summary>Gets an instance of <see cref="CategoryUpsertionViewModel"/> for use during design time.</summary>
 	public static CategoryUpsertionViewModel CategoryUpsertionViewModel { get; } =
@@ -103,7 +103,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="UnitViewModel"/> for use during design time.</summary>
 	public static UnitViewModel UnitViewModel { get; } =
-		UnitViewModel.CreateAsync(ActivityService, GnomeshadeClient).Result;
+		InitializeViewModel<UnitViewModel, UnitRow, UnitUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
 	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =

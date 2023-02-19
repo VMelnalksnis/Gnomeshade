@@ -15,6 +15,10 @@ namespace Gnomeshade.Avalonia.Core;
 /// <summary>Base view model for creating or updating a single entity.</summary>
 public abstract partial class UpsertionViewModel : ViewModelBase
 {
+	/// <summary>Gets or sets the id of the entity being edited.</summary>
+	[Notify(Setter.Protected)]
+	private Guid? _id;
+
 	/// <summary>Gets or sets error message when <see cref="SaveAsync"/> fails.</summary>
 	[Notify(Setter.Protected)]
 	private string? _errorMessage;
@@ -51,8 +55,9 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 		try
 		{
 			var id = await SaveValidatedAsync();
-			ErrorMessage = null;
 			OnUpserted(id);
+			Id = id;
+			ErrorMessage = null;
 		}
 		catch (Exception exception)
 		{

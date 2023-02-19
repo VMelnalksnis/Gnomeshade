@@ -10,8 +10,8 @@ using Gnomeshade.Avalonia.Core.Products;
 
 namespace Gnomeshade.Desktop.Views.Products;
 
-/// <inheritdoc cref="UnitCreationViewModel"/>
-public sealed class UnitCreationView : UserControl, IView<UnitCreationView, UnitCreationViewModel>
+/// <inheritdoc cref="UnitUpsertionViewModel"/>
+public sealed class UnitCreationView : UserControl, IView<UnitCreationView, UnitUpsertionViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="UnitCreationView"/> class.</summary>
 	public UnitCreationView()

@@ -28,7 +28,6 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
-	private readonly Guid? _id;
 
 	/// <summary>Gets or sets the amount paid to purchase an <see cref="Amount"/> of <see cref="Product"/>.</summary>
 	[Notify]
@@ -89,7 +88,8 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_id = id;
+		Id = id;
+
 		_currencies = new();
 		_products = new();
 
@@ -136,7 +136,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		if (_id is null)
+		if (Id is not { } purchaseId)
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync();
 			Products = await GnomeshadeClient.GetProductsAsync();
@@ -145,7 +145,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		{
 			Currencies = await GnomeshadeClient.GetCurrenciesAsync();
 			Products = await GnomeshadeClient.GetProductsAsync();
-			var purchase = await GnomeshadeClient.GetPurchaseAsync(_id.Value);
+			var purchase = await GnomeshadeClient.GetPurchaseAsync(purchaseId);
 			Price = purchase.Price;
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
@@ -181,7 +181,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 			Order = Order,
 		};
 
-		var id = _id ?? Guid.NewGuid(); // todo should this be saved?
+		var id = Id ?? Guid.NewGuid(); // todo should this be saved?
 		await GnomeshadeClient.PutPurchaseAsync(id, purchaseCreation);
 		return id;
 	}

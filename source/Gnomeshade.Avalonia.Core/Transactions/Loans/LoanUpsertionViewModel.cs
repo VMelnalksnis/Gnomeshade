@@ -22,8 +22,6 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 {
 	private readonly Guid _transactionId;
 
-	private Guid? _id;
-
 	/// <summary>Gets all available counterparties.</summary>
 	[Notify(Setter.Private)]
 	private List<Counterparty> _counterparties;
@@ -68,7 +66,7 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 		: base(activityService, gnomeshadeClient)
 	{
 		_transactionId = transactionId;
-		_id = id;
+		Id = id;
 
 		_counterparties = new();
 		_currencies = new();
@@ -94,12 +92,12 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 		Counterparties = await GnomeshadeClient.GetCounterpartiesAsync();
 		Currencies = await GnomeshadeClient.GetCurrenciesAsync();
 
-		if (_id is null)
+		if (Id is null)
 		{
 			return;
 		}
 
-		var loan = await GnomeshadeClient.GetLoanAsync(_id.Value);
+		var loan = await GnomeshadeClient.GetLoanAsync(Id.Value);
 		IssuingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId);
 		ReceivingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.ReceivingCounterpartyId);
 		Amount = loan.Amount;
@@ -118,8 +116,8 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 			CurrencyId = Currency?.Id,
 		};
 
-		_id ??= Guid.NewGuid();
-		await GnomeshadeClient.PutLoanAsync(_id.Value, creation);
-		return _id.Value;
+		var id = Id ?? Guid.NewGuid();
+		await GnomeshadeClient.PutLoanAsync(id, creation);
+		return id;
 	}
 }
