@@ -5,7 +5,11 @@
 		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
 		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
-		<PublishTrimmed>false</PublishTrimmed>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>copyused</TrimMode>
+		<!--See https://github.com/dotnet/linker/issues/3039-->
+		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
+		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 
 		<NoWarn>CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>

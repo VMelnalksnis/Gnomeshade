@@ -4,7 +4,13 @@
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 
-		<PublishTrimmed>false</PublishTrimmed>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>copyused</TrimMode>
+		<!--See https://github.com/dotnet/linker/issues/3039-->
+		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
