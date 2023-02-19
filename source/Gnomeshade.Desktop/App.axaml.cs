@@ -100,10 +100,10 @@ public sealed class App : Application
 		serviceCollection.AddGnomeshadeClient(configuration);
 
 		serviceCollection
+			.AddViewModels()
 			.AddTransient<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<ViewLocator<App>>()
-			.AddSingleton<IDialogService, DialogService>()
-			.AddSingleton<MainWindowViewModel>();
+			.AddSingleton<IDialogService, DialogService>();
 
 		_serviceProvider = serviceCollection.BuildServiceProvider();
 	}
