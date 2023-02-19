@@ -582,7 +582,7 @@
           "IdentityModel.OidcClient": "[5.2.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.Http": "[7.0.0, )",
-          "Microsoft.Extensions.Options": "[7.0.0, )",
+          "Microsoft.Extensions.Options": "[7.0.1, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[7.0.0, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[7.0.0, )",
           "NodaTime.Serialization.SystemTextJson": "[1.0.0, )"
@@ -726,9 +726,9 @@
       },
       "Microsoft.Extensions.Options": {
         "type": "CentralTransitive",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "lP1yBnTTU42cKpMozuafbvNtQ7QcBjr/CcK3bYOGEMH55Fjt+iecXjT6chR7vbgCMqy3PG3aNQSZgo/EuY/9qQ==",
+        "requested": "[7.0.1, )",
+        "resolved": "7.0.1",
+        "contentHash": "pZRDYdN1FpepOIfHU62QoBQ6zdAoTvnjxFfqAzEd9Jhb2dfhA5i6jeTdgGgcgTWFRC7oT0+3XrbQu4LjvgX1Nw==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
           "Microsoft.Extensions.Primitives": "7.0.0"
