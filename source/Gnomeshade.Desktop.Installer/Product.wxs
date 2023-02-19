@@ -68,7 +68,9 @@
 				<File Id="Gnomeshade.Desktop.exe" Name="Gnomeshade.Desktop.exe"
 					  Source="$(var.BuildDir)Gnomeshade.Desktop.exe"/>
 
-				<RemoveFile Id="ALLFILES" Name="*.*" On="both"/>
+				<RemoveFile Id="DllRemove" Name="*.dll" On="both"/>
+				<RemoveFile Id="ExeRemove" Name="*.exe" On="both"/>
+				<RemoveFile Id="DefaultSettingsRemove" Name="appsettings.json" On="both"/>
 				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
 			</Component>
 
