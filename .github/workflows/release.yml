@@ -153,13 +153,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: >
-          docker build
-          --tag ghcr.io/vmelnalksnis/gnomeshade:nightly
-          --build-arg "BUILD_NUMBER=${{ github.run_number }}"
-          ./
-
-      - run: docker push ghcr.io/vmelnalksnis/gnomeshade:nightly
+      - run: ./deployment/docker_push.sh "${{ github.run_number }}" "nightly"
 
   docker-release:
     name: Build docker image
@@ -173,17 +167,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read version
-        id: getversion
-        run: echo "version=$(cat version)" >>"$GITHUB_OUTPUT"
-
-      - run: >
-          docker build
-          --tag ghcr.io/vmelnalksnis/gnomeshade:${{ steps.getversion.version }}
-          --build-arg "BUILD_NUMBER=${{ github.run_number }}"
-          ./
-
-      - run: docker push ghcr.io/vmelnalksnis/gnomeshade:${{ steps.getversion.version }}
+      - run: ./deployment/docker_push.sh "${{ github.run_number }}"
 
   deploy-demo:
     name: Deploy demo app
