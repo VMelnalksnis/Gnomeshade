@@ -38,8 +38,7 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 
 ### Client
 
-An `.msi` installer is provided for the windows client application.
-Currently no settings are preserved between updates, [see issue](https://github.com/VMelnalksnis/Gnomeshade/issues/360). 
+An `.msi` installer is provided for the windows client application. 
 
 ## Contributing
 
