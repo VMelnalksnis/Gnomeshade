@@ -17,6 +17,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 public sealed class TransferViewModel : OverviewViewModel<TransferOverview, TransferUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDialogService _dialogService;
 	private readonly Guid _transactionId;
 
 	private TransferUpsertionViewModel _details;
@@ -24,13 +25,19 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
-	public TransferViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public TransferViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
+		Guid transactionId)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dialogService = dialogService;
 		_transactionId = transactionId;
-		_details = new(activityService, gnomeshadeClient, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, _dialogService, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -54,7 +61,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		SetDefaultCurrency(this);
 	}

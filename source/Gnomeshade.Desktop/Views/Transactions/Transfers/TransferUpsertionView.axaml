@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="transfers:TransferUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,2*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,2*,*,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
 			Margin="5" VerticalAlignment="Center"
@@ -49,6 +49,13 @@
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
+
+		<Button
+			Grid.Column="4" Grid.Row="0"
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			Command="{ReflectionBinding ShowSourceAccountDialog}" CommandParameter="{Binding $parent[Window]}">
+			+
+		</Button>
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="1"
@@ -88,12 +95,19 @@
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
 
+		<Button
+			Grid.Column="4" Grid.Row="1"
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			Command="{ReflectionBinding ShowTargetAccountDialog}" CommandParameter="{Binding $parent[Window]}">
+			+
+		</Button>
+
 		<TextBlock
 			Grid.Column="0" Grid.Row="2"
 			Margin="5" VerticalAlignment="Center"
 			Text="Bank:" />
 		<TextBox
-			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3"
+			Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4"
 			Watermark="Transaction id"
 			Text="{Binding BankReference}" />
 
@@ -102,7 +116,7 @@
 			Margin="5" VerticalAlignment="Center"
 			Text="External:" />
 		<TextBox
-			Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="3"
+			Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="4"
 			Watermark="Reference number"
 			Text="{Binding ExternalReference}" />
 
@@ -111,7 +125,7 @@
 			Margin="5" VerticalAlignment="Center"
 			Text="Internal:" />
 		<TextBox
-			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="3"
+			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4"
 			Watermark="Reference number"
 			Text="{Binding InternalReference}" />
 
@@ -119,8 +133,8 @@
 			Grid.Column="0" Grid.Row="5"
 			Margin="5" VerticalAlignment="Center"
 			Text="Order:" />
-		
-		<NumericUpDown Grid.Column="1" Grid.Row="5" Minimum="0" Value="{Binding Order}"/>
+
+		<NumericUpDown Grid.Column="1" Grid.Row="5" Minimum="0" Value="{Binding Order}" />
 
 		<Button
 			Grid.Column="0" Grid.Row="6"

@@ -149,7 +149,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
-		Transfers ??= new(ActivityService, GnomeshadeClient, transactionId);
+		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, transactionId);
 		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
 		Links ??= new(ActivityService, GnomeshadeClient, transactionId);
 		Loans ??= new(ActivityService, GnomeshadeClient, transactionId);

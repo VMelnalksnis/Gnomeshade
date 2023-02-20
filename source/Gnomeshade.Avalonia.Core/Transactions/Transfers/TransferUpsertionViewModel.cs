@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
@@ -21,6 +22,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 /// <summary>Create or update a transfer.</summary>
 public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 {
+	private readonly IDialogService _dialogService;
 	private readonly Guid _transactionId;
 
 	/// <summary>Gets or sets the amount withdrawn from <see cref="SourceAccount"/>.</summary>
@@ -74,15 +76,18 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
 	/// <param name="id">The id of the transfer to edit.</param>
 	public TransferUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
+		IDialogService dialogService,
 		Guid transactionId,
 		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
+		_dialogService = dialogService;
 		_transactionId = transactionId;
 		Id = id;
 
@@ -109,6 +114,34 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		TargetAmount is not null &&
 		TargetAccount is not null &&
 		TargetCurrency is not null;
+
+	/// <summary>Shows a modal dialog for creating or editing the <see cref="SourceAccount"/>.</summary>
+	/// <param name="window">The current window.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task ShowSourceAccountDialog(Window window)
+	{
+		var initialId = SourceAccount?.Id;
+		var resultId = await ShowAccountDialog(window, initialId);
+
+		if (resultId is { } id && id != initialId)
+		{
+			SourceAccount = Accounts.SingleOrDefault(account => account.Id == id);
+		}
+	}
+
+	/// <summary>Shows a modal dialog for creating or editing the <see cref="TargetAccount"/>.</summary>
+	/// <param name="window">The current window.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public async Task ShowTargetAccountDialog(Window window)
+	{
+		var initialId = TargetAccount?.Id;
+		var resultId = await ShowAccountDialog(window, initialId);
+
+		if (resultId is { } id && id != initialId)
+		{
+			TargetAccount = Accounts.SingleOrDefault(account => account.Id == id);
+		}
+	}
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
@@ -162,6 +195,22 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		var id = Id ?? Guid.NewGuid();
 		await GnomeshadeClient.PutTransferAsync(id, transferCreation);
 		return id;
+	}
+
+	private async Task<Guid?> ShowAccountDialog(Window window, Guid? id)
+	{
+		using var activity = BeginActivity("Waiting for account creation");
+		var viewModel = new AccountUpsertionViewModel(ActivityService, GnomeshadeClient, id);
+		await viewModel.RefreshAsync();
+
+		var result = await _dialogService.ShowDialogValue<AccountUpsertionViewModel, Guid>(window, viewModel, dialog =>
+		{
+			dialog.Title = id.HasValue ? "Edit account" : "Create account";
+			viewModel.Upserted += (_, args) => dialog.Close(args.Id);
+		});
+
+		await RefreshAsync();
+		return result;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -19,7 +19,7 @@ public class TransferViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient(), Guid.Empty);
+		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), Guid.Empty);
 		await _viewModel.RefreshAsync();
 	}
 
