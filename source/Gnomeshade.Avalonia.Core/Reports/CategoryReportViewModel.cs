@@ -99,6 +99,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 	protected override async Task Refresh()
 	{
 		Categories = await _gnomeshadeClient.GetCategoriesAsync();
+		var accounts = await _gnomeshadeClient.GetAccountsAsync();
 		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var transactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
@@ -130,7 +131,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			.ToList();
 
 		var purchases = data
-			.SelectMany(tuple => tuple.transaction.Purchases.Select(purchase => (purchase, tuple.date)))
+			.SelectMany(tuple => tuple.transaction.Purchases.Select(purchase => (purchase, tuple.transaction.Transfers, tuple.date)))
 			.ToList();
 
 		var uncategorizedTransfers = data
@@ -138,7 +139,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			.Select(tuple =>
 			{
 				var purchase = new Purchase { Price = tuple.transaction.TransferBalance - tuple.transaction.PurchaseTotal };
-				return (purchase, tuple.date, node: default(CategoryNode));
+				return new PurchaseData(purchase, tuple.date, tuple.transaction.Transfers, null);
 			})
 			.ToList();
 
@@ -147,23 +148,77 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			{
 				var product = products.SingleOrDefault(product => product.Id == purchase.purchase.ProductId);
 				var node = product?.CategoryId is not { } id ? null : nodes.SingleOrDefault(node => node.Contains(id));
-				return (purchase.purchase, purchase.date, node);
+				return new PurchaseData(purchase.purchase, purchase.date, purchase.Transfers, node);
 			})
 			.Concat(uncategorizedTransfers)
-			.Where(tuple => SelectedCategory is null || tuple.node is not null)
-			.GroupBy(tuple => tuple.node)
+			.Where(tuple => SelectedCategory is null || tuple.Node is not null)
+			.GroupBy(tuple => tuple.Node)
 			.Select(categoryGrouping => new StackedColumnSeries<DateTimePoint>
 			{
 				Values = splits
 					.Select(split => new DateTimePoint(
 						split.ToDateTimeUnspecified(),
 						(double?)categoryGrouping
-							.Where(grouping => grouping.date.Year == split.Year && grouping.date.Month == split.Month)
-							.Sum(grouping => grouping.purchase.Price))),
+							.Where(grouping => grouping.Date.Year == split.Year && grouping.Date.Month == split.Month)
+							.Sum(grouping =>
+							{
+								var sourceCurrencyIds = accounts
+									.SelectMany(account => account.Currencies)
+									.Where(account => grouping.Transfers.Any(transfer => transfer.SourceAccountId == account.Id))
+									.Select(account => account.Currency.Id)
+									.Distinct()
+									.ToList();
+
+								var targetCurrencyIds = accounts
+									.SelectMany(account => account.Currencies)
+									.Where(account => grouping.Transfers.Any(transfer => transfer.TargetAccountId == account.Id))
+									.Select(account => account.Currency.Id)
+									.Distinct()
+									.ToList();
+
+								if (sourceCurrencyIds.Count is not 1 ||
+									targetCurrencyIds.Count is not 1)
+								{
+									// todo cannot handle multiple currencies (#686)
+									return grouping.Purchase.Price;
+								}
+
+								var sourceCurrency = sourceCurrencyIds.Single();
+								var targetCurrency = targetCurrencyIds.Single();
+
+								if (sourceCurrency == targetCurrency)
+								{
+									return grouping.Purchase.Price;
+								}
+
+								var transfer = grouping.Transfers.Single();
+								var ratio = transfer.SourceAmount / transfer.TargetAmount;
+								return Math.Round(grouping.Purchase.Price * ratio, 2);
+							})))
+					.ToArray(),
 				Name = categoryGrouping.Key?.Name ?? "Uncategorized",
 			})
 			.ToList();
 
 		Series = purchasesWithCategories;
+	}
+
+	private struct PurchaseData
+	{
+		public PurchaseData(Purchase purchase, ZonedDateTime date, List<Transfer> transfers, CategoryNode? node)
+		{
+			Purchase = purchase;
+			Date = date;
+			Transfers = transfers;
+			Node = node;
+		}
+
+		public Purchase Purchase { get; }
+
+		public ZonedDateTime Date { get; }
+
+		public List<Transfer> Transfers { get; }
+
+		public CategoryNode? Node { get; }
 	}
 }
