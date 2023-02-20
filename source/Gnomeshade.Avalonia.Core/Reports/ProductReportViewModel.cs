@@ -268,7 +268,7 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 
 		Series.Add(new()
 		{
-			Values = calculationFunction.Update(dateTimePoints),
+			Values = calculationFunction.Update(dateTimePoints).ToArray(),
 			Stroke = null,
 			DataLabelsPaint = new SolidColorPaint(new(255, 255, 255)),
 			DataLabelsSize = 12,
