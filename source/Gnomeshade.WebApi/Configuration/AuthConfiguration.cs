@@ -28,6 +28,9 @@ namespace Gnomeshade.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
+	private const string DefaultScheme = "UNKNOWN";
+	private static readonly JwtSecurityTokenHandler _tokenHandler = new();
+
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,
 		IConfiguration configuration)
@@ -64,11 +67,9 @@ internal static class AuthConfiguration
 				.AddScoped<ApplicationUserContext>()
 				.AddAuthentication(options =>
 				{
-					var defaultScheme = authenticationSchemes.First();
-
-					options.DefaultScheme = defaultScheme;
-					options.DefaultAuthenticateScheme = defaultScheme;
-					options.DefaultChallengeScheme = defaultScheme;
+					options.DefaultScheme = DefaultScheme;
+					options.DefaultAuthenticateScheme = DefaultScheme;
+					options.DefaultChallengeScheme = DefaultScheme;
 				});
 
 		if (jwtOptionsDefined)
@@ -142,8 +143,6 @@ internal static class AuthConfiguration
 				options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
 				options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
 				options.SaveTokens = true;
-				options.NonceCookie.SameSite = SameSiteMode.Unspecified;
-				options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
 				options.TokenValidationParameters = new()
 				{
 					NameClaimType = "name",
@@ -170,19 +169,20 @@ internal static class AuthConfiguration
 		}
 
 		string? authorization = context.Request.Headers[HeaderNames.Authorization];
-		if (string.IsNullOrWhiteSpace(authorization) || !authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
+		if (string.IsNullOrWhiteSpace(authorization) ||
+			!authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
 		{
 			return null;
 		}
 
 		var token = authorization[JwtBearerDefaults.AuthenticationScheme.Length..];
-		var handler = new JwtSecurityTokenHandler();
-		if (!handler.CanReadToken(token))
+
+		if (!_tokenHandler.CanReadToken(token))
 		{
 			return null;
 		}
 
-		var jwtToken = handler.ReadToken(token);
+		var jwtToken = _tokenHandler.ReadToken(token);
 		return authenticationSchemes.Contains(jwtToken.Issuer)
 			? jwtToken.Issuer
 			: null;
