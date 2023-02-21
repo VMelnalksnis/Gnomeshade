@@ -43,13 +43,20 @@ public sealed class EndpointTests : WebserverTests
 	{
 		yield return new Uri("/", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
-		yield return new Uri("/Identity/Account/Login", UriKind.Relative);
 	}
 
 	private static IEnumerable Redirects()
 	{
 		yield return new TestCaseData(
 			new Uri("/Identity/Account/ExternalLogin", UriKind.Relative),
+			new Uri("/Identity/Account/Login", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/LoginWith2Fa", UriKind.Relative),
+			new Uri("/Identity/Account/Login", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/LoginWithRecoveryCode", UriKind.Relative),
 			new Uri("/Identity/Account/Login", UriKind.Relative));
 	}
 }

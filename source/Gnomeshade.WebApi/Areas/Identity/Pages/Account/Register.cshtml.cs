@@ -96,7 +96,7 @@ public sealed class Register : PageModel
 
 			if (result.Succeeded)
 			{
-				_logger.LogInformation("User created a new account with password");
+				LogMessages.UserCreated(_logger);
 
 				var identityUser = await _userManager.FindByNameAsync(user.UserName);
 				if (identityUser is null)

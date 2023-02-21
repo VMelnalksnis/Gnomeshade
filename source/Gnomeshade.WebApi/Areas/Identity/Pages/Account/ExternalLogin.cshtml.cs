@@ -111,7 +111,7 @@ public sealed class ExternalLogin : PageModel
 
 		if (result.Succeeded)
 		{
-			_logger.LogInformation("{Name} logged in with {LoginProvider} provider", info.Principal.Identity?.Name, info.LoginProvider);
+			LogMessages.UserLoggedInExternal(_logger, info.Principal.Identity?.Name, info.LoginProvider);
 			return LocalRedirect(returnUrl);
 		}
 
@@ -175,7 +175,7 @@ public sealed class ExternalLogin : PageModel
 				result = await _userManager.AddLoginAsync(user, info);
 				if (result.Succeeded)
 				{
-					_logger.LogInformation("User created an account using {Name} provider", info.LoginProvider);
+					LogMessages.UserCreatedExternal(_logger, info.LoginProvider);
 
 					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 					if (identityUser is null)

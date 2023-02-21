@@ -1,139 +1,128 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
+// Copyright 2021 Valters Melnalksnis
+// Licensed under the GNU Affero General Public License v3.0 or later.
+// See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+
+using Gnomeshade.Data.Identity;
+
+using JetBrains.Annotations;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account
+namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
+
+/// <summary>Page for handling user login.</summary>
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented", Justification = "No reason to document IActionResult")]
+public sealed class Login : PageModel
 {
-    public class LoginModel : PageModel
-    {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
+	private readonly SignInManager<ApplicationUser> _signInManager;
+	private readonly ILogger<Login> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
-        {
-            _signInManager = signInManager;
-            _logger = logger;
-        }
+	/// <summary>Initializes a new instance of the <see cref="Login"/> class.</summary>
+	/// <param name="signInManager">Application user sign in manager.</param>
+	/// <param name="logger">Logger for logging in the specified category.</param>
+	public Login(SignInManager<ApplicationUser> signInManager, ILogger<Login> logger)
+	{
+		_signInManager = signInManager;
+		_logger = logger;
+	}
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [BindProperty]
-        public InputModel Input { get; set; }
+	/// <summary>Gets or sets the data needed to login.</summary>
+	[BindProperty]
+	public InputModel Input { get; set; } = null!;
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+	/// <summary>Gets a collection of external authentication schemes.</summary>
+	/// <seealso cref="ExternalLogin"/>
+	public IList<AuthenticationScheme>? ExternalLogins { get; private set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public string ReturnUrl { get; set; }
+	/// <summary>Gets the return url parameter.</summary>
+	public string? ReturnUrl { get; private set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [TempData]
-        public string ErrorMessage { get; set; }
+	/// <summary>Gets or sets the error message.</summary>
+	[TempData]
+	public string? ErrorMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            public string Email { get; set; }
+	/// <summary>Handles requests made by the user.</summary>
+	/// <param name="returnUrl">The URL to which to return to after successful login.</param>
+	public async Task OnGetAsync(string? returnUrl = null)
+	{
+		if (!string.IsNullOrEmpty(ErrorMessage))
+		{
+			ModelState.AddModelError(string.Empty, ErrorMessage);
+		}
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
+		returnUrl ??= Url.Content("~/");
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
+		// Clear the existing external cookie to ensure a clean login process
+		await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-        public async Task OnGetAsync(string returnUrl = null)
-        {
-            if (!string.IsNullOrEmpty(ErrorMessage))
-            {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
-            }
+		ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            returnUrl ??= Url.Content("~/");
+		ReturnUrl = returnUrl;
+	}
 
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+	/// <summary>Handles login attempt by the user.</summary>
+	/// <param name="returnUrl">The URL to which to return to after successful login.</param>
+	public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+	{
+		returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+		ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            ReturnUrl = returnUrl;
-        }
+		if (!ModelState.IsValid)
+		{
+			return Page();
+		}
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
+		// This doesn't count login failures towards account lockout
+		// To enable password failures to trigger account lockout, set lockoutOnFailure: true
+		var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+		LogMessages.PasswordSignIn(_logger, result);
+		if (result.Succeeded)
+		{
+			LogMessages.UserLoggedIn(_logger);
+			return LocalRedirect(returnUrl);
+		}
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+		if (result.RequiresTwoFactor)
+		{
+			return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
+		}
 
-            if (ModelState.IsValid)
-            {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
-            }
+		if (result.IsLockedOut)
+		{
+			LogMessages.UserLockedOut(_logger);
+			return RedirectToPage("./Lockout");
+		}
 
-            // If we got this far, something failed, redisplay form
-            return Page();
-        }
-    }
+		ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+		return Page();
+	}
+
+	/// <summary>Data needed to log in a user.</summary>
+	[UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
+	public sealed class InputModel
+	{
+		/// <summary>Gets or sets the username of the user.</summary>
+		[Required]
+		public string Username { get; set; } = null!;
+
+		/// <summary>Gets or sets the password of the user.</summary>
+		[Required]
+		[DataType(DataType.Password)]
+		public string Password { get; set; } = null!;
+
+		/// <summary>Gets or sets a value indicating whether to persist this login.</summary>
+		[Display(Name = "Remember me?")]
+		public bool RememberMe { get; set; }
+	}
 }
