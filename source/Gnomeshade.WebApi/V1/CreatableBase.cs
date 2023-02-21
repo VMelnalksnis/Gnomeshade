@@ -119,7 +119,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 			return await CreateNewAsync(id, creation, ApplicationUser);
 		}
 
-		return Forbid();
+		return StatusCode(Status403Forbidden);
 	}
 
 	/// <summary>Deletes the entity.</summary>

@@ -69,7 +69,7 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 			return await CreateNewOwnershipAsync(ownership, id);
 		}
 
-		return Forbid();
+		return StatusCode(Status403Forbidden);
 	}
 
 	/// <inheritdoc cref="IOwnerClient.DeleteOwnershipAsync"/>

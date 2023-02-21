@@ -16,6 +16,7 @@ using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Models.Transactions;
 using Gnomeshade.WebApi.V1.Authorization;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -111,6 +112,6 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 
 		return await _transactionRepository.FindByIdAsync(transactionId, dbTransaction) is null
 			? NotFound()
-			: Forbid();
+			: StatusCode(StatusCodes.Status403Forbidden);
 	}
 }
