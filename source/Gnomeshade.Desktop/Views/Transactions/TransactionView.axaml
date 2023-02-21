@@ -93,9 +93,7 @@
 								</ItemsControl.ItemsPanel>
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="transactions:TransferSummary">
-										<TextBlock
-											Text="{Binding UserCurrency}"
-											IsVisible="{Binding DisplayUserCurrency}" />
+										<TextBlock Text="{Binding UserCurrency}" />
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>

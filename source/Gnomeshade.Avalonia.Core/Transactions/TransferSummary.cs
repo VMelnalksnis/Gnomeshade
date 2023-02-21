@@ -30,8 +30,7 @@ public sealed class TransferSummary : PropertyChangedBase
 		string otherCurrency,
 		decimal otherAmount)
 	{
-		UserCurrency = userCurrency;
-		DisplayUserCurrency = displayUserCurrency;
+		UserCurrency = displayUserCurrency ? userCurrency : " "; // string.Empty is not displayed
 		UserAmount = userAmount;
 		UserAccount = userAccount;
 		Direction = direction;
@@ -44,9 +43,6 @@ public sealed class TransferSummary : PropertyChangedBase
 
 	/// <summary>Gets the currency of <see cref="UserAmount"/>.</summary>
 	public string UserCurrency { get; }
-
-	/// <summary>Gets a value indicating whether <see cref="UserCurrency"/> needs to be displayed.</summary>
-	public bool DisplayUserCurrency { get; }
 
 	/// <summary>Gets the amount withdrawn from or deposited to the account owned by the user.</summary>
 	public decimal UserAmount { get; }
