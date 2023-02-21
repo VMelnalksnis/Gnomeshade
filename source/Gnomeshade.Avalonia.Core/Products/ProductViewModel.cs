@@ -80,6 +80,12 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 
 		Filter.Units = await _gnomeshadeClient.GetUnitsAsync();
 		Filter.Categories = await _gnomeshadeClient.GetCategoriesAsync();
+
+		foreach (var row in Rows)
+		{
+			var purchases = await _gnomeshadeClient.GetProductPurchasesAsync(row.Id);
+			row.PurchaseCount = purchases.Count;
+		}
 	}
 
 	/// <inheritdoc />

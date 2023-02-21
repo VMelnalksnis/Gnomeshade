@@ -16,7 +16,7 @@
 			<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
 			<Border Background="White" HorizontalAlignment="Stretch" Height="1"/>
-			
+
 			<Button
 				HorizontalAlignment="Center"
 				IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
@@ -61,6 +61,12 @@
 					x:DataType="products:ProductRow"
 					Header="Category" IsReadOnly="True"
 					Binding="{Binding CategoryName, Mode=OneWay}" />
+			</DataGrid.Columns>
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="products:ProductRow"
+					Header="Purchases" IsReadOnly="True"
+					Binding="{Binding PurchaseCount, Mode=OneWay}" />
 			</DataGrid.Columns>
 
 			<DataGrid.Styles>

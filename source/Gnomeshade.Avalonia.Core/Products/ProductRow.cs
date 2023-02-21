@@ -8,11 +8,17 @@ using System.Linq;
 
 using Gnomeshade.WebApi.Models.Products;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Overview of a single <see cref="Product"/>.</summary>
-public sealed class ProductRow : PropertyChangedBase
+public sealed partial class ProductRow : PropertyChangedBase
 {
+	/// <summary>Gets or sets the count of purchases of this product.</summary>
+	[Notify]
+	private int? _purchaseCount;
+
 	/// <summary>Initializes a new instance of the <see cref="ProductRow"/> class.</summary>
 	/// <param name="product">The product this row represents.</param>
 	/// <param name="unitRows">A collection from which to select the unit of this product.</param>
