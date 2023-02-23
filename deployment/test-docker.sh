@@ -11,7 +11,7 @@ function printLogs() {
 trap printLogs EXIT
 
 docker build --tag $tag --build-arg "BUILD_NUMBER=$1" ./
-docker run --name $name -d -p 8000:80 -e "Admin__Password=$2" $tag
+docker run --name $name -d -p 8000:8080 -e "Admin__Password=$2" $tag
 
 wget --tries=10 --retry-connrefused --waitretry=1 --timeout=15 "http://localhost:8000/api/v1.0/health"
 

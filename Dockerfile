@@ -1,17 +1,17 @@
-FROM ghcr.io/vmelnalksnis/gnomeshade-build:7.0.401 AS build
+FROM ghcr.io/vmelnalksnis/gnomeshade-build:8.0.101 AS build
 
 WORKDIR /gnomeshade
 COPY ./ ./
 ARG BUILD_NUMBER=123
 RUN ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:7.0.11-alpine3.18 as gnomeshade
+FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.1-alpine3.18 as gnomeshade
 
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/Gnomeshade.WebApi /gnomeshade/
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/libe_sqlite3.so /gnomeshade/
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/appsettings.json /gnomeshade/
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/*.xml /gnomeshade/
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/wwwroot/ /gnomeshade/wwwroot
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/Gnomeshade.WebApi /gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/libe_sqlite3.so /gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/appsettings.json /gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/*.xml /gnomeshade/
+COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/wwwroot/ /gnomeshade/wwwroot
 
 ENV DOTNET_gcServer=0 \
 	Database__Provider="Sqlite" \
@@ -21,7 +21,7 @@ ENV DOTNET_gcServer=0 \
 	Jwt__Secret="280ba7e4-d323-4232-8107-3b8c1b0832a8"
 
 VOLUME /data
-EXPOSE 80
+EXPOSE 8080
 
 WORKDIR /gnomeshade
 ENTRYPOINT ["./Gnomeshade.WebApi"]

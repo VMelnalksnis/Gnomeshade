@@ -49,6 +49,7 @@ internal static class ConfigurationExtensions
 		string sectionName)
 		where TOptions : notnull, new()
 	{
+		// todo this breaks EnableConfigurationBindingGenerator, as it does not support generics
 		return (configuration.GetSection(sectionName).Get<TOptions>() ?? new()).ValidateAndThrow();
 	}
 

@@ -1,15 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 		<AssemblyTitle>Gnomeshade</AssemblyTitle>
 		<ApplicationIcon>Assets/avalonia-logo.ico</ApplicationIcon>
 
 		<PublishTrimmed>true</PublishTrimmed>
-		<TrimMode>copyused</TrimMode>
-		<!--See https://github.com/dotnet/linker/issues/3039-->
-		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
+		<TrimMode>partial</TrimMode>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>

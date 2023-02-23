@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
 		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
 		<PublishTrimmed>true</PublishTrimmed>
-		<TrimMode>copyused</TrimMode>
-		<!--See https://github.com/dotnet/linker/issues/3039-->
-		<_TrimmerDefaultAction>copy</_TrimmerDefaultAction>
+		<TrimMode>partial</TrimMode>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+		<InvariantGlobalization>true</InvariantGlobalization>
 
-		<NoWarn>CS8002</NoWarn>
+		<NoWarn>$(NoWarn); CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
 	</PropertyGroup>

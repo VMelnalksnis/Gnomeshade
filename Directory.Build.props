@@ -17,6 +17,22 @@
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<PublishSingleFile>true</PublishSingleFile>
+		<DebuggerSupport>false</DebuggerSupport>
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
+		<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+		<StripSymbols>true</StripSymbols>
+		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+		<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<NoWarn>$(NoWarn); NETSDK1206</NoWarn>
+	</PropertyGroup>
+
 	<ItemGroup Condition="$(MSBuildProjectFile.EndsWith('csproj'))">
 		<PackageReference Include="DotNet.ReproducibleBuilds">
 			<PrivateAssets>all</PrivateAssets>

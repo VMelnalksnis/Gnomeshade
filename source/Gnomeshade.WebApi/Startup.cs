@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Text.Json.Serialization.Metadata;
 
 using AutoMapper;
 
@@ -15,6 +16,7 @@ using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Configuration.StartupFilters;
 using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
+using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Services;
 using Gnomeshade.WebApi.V1;
 using Gnomeshade.WebApi.V1.Importing;
@@ -62,6 +64,9 @@ public class Startup
 			{
 				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
+				options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(
+					new GnomeshadeSerializerContext(),
+					new DefaultJsonTypeInfoResolver());
 			});
 
 		services.AddRazorPages(options =>

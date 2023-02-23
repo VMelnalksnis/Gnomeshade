@@ -22,7 +22,10 @@ internal static class HttpsOptionsExtensions
 
 		options.OnAuthenticate = (_, sslAuthenticationOptions) =>
 		{
+// TlsOptions validation checks for platform todo
+#pragma warning disable CA1416
 			sslAuthenticationOptions.CipherSuitesPolicy = new(tlsOptions.CipherSuites);
+#pragma warning restore CA1416
 		};
 	}
 }
