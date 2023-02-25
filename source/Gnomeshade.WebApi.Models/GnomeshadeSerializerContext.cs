@@ -52,6 +52,6 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(RegistrationModel))]
 [JsonSerializable(typeof(List<User>))]
-internal sealed partial class GnomeshadeSerializerContext : JsonSerializerContext
+public sealed partial class GnomeshadeSerializerContext : JsonSerializerContext
 {
 }
