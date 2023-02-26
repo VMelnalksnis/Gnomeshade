@@ -22,6 +22,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Ardalis.SmartEnum" />
+		<PackageReference Include="AspNet.Security.OAuth.GitHub" />
 		<PackageReference Include="AutoMapper" />
 		<PackageReference Include="Elastic.Apm.AspNetCore" />
 		<PackageReference Include="Elastic.Apm.Elasticsearch" />

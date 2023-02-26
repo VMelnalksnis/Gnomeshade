@@ -224,6 +224,16 @@ jobs:
                     "name": "Jwt__ValidIssuer",
                     "value": "${{ env.AZURE_APP_DOMAIN }}",
                     "slotSetting": false
+                },
+                {
+                    "name": "OAuth__GitHub__ClientId",
+                    "value": "${{ secrets.DEMO_GITHUB_ID }}",
+                    "slotSetting": false
+                },
+                {
+                    "name": "OAuth__GitHub__ClientSecret",
+                    "value": "${{ secrets.DEMO_GITHUB_SECRET }}",
+                    "slotSetting": false
                 }
             ]
 

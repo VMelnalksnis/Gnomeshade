@@ -8,6 +8,12 @@
         "resolved": "2.1.0",
         "contentHash": "RY3BulzPKbcwGhsY/gYkn8sPQtbipF6XheDHbW/TSVUtyFJ/FKTnY2Tx+34WLL5+e/9UnSQcGd3dOqpdN1QzKA=="
       },
+      "AspNet.Security.OAuth.GitHub": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "OKLtEa/nvLMYiZshxuwX/coI8O588z3hNmOjV72ICQ32tvmNhLTpIUTeKRdFVZx7LQ18U6LSiTmMzJCbVqWIvw=="
+      },
       "AutoMapper": {
         "type": "Direct",
         "requested": "[12.0.1, )",

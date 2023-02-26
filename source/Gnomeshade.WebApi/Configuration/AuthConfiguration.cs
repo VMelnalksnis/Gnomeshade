@@ -7,11 +7,16 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
+
+using AspNet.Security.OAuth.GitHub;
 
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.V1.Authorization;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +35,10 @@ internal static class AuthConfiguration
 {
 	private const string DefaultScheme = "UNKNOWN";
 	private static readonly JwtSecurityTokenHandler _tokenHandler = new();
+	private static readonly string[] _supportedOAuthProviders =
+	{
+		GitHubAuthenticationDefaults.AuthenticationScheme,
+	};
 
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,
@@ -45,10 +54,18 @@ internal static class AuthConfiguration
 			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 		}
 
-		var providerSection = configuration.GetSection(OidcProviderOptions.OidcProviderSectionName);
-		var providerNames = providerSection.GetChildren().Select(section => section.Key).ToList();
+		var oidcProviderSection = configuration.GetSection(OidcProviderOptions.OidcProviderSectionName);
+		var oidcProviderNames = oidcProviderSection.GetChildren().Select(section => section.Key).ToArray();
 
-		authenticationSchemes.AddRange(providerNames);
+		var oauthProviderSection = configuration.GetSection(OAuthProviderOptions.ProviderSectionName);
+		var oauthProviderNames = oauthProviderSection
+			.GetChildren()
+			.Select(section => section.Key)
+			.Where(key => _supportedOAuthProviders.Contains(key))
+			.ToArray();
+
+		authenticationSchemes.AddRange(oidcProviderNames);
+		authenticationSchemes.AddRange(oauthProviderNames);
 
 		var authenticationBuilder =
 			services
@@ -102,9 +119,9 @@ internal static class AuthConfiguration
 				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, authenticationSchemes));
 		}
 
-		foreach (var providerName in providerNames)
+		foreach (var providerName in oidcProviderNames)
 		{
-			var providerOptions = providerSection.GetValid<OidcProviderOptions>(providerName);
+			var providerOptions = oidcProviderSection.GetValid<OidcProviderOptions>(providerName);
 			authenticationBuilder.AddJwtBearer(providerName, options =>
 			{
 				options.Authority = providerOptions.ServerRealm.AbsoluteUri;
@@ -158,6 +175,20 @@ internal static class AuthConfiguration
 			});
 		}
 
+		foreach (var providerName in oauthProviderNames)
+		{
+			var providerOptions = oauthProviderSection.GetValid<OAuthProviderOptions>(providerName);
+			if (providerName is GitHubAuthenticationDefaults.AuthenticationScheme)
+			{
+				authenticationBuilder.AddGitHub(options =>
+				{
+					options.ClientId = providerOptions.ClientId;
+					options.ClientSecret = providerOptions.ClientSecret!;
+					options.Events.OnRedirectToAuthorizationEndpoint = OnRedirectToAuthorizationEndpoint;
+				});
+			}
+		}
+
 		return services;
 	}
 
@@ -186,5 +217,20 @@ internal static class AuthConfiguration
 		return authenticationSchemes.Contains(jwtToken.Issuer)
 			? jwtToken.Issuer
 			: null;
+	}
+
+	/// <seealso cref="OAuthEvents.OnRedirectToAuthorizationEndpoint"/>
+	private static Task OnRedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
+	{
+		if (context.Request.Path.StartsWithSegments("/api"))
+		{
+			context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+		}
+		else
+		{
+			context.Response.Redirect(context.RedirectUri);
+		}
+
+		return Task.CompletedTask;
 	}
 }
