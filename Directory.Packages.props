@@ -88,7 +88,7 @@
 		<PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1"/>
 		<PackageVersion Include="Testcontainers" Version="2.3.0"/>
 		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.3"/>
-		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.1.1"/>
+		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.1.2"/>
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="0.2.0"/>
 		<PackageVersion Include="VMelnalksnis.Testcontainers.Keycloak" Version="0.1.4"/>
 	</ItemGroup>
