@@ -28,4 +28,7 @@ public interface ICredentialStorageService
 	/// <param name="password">The stored password if available; otherwise <c>null</c>.</param>
 	/// <returns><c>true</c> if a stored refresh credentials were found; otherwise <c>false</c>.</returns>
 	bool TryGetCredentials([NotNullWhen(true)] out string? username, [NotNullWhen(true)] out string? password);
+
+	/// <summary>Clears any stored credentials or tokens.</summary>
+	void RemoveCredentials();
 }

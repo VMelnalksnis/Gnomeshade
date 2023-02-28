@@ -18,7 +18,6 @@ using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -26,8 +25,6 @@ namespace Gnomeshade.Avalonia.Core;
 public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IServiceProvider _serviceProvider;
-	private readonly IOptions<UserConfiguration> _userConfiguration;
-	private readonly UserConfigurationValidator _validator;
 
 	private ViewModelBase? _activeView;
 
@@ -37,9 +34,6 @@ public sealed class MainWindowViewModel : ViewModelBase
 		: base(serviceProvider.GetRequiredService<IActivityService>())
 	{
 		_serviceProvider = serviceProvider;
-
-		_userConfiguration = serviceProvider.GetRequiredService<IOptions<UserConfiguration>>();
-		_validator = serviceProvider.GetRequiredService<UserConfigurationValidator>();
 	}
 
 	/// <summary>
@@ -72,17 +66,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		using var activity = BeginActivity("Validating configuration");
-		var isValid = await _validator.IsValid(_userConfiguration.Value);
-
-		if (isValid)
-		{
-			await SwitchToLogin();
-		}
-		else
-		{
-			SwitchToSetup();
-		}
+		await SwitchToLogin();
 	}
 
 	/// <summary>Logs out the current user.</summary>

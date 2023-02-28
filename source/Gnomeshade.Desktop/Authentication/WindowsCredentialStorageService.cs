@@ -12,6 +12,8 @@ using AdysTech.CredentialManager;
 
 using Gnomeshade.Avalonia.Core.Authentication;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Desktop.Authentication;
 
 /// <summary>Manages credential persistence on windows.</summary>
@@ -20,6 +22,15 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 {
 	private const string _credentialName = "Gnomeshade";
 	private const string _tokenAttributeName = "Token";
+
+	private readonly ILogger<WindowsCredentialStorageService> _logger;
+
+	/// <summary>Initializes a new instance of the <see cref="WindowsCredentialStorageService"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
+	public WindowsCredentialStorageService(ILogger<WindowsCredentialStorageService> logger)
+	{
+		_logger = logger;
+	}
 
 	/// <inheritdoc />
 	public void StoreRefreshToken(string token)
@@ -75,6 +86,19 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 		username = credential.UserName;
 		password = credential.CredentialBlob;
 		return true;
+	}
+
+	/// <inheritdoc />
+	public void RemoveCredentials()
+	{
+		try
+		{
+			CredentialManager.RemoveCredentials(_credentialName);
+		}
+		catch (CredentialAPIException exception)
+		{
+			_logger.LogWarning(exception, "Failed to remove credentials");
+		}
 	}
 
 	private static bool TryGetCredential([NotNullWhen(true)] out ICredential? credential)

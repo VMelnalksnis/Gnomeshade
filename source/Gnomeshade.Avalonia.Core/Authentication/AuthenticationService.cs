@@ -59,5 +59,9 @@ public sealed class AuthenticationService : IAuthenticationService
 	}
 
 	/// <inheritdoc />
-	public Task Logout() => _gnomeshadeClient.LogOutAsync();
+	public async Task Logout()
+	{
+		await _gnomeshadeClient.LogOutAsync();
+		_credentialStorageService.RemoveCredentials();
+	}
 }

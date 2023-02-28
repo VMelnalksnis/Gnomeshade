@@ -35,4 +35,9 @@ public sealed class DesignTimeCredentialStorage : ICredentialStorageService
 		password = null;
 		return false;
 	}
+
+	/// <inheritdoc />
+	public void RemoveCredentials()
+	{
+	}
 }
