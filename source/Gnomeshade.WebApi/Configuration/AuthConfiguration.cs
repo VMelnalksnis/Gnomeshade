@@ -23,7 +23,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
 
@@ -44,13 +43,15 @@ internal static class AuthConfiguration
 		this IServiceCollection services,
 		IConfiguration configuration)
 	{
-		IdentityModelEventSource.ShowPII = true;
 		services.AddTransient<JwtSecurityTokenHandler>();
 
-		var jwtOptionsDefined = configuration.GetValidIfDefined<JwtOptions>(out var jwtOptions);
+		var issuers = new Dictionary<string, string>();
 		var authenticationSchemes = new List<string>();
+
+		var jwtOptionsDefined = configuration.GetValidIfDefined<JwtOptions>(out var jwtOptions);
 		if (jwtOptionsDefined)
 		{
+			issuers.Add(jwtOptions!.ValidIssuer, JwtBearerDefaults.AuthenticationScheme);
 			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
 		}
 
@@ -110,18 +111,19 @@ internal static class AuthConfiguration
 					ClockSkew = TimeSpan.Zero,
 				};
 
-				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, authenticationSchemes);
+				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, JwtBearerDefaults.AuthenticationScheme);
 			});
 		}
 		else
 		{
-			authenticationBuilder.AddJwtBearer(options =>
-				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, authenticationSchemes));
+			authenticationBuilder.AddJwtBearer(options => options.ForwardDefaultSelector =
+				context => ForwardDefaultSelector(context, issuers, JwtBearerDefaults.AuthenticationScheme));
 		}
 
 		foreach (var providerName in oidcProviderNames)
 		{
 			var providerOptions = oidcProviderSection.GetValid<OidcProviderOptions>(providerName);
+			issuers.Add(providerOptions.ServerRealm.AbsoluteUri, providerName);
 			authenticationBuilder.AddJwtBearer(providerName, options =>
 			{
 				options.Authority = providerOptions.ServerRealm.AbsoluteUri;
@@ -192,7 +194,7 @@ internal static class AuthConfiguration
 		return services;
 	}
 
-	private static string? ForwardDefaultSelector(HttpContext context, IEnumerable<string> authenticationSchemes)
+	private static string? ForwardDefaultSelector(HttpContext context, IReadOnlyDictionary<string, string> issuers, string currentScheme)
 	{
 		if (context.Request.Cookies.Keys.Any(key => key.EndsWith(IdentityConstants.ApplicationScheme)))
 		{
@@ -206,16 +208,15 @@ internal static class AuthConfiguration
 			return null;
 		}
 
-		var token = authorization[JwtBearerDefaults.AuthenticationScheme.Length..];
-
+		var token = authorization[(JwtBearerDefaults.AuthenticationScheme.Length + 1)..];
 		if (!_tokenHandler.CanReadToken(token))
 		{
 			return null;
 		}
 
 		var jwtToken = _tokenHandler.ReadToken(token);
-		return authenticationSchemes.Contains(jwtToken.Issuer)
-			? jwtToken.Issuer
+		return issuers.TryGetValue(jwtToken.Issuer, out var scheme) && scheme != currentScheme
+			? scheme
 			: null;
 	}
 

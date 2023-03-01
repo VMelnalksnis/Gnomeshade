@@ -23,6 +23,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 			.MinimumLevel.Information()
 			.Enrich.FromLogContext()
 			.WriteTo.NUnitOutput(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}")
+			.WriteTo.Debug()
 			.ReadFrom.Configuration(configuration)
 			.CreateLogger();
 	}

@@ -48,7 +48,12 @@ public sealed class ExternalAuthenticationController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult> SocialRegister()
 	{
-		var providerKeyClaim = User.FindAll(ClaimTypes.NameIdentifier).Single();
+		if (User.Identity is not ClaimsIdentity identity)
+		{
+			return Unauthorized();
+		}
+
+		var providerKeyClaim = identity.FindAll(ClaimTypes.NameIdentifier).Single();
 		var existingUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
 		if (existingUser is not null)
 		{

@@ -80,6 +80,9 @@ public sealed class KeycloakFixture : IAsyncDisposable
 				{ "Oidc:Keycloak:ClientId", Client.Name },
 				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
 				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
+				{ "Jwt:ValidAudience", $"http://localhost:{Port}/" },
+				{ "Jwt:ValidIssuer", $"http://localhost:{Port}/" },
+				{ "Jwt:Secret", Guid.NewGuid().ToString() },
 			})
 			.AddEnvironmentVariables()
 			.Build();
