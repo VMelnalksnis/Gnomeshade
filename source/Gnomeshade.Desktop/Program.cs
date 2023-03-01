@@ -31,7 +31,7 @@ internal static class Program
 {
 	public static void Main(string[] args)
 	{
-		InitializeBootstrapLogger();
+		SerilogConfiguration.InitializeBootstrapLogger();
 		if (AnotherInstanceIsRunning())
 		{
 			SendArgumentsToRunningInstance(args);
@@ -71,25 +71,16 @@ internal static class Program
 				.LogToTrace(LogEventLevel.Debug);
 	}
 
-	private static void InitializeBootstrapLogger()
-	{
-		Serilog.Debugging.SelfLog.Enable(output => Debug.WriteLine(output));
-		Log.Logger = new LoggerConfiguration()
-			.Enrich.FromLogContext()
-			.WriteTo.Trace()
-			.WriteTo.File("bootstrap_log")
-			.MinimumLevel.Debug()
-			.CreateBootstrapLogger();
-	}
-
 	[SupportedOSPlatform("windows")]
 	private static bool AnotherInstanceIsRunning()
 	{
+		Log.Debug("Checking if another instance is running");
 		return EventWaitHandle.TryOpenExisting(WindowsProtocolHandler.Name, out _);
 	}
 
 	private static void SendArgumentsToRunningInstance(IEnumerable<string> args)
 	{
+		Log.Debug("Sending arguments to an already running instance");
 		using var pipeClient = new NamedPipeClientStream(".", WindowsProtocolHandler.Name);
 		pipeClient.Connect((int)TimeSpan.FromSeconds(5).TotalMilliseconds);
 
@@ -101,6 +92,7 @@ internal static class Program
 	[SupportedOSPlatform("windows")]
 	private static IDisposable GetApplicationHandle()
 	{
+		Log.Debug("Getting an application handle");
 		return new EventWaitHandle(false, EventResetMode.AutoReset, WindowsProtocolHandler.Name);
 	}
 }

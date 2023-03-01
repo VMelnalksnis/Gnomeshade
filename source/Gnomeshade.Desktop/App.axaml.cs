@@ -42,6 +42,7 @@ public sealed class App : Application
 	private static readonly ProductInfoHeaderValue _userAgent;
 
 	private readonly IServiceProvider _serviceProvider;
+	private readonly ILogger<App> _logger;
 
 	static App()
 	{
@@ -59,7 +60,9 @@ public sealed class App : Application
 			.Build();
 
 		var serviceCollection = new ServiceCollection();
-		serviceCollection.AddLogging(builder => builder.AddSerilog());
+		serviceCollection.AddLogging(builder => builder
+			.ClearProviders()
+			.AddSerilog(SerilogConfiguration.CreateLogger(configuration), true));
 
 		serviceCollection
 			.AddGnomeshadeOptions(configuration)
@@ -106,6 +109,7 @@ public sealed class App : Application
 			.AddSingleton<IDialogService, DialogService>();
 
 		_serviceProvider = serviceCollection.BuildServiceProvider();
+		_logger = _serviceProvider.GetRequiredService<ILogger<App>>();
 	}
 
 	/// <inheritdoc />
@@ -131,7 +135,7 @@ public sealed class App : Application
 	/// <inheritdoc />
 	protected override void LogBindingError(AvaloniaProperty property, Exception exception)
 	{
-		Log.Error(exception, "Failed to bind property {PropertyName} from owner type {OwnerTypeName}", property.Name, property.OwnerType.Name);
+		_logger.LogError(exception, "Failed to bind property {PropertyName} from owner type {OwnerTypeName}", property.Name, property.OwnerType.Name);
 		base.LogBindingError(property, exception);
 	}
 }
