@@ -9,14 +9,20 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Loans;
 
 /// <summary>Overview of all loans for a single transaction.</summary>
-public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertionViewModel>
+public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid _transactionId;
 	private LoanUpsertionViewModel _details;
+
+	/// <summary>Gets the total loaned amount.</summary>
+	[Notify(Setter.Private)]
+	private decimal _total;
 
 	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -38,9 +44,6 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 		get => _details;
 		set => SetAndNotify(ref _details, value);
 	}
-
-	/// <summary>Gets the total loaned amount.</summary>
-	public decimal Total => Rows.Select(overview => overview.Amount).Sum();
 
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
@@ -66,6 +69,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertio
 
 		var selected = Selected;
 		IsReadOnly = transaction.Reconciled;
+		Total = transaction.LoanTotal;
 		Rows = new(overviews);
 		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
 

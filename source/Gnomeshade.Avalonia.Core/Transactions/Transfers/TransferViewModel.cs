@@ -11,16 +11,22 @@ using System.Threading.Tasks;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Transactions;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 
 /// <summary>Overview of all <see cref="Transfer"/>s of a single <see cref="Transaction"/>.</summary>
-public sealed class TransferViewModel : OverviewViewModel<TransferOverview, TransferUpsertionViewModel>
+public sealed partial class TransferViewModel : OverviewViewModel<TransferOverview, TransferUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDialogService _dialogService;
 	private readonly Guid _transactionId;
 
 	private TransferUpsertionViewModel _details;
+
+	/// <summary>Gets the total transferred amount.</summary>
+	[Notify(Setter.Private)]
+	private decimal _total;
 
 	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -42,9 +48,6 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
 	}
-
-	/// <summary>Gets the total transferred amount.</summary>
-	public decimal Total => Rows.Select(overview => overview.TargetAmount).Sum();
 
 	/// <inheritdoc />
 	public override TransferUpsertionViewModel Details
@@ -75,6 +78,7 @@ public sealed class TransferViewModel : OverviewViewModel<TransferOverview, Tran
 
 		var accounts = accountsTask.Result;
 		var transaction = transactionsTask.Result;
+		Total = transaction.TransferBalance;
 		IsReadOnly = transaction.Reconciled;
 
 		var overviews = transaction.Transfers

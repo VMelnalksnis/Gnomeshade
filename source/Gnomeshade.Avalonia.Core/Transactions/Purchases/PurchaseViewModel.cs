@@ -13,10 +13,12 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Overview of all <see cref="Purchase"/>s of a single <see cref="Transaction"/>.</summary>
-public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, PurchaseUpsertionViewModel>
+public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOverview, PurchaseUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDialogService _dialogService;
@@ -24,6 +26,10 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 	private readonly Guid _transactionId;
 
 	private PurchaseUpsertionViewModel _details;
+
+	/// <summary>Gets the total purchased amount.</summary>
+	[Notify(Setter.Private)]
+	private decimal _total;
 
 	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -61,9 +67,6 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		}
 	}
 
-	/// <summary>Gets the total purchased amount.</summary>
-	public decimal Total => Rows.Select(overview => overview.Price).Sum();
-
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
@@ -96,6 +99,7 @@ public sealed class PurchaseViewModel : OverviewViewModel<PurchaseOverview, Purc
 		var selected = Selected;
 
 		IsReadOnly = transaction.Reconciled;
+		Total = transaction.PurchaseTotal;
 		Rows.CollectionChanged -= RowsOnCollectionChanged;
 		Rows = new(overviews);
 		Rows.CollectionChanged += RowsOnCollectionChanged;
