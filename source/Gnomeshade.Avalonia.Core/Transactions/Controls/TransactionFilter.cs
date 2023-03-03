@@ -218,7 +218,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 			return true;
 		}
 
-		return overview.ReconciledAt is not null == reconciled;
+		return overview.Reconciled == reconciled;
 	}
 
 	private bool IsUncategorized(TransactionOverview overview)

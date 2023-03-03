@@ -63,6 +63,19 @@
 				AutoGenerateColumns="False" IsReadOnly="False"
 				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
+					<DataGridTemplateColumn Header="Rec" IsReadOnly="True" CanUserSort="False">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate DataType="transactions:TransactionOverview">
+								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
+									<CheckBox IsChecked="{Binding Reconciled}" IsEnabled="False">
+									</CheckBox>
+									<LayoutTransformControl.LayoutTransform>
+										<ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
+									</LayoutTransformControl.LayoutTransform>
+								</LayoutTransformControl>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
 					<DataGridTemplateColumn
 						Header="Date" IsReadOnly="True"
 						SortMemberPath="Date" CanUserSort="True">
@@ -71,16 +84,6 @@
 								HorizontalAlignment="Right" VerticalAlignment="Top"
 								Margin="5 0"
 								Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
-						</DataTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn
-						Header="Reconciled At" IsReadOnly="True"
-						SortMemberPath="ReconciledAt" CanUserSort="True">
-						<DataTemplate DataType="transactions:TransactionOverview">
-							<TextBlock
-								HorizontalAlignment="Right" VerticalAlignment="Top"
-								Margin="5 0"
-								Text="{Binding ReconciledAt, Mode=OneWay, StringFormat=\{0:d\}}" />
 						</DataTemplate>
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>

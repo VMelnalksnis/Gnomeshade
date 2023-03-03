@@ -50,6 +50,9 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <summary>Gets the point in time when this transaction was reconciled.</summary>
 	public DateTimeOffset? ReconciledAt { get; }
 
+	/// <summary>Gets a value indicating whether the transaction is reconciled.</summary>
+	public bool Reconciled => ReconciledAt is not null;
+
 	/// <summary>Gets all transfers of the transaction.</summary>
 	public List<TransferSummary> Transfers { get; }
 
