@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="controls:TransactionProperties">
 
-	<Grid ColumnDefinitions="Auto,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,2*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
 			Margin="10 0" VerticalAlignment="Center"
@@ -53,15 +53,28 @@
 			Watermark="Time" />
 
 		<TextBlock
-			Grid.Column="0" Grid.Row="3" IsVisible="{Binding IsImported}"
+			Grid.Column="0" Grid.Row="3"
+			Margin="10 0" VerticalAlignment="Center"
+			Text="Refunded at" />
+		<TextBox
+			Grid.Column="1" Grid.Row="3" IsEnabled="False"
+			Text="{Binding RefundDate, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
+			Watermark="Date" />
+		<TextBox
+			Grid.Column="2" Grid.Row="3" IsEnabled="False"
+			Text="{Binding RefundTime, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
+			Watermark="Time" />
+
+		<TextBlock
+			Grid.Column="0" Grid.Row="4" IsVisible="{Binding IsImported}"
 			Margin="10 0" VerticalAlignment="Center"
 			Text="Imported at" />
 		<TextBox
-			Grid.Column="1" Grid.Row="3" IsVisible="{Binding IsImported}" IsEnabled="False"
+			Grid.Column="1" Grid.Row="4" IsVisible="{Binding IsImported}" IsEnabled="False"
 			Text="{Binding ImportDate, Converter={x:Static core:Converters.DateTime}}"
 			Watermark="Date" />
 		<TextBox
-			Grid.Column="2" Grid.Row="3" IsVisible="{Binding IsImported}" IsEnabled="False"
+			Grid.Column="2" Grid.Row="4" IsVisible="{Binding IsImported}" IsEnabled="False"
 			Text="{Binding ImportTime, Converter={x:Static core:Converters.DateTime}}"
 			Watermark="Time" />
 

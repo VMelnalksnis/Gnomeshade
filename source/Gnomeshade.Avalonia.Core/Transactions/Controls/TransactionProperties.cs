@@ -51,6 +51,14 @@ public sealed partial class TransactionProperties : ViewModelBase
 	[Notify]
 	private TimeSpan? _importTime;
 
+	/// <summary>Gets or sets the date on which the transaction was refunded.</summary>
+	[Notify]
+	private DateTimeOffset? _refundDate;
+
+	/// <summary>Gets or sets the time when the transaction was refunded.</summary>
+	[Notify]
+	private TimeSpan? _refundTime;
+
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	[Notify]
 	private string? _description;

@@ -27,6 +27,7 @@ public sealed record DetailedTransactionEntity : TransactionEntity
 		ImportedAt = transaction.ImportedAt;
 		ReconciledAt = transaction.ReconciledAt;
 		ReconciledByUserId = transaction.ReconciledByUserId;
+		RefundedBy = transaction.RefundedBy;
 	}
 
 	/// <summary>Gets the transfers of the transaction.</summary>

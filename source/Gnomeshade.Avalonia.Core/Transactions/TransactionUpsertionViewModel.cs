@@ -147,6 +147,15 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 		Properties.ImportDate = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset();
 		Properties.ImportTime = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
 
+		if (transaction.RefundedBy is { } refundId)
+		{
+			var refundTransaction = await GnomeshadeClient.GetTransactionAsync(refundId);
+			var refundTime = (refundTransaction.ValuedAt ?? refundTransaction.BookedAt)!.Value;
+
+			Properties.RefundDate = refundTime.InZone(defaultZone).ToDateTimeOffset();
+			Properties.RefundTime = refundTime.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+		}
+
 		Properties.Description = transaction.Description;
 
 		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, transactionId);
