@@ -19,13 +19,15 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <param name="reconciledAt">The point in time when this transaction was reconciled.</param>
 	/// <param name="transfers">All transfers of the transaction.</param>
 	/// <param name="purchases">All purchases of the transaction.</param>
+	/// <param name="refunded">Whether the transaction is refunded.</param>
 	public TransactionOverview(
 		Guid id,
 		DateTimeOffset? bookedAt,
 		DateTimeOffset? valuedAt,
 		DateTimeOffset? reconciledAt,
 		List<TransferSummary> transfers,
-		List<Purchase> purchases)
+		List<Purchase> purchases,
+		bool refunded)
 	{
 		Id = id;
 		BookedAt = bookedAt;
@@ -33,6 +35,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		ReconciledAt = reconciledAt;
 		Transfers = transfers;
 		Purchases = purchases;
+		Refunded = refunded;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -58,4 +61,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 
 	/// <summary>Gets all purchases of the transaction.</summary>
 	public List<Purchase> Purchases { get; }
+
+	/// <summary>Gets a value indicating whether the transaction is refunded.</summary>
+	public bool Refunded { get; }
 }

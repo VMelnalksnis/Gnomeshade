@@ -15,7 +15,7 @@
 		<StackPanel Orientation="Vertical" Spacing="5">
 			<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
-			<Grid ColumnDefinitions="*, *" RowDefinitions="Auto, 5, Auto, Auto">
+			<Grid ColumnDefinitions="*, *" RowDefinitions="Auto, 5, Auto, Auto, Auto">
 				<Button
 					Grid.Row="0" Grid.Column="0"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
@@ -39,15 +39,20 @@
 					Select Target
 				</Button>
 				<Button
-					Grid.Row="3" Grid.Column="0"
+					Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
 					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					Command="{ReflectionBinding ClearMerge}">
 					Clear
 				</Button>
 				<Button
-					Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 					IsEnabled="{Binding Merge.CanMerge}" Command="{ReflectionBinding Merge.MergeAsync}">
 					Merge
+				</Button>
+				<Button
+					Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+					IsEnabled="{Binding Refund.CanRefund}" Command="{ReflectionBinding Refund.RefundAsync}">
+					Refund
 				</Button>
 			</Grid>
 		</StackPanel>
@@ -68,6 +73,19 @@
 							<DataTemplate DataType="transactions:TransactionOverview">
 								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
 									<CheckBox IsChecked="{Binding Reconciled}" IsEnabled="False">
+									</CheckBox>
+									<LayoutTransformControl.LayoutTransform>
+										<ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
+									</LayoutTransformControl.LayoutTransform>
+								</LayoutTransformControl>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTemplateColumn Header="Ref" IsReadOnly="True" CanUserSort="False">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate DataType="transactions:TransactionOverview">
+								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
+									<CheckBox IsChecked="{Binding Refunded}" IsEnabled="False">
 									</CheckBox>
 									<LayoutTransformControl.LayoutTransform>
 										<ScaleTransform ScaleX="0.6" ScaleY="0.6"/>

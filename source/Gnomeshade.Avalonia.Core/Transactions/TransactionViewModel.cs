@@ -64,6 +64,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		Summary = new(ActivityService);
 		Merge = new(ActivityService, _gnomeshadeClient);
+		Refund = new(ActivityService, _gnomeshadeClient);
 	}
 
 	/// <summary>Gets the transaction filter.</summary>
@@ -74,6 +75,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Gets the model for merging transactions.</summary>
 	public TransactionMerge Merge { get; }
+
+	/// <summary>Gets the model for refunding transactions.</summary>
+	public TransactionRefund Refund { get; }
 
 	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
 	public bool CanRefresh => Filter.IsValid;
@@ -104,16 +108,27 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	}
 
 	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the source for merging.</summary>
-	public void SelectSource() => Merge.Source = Selected;
+	public void SelectSource()
+	{
+		Merge.Source = Selected;
+		Refund.Source = Selected;
+	}
 
 	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the target for merging.</summary>
-	public void SelectTarget() => Merge.Target = Selected;
+	public void SelectTarget()
+	{
+		Merge.Target = Selected;
+		Refund.Target = Selected;
+	}
 
 	/// <summary>Clears mergeable transactions.</summary>
 	public void ClearMerge()
 	{
 		Merge.Source = null;
 		Merge.Target = null;
+
+		Refund.Source = null;
+		Refund.Target = null;
 	}
 
 	/// <inheritdoc />
@@ -142,7 +157,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transfers,
-				transaction.Purchases);
+				transaction.Purchases,
+				transaction.Refunded);
 		}).ToList();
 
 		var selected = Selected;
@@ -225,7 +241,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transfers,
-			transaction.Purchases);
+			transaction.Purchases,
+			transaction.Refunded);
 
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(Rows.Where(row => row.Id != updatedOverview?.Id).Append(overview).ToList());
