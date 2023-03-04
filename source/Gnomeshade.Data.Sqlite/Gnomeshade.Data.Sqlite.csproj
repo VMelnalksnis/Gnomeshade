@@ -29,6 +29,7 @@
 		<EmbeddedResource Include="Migrations\00000006_order.sql" />
 		<EmbeddedResource Include="Migrations\00000007_related_transactions.sql" />
 		<EmbeddedResource Include="Migrations\00000008_active_currencies.sql" />
+		<EmbeddedResource Include="Migrations\00000009_refunded_by.sql" />
 	</ItemGroup>
 
 </Project>

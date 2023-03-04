@@ -8,7 +8,8 @@
      description,
      imported_at,
      reconciled_at,
-     reconciled_by_user_id)
+     reconciled_by_user_id,
+     refunded_by)
 VALUES
     (@Id,
      @OwnerId,
@@ -19,5 +20,6 @@ VALUES
      @Description,
      @ImportedAt,
      @ReconciledAt,
-     @ReconciledByUserId)
+     @ReconciledByUserId,
+     @RefundedBy)
 RETURNING id;

@@ -14,7 +14,8 @@ SET modified_at           = CURRENT_TIMESTAMP,
 	description           = @Description,
 	imported_at           = @ImportedAt,
 	reconciled_at         = @ReconciledAt,
-	reconciled_by_user_id = @ReconciledByUserId
+	reconciled_by_user_id = @ReconciledByUserId,
+	refunded_by           = @RefundedBy
 FROM t
 WHERE transactions.id IN (SELECT id FROM t)
 RETURNING (SELECT id FROM t);

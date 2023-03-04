@@ -11,7 +11,8 @@
 	   t.description,
 	   t.imported_at           ImportedAt,
 	   t.reconciled_at         ReconciledAt,
-	   t.reconciled_by_user_id ReconciledByUserId
+	   t.reconciled_by_user_id ReconciledByUserId,
+	   t.refunded_by           RefundedBy
 FROM transactions t
 		 INNER JOIN owners ON owners.id = t.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id

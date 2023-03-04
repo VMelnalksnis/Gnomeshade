@@ -52,4 +52,10 @@ public record Transaction
 
 	/// <summary>Whether or not this transaction was reconciled.</summary>
 	public bool Reconciled => ReconciledAt.HasValue;
+
+	/// <summary>The id of the transaction that refunds this one.</summary>
+	public Guid? RefundedBy { get; set; }
+
+	/// <summary>Whether or not this transaction was refunded.</summary>
+	public bool Refunded => RefundedBy.HasValue;
 }

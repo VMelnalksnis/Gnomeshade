@@ -39,4 +39,7 @@ public record TransactionEntity : Entity, IOwnableEntity, IModifiableEntity
 
 	/// <summary>Gets or sets the id of the user that reconciled the transaction.</summary>
 	public Guid? ReconciledByUserId { get; set; }
+
+	/// <summary>Gets or sets the id of the transaction that refunds this transaction.</summary>
+	public Guid? RefundedBy { get; set; }
 }

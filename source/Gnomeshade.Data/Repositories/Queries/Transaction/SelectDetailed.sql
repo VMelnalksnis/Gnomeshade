@@ -12,6 +12,7 @@
 	   transactions.imported_at           ImportedAt,
 	   transactions.reconciled_at         ReconciledAt,
 	   transactions.reconciled_by_user_id ReconciledByUserId,
+	   transactions.refunded_by           RefundedBy,
 	   purchases.id                  AS   Id,
 	   purchases.created_at          AS   CreatedAt,
 	   purchases.owner_id            AS   OwnerId,
