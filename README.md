@@ -23,6 +23,7 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 ### Server
 
 * A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
+* A [docker image](https://github.com/VMelnalksnis/Gnomeshade/pkgs/container/gnomeshade) is also provided; currently only `amd64` is supported 
 * An unpublished Ansible role ([see issue](https://github.com/VMelnalksnis/Gnomeshade/issues/523)) is also available; for supported platforms see [tests](.github/workflows/build-and-test.yml)
 * The server requires a database, currently the following are supported:
 	* SQLite
@@ -39,6 +40,8 @@ the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/ni
 ### Client
 
 An `.msi` installer is provided for the windows client application. 
+
+A linux version of the same client is also built and provided in the releases in a zip file, however they have not been tested on linux desktop. 
 
 ## Contributing
 
