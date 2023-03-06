@@ -15,11 +15,6 @@ public sealed class PurchaseIdentifierTests
 	private static readonly Guid _kilogramId = Guid.NewGuid();
 	private static readonly Guid _gramId = Guid.NewGuid();
 
-	private readonly ProductEntity[] _products =
-	{
-		new() { Name = "Tostermaize franču Brioche", UnitId = _gramId },
-	};
-
 	private readonly CurrencyEntity[] _currencies =
 	{
 		new() { AlphabeticCode = "EUR" },
@@ -31,13 +26,18 @@ public sealed class PurchaseIdentifierTests
 		new() { Name = "Kilogram", Symbol = "kg", Id = _kilogramId },
 	};
 
+	internal static ProductEntity[] Products { get; } =
+	{
+		new() { Name = "Tostermaize franču Brioche", UnitId = _gramId },
+	};
+
 	[TestCaseSource(typeof(RimiPurchaseIdentifierTestCaseSource))]
 	public void IdentifyPurchase_ShouldReturnExpected(
 		IPurchaseIdentifier identifier,
 		string purchaseText,
 		IdentifiedPurchase expectedPurchase)
 	{
-		var purchase = identifier.IdentifyPurchase(purchaseText, _products, _currencies, _units);
+		var purchase = identifier.IdentifyPurchase(purchaseText, Products, _currencies, _units);
 
 		purchase.Should().BeEquivalentTo(expectedPurchase);
 	}

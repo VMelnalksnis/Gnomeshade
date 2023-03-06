@@ -5,6 +5,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 using Gnomeshade.WebApi.V1.Importing.Paperless;
 using Gnomeshade.WebApi.V1.Importing.Paperless.Rimi;
@@ -27,7 +28,7 @@ Brioche 450g
 1 gab x 2,55 EUR 2,55 8",
 				new IdentifiedPurchase(
 					"Tostermaize franēu Brioche 450g",
-					"Tostermaize franču Brioche",
+					PurchaseIdentifierTests.Products.Single(),
 					88,
 					"EUR",
 					2.55m,
@@ -41,7 +42,7 @@ Brioche 450g
 Or 188 kg X 14,59 EUR/kg 2,748",
 				new IdentifiedPurchase(
 					"siefs Dor blu 50% kg",
-					"Tostermaize franču Brioche",
+					PurchaseIdentifierTests.Products.Single(),
 					30,
 					"EUR",
 					2.74m,
@@ -56,7 +57,7 @@ Or 188 kg X 14,59 EUR/kg 2,748",
 Atl -0,50 Gala cena 2,59",
 				new IdentifiedPurchase(
 					"Sviests Exporta 82,5% 200g",
-					"Tostermaize franču Brioche",
+					PurchaseIdentifierTests.Products.Single(),
 					23,
 					"EUR",
 					2.59m,
@@ -71,7 +72,7 @@ Atl -0,50 Gala cena 2,59",
 ati -0,50 Gala cena 2,59",
 				new IdentifiedPurchase(
 					"Sviests Exporta 82,5% 200g",
-					"Tostermaize franču Brioche",
+					PurchaseIdentifierTests.Products.Single(),
 					23,
 					"EUR",
 					2.59m,

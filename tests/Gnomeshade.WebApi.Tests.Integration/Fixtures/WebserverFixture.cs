@@ -44,6 +44,11 @@ public abstract class WebserverFixture : IAsyncDisposable
 		await Task.WhenAll(Containers.Select(container => container.StartAsync()));
 
 		var configuration = new ConfigurationBuilder()
+			.AddInMemoryCollection(new Dictionary<string, string?>
+			{
+				{ "Paperless:BaseAddress", "https://localhost/" },
+				{ "Paperless:Token", "not-used" },
+			})
 			.AddConfiguration(GetAdditionalConfiguration())
 			.AddEnvironmentVariables()
 			.Build();

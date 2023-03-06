@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,7 +85,7 @@ public sealed class PaperlessService : IPaperlessService
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		var rawPurchases = _documentParser.ParsePurchases(document);
-		var products = (await _productRepository.GetAllAsync(ownerId)).ToList();
+		var products = (await _productRepository.GetAllAsync(ownerId, true)).ToList();
 		var currencies = await _currencyRepository.GetAllAsync();
 		var units = (await _unitRepository.GetAllAsync(ownerId)).ToList();
 		var defaultUnit = units.SingleOrDefault(u => u.Name == "Piece");
@@ -95,10 +94,12 @@ public sealed class PaperlessService : IPaperlessService
 			.Select(raw => _purchaseIdentifier.IdentifyPurchase(raw, products, currencies, units))
 			.Select(async (purchase, index) =>
 			{
-				// ReSharper disable once AccessToDisposedClosure
-				var product = purchase.Score > 50
-					? products.Single(p => _comparer.Equals(p.Name, purchase.ClosestProductName))
+				// ReSharper disable AccessToDisposedClosure
+				var product = purchase is { Score: > 50, ClosestProduct: { } closestProduct }
+					? await RestoreProduct(ownerId, closestProduct, dbTransaction)
 					: await CreateProduct(ownerId, purchase, units, defaultUnit, dbTransaction);
+
+				// ReSharper restore AccessToDisposedClosure
 
 				var currency = currencies.Single(c => _comparer.Equals(c.AlphabeticCode, purchase.Currency));
 
@@ -145,12 +146,29 @@ public sealed class PaperlessService : IPaperlessService
 		await dbTransaction.CommitAsync();
 	}
 
+	private async Task<ProductEntity> RestoreProduct(
+		Guid ownerId,
+		ProductEntity product,
+		DbTransaction dbTransaction)
+	{
+		if (product.DeletedAt is null)
+		{
+			return product;
+		}
+
+		product.DeletedAt = null;
+		product.DeletedByUserId = null;
+		product.ModifiedByUserId = ownerId;
+		await _productRepository.UpdateAsync(product, dbTransaction);
+		return product;
+	}
+
 	private async Task<ProductEntity> CreateProduct(
 		Guid ownerId,
 		IdentifiedPurchase identifiedPurchase,
 		IEnumerable<UnitEntity> units,
 		UnitEntity? defaultUnit,
-		IDbTransaction dbTransaction)
+		DbTransaction dbTransaction)
 	{
 		var unit = identifiedPurchase.Unit is null
 			? defaultUnit
