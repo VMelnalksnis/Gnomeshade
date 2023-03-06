@@ -119,7 +119,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
 		var transactions = (timeRange.From is null && timeRange.To is null) || (timeRange.From == Instant.MinValue && timeRange.To == Instant.MaxValue)
-			? await Repository.GetAllAsync(ApplicationUser.Id, cancellation)
+			? await Repository.GetAllAsync(ApplicationUser.Id, false, cancellation)
 			: await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
 
 		return transactions.Select(MapToModel).ToList();
@@ -326,7 +326,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	private async Task<List<Guid>> GetUserAccountsInCurrencyIds(CancellationToken cancellationToken)
 	{
 		var userCounterparty = await _counterpartyRepository.GetByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken);
-		var accounts = await _accountRepository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+		var accounts = await _accountRepository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
 		return accounts
 			.Where(account => account.CounterpartyId == userCounterparty.Id)
 			.SelectMany(account => account.Currencies)

@@ -75,7 +75,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	{
 		var accounts = onlyActive
 			? await _repository.GetAllActiveAsync(ApplicationUser.Id, cancellationToken)
-			: await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
+			: await _repository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
 
 		return accounts.Select(MapToModel).ToList();
 	}

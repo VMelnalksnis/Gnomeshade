@@ -90,11 +90,18 @@ public abstract class Repository<TEntity>
 
 	/// <summary>Gets all entities.</summary>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="includeDeleted">Whether to include deleted entities.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all entities.</returns>
-	public Task<IEnumerable<TEntity>> GetAllAsync(Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<IEnumerable<TEntity>> GetAllAsync(
+		Guid ownerId,
+		bool includeDeleted = false,
+		CancellationToken cancellationToken = default)
 	{
-		var command = new CommandDefinition($"{SelectSql} WHERE {NotDeleted} AND {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
+		var command = includeDeleted
+			? new CommandDefinition($"{SelectSql} WHERE {AccessSql}", new { ownerId }, cancellationToken: cancellationToken)
+			: new($"{SelectSql} WHERE {NotDeleted} AND {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
+
 		return GetEntitiesAsync(command);
 	}
 
