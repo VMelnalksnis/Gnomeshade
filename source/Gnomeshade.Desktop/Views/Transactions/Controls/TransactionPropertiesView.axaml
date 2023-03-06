@@ -79,7 +79,7 @@
 			Watermark="Time" />
 
 		<TextBox
-			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding !Reconciled}"
+			Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding !Reconciled}"
 			Watermark="Description" AcceptsReturn="True"
 			Text="{Binding Description}" />
 	</Grid>
