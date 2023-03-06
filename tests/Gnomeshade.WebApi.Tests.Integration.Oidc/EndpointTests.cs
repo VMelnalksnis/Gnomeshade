@@ -50,7 +50,7 @@ public sealed class EndpointTests
 	[Test]
 	public async Task Health_ShouldReturnHealthy()
 	{
-		using var response = await _client.GetAsync("/health");
+		using var response = await _client.GetAsync("/api/v1.0/Health");
 		response.StatusCode.Should().Be(HttpStatusCode.OK);
 
 		var content = await response.Content.ReadAsStringAsync();

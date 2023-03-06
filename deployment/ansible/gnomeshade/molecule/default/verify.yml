@@ -14,7 +14,7 @@
 
     - name: Verify that the API is running
       ansible.builtin.uri:
-        url: 'http://localhost:8297/health'
+        url: 'http://localhost:8297/api/v1.0/health'
       register: verify
 
     - name: Display logs

@@ -156,7 +156,6 @@ public class Startup
 		{
 			builder.MapRazorPages();
 			builder.MapControllers().RequireAuthorization();
-			builder.MapHealthChecks("/health").AllowAnonymous();
 		});
 
 		application.UseGnomeshadeApiExplorer();

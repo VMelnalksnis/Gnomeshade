@@ -23,10 +23,14 @@ public sealed class HealthChecksTests : WebserverTests
 	{
 		var apiClient = Fixture.CreateHttpClient();
 
-		using var response = await apiClient.GetAsync("/health");
-		response.StatusCode.Should().Be(HttpStatusCode.OK);
-
+		using var response = await apiClient.GetAsync("/api/v1.0/Health");
 		var content = await response.Content.ReadAsStringAsync();
-		content.Should().Be(nameof(HealthStatus.Healthy));
+
+		using (new AssertionScope())
+		{
+			response.StatusCode.Should().Be(HttpStatusCode.OK);
+			response.Headers.CacheControl?.NoCache.Should().BeTrue();
+			content.Should().Be(nameof(HealthStatus.Healthy));
+		}
 	}
 }
