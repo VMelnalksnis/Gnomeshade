@@ -8,6 +8,7 @@ using System.Linq;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
 
@@ -37,11 +38,11 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	private Account? _selectedAccount;
 
 	/// <summary>Gets or sets a collection of all active accounts.</summary>
-	[Notify]
+	[Notify(Setter.Internal)]
 	private List<Account> _accounts = new();
 
 	/// <summary>Gets or sets a collection of all counterparties.</summary>
-	[Notify]
+	[Notify(Setter.Internal)]
 	private List<Counterparty> _counterparties = new();
 
 	/// <summary>Gets or sets the selected counterparty from <see cref="Counterparties"/>.</summary>
@@ -49,12 +50,20 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	private Counterparty? _selectedCounterparty;
 
 	/// <summary>Gets or sets a collection of all products.</summary>
-	[Notify]
+	[Notify(Setter.Internal)]
 	private List<Product> _products = new();
 
 	/// <summary>Gets or sets the selected product from <see cref="Products"/>.</summary>
 	[Notify]
 	private Product? _selectedProduct;
+
+	/// <summary>Gets or sets a collection of all categories.</summary>
+	[Notify(Setter.Internal)]
+	private List<Category> _categories = new();
+
+	/// <summary>Gets or sets the selected category from <see cref="Categories"/>.</summary>
+	[Notify]
+	private Category? _selectedCategory;
 
 	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedAccount"/>.</summary>
 	[Notify]
@@ -67,6 +76,10 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedProduct"/>.</summary>
 	[Notify]
 	private bool _invertProduct;
+
+	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedCategory"/>.</summary>
+	[Notify]
+	private bool _invertCategory;
 
 	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions.</summary>
 	[Notify]
@@ -99,6 +112,9 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 
 	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
+
+	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
 
 	internal Interval Interval
 	{
@@ -160,7 +176,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && Reconciled is null && Uncategorized is null)
+		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && SelectedCategory is null && Reconciled is null && Uncategorized is null)
 		{
 			return true;
 		}
@@ -169,6 +185,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 			IsAccountSelected(overview) &&
 			IsCounterpartySelected(overview) &&
 			IsProductSelected(overview) &&
+			IsCategorySelected(overview) &&
 			IsReconciled(overview) &&
 			IsUncategorized(overview);
 	}
@@ -209,6 +226,25 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 		return InvertProduct
 			? overview.Purchases.All(purchase => purchase.ProductId != SelectedProduct.Id)
 			: overview.Purchases.Any(purchase => purchase.ProductId == SelectedProduct.Id);
+	}
+
+	private bool IsCategorySelected(TransactionOverview overview)
+	{
+		if (SelectedCategory is null)
+		{
+			return true;
+		}
+
+		var categoryNodes = overview
+			.Purchases
+			.Select(purchase => Products.Single(product => product.Id == purchase.ProductId))
+			.Where(product => product.CategoryId is not null)
+			.Select(product => Categories.Single(category => category.Id == product.CategoryId))
+			.Select(category => CategoryNode.FromCategory(category, Categories));
+
+		return InvertCategory
+			? categoryNodes.All(node => !node.Contains(SelectedCategory.Id))
+			: categoryNodes.Any(node => node.Contains(SelectedCategory.Id));
 	}
 
 	private bool IsReconciled(TransactionOverview overview)

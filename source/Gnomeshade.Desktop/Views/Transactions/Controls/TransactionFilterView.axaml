@@ -70,7 +70,7 @@
 			</Button>
 		</Grid>
 
-		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto">
+		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />
 			<AutoCompleteBox
 				Grid.Row="0" Grid.Column="1"
@@ -119,11 +119,27 @@
 				</AutoCompleteBox.ItemTemplate>
 			</AutoCompleteBox>
 
-			<CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding Reconciled}" IsThreeState="True" />
-			<TextBlock Grid.Row="6" Grid.Column="1" Text="Reconciled" VerticalAlignment="Center" />
+			<CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding InvertCategory}" />
+			<AutoCompleteBox
+				Grid.Row="6" Grid.Column="1"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Category"
+				Items="{Binding Categories}"
+				ItemSelector="{Binding CategorySelector}"
+				SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+				<AutoCompleteBox.ItemTemplate>
+					<DataTemplate x:DataType="products:Category">
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</AutoCompleteBox.ItemTemplate>
+			</AutoCompleteBox>
 
-			<CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding Uncategorized}" IsThreeState="True" />
-			<TextBlock Grid.Row="8" Grid.Column="1" Text="Uncategorized" VerticalAlignment="Center" />
+			<CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding Reconciled}" IsThreeState="True" />
+			<TextBlock Grid.Row="8" Grid.Column="1" Text="Reconciled" VerticalAlignment="Center" />
+
+			<CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding Uncategorized}" IsThreeState="True" />
+			<TextBlock Grid.Row="10" Grid.Column="1" Text="Uncategorized" VerticalAlignment="Center" />
 		</Grid>
 
 	</StackPanel>

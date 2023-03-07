@@ -138,8 +138,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
+		var categoriesTask = _gnomeshadeClient.GetCategoriesAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask, categoriesTask);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
@@ -170,6 +171,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Filter.Accounts = accounts;
 		Filter.Counterparties = counterparties;
 		Filter.Products = productsTask.Result;
+		Filter.Categories = categoriesTask.Result;
 		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
 	}
 
@@ -208,6 +210,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			nameof(TransactionFilter.InvertCounterparty) or
 			nameof(TransactionFilter.SelectedProduct) or
 			nameof(TransactionFilter.InvertProduct) or
+			nameof(TransactionFilter.SelectedCategory) or
+			nameof(TransactionFilter.InvertCategory) or
 			nameof(TransactionFilter.Reconciled) or
 			nameof(TransactionFilter.Uncategorized))
 		{
