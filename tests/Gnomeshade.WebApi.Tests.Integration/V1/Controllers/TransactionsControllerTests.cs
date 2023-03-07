@@ -430,6 +430,21 @@ public sealed class TransactionsControllerTests : WebserverTests
 			detailed.Loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
 			detailed.Links.Should().ContainSingle().Which.Id.Should().Be(linkId);
 		}
+
+		await _client.DeleteTransferAsync(transfer.Id);
+		await _client.DeletePurchaseAsync(purchase.Id);
+		await _client.DeleteLoanAsync(loan.Id);
+		await _client.DeleteLinkAsync(linkId);
+
+		detailed = await _client.GetDetailedTransactionAsync(transaction.Id);
+		using (new AssertionScope())
+		{
+			detailed.Should().BeEquivalentTo(transaction);
+			detailed.Transfers.Should().BeEmpty();
+			detailed.Purchases.Should().HaveCount(1);
+			detailed.Loans.Should().BeEmpty();
+			detailed.Links.Should().BeEmpty();
+		}
 	}
 
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)

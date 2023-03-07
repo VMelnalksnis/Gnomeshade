@@ -215,22 +215,22 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 				{
 					var detailed = new DetailedTransactionEntity(transaction);
 
-					if (purchase is not null)
+					if (purchase is { DeletedAt: null })
 					{
 						detailed.Purchases.Add(purchase);
 					}
 
-					if (transfer is not null)
+					if (transfer is { DeletedAt: null })
 					{
 						detailed.Transfers.Add(transfer);
 					}
 
-					if (loan is not null)
+					if (loan is { DeletedAt: null })
 					{
 						detailed.Loans.Add(loan);
 					}
 
-					if (link is not null)
+					if (link is { DeletedAt: null })
 					{
 						detailed.Links.Add(link);
 					}
