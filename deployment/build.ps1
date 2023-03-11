@@ -8,11 +8,13 @@ $publish_dir = "source\$Project\bin\Release\"
 $archive_name = "${Project}.msi"
 
 $dotnetArgs = @()
+$dotnetArgs = $dotnetArgs + "build"
 $dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.wixproj"
-$dotnetArgs = $dotnetArgs + "-property:Configuration=Release"
+$dotnetArgs = $dotnetArgs + "--configuration" + "Release"
+$dotnetArgs = $dotnetArgs + "--no-restore"
 $dotnetArgs = $dotnetArgs + "/nologo"
 
-& msbuild $dotnetArgs
+& dotnet $dotnetArgs
 
 "artifact-name=$archive_name" >> $env:GITHUB_OUTPUT
 "artifact<<EOF" >> $env:GITHUB_OUTPUT

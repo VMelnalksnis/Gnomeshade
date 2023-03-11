@@ -17,7 +17,7 @@
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="$(MSBuildProjectFile.EndsWith('csproj'))">
 		<PackageReference Include="DotNet.ReproducibleBuilds">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

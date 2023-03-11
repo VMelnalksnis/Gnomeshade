@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<?define ProductId = "{37305834-4b9f-4bf2-a7c0-e1180eab9da1}" ?>
+﻿<?define ProductId = "{37305834-4b9f-4bf2-a7c0-e1180eab9da1}" ?>
 <?define Name = "Gnomeshade" ?>
 <?define Description = "Gnomeshade desktop client" ?>
 <?define Manufacturer = "Valters Melnalksnis" ?>
@@ -7,17 +6,17 @@
 <?define UpgradeCode = "{7bf2e236-d07d-4622-b190-7424bf463ecd}" ?>
 <?define CabName = "Gnomeshade.cab" ?>
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 
 	<!--Variable for Sample Application Directory-->
 	<?define BuildDir=$(var.Gnomeshade.Desktop.TargetDir)win10-x64\publish\?>
 
-	<Product Id="$(var.ProductId)" Name="$(var.Name)" Manufacturer="$(var.Manufacturer)"
-			 UpgradeCode="$(var.UpgradeCode)" Version="$(var.Version)" Language="1033">
+	<Package Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
+			 Version="$(var.Version)" Language="1033" InstallerVersion="200" Scope="perUser"
+			 ProductCode="$(var.ProductId)">
 
 		<!--Setup or Installer with properties-->
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perUser" InstallPrivileges="limited"
-				 Description="$(var.Name)" Manufacturer="$(var.Manufacturer)"/>
+		<SummaryInformation Description="$(var.Name)" Manufacturer="$(var.Manufacturer)"/>
 
 		<!--Application logo-->
 		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Desktop.TargetDir)Assets\avalonia-logo.ico"/>
@@ -36,35 +35,31 @@
 			<ComponentGroupRef Id="ProductComponents"/>
 			<ComponentRef Id="ApplicationShortcut"/>
 			<ComponentRef Id="ComponentDesktopShortcut"/>
-			<ComponentRef Id="RegistryEntries" />
+			<ComponentRef Id="RegistryEntries"/>
 		</Feature>
-	</Product>
+	</Package>
 
 	<!--Fragment with details of installation directory-->
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="LocalAppDataFolder">
-				<!-- Create a folder inside Company Name folder with Product Name-->
-				<Directory Id="INSTALLFOLDER" Name="$(var.Name)">
-					<Directory Id="DesktopFolder" Name="DesktopFolder"/>
-				</Directory>
-			</Directory>
-			<!--Create application folder in Program Menu-->
-			<Directory Id="ProgramMenuFolder">
-				<Directory Id="ApplicationProgramsFolder" Name="$(var.Name)"/>
-			</Directory>
-		</Directory>
+		<StandardDirectory Id="LocalAppDataFolder">
+			<!-- Create a folder inside Company Name folder with Product Name-->
+			<Directory Id="INSTALLFOLDER" Name="$(var.Name)"/>
+		</StandardDirectory>
+		<!--Create application folder in Program Menu-->
+		<StandardDirectory Id="ProgramMenuFolder">
+			<Directory Id="ApplicationProgramsFolder" Name="$(var.Name)"/>
+		</StandardDirectory>
 	</Fragment>
 
 	<!--Main Feature Fragment with Sample application executable-->
 	<Fragment>
 		<!--ComponentGroup refering to install component in INSTALLFOLDER Directory-->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<Component Id="av_libglesv2.dll" Guid="*">
+			<Component Id="av_libglesv2.dll">
 				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
 			</Component>
 
-			<Component Id="Gnomeshade.Desktop.exe" Guid="*">
+			<Component Id="Gnomeshade.Desktop.exe">
 				<File Id="Gnomeshade.Desktop.exe" Name="Gnomeshade.Desktop.exe"
 					  Source="$(var.BuildDir)Gnomeshade.Desktop.exe"/>
 
@@ -74,12 +69,12 @@
 				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
 			</Component>
 
-			<Component Id="libHarfBuzzSharp.dll" Guid="*">
+			<Component Id="libHarfBuzzSharp.dll">
 				<File Id="libHarfBuzzSharp.dll" Name="libHarfBuzzSharp.dll"
 					  Source="$(var.BuildDir)libHarfBuzzSharp.dll"/>
 			</Component>
 
-			<Component Id="libSkiaSharp.dll" Guid="*">
+			<Component Id="libSkiaSharp.dll">
 				<File Id="libSkiaSharp.dll" Name="libSkiaSharp.dll" Source="$(var.BuildDir)libSkiaSharp.dll"/>
 			</Component>
 
@@ -92,7 +87,7 @@
 	<Fragment>
 		<DirectoryRef Id="ApplicationProgramsFolder">
 			<!--Create application shortcut in Program Menu-->
-			<Component Id="ApplicationShortcut" Guid="*">
+			<Component Id="ApplicationShortcut">
 				<Shortcut Id="ApplicationStartMenuShortcut"
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
@@ -110,31 +105,30 @@
 
 	<Fragment>
 		<!--Desktop Shortcut-->
-		<DirectoryRef Id="DesktopFolder">
-			<Component Id="ComponentDesktopShortcut" Guid="*">
-				<Shortcut Id="AppDesktopShortcut"
-						  Name="$(var.Name)"
-						  Description="$(var.Description)"
-						  Target="[INSTALLFOLDER]Gnomeshade.Desktop.exe"
-						  Icon="Logo.ico"/>
+		<StandardDirectory Id="DesktopFolder">
+			<Component Id="ComponentDesktopShortcut">
+				<Shortcut Id="AppDesktopShortcut" Name="$(var.Name)" Description="$(var.Description)"
+						  Target="[INSTALLFOLDER]Gnomeshade.Desktop.exe" Icon="Logo.ico"/>
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
-				<RegistryValue Root="HKCU" Key="Software\$(var.Name)"
-							   Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				<RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1"
+							   KeyPath="yes"/>
 			</Component>
-		</DirectoryRef>
+		</StandardDirectory>
 	</Fragment>
 
 	<Fragment>
-		<DirectoryRef Id="TARGETDIR">
-			<Component Id="RegistryEntries" Guid="*">
-				<RegistryKey Root="HKCU" Key="SOFTWARE\Classes\gnomeshade" Action="createAndRemoveOnUninstall">
+		<StandardDirectory Id="TARGETDIR">
+			<Component Id="RegistryEntries">
+				<RegistryKey Root="HKCU" Key="SOFTWARE\Classes\gnomeshade" ForceCreateOnInstall="yes"
+							 ForceDeleteOnUninstall="yes">
 					<RegistryValue Type="string" Value="URL:gnomeshade"/>
 					<RegistryValue Type="string" Value="" Name="URL Protocol" KeyPath="yes"/>
-					<RegistryKey Key="shell\open\command" Action="createAndRemoveOnUninstall">
-						<RegistryValue Type="string" Value="&quot;[INSTALLFOLDER]Gnomeshade.Desktop.exe&quot; &quot;%1&quot;"/>
+					<RegistryKey Key="shell\open\command" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+						<RegistryValue Type="string"
+									   Value="&quot;[INSTALLFOLDER]Gnomeshade.Desktop.exe&quot; &quot;%1&quot;"/>
 					</RegistryKey>
 				</RegistryKey>
 			</Component>
-		</DirectoryRef>
+		</StandardDirectory>
 	</Fragment>
 </Wix>
