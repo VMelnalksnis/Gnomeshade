@@ -7,10 +7,12 @@ on:
     branches: [ master ]
     paths-ignore:
       - '**.md'
+      - '/docs'
   pull_request:
     branches: [ master ]
     paths-ignore:
       - '**.md'
+      - '/docs'
 
 env:
   DOTNET_NOLOGO: true
@@ -21,7 +23,7 @@ jobs:
   nuget-vulnerabilities:
     name: NuGet vulnerabilities
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3.3.0
       - uses: actions/setup-dotnet@v3.0.3
