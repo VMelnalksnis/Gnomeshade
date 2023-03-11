@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Gnomeshade</title>
+	<meta name="description" content="Gnomeshade">
+	<meta name="author" content="Valters Melnalksnis">
+
+	<style>
+		body {
+			margin: 0 auto 0 auto;
+			font: 18px/1.8 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+			color: #444444;
+			background: #f4f4f4;
+		}
+
+		h1, h2, h3 {
+			line-height: 1.2
+		}
+
+		p {
+			text-align: justify;
+			text-justify: inter-word;
+		}
+
+		nav {
+			border: 1px solid #d2d2d2;
+			background-color: #e8e8e8;
+			padding: 14px 16px;
+			overflow: auto;
+		}
+
+		nav * {
+			display: inline;
+			text-decoration: none;
+		}
+
+		.top-navigation ul {
+			list-style-type: none;
+			overflow: hidden;
+			margin: 0;
+			padding: 0;
+			float: right;
+		}
+
+		.top-navigation li:not(:last-child) {
+			margin: 0 14px 0 0;
+		}
+
+		.content {
+			width: 50%;
+			min-width: 325px;
+			max-width: 650px;
+			margin: 0 auto;
+		}
+
+		.bottom-navigation {
+			display: flex;
+			justify-content: center;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			body {
+				color: #c9d1d9;
+				background: #0d1117
+			}
+
+			nav {
+				border: none;
+				background-color: #21252b;
+			}
+
+			a:link {
+				color: #58a6ff
+			}
+
+			a:visited {
+				color: #8e96f0
+			}
+		}
+	</style>
+</head>
+<body>
+
+<nav id="top" class="top-navigation">
+	<a href="index.html">Gnomeshade</a>
+	<ul>
+		<li>
+			<a href="https://gnomeshade-demo.azurewebsites.net/">Demo</a>
+		</li>
+		<li>
+			<a href="https://github.com/VMelnalksnis/Gnomeshade/releases/latest">Download</a>
+		</li>
+		<li>
+			<a href="https://github.com/VMelnalksnis/Gnomeshade">Contribute</a>
+		</li>
+	</ul>
+</nav>
+
+<main class="content">
+	<h1>Gnomeshade</h1>
+	<p>
+		A free and open source self-hosted personal finance tracker
+	</p>
+
+	<section>
+		<h2>Features</h2>
+
+		<section>
+			<h3>Transaction management</h3>
+			<p>
+				Gnomeshade features a double-entry bookkeeping system.
+				You can quickly enter and organize your transactions in multiple currencies.
+			</p>
+		</section>
+
+		<section>
+			<h3>Automatically import transactions</h3>
+			<p>
+				Automatically sync transactions from your bank using <a href="https://nordigen.com/">Nordigen</a>
+				or import <a href="https://en.wikipedia.org/wiki/ISO_20022">ISO 20022</a> reports.
+			</p>
+		</section>
+
+		<section>
+			<h3>Automatically categorize purchases</h3>
+			<p>
+				Link receipts from <a href="https://github.com/paperless-ngx/paperless-ngx">paperless-ngx</a>
+				to transactions and automatically categorize the purchases.
+			</p>
+		</section>
+
+		<section>
+			<h3>Multi-user support</h3>
+			<p>
+				Multiple users can register and share accounts using either built-in authentication or
+				<a href="https://en.wikipedia.org/wiki/OpenID#OpenID_Connect_(OIDC)">OIDC</a>.
+			</p>
+		</section>
+
+		<section>
+			<h3>Informative reports</h3>
+			<p>
+				Gnomeshade has advanced reporting capabilities, showing your total balance, spending per category
+				and prices over time. It can also show how much you've paid or received from different accounts
+				or counterparties.
+			</p>
+		</section>
+
+		<section>
+			<h3>REST API</h3>
+			<p>
+				All functionality used by the desktop client application is available via a
+				<a href="https://gnomeshade-demo.azurewebsites.net/swagger/index.html">REST API</a>,
+				and a .NET API client is available as a
+				<a href="https://www.nuget.org/packages/Gnomeshade.WebApi.Client">NuGet package</a>.
+			</p>
+		</section>
+	</section>
+</main>
+
+<footer>
+	<nav class="bottom-navigation">
+		<a href="#top">Back to top</a>
+	</nav>
+</footer>
+</body>
+</html>
