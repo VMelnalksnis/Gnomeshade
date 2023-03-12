@@ -38,7 +38,7 @@ public sealed class UserConfigurationWriter
 	public async Task Write(UserConfiguration userConfiguration)
 	{
 		var changed = false;
-		_optionsMonitor.OnChange(_ => changed = true);
+		using var change = _optionsMonitor.OnChange(_ => changed = true);
 
 		var fileStream = File.Open(Filepath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
 		var writer = new Utf8JsonWriter(fileStream);
