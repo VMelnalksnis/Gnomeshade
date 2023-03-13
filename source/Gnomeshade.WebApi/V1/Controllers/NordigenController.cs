@@ -376,6 +376,8 @@ public sealed class NordigenController : ControllerBase
 			"CARD FEE" => CreditDebitCode.DBIT,
 			"OUTWARD TRANSFER" => CreditDebitCode.DBIT,
 			"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
+			var information when information?.StartsWith("INWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.CRDT,
+			var information when information?.StartsWith("OUTWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.DBIT,
 			_ => bookedTransaction.BankTransactionCode switch
 			{
 				"PMNT" => CreditDebitCode.DBIT,
