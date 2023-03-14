@@ -23,6 +23,9 @@ public static class ServiceCollectionExtensions
 	/// <returns><paramref name="serviceCollection"/>.</returns>
 	public static IServiceCollection AddViewModels(this IServiceCollection serviceCollection) => serviceCollection
 		.AddSingleton<MainWindowViewModel>()
+		.AddTransient<ConfigurationWizardViewModel>()
+		.AddTransient<GnomeshadeConfigurationViewModel>()
+		.AddTransient<AuthenticationConfigurationViewModel>()
 		.AddTransient<LoginViewModel>()
 		.AddTransient<ApplicationSettingsViewModel>()
 		.AddTransient<CounterpartyMergeViewModel>()

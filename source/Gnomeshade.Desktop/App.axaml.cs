@@ -3,9 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 
 using Avalonia;
@@ -39,17 +37,8 @@ namespace Gnomeshade.Desktop;
 [UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
 public sealed class App : Application
 {
-	private static readonly ProductInfoHeaderValue _userAgent;
-
 	private readonly IServiceProvider _serviceProvider;
 	private readonly ILogger<App> _logger;
-
-	static App()
-	{
-		var assemblyName = typeof(App).Assembly.GetName();
-		var assemblyShortName = assemblyName.Name ?? assemblyName.FullName.Split(',').First();
-		_userAgent = new(assemblyShortName, assemblyName.Version?.ToString());
-	}
 
 	/// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
 	public App()
@@ -64,10 +53,7 @@ public sealed class App : Application
 			.ClearProviders()
 			.AddSerilog(SerilogConfiguration.CreateLogger(configuration), true));
 
-		serviceCollection
-			.AddGnomeshadeOptions(configuration)
-			.AddSingleton<UserConfigurationWriter>()
-			.AddHttpClient<UserConfigurationValidator>(client => client.DefaultRequestHeaders.UserAgent.Add(_userAgent));
+		serviceCollection.AddGnomeshadeOptions(configuration);
 
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
@@ -76,7 +62,7 @@ public sealed class App : Application
 			.AddSingleton<IBrowser, SystemBrowser>(provider =>
 			{
 				var protocolHandler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
-				var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue;
+				var options = provider.GetRequiredService<IOptionsMonitor<UserConfiguration>>().CurrentValue.Oidc ?? new();
 				return new(protocolHandler, options.SigninTimeout);
 			});
 
@@ -93,7 +79,13 @@ public sealed class App : Application
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
 		{
-			var options = provider.GetRequiredService<IOptionsMonitor<OidcOptions>>().CurrentValue.ToOidcClientOptions();
+			var oidcOptions = provider.GetRequiredService<IOptionsMonitor<UserConfiguration>>().CurrentValue.Oidc;
+			if (oidcOptions?.Authority is null)
+			{
+				return new NullOidcClient();
+			}
+
+			var options = oidcOptions.ToOidcClientOptions();
 			options.Browser = provider.GetRequiredService<IBrowser>();
 			options.HttpClientFactory = _ => provider.GetRequiredService<HttpClient>();
 			options.LoggerFactory = provider.GetRequiredService<ILoggerFactory>();

@@ -174,6 +174,18 @@ public static class DesignTimeData
 	public static PreferencesViewModel PreferencesViewModel { get; } =
 		GetServiceProvider().GetRequiredService<PreferencesViewModel>();
 
+	/// <summary>Gets an instance of <see cref="GnomeshadeConfigurationViewModel"/> for use during design time.</summary>
+	public static GnomeshadeConfigurationViewModel GnomeshadeConfigurationViewModel { get; } =
+		GetServiceProvider().GetRequiredService<GnomeshadeConfigurationViewModel>();
+
+	/// <summary>Gets an instance of <see cref="AuthenticationConfigurationViewModel"/> for use during design time.</summary>
+	public static AuthenticationConfigurationViewModel AuthenticationConfigurationViewModel { get; } =
+		GetServiceProvider().GetRequiredService<AuthenticationConfigurationViewModel>();
+
+	/// <summary>Gets an instance of <see cref="ConfigurationWizardViewModel"/> for use during design time.</summary>
+	public static ConfigurationWizardViewModel ConfigurationWizardViewModel { get; } =
+		GetServiceProvider().GetRequiredService<ConfigurationWizardViewModel>();
+
 	[UnconditionalSuppressMessage(
 		"Trimming",
 		"IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
@@ -194,11 +206,13 @@ public static class DesignTimeData
 			.AddSingleton<UserConfigurationWriter>()
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
-			.AddSingleton<UserConfigurationValidator>()
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
 			.AddSingleton<IActivityService, ActivityService>()
 			.AddTransient<ApplicationSettingsViewModel>()
 			.AddTransient<PreferencesViewModel>()
+			.AddTransient<GnomeshadeConfigurationViewModel>()
+			.AddTransient<AuthenticationConfigurationViewModel>()
+			.AddTransient<ConfigurationWizardViewModel>()
 			.AddTransient<ILogger<PreferencesViewModel>>(_ => NullLogger<PreferencesViewModel>.Instance)
 			.AddTransient<IGnomeshadeClient>(_ => GnomeshadeClient)
 			.AddHttpClient();

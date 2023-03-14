@@ -3,124 +3,92 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
-using Gnomeshade.WebApi.Client;
-
 using Microsoft.Extensions.Options;
+
+using PropertyChanged.SourceGenerator;
 
 namespace Gnomeshade.Avalonia.Core.Configuration;
 
 /// <summary>Settings for this specific installation of the application.</summary>
-public sealed class ApplicationSettingsViewModel : ViewModelBase
+public sealed partial class ApplicationSettingsViewModel : ViewModelBase
 {
+	private readonly IOptionsMonitor<UserConfiguration> _userConfiguration;
 	private readonly UserConfigurationWriter _userConfigurationWriter;
-	private readonly UserConfigurationValidator _validator;
-	private readonly GnomeshadeOptions _gnomeshadeOptions;
-	private readonly OidcOptions _oidcOptions;
 
-	private CancellationTokenSource _cancellationTokenSource = new();
-	private string _baseAddress;
-	private string _oidcAuthority;
-	private string _oidcClientId;
-	private string? _oidcClientSecret;
+	/// <summary>Gets or sets a value indicating whether authentication configuration is needed.</summary>
+	[Notify]
+	private bool _enableAuthentication;
 
 	/// <summary>Initializes a new instance of the <see cref="ApplicationSettingsViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="userConfiguration">The current value of user configuration.</param>
 	/// <param name="userConfigurationWriter">Used to persist user configuration.</param>
-	/// <param name="validator">User configuration validator.</param>
+	/// <param name="gnomeshadeConfigurationViewModel">Gnomeshade API configuration viewmodel.</param>
+	/// <param name="authenticationConfigurationViewModel">Authentication configuration viewmodel.</param>
 	public ApplicationSettingsViewModel(
 		IActivityService activityService,
-		IOptions<UserConfiguration> userConfiguration,
+		IOptionsMonitor<UserConfiguration> userConfiguration,
 		UserConfigurationWriter userConfigurationWriter,
-		UserConfigurationValidator validator)
+		GnomeshadeConfigurationViewModel gnomeshadeConfigurationViewModel,
+		AuthenticationConfigurationViewModel authenticationConfigurationViewModel)
 		: base(activityService)
 	{
+		_userConfiguration = userConfiguration;
 		_userConfigurationWriter = userConfigurationWriter;
-		_validator = validator;
 
-		_gnomeshadeOptions = userConfiguration.Value.Gnomeshade ?? new();
-		_oidcOptions = userConfiguration.Value.Oidc ?? new();
-
-		_baseAddress = _gnomeshadeOptions.BaseAddress?.ToString() ?? string.Empty;
-
-		_oidcAuthority = _oidcOptions.Authority?.ToString() ?? string.Empty;
-		_oidcClientId = _oidcOptions.ClientId;
-		_oidcClientSecret = _oidcOptions.ClientSecret;
+		Gnomeshade = gnomeshadeConfigurationViewModel;
+		Authentication = authenticationConfigurationViewModel;
 	}
 
 	/// <summary>Raised when the user configuration has been updated.</summary>
 	public event EventHandler? Updated;
 
-	/// <inheritdoc cref="GnomeshadeOptions.BaseAddress"/>
-	public string BaseAddress
-	{
-		get => _baseAddress;
-		set
-		{
-			_cancellationTokenSource.Cancel();
-			_cancellationTokenSource = new();
-			if (Uri.IsWellFormedUriString(value, UriKind.Absolute))
-			{
-				_gnomeshadeOptions.BaseAddress = new(value);
-			}
+	/// <summary>Gets the viewmodel for managing gnomeshade configuration.</summary>
+	public GnomeshadeConfigurationViewModel Gnomeshade { get; }
 
-			SetAndNotifyWithGuard(ref _baseAddress, value, nameof(BaseAddress), nameof(IsValid));
-		}
-	}
-
-	/// <inheritdoc cref="OidcOptions.Authority"/>
-	public string OidcAuthority
-	{
-		get => _oidcAuthority;
-		set
-		{
-			_cancellationTokenSource.Cancel();
-			_cancellationTokenSource = new();
-			if (Uri.IsWellFormedUriString(value, UriKind.Absolute))
-			{
-				_oidcOptions.Authority = new(value);
-			}
-
-			SetAndNotifyWithGuard(ref _oidcAuthority, value, nameof(OidcAuthority), nameof(IsValid));
-		}
-	}
-
-	/// <inheritdoc cref="OidcOptions.ClientId"/>
-	public string OidcClientId
-	{
-		get => _oidcClientId;
-		set
-		{
-			_oidcOptions.ClientId = value;
-			SetAndNotify(ref _oidcClientId, value);
-		}
-	}
-
-	/// <inheritdoc cref="OidcOptions.ClientSecret"/>
-	public string? OidcClientSecret
-	{
-		get => _oidcClientSecret;
-		set
-		{
-			_oidcOptions.ClientSecret = value;
-			SetAndNotify(ref _oidcClientSecret, value);
-		}
-	}
+	/// <summary>Gets the viewmodel for managing authentication configuration.</summary>
+	public AuthenticationConfigurationViewModel Authentication { get; }
 
 	/// <summary>Gets a task, the result of which indicates whether the current state of this view model represents valid user configuration.</summary>
-	public Task<bool> IsValid => _validator.IsValid(Configuration, _cancellationTokenSource.Token);
-
-	private UserConfiguration Configuration => new() { Gnomeshade = _gnomeshadeOptions, Oidc = _oidcOptions };
+	public Task<bool> IsValid => IsValidAsync();
 
 	/// <summary>Persists the changes made to the user configuration in this view model.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task UpdateConfiguration()
 	{
 		using var activity = BeginActivity("Updating configuration");
-		await _userConfigurationWriter.Write(Configuration);
+		var configuration = _userConfiguration.CurrentValue;
+
+		Gnomeshade.UpdateConfiguration(configuration);
+
+		if (EnableAuthentication)
+		{
+			Authentication.UpdateConfiguration(configuration);
+		}
+		else
+		{
+			configuration.Oidc = null;
+		}
+
+		await _userConfigurationWriter.Write(configuration);
 		Updated?.Invoke(this, EventArgs.Empty);
+	}
+
+	private async Task<bool> IsValidAsync()
+	{
+		var valid = await Gnomeshade.IsValid;
+		if (!valid)
+		{
+			return false;
+		}
+
+		if (!EnableAuthentication)
+		{
+			return true;
+		}
+
+		return await Authentication.IsValid;
 	}
 }

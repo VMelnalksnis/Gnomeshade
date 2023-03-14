@@ -18,6 +18,7 @@ using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -25,6 +26,7 @@ namespace Gnomeshade.Avalonia.Core;
 public sealed class MainWindowViewModel : ViewModelBase
 {
 	private readonly IServiceProvider _serviceProvider;
+	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
 
 	private ViewModelBase? _activeView;
 
@@ -34,6 +36,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		: base(serviceProvider.GetRequiredService<IActivityService>())
 	{
 		_serviceProvider = serviceProvider;
+		_userConfigurationMonitor = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>();
 	}
 
 	/// <summary>
@@ -66,7 +69,15 @@ public sealed class MainWindowViewModel : ViewModelBase
 			return;
 		}
 
-		await SwitchToLogin();
+		var apiBaseAddress = _userConfigurationMonitor.CurrentValue.Gnomeshade?.BaseAddress;
+		if (apiBaseAddress is not null)
+		{
+			await SwitchToLogin();
+		}
+
+		var configurationWizardViewModel = _serviceProvider.GetRequiredService<ConfigurationWizardViewModel>();
+		configurationWizardViewModel.Completed += ConfigurationWizardViewModelOnUpdated;
+		ActiveView = configurationWizardViewModel;
 	}
 
 	/// <summary>Logs out the current user.</summary>
@@ -121,10 +132,10 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ApplicationSettingsViewModel"/>.</summary>
 	public void SwitchToSetup()
 	{
-		var initialSetupViewModel = _serviceProvider.GetRequiredService<ApplicationSettingsViewModel>();
-		initialSetupViewModel.Updated += InitialSetupViewModelOnUpdated;
+		var applicationSettingsViewModel = _serviceProvider.GetRequiredService<ApplicationSettingsViewModel>();
+		applicationSettingsViewModel.Updated += InitialSetupViewModelOnUpdated;
 
-		ActiveView = initialSetupViewModel;
+		ActiveView = applicationSettingsViewModel;
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="PreferencesViewModel"/>.</summary>
@@ -203,11 +214,24 @@ public sealed class MainWindowViewModel : ViewModelBase
 		await SwitchToTransactionOverviewAsync();
 	}
 
+	private async void ConfigurationWizardViewModelOnUpdated(object? sender, EventArgs e)
+	{
+		await SwitchToLogin();
+	}
+
 	private void Unsubscribe(ViewModelBase? viewModel)
 	{
 		if (viewModel is LoginViewModel loginViewModel)
 		{
 			loginViewModel.UserLoggedIn -= OnUserLoggedIn;
+		}
+		else if (viewModel is ApplicationSettingsViewModel applicationSettingsViewModel)
+		{
+			applicationSettingsViewModel.Updated -= InitialSetupViewModelOnUpdated;
+		}
+		else if (viewModel is ConfigurationWizardViewModel gnomeshadeConfigurationViewModel)
+		{
+			gnomeshadeConfigurationViewModel.Completed -= ConfigurationWizardViewModelOnUpdated;
 		}
 	}
 }
