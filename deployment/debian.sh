@@ -14,9 +14,11 @@ time="Fri, 24 Jun 2022 19:28:01 +0200"
 
 mkdir -p gnomeshade/opt/gnomeshade
 unzip "$archive_path" -d gnomeshade/opt/gnomeshade
+
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
+
 chmod 0755 gnomeshade/opt/gnomeshade/libe_sqlite3.so
-objcopy --strip-debug --strip-unneeded gnomeshade/opt/gnomeshade/libe_sqlite3.so
+strip gnomeshade/opt/gnomeshade/libe_sqlite3.so
 
 mkdir -p gnomeshade/DEBIAN
 cp deployment/debian/postinst gnomeshade/DEBIAN/postinst
@@ -45,4 +47,10 @@ mkdir -p gnomeshade/lib/systemd/system
 cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service
 
 dpkg-deb --root-owner-group --build gnomeshade
-lintian --suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt gnomeshade.deb
+
+# unstripped-binary-or-object suppressed because gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
+# cannot be stripped without corrupting the application
+lintian \
+	--suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt \
+	--suppress-tags unstripped-binary-or-object \
+	gnomeshade.deb
