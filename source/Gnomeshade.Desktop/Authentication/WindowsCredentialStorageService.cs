@@ -52,7 +52,10 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 			return false;
 		}
 
-		if (!credential.Attributes.TryGetValue(_tokenAttributeName, out var value) || value is not bool flag || !flag)
+		if (credential.Attributes is null ||
+			!credential.Attributes.TryGetValue(_tokenAttributeName, out var value) ||
+			value is not bool flag ||
+			!flag)
 		{
 			return false;
 		}
@@ -78,7 +81,7 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 			return false;
 		}
 
-		if (credential.Attributes.Any())
+		if (credential.Attributes?.Any() ?? false)
 		{
 			return false;
 		}
