@@ -14,7 +14,7 @@ public static class OidcOptionsExtensions
 	/// <returns>An instance of <see cref="OidcClientOptions"/> with the respective properties from <paramref name="options"/>.</returns>
 	public static OidcClientOptions ToOidcClientOptions(this OidcOptions options) => new()
 	{
-		Authority = options.Authority?.ToString() ?? string.Empty,
+		Authority = options.Authority.ToString(),
 		ClientId = options.ClientId,
 		ClientSecret = options.ClientSecret,
 		Scope = options.Scope,

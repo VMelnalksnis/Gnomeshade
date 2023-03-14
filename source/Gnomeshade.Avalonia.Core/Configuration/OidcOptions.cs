@@ -14,18 +14,18 @@ public sealed class OidcOptions
 {
 	/// <inheritdoc cref="OidcClientOptions.Authority"/>
 	[Required]
-	public Uri? Authority { get; set; }
+	public Uri Authority { get; set; } = null!;
 
 	/// <inheritdoc cref="OidcClientOptions.ClientId"/>
 	[Required]
-	public string ClientId { get; set; } = null!;
+	public string ClientId { get; set; } = "gnomeshade-desktop";
 
 	/// <inheritdoc cref="OidcClientOptions.ClientSecret"/>
 	public string? ClientSecret { get; set; }
 
 	/// <inheritdoc cref="OidcClientOptions.RedirectUri"/>
 	[Required]
-	public Uri RedirectUri { get; set; } = null!;
+	public Uri RedirectUri { get; set; } = new("gnomeshade://localhost");
 
 	/// <inheritdoc cref="OidcClientOptions.Scope"/>
 	[Required]
