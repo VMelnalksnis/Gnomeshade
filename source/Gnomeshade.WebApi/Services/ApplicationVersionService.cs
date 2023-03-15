@@ -9,7 +9,7 @@ namespace Gnomeshade.WebApi.Services;
 internal sealed class ApplicationVersionService
 {
 	private static readonly string _version = Assembly.GetExecutingAssembly().GetName().Version is { } version
-		? $"v{version.Major}.{version.Minor}.{version.Revision}"
+		? $"v{version.Major}.{version.Minor}.{version.Build}"
 		: string.Empty;
 
 	internal string Version => _version;
