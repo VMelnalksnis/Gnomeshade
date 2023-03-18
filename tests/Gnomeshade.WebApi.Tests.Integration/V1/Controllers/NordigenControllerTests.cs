@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -37,6 +38,16 @@ public sealed class NordigenControllerTests : WebserverTests
 
 		var result = await client.ImportAsync(_integrationInstitutionId);
 
-		result.Should().BeOfType<SuccessfulImport>();
+		result.Should().BeOfType<SuccessfulImport>().Which.Results.Should().HaveCount(2);
+
+		var repeatedResult = await client.ImportAsync(_integrationInstitutionId);
+
+		repeatedResult
+			.Should()
+			.BeOfType<SuccessfulImport>()
+			.Which.Results
+			.SelectMany(reportResult => reportResult.TransactionReferences)
+			.Should()
+			.AllSatisfy(reference => reference.Created.Should().BeFalse());
 	}
 }

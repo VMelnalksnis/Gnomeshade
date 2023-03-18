@@ -336,7 +336,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		using var importResponse = await _httpClient.PostAsync(Nordigen.Import(id, timeZone), null);
 		if (importResponse.StatusCode is HttpStatusCode.OK)
 		{
-			return new SuccessfulImport();
+			var results = await importResponse.Content.ReadFromJsonAsync(_context.ListAccountReportResult).ConfigureAwait(false);
+			return new SuccessfulImport(results!);
 		}
 
 		if (importResponse.StatusCode is HttpStatusCode.Found)
