@@ -65,4 +65,14 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
+
+	public Task<IEnumerable<TransferEntity>> GetByExternalReferenceAsync(
+		string externalReference,
+		Guid ownerId,
+		IDbTransaction dbTransaction)
+	{
+		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.external_reference = @externalReference AND {AccessSql}";
+		var command = new CommandDefinition(sql, new { externalReference, ownerId }, dbTransaction);
+		return GetEntitiesAsync(command);
+	}
 }

@@ -3,8 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,11 +13,9 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Models.Importing;
-using Gnomeshade.WebApi.V1.Accounts;
 using Gnomeshade.WebApi.V1.Authorization;
 using Gnomeshade.WebApi.V1.Importing;
 using Gnomeshade.WebApi.V1.Importing.Results;
-using Gnomeshade.WebApi.V1.Importing.TransactionCodes;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -29,9 +25,6 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 
 using VMelnalksnis.ISO20022DotNet.MessageSets.BankToCustomerCashManagement.V2.AccountReport;
-
-using static Gnomeshade.WebApi.V1.Importing.TransactionCodes.Family;
-using static Gnomeshade.WebApi.V1.Importing.TransactionCodes.SubFamily;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -48,62 +41,46 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly ApplicationUserContext _applicationUserContext;
 	private readonly ILogger<Iso20022Controller> _logger;
 	private readonly Iso20022AccountReportReader _reportReader;
-	private readonly CurrencyRepository _currencyRepository;
-	private readonly AccountRepository _accountRepository;
-	private readonly AccountInCurrencyRepository _inCurrencyRepository;
 	private readonly TransactionRepository _transactionRepository;
 	private readonly TransferRepository _transferRepository;
 	private readonly TransactionUnitOfWork _transactionUnitOfWork;
-	private readonly AccountUnitOfWork _accountUnitOfWork;
 	private readonly DbConnection _dbConnection;
 	private readonly Mapper _mapper;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
-	private readonly IClock _clock;
+	private readonly Iso20022ImportService _importService;
 
 	/// <summary>Initializes a new instance of the <see cref="Iso20022Controller"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="logger">Context specific logger.</param>
 	/// <param name="reportReader">Bank account report reader.</param>
-	/// <param name="currencyRepository">The repository for performing CRUD operations on <see cref="CurrencyEntity"/>.</param>
-	/// <param name="accountRepository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
-	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="transactionRepository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
 	/// <param name="transferRepository">The repository for performing CRUD operations on <see cref="TransferEntity"/>.</param>
 	/// <param name="transactionUnitOfWork">Unit of work for managing transactions and all related entities.</param>
-	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	/// <param name="dbConnection">Database connection for managing transactions.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
-	/// <param name="clock">A clock that provides access to the current time.</param>
+	/// <param name="importService">Service for importing transactions from external sources.</param>
 	public Iso20022Controller(
 		ApplicationUserContext applicationUserContext,
 		ILogger<Iso20022Controller> logger,
 		Iso20022AccountReportReader reportReader,
-		CurrencyRepository currencyRepository,
-		AccountRepository accountRepository,
-		AccountInCurrencyRepository inCurrencyRepository,
 		TransactionRepository transactionRepository,
 		TransferRepository transferRepository,
 		TransactionUnitOfWork transactionUnitOfWork,
-		AccountUnitOfWork accountUnitOfWork,
 		DbConnection dbConnection,
 		Mapper mapper,
 		IDateTimeZoneProvider dateTimeZoneProvider,
-		IClock clock)
+		Iso20022ImportService importService)
 	{
 		_applicationUserContext = applicationUserContext;
 		_logger = logger;
 		_reportReader = reportReader;
-		_currencyRepository = currencyRepository;
-		_accountRepository = accountRepository;
-		_inCurrencyRepository = inCurrencyRepository;
 		_transactionRepository = transactionRepository;
 		_transactionUnitOfWork = transactionUnitOfWork;
-		_accountUnitOfWork = accountUnitOfWork;
 		_dbConnection = dbConnection;
 		_mapper = mapper;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_clock = clock;
+		_importService = importService;
 		_transferRepository = transferRepository;
 	}
 
@@ -130,13 +107,21 @@ public sealed class Iso20022Controller : ControllerBase
 
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
-		var (reportAccount, currency, createdAccount) = await FindAccount(accountReport.Account, user, dbTransaction);
+		var (reportAccount, currency, createdAccount) = await _importService.FindUserAccountAsync(
+			new(accountReport.Account.Identification.Iban, accountReport.Account.Currency),
+			user,
+			dbTransaction);
+
 		_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
 
 		var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
 
-		var (bankAccount, bankCreated) =
-			await FindBankAccount(accountReport.Account.Servicer, user, currency, dbTransaction);
+		var (bankAccount, bankCreated) = await _importService.FindBankAccountAsync(
+			new(accountReport.Account.Servicer?.FinancialInstitutionIdentification.Name, accountReport.Account.Servicer?.FinancialInstitutionIdentification.Bic),
+			user,
+			currency,
+			dbTransaction);
+
 		resultBuilder.AddAccount(bankAccount, bankCreated);
 
 		var creditEntriesSummary = accountReport.TransactionsSummary?.TotalCreditEntries;
@@ -237,114 +222,8 @@ public sealed class Iso20022Controller : ControllerBase
 		return bankToCustomerAccountReport.Reports.First();
 	}
 
-	private async Task<(AccountEntity Account, CurrencyEntity Currency, bool Created)> FindAccount(
-		CashAccount20 cashAccount,
-		UserEntity user,
-		IDbTransaction dbTransaction)
-	{
-		var iban = cashAccount.Identification.Iban;
-		if (iban is null)
-		{
-			throw new NotSupportedException(
-				$"Unsupported account identification scheme {cashAccount.Identification}");
-		}
-
-		var currencyCode = cashAccount.Currency;
-		if (string.IsNullOrWhiteSpace(currencyCode))
-		{
-			throw new NotSupportedException("Cannot create a new account without a currency");
-		}
-
-		var currency = await _currencyRepository.FindByAlphabeticCodeAsync(currencyCode);
-		if (currency is null)
-		{
-			throw new KeyNotFoundException($"Could not find currency by alphabetic code {currencyCode}");
-		}
-
-		var account = await _accountRepository.FindByIbanAsync(iban, user.Id, dbTransaction);
-		if (account is not null)
-		{
-			return (account, currency, false);
-		}
-
-		account = new()
-		{
-			OwnerId = user.Id,
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			Name = iban,
-			CounterpartyId = user.CounterpartyId,
-			PreferredCurrencyId = currency.Id,
-			Iban = iban,
-			AccountNumber = iban,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
-		};
-
-		var id = await _accountUnitOfWork.AddAsync(account, dbTransaction);
-		account = await _accountRepository.GetByIdAsync(id, user.Id);
-		return (account, currency, true);
-	}
-
-	private async Task<(AccountEntity Account, bool Created)> FindBankAccount(
-		BranchAndFinancialInstitutionIdentification4? identification,
-		UserEntity user,
-		CurrencyEntity currency,
-		IDbTransaction dbTransaction)
-	{
-		if (identification is null)
-		{
-			throw new();
-		}
-
-		AccountEntity? bankAccount = null!;
-
-		var institutionIdentification = identification.FinancialInstitutionIdentification;
-		var bankName = institutionIdentification.Name;
-		if (!string.IsNullOrWhiteSpace(bankName))
-		{
-			_logger.LogTrace("Searching for bank account by name {AccountName}", bankName);
-			bankAccount = await _accountRepository.FindByNameAsync(bankName, user.Id);
-			if (bankAccount is not null)
-			{
-				_logger.LogDebug("Matched bank account to {AccountName}", bankAccount.Name);
-				return (bankAccount, false);
-			}
-
-			// todo create new account based on name
-		}
-
-		var bic = institutionIdentification.Bic;
-		if (!string.IsNullOrWhiteSpace(bic))
-		{
-			_logger.LogTrace("Searching for bank account by BIC {Bic}", bic);
-			bankAccount = await _accountRepository.FindByBicAsync(bic, user.Id, dbTransaction);
-			if (bankAccount is not null)
-			{
-				_logger.LogDebug("Matched bank account to {Bic}", bic);
-				return (bankAccount, false);
-			}
-
-			var account = new AccountEntity
-			{
-				OwnerId = user.Id,
-				CreatedByUserId = user.Id,
-				ModifiedByUserId = user.Id,
-				PreferredCurrencyId = currency.Id,
-				Name = bic,
-				Bic = bic,
-				Currencies = new() { new() { CurrencyId = currency.Id } },
-			};
-
-			var id = await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
-			account = await _accountRepository.GetByIdAsync(id, user.Id, dbTransaction);
-			return (account, true);
-		}
-
-		throw new KeyNotFoundException($"Could not find account by name {bankAccount}");
-	}
-
 	private async Task<(TransactionEntity Transaction, TransferEntity Transfer)> Translate(
-		IDbTransaction dbTransaction,
+		DbTransaction dbTransaction,
 		AccountReportResultBuilder resultBuilder,
 		ReportEntry2 reportEntry,
 		AccountEntity reportAccount,
@@ -359,263 +238,34 @@ public sealed class Iso20022Controller : ControllerBase
 		_logger.LogTrace("Entry details contains {TransactionDetailCount} details", entryDetails.TransactionDetails.Count);
 		var transactionDetails = entryDetails.TransactionDetails.First();
 
-		var bankReference = transactionDetails.References?.Proprietary?.Reference;
-		_logger.LogTrace("Bank reference {BankReference}", bankReference);
+		var importableTransaction = new ImportableTransaction(
+			reportEntry.AccountServicerReference,
+			transactionDetails.References?.Proprietary?.Reference,
+			reportEntry.Amount.Value,
+			reportEntry.Amount.Currency,
+			reportEntry.CreditDebitIndicator,
+			GetBookingDate(reportEntry.BookingDate, dateTimeZone),
+			null,
+			string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new()),
+			reportEntry.AmountDetails?.InstructedAmount is null
+				? reportEntry.Amount.Currency
+				: reportEntry.AmountDetails.InstructedAmount.Amount.Currency,
+			reportEntry.AmountDetails?.InstructedAmount is null
+				? reportEntry.Amount.Value
+				: reportEntry.AmountDetails.InstructedAmount.Amount.Value,
+			transactionDetails.RelatedParties?.CreditorAccount?.Identification.Iban ?? transactionDetails.RelatedParties?.DebtorAccount?.Identification.Iban,
+			transactionDetails.RelatedParties?.CreditorAccount?.Name ?? transactionDetails.RelatedParties?.DebtorAccount?.Name,
+			reportEntry.BankTransactionCode.Domain?.Code,
+			reportEntry.BankTransactionCode.Domain?.Family.Code,
+			reportEntry.BankTransactionCode.Domain?.Family.SubFamilyCode);
 
-		var existingTransfer = string.IsNullOrWhiteSpace(bankReference)
-			? null
-			: await _transferRepository.FindByBankReferenceAsync(bankReference, user.Id, dbTransaction);
-		if (existingTransfer is not null)
-		{
-			var existingTransaction = await _transactionRepository.GetByIdAsync(existingTransfer.TransactionId, user.Id, dbTransaction);
-			resultBuilder.AddTransaction(existingTransaction, false);
-			var inCurrencyIds = new[] { existingTransfer.SourceAccountId, existingTransfer.TargetAccountId }
-				.Distinct();
-
-			var accounts = inCurrencyIds
-				.Select(async id => await _inCurrencyRepository.GetByIdAsync(id, user.Id))
-				.Select(task => task.Result.AccountId)
-				.Select(async id => await _accountRepository.GetByIdAsync(id, user.Id))
-				.Select(task => task.Result);
-
-			foreach (var account in accounts)
-			{
-				resultBuilder.AddAccount(account, false);
-			}
-
-			return (existingTransaction, existingTransfer);
-		}
-
-		var amount = reportEntry.Amount.Value;
-		_logger.LogTrace("Report entry amount {Amount}", amount);
-
-		var currencyCode = reportEntry.Amount.Currency;
-		_logger.LogTrace("Searching for currency {CurrencyAlphabeticCode}", currencyCode);
-		var currency =
-			await _currencyRepository.FindByAlphabeticCodeAsync(currencyCode) ??
-			throw new InvalidOperationException($"Failed to find currency by alphabetic code {currencyCode}");
-		_logger.LogTrace("Found currency {CurrencyId}", currency.Name);
-
-		var reportAccountInCurrency = reportAccount.Currencies.Single(aic => aic.CurrencyId == currency.Id);
-
-		var creditDebit = reportEntry.CreditDebitIndicator;
-		_logger.LogTrace("Credit or debit indicator {CreditDebit}", creditDebit);
-
-		var bookingDate = GetBookingDate(reportEntry.BookingDate, dateTimeZone);
-		_logger.LogTrace("Booking date {BookingDate}", bookingDate);
-
-		var description = string.Join(string.Empty, transactionDetails.RemittanceInformation?.Unstructured ?? new());
-		_logger.LogTrace("Item description {ItemDescription}", description);
-
-		_logger.LogTrace("Mapping {Code} to product", reportEntry.BankTransactionCode);
-
-		var (otherCurrency, otherAmount) = await GetOtherAmount(transactionDetails, amount, currency);
-
-		_logger.LogTrace("Searching for other account by {RelatedParties}", transactionDetails.RelatedParties);
-		var otherAccount = await FindOtherAccount(transactionDetails.RelatedParties, user, dbTransaction);
-		_logger.LogTrace("Found other account {OtherAccount}", otherAccount?.Name);
-		if (otherAccount is null)
-		{
-			_logger.LogTrace("Searching for other account by {TransactionCode}", reportEntry.BankTransactionCode);
-			otherAccount = FindOtherAccount(reportEntry.BankTransactionCode, bankAccount);
-			_logger.LogTrace("Found other account {OtherAccount}", otherAccount?.Name);
-		}
-
-		if (otherAccount is null && transactionDetails.RelatedParties is not null)
-		{
-			var name =
-				transactionDetails.RelatedParties.Creditor?.Name ??
-				transactionDetails.RelatedParties.Debtor?.Name;
-
-			if (name is not null)
-			{
-				var iban =
-					transactionDetails.RelatedParties.CreditorAccount?.Identification.Iban ??
-					transactionDetails.RelatedParties.DebtorAccount?.Identification.Iban;
-
-				otherAccount = new()
-				{
-					OwnerId = user.Id,
-					CreatedByUserId = user.Id,
-					ModifiedByUserId = user.Id,
-					PreferredCurrencyId = otherCurrency.Id,
-					Name = name,
-					Iban = iban,
-					AccountNumber = iban,
-					Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
-				};
-
-				var id = await _accountUnitOfWork.AddWithCounterpartyAsync(otherAccount, dbTransaction);
-
-				otherAccount = await _accountRepository.GetByIdAsync(id, user.Id);
-				resultBuilder.AddAccount(otherAccount, true);
-			}
-		}
-
-		if (otherAccount is null &&
-			reportEntry.BankTransactionCode.GetStandardCode() is { } subFamily &&
-			BankSubFamilies.Contains(subFamily))
-		{
-			otherAccount = bankAccount;
-			resultBuilder.AddAccount(otherAccount, false);
-		}
-
-		if (otherAccount is null)
-		{
-			_logger.LogTrace("Failed to find other account, using unidentified");
-			otherAccount = await _accountRepository.FindByNameAsync(ReservedNames.Unidentified, user.Id, dbTransaction) ??
-				throw new ApplicationException($"Failed to find account by reserved name {ReservedNames.Unidentified}");
-		}
-
-		resultBuilder.AddAccount(otherAccount, false);
-
-		_logger.LogInformation("Searching for currency {OtherCurrency} in {Account}", otherCurrency.AlphabeticCode, otherAccount.Name);
-		var otherAccountCurrency = otherAccount.Currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id);
-		if (otherAccountCurrency is null)
-		{
-			otherAccountCurrency = new()
-			{
-				AccountId = otherAccount.Id,
-				CreatedByUserId = user.Id,
-				CurrencyId = otherCurrency.Id,
-				Id = Guid.NewGuid(),
-				OwnerId = user.Id,
-				ModifiedByUserId = user.Id,
-			};
-			var otherId = await _inCurrencyRepository.AddAsync(otherAccountCurrency, dbTransaction);
-			otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(otherId, user.Id, dbTransaction);
-		}
-
-		var transfer = new TransferEntity
-		{
-			OwnerId = user.Id,
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			BankReference = bankReference,
-			Order = 0,
-		};
-
-		transfer = creditDebit == CreditDebitCode.CRDT
-			? transfer with
-			{
-				SourceAmount = otherAmount,
-				SourceAccountId = otherAccountCurrency.Id,
-				TargetAmount = amount,
-				TargetAccountId = reportAccountInCurrency.Id,
-			}
-			: transfer with
-			{
-				SourceAmount = amount,
-				SourceAccountId = reportAccountInCurrency.Id,
-				TargetAmount = otherAmount,
-				TargetAccountId = otherAccountCurrency.Id,
-			};
-
-		var transaction = new TransactionEntity
-		{
-			OwnerId = user.Id,
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			BookedAt = bookingDate,
-			ImportedAt = _clock.GetCurrentInstant(),
-			Description = description,
-		};
-
-		return (transaction, transfer);
-	}
-
-	private async Task<AccountEntity?> FindOtherAccount(
-		TransactionParty2? relatedParty,
-		UserEntity user,
-		IDbTransaction dbTransaction)
-	{
-		if (relatedParty is null)
-		{
-			return null;
-		}
-
-		var iban =
-			relatedParty.CreditorAccount?.Identification.Iban ??
-			relatedParty.DebtorAccount?.Identification.Iban;
-		if (!string.IsNullOrWhiteSpace(iban) &&
-			await _accountRepository.FindByIbanAsync(iban, user.Id, dbTransaction) is { } ibanAccount)
-		{
-			return ibanAccount;
-		}
-
-		var name =
-			relatedParty.Creditor?.Name ??
-			relatedParty.Debtor?.Name;
-		if (!string.IsNullOrWhiteSpace(name) &&
-			await _accountRepository.FindByNameAsync(name, user.Id, dbTransaction) is { } nameAccount)
-		{
-			return nameAccount;
-		}
-
-		return null;
-	}
-
-	private AccountEntity? FindOtherAccount(
-		BankTransactionCodeStructure4 transactionCode,
-		AccountEntity bankAccount)
-	{
-		if (transactionCode.Domain is null)
-		{
-			return null;
-		}
-
-		var domain = Domain.FromName(transactionCode.Domain.Code, true);
-		var familyCodeStructure = transactionCode.Domain.Family;
-		var family = Family.FromName(familyCodeStructure.Code, true);
-		var subFamily = SubFamily.FromName(familyCodeStructure.SubFamilyCode, true);
-
-		if (domain.Equals(Domain.Extended))
-		{
-			return bankAccount;
-		}
-
-		if (domain.Equals(Domain.AccountManagement) && family.Equals(CreditOperation) && subFamily.Equals(Interest))
-		{
-			return bankAccount;
-		}
-
-		if (!domain.Equals(Domain.Payments))
-		{
-			return null;
-		}
-
-		if (subFamily.Equals(Fees) ||
-			(family.Equals(CreditOperation) && subFamily.Equals(SubFamily.NotAvailable)))
-		{
-			return bankAccount;
-		}
-
-		return null;
-	}
-
-	private async Task<(CurrencyEntity Currency, decimal Amount)> GetOtherAmount(
-		EntryTransaction2 transaction,
-		decimal amount,
-		CurrencyEntity currency)
-	{
-		var amountDetails = transaction.AmountDetails;
-		if (amountDetails is null)
-		{
-			return (currency, amount);
-		}
-
-		var otherCurrencyCode = amountDetails.InstructedAmount?.Amount.Currency ?? string.Empty;
-		var otherAmount = amountDetails.InstructedAmount!.Amount.Value;
-		var otherCurrency = await _currencyRepository.FindByAlphabeticCodeAsync(otherCurrencyCode);
-		_logger.LogInformation(
-			"Found other currency {Currency} by code {CurrencyCode}",
-			otherCurrency,
-			otherCurrencyCode);
-		if (otherCurrency is null)
-		{
-			throw new();
-		}
-
-		return (otherCurrency, otherAmount);
+		return await _importService.Translate(
+			dbTransaction,
+			resultBuilder,
+			importableTransaction,
+			reportAccount,
+			bankAccount,
+			user,
+			reportEntry);
 	}
 }

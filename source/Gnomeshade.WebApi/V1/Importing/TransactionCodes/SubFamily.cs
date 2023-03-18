@@ -41,6 +41,6 @@ public sealed class SubFamily : SmartEnum<SubFamily>
 
 	internal static IEnumerable<SubFamily> BankSubFamilies { get; } = new[]
 	{
-		Charges, Fees, InternalBookTransfer, CashWithdrawl, CashDeposit,
+		Charges, Fees, CashWithdrawl, CashDeposit,
 	};
 }

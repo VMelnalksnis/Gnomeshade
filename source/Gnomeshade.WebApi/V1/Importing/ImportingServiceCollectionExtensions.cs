@@ -12,7 +12,9 @@ namespace Gnomeshade.WebApi.V1.Importing;
 internal static class ImportingServiceCollectionExtensions
 {
 	internal static IServiceCollection AddV1ImportingServices(this IServiceCollection services) => services
+		.AddTransient<Iso20022ImportService>()
 		.AddTransient<Iso20022AccountReportReader>()
+		.AddTransient<NordigenImportService>()
 		.AddTransient<IPaperlessDocumentParser, RimiReceiptParser>()
 		.AddTransient<IPurchaseIdentifier, RimiPurchaseIdentifier>()
 		.AddTransient<IPaperlessService, PaperlessService>();
