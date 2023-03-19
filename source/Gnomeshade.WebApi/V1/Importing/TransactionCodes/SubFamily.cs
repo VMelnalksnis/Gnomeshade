@@ -34,6 +34,15 @@ public sealed class SubFamily : SmartEnum<SubFamily>
 
 	public static readonly SubFamily PointOfSaleDebitCard = new("POSD", 10904);
 
+	/// <summary>Transaction is related to drawdown of fixed term / notice / mortgage / consumer loans or syndications contracts.</summary>
+	public static readonly SubFamily Drawdown = new("DDWN", 40101);
+
+	/// <summary>Transaction is related to renewal of fixed term / notice / mortgage / consumer loans or syndications contracts.</summary>
+	public static readonly SubFamily Renewal = new("RNEW", 40101);
+
+	/// <summary>Transaction is related to the payment of the principal of fixed term / notice / mortgage / consumer loans or syndications contracts.</summary>
+	public static readonly SubFamily PrincipalPayment = new("PPAY", 40101);
+
 	private SubFamily(string name, int value)
 		: base(name, value)
 	{

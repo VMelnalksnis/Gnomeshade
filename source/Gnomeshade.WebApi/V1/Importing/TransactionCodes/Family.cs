@@ -137,6 +137,44 @@ public class Family : SmartEnum<Family>
 	/// </summary>
 	public static readonly Family IssuedRealTimeCreditTransfer = new("IRCT", 115);
 
+	/// <summary>
+	/// Transaction relates to a loan with a fixed maturity during which time interest is paid,
+	/// but no payments to reduce principal are made. The entire principal is due and payable
+	/// at the end of the loan term.
+	/// </summary>
+	public static readonly Family FixedTermLoans = new("FTLN", 401);
+
+	/// <summary>Transaction relates to a loan which can be reimbursed with a fixed notice period.</summary>
+	public static readonly Family NoticeLoans = new("NTLN", 402);
+
+	/// <summary>
+	/// Transaction relates to an amount of money deposited in a savings account for a fixed period of time,
+	/// the terms of which impose a financial penalty if the amount of money
+	/// is withdrawn before the specified maturity date.
+	/// </summary>
+	public static readonly Family FixedTermDeposits = new("FTDP", 403);
+
+	/// <summary>
+	/// Transaction relates to a deposit which can be recalled with a fixed notice period.
+	/// The amount of money is put on a savings account on which the customer
+	/// agrees to give the thrift institution a specified notice before making a withdrawal,
+	/// usually in return for higher interest rates. A penalty may be imposed by the institution
+	/// for a withdrawal made without the agreed upon notice.
+	/// </summary>
+	public static readonly Family NoticeDeposits = new("NTDP", 404);
+
+	/// <summary>Transaction relates to a loan that is secured by a guarantee of real estate.</summary>
+	public static readonly Family MortgageLoans = new("MGLN", 405);
+
+	/// <summary>Transaction related to a loan that has been issued for consumable goods, such as a car.</summary>
+	public static readonly Family ConsumerLoans = new("CSLN", 406);
+
+	/// <summary>
+	/// Transaction relates to a syndication which is the process of involving numerous different lenders
+	/// in providing various portions of a loan.
+	/// </summary>
+	public static readonly Family Syndications = new("SYDN", 407);
+
 	private Family(string name, int value)
 		: base(name, value)
 	{
