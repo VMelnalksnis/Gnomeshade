@@ -11,12 +11,17 @@
 	x:CompileBindings="True"
 	x:DataType="t:TransactionSummary">
 
-	<Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto">
-		<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Received: " />
-		<TextBlock Grid.Column="1" Padding="0 0 10 0" Text="{Binding Received, Mode=OneWay, StringFormat=\{0:N2\}}" />
-		<TextBlock Grid.Column="2" VerticalAlignment="Center" Text="Withdrawn: " />
-		<TextBlock Grid.Column="3" Padding="0 0 10 0" Text="{Binding Withdrawn, Mode=OneWay, StringFormat=\{0:N2\}}" />
-		<TextBlock Grid.Column="4" VerticalAlignment="Center" Text="Total: " />
-		<TextBlock Grid.Column="5" Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
-	</Grid>
+	<StackPanel Orientation="Horizontal">
+		<TextBlock Text="Transactions: " />
+		<TextBlock Padding="0 0 10 0" Text="{Binding TransactionCount, Mode=OneWay, StringFormat=\{0:N0\}}" />
+		<TextBlock Text="Transfers: " />
+		<TextBlock Padding="0 0 10 0" Text="{Binding TransferCount, Mode=OneWay, StringFormat=\{0:N0\}}" />
+
+		<TextBlock Text="Received: " />
+		<TextBlock Padding="0 0 10 0" Text="{Binding Received, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		<TextBlock Text="Withdrawn: " />
+		<TextBlock Padding="0 0 10 0" Text="{Binding Withdrawn, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		<TextBlock Text="Total: " />
+		<TextBlock Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+	</StackPanel>
 </UserControl>

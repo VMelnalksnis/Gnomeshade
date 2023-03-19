@@ -172,7 +172,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		Filter.Counterparties = counterparties;
 		Filter.Products = productsTask.Result;
 		Filter.Categories = categoriesTask.Result;
-		Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
+		Summary.UpdateTotal(Rows);
 	}
 
 	/// <inheritdoc />
@@ -216,7 +216,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			nameof(TransactionFilter.Uncategorized))
 		{
 			DataGridView.Refresh();
-			Summary.UpdateTotal(DataGridView.Cast<TransactionOverview>());
+			Summary.UpdateTotal(Rows);
 		}
 	}
 

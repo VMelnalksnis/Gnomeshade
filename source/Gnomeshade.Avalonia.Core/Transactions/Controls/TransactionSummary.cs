@@ -20,6 +20,14 @@ public sealed partial class TransactionSummary : ViewModelBase
 	[Notify(Setter.Private)]
 	private decimal _withdrawn;
 
+	/// <summary>Gets the count of transactions.</summary>
+	[Notify(Setter.Private)]
+	private int _transactionCount;
+
+	/// <summary>Gets the count of transfers.</summary>
+	[Notify(Setter.Private)]
+	private int _transferCount;
+
 	/// <summary>Initializes a new instance of the <see cref="TransactionSummary"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	public TransactionSummary(IActivityService activityService)
@@ -34,12 +42,17 @@ public sealed partial class TransactionSummary : ViewModelBase
 	/// <param name="transactions">The transactions to summarize.</param>
 	public void UpdateTotal(IEnumerable<TransactionOverview> transactions)
 	{
-		var transfers = transactions
+		var transactionArray = transactions.ToList();
+
+		var transfers = transactionArray
 			.SelectMany(transaction => transaction.Transfers)
 			.Where(transfer => !transfer.UserToUser)
 			.ToList();
 
 		Withdrawn = transfers.Where(transfer => transfer.Direction == "→").Sum(transfer => transfer.UserAmount);
 		Received = transfers.Where(transfer => transfer.Direction != "→").Sum(transfer => transfer.UserAmount);
+
+		TransactionCount = transactionArray.Count;
+		TransferCount = transactionArray.SelectMany(transaction => transaction.Transfers).Count();
 	}
 }
