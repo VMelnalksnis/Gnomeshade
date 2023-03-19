@@ -142,18 +142,20 @@ public sealed class Iso20022ControllerTests : WebserverTests
 		{
 			var existingTransfer = firstAccountResult.TransferReferences
 				.Should()
-				.HaveCount(3).And.ContainSingle(reference => reference.Created == false)
+				.HaveCount(4).And.ContainSingle(reference => reference.Created == false)
 				.Subject.Transfer;
 
 			existingTransfer.Id.Should().Be(transferId);
 			existingTransfer.BankReference.Should().Be("123456789876543.020001");
 
+			secondAccountResult.TransferReferences.Should().HaveCount(2);
+			secondAccountResult.TransferReferences.Should().ContainSingle(transfer => transfer.Created == true);
 			secondAccountResult.TransferReferences
 				.Should()
-				.ContainSingle()
-				.Which.Created
+				.ContainSingle(transfer => transfer.Created == false)
+				.Which.Transfer.ExternalReference
 				.Should()
-				.BeTrue();
+				.Be("AB12345ABCDE");
 		}
 	}
 }

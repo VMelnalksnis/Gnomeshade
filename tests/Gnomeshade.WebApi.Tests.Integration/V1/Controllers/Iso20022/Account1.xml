@@ -42,7 +42,7 @@
                         <Cd>CLBD</Cd>
                     </CdOrPrtry>
                 </Tp>
-                <Amt Ccy="EUR">971.89</Amt>
+                <Amt Ccy="EUR">961.69</Amt>
                 <CdtDbtInd>CRDT</CdtDbtInd>
                 <Dt>
                     <Dt>2023-03-15</Dt>
@@ -54,8 +54,8 @@
                     <Sum>0</Sum>
                 </TtlCdtNtries>
                 <TtlDbtNtries>
-                    <NbOfNtries>3</NbOfNtries>
-                    <Sum>1029.1</Sum>
+                    <NbOfNtries>4</NbOfNtries>
+                    <Sum>1039.3</Sum>
                 </TtlDbtNtries>
             </TxsSummry>
             <Ntry>
@@ -183,6 +183,63 @@
                     </TxDtls>
                 </NtryDtls>
             </Ntry>
+			<Ntry>
+				<Amt Ccy="EUR">10.2</Amt>
+				<CdtDbtInd>DBIT</CdtDbtInd>
+				<Sts>BOOK</Sts>
+				<BookgDt>
+					<Dt>2023-03-15</Dt>
+				</BookgDt>
+				<AcctSvcrRef>299645074937282.000001</AcctSvcrRef>
+				<BkTxCd>
+					<Domn>
+						<Cd>PMNT</Cd>
+						<Fmly>
+							<Cd>ICDT</Cd>
+							<SubFmlyCd>BOOK</SubFmlyCd>
+						</Fmly>
+					</Domn>
+					<Prtry>
+						<Cd>INTR</Cd>
+					</Prtry>
+				</BkTxCd>
+				<NtryDtls>
+					<TxDtls>
+						<Refs>
+							<InstrId>498</InstrId>
+							<Prtry>
+								<Tp>TEST_BANK_REF</Tp>
+								<Ref>AB12345ABCDE</Ref>
+							</Prtry>
+						</Refs>
+						<RltdPties>
+							<Cdtr>
+								<Nm>Bob Doe</Nm>
+							</Cdtr>
+							<CdtrAcct>
+								<Id>
+									<IBAN>LV22TEST0012345678903</IBAN>
+								</Id>
+							</CdtrAcct>
+						</RltdPties>
+						<RltdAgts>
+							<CdtrAgt>
+								<FinInstnId>
+									<BIC>TESTLV01</BIC>
+									<Nm>TEST BANK
+										SOME STREET 5
+										CITY
+										CONTRY
+									</Nm>
+								</FinInstnId>
+							</CdtrAgt>
+						</RltdAgts>
+						<RmtInf>
+							<Ustrd>Payment between accounts</Ustrd>
+						</RmtInf>
+					</TxDtls>
+				</NtryDtls>
+			</Ntry>
         </Rpt>
     </BkToCstmrAcctRpt>
 </Document>
