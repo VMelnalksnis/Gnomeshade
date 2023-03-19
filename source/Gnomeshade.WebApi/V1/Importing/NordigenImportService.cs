@@ -49,5 +49,5 @@ public sealed class NordigenImportService : TransactionImportService<BookedTrans
 
 	/// <inheritdoc />
 	protected override bool IsOtherAccountBank(BookedTransaction transaction) =>
-		transaction.BankTransactionCode is "CARD FEE";
+		transaction.BankTransactionCode is "CARD FEE" or "LOAN DRAWDOWN";
 }
