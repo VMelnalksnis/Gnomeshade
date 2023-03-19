@@ -203,6 +203,7 @@ public sealed class NordigenController : ControllerBase
 		"OUTWARD TRANSFER" => CreditDebitCode.DBIT,
 		"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
 		"INTEREST PAYMENT" => CreditDebitCode.DBIT,
+		"REIMBURSEMENT OF COMMISSION" => CreditDebitCode.DBIT,
 		var information when information?.StartsWith("INWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.CRDT,
 		var information when information?.StartsWith("OUTWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.DBIT,
 		_ => bookedTransaction.BankTransactionCode switch
