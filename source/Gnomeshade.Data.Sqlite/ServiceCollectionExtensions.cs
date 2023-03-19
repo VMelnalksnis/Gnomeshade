@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
 	{
 		SqlMapper.AddTypeHandler(new GuidHandler());
 		SqlMapper.AddTypeHandler(new InstantHandler());
+		SqlMapper.AddTypeHandler(new DecimalHandler());
 
 		return services
 			.AddTransient<IDatabaseMigrator, SqliteDatabaseMigrator>()
