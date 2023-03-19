@@ -8,11 +8,11 @@
         "resolved": "34.0.2",
         "contentHash": "2KQAuMn3fLAQ2r6jeiffZnpv0bi3GCW3iRB2v1KeHIEBu8MNTh9dBlLTZwGvM0pr+9doKkU8L5JgCURmTmT88A=="
       },
-      "coverlet.msbuild": {
+      "coverlet.collector": {
         "type": "Direct",
         "requested": "[3.2.0, )",
         "resolved": "3.2.0",
-        "contentHash": "lu/eJJpqJb4qy3BGPtDD/LI5RSOwXYYyRErTyaG0OTP69llzVK3FEe74hBQx0JtLUTLEVBfERV4uGYcE1Br2sg=="
+        "contentHash": "xjY8xBigSeWIYs4I7DgUHqSNoGqnHi7Fv7/7RZD02rvZyG3hlsjnQKiVKVWKgr9kRKgmV+dEfu8KScvysiC0Wg=="
       },
       "DotNet.ReproducibleBuilds": {
         "type": "Direct",
