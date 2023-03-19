@@ -249,7 +249,7 @@ public sealed class NordigenController : ControllerBase
 		var importableTransaction = new ImportableTransaction(
 			bookedTransaction.TransactionId,
 			bookedTransaction.EntryReference,
-			bookedTransaction.TransactionAmount.Amount,
+			Math.Abs(bookedTransaction.TransactionAmount.Amount),
 			bookedTransaction.TransactionAmount.Currency,
 			GetCreditDebitCode(bookedTransaction),
 			bookedTransaction.BookingDate.AtStartOfDayInZone(dateTimeZone).ToInstant(),
