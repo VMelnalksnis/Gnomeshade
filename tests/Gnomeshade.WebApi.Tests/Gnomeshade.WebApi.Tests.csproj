@@ -8,4 +8,8 @@
         <ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj" />
     </ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Serilog.Settings.Configuration" />
+	</ItemGroup>
+
 </Project>
