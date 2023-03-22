@@ -406,10 +406,10 @@ public abstract partial class TransactionImportService<TTransaction>
 
 		if (!string.IsNullOrWhiteSpace(name))
 		{
-			var account = await _accountRepository.FindByNameAsync(name.ToUpperInvariant(), user.Id, dbTransaction);
+			var account = await _accountRepository.FindByNameAsync(name, user.Id, dbTransaction);
 			if (account is not null)
 			{
-				return null;
+				return account;
 			}
 		}
 

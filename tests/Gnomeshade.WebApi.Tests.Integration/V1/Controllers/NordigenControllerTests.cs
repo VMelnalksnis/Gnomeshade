@@ -38,21 +38,39 @@ public sealed class NordigenControllerTests : WebserverTests
 
 		var result = await client.ImportAsync(_integrationInstitutionId);
 
-		var successfulImport = result.Should().BeOfType<SuccessfulImport>().Subject;
-		successfulImport.Results.Should().HaveCount(2);
-		successfulImport
-			.Results.First()
-			.TransferReferences.Should()
-			.AllSatisfy(transfer => transfer.Transfer.SourceAmount.Should().Be(transfer.Transfer.TargetAmount));
+		var reportResults = result.Should().BeOfType<SuccessfulImport>().Subject.Results;
+
+		using (new AssertionScope())
+		{
+			reportResults.Should().HaveCount(2);
+
+			reportResults
+				.First()
+				.TransferReferences.Should()
+				.AllSatisfy(transfer => transfer.Transfer.SourceAmount.Should().Be(transfer.Transfer.TargetAmount));
+
+			reportResults
+				.First()
+				.AccountReferences.Should()
+				.AllSatisfy(reference => reference.Created.Should().BeTrue());
+		}
 
 		var repeatedResult = await client.ImportAsync(_integrationInstitutionId);
 
-		repeatedResult
-			.Should()
-			.BeOfType<SuccessfulImport>()
-			.Which.Results
-			.SelectMany(reportResult => reportResult.TransactionReferences)
-			.Should()
-			.AllSatisfy(reference => reference.Created.Should().BeFalse());
+		var secondReportResults = repeatedResult.Should().BeOfType<SuccessfulImport>().Subject.Results;
+		using (new AssertionScope())
+		{
+			secondReportResults.Should().HaveCount(2);
+
+			secondReportResults
+				.SelectMany(reportResult => reportResult.TransactionReferences)
+				.Should()
+				.AllSatisfy(reference => reference.Created.Should().BeFalse());
+
+			secondReportResults
+				.First()
+				.AccountReferences.Should()
+				.AllSatisfy(reference => reference.Created.Should().BeFalse());
+		}
 	}
 }
