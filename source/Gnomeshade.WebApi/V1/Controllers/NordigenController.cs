@@ -109,13 +109,19 @@ public sealed class NordigenController : ControllerBase
 		}
 
 		_logger.LogDebug("Getting requisition for {InstitutionId}", id);
-		var existing = await _nordigenClient.Requisitions.Get().SingleOrDefaultAsync(r =>
-			r.InstitutionId == id && r.Status is RequisitionStatus.Ln);
+		var existing = await _nordigenClient
+			.Requisitions
+			.Get()
+			.OrderByDescending(requisition => requisition.Created)
+			.FirstOrDefaultAsync(requisition =>
+				requisition.InstitutionId == id &&
+				requisition.Status is RequisitionStatus.Ln);
+
 		if (existing is null)
 		{
 			_logger.LogDebug("Creating new requisition for {InstitutionId}", id);
 			var requisition = await _nordigenClient.Requisitions.Post(new(new("https://gnomeshade.org/"), id));
-			return Redirect(requisition.Link.ToString());
+			return Redirect(requisition.Link.AbsoluteUri);
 		}
 
 		var tasks = existing.Accounts.Select(async accountId => await _nordigenClient.Accounts.Get(accountId));
