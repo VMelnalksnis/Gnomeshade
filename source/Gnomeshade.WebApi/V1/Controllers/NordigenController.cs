@@ -250,19 +250,20 @@ public sealed class NordigenController : ControllerBase
 	{
 		_logger.LogTrace("Parsing transaction {ServicerReference}", bookedTransaction.TransactionId);
 
+		var amount = Math.Abs(bookedTransaction.TransactionAmount.Amount);
 		var (domainCode, familyCode, subFamilyCode) = GetCode(bookedTransaction.BankTransactionCode);
 
 		var importableTransaction = new ImportableTransaction(
 			bookedTransaction.TransactionId,
 			bookedTransaction.EntryReference,
-			Math.Abs(bookedTransaction.TransactionAmount.Amount),
+			amount,
 			bookedTransaction.TransactionAmount.Currency,
 			GetCreditDebitCode(bookedTransaction),
 			bookedTransaction.BookingDate.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.ValueDate?.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.UnstructuredInformation,
 			bookedTransaction.TransactionAmount.Currency,
-			bookedTransaction.TransactionAmount.Amount,
+			amount,
 			bookedTransaction.CreditorAccount?.Iban ?? bookedTransaction.DebtorAccount?.Iban,
 			bookedTransaction.CreditorName ?? bookedTransaction.DebtorName,
 			domainCode,

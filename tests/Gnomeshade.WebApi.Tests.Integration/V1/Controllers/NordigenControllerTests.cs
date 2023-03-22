@@ -38,7 +38,12 @@ public sealed class NordigenControllerTests : WebserverTests
 
 		var result = await client.ImportAsync(_integrationInstitutionId);
 
-		result.Should().BeOfType<SuccessfulImport>().Which.Results.Should().HaveCount(2);
+		var successfulImport = result.Should().BeOfType<SuccessfulImport>().Subject;
+		successfulImport.Results.Should().HaveCount(2);
+		successfulImport
+			.Results.First()
+			.TransferReferences.Should()
+			.AllSatisfy(transfer => transfer.Transfer.SourceAmount.Should().Be(transfer.Transfer.TargetAmount));
 
 		var repeatedResult = await client.ImportAsync(_integrationInstitutionId);
 
