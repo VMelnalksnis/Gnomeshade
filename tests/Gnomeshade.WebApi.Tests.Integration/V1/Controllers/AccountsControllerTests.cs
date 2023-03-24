@@ -137,6 +137,15 @@ public sealed class AccountsControllerTests : WebserverTests
 		await PutTransactionAndTransfer(secondAccount.Currencies.Single(), 15m, firstAccount.Currencies.First(), 10m);
 		await PutTransactionAndTransfer(secondAccount.Currencies.Single(), 3m, firstAccount.Currencies.Last(), 3m);
 
+		var transactionId = await PutTransactionAndTransfer(secondAccount.Currencies.Single(), 3m, firstAccount.Currencies.Last(), 3m);
+		var transfers = await _client.GetTransfersAsync(transactionId);
+		foreach (var transfer in transfers)
+		{
+			await _client.DeleteTransferAsync(transfer.Id);
+		}
+
+		await _client.DeleteTransactionAsync(transactionId);
+
 		var expectedBalances = new List<Balance>
 		{
 			new() { AccountInCurrencyId = firstAccount.Currencies.First().Id, SourceAmount = 10, TargetAmount = 10 },
@@ -152,7 +161,7 @@ public sealed class AccountsControllerTests : WebserverTests
 		balance.TargetAmount.Should().Be(15m);
 	}
 
-	private async Task PutTransactionAndTransfer(
+	private async Task<Guid> PutTransactionAndTransfer(
 		AccountInCurrency source,
 		decimal sourceAmount,
 		AccountInCurrency target,
@@ -174,6 +183,7 @@ public sealed class AccountsControllerTests : WebserverTests
 			TargetAmount = targetAmount,
 		};
 		await _client.PutTransferAsync(Guid.NewGuid(), transfer);
+		return transactionId;
 	}
 
 	private AccountCreation GetAccountCreationModel(Currency currency)
