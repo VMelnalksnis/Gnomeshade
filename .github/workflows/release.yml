@@ -235,7 +235,7 @@ jobs:
                 }
             ]
 
-      - run: wget --retry-connrefused --waitretry=1 --read-timeout=120 --timeout=120 -t 3 ${{ env.AZURE_APP_DOMAIN }}
+      - run: wget --retry-connrefused --retry-on-http-error=502 --waitretry=5 --read-timeout=120 --timeout=120 -t 5 ${{ env.AZURE_APP_DOMAIN }}
 
   update-nightly:
     name: Update nightly release
