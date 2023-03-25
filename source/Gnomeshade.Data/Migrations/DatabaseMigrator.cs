@@ -11,10 +11,12 @@ using DbUp.Engine.Output;
 
 using Microsoft.Extensions.Logging;
 
+using static Microsoft.Extensions.Logging.LogLevel;
+
 namespace Gnomeshade.Data.Migrations;
 
 /// <inheritdoc />
-public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
+public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 	where TConnection : DbConnection
 {
 	private readonly ILogger<DatabaseMigrator<TConnection>> _logger;
@@ -50,24 +52,20 @@ public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
 
 		if (!upgradeEngine.IsUpgradeRequired())
 		{
-			_logger.LogInformation("Database upgrade is not required");
+			MigrationNotRequired();
 			return;
 		}
 
-		_logger.LogInformation("Database upgrade is required, starting now");
+		MigrationRequired();
 		var upgradeResult = upgradeEngine.PerformUpgrade();
 
 		if (upgradeResult.Successful)
 		{
-			_logger.LogInformation("Database upgrade completed successfully");
+			MigrationSuccessful();
 			return;
 		}
 
-		_logger.LogError(
-			upgradeResult.Error,
-			"Database upgrade failed at script {MigrationScript}",
-			upgradeResult.ErrorScript.Name);
-
+		MigrationFailed(upgradeResult.Error, upgradeResult.ErrorScript.Name);
 		throw upgradeResult.Error;
 	}
 
@@ -94,4 +92,16 @@ public abstract class DatabaseMigrator<TConnection> : IDatabaseMigrator
 
 		return filepath.Contains(migrationNamespace, StringComparison.OrdinalIgnoreCase);
 	}
+
+	[LoggerMessage(EventId = 1, Level = Information, Message = "Database migration is not required")]
+	private partial void MigrationNotRequired();
+
+	[LoggerMessage(EventId = 2, Level = Information, Message = "Starting database migration")]
+	private partial void MigrationRequired();
+
+	[LoggerMessage(EventId = 3, Level = Information, Message = "Database migration completed successfully")]
+	private partial void MigrationSuccessful();
+
+	[LoggerMessage(EventId = 4, Level = Critical, Message = "Database migration failed at script {MigrationScript}")]
+	private partial void MigrationFailed(Exception exception, string migrationScript);
 }
