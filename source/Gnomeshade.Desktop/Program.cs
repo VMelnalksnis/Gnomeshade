@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Logging;
@@ -41,6 +42,10 @@ internal static class Program
 		try
 		{
 			using var handle = GetApplicationHandle();
+
+			TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+
 			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
 		}
 		catch (Exception exception)
@@ -50,6 +55,9 @@ internal static class Program
 		}
 		finally
 		{
+			TaskScheduler.UnobservedTaskException -= TaskSchedulerOnUnobservedTaskException;
+			AppDomain.CurrentDomain.UnhandledException -= CurrentDomainOnUnhandledException;
+
 			Log.CloseAndFlush();
 		}
 	}
@@ -94,5 +102,22 @@ internal static class Program
 	{
 		Log.Debug("Getting an application handle");
 		return new EventWaitHandle(false, EventResetMode.AutoReset, WindowsProtocolHandler.Name);
+	}
+
+	private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+	{
+		Log.Error(e.Exception, "Unobserved task exception");
+	}
+
+	private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+	{
+		if (e.ExceptionObject is Exception exception)
+		{
+			Log.Error(exception, "Unobserved task exception");
+		}
+		else
+		{
+			Log.Error("Unobserved task exception, exception object is {TypeName}", e.ExceptionObject.GetType().FullName);
+		}
 	}
 }
