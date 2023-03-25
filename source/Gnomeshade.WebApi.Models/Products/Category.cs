@@ -40,4 +40,7 @@ public sealed record Category
 
 	/// <summary>The id of the category to which the category belongs to.</summary>
 	public Guid? CategoryId { get; set; }
+
+	/// <summary>The id of the linked product which represents this category in purchases.</summary>
+	public Guid? LinkedProductId { get; set; }
 }

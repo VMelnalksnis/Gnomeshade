@@ -33,4 +33,7 @@ public sealed record CategoryEntity : Entity, IOwnableEntity, IModifiableEntity,
 
 	/// <summary>Gets or sets the id of the <see cref="CategoryEntity"/> for the category of this category.</summary>
 	public Guid? CategoryId { get; set; }
+
+	/// <summary>Gets or sets the id of the <see cref="ProductEntity"/> that represents this category in purchases.</summary>
+	public Guid? LinkedProductId { get; set; }
 }

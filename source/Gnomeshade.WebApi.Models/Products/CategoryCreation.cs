@@ -22,4 +22,8 @@ public sealed record CategoryCreation : Creation
 
 	/// <inheritdoc cref="Category.CategoryId"/>
 	public Guid? CategoryId { get; set; }
+
+	/// <summary>Whether to create a linked product for using this category in purchases.</summary>
+	/// <seealso cref="Category.LinkedProductId"/>
+	public bool LinkProduct { get; set; }
 }

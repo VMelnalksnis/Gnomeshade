@@ -7,7 +7,8 @@
 	   c.name AS             Name,
 	   c.normalized_name     NormalizedName,
 	   c.description,
-	   c.category_id         CategoryId
+	   c.category_id         CategoryId,
+	   c.linked_product_id   LinkedProductId
 FROM categories c
 		 INNER JOIN owners ON owners.id = c.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id
