@@ -4,6 +4,7 @@
 
 using System;
 using System.Data.Common;
+using System.Linq;
 
 using DbUp;
 using DbUp.Builder;
@@ -43,8 +44,11 @@ public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 	{
 		CheckDatabase(EnsureDatabase.For);
 
+		var migrationScriptAssemblies = new[] { typeof(DatabaseMigrator<>).Assembly, GetType().Assembly };
+
 		var upgradeEngine = GetBuilder(DeployChanges.To)
-			.WithScriptsEmbeddedInAssembly(GetType().Assembly, ScriptFilter)
+			.WithScriptsEmbeddedInAssemblies(migrationScriptAssemblies, ScriptFilter)
+			.WithScriptNameComparer(new MigrationScriptNameComparer())
 			.WithTransaction()
 			.LogScriptOutput()
 			.LogTo(UpgradeLog)
@@ -84,13 +88,11 @@ public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 	/// <exception cref="InvalidOperationException">The current type does not have a namespace.</exception>
 	protected virtual bool ScriptFilter(string filepath)
 	{
-		var migrationNamespace = GetType().Namespace;
-		if (migrationNamespace is null)
-		{
-			throw new InvalidOperationException($"{GetType().FullName} does not have a namespace");
-		}
+		var namespaces = new[] { typeof(DatabaseMigrator<>).Namespace, GetType().Namespace }
+			.Where(name => name is not null)
+			.Select(name => name!);
 
-		return filepath.Contains(migrationNamespace, StringComparison.OrdinalIgnoreCase);
+		return namespaces.Any(name => filepath.Contains(name, StringComparison.OrdinalIgnoreCase));
 	}
 
 	[LoggerMessage(EventId = 1, Level = Information, Message = "Database migration is not required")]
