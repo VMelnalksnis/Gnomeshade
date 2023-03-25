@@ -31,6 +31,10 @@ public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private Category? _selectedCategory;
 
+	/// <summary>Gets or sets a value indicating whether to link a product to this category for use in purchases.</summary>
+	[Notify]
+	private bool _linkProduct;
+
 	/// <summary>Gets a collection of all available categories.</summary>
 	[Notify(Setter.Private)]
 	private List<Category> _categories;
@@ -77,6 +81,7 @@ public sealed partial class CategoryUpsertionViewModel : UpsertionViewModel
 			Name = Name!,
 			Description = Description,
 			CategoryId = SelectedCategory?.Id,
+			LinkProduct = LinkProduct,
 		};
 
 		var id = Id ?? Guid.NewGuid();

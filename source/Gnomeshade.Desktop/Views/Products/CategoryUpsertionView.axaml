@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="products:CategoryUpsertionViewModel">
 
-	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBox
 			Grid.Row="0"
 			Watermark="Name" Text="{Binding Name}">
@@ -39,15 +39,16 @@
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
+		<CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding LinkProduct}">Create linked product</CheckBox>
 
 		<Button
-			Grid.Column="0" Grid.Row="3"
+			Grid.Column="0" Grid.Row="4"
 			Padding="25 5"
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 		<TextBlock
-			Grid.Row="4"
+			Grid.Row="5"
 			VerticalAlignment="Center"
 			Text="{Binding ErrorMessage}" />
 	</Grid>
