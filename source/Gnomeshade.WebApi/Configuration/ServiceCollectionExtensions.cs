@@ -4,17 +4,22 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using JetBrains.Annotations;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
+
+using static JetBrains.Annotations.ImplicitUseKindFlags;
+using static JetBrains.Annotations.ImplicitUseTargetFlags;
 
 namespace Gnomeshade.WebApi.Configuration;
 
 internal static class ServiceCollectionExtensions
 {
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(DynamicallyAccessedMembersAttribute)} indicates what is dynamically accessed")]
-	internal static IServiceCollection AddValidatedOptions<[DynamicallyAccessedMembers(All)] TOptions>(
+	internal static IServiceCollection AddValidatedOptions<[DynamicallyAccessedMembers(All), MeansImplicitUse(Assign, Members)] TOptions>(
 		this IServiceCollection services,
 		IConfiguration configuration)
 		where TOptions : class
