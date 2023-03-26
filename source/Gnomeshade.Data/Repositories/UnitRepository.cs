@@ -6,15 +6,18 @@ using System.Data.Common;
 
 using Gnomeshade.Data.Entities;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="UnitEntity"/> repository.</summary>
 public sealed class UnitRepository : NamedRepository<UnitEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="UnitRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public UnitRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public UnitRepository(ILogger<UnitRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 

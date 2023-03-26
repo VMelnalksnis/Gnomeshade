@@ -10,18 +10,24 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="UserEntity"/> repository.</summary>
 public sealed class UserRepository
 {
+	private readonly ILogger<UserRepository> _logger;
 	private readonly DbConnection _dbConnection;
 
 	/// <summary>Initializes a new instance of the <see cref="UserRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public UserRepository(DbConnection dbConnection)
+	public UserRepository(ILogger<UserRepository> logger, DbConnection dbConnection)
 	{
+		_logger = logger;
 		_dbConnection = dbConnection;
 	}
 
@@ -31,6 +37,7 @@ public sealed class UserRepository
 	/// <returns>The id of the created user.</returns>
 	public Task<Guid> AddWithIdAsync(UserEntity entity, IDbTransaction dbTransaction)
 	{
+		_logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(Queries.User.Insert, entity, dbTransaction);
 		return _dbConnection.QuerySingleAsync<Guid>(command);
 	}
@@ -40,6 +47,7 @@ public sealed class UserRepository
 	/// <returns>The <see cref="UserEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<UserEntity?> FindByIdAsync(Guid id)
 	{
+		_logger.FindId(id);
 		var commandDefinition = new CommandDefinition(Queries.User.Select, new { id });
 		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 	}
@@ -50,6 +58,7 @@ public sealed class UserRepository
 	/// <returns>The number of affected rows.</returns>
 	public Task<int> UpdateAsync(UserEntity user, IDbTransaction dbTransaction)
 	{
+		_logger.UpdatingEntityWithTransaction();
 		var command = new CommandDefinition(Queries.User.Update, user, dbTransaction);
 		return _dbConnection.ExecuteAsync(command);
 	}

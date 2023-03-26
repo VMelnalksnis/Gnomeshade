@@ -10,6 +10,8 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.Tests.Integration.Fakers;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 using NodaTime;
 
 using Npgsql;
@@ -30,10 +32,10 @@ public sealed class AccountRepositoryTests
 	public async Task SetUpAsync()
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-		_counterpartyRepository = new(_dbConnection);
-		_repository = new(_dbConnection);
-		_inCurrencyRepository = new(_dbConnection);
-		_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository, new(_dbConnection));
+		_counterpartyRepository = new(NullLogger<CounterpartyRepository>.Instance, _dbConnection);
+		_repository = new(NullLogger<AccountRepository>.Instance, _dbConnection);
+		_inCurrencyRepository = new(NullLogger<AccountInCurrencyRepository>.Instance, _dbConnection);
+		_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository, new(NullLogger<CounterpartyRepository>.Instance, _dbConnection));
 	}
 
 	[Test]

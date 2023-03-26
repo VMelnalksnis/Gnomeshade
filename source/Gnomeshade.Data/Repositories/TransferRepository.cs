@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -19,9 +22,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class TransferRepository : TransactionItemRepository<TransferEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransferRepository"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public TransferRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public TransferRepository(ILogger<TransferRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -49,6 +53,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
@@ -61,6 +66,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.FindBankReferenceWithTransaction(bankReference);
 		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.bank_reference = @bankReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);

@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities.Abstractions;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -20,9 +23,10 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	where TNamedEntity : class, INamedEntity
 {
 	/// <summary>Initializes a new instance of the <see cref="NamedRepository{TNamedEntity}"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected NamedRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	protected NamedRepository(ILogger<NamedRepository<TNamedEntity>> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -36,6 +40,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
 	{
+		Logger.FindName(name);
 		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
@@ -49,6 +54,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, IDbTransaction dbTransaction, CancellationToken cancellationToken = default)
 	{
+		Logger.FindNameWithTransaction(name);
 		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, dbTransaction, cancellationToken: cancellationToken);
 		return FindAsync(command);

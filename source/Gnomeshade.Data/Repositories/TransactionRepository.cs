@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 using NodaTime;
 
@@ -21,9 +24,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class TransactionRepository : Repository<TransactionEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public TransactionRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public TransactionRepository(ILogger<TransactionRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -57,6 +61,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql =
 			$"{SelectSql} WHERE t.deleted_at IS NULL AND (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {AccessSql} ORDER BY t.valued_at DESC";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
@@ -70,6 +75,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.FindId(id);
 		var sql = @$"{Queries.Transaction.SelectDetailed}
 WHERE transactions.deleted_at IS NULL 
 AND transactions.id = @id
@@ -86,6 +92,7 @@ ORDER BY transactions.valued_at DESC";
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql = @$"{Queries.Transaction.SelectDetailed}
 WHERE transactions.deleted_at IS NULL 
 AND (transactions.valued_at >= @from OR transactions.booked_at >= @from) 
@@ -155,6 +162,7 @@ WHERE transaction_links.transaction_id = @id
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
 	{
+		Logger.MergeTransactions(sourceId, targetId);
 		var moveDetailsCommand =
 			new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
 		await DbConnection.ExecuteAsync(moveDetailsCommand);

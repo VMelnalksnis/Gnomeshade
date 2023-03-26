@@ -29,7 +29,7 @@ public class PostgresInitializer
 	public PostgresInitializer(IConfiguration configuration)
 	{
 		var services = new ServiceCollection();
-		services.AddLogging().AddPostgreSQL(configuration);
+		services.AddLogging().AddPostgreSQL(configuration).AddRepositories();
 		_serviceProvider = services.BuildServiceProvider();
 	}
 
@@ -58,9 +58,9 @@ public class PostgresInitializer
 		var userId = Guid.NewGuid();
 		var user = new UserEntity { Id = userId, ModifiedByUserId = userId };
 
-		var userRepository = new UserRepository(sqlConnection);
-		var ownerRepository = new OwnerRepository(sqlConnection);
-		var ownershipRepository = new OwnershipRepository(sqlConnection);
+		var userRepository = _serviceProvider.GetRequiredService<UserRepository>();
+		var ownerRepository = _serviceProvider.GetRequiredService<OwnerRepository>();
+		var ownershipRepository = _serviceProvider.GetRequiredService<OwnershipRepository>();
 
 		await userRepository.AddWithIdAsync(user, transaction);
 		await ownerRepository.AddAsync(user.Id, transaction);
@@ -74,7 +74,7 @@ public class PostgresInitializer
 			Name = "Test counterparty",
 		};
 
-		var counterpartyId = await new CounterpartyRepository(sqlConnection).AddAsync(counterparty, transaction);
+		var counterpartyId = await _serviceProvider.GetRequiredService<CounterpartyRepository>().AddAsync(counterparty, transaction);
 		user.CounterpartyId = counterpartyId;
 		await userRepository.UpdateAsync(user, transaction);
 		await transaction.CommitAsync();

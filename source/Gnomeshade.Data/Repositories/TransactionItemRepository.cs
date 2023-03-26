@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <inheritdoc />
@@ -18,9 +20,10 @@ public abstract class TransactionItemRepository<TEntity> : Repository<TEntity>
 	where TEntity : Entity
 {
 	/// <summary>Initializes a new instance of the <see cref="TransactionItemRepository{TEntity}"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected TransactionItemRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	protected TransactionItemRepository(ILogger<TransactionItemRepository<TEntity>> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 

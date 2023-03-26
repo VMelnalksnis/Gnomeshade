@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -17,9 +20,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="CounterpartyRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public CounterpartyRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public CounterpartyRepository(ILogger<CounterpartyRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -52,6 +56,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.MergeCounterparties(sourceId, targetId);
 		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
 		await DbConnection.ExecuteAsync(mergeCommand);
 		await DeleteAsync(sourceId, ownerId, dbTransaction);

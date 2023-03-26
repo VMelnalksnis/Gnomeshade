@@ -6,15 +6,18 @@ using System.Data.Common;
 
 using Gnomeshade.Data.Entities;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="LinkEntity"/>.</summary>
 public sealed class LinkRepository : Repository<LinkEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LinkRepository"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public LinkRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public LinkRepository(ILogger<LinkRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 

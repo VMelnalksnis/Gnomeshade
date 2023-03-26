@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data.Repositories;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
@@ -21,7 +23,7 @@ public class TransactionRepositoryTests
 	public async Task SetUpAsync()
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-		_repository = new(_dbConnection);
+		_repository = new(NullLogger<TransactionRepository>.Instance, _dbConnection);
 	}
 
 	[Test]

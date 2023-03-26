@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities.Abstractions;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -26,11 +29,15 @@ public abstract class Repository<TEntity>
 	internal const string DeleteAccessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')";
 
 	/// <summary>Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	protected Repository(DbConnection dbConnection)
+	protected Repository(ILogger<Repository<TEntity>> logger, DbConnection dbConnection)
 	{
+		Logger = logger;
 		DbConnection = dbConnection;
 	}
+
+	protected ILogger Logger { get; }
 
 	/// <summary>Gets the database connection for executing queries.</summary>
 	protected DbConnection DbConnection { get; }
@@ -56,7 +63,11 @@ public abstract class Repository<TEntity>
 	/// <summary>Adds a new entity.</summary>
 	/// <param name="entity">The entity to add.</param>
 	/// <returns>The id of the created entity.</returns>
-	public Task<Guid> AddAsync(TEntity entity) => DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
+	public Task<Guid> AddAsync(TEntity entity)
+	{
+		Logger.AddingEntity();
+		return DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
+	}
 
 	/// <summary>Adds a new entity using the specified database transaction.</summary>
 	/// <param name="entity">The entity to add.</param>
@@ -64,6 +75,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The id of the created entity.</returns>
 	public Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction)
 	{
+		Logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(InsertSql, entity, dbTransaction);
 		return DbConnection.QuerySingleAsync<Guid>(command);
 	}
@@ -74,6 +86,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The number of affected rows.</returns>
 	public Task DeleteAsync(Guid id, Guid ownerId)
 	{
+		Logger.DeletingEntity(id);
 		return DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId });
 	}
 
@@ -84,6 +97,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The number of affected rows.</returns>
 	public Task DeleteAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.DeletingEntityWithTransaction(id);
 		var command = new CommandDefinition(DeleteSql, new { id, ownerId }, dbTransaction);
 		return DbConnection.ExecuteAsync(command);
 	}
@@ -98,6 +112,7 @@ public abstract class Repository<TEntity>
 		bool includeDeleted = false,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll(includeDeleted);
 		var command = includeDeleted
 			? new CommandDefinition($"{SelectSql} WHERE {AccessSql}", new { ownerId }, cancellationToken: cancellationToken)
 			: new($"{SelectSql} WHERE {NotDeleted} AND {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
@@ -112,6 +127,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The entity with the specified id.</returns>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
+		Logger.GetId(id);
 		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return GetAsync(command);
@@ -124,6 +140,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The entity with the specified id.</returns>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.GetIdWithTransaction(id);
 		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return GetAsync(command);
@@ -141,6 +158,7 @@ public abstract class Repository<TEntity>
 		AccessLevel accessLevel = AccessLevel.Read,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.FindId(id, accessLevel);
 		var sql = GetAccessSql(accessLevel);
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
@@ -154,6 +172,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction, AccessLevel accessLevel = AccessLevel.Read)
 	{
+		Logger.FindIdWithTransaction(id, accessLevel);
 		var sql = GetAccessSql(accessLevel);
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return FindAsync(command);
@@ -165,6 +184,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
+		Logger.FindId(id);
 		var sql = $"{SelectSql} {FindSql};";
 		var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 		return FindAsync(command);
@@ -176,6 +196,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, IDbTransaction dbTransaction)
 	{
+		Logger.FindIdWithTransaction(id);
 		var sql = $"{SelectSql} {FindSql};";
 		var command = new CommandDefinition(sql, new { id }, dbTransaction);
 		return FindAsync(command);
@@ -184,7 +205,11 @@ public abstract class Repository<TEntity>
 	/// <summary>Updates an existing entity with the specified id.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task UpdateAsync(TEntity entity) => DbConnection.ExecuteAsync(UpdateSql, entity);
+	public Task UpdateAsync(TEntity entity)
+	{
+		Logger.UpdatingEntity();
+		return DbConnection.ExecuteAsync(UpdateSql, entity);
+	}
 
 	/// <summary>Updates an existing entity with the specified id using the specified database transaction.</summary>
 	/// <param name="entity">The entity to update.</param>
@@ -192,6 +217,7 @@ public abstract class Repository<TEntity>
 	/// <returns>The number of affected rows.</returns>
 	public Task UpdateAsync(TEntity entity, IDbTransaction dbTransaction)
 	{
+		Logger.UpdatingEntityWithTransaction();
 		return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
 	}
 
@@ -210,7 +236,14 @@ public abstract class Repository<TEntity>
 	protected async Task<TEntity?> FindAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
-		return entities.DistinctBy(entity => entity.Id).SingleOrDefault();
+		return entities
+			.DistinctBy(entity => entity.Id)
+			.Select(entity =>
+			{
+				Logger.FoundEntity(entity.Id, entity.DeletedAt);
+				return entity;
+			})
+			.SingleOrDefault();
 	}
 
 	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>

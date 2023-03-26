@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -18,9 +21,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoanRepository"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public LoanRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public LoanRepository(ILogger<LoanRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -48,6 +52,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
@@ -63,6 +68,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { counterpartyId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);

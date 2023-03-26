@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.Tests.Integration.Fakers;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
@@ -21,7 +23,7 @@ public sealed class CategoryRepositoryTests
 	public async Task SetUpAsync()
 	{
 		_dbConnection = await CreateConnectionAsync().ConfigureAwait(false);
-		_repository = new(_dbConnection);
+		_repository = new(NullLogger<CategoryRepository>.Instance, _dbConnection);
 	}
 
 	[Test]

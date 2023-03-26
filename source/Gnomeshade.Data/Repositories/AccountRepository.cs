@@ -13,7 +13,10 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
 using Gnomeshade.Data.Repositories.Extensions;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -21,9 +24,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class AccountRepository : NamedRepository<AccountEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="AccountRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccountRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public AccountRepository(ILogger<AccountRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -55,6 +59,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.FindByIbanWithTransaction(iban);
 		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.iban = @iban AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { iban, ownerId }, dbTransaction);
 		return FindAsync(command);
@@ -67,6 +72,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, IDbTransaction dbTransaction)
 	{
+		Logger.FindByBicWithTransaction(bic);
 		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.bic = @bic AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { bic, ownerId }, dbTransaction);
 		return FindAsync(command);
@@ -78,6 +84,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <returns>A collection of all active accounts.</returns>
 	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {AccessSql} ORDER BY a.created_at;";
 		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
@@ -93,6 +100,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetBalance(id);
 		var command = new CommandDefinition(Queries.Account.Balance, new { id, ownerId }, cancellationToken: cancellationToken);
 		return DbConnection.QueryAsync<BalanceEntity>(command);
 	}

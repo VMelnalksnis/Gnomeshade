@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -21,14 +24,15 @@ public sealed class CurrencyRepository
 	private static readonly string _selectAlphabetic = $"{Queries.Currency.Select} WHERE alphabetic_code = @code;";
 	private static readonly string _selectId = $"{Queries.Currency.Select} WHERE id = @id;";
 
+	private readonly ILogger<CurrencyRepository> _logger;
 	private readonly DbConnection _dbConnection;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="CurrencyRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="CurrencyRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public CurrencyRepository(DbConnection dbConnection)
+	public CurrencyRepository(ILogger<CurrencyRepository> logger, DbConnection dbConnection)
 	{
+		_logger = logger;
 		_dbConnection = dbConnection;
 	}
 
@@ -40,6 +44,7 @@ public sealed class CurrencyRepository
 		string code,
 		CancellationToken cancellationToken = default)
 	{
+		_logger.FindAlphabeticCode(code);
 		var command = new CommandDefinition(_selectAlphabetic, new { code }, cancellationToken: cancellationToken);
 		return await _dbConnection.QuerySingleOrDefaultAsync<CurrencyEntity>(command).ConfigureAwait(false);
 	}
@@ -50,6 +55,7 @@ public sealed class CurrencyRepository
 	/// <returns>The <see cref="CurrencyEntity"/> with the specified id.</returns>
 	public async Task<CurrencyEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
+		_logger.GetId(id);
 		var command = new CommandDefinition(_selectId, new { id }, cancellationToken: cancellationToken);
 		return await _dbConnection.QuerySingleAsync<CurrencyEntity>(command).ConfigureAwait(false);
 	}
@@ -59,6 +65,7 @@ public sealed class CurrencyRepository
 	/// <returns>A collection of all currencies.</returns>
 	public async Task<List<CurrencyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
+		_logger.GetAll();
 		var command = new CommandDefinition(Queries.Currency.Select, cancellationToken: cancellationToken);
 		var currencies = await _dbConnection.QueryAsync<CurrencyEntity>(command).ConfigureAwait(false);
 		return currencies.ToList();

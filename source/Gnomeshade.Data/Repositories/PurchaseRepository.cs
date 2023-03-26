@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 using Dapper;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Logging;
+
+using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -19,9 +22,10 @@ namespace Gnomeshade.Data.Repositories;
 public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="PurchaseRepository"/> class.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public PurchaseRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public PurchaseRepository(ILogger<PurchaseRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 
@@ -48,6 +52,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		Guid ownerId,
 		CancellationToken cancellationToken = default)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
@@ -59,6 +64,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		Guid ownerId,
 		IDbTransaction dbTransaction)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, dbTransaction);
 		return GetEntitiesAsync(command);
@@ -74,6 +80,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		Guid ownerId,
 		CancellationToken cancellationToken)
 	{
+		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.product_id = @{nameof(productId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { productId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);

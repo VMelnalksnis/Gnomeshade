@@ -9,6 +9,8 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.Data.Tests.Integration.Fakers;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 using NodaTime;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -25,7 +27,7 @@ public sealed class TransactionUnitOfWorkTests
 	public async Task OneTimeSetupAsync()
 	{
 		_dbConnection = await CreateConnectionAsync();
-		_repository = new(_dbConnection);
+		_repository = new(NullLogger<TransactionRepository>.Instance, _dbConnection);
 		_unitOfWork = new(_dbConnection, _repository);
 	}
 

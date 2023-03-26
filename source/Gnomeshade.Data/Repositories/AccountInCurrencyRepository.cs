@@ -7,19 +7,18 @@ using System.Data.Common;
 
 using Gnomeshade.Data.Entities;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Data.Repositories;
 
-/// <summary>
-/// Database backed <see cref="AccountInCurrencyRepository"/> repository.
-/// </summary>
+/// <summary>Database backed <see cref="AccountInCurrencyRepository"/> repository.</summary>
 public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEntity>
 {
-	/// <summary>
-	/// Initializes a new instance of the <see cref="AccountInCurrencyRepository"/> class with a database connection.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="AccountInCurrencyRepository"/> class with a database connection.</summary>
+	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccountInCurrencyRepository(DbConnection dbConnection)
-		: base(dbConnection)
+	public AccountInCurrencyRepository(ILogger<AccountInCurrencyRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
 	}
 

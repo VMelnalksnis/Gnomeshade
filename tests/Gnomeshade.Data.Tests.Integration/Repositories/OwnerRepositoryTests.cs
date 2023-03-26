@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data.Repositories;
 
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace Gnomeshade.Data.Tests.Integration.Repositories;
 
 public sealed class OwnerRepositoryTests
@@ -19,7 +21,7 @@ public sealed class OwnerRepositoryTests
 	public async Task SetUpAsync()
 	{
 		_dbConnection = await DatabaseInitialization.CreateConnectionAsync().ConfigureAwait(false);
-		_ownerRepository = new(_dbConnection);
+		_ownerRepository = new(NullLogger<OwnerRepository>.Instance, _dbConnection);
 	}
 
 	[Test]
