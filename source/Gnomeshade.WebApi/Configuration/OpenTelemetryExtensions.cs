@@ -27,6 +27,8 @@ internal static class OpenTelemetryExtensions
 		this IServiceCollection services,
 		IConfiguration configuration)
 	{
+		services.AddValidatedOptions<OpenTelemetryOptions>(configuration);
+
 		var telemetryOptions = configuration.GetValid<OpenTelemetryOptions>();
 		if (!telemetryOptions.Enabled)
 		{

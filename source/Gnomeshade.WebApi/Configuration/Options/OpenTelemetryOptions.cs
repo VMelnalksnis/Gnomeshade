@@ -6,6 +6,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
+using OpenTelemetry.Exporter;
+
 namespace Gnomeshade.WebApi.Configuration.Options;
 
 /// <summary>Options for configuring Open Telemetry.</summary>
@@ -27,4 +29,7 @@ public sealed class OpenTelemetryOptions
 	/// <summary>Gets the endpoint to which to send the telemetry. Defaults to localhost.</summary>
 	[Required]
 	public Uri ExporterEndpoint { get; init; } = new("http://localhost:4317");
+
+	/// <summary>Gets the protocol to use for exporting data.</summary>
+	public OtlpExportProtocol ExportProtocol { get; init; }
 }

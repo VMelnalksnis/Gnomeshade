@@ -25,6 +25,6 @@ internal sealed class ConfigureOtlpExporterOptions : IConfigureOptions<OtlpExpor
 		var telemetryOptions = _optionsMonitor.CurrentValue;
 
 		options.Endpoint = telemetryOptions.ExporterEndpoint;
-		options.Protocol = OtlpExportProtocol.Grpc;
+		options.Protocol = telemetryOptions.ExportProtocol;
 	}
 }
