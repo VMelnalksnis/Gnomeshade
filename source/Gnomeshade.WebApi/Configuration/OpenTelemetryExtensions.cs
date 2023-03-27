@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 using Gnomeshade.WebApi.Configuration.Options;
@@ -71,6 +72,8 @@ internal static class OpenTelemetryExtensions
 					.AddRuntimeInstrumentation();
 			});
 
+		SetOpenTelemetryLoggingEnvironmentVariables(configuration);
+
 		services.AddLogging(builder => builder.AddOpenTelemetry(options =>
 		{
 			options.AddOtlpExporter();
@@ -81,5 +84,22 @@ internal static class OpenTelemetryExtensions
 		}));
 
 		return services;
+	}
+
+	/// <summary>
+	/// HACK: Force the open telemetry endpoint environment variable to be populated even if
+	/// the value is already provided through other configuration means.
+	/// </summary>
+	/// <seealso href="https://github.com/open-telemetry/opentelemetry-dotnet/issues/4014"/>
+	private static void SetOpenTelemetryLoggingEnvironmentVariables(IConfiguration configuration)
+	{
+		const string endpointVariableName = "OTEL_EXPORTER_OTLP_ENDPOINT";
+		const string protocolVariableName = "OTEL_EXPORTER_OTLP_PROTOCOL";
+
+		var endpoint = configuration.GetValue<string>(endpointVariableName);
+		var protocol = configuration.GetValue<string>(protocolVariableName);
+
+		Environment.SetEnvironmentVariable(endpointVariableName, endpoint);
+		Environment.SetEnvironmentVariable(protocolVariableName, protocol);
 	}
 }
