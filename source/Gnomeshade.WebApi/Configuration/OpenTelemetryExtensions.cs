@@ -72,11 +72,22 @@ internal static class OpenTelemetryExtensions
 					.AddRuntimeInstrumentation();
 			});
 
-		SetOpenTelemetryLoggingEnvironmentVariables(configuration);
-
 		services.AddLogging(builder => builder.AddOpenTelemetry(options =>
 		{
-			options.AddOtlpExporter();
+			options.AddOtlpExporter(exporterOptions =>
+			{
+				// HACK: Force the open telemetry endpoint environment variable to be populated even if
+				// the value is already provided through other configuration means.
+				//
+				// https://github.com/open-telemetry/opentelemetry-dotnet/issues/4014
+
+				var defaultOptions = new OpenTelemetryOptions();
+				var endpoint = configuration.GetValue<Uri>($"{OpenTelemetryOptions.SectionName}:{nameof(OpenTelemetryOptions.ExporterEndpoint)}") ?? defaultOptions.ExporterEndpoint;
+				var protocol = configuration.GetValue<OtlpExportProtocol>($"{OpenTelemetryOptions.SectionName}:{nameof(OpenTelemetryOptions.ExportProtocol)}");
+
+				exporterOptions.Endpoint = endpoint;
+				exporterOptions.Protocol = protocol;
+			});
 			options.SetResourceBuilder(resourceBuilder);
 			options.IncludeScopes = true;
 			options.IncludeFormattedMessage = true;
@@ -84,22 +95,5 @@ internal static class OpenTelemetryExtensions
 		}));
 
 		return services;
-	}
-
-	/// <summary>
-	/// HACK: Force the open telemetry endpoint environment variable to be populated even if
-	/// the value is already provided through other configuration means.
-	/// </summary>
-	/// <seealso href="https://github.com/open-telemetry/opentelemetry-dotnet/issues/4014"/>
-	private static void SetOpenTelemetryLoggingEnvironmentVariables(IConfiguration configuration)
-	{
-		const string endpointVariableName = "OTEL_EXPORTER_OTLP_ENDPOINT";
-		const string protocolVariableName = "OTEL_EXPORTER_OTLP_PROTOCOL";
-
-		var endpoint = configuration.GetValue<string>(endpointVariableName);
-		var protocol = configuration.GetValue<string>(protocolVariableName);
-
-		Environment.SetEnvironmentVariable(endpointVariableName, endpoint);
-		Environment.SetEnvironmentVariable(protocolVariableName, protocol);
 	}
 }
