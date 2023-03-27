@@ -11,8 +11,10 @@ using System.Runtime.Versioning;
 using AdysTech.CredentialManager;
 
 using Gnomeshade.Avalonia.Core.Authentication;
+using Gnomeshade.WebApi.Client;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.Desktop.Authentication;
 
@@ -20,23 +22,27 @@ namespace Gnomeshade.Desktop.Authentication;
 [SupportedOSPlatform("windows")]
 public sealed class WindowsCredentialStorageService : ICredentialStorageService
 {
-	private const string _credentialName = "Gnomeshade";
 	private const string _tokenAttributeName = "Token";
 
 	private readonly ILogger<WindowsCredentialStorageService> _logger;
+	private readonly IOptionsMonitor<GnomeshadeOptions> _optionsMonitor;
 
 	/// <summary>Initializes a new instance of the <see cref="WindowsCredentialStorageService"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public WindowsCredentialStorageService(ILogger<WindowsCredentialStorageService> logger)
+	/// <param name="optionsMonitor">Gnomeshade client options monitor.</param>
+	public WindowsCredentialStorageService(
+		ILogger<WindowsCredentialStorageService> logger,
+		IOptionsMonitor<GnomeshadeOptions> optionsMonitor)
 	{
 		_logger = logger;
+		_optionsMonitor = optionsMonitor;
 	}
 
 	/// <inheritdoc />
 	public void StoreRefreshToken(string token)
 	{
 		var credentials = new NetworkCredential().ToICredential();
-		credentials.TargetName = _credentialName;
+		credentials.TargetName = GetCredentialName();
 		credentials.CredentialBlob = token;
 		credentials.Attributes = new Dictionary<string, object> { { _tokenAttributeName, true } };
 		credentials.Persistance = Persistance.LocalMachine;
@@ -68,7 +74,7 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 	public void StoreCredentials(string? username, string? password)
 	{
 		var credentials = new NetworkCredential(username, password);
-		CredentialManager.SaveCredentials(_credentialName, credentials);
+		CredentialManager.SaveCredentials(GetCredentialName(), credentials);
 	}
 
 	/// <inheritdoc />
@@ -94,9 +100,11 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 	/// <inheritdoc />
 	public void RemoveCredentials()
 	{
+		var credentialName = GetCredentialName();
+
 		try
 		{
-			CredentialManager.RemoveCredentials(_credentialName);
+			CredentialManager.RemoveCredentials(credentialName);
 		}
 		catch (CredentialAPIException exception)
 		{
@@ -104,9 +112,20 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 		}
 	}
 
-	private static bool TryGetCredential([NotNullWhen(true)] out ICredential? credential)
+	private bool TryGetCredential([NotNullWhen(true)] out ICredential? credential)
 	{
-		credential = CredentialManager.GetICredential(_credentialName);
+		var credentialName = GetCredentialName();
+		credential = CredentialManager.GetICredential(credentialName);
 		return credential is not null;
+	}
+
+	private string GetCredentialName()
+	{
+		const string credentialName = "Gnomeshade";
+		var serverHost = _optionsMonitor.CurrentValue.BaseAddress?.Host;
+
+		return string.IsNullOrWhiteSpace(serverHost)
+			? credentialName
+			: $"{credentialName}:{serverHost}";
 	}
 }
