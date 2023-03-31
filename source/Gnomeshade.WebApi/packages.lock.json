@@ -118,9 +118,9 @@
       },
       "NodaTime": {
         "type": "Direct",
-        "requested": "[3.1.6, )",
-        "resolved": "3.1.6",
-        "contentHash": "0ZGOyyLldBHYhFpDi22YcXDuAjj3bI33ChGJyp4/dP2gbhpIIVAKaIgU0h+1oUlh/LgA/UKeyJkWOCW2wHYfIg==",
+        "requested": "[3.1.9, )",
+        "resolved": "3.1.9",
+        "contentHash": "EzjwDOtsETlXWBDE6qvTQqc3guP+9xrAOf9j1mHL++UD4VeZay+dbCPNnXyZhoQMkKAOZ/+hIOtz7STl0Rkknw==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
@@ -1586,7 +1586,7 @@
           "Dapper": "[2.0.123, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[7.0.4, )",
           "Microsoft.Extensions.Identity.Stores": "[7.0.4, )",
-          "NodaTime": "[3.1.6, )",
+          "NodaTime": "[3.1.9, )",
           "dbup-core": "[5.0.10, )"
         }
       },
@@ -1629,7 +1629,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
-          "NodaTime": "[3.1.6, )"
+          "NodaTime": "[3.1.9, )"
         }
       },
       "Dapper": {
