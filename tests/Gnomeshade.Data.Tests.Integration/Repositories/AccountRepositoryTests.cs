@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -111,6 +112,36 @@ public sealed class AccountRepositoryTests
 		await _unitOfWork.DeleteAsync(getAccount, TestUser.Id);
 		disabledAccount = await _repository.GetByIdAsync(disabledAccountId, TestUser.Id);
 		await _unitOfWork.DeleteAsync(disabledAccount, TestUser.Id);
+	}
+
+	[Test]
+	public async Task FindByName_ShouldIgnoreDeleted()
+	{
+		var currencies = await EntityFactory.GetCurrenciesAsync();
+		var preferredCurrency = currencies.First();
+
+		var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
+		var counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
+		counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
+
+		var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
+		var account = accountFaker.Generate();
+		var accountId = await _unitOfWork.AddAsync(account);
+
+		var firstAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
+		var firstAccountName = firstAccount.Name;
+		await _repository.DeleteAsync(accountId, TestUser.Id);
+		firstAccount = await _repository.FindByIdAsync(accountId, TestUser.Id);
+		firstAccount.Should().BeNull();
+
+		counterParty = new CounterpartyFaker(TestUser.Id).Generate();
+		counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
+		account = account with { Id = Guid.NewGuid(), CounterpartyId = counterPartyId };
+		accountId = await _unitOfWork.AddAsync(account);
+		var secondAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
+		secondAccount.Name.Should().Be(firstAccountName);
+		var secondAccountByName = await _repository.FindByNameAsync(secondAccount.Name, TestUser.Id);
+		secondAccountByName.Should().BeEquivalentTo(secondAccount, Options);
 	}
 
 	private static EquivalencyAssertionOptions<AccountEntity> Options(

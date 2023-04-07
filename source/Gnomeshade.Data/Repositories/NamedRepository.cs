@@ -41,7 +41,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
 	{
 		Logger.FindName(name);
-		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
+		var sql = $"{SelectSql} {NameSql} AND {AccessSql} and {NotDeleted}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -55,7 +55,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, IDbTransaction dbTransaction, CancellationToken cancellationToken = default)
 	{
 		Logger.FindNameWithTransaction(name);
-		var sql = $"{SelectSql} {NameSql} AND {AccessSql}";
+		var sql = $"{SelectSql} {NameSql} AND {AccessSql} and {NotDeleted}";
 		var command = new CommandDefinition(sql, new { name, ownerId }, dbTransaction, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
