@@ -34,6 +34,8 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 	// todo need a better way to catch all parsing errors
 	private static readonly string[] _endIdentifiers =
 	{
+		"ATLAIDES",
+		"ATDALDES",
 		"ATLALDES",
 		"Citas akcijas",
 		"Makeajanu karte",
@@ -61,6 +63,11 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		var end = _endIdentifiers
 			.Select(filter => content.LastIndexOf(filter, Comparison))
 			.FirstOrDefault(index => index is not -1);
+
+		if (end is 0)
+		{
+			throw new InvalidOperationException("Could not identify the end of purchases");
+		}
 
 		if (start > end)
 		{
