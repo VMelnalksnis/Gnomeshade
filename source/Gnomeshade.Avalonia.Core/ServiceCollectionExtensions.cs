@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
 		.AddTransient<ConfigurationWizardViewModel>()
 		.AddTransient<GnomeshadeConfigurationViewModel>()
 		.AddTransient<AuthenticationConfigurationViewModel>()
+		.AddTransient<UserConfigurationWriter>()
 		.AddTransient<LoginViewModel>()
 		.AddTransient<ApplicationSettingsViewModel>()
 		.AddTransient<CounterpartyMergeViewModel>()
