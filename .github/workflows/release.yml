@@ -22,7 +22,7 @@ jobs:
         project:
           - Gnomeshade.Desktop.Installer
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
 
       - run: $env:BUILD_TAG = "-nightly"
@@ -55,7 +55,7 @@ jobs:
     name: Build for Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
       - uses: actions/setup-node@v3.6.0
         with:
@@ -91,7 +91,7 @@ jobs:
     needs: build-linux
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
 
       - uses: actions/download-artifact@v3.0.2
         id: download
@@ -113,7 +113,7 @@ jobs:
     name: Publish NuGet packages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
 
       - name: Cache NuGet packages
@@ -143,7 +143,7 @@ jobs:
     name: Build docker image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
       - uses: docker/login-action@v2.1.0
         with:
           registry: ghcr.io
