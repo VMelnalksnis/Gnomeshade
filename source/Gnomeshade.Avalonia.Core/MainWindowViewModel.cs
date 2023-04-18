@@ -73,6 +73,7 @@ public sealed class MainWindowViewModel : ViewModelBase
 		if (apiBaseAddress is not null)
 		{
 			await SwitchToLogin();
+			return;
 		}
 
 		var configurationWizardViewModel = _serviceProvider.GetRequiredService<ConfigurationWizardViewModel>();
