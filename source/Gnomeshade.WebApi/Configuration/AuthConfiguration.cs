@@ -32,7 +32,6 @@ namespace Gnomeshade.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
-	private const string DefaultScheme = "UNKNOWN";
 	private static readonly JwtSecurityTokenHandler _tokenHandler = new();
 	private static readonly string[] _supportedOAuthProviders =
 	{
@@ -78,16 +77,16 @@ internal static class AuthConfiguration
 						.Build();
 
 					options.AddPolicy(
-						AuthorizeApplicationUserAttribute.PolicyName,
+						Policies.ApplicationUser,
 						policy => policy.AddRequirements(new ApplicationUserRequirement()));
 				})
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()
 				.AddAuthentication(options =>
 				{
-					options.DefaultScheme = DefaultScheme;
-					options.DefaultAuthenticateScheme = DefaultScheme;
-					options.DefaultChallengeScheme = DefaultScheme;
+					options.DefaultScheme = IdentityConstants.ApplicationScheme;
+					options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+					options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
 				});
 
 		if (jwtOptionsDefined)
