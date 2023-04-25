@@ -40,14 +40,9 @@ public static class ServiceCollectionExtensions
 			.AddNpgsqlDataSource(
 				configuration.GetConnectionString("Gnomeshade")!,
 				builder => builder.UseNodaTime(),
-				ServiceLifetime.Scoped);
+				ServiceLifetime.Scoped)
+			.AddDbContext<IdentityContext, PostgreSQLIdentityContext>();
 	}
-
-	/// <summary>Adds <see cref="IdentityContext"/> to service collection.</summary>
-	/// <param name="services">The <see cref="IServiceCollection"/> to which to add the context.</param>
-	/// <returns>The current <see cref="IdentityBuilder"/>.</returns>
-	public static IServiceCollection AddPostgreSQLIdentityContext(this IServiceCollection services) => services
-		.AddDbContext<IdentityContext, PostgreSQLIdentityContext>();
 
 	/// <summary>Adds an Entity Framework implementation of identity information stores for PostgreSQL.</summary>
 	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>

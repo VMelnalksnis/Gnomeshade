@@ -49,14 +49,9 @@ public static class ServiceCollectionExtensions
 				connection.CreateFunction("CURRENT_TIMESTAMP", () => InstantHandler.Pattern.Format(SystemClock.Instance.GetCurrentInstant()));
 				return connection;
 			})
-			.AddSingleton<DbConnection>(provider => provider.GetRequiredService<SqliteConnection>());
+			.AddSingleton<DbConnection>(provider => provider.GetRequiredService<SqliteConnection>())
+			.AddDbContext<IdentityContext, SqliteIdentityContext>();
 	}
-
-	/// <summary>Adds <see cref="IdentityContext"/> to service collection.</summary>
-	/// <param name="services">The <see cref="IServiceCollection"/> to which to add the context.</param>
-	/// <returns>The current <see cref="IdentityBuilder"/>.</returns>
-	public static IServiceCollection AddSqliteIdentityContext(this IServiceCollection services) => services
-		.AddDbContext<IdentityContext, SqliteIdentityContext>();
 
 	/// <summary>Adds an Entity Framework implementation of identity information stores for Sqlite.</summary>
 	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>

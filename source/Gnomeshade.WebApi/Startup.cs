@@ -70,27 +70,24 @@ public class Startup
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
 
 		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
-		_ = databaseProvider switch
+		var identityBuilder = databaseProvider switch
 		{
-			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) =>
-				services
-					.AddPostgreSQL(_configuration)
-					.AddPostgreSQLIdentityContext()
-					.AddIdentity<ApplicationUser, IdentityRole>()
-					.AddPostgreSQLIdentity()
-					.AddDefaultUI()
-					.AddDefaultTokenProviders(),
+			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
+				.AddPostgreSQL(_configuration)
+				.AddIdentity<ApplicationUser, IdentityRole>()
+				.AddPostgreSQLIdentity(),
 
 			_ when databaseProvider.Equals(DatabaseProvider.Sqlite.Name, StringComparison.OrdinalIgnoreCase) => services
 				.AddSqlite(_configuration)
-				.AddSqliteIdentityContext()
 				.AddIdentity<ApplicationUser, IdentityRole>()
-				.AddSqliteIdentity()
-				.AddDefaultUI()
-				.AddDefaultTokenProviders(),
+				.AddSqliteIdentity(),
 
 			_ => throw new ArgumentOutOfRangeException(nameof(databaseProvider), databaseProvider, "Unsupported database provider"),
 		};
+
+		identityBuilder
+			.AddDefaultUI()
+			.AddDefaultTokenProviders();
 
 		services.AddAuthenticationAndAuthorization(_configuration);
 
