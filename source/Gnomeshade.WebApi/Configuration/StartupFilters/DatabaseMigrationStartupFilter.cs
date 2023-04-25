@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gnomeshade.WebApi.Configuration;
+namespace Gnomeshade.WebApi.Configuration.StartupFilters;
 
 internal sealed class DatabaseMigrationStartupFilter : IStartupFilter
 {

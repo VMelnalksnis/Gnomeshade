@@ -20,7 +20,7 @@
 			}
 		}
 {% else %}
-		"Endpoints": {	
+		"Endpoints": {
 			"Http": {
 				"Url": "{{ gnomeshade_url }}",
 			}
@@ -50,6 +50,9 @@
 		"ValidAudience": "{{ gnomeshade_jwt_valid_audience }}",
 		"ValidIssuer": "{{ gnomeshade_jwt_valid_issuer }}",
 		"Secret": "{{ gnomeshade_jwt_secret }}"
+	},
+	"Admin": {
+		"Password": "{{ gnomeshade_admin_password }}"
 	},
 {% if gnomeshade_oauth2_providers is defined %}
 	"OAuth2Providers": {

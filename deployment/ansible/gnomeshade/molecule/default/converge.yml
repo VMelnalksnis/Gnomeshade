@@ -4,6 +4,7 @@
   vars:
     gnomeshade_binary_url: '/tmp/gnomeshade.deb'
     gnomeshade_oauth2_providers: []
+    gnomeshade_admin_password: 'Password1!'
   tasks:
     - name: 'Include gnomeshade.gnomeshade'
       include_role:

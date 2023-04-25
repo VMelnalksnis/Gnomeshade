@@ -67,7 +67,9 @@ public class Startup
 
 		services
 			.AddRepositories()
-			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>();
+			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>()
+			.AddValidatedOptions<AdminOptions>(_configuration)
+			.AddTransient<IStartupFilter, AdminUserStartupFilter>();
 
 		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
 		var identityBuilder = databaseProvider switch

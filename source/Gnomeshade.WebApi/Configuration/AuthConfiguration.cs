@@ -79,6 +79,12 @@ internal static class AuthConfiguration
 					options.AddPolicy(
 						Policies.ApplicationUser,
 						policy => policy.AddRequirements(new ApplicationUserRequirement()));
+
+					options.AddPolicy(
+						Policies.Administrator,
+						policy => policy
+							.AddRequirements(new ApplicationUserRequirement())
+							.AddRequirements(new AdministratorRoleRequirement()));
 				})
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()

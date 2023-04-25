@@ -188,6 +188,11 @@ jobs:
           app-settings-json: |
             [
                 {
+                    "name": "Admin__Password",
+                    "value": "${{ secrets.DEMO_ADMIN_PASSWORD }}",
+                    "slotSetting": false
+                },
+                {
                     "name": "ConnectionStrings__Gnomeshade",
                     "value": "Data Source=/tmp/gnomeshade.db",
                     "slotSetting": false

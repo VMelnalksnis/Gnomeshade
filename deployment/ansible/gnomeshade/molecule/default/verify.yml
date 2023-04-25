@@ -3,23 +3,28 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Wait for service to be ready
-      wait_for:
-        port: 8297
-        host: localhost
-        connect_timeout: 3
-        delay: 3
-        timeout: 30
-      register: wait
-
     - name: Verify that the API is running
-      ansible.builtin.uri:
-        url: 'http://localhost:8297/api/v1.0/health'
-      register: verify
-
-    - name: Display logs
-      when: wait.failed or verify.failed
       block:
-        - command: journalctl -u gnomeshade -n 100
-          register: logs
-        - debug: var=logs.stdout_lines
+      - name: Wait for service to be ready
+        wait_for:
+          port: 8297
+          host: localhost
+          connect_timeout: 3
+          delay: 3
+          timeout: 30
+        register: wait
+
+      - name: Verify that the API is running
+        ansible.builtin.uri:
+          url: 'http://localhost:8297/api/v1.0/health'
+        register: verify
+      rescue:
+        - name: Display logs
+          when: wait.failed or verify.failed
+          block:
+            - command: journalctl -u gnomeshade -n 100
+              register: logs
+            - debug: var=logs.stdout_lines
+
+        - fail:
+            msg: "Failed to start the service"

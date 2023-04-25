@@ -47,6 +47,7 @@ jobs:
 
       - run: ./deployment/test.sh
         env:
+          Admin:Password: ${{ secrets.DEMO_ADMIN_PASSWORD }}
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
           Nordigen:SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
           Serilog:MinimumLevel: Warning
@@ -126,7 +127,7 @@ jobs:
           --tag ghcr.io/vmelnalksnis/gnomeshade:test
           --build-arg "BUILD_NUMBER=${{ github.run_number }}"
           ./
-      - run: docker run --name test -d -p 8000:80 ghcr.io/vmelnalksnis/gnomeshade:test
+      - run: docker run --name test -d -p 8000:80 -e "Admin__Password=${{ secrets.DEMO_ADMIN_PASSWORD }}" ghcr.io/vmelnalksnis/gnomeshade:test
       - run: wget --tries=10 --retry-connrefused --waitretry=1 --timeout=15 "http://localhost:8000/api/v1.0/health"
       - run: >
           [[ $(cat health) = "Healthy" ]] || exit 1
