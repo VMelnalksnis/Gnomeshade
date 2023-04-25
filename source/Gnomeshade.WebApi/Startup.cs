@@ -12,6 +12,7 @@ using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Sqlite;
 using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.Configuration.Options;
+using Gnomeshade.WebApi.Configuration.StartupFilters;
 using Gnomeshade.WebApi.Configuration.Swagger;
 using Gnomeshade.WebApi.HealthChecks;
 using Gnomeshade.WebApi.Services;
@@ -62,6 +63,11 @@ public class Startup
 				options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 				options.JsonSerializerOptions.Converters.Add(NodaConverters.InstantConverter);
 			});
+
+		services.AddRazorPages(options =>
+		{
+			options.Conventions.AuthorizeAreaFolder("Admin", "/", Policies.Administrator);
+		});
 
 		services.AddSingleton<ApplicationVersionService>();
 

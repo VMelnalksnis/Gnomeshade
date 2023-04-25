@@ -1,5 +1,6 @@
 ﻿@using Gnomeshade.WebApi.Services
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Gnomeshade.WebApi.Configuration
 @inject ApplicationVersionService ApplicationVersionService
 
 <!DOCTYPE html>
@@ -25,6 +26,14 @@
 					<li class="nav-item">
 						<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 					</li>
+					@{
+						if (User.Identity?.IsAuthenticated == true && User.IsInRole(Roles.Administrator))
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-area="Admin" asp-page="/Index">Admin</a>
+							</li>
+						}
+					}
 				</ul>
 				<partial name="_LoginPartial"/>
 			</div>

@@ -3,8 +3,10 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -44,11 +46,12 @@ public sealed class UserRepository
 
 	/// <summary>Searches for a user with the specified id.</summary>
 	/// <param name="id">The id to search by.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The <see cref="UserEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<UserEntity?> FindByIdAsync(Guid id)
+	public Task<UserEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		_logger.FindId(id);
-		var commandDefinition = new CommandDefinition(Queries.User.Select, new { id });
+		var commandDefinition = new CommandDefinition(Queries.User.Select, new { id }, cancellationToken: cancellationToken);
 		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 	}
 
@@ -61,5 +64,14 @@ public sealed class UserRepository
 		_logger.UpdatingEntityWithTransaction();
 		var command = new CommandDefinition(Queries.User.Update, user, dbTransaction);
 		return _dbConnection.ExecuteAsync(command);
+	}
+
+	public Task<IEnumerable<UserEntity>> Get(CancellationToken cancellationToken = default)
+	{
+		_logger.GetAll();
+		var command = new CommandDefinition(
+			"SELECT id, created_at CreatedAt, counterparty_id CounterpartyId FROM users;",
+			cancellationToken: cancellationToken);
+		return _dbConnection.QueryAsync<UserEntity>(command);
 	}
 }

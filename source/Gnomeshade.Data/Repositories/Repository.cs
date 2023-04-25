@@ -120,6 +120,22 @@ public abstract class Repository<TEntity>
 		return GetEntitiesAsync(command);
 	}
 
+	/// <summary>Gets all entities ignoring access control.</summary>
+	/// <param name="includeDeleted">Whether to include deleted entities.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all entities.</returns>
+	public Task<IEnumerable<TEntity>> GetAllAsync(
+		bool includeDeleted = false,
+		CancellationToken cancellationToken = default)
+	{
+		Logger.GetAll(includeDeleted);
+		var command = includeDeleted
+			? new CommandDefinition($"{SelectSql}", cancellationToken: cancellationToken)
+			: new($"{SelectSql} WHERE {NotDeleted}", cancellationToken: cancellationToken);
+
+		return GetEntitiesAsync(command);
+	}
+
 	/// <summary>Gets an entity with the specified id.</summary>
 	/// <param name="id">The id of the entity to get.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>

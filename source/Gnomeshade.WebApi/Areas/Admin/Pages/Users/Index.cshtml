@@ -1,0 +1,52 @@
+@page
+@model Gnomeshade.WebApi.Areas.Admin.Pages.Users.Index
+
+@{
+	ViewData["Title"] = "Users";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-striped">
+	<thead>
+	<tr>
+		<th scope="col">Name</th>
+		<th scope="col">Locked Out</th>
+		<th scope="col">Lockout End</th>
+		<th scope="col">Actions</th>
+	</tr>
+	</thead>
+	@{
+		foreach (var user in Model.Users)
+		{
+			<tr>
+				<td>
+					@user.Name
+				</td>
+				<td>
+					@user.IsLockedOut
+				</td>
+				<td>
+					@user.LockoutEnd
+				</td>
+				<td>
+					@if (user.IsLockedOut is null)
+					{
+					}
+					else if (user.IsLockedOut.Value)
+					{
+						<form method="post" asp-route-id="@user.Id" asp-page-handler="Enable">
+							<input type="submit" value="Enable" class="btn btn-sm btn-primary"/>
+						</form>
+					}
+					else
+					{
+						<form method="post" asp-route-id="@user.Id" asp-page-handler="Disable">
+							<input type="submit" value="Disable" class="btn btn-sm btn-danger"/>
+						</form>
+					}
+				</td>
+			</tr>
+		}
+	}
+</table>
