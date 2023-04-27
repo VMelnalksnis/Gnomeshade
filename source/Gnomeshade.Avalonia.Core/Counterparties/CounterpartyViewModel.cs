@@ -57,7 +57,7 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
 		Rows = new(counterpartyRows);
 
-		foreach (var row in Rows)
+		foreach (var row in Rows.ToList())
 		{
 			var loans = await _gnomeshadeClient.GetCounterpartyLoansAsync(row.Id);
 			var issued = loans

@@ -69,7 +69,7 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 			await Details.RefreshAsync();
 		}
 
-		foreach (var row in Rows)
+		foreach (var row in Rows.ToList())
 		{
 			var balances = await _gnomeshadeClient.GetAccountBalanceAsync(row.Id);
 			var balance = balances.SingleOrDefault(balance => balance.AccountInCurrencyId == row.InCurrencyId);
