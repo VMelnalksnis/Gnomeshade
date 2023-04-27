@@ -66,6 +66,7 @@ public sealed partial class ImportViewModel : ViewModelBase
 	public async Task ImportAsync()
 	{
 		using var activity = BeginActivity("Importing transactions");
+
 		if (FilePath is not null)
 		{
 			var file = new FileInfo(FilePath);
@@ -80,8 +81,10 @@ public sealed partial class ImportViewModel : ViewModelBase
 				SystemBrowser.OpenBrowser(newRequisition.RequisitionUri.ToString());
 			}
 		}
-
-		throw new InvalidOperationException("Could not import");
+		else
+		{
+			throw new InvalidOperationException("Could not import");
+		}
 	}
 
 	/// <inheritdoc />
