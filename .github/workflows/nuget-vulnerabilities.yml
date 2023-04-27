@@ -1,5 +1,9 @@
 name: NuGet vulnerabilities
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 on:
   schedule:
     - cron: "0 0 * * 1-5"
