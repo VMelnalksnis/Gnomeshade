@@ -8,62 +8,30 @@ using JetBrains.Annotations;
 
 using NodaTime;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.WebApi.Models.Accounts;
 
-/// <summary>
-/// A single currency for a specific account.
-/// </summary>
+/// <summary>A single currency for a specific account.</summary>
 [PublicAPI]
 public sealed record AccountInCurrency
 {
-	/// <summary>
-	/// The id of the account in currency.
-	/// </summary>
+	/// <summary>The id of the account in currency.</summary>
 	public Guid Id { get; set; }
 
-	/// <summary>
-	/// The point in time when this account in currency was created.
-	/// </summary>
+	/// <summary>The point in time when this account in currency was created.</summary>
 	public Instant CreatedAt { get; set; }
 
-	/// <summary>
-	/// The id of the owner of this account in currency.
-	/// </summary>
+	/// <summary>The id of the owner of this account in currency.</summary>
 	public Guid OwnerId { get; set; }
 
-	/// <summary>
-	/// The id of the user which created this account in currency.
-	/// </summary>
+	/// <summary>The id of the user which created this account in currency.</summary>
 	public Guid CreatedByUserId { get; set; }
 
-	/// <summary>
-	/// The point in time when this account in currency was last modified.
-	/// </summary>
+	/// <summary>The point in time when this account in currency was last modified.</summary>
 	public Instant ModifiedAt { get; set; }
 
-	/// <summary>
-	/// The id of the user which last modified this account in currency.
-	/// </summary>
+	/// <summary>The id of the user which last modified this account in currency.</summary>
 	public Guid ModifiedByUserId { get; set; }
 
-	/// <summary>
-	/// The currency of the account in currency.
-	/// </summary>
+	/// <summary>The currency of the account in currency.</summary>
 	public Currency Currency { get; set; } = null!;
-
-	/// <summary>
-	/// The point in time when this account in currency was disabled.
-	/// </summary>
-	public Instant? DisabledAt { get; set; }
-
-	/// <summary>
-	/// The id of the user which disabled this account in currency.
-	/// </summary>
-	public Guid? DisabledByUserId { get; set; }
-
-	/// <summary>
-	/// Whether or not this account in currency is disabled.
-	/// </summary>
-	public bool Disabled => DisabledAt.HasValue;
 }

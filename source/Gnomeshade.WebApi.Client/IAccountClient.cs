@@ -58,11 +58,6 @@ public interface IAccountClient
 	/// <returns>A collection with all accounts.</returns>
 	Task<List<Account>> GetAccountsAsync(CancellationToken cancellationToken = default);
 
-	/// <summary>Gets all currently active accounts.</summary>
-	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-	/// <returns>A collection with all currently active accounts.</returns>
-	Task<List<Account>> GetActiveAccountsAsync(CancellationToken cancellationToken = default);
-
 	/// <summary>Creates a new account.</summary>
 	/// <param name="account">Information for creating the account.</param>
 	/// <returns>The id of the created account.</returns>

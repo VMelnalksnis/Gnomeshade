@@ -78,18 +78,6 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 		return FindAsync(command);
 	}
 
-	/// <summary>Gets all accounts accounts that have not been disabled, with currencies which also have not been disabled.</summary>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all active accounts.</returns>
-	public Task<IEnumerable<AccountEntity>> GetAllActiveAsync(Guid ownerId, CancellationToken cancellationToken = default)
-	{
-		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.disabled_at IS NULL AND aic.disabled_at IS NULL AND {AccessSql} ORDER BY a.created_at;";
-		var command = new CommandDefinition(sql, new { ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
-	}
-
 	/// <summary>Gets the sums of all transfers to and from the specified account in all currencies.</summary>
 	/// <param name="id">The id of the account for which to get the balance.</param>
 	/// <param name="ownerId">The id of the owner of the account.</param>

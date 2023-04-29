@@ -13,8 +13,6 @@ using Gnomeshade.Data.Tests.Integration.Fakers;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
-using NodaTime;
-
 using Npgsql;
 
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
@@ -98,20 +96,7 @@ public sealed class AccountRepositoryTests
 			.ThrowAsync<NpgsqlException>())
 			.Which.Message.Should().Contain("duplicate key value violates unique constraint");
 
-		var disabledAccount = accountFaker.GenerateUnique(account) with
-		{
-			DisabledAt = SystemClock.Instance.GetCurrentInstant(),
-			DisabledByUserId = TestUser.Id,
-		};
-
-		var disabledAccountId = await _unitOfWork.AddAsync(disabledAccount);
-
-		var allAccounts = await _repository.GetAllActiveAsync(TestUser.Id);
-		allAccounts.Should().OnlyContain(enabledAccount => enabledAccount.Id == getAccount.Id);
-
 		await _unitOfWork.DeleteAsync(getAccount, TestUser.Id);
-		disabledAccount = await _repository.GetByIdAsync(disabledAccountId, TestUser.Id);
-		await _unitOfWork.DeleteAsync(disabledAccount, TestUser.Id);
 	}
 
 	[Test]

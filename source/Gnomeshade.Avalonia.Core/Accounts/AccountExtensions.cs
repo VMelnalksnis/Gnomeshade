@@ -29,7 +29,6 @@ internal static class AccountExtensions
 					tuple.account.Name,
 					tuple.inCurrency.Currency.AlphabeticCode,
 					0,
-					tuple.inCurrency.Disabled,
 					counterparty.Name,
 					tuple.inCurrency.Id);
 			});

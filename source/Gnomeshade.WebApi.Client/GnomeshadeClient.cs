@@ -255,10 +255,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync(Accounts._allUri, _context.ListAccount, cancellationToken);
 
 	/// <inheritdoc />
-	public Task<List<Account>> GetActiveAccountsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Accounts._uri, _context.ListAccount, cancellationToken);
-
-	/// <inheritdoc />
 	public Task<Guid> CreateAccountAsync(AccountCreation account) =>
 		PostAsync(Accounts._uri, account, _context.AccountCreation);
 

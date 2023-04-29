@@ -25,28 +25,21 @@
 					<DataTemplate x:DataType="a:AccountOverviewRow">
 						<TextBlock
 							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
-							Text="{Binding Name, Mode=OneWay}"/>
+							Text="{Binding Name, Mode=OneWay}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="Currency" IsReadOnly="True">
 					<DataTemplate x:DataType="a:AccountOverviewRow">
 						<TextBlock
 							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
-							Text="{Binding Currency, Mode=OneWay}"/>
+							Text="{Binding Currency, Mode=OneWay}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="Balance" IsReadOnly="True">
 					<DataTemplate x:DataType="a:AccountOverviewRow">
 						<TextBlock
 							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
-							Text="{Binding Balance, Mode=OneWay, StringFormat=\{0:N2\}}"/>
-					</DataTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Disabled" IsReadOnly="True">
-					<DataTemplate x:DataType="a:AccountOverviewRow">
-						<TextBlock
-							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
-							Text="{Binding Disabled, Mode=OneWay}"/>
+							Text="{Binding Balance, Mode=OneWay, StringFormat=\{0:N2\}}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
@@ -56,10 +49,10 @@
 					<Setter Property="Fill" Value="#05769d" />
 				</Style>
 			</DataGrid.Styles>
-				
+
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
+					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
 				</EventTriggerBehavior>
 			</Interaction.Behaviors>
 		</DataGrid>

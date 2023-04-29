@@ -20,7 +20,6 @@ public sealed partial class AccountOverviewRow : PropertyChangedBase
 	/// <param name="name">The name of the account.</param>
 	/// <param name="currency">The currency of the account.</param>
 	/// <param name="balance">The balance of the account.</param>
-	/// <param name="disabled">Whether this account is disabled.</param>
 	/// <param name="counterparty">The name of the counterparty of the account.</param>
 	/// <param name="inCurrencyId">The id of the account in currency.</param>
 	public AccountOverviewRow(
@@ -28,7 +27,6 @@ public sealed partial class AccountOverviewRow : PropertyChangedBase
 		string name,
 		string currency,
 		decimal balance,
-		bool disabled,
 		string counterparty,
 		Guid inCurrencyId)
 	{
@@ -36,7 +34,6 @@ public sealed partial class AccountOverviewRow : PropertyChangedBase
 		Name = name;
 		Currency = currency;
 		_balance = balance;
-		Disabled = disabled;
 		Counterparty = counterparty;
 		InCurrencyId = inCurrencyId;
 	}
@@ -49,9 +46,6 @@ public sealed partial class AccountOverviewRow : PropertyChangedBase
 
 	/// <summary>Gets the currency of the account.</summary>
 	public string Currency { get; }
-
-	/// <summary>Gets a value indicating whether this account is disabled.</summary>
-	public bool Disabled { get; }
 
 	/// <summary>Gets the name of the counterparty of the account.</summary>
 	public string Counterparty { get; }

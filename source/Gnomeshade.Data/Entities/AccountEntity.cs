@@ -14,7 +14,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>Represents an account which can hold funds one or more currencies.</summary>
-public sealed record AccountEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity, IDisableableEntity
+public sealed record AccountEntity : Entity, IOwnableEntity, IModifiableEntity, INamedEntity
 {
 	/// <inheritdoc />
 	public Guid OwnerId { get; set; }
@@ -39,12 +39,6 @@ public sealed record AccountEntity : Entity, IOwnableEntity, IModifiableEntity, 
 
 	/// <summary>Gets or sets the preferred currency.</summary>
 	public CurrencyEntity PreferredCurrency { get; set; } = null!;
-
-	/// <inheritdoc />
-	public Instant? DisabledAt { get; set; }
-
-	/// <inheritdoc />
-	public Guid? DisabledByUserId { get; set; }
 
 	/// <summary>Gets or sets the Business Identifier Code (BIC).</summary>
 	public string? Bic { get; set; }

@@ -7,8 +7,6 @@
      normalized_name,
      counterparty_id,
      preferred_currency_id,
-     disabled_at,
-     disabled_by_user_id,
      bic,
      iban,
      account_number)
@@ -21,8 +19,6 @@ VALUES
      upper(@Name),
      @CounterpartyId,
      @PreferredCurrencyId,
-     @DisabledAt,
-     @DisabledByUserId,
      @Bic,
      @Iban,
      @AccountNumber)

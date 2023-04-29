@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -63,19 +62,14 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 		base.Get(cancellationToken);
 
 	/// <summary>Gets all accounts.</summary>
-	/// <param name="onlyActive">Whether to get only active accounts.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all accounts.</returns>
 	/// <response code="200">Successfully got all accounts.</response>
 	[HttpGet]
 	[ProducesResponseType(typeof(List<Account>), Status200OK)]
-	public async Task<List<Account>> GetAll(
-		[FromQuery, DefaultValue(true)] bool onlyActive,
-		CancellationToken cancellationToken)
+	public async Task<List<Account>> GetAll(CancellationToken cancellationToken)
 	{
-		var accounts = onlyActive
-			? await _repository.GetAllActiveAsync(ApplicationUser.Id, cancellationToken)
-			: await _repository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
+		var accounts = await _repository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
 
 		return accounts.Select(MapToModel).ToList();
 	}

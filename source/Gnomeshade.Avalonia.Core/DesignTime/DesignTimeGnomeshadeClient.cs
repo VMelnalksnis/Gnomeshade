@@ -480,18 +480,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		return Task.FromResult(_accounts.Single(account => account.Id == id));
 	}
 
-	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_accounts.ToList());
-	}
-
-	/// <param name="cancellationToken"></param>
-	/// <inheritdoc />
-	public Task<List<Account>> GetActiveAccountsAsync(CancellationToken cancellationToken = default)
-	{
-		return Task.FromResult(_accounts.Where(account => !account.Disabled).ToList());
 	}
 
 	/// <inheritdoc />

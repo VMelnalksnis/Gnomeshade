@@ -42,15 +42,6 @@ public sealed record Account
 	/// <summary>The preferred currency of the account.</summary>
 	public Currency PreferredCurrency { get; set; } = null!;
 
-	/// <summary>The point in time when this account was disabled.</summary>
-	public Instant? DisabledAt { get; set; }
-
-	/// <summary>The id of the user which disabled this account.</summary>
-	public Guid? DisabledByUserId { get; set; }
-
-	/// <summary>Whether or not this account is disabled.</summary>
-	public bool Disabled => DisabledAt.HasValue;
-
 	/// <summary>The BIC (Business Identifier Code) of the account.</summary>
 	public string? Bic { get; set; }
 
