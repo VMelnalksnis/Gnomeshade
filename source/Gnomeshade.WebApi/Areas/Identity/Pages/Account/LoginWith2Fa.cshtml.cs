@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Identity;
@@ -19,7 +18,6 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 
 /// <summary>Page for handling user login with 2FA.</summary>
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented", Justification = "No reason to document IActionResult")]
 public sealed class LoginWith2Fa : PageModel
 {
 	private readonly SignInManager<ApplicationUser> _signInManager;

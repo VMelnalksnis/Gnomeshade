@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -29,7 +28,6 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 
 /// <summary>Page for handling new user registration.</summary>
 [AllowAnonymous]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented", Justification = "No reason to document IActionResult")]
 public sealed class Register : PageModel
 {
 	private readonly ILogger<Register> _logger;
@@ -183,7 +181,6 @@ public sealed class Register : PageModel
 		[DataType(DataType.Password)]
 		[Display(Name = "Confirm password")]
 		[Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
-		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Unused otherProperty will have it's own warning")]
 		public string ConfirmPassword { get; set; } = null!;
 	}
 }

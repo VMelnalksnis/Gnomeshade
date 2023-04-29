@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -26,7 +25,6 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 
 /// <summary>Page for handling authentication from an external provider.</summary>
 [AllowAnonymous]
-[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1615:Element return value should be documented", Justification = "No reason to document IActionResult")]
 public sealed class ExternalLogin : PageModel
 {
 	private readonly ILogger<ExternalLogin> _logger;

@@ -1,0 +1,4 @@
+[*.cs]
+
+# SA1615: Element return value should be documented
+dotnet_diagnostic.SA1615.severity = none
