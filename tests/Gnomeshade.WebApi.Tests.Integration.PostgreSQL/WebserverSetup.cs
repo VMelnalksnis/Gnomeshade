@@ -22,7 +22,6 @@ public static class WebserverSetup
 		new("13"),
 		new("12"),
 		new("11-bullseye"),
-		new("10-bullseye"),
 	}.Cast<WebserverFixture>().ToList();
 
 	[OneTimeSetUp]
