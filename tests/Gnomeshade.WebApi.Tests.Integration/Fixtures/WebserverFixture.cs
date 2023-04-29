@@ -66,7 +66,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 		return new(httpClient, new(DateTimeZoneProviders.Tzdb));
 	}
 
-	internal async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+	internal async Task<Login> CreateApplicationUserAsync()
 	{
 		var client = _webApplicationFactory.CreateClient();
 		var registrationFaker = new Faker<RegistrationModel>()
@@ -75,7 +75,12 @@ public abstract class WebserverFixture : IAsyncDisposable
 			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
 			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
 
-		var login = await RegisterUser(client, registrationFaker.Generate());
+		return await RegisterUser(client, registrationFaker.Generate());
+	}
+
+	internal async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
+	{
+		var login = await CreateApplicationUserAsync();
 		return await CreateAuthorizedClientAsync(login);
 	}
 
