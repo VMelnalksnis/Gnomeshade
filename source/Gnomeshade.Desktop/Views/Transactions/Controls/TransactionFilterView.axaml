@@ -77,7 +77,7 @@
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				Watermark="Account"
-				Items="{Binding Accounts}"
+				ItemsSource="{Binding Accounts}"
 				ItemSelector="{Binding AccountSelector}"
 				SelectedItem="{Binding SelectedAccount, Mode=TwoWay}">
 				<AutoCompleteBox.ItemTemplate>
@@ -93,7 +93,7 @@
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				Watermark="Counterparty"
-				Items="{Binding Counterparties}"
+				ItemsSource="{Binding Counterparties}"
 				ItemSelector="{Binding CounterpartySelector}"
 				SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}">
 				<AutoCompleteBox.ItemTemplate>
@@ -109,7 +109,7 @@
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				Watermark="Product"
-				Items="{Binding Products}"
+				ItemsSource="{Binding Products}"
 				ItemSelector="{Binding ProductSelector}"
 				SelectedItem="{Binding SelectedProduct, Mode=TwoWay}">
 				<AutoCompleteBox.ItemTemplate>
@@ -125,7 +125,7 @@
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				Watermark="Category"
-				Items="{Binding Categories}"
+				ItemsSource="{Binding Categories}"
 				ItemSelector="{Binding CategorySelector}"
 				SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
 				<AutoCompleteBox.ItemTemplate>

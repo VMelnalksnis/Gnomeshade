@@ -28,7 +28,7 @@
 				<FocusOnAttachedToVisualTreeBehavior />
 			</Interaction.Behaviors>
 		</TextBox>
-		
+
 		<TextBlock
 			Grid.Column="0" Grid.Row="1"
 			Padding="10 0"
@@ -52,7 +52,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding UnitSelector}"
-			Items="{Binding Units}"
+			ItemsSource="{Binding Units}"
 			SelectedItem="{Binding ParentUnit, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="mp:Unit">

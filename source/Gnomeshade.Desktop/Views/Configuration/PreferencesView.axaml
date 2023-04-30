@@ -14,12 +14,12 @@
 	<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto">
 
 		<TextBox Grid.Row="0" Grid.Column="0" Watermark="Nordigen Country" Text="{Binding NordigenCountry}" />
-		
+
 		<AutoCompleteBox
 			Grid.Row="1" Grid.Column="0"
 			Watermark="Nordigen Institution"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			Items="{Binding Institutions}"
+			ItemsSource="{Binding Institutions}"
 			SelectedItem="{Binding SelectedInstitutionId}" />
 
 		<Button Grid.Row="2" Grid.Column="0" Command="{ReflectionBinding Save}">

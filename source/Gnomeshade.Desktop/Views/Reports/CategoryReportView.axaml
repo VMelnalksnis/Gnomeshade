@@ -19,7 +19,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Watermark="Category"
-			Items="{Binding Categories}"
+			ItemsSource="{Binding Categories}"
 			ItemSelector="{Binding CategorySelector}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
 			IsEnabled="{Binding !IsBusy}">

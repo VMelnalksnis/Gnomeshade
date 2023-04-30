@@ -64,7 +64,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding OwnerSelector}"
-			Items="{Binding Owners}"
+			ItemsSource="{Binding Owners}"
 			SelectedItem="{Binding Owner, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="owners:Owner">

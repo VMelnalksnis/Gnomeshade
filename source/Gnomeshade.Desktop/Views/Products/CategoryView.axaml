@@ -16,7 +16,7 @@
 			Grid.Column="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
-			Items="{Binding DataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding Selected, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -44,7 +44,7 @@
 					<Setter Property="Fill" Value="#05769d" />
 				</Style>
 			</DataGrid.Styles>
-				
+
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
 					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
@@ -54,9 +54,9 @@
 
 		<Grid Grid.Column="1" RowDefinitions="Auto,*">
 			<UserControl Grid.Row="0" Content="{Binding Details, Mode=OneWay}"/>
-			<TreeView Grid.Row="1" Items="{Binding Nodes}">
+			<TreeView Grid.Row="1" ItemsSource="{Binding Nodes}">
 				<TreeView.ItemTemplate>
-					<TreeDataTemplate ItemsSource="{Binding Nodes}">
+					<TreeDataTemplate x:DataType="products:CategoryNode" ItemsSource="{Binding Nodes}">
 						<TextBlock Text="{Binding Name}"/>
 					</TreeDataTemplate>
 				</TreeView.ItemTemplate>

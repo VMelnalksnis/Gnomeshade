@@ -36,7 +36,7 @@
 			Grid.Row="3"
 			Watermark="Unit"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding UnitSelector}" Items="{Binding Units}"
+			ItemSelector="{Binding UnitSelector}" ItemsSource="{Binding Units}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
 
 			<AutoCompleteBox.ItemTemplate>
@@ -50,7 +50,7 @@
 			Grid.Row="4"
 			Watermark="Category"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding CategorySelector}" Items="{Binding Categories}"
+			ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
 
 			<AutoCompleteBox.ItemTemplate>
@@ -71,14 +71,14 @@
 			Grid.Row="6"
 			VerticalAlignment="Center" Text="{Binding ErrorMessage}" />
 
-		<Border 
+		<Border
 			Grid.Row="7" Margin="0 10"
 			Background="White" HorizontalAlignment="Stretch" Height="1"/>
-		
+
 		<DataGrid
 			Grid.Row="8"
 			x:Name="DataGrid"
-			Items="{Binding Purchases, Mode=TwoWay}"
+			ItemsSource="{Binding Purchases, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>

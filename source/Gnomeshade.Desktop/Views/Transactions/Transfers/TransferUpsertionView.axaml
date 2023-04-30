@@ -24,7 +24,7 @@
 			x:Name="SourceAccount"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Accounts}"
+			ItemsSource="{Binding Accounts}"
 			ItemSelector="{Binding AccountSelector}"
 			SelectedItem="{Binding SourceAccount, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -41,7 +41,7 @@
 			Grid.Column="3" Grid.Row="0"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Currencies}"
+			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -68,7 +68,7 @@
 			Watermark="Account"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Accounts}"
+			ItemsSource="{Binding Accounts}"
 			ItemSelector="{Binding AccountSelector}"
 			SelectedItem="{Binding TargetAccount, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -86,7 +86,7 @@
 			Watermark="Currency"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Currencies}"
+			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>

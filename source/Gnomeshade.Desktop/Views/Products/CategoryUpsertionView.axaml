@@ -30,7 +30,7 @@
 			Grid.Row="2"
 			Watermark="Category"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding CategorySelector}" Items="{Binding Categories}"
+			ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
 
 			<AutoCompleteBox.ItemTemplate>

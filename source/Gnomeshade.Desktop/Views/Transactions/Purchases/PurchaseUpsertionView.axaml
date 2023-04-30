@@ -20,7 +20,7 @@
 			Watermark="Product"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Products}"
+			ItemsSource="{Binding Products}"
 			ItemSelector="{Binding ProductSelector}"
 			SelectedItem="{Binding Product, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -55,7 +55,7 @@
 			Watermark="Currency"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Currencies}"
+			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding Currency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -79,7 +79,7 @@
 			Watermark="Time" />
 
 		<NumericUpDown Grid.Column="1" Grid.Row="3" Minimum="0" Value="{Binding Order}"/>
-		
+
 		<Button
 			Grid.Column="0" Grid.Row="4"
 			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"

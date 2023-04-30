@@ -18,7 +18,7 @@
 			Watermark="Issuing counterparty"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Counterparties}"
+			ItemsSource="{Binding Counterparties}"
 			ItemSelector="{Binding CounterpartySelector}"
 			SelectedItem="{Binding IssuingCounterparty, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -32,7 +32,7 @@
 			Watermark="Receiving counterparty"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Counterparties}"
+			ItemsSource="{Binding Counterparties}"
 			ItemSelector="{Binding CounterpartySelector}"
 			SelectedItem="{Binding ReceivingCounterparty, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -51,7 +51,7 @@
 			Watermark="Currency"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Items="{Binding Currencies}"
+			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding Currency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>

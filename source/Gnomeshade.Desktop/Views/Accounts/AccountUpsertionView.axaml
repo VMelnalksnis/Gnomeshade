@@ -37,7 +37,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CounterpartySelector}"
-			Items="{Binding Counterparties}"
+			ItemsSource="{Binding Counterparties}"
 			SelectedItem="{Binding Counterparty, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="accounts:Counterparty">
@@ -57,7 +57,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CurrencySelector}"
-			Items="{Binding Currencies}"
+			ItemsSource="{Binding Currencies}"
 			SelectedItem="{Binding PreferredCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="accounts:Currency">
@@ -113,7 +113,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding OwnerSelector}"
-			Items="{Binding Owners}"
+			ItemsSource="{Binding Owners}"
 			SelectedItem="{Binding Owner, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="owners:Owner">
@@ -135,7 +135,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CurrencySelector}"
-			Items="{Binding AddableCurrencies}"
+			ItemsSource="{Binding AddableCurrencies}"
 			SelectedItem="{Binding AddableCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
 				<DataTemplate x:DataType="accounts:Currency">
@@ -153,7 +153,7 @@
 
 		<ListBox
 			Grid.Column="1" Grid.Row="8"
-			Items="{Binding AdditionalCurrencies}"
+			ItemsSource="{Binding AdditionalCurrencies}"
 			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" SelectionMode="Single,Toggle">
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="accounts:Currency">

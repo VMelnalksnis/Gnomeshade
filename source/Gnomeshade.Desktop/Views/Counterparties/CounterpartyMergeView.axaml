@@ -16,7 +16,7 @@
 			Grid.Column="0" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="SourceDataGrid"
-			Items="{Binding SourceDataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding SourceDataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding SourceCounterparty, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -44,7 +44,7 @@
 			Grid.Column="2" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="TargetDataGrid"
-			Items="{Binding TargetDataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding TargetDataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding TargetCounterparty, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">

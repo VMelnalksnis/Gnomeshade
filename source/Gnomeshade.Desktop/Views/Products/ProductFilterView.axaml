@@ -19,7 +19,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Watermark="Unit"
-			Items="{Binding Units}"
+			ItemsSource="{Binding Units}"
 			ItemSelector="{Binding UnitSelector}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
@@ -35,7 +35,7 @@
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Watermark="Category"
-			Items="{Binding Categories}"
+			ItemsSource="{Binding Categories}"
 			ItemSelector="{Binding CategorySelector}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>

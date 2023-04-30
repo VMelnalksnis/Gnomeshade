@@ -63,7 +63,7 @@
 				x:Name="DataGrid"
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
-				Items="{Binding DataGridView, Mode=TwoWay}"
+				ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 				SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
 				AutoGenerateColumns="False" IsReadOnly="False"
 				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -106,7 +106,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -122,7 +122,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -141,7 +141,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -157,7 +157,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -173,7 +173,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -189,7 +189,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />
@@ -208,7 +208,7 @@
 					</DataGridTemplateColumn>
 					<DataGridTemplateColumn>
 						<DataTemplate DataType="transactions:TransactionOverview">
-							<ItemsControl Margin="0 1" Items="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<StackPanel Orientation="Vertical" />

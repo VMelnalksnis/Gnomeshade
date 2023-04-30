@@ -20,7 +20,7 @@
 		<DataGrid
 			x:Name="DataGrid"
 			VerticalAlignment="Stretch"
-			Items="{Binding DataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">

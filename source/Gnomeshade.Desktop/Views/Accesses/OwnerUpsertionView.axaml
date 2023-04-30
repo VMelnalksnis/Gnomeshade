@@ -27,7 +27,7 @@
 			Grid.Row="1"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
-			Items="{Binding Ownerships, Mode=TwoWay}"
+			ItemsSource="{Binding Ownerships, Mode=TwoWay}"
 			SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -65,7 +65,7 @@
 			Grid.Row="2"
 			Watermark="User"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding CounterpartySelector}" Items="{Binding AddableCounterparties}"
+			ItemSelector="{Binding CounterpartySelector}" ItemsSource="{Binding AddableCounterparties}"
 			SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}">
 
 			<AutoCompleteBox.ItemTemplate>
@@ -79,7 +79,7 @@
 			Grid.Row="3"
 			Watermark="Access"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding AccessSelector}" Items="{Binding Accesses}"
+			ItemSelector="{Binding AccessSelector}" ItemsSource="{Binding Accesses}"
 			SelectedItem="{Binding SelectedAccess, Mode=TwoWay}">
 
 			<AutoCompleteBox.ItemTemplate>

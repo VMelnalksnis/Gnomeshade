@@ -16,7 +16,7 @@
 			Grid.Column="0" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
-			Items="{Binding DataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding Selected, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -29,8 +29,8 @@
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="Access" IsReadOnly="True">
-					<DataTemplate x:DataType="a:OwnerRow">
-						<ItemsControl Margin="0 1" Items="{Binding Ownerships, Mode=OneWay}">
+					<DataTemplate DataType="a:OwnerRow">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Ownerships, Mode=OneWay}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<StackPanel Orientation="Vertical" />
@@ -45,8 +45,8 @@
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="User" IsReadOnly="True">
-					<DataTemplate x:DataType="a:OwnerRow">
-						<ItemsControl Margin="0 1" Items="{Binding Ownerships, Mode=OneWay}">
+					<DataTemplate DataType="a:OwnerRow">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Ownerships, Mode=OneWay}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<StackPanel Orientation="Vertical" />

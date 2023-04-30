@@ -16,7 +16,7 @@
 			Grid.Column="0" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
-			Items="{Binding DataGridView, Mode=TwoWay}"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">

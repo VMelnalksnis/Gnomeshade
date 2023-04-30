@@ -24,7 +24,7 @@
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					Watermark="Product"
-					Items="{Binding Aggregates}"
+					ItemsSource="{Binding Aggregates}"
 					ItemSelector="{Binding AggregateSelector}"
 					SelectedItem="{Binding SelectedAggregate, Mode=TwoWay}"
 					IsEnabled="{Binding !IsBusy}">
@@ -46,7 +46,7 @@
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					Watermark="Product"
-					Items="{Binding Calculators}"
+					ItemsSource="{Binding Calculators}"
 					ItemSelector="{Binding CalculatorSelector}"
 					SelectedItem="{Binding SelectedCalculator, Mode=TwoWay}"
 					IsEnabled="{Binding !IsBusy}">
@@ -70,7 +70,7 @@
 						MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 						IsTextCompletionEnabled="True"
 						Watermark="Product"
-						Items="{Binding Products}"
+						ItemsSource="{Binding Products}"
 						ItemSelector="{Binding ProductSelector}"
 						SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
 						IsEnabled="{Binding !IsBusy}">
@@ -87,7 +87,7 @@
 						</Interaction.Behaviors>
 					</AutoCompleteBox>
 
-					<ListBox Items="{Binding DisplayedProducts}" SelectedItem="{Binding SelectedDisplayedProduct, Mode=TwoWay}">
+					<ListBox ItemsSource="{Binding DisplayedProducts}" SelectedItem="{Binding SelectedDisplayedProduct, Mode=TwoWay}">
 						<ListBox.ItemTemplate>
 							<DataTemplate x:DataType="products:Product">
 								<TextBlock Text="{Binding Name}" />
