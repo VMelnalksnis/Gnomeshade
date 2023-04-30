@@ -164,5 +164,5 @@ jobs:
         uses: VMelnalksnis/resharper-inspect-action@v0.2.5
         with:
           solution: Gnomeshade.sln
-          resharper-version: 2022.3.2
+          resharper-version: 2023.1.1
           treat-warnings-as-errors: false # ReSharper CLI still has false positives
