@@ -8,11 +8,10 @@
 	<ItemGroup>
 		<PackageReference Include="Bogus" />
 		<PackageReference Include="FluentAssertions.NodaTime" />
+		<PackageReference Include="HtmlAgilityPack" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-		<PackageReference Include="Testcontainers" />
-		<PackageReference Include="IdentityModel.OidcClient" />
-		<PackageReference Include="HtmlAgilityPack" />
+		<PackageReference Include="Testcontainers.PostgreSql" />
 		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
 	</ItemGroup>
 

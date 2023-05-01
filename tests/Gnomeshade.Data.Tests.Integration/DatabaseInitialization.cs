@@ -5,42 +5,31 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
-
 using Gnomeshade.Data.Entities;
 
 using Microsoft.Extensions.Configuration;
 
 using Npgsql;
 
+using Testcontainers.PostgreSql;
+
 namespace Gnomeshade.Data.Tests.Integration;
 
 [SetUpFixture]
 public class DatabaseInitialization
 {
-	private static readonly PostgreSqlTestcontainer _postgreSqlTestcontainer;
+	private static readonly PostgreSqlContainer _postgreSqlContainer;
 	private static readonly PostgresInitializer _initializer;
 
 	static DatabaseInitialization()
 	{
-		_postgreSqlTestcontainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration("postgres:14")
-			{
-				Database = "gnomeshade-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
-
-		_postgreSqlTestcontainer.StartAsync().GetAwaiter().GetResult();
+		_postgreSqlContainer = new PostgreSqlBuilder().Build();
+		_postgreSqlContainer.StartAsync().GetAwaiter().GetResult();
 
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
-				{ "ConnectionStrings:Gnomeshade", _postgreSqlTestcontainer.ConnectionString },
+				{ "ConnectionStrings:Gnomeshade", _postgreSqlContainer.GetConnectionString() },
 			})
 			.AddEnvironmentVariables()
 			.Build();
@@ -61,5 +50,5 @@ public class DatabaseInitialization
 	}
 
 	[OneTimeTearDown]
-	public static Task DropDatabaseAsync() => _postgreSqlTestcontainer.StopAsync();
+	public static Task DropDatabaseAsync() => _postgreSqlContainer.StopAsync();
 }

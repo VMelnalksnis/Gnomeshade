@@ -23,7 +23,7 @@ internal sealed class SqliteFixture : WebserverFixture
 
 	internal override string Name => "SQLite";
 
-	protected override IEnumerable<ITestcontainersContainer> Containers => Array.Empty<ITestcontainersContainer>();
+	protected override IEnumerable<IContainer> Containers => Array.Empty<IContainer>();
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>

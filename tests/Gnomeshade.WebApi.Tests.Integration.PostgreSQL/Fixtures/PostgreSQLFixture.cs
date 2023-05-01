@@ -4,43 +4,35 @@
 
 using System.Collections.Generic;
 
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 
 using Microsoft.Extensions.Configuration;
+
+using Testcontainers.PostgreSql;
 
 namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 internal sealed class PostgreSQLFixture : WebserverFixture
 {
-	private readonly PostgreSqlTestcontainer _databaseContainer;
-	private readonly ITestcontainersContainer[] _containers;
+	private readonly PostgreSqlContainer _databaseContainer;
+	private readonly IContainer[] _containers;
 
 	internal PostgreSQLFixture(string version)
 	{
 		Name = version;
-		_databaseContainer = new TestcontainersBuilder<PostgreSqlTestcontainer>()
-			.WithDatabase(new PostgreSqlTestcontainerConfiguration($"postgres:{version}")
-			{
-				Database = "gnomeshade-test",
-				Username = "gnomeshade",
-				Password = "foobar",
-			})
-			.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5432))
-			.Build();
 
-		_containers = new ITestcontainersContainer[] { _databaseContainer };
+		_databaseContainer = new PostgreSqlBuilder().WithImage($"postgres:{version}").Build();
+		_containers = new IContainer[] { _databaseContainer };
 	}
 
 	internal override string Name { get; }
 
-	protected override IEnumerable<ITestcontainersContainer> Containers => _containers;
+	protected override IEnumerable<IContainer> Containers => _containers;
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
-			{ "ConnectionStrings:Gnomeshade", _databaseContainer.ConnectionString },
+			{ "ConnectionStrings:Gnomeshade", _databaseContainer.GetConnectionString() },
 			{ "Database:Provider", "PostgreSQL" },
 		})
 		.Build();

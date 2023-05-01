@@ -15,7 +15,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 		<PackageReference Include="NodaTime.Bogus" />
 		<PackageReference Include="Npgsql.NodaTime" />
-		<PackageReference Include="Testcontainers" />
+		<PackageReference Include="Testcontainers.PostgreSql" />
 	</ItemGroup>
 
 	<ItemGroup>

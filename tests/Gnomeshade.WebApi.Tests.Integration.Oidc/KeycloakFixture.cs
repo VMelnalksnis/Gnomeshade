@@ -5,11 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
-using DotNet.Testcontainers.Builders;
 
 using Gnomeshade.WebApi.Client;
 
@@ -29,7 +26,7 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	internal const int Port = 8297;
 	private const string _databasePath = "gnomeshade.db";
 
-	private readonly KeycloakTestcontainer _keycloak;
+	private readonly KeycloakContainer _keycloak;
 	private GnomeshadeWebApplicationFactory _application = null!;
 
 	public KeycloakFixture()
@@ -48,9 +45,7 @@ public sealed class KeycloakFixture : IAsyncDisposable
 			new List<KeycloakClient> { Client },
 			new List<User> { User });
 
-		_keycloak = new TestcontainersBuilder<KeycloakTestcontainer>()
-			.WithKeycloak(new() { Realms = new[] { realmConfiguration } })
-			.Build();
+		_keycloak = new KeycloakBuilder().WithRealm(realmConfiguration).Build();
 	}
 
 	internal Realm Realm { get; private set; } = null!;
@@ -69,7 +64,7 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	{
 		await _keycloak.StartAsync();
 
-		Realm = _keycloak.Realms.Single();
+		Realm = _keycloak.Realm;
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string?>
 			{

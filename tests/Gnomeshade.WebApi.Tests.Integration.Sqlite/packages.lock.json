@@ -57,16 +57,6 @@
         "resolved": "1.11.46",
         "contentHash": "dLMn4EVfJBHWmWK4Uh0XGD76FPLHI0qr2Tm0s1m/xmgiHb1JUb9zB8AzO8HtrkBBlMN6JfCUBYddhqC0hZNR+g=="
       },
-      "IdentityModel.OidcClient": {
-        "type": "Direct",
-        "requested": "[5.2.1, )",
-        "resolved": "5.2.1",
-        "contentHash": "OuPhDNAw/EoJVEmYO6/ChZUBcug4OGoGKTKLUyBCsGhlKegxJk25LYQ0EL7GCBMgkEL+BYNJukNZyaJ+JNaWog==",
-        "dependencies": {
-          "IdentityModel": "5.2.0",
-          "Microsoft.Extensions.Logging": "6.0.0"
-        }
-      },
       "JetBrains.Annotations": {
         "type": "Direct",
         "requested": "[2022.3.1, )",
@@ -130,29 +120,15 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.406"
         }
       },
-      "Testcontainers": {
-        "type": "Direct",
-        "requested": "[2.3.0, )",
-        "resolved": "2.3.0",
-        "contentHash": "7RhiL9QayGN2mg++ZdBAVAo5Xn+ZFsJvj/EUyDiHXglMHmsyD6yUp7ju49MM8OohlHAxPIoGmWgmdlj6I63/+g==",
-        "dependencies": {
-          "Docker.DotNet": "3.125.12",
-          "Docker.DotNet.X509": "3.125.12",
-          "Microsoft.Extensions.Logging.Abstractions": "3.1.31",
-          "Portable.BouncyCastle": "1.9.0",
-          "SharpZipLib": "1.4.1",
-          "System.Text.Json": "4.7.2"
-        }
-      },
       "VMelnalksnis.Testcontainers.Keycloak": {
         "type": "Direct",
-        "requested": "[0.1.4, )",
-        "resolved": "0.1.4",
-        "contentHash": "gKC0PLp0BtF/8l8evvv7fTY91+bNHy3Lrc0SGuwOj8Etvme5BlgqZKPL1vt0VpY6g7qKobVX0U21EfaXcImFKg==",
+        "requested": "[0.2.0, )",
+        "resolved": "0.2.0",
+        "contentHash": "fe/IpfbtXTfBGQ/8CeeZwY1LVJLBZeunIbvPhFre7tddHbB2nRIsnf1ouiLONs3nJmuiMgGGfeNYmFaRQsWuGg==",
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0",
-          "System.Text.Json": "7.0.0",
-          "Testcontainers": "2.2.0"
+          "System.Text.Json": "7.0.2",
+          "Testcontainers": "3.1.0"
         }
       },
       "Avalonia.Angle.Windows.Natives": {
@@ -217,8 +193,8 @@
       },
       "Docker.DotNet": {
         "type": "Transitive",
-        "resolved": "3.125.12",
-        "contentHash": "lkDh6PUV8SIM1swPCkd3f+8zGB7Z9Am3C2XBLqAjyIIp5jQBCsDFrtbtA1QiVdFMWdYcJscrX/gzzG50kRj0jQ==",
+        "resolved": "3.125.13",
+        "contentHash": "p1DrW2Sw4ND2jFlIvpHB8/pY5o5HIkDalbGAI8tUvqjJR6n0/ubos7kDGWI+Xbx9+L3US3SUR8r59Zwq+ZxBvw==",
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.Buffers": "4.5.1",
@@ -227,10 +203,10 @@
       },
       "Docker.DotNet.X509": {
         "type": "Transitive",
-        "resolved": "3.125.12",
-        "contentHash": "CwxE5BUJNdKvhLD2NZuxzGd2y6o+grkIJQr3JavEUILTlJd0tZMVDfge63wWTuzsbq4sTEhE4bZBLEgG/0vzgw==",
+        "resolved": "3.125.13",
+        "contentHash": "+rhZU3AK4cgiRJQwramWZ2ud/tfGDZ5L7sQ6m1AtvFTUi7gEafHahRwLmdeGOov3NgW8aKD+TFRi9Ht97B+jBA==",
         "dependencies": {
-          "Docker.DotNet": "3.125.12"
+          "Docker.DotNet": "3.125.13"
         }
       },
       "Google.Protobuf": {
@@ -942,8 +918,8 @@
       },
       "SharpZipLib": {
         "type": "Transitive",
-        "resolved": "1.4.1",
-        "contentHash": "X8QiHZS7+bbZy85LfpKCAL9oh0yZkiiecWhQL5F1Yn1AKFDYiOzR3UG5vI+9bDYGRGyseVdMW5sTH8mv8LXF1g=="
+        "resolved": "1.4.2",
+        "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
       },
       "SkiaSharp": {
         "type": "Transitive",
@@ -1010,6 +986,19 @@
         "dependencies": {
           "SQLitePCLRaw.core": "2.1.4"
         }
+      },
+      "SSH.NET": {
+        "type": "Transitive",
+        "resolved": "2020.0.2",
+        "contentHash": "G0dNlTBAM00KZXv1wWVwgg26d9/METcM6qWBpNQwllzQmmbu+Zu+FS1L1X4fFgGdPu3e8k9mmTBu6SwtQ0614g==",
+        "dependencies": {
+          "SshNet.Security.Cryptography": "[1.3.0]"
+        }
+      },
+      "SshNet.Security.Cryptography": {
+        "type": "Transitive",
+        "resolved": "1.3.0",
+        "contentHash": "5pBIXRjcSO/amY8WztpmNOhaaCNHY/B6CcYDI7FSTgqSyo/ZUojlLiKcsl+YGbxQuLX439qIkMfP0PHqxqJi/Q=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",
@@ -1442,8 +1431,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "DaGSsVqKsn/ia6RG8frjwmJonfos0srquhw09TlT8KRw5I43E+4gs+/bZj4K0vShJ5H9imCuXupb4RmS+dBy3w==",
+        "resolved": "7.0.2",
+        "contentHash": "/LZf/JrGyilojqwpaywb+sSz8Tew7ij4K/Sk+UW8AKfAK7KRhR6mKpKtTm06cYA7bCpGTWfYksIW+mVsdxPegQ==",
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0"
         }
@@ -1476,6 +1465,21 @@
         "type": "Transitive",
         "resolved": "4.5.0",
         "contentHash": "okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ=="
+      },
+      "Testcontainers": {
+        "type": "Transitive",
+        "resolved": "3.1.0",
+        "contentHash": "LHyBFUdqdNaGcCsS3ylXlSMfg8V6Pv9uewbTuztcNdidLH/XAdrBH2eG5Ycvq5O/f3d4mqsCBjOh3YmbTG5OTw==",
+        "dependencies": {
+          "Docker.DotNet": "3.125.13",
+          "Docker.DotNet.X509": "3.125.13",
+          "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
+          "Portable.BouncyCastle": "1.9.0",
+          "SSH.NET": "2020.0.2",
+          "SharpZipLib": "1.4.2",
+          "System.Text.Json": "6.0.7"
+        }
       },
       "Tmds.DBus": {
         "type": "Transitive",
@@ -1723,6 +1727,16 @@
         "requested": "[2.0.2, )",
         "resolved": "2.0.2",
         "contentHash": "sBKqWxw3g//peYxDZ8JipRlyPbIyBtgzqBVA5GqwHVeqtIrw75maGXAllztf+1aJhchD+drcQIgf2mFho8ZV8A=="
+      },
+      "IdentityModel.OidcClient": {
+        "type": "CentralTransitive",
+        "requested": "[5.2.1, )",
+        "resolved": "5.2.1",
+        "contentHash": "OuPhDNAw/EoJVEmYO6/ChZUBcug4OGoGKTKLUyBCsGhlKegxJk25LYQ0EL7GCBMgkEL+BYNJukNZyaJ+JNaWog==",
+        "dependencies": {
+          "IdentityModel": "5.2.0",
+          "Microsoft.Extensions.Logging": "6.0.0"
+        }
       },
       "LiveChartsCore.SkiaSharpView.Avalonia": {
         "type": "CentralTransitive",

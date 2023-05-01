@@ -31,7 +31,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	internal abstract string Name { get; }
 
-	protected abstract IEnumerable<ITestcontainersContainer> Containers { get; }
+	protected abstract IEnumerable<IContainer> Containers { get; }
 
 	public async ValueTask DisposeAsync()
 	{
