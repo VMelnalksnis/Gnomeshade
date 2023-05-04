@@ -3,6 +3,7 @@ using System;
 using Gnomeshade.Data.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Gnomeshade.Data.PostgreSQL.Migrations
 {
     [DbContext(typeof(PostgreSQLIdentityContext))]
-    partial class PostgreSQLIdentityContextModelSnapshot : ModelSnapshot
+    [Migration("20230504074751_RemoveSchema")]
+    partial class RemoveSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
