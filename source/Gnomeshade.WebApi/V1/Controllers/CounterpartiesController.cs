@@ -19,7 +19,6 @@ using Gnomeshade.WebApi.OpenApi;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -32,15 +31,13 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CounterpartyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public CounterpartiesController(
 		CounterpartyRepository repository,
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<CounterpartiesController> logger,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 	}
 

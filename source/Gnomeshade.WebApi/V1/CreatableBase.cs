@@ -20,7 +20,6 @@ using Gnomeshade.WebApi.OpenApi;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -40,16 +39,14 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <summary>Initializes a new instance of the <see cref="CreatableBase{TRepository, TEntity, TModel, TCreation}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <typeparamref name="TEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	protected CreatableBase(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<CreatableBase<TRepository, TEntity, TModel, TCreation>> logger,
 		TRepository repository,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper)
 	{
 		Repository = repository;
 		DbConnection = dbConnection;

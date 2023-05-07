@@ -16,7 +16,6 @@ using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -31,13 +30,11 @@ public sealed class CurrenciesController : FinanceControllerBase<CurrencyEntity,
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CurrencyEntity"/>.</param>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	public CurrenciesController(
 		CurrencyRepository repository,
 		ApplicationUserContext applicationUserContext,
-		Mapper mapper,
-		ILogger<CurrenciesController> logger)
-		: base(applicationUserContext, mapper, logger)
+		Mapper mapper)
+		: base(applicationUserContext, mapper)
 	{
 		_repository = repository;
 	}

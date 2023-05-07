@@ -20,7 +20,6 @@ using Gnomeshade.WebApi.OpenApi;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -34,18 +33,16 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	/// <summary>Initializes a new instance of the <see cref="ProductsController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="purchaseRepository">The repository for performing CRUD operations on <see cref="PurchaseEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public ProductsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<ProductsController> logger,
 		ProductRepository repository,
 		PurchaseRepository purchaseRepository,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 		_purchaseRepository = purchaseRepository;
 	}

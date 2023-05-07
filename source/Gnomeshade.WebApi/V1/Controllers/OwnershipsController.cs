@@ -17,7 +17,6 @@ using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -31,14 +30,12 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 	/// <summary>Initializes a new instance of the <see cref="OwnershipsController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnershipEntity"/>.</param>
 	public OwnershipsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<OwnershipsController> logger,
 		OwnershipRepository repository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper)
 	{
 		_repository = repository;
 	}
@@ -76,8 +73,8 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 	[HttpDelete("{id:guid}")]
 	public async Task<IActionResult> Delete(Guid id)
 	{
-		var deletedCount = await _repository.DeleteAsync(id);
-		return DeletedEntity<OwnershipEntity>(id, deletedCount);
+		await _repository.DeleteAsync(id);
+		return NoContent();
 	}
 
 	private async Task<ActionResult> CreateNewOwnershipAsync(OwnershipCreation model, Guid id)

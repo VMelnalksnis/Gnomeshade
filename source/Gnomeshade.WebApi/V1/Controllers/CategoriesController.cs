@@ -18,7 +18,6 @@ using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -32,18 +31,16 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	/// <summary>Initializes a new instance of the <see cref="CategoriesController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CategoryEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	/// <param name="productRepository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	public CategoriesController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<CategoriesController> logger,
 		CategoryRepository repository,
 		DbConnection dbConnection,
 		ProductRepository productRepository)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 		_productRepository = productRepository;
 	}

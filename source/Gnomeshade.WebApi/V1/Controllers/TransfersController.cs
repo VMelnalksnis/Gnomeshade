@@ -17,7 +17,6 @@ using Gnomeshade.WebApi.Models.Transactions;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -29,18 +28,16 @@ public sealed class TransfersController : TransactionItemController<TransferRepo
 	/// <summary>Initializes a new instance of the <see cref="TransfersController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransferEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	/// <param name="transactionRepository">Transaction repository for validation of transactions.</param>
 	public TransfersController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<TransfersController> logger,
 		TransferRepository repository,
 		DbConnection dbConnection,
 		TransactionRepository transactionRepository)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection, transactionRepository)
+		: base(applicationUserContext, mapper, repository, dbConnection, transactionRepository)
 	{
 	}
 

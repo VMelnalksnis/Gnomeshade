@@ -17,7 +17,6 @@ using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 using static Microsoft.AspNetCore.Http.StatusCodes;
 
@@ -31,14 +30,12 @@ public sealed class OwnersController : FinanceControllerBase<OwnerEntity, Owner>
 	/// <summary>Initializes a new instance of the <see cref="OwnersController"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnerEntity"/>.</param>
 	public OwnersController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<OwnersController> logger,
 		OwnerRepository repository)
-		: base(applicationUserContext, mapper, logger)
+		: base(applicationUserContext, mapper)
 	{
 		_repository = repository;
 	}
@@ -70,7 +67,7 @@ public sealed class OwnersController : FinanceControllerBase<OwnerEntity, Owner>
 	[HttpDelete("{id:guid}")]
 	public async Task<ActionResult> Delete(Guid id)
 	{
-		var deletedCount = await _repository.DeleteAsync(id);
-		return DeletedEntity<OwnerEntity>(id, deletedCount);
+		await _repository.DeleteAsync(id);
+		return NoContent();
 	}
 }

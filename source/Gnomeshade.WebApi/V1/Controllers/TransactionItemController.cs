@@ -18,7 +18,6 @@ using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.WebApi.V1.Controllers;
 
@@ -39,18 +38,16 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 	/// <summary>Initializes a new instance of the <see cref="TransactionItemController{TRepository, TEntity, TModel, TCreation}"/> class.</summary>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <typeparamref name="TEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	/// <param name="transactionRepository">Transaction repository for checking conflicts.</param>
 	protected TransactionItemController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		ILogger<TransactionItemController<TRepository, TEntity, TModel, TItemCreation>> logger,
 		TRepository repository,
 		DbConnection dbConnection,
 		TransactionRepository transactionRepository)
-		: base(applicationUserContext, mapper, logger, repository, dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 		_transactionRepository = transactionRepository;
 	}
