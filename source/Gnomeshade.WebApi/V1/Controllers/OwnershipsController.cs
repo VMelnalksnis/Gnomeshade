@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>Resource access management.</summary>
-public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity, Ownership>
+public sealed class OwnershipsController : CreatableBase<OwnershipRepository, OwnershipEntity, Ownership, OwnershipCreation>
 {
 	private readonly OwnershipRepository _repository;
 
@@ -31,65 +31,51 @@ public sealed class OwnershipsController : FinanceControllerBase<OwnershipEntity
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnershipEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public OwnershipsController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		OwnershipRepository repository)
-		: base(applicationUserContext, mapper)
+		OwnershipRepository repository,
+		DbConnection dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IOwnerClient.GetOwnershipsAsync"/>
 	/// <response code="200">Successfully got all ownerships.</response>
-	[HttpGet]
 	[ProducesResponseType(typeof(List<Ownership>), Status200OK)]
-	public async Task<List<Ownership>> Get(CancellationToken cancellationToken)
-	{
-		var ownerships = await _repository.GetAllAsync(ApplicationUser.Id, cancellationToken);
-		return ownerships.Select(MapToModel).ToList();
-	}
+	public override Task<List<Ownership>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IOwnerClient.PutOwnershipAsync"/>
-	[HttpPut("{id:guid}")]
-	public async Task<IActionResult> Put(Guid id, OwnershipCreation ownership)
-	{
-		var existingOwnership = await _repository.FindByIdAsync(id, ApplicationUser.Id);
-		if (existingOwnership is not null)
-		{
-			return await UpdateExistingOwnershipAsync(ownership, existingOwnership);
-		}
-
-		var conflictingOwnership = await _repository.FindByIdAsync(id);
-		if (conflictingOwnership is null)
-		{
-			return await CreateNewOwnershipAsync(ownership, id);
-		}
-
-		return StatusCode(Status403Forbidden);
-	}
+	/// <response code="201">A new ownership was created.</response>
+	/// <response code="204">An existing ownership was replaced.</response>
+	public override Task<ActionResult> Put(Guid id, OwnershipCreation ownership) =>
+		base.Put(id, ownership);
 
 	/// <inheritdoc cref="IOwnerClient.DeleteOwnershipAsync"/>
-	[HttpDelete("{id:guid}")]
-	public async Task<IActionResult> Delete(Guid id)
+	/// <response code="204">The ownership was deleted successfully.</response>
+	// ReSharper disable once RedundantOverriddenMember
+	public override Task<StatusCodeResult> Delete(Guid id) =>
+		base.Delete(id);
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		OwnershipCreation creation,
+		UserEntity user)
 	{
-		await _repository.DeleteAsync(id);
+		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
+		await _repository.UpdateAsync(ownership);
 		return NoContent();
 	}
 
-	private async Task<ActionResult> CreateNewOwnershipAsync(OwnershipCreation model, Guid id)
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, OwnershipCreation creation, UserEntity user)
 	{
-		var ownership = Mapper.Map<OwnershipEntity>(model) with { Id = id };
+		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
 		await _repository.AddAsync(ownership);
 		return CreatedAtAction(nameof(Get), new { id }, id);
-	}
-
-	private async Task<ActionResult> UpdateExistingOwnershipAsync(
-		OwnershipCreation model,
-		OwnershipEntity existingOwnership)
-	{
-		var ownership = Mapper.Map<OwnershipEntity>(model) with { Id = existingOwnership.Id };
-		_ = await _repository.UpdateAsync(ownership);
-		return NoContent();
 	}
 }

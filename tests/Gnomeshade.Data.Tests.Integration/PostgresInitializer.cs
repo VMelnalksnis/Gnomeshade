@@ -4,13 +4,16 @@
 
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Entities;
+using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Repositories;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,7 +32,13 @@ public class PostgresInitializer
 	public PostgresInitializer(IConfiguration configuration)
 	{
 		var services = new ServiceCollection();
-		services.AddLogging().AddPostgreSQL(configuration).AddRepositories();
+		services
+			.AddSingleton(configuration)
+			.AddLogging()
+			.AddPostgreSQL(configuration)
+			.AddRepositories()
+			.AddIdentity<ApplicationUser, ApplicationRole>()
+			.AddIdentityStores();
 		_serviceProvider = services.BuildServiceProvider();
 	}
 
@@ -50,35 +59,17 @@ public class PostgresInitializer
 	/// <returns>A valid user for testing.</returns>
 	public async Task<UserEntity> SetupDatabaseAsync()
 	{
-		_serviceProvider.GetRequiredService<IDatabaseMigrator>().Migrate();
+		using var scope = _serviceProvider.CreateScope();
+		var provider = scope.ServiceProvider;
 
-		var sqlConnection = _serviceProvider.GetRequiredService<NpgsqlConnection>();
-		await using var transaction = await sqlConnection.OpenAndBeginTransaction();
+		await provider.GetRequiredService<IdentityContext>().Database.MigrateAsync();
+		provider.GetRequiredService<IDatabaseMigrator>().Migrate();
 
+		var userUnitOfWork = provider.GetRequiredService<UserUnitOfWork>();
 		var userId = Guid.NewGuid();
-		var user = new UserEntity { Id = userId, ModifiedByUserId = userId };
+		await userUnitOfWork.CreateUserAsync(new() { Id = userId, FullName = "Test user" });
 
-		var userRepository = _serviceProvider.GetRequiredService<UserRepository>();
-		var ownerRepository = _serviceProvider.GetRequiredService<OwnerRepository>();
-		var ownershipRepository = _serviceProvider.GetRequiredService<OwnershipRepository>();
-
-		await userRepository.AddWithIdAsync(user, transaction);
-		await ownerRepository.AddAsync(user.Id, transaction);
-		await ownershipRepository.AddDefaultAsync(user.Id, transaction);
-
-		var counterparty = new CounterpartyEntity
-		{
-			OwnerId = user.Id,
-			CreatedByUserId = user.Id,
-			ModifiedByUserId = user.Id,
-			Name = "Test counterparty",
-		};
-
-		var counterpartyId = await _serviceProvider.GetRequiredService<CounterpartyRepository>().AddAsync(counterparty, transaction);
-		user.CounterpartyId = counterpartyId;
-		await userRepository.UpdateAsync(user, transaction);
-		await transaction.CommitAsync();
-
-		return user;
+		var userRepository = provider.GetRequiredService<UserRepository>();
+		return (await userRepository.Get()).Single(user => user.Id == userId);
 	}
 }

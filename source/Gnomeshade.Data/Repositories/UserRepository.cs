@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +36,7 @@ public sealed class UserRepository
 	/// <param name="entity">The values to insert.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created user.</returns>
-	public Task<Guid> AddWithIdAsync(UserEntity entity, IDbTransaction dbTransaction)
+	public Task<Guid> AddWithIdAsync(UserEntity entity, DbTransaction dbTransaction)
 	{
 		_logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(Queries.User.Insert, entity, dbTransaction);
@@ -51,7 +50,7 @@ public sealed class UserRepository
 	public Task<UserEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		_logger.FindId(id);
-		var commandDefinition = new CommandDefinition(Queries.User.Select, new { id }, cancellationToken: cancellationToken);
+		var commandDefinition = new CommandDefinition($"{Queries.User.Select} WHERE id = @id LIMIT 2;", new { id }, cancellationToken: cancellationToken);
 		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 	}
 
@@ -59,7 +58,7 @@ public sealed class UserRepository
 	/// <param name="user">The user to update with the new information.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task<int> UpdateAsync(UserEntity user, IDbTransaction dbTransaction)
+	public Task<int> UpdateAsync(UserEntity user, DbTransaction dbTransaction)
 	{
 		_logger.UpdatingEntityWithTransaction();
 		var command = new CommandDefinition(Queries.User.Update, user, dbTransaction);
@@ -69,9 +68,7 @@ public sealed class UserRepository
 	public Task<IEnumerable<UserEntity>> Get(CancellationToken cancellationToken = default)
 	{
 		_logger.GetAll();
-		var command = new CommandDefinition(
-			"SELECT id, created_at CreatedAt, counterparty_id CounterpartyId FROM users;",
-			cancellationToken: cancellationToken);
+		var command = new CommandDefinition(Queries.User.Select, cancellationToken: cancellationToken);
 		return _dbConnection.QueryAsync<UserEntity>(command);
 	}
 }

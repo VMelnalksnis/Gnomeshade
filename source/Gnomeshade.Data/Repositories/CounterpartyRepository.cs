@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -26,6 +25,9 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 		: base(logger, dbConnection)
 	{
 	}
+
+	/// <inheritdoc />
+	protected override string AccessSql => $"(({base.AccessSql}) OR \"AspNetUsers\".\"Id\" = c.id)";
 
 	/// <inheritdoc />
 	protected override string DeleteSql => Queries.Counterparty.Delete;
@@ -54,7 +56,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <param name="ownerId">The id of the owner of the counterparties.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, IDbTransaction dbTransaction)
+	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.MergeCounterparties(sourceId, targetId);
 		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);

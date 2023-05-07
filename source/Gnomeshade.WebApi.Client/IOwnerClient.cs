@@ -26,8 +26,9 @@ public interface IOwnerClient
 
 	/// <summary>Creates a new owner or replaces an existing one, if one exists with the specified id.</summary>
 	/// <param name="id">The id of the owner.</param>
+	/// <param name="owner">The owner to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task PutOwnerAsync(Guid id);
+	Task PutOwnerAsync(Guid id, OwnerCreation owner);
 
 	/// <summary>Deletes the specified owner.</summary>
 	/// <param name="id">The id of the owner to delete.</param>
@@ -49,4 +50,9 @@ public interface IOwnerClient
 	/// <param name="id">The id of the ownership to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task DeleteOwnershipAsync(Guid id);
+
+	/// <summary>Gets all users.</summary>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>A collection of all users.</returns>
+	Task<List<User>> GetUsersAsync(CancellationToken cancellationToken = default);
 }

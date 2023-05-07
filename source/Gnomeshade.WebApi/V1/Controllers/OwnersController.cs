@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +23,7 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on <see cref="Owner"/>.</summary>
-public sealed class OwnersController : FinanceControllerBase<OwnerEntity, Owner>
+public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntity, Owner, OwnerCreation>
 {
 	private readonly OwnerRepository _repository;
 
@@ -31,43 +31,53 @@ public sealed class OwnersController : FinanceControllerBase<OwnerEntity, Owner>
 	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnerEntity"/>.</param>
+	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public OwnersController(
 		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
-		OwnerRepository repository)
-		: base(applicationUserContext, mapper)
+		OwnerRepository repository,
+		DbConnection dbConnection)
+		: base(applicationUserContext, mapper, repository, dbConnection)
 	{
 		_repository = repository;
 	}
 
 	/// <inheritdoc cref="IOwnerClient.GetOwnersAsync"/>
-	[HttpGet]
+	/// <response code="200">Successfully got the owners.</response>
 	[ProducesResponseType(typeof(List<Owner>), Status200OK)]
-	public async Task<List<Owner>> Get(CancellationToken cancellationToken)
-	{
-		var owners = await _repository.GetAllAsync(cancellationToken);
-		return owners.Select(MapToModel).ToList();
-	}
+	public override Task<List<Owner>> Get(CancellationToken cancellationToken) =>
+		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IOwnerClient.PutOwnerAsync"/>
-	[HttpPut("{id:guid}")]
-	public async Task<ActionResult> Put(Guid id)
-	{
-		var existingOwner = (await _repository.GetAllAsync()).SingleOrDefault(owner => owner.Id == id);
-		if (existingOwner is not null)
-		{
-			return NoContent();
-		}
-
-		await _repository.AddAsync(id);
-		return CreatedAtAction(nameof(Get), new { id }, id);
-	}
+	/// <response code="201">A new owner was created.</response>
+	/// <response code="204">An existing owner was replaced.</response>
+	/// <response code="409">An owner with the specified name already exists.</response>
+	public override Task<ActionResult> Put(Guid id, OwnerCreation owner) =>
+		base.Put(id, owner);
 
 	/// <inheritdoc cref="IOwnerClient.DeleteOwnerAsync"/>
-	[HttpDelete("{id:guid}")]
-	public async Task<ActionResult> Delete(Guid id)
+	/// <response code="204">The owner was deleted successfully.</response>
+	// ReSharper disable once RedundantOverriddenMember
+	public override Task<StatusCodeResult> Delete(Guid id) =>
+		base.Delete(id);
+
+	/// <inheritdoc />
+	protected override Task<ActionResult> UpdateExistingAsync(Guid id, OwnerCreation creation, UserEntity user)
 	{
-		await _repository.DeleteAsync(id);
-		return NoContent();
+		// todo
+		return Task.FromResult<ActionResult>(NoContent());
+	}
+
+	/// <inheritdoc />
+	protected override async Task<ActionResult> CreateNewAsync(Guid id, OwnerCreation creation, UserEntity user)
+	{
+		var owner = Mapper.Map<OwnerEntity>(creation) with
+		{
+			Id = id,
+			CreatedByUserId = ApplicationUser.Id,
+		};
+
+		await _repository.AddAsync(owner);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

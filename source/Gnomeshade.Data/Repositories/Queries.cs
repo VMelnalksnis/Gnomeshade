@@ -69,6 +69,13 @@ internal static class Queries
 		internal static string Select { get; } = Read($"Queries.{nameof(Currency)}.Select.sql");
 	}
 
+	internal static class Owner
+	{
+		internal static string Insert { get; } = Read($"Queries.{nameof(Owner)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Owner)}.Select.sql");
+	}
+
 	internal static class Ownership
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Ownership)}.Delete.sql");

@@ -52,7 +52,7 @@ public sealed class UserUnitOfWork
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		_ = await _userRepository.AddWithIdAsync(user, dbTransaction);
-		_ = await _ownerRepository.AddAsync(userId, dbTransaction);
+		await _ownerRepository.AddDefaultAsync(userId, dbTransaction);
 		await _ownershipRepository.AddDefaultAsync(userId, dbTransaction);
 		var counterparty = new CounterpartyEntity
 		{

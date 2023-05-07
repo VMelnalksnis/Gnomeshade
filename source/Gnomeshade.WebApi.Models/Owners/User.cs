@@ -1,4 +1,4 @@
-﻿// Copyright 2021 Valters Melnalksnis
+// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
@@ -8,13 +8,10 @@ using JetBrains.Annotations;
 
 namespace Gnomeshade.WebApi.Models.Owners;
 
-/// <summary>A group of resources.</summary>
+/// <summary>An application user.</summary>
 [PublicAPI]
-public sealed record Owner
+public sealed record User
 {
-	/// <summary>The id of the owner.</summary>
+	/// <summary>The id of the user.</summary>
 	public Guid Id { get; set; }
-
-	/// <summary>The name of the owner.</summary>
-	public string Name { get; set; } = null!;
 }

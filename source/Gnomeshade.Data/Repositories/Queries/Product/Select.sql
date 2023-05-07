@@ -8,7 +8,7 @@
 	   p.normalized_name     NormalizedName,
 	   p.deleted_at          DeletedAt,
 	   p.deleted_by_user_id  DeletedByUserId,
-	   p.sku                 Sku,
+	   p.sku  AS             Sku,
 	   p.description,
 	   p.unit_id             UnitId,
 	   p.category_id         CategoryId

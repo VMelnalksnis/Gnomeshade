@@ -32,6 +32,7 @@
 		<EmbeddedResource Include="Migrations\00000009_refunded_by.sql" />
 		<EmbeddedResource Include="Migrations\00000010_bank_reference.sql" />
 		<EmbeddedResource Include="Migrations\00000029_transfer_dates.sql" />
+		<EmbeddedResource Include="Migrations\00000030_ownership_name.sql" />
 	</ItemGroup>
 
 </Project>

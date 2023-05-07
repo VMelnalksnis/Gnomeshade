@@ -52,8 +52,11 @@ public sealed class OwnershipsControllerTests : WebserverTests
 		var ownershipId = Guid.NewGuid();
 
 		await client.PutOwnershipAsync(ownershipId, ownership);
-		await client.DeleteOwnershipAsync(ownershipId);
 
+		var ownerships = await client.GetOwnershipsAsync();
+		ownerships.Should().HaveCount(2);
+
+		await client.DeleteOwnershipAsync(ownershipId);
 		(await client.GetOwnershipsAsync()).Should().NotContain(o => o.Id == ownershipId);
 	}
 }

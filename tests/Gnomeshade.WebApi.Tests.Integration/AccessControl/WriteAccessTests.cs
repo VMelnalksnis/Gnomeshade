@@ -57,7 +57,10 @@ public sealed class WriteAccessTests : WebserverTests
 	}
 
 	[OneTimeTearDown]
-	public Task OneTimeTearDown() => _client.DeleteOwnershipAsync(_writeOwnershipId);
+	public async Task OneTimeTearDown()
+	{
+		await _client.DeleteOwnershipAsync(_writeOwnershipId);
+	}
 
 	[Test]
 	public async Task Counterparties()

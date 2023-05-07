@@ -24,10 +24,6 @@ namespace Gnomeshade.Data.Repositories;
 public abstract class Repository<TEntity>
 	where TEntity : class, IEntity
 {
-	internal const string AccessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
-	internal const string WriteAccessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')";
-	internal const string DeleteAccessSql = "ownerships.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')";
-
 	/// <summary>Initializes a new instance of the <see cref="Repository{TEntity}"/> class with a database connection.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
@@ -41,6 +37,12 @@ public abstract class Repository<TEntity>
 
 	/// <summary>Gets the database connection for executing queries.</summary>
 	protected DbConnection DbConnection { get; }
+
+	protected virtual string AccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
+
+	protected virtual string WriteAccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')";
+
+	protected virtual string DeleteAccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')";
 
 	/// <summary>Gets the SQL query for deleting entities.</summary>
 	protected abstract string DeleteSql { get; }

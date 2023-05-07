@@ -28,14 +28,23 @@ public sealed class OwnerRepositoryTests
 	public async Task AddAsync_ShouldGenerateGuid()
 	{
 		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
-		var id = await _ownerRepository.AddAsync(Guid.NewGuid(), dbTransaction);
-		id.Should().NotBe(Guid.Empty);
+
+		await _ownerRepository.AddAsync(
+			new()
+			{
+				Id = Guid.NewGuid(),
+				Name = Guid.NewGuid().ToString(),
+				CreatedByUserId = DatabaseInitialization.TestUser.Id,
+			},
+			dbTransaction);
+
+		await dbTransaction.CommitAsync();
 	}
 
 	[Test]
 	public async Task GetAllAsync()
 	{
-		var owners = await _ownerRepository.GetAllAsync();
+		var owners = await _ownerRepository.GetAllAsync(DatabaseInitialization.TestUser.Id);
 		owners.Should().OnlyHaveUniqueItems();
 	}
 }

@@ -34,7 +34,7 @@ internal sealed class OwnerTestFixtureSource : IEnumerable
 						var ownerAccess = (await client.GetAccessesAsync()).Single(access => access.Name == "Owner");
 						var ownerId = Guid.NewGuid();
 
-						await client.PutOwnerAsync(ownerId);
+						await client.PutOwnerAsync(ownerId, new() { Name = "Test owner" });
 						var ownership = new OwnershipCreation
 						{
 							AccessId = ownerAccess.Id,

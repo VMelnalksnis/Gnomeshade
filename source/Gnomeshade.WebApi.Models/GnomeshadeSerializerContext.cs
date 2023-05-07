@@ -39,6 +39,7 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(List<AccountReportResult>))]
 [JsonSerializable(typeof(List<Access>))]
 [JsonSerializable(typeof(List<Owner>))]
+[JsonSerializable(typeof(OwnerCreation))]
 [JsonSerializable(typeof(List<Ownership>))]
 [JsonSerializable(typeof(OwnershipCreation))]
 [JsonSerializable(typeof(List<Category>))]
@@ -50,7 +51,7 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(Login))]
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(RegistrationModel))]
-[JsonSerializable(typeof(UserModel))]
+[JsonSerializable(typeof(List<User>))]
 internal sealed partial class GnomeshadeSerializerContext : JsonSerializerContext
 {
 }

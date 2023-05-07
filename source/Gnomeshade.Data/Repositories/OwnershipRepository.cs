@@ -4,16 +4,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
@@ -21,103 +18,47 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="OwnershipEntity"/>.</summary>
-public sealed class OwnershipRepository
+public sealed class OwnershipRepository : Repository<OwnershipEntity>
 {
-	private readonly ILogger<OwnershipRepository> _logger;
-	private readonly DbConnection _dbConnection;
-
 	/// <summary>Initializes a new instance of the <see cref="OwnershipRepository"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public OwnershipRepository(ILogger<OwnershipRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
-		_logger = logger;
-		_dbConnection = dbConnection;
 	}
 
-	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to to search by.</param>
-	/// <param name="userId">The id of the owner of the entity.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public async Task<OwnershipEntity?> FindByIdAsync(
-		Guid id,
-		Guid userId,
-		CancellationToken cancellationToken = default)
-	{
-		_logger.FindId(id);
-		var sql = $"{Queries.Ownership.Select} WHERE id = @id AND user_id = @userId LIMIT 2;";
-		var command = new CommandDefinition(sql, new { id, userId }, cancellationToken: cancellationToken);
-		var entities = await _dbConnection.QueryAsync<OwnershipEntity>(command);
-		return entities.SingleOrDefault();
-	}
+	/// <inheritdoc />
+	protected override string DeleteSql => Queries.Ownership.Delete;
 
-	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to to search by.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public async Task<OwnershipEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-	{
-		_logger.FindId(id);
-		var sql = $"{Queries.Ownership.Select} WHERE id = @id LIMIT 2;";
-		var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-		var entities = await _dbConnection.QueryAsync<OwnershipEntity>(command);
-		return entities.SingleOrDefault();
-	}
+	/// <inheritdoc />
+	protected override string InsertSql => Queries.Ownership.Insert;
 
-	/// <summary>
-	/// Adds the default <see cref="OwnershipEntity"/>, where the <see cref="Entity.Id"/>,
-	/// <see cref="OwnershipEntity.OwnerId"/> and <see cref="OwnershipEntity.UserId"/> is the id of the user.
-	/// </summary>
-	/// <param name="id">Id of the user.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The id of the created ownership.</returns>
-	public async Task AddDefaultAsync(Guid id, IDbTransaction dbTransaction)
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Ownership.Select;
+
+	/// <inheritdoc />
+	protected override string UpdateSql => Queries.Ownership.Update;
+
+	/// <inheritdoc />
+	protected override string FindSql => "WHERE o.id = @id";
+
+	/// <inheritdoc />
+	protected override string NotDeleted => "1 = 1";
+
+	public async Task AddDefaultAsync(Guid id, DbTransaction dbTransaction)
 	{
-		_logger.AddingEntityWithTransaction();
-		const string text = "SELECT id AS Id FROM access WHERE normalized_name = 'OWNER'";
+		Logger.AddingEntityWithTransaction();
+		const string text = "SELECT id AS Id FROM access WHERE normalized_name = 'OWNER';";
 		var accessCommand = new CommandDefinition(text, null, dbTransaction);
-		var accessId = await _dbConnection.QuerySingleAsync<Guid>(accessCommand);
+		var accessId = await DbConnection.QuerySingleAsync<Guid>(accessCommand);
 
 		await AddAsync(new() { Id = id, OwnerId = id, UserId = id, AccessId = accessId });
 	}
 
-	/// <summary>Adds a new ownership.</summary>
-	/// <param name="ownership">The ownership to add.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public Task AddAsync(OwnershipEntity ownership)
+	protected override async Task<IEnumerable<OwnershipEntity>> GetEntitiesAsync(CommandDefinition command)
 	{
-		_logger.AddingEntity();
-		return _dbConnection.ExecuteAsync(Queries.Ownership.Insert, ownership);
-	}
-
-	/// <summary>Updates an existing ownership with the specified id.</summary>
-	/// <param name="ownership">The ownership to update.</param>
-	/// <returns>The number of affected rows.</returns>
-	public Task<int> UpdateAsync(OwnershipEntity ownership)
-	{
-		_logger.UpdatingEntity();
-		return _dbConnection.ExecuteAsync(Queries.Ownership.Update, ownership);
-	}
-
-	/// <summary>Gets all ownerships.</summary>
-	/// <param name="userId">The id of the user for which to get all ownerships.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all ownerships.</returns>
-	public Task<IEnumerable<OwnershipEntity>> GetAllAsync(Guid userId, CancellationToken cancellationToken)
-	{
-		_logger.GetAll();
-		var text = $"{Queries.Ownership.Select} WHERE user_id = @userId;";
-		var command = new CommandDefinition(text, new { userId }, cancellationToken: cancellationToken);
-		return _dbConnection.QueryAsync<OwnershipEntity>(command);
-	}
-
-	/// <summary>Deletes the entity with the specified id using the specified database transaction.</summary>
-	/// <param name="id">The id of the entity to delete.</param>
-	/// <returns>The number of affected rows.</returns>
-	public Task<int> DeleteAsync(Guid id)
-	{
-		_logger.DeletingEntity(id);
-		return _dbConnection.ExecuteAsync(new(Queries.Ownership.Delete, new { id }));
+		var ownerships = await DbConnection.QueryAsync<OwnershipEntity>(command);
+		return ownerships.DistinctBy(ownership => ownership.Id).ToList();
 	}
 }

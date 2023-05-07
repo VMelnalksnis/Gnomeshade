@@ -32,7 +32,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
-			{ "ConnectionStrings:Gnomeshade", _databaseContainer.GetConnectionString() },
+			{ "ConnectionStrings:Gnomeshade", $"{_databaseContainer.GetConnectionString()}; Include Error Detail=true" },
 			{ "Database:Provider", "PostgreSQL" },
 		})
 		.Build();

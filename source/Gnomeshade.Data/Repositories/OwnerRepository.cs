@@ -4,75 +4,56 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Dapper;
 
 using Gnomeshade.Data.Entities;
-using Gnomeshade.Data.Entities.Abstractions;
-using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="OwnerEntity"/>.</summary>
-public sealed class OwnerRepository
+public sealed class OwnerRepository : NamedRepository<OwnerEntity>
 {
-	private const string _insertWithIdSql = "INSERT INTO owners (id) VALUES (@id) RETURNING id;";
-	private const string _selectSql = "SELECT id, created_at CreatedAt FROM owners";
-
-	private readonly ILogger<OwnerRepository> _logger;
-	private readonly DbConnection _dbConnection;
-
 	/// <summary>Initializes a new instance of the <see cref="OwnerRepository"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="dbConnection">The database connection for executing queries.</param>
 	public OwnerRepository(ILogger<OwnerRepository> logger, DbConnection dbConnection)
+		: base(logger, dbConnection)
 	{
-		_logger = logger;
-		_dbConnection = dbConnection;
 	}
 
-	/// <summary>Adds a new owner with the specified <see cref="Entity.Id"/>.</summary>
-	/// <param name="id">The id with which to create the entity.</param>
-	/// <returns>The id of the new entity.</returns>
-	public Task<Guid> AddAsync(Guid id)
+	/// <inheritdoc />
+	protected override string DeleteSql => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	protected override string InsertSql => Queries.Owner.Insert;
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Owner.Select;
+
+	/// <inheritdoc />
+	protected override string UpdateSql => throw new NotImplementedException();
+
+	protected override string FindSql => "WHERE o.id = @id";
+
+	/// <inheritdoc />
+	protected override string AccessSql => "users.id = @ownerId";
+
+	protected override string NotDeleted => "o.deleted_at IS NULL";
+
+	public Task AddDefaultAsync(Guid id, DbTransaction dbTransaction)
 	{
-		_logger.AddingEntity();
-		var command = new CommandDefinition(_insertWithIdSql, new { id });
-		return _dbConnection.QuerySingleAsync<Guid>(command);
+		return AddAsync(new() { Id = id, Name = "Private", CreatedByUserId = id }, dbTransaction);
 	}
 
-	/// <summary>Adds a new owner with the specified <see cref="Entity.Id"/>.</summary>
-	/// <param name="id">The id with which to create the entity.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The id of the new entity.</returns>
-	public Task<Guid> AddAsync(Guid id, IDbTransaction dbTransaction)
+	protected override async Task<IEnumerable<OwnerEntity>> GetEntitiesAsync(CommandDefinition command)
 	{
-		_logger.AddingEntityWithTransaction();
-		var command = new CommandDefinition(_insertWithIdSql, new { id }, dbTransaction);
-		return _dbConnection.QuerySingleAsync<Guid>(command);
-	}
-
-	/// <summary>Gets all owners.</summary>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all owners.</returns>
-	public Task<IEnumerable<OwnerEntity>> GetAllAsync(CancellationToken cancellationToken = default)
-	{
-		_logger.GetAll();
-		return _dbConnection.QueryAsync<OwnerEntity>(new(_selectSql, cancellationToken: cancellationToken));
-	}
-
-	/// <summary>Deletes the owner with the specified id.</summary>
-	/// <param name="id">The id of the owner to delete.</param>
-	/// <returns>The number of affected rows.</returns>
-	public Task<int> DeleteAsync(Guid id)
-	{
-		_logger.DeletingEntity(id);
-		return _dbConnection.ExecuteAsync("DELETE FROM owners WHERE id = @id", new { id });
+		var owners = await DbConnection.QueryAsync<OwnerEntity>(command);
+		return owners.DistinctBy(owner => owner.Id).ToList();
 	}
 }

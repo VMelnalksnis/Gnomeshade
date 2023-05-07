@@ -202,4 +202,9 @@ public static class Routes
 		internal static string Import(Guid transactionId, Guid linkId) =>
 			$"{_path}/?{Parameters(new() { new(nameof(transactionId), transactionId), new(nameof(linkId), linkId) })}";
 	}
+
+	internal static class Users
+	{
+		internal const string Uri = nameof(Users);
+	}
 }

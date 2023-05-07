@@ -9,4 +9,11 @@ namespace Gnomeshade.Data.Entities;
 /// <summary>Represents a collection of other entities (users, roles, groups, etc.) that can own other entities.</summary>
 /// <seealso cref="OwnershipEntity"/>
 /// <seealso cref="UserEntity"/>
-public sealed record OwnerEntity : Entity;
+public sealed record OwnerEntity : Entity, INamedEntity
+{
+	/// <inheritdoc />
+	public string Name { get; set; } = null!;
+
+	/// <inheritdoc />
+	public string NormalizedName { get; set; } = null!;
+}

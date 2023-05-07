@@ -389,8 +389,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		GetAsync(Owners._uri, _context.ListOwner, cancellationToken);
 
 	/// <inheritdoc />
-	public Task PutOwnerAsync(Guid id) =>
-		PutAsync(Owners.IdUri(id));
+	public Task PutOwnerAsync(Guid id, OwnerCreation owner) =>
+		PutAsync(Owners.IdUri(id), owner, _context.OwnerCreation);
 
 	/// <inheritdoc />
 	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) =>
@@ -399,6 +399,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task DeleteOwnershipAsync(Guid id) =>
 		DeleteAsync(Ownerships.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<User>> GetUsersAsync(CancellationToken cancellationToken = default) =>
+		GetAsync(Users.Uri, _context.ListUser, cancellationToken);
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{

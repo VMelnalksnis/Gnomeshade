@@ -12,3 +12,5 @@ FROM counterparties c
 		 INNER JOIN owners ON owners.id = c.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id
 		 INNER JOIN access ON access.id = ownerships.access_id
+		 LEFT JOIN users on users.id = c.id
+		 LEFT JOIN "AspNetUsers" on "AspNetUsers"."Id" = users.id
