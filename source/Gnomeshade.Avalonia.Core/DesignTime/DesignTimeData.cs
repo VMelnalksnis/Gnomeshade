@@ -5,6 +5,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
@@ -185,6 +186,14 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="ConfigurationWizardViewModel"/> for use during design time.</summary>
 	public static ConfigurationWizardViewModel ConfigurationWizardViewModel { get; } =
 		GetServiceProvider().GetRequiredService<ConfigurationWizardViewModel>();
+
+	/// <summary>Gets an instance of <see cref="OwnerUpsertionViewModel"/> for use during design time.</summary>
+	public static OwnerUpsertionViewModel OwnerUpsertionViewModel { get; } =
+		InitializeViewModel<OwnerUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
+
+	/// <summary>Gets an instance of <see cref="OwnerViewModel"/> for use during design time.</summary>
+	public static OwnerViewModel OwnerViewModel { get; } =
+		InitializeViewModel<OwnerViewModel, OwnerRow, OwnerUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
 	[UnconditionalSuppressMessage(
 		"Trimming",

@@ -9,6 +9,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 
+using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
@@ -117,6 +118,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToAccountOverviewAsync() => SwitchTo<AccountViewModel>();
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="AccountViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToAccessOverviewAsync() => SwitchTo<OwnerViewModel>();
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

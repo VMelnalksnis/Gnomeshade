@@ -37,6 +37,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<KeyValuePair<Guid, Guid>> _transactionLinks;
 	private static readonly List<Category> _categories;
 	private static readonly List<Loan> _loans;
+	private static readonly List<User> _users;
+	private static readonly List<Ownership> _ownerships;
+	private static readonly List<Owner> _owners;
+	private static readonly List<Access> _accesses;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -162,6 +166,29 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				CurrencyId = euro.Id,
 			},
 		};
+
+		var owner = new Access { Id = Guid.NewGuid(), Name = "Owner" };
+		var read = new Access { Id = Guid.NewGuid(), Name = "Read" };
+		_accesses = new() { owner, read };
+
+		_users = new()
+		{
+			new() { Id = counterparty.Id },
+			new() { Id = otherCounterparty.Id },
+		};
+
+		_owners = new()
+		{
+			new() { Id = counterparty.Id, Name = "Private" },
+			new() { Id = otherCounterparty.Id, Name = "Private" },
+		};
+
+		_ownerships = new()
+		{
+			new() { Id = counterparty.Id, OwnerId = counterparty.Id, UserId = counterparty.Id, AccessId = owner.Id },
+			new() { Id = otherCounterparty.Id, OwnerId = otherCounterparty.Id, UserId = otherCounterparty.Id, AccessId = owner.Id },
+			new() { Id = Guid.NewGuid(), OwnerId = counterparty.Id, UserId = otherCounterparty.Id, AccessId = read.Id },
+		};
 	}
 
 	/// <inheritdoc />
@@ -217,7 +244,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Counterparty>> GetCounterpartiesAsync(CancellationToken cancellationToken = default) => Task.FromResult(_counterparties.ToList());
+	public Task<List<Counterparty>> GetCounterpartiesAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_counterparties.ToList());
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
@@ -262,7 +290,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public async Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default)
+	public async Task<DetailedTransaction> GetDetailedTransactionAsync(
+		Guid id,
+		CancellationToken cancellationToken = default)
 	{
 		var transaction = await GetTransactionAsync(id, cancellationToken);
 		var transfers = await GetTransfersAsync(cancellationToken);
@@ -415,7 +445,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default)
+	public Task<List<Loan>> GetCounterpartyLoansAsync(
+		Guid counterpartyId,
+		CancellationToken cancellationToken = default)
 	{
 		var loans = _loans
 			.Where(loan =>
@@ -616,7 +648,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <param name="cancellationToken"></param>
 	/// <inheritdoc />
-	public Task<List<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default) => Task.FromResult(_categories.ToList());
+	public Task<List<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_categories.ToList());
 
 	/// <inheritdoc />
 	public Task<Category> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
@@ -675,23 +708,58 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_accesses.ToList());
 
 	/// <inheritdoc />
 	public Task DeleteOwnerAsync(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_ownerships.ToList());
 
 	/// <inheritdoc />
-	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) => throw new NotImplementedException();
+	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_owners.ToList());
 
 	/// <inheritdoc />
-	public Task PutOwnerAsync(Guid id) => throw new NotImplementedException();
+	public Task PutOwnerAsync(Guid id, OwnerCreation owner)
+	{
+		var storedOwner = _owners.SingleOrDefault(o => o.Id == id);
+		if (storedOwner is null)
+		{
+			storedOwner = new() { Id = id };
+			_owners.Add(storedOwner);
+		}
+
+		storedOwner.Name = owner.Name;
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
-	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership) => throw new NotImplementedException();
+	public Task PutOwnershipAsync(Guid id, OwnershipCreation ownership)
+	{
+		var storedOwnership = _ownerships.SingleOrDefault(o => o.Id == id);
+		if (storedOwnership is null)
+		{
+			storedOwnership = new() { Id = id };
+			_ownerships.Add(storedOwnership);
+		}
+
+		storedOwnership.AccessId = ownership.AccessId;
+		storedOwnership.OwnerId = ownership.OwnerId ?? throw new NotImplementedException();
+		storedOwnership.UserId = ownership.UserId;
+		return Task.CompletedTask;
+	}
 
 	/// <inheritdoc />
-	public Task DeleteOwnershipAsync(Guid id) => throw new NotImplementedException();
+	public Task DeleteOwnershipAsync(Guid id)
+	{
+		_ownerships.Remove(_ownerships.Single(ownership => ownership.Id == id));
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public Task<List<User>> GetUsersAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_users.ToList());
 }

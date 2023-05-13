@@ -3,7 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
+using Avalonia.Controls;
+
+using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -47,12 +51,24 @@ public sealed partial class TransactionProperties : ViewModelBase
 	[Notify]
 	private string? _description;
 
+	/// <summary>Gets a collection of available owners.</summary>
+	[Notify(Setter.Internal)]
+	private List<Owner> _owners;
+
+	/// <summary>Gets or sets the owner of the account.</summary>
+	[Notify]
+	private Owner? _owner;
+
 	/// <summary>Initializes a new instance of the <see cref="TransactionProperties"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	public TransactionProperties(IActivityService activityService)
 		: base(activityService)
 	{
+		_owners = new();
 	}
+
+	/// <summary>Gets a delegate for formatting a owner in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> OwnerSelector => AutoCompleteSelectors.Owner;
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
 	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue

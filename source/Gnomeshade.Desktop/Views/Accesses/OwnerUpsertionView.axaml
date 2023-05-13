@@ -1,0 +1,119 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:accesses="clr-namespace:Gnomeshade.Avalonia.Core.Accesses;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
+	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.OwnerUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Accesses.OwnerUpsertionView"
+	x:CompileBindings="True"
+	x:DataType="accesses:OwnerUpsertionViewModel">
+
+	<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+		<TextBox
+			Grid.Row="0"
+			MinWidth="300"
+			AcceptsReturn="False"
+			x:Name="AccountName"
+			Watermark="Name"
+			Text="{Binding Name}" />
+
+		<DataGrid
+			Grid.Row="1"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			x:Name="DataGrid"
+			Items="{Binding Ownerships, Mode=TwoWay}"
+			SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Name" IsReadOnly="True">
+					<DataTemplate x:DataType="accesses:OwnershipRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Username, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Access" IsReadOnly="True">
+					<DataTemplate x:DataType="accesses:OwnershipRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Access, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<AutoCompleteBox
+			Grid.Row="2"
+			Watermark="User"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+			ItemSelector="{Binding CounterpartySelector}" Items="{Binding AddableCounterparties}"
+			SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}">
+
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="accounts:Counterparty">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<AutoCompleteBox
+			Grid.Row="3"
+			Watermark="Access"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+			ItemSelector="{Binding AccessSelector}" Items="{Binding Accesses}"
+			SelectedItem="{Binding SelectedAccess, Mode=TwoWay}">
+
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="owners:Access">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<Grid Grid.Row="8" ColumnDefinitions="*,*" RowDefinitions="Auto">
+			<Button
+				Grid.Column="0"
+				IsEnabled="{Binding CanSaveRow}"
+				Command="{ReflectionBinding SaveRow}"
+				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+				Save Row
+			</Button>
+
+			<Button
+				Grid.Column="1"
+				Command="{ReflectionBinding RemoveRow}"
+				IsEnabled="{Binding SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}"
+				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+				Remove Row
+			</Button>
+		</Grid>
+
+		<Button
+			Grid.Row="9"
+			Padding="25 5"
+			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}"
+			Command="{ReflectionBinding SaveAsync}">
+			Save
+		</Button>
+	</Grid>
+</UserControl>

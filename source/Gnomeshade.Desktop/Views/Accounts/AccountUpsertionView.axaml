@@ -6,13 +6,14 @@
 	xmlns:a="clr-namespace:Gnomeshade.Avalonia.Core.Accounts;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
+	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.AccountUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Accounts.AccountUpsertionView"
 	x:CompileBindings="True"
 	x:DataType="a:AccountUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 		<TextBlock
 			Grid.Column="0" Grid.Row="0"
 			Padding="10 0"
@@ -39,10 +40,8 @@
 			Items="{Binding Counterparties}"
 			SelectedItem="{Binding Counterparty, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock
-						x:DataType="accounts:Counterparty"
-						Text="{Binding Name}" />
+				<DataTemplate x:DataType="accounts:Counterparty">
+					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
@@ -61,10 +60,8 @@
 			Items="{Binding Currencies}"
 			SelectedItem="{Binding PreferredCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock
-						x:DataType="accounts:Currency"
-						Text="{Binding Name}" />
+				<DataTemplate x:DataType="accounts:Currency">
+					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
@@ -105,15 +102,35 @@
 			x:Name="AccountNumber"
 			Text="{Binding AccountNumber}" />
 
-		<Button
+		<TextBlock
 			Grid.Column="0" Grid.Row="6"
+			Padding="10 0"
+			VerticalAlignment="Center"
+			Text="Owner: " />
+		<AutoCompleteBox
+			Grid.Column="1" Grid.Row="6"
+			MinWidth="300" Margin="5"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			ItemSelector="{Binding OwnerSelector}"
+			Items="{Binding Owners}"
+			SelectedItem="{Binding Owner, Mode=TwoWay}">
+			<AutoCompleteBox.ItemTemplate>
+				<DataTemplate x:DataType="owners:Owner">
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</AutoCompleteBox.ItemTemplate>
+		</AutoCompleteBox>
+
+		<Button
+			Grid.Column="0" Grid.Row="7"
 			Command="{ReflectionBinding AddAdditionalCurrency}"
 			IsEnabled="{Binding AddableCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 			Add Currency
 		</Button>
 
 		<AutoCompleteBox
-			Grid.Column="1" Grid.Row="6"
+			Grid.Column="1" Grid.Row="7"
 			MinWidth="300" Margin="5"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
@@ -121,23 +138,21 @@
 			Items="{Binding AddableCurrencies}"
 			SelectedItem="{Binding AddableCurrency, Mode=TwoWay}">
 			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate>
-					<TextBlock
-						x:DataType="accounts:Currency"
-						Text="{Binding Name}" />
+				<DataTemplate x:DataType="accounts:Currency">
+					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</AutoCompleteBox.ItemTemplate>
 		</AutoCompleteBox>
 
 		<Button
-			Grid.Column="0" Grid.Row="7"
+			Grid.Column="0" Grid.Row="8"
 			Command="{ReflectionBinding RemoveAdditionalCurrency}"
 			IsEnabled="{Binding SelectedCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 			Remove Currency
 		</Button>
 
 		<ListBox
-			Grid.Column="1" Grid.Row="7"
+			Grid.Column="1" Grid.Row="8"
 			Items="{Binding AdditionalCurrencies}"
 			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" SelectionMode="Single,Toggle">
 			<ListBox.ItemTemplate>

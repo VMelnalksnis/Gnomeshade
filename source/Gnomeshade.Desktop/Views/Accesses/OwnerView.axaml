@@ -1,0 +1,80 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:a="clr-namespace:Gnomeshade.Avalonia.Core.Accesses;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.OwnerViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Accesses.OwnerView"
+	x:CompileBindings="True"
+	x:DataType="a:OwnerViewModel">
+
+	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
+		<DataGrid
+			Grid.Column="0" Grid.Row="0"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			x:Name="DataGrid"
+			Items="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Name" IsReadOnly="True">
+					<DataTemplate x:DataType="a:OwnerRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Name, Mode=OneWay}"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Access" IsReadOnly="True">
+					<DataTemplate x:DataType="a:OwnerRow">
+						<ItemsControl Margin="0 1" Items="{Binding Ownerships, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="a:OwnershipRow">
+									<TextBlock Text="{Binding Access}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="User" IsReadOnly="True">
+					<DataTemplate x:DataType="a:OwnerRow">
+						<ItemsControl Margin="0 1" Items="{Binding Ownerships, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="a:OwnershipRow">
+									<TextBlock Text="{Binding Username}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+					<Setter Property="Fill" Value="#05769d" />
+				</Style>
+			</DataGrid.Styles>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<UserControl Grid.Column="1" Content="{Binding Details}" />
+	</Grid>
+</UserControl>

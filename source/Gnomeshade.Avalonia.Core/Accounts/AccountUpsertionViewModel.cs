@@ -13,6 +13,7 @@ using Avalonia.Controls;
 
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Owners;
 
 using PropertyChanged.SourceGenerator;
 
@@ -21,13 +22,17 @@ namespace Gnomeshade.Avalonia.Core.Accounts;
 /// <summary>Form for viewing and editing a single account.</summary>
 public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 {
-	/// <summary>Gets a collection of available currencies.</summary>
+	/// <summary>Gets a collection of available counterparties.</summary>
 	[Notify(Setter.Private)]
 	private List<Counterparty> _counterparties;
 
 	/// <summary>Gets a collection of available currencies.</summary>
 	[Notify(Setter.Private)]
 	private List<Currency> _currencies;
+
+	/// <summary>Gets a collection of available owners.</summary>
+	[Notify(Setter.Private)]
+	private List<Owner> _owners;
 
 	/// <inheritdoc cref="Account.Name"/>
 	[Notify]
@@ -61,6 +66,10 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private Currency? _addableCurrency;
 
+	/// <summary>Gets or sets the owner of the account.</summary>
+	[Notify]
+	private Owner? _owner;
+
 	/// <summary>Initializes a new instance of the <see cref="AccountUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">API client for getting finance data.</param>
@@ -72,6 +81,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 
 		_counterparties = new();
 		_currencies = new();
+		_owners = new();
 		AdditionalCurrencies = new();
 
 		AdditionalCurrencies.CollectionChanged += AdditionalCurrenciesOnCollectionChanged;
@@ -82,6 +92,9 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
+
+	/// <summary>Gets a delegate for formatting a owner in an <see cref="AutoCompleteBox"/>.</summary>
+	public AutoCompleteSelector<object> OwnerSelector => AutoCompleteSelectors.Owner;
 
 	/// <summary>Gets a collection of all currencies in the account except for <see cref="PreferredCurrency"/>.</summary>
 	public ObservableCollection<Currency> AdditionalCurrencies { get; }
@@ -125,11 +138,15 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var counterparties = await GnomeshadeClient.GetCounterpartiesAsync();
-		var currencies = await GnomeshadeClient.GetCurrenciesAsync();
+		var counterparties = GnomeshadeClient.GetCounterpartiesAsync();
+		var currencies = GnomeshadeClient.GetCurrenciesAsync();
+		var owners = GnomeshadeClient.GetOwnersAsync();
 
-		Counterparties = counterparties;
-		Currencies = currencies;
+		await Task.WhenAll(counterparties, currencies, owners);
+
+		Counterparties = counterparties.Result;
+		Currencies = currencies.Result;
+		Owners = owners.Result;
 
 		if (Id is not { } id)
 		{
@@ -144,9 +161,10 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 		Bic = account.Bic;
 		Iban = account.Iban;
 		AccountNumber = account.AccountNumber;
+		Owner = Owners.SingleOrDefault(owner => owner.Id == account.OwnerId);
 
 		AdditionalCurrencies.Clear();
-		var additionalCurrencies = currencies.Where(currency =>
+		var additionalCurrencies = Currencies.Where(currency =>
 			account.Currencies.Any(c => c.Currency.Id == currency.Id) &&
 			_preferredCurrency?.Id != currency.Id);
 
@@ -175,6 +193,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 			PreferredCurrencyId = PreferredCurrency.Id,
 			CounterpartyId = Counterparty!.Id,
 			Currencies = currencyIds.Select(id => new AccountInCurrencyCreation { CurrencyId = id }).ToList(),
+			OwnerId = Owner?.Id,
 		};
 
 		var newAccount = Id is null;

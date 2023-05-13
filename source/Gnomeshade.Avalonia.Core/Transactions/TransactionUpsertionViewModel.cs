@@ -150,6 +150,10 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
+		var owners = await GnomeshadeClient.GetOwnersAsync();
+		Properties.Owners = owners;
+		Properties.Owner = owners.SingleOrDefault(owner => owner.Id == transaction.OwnerId);
+
 		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
 		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
 		Links ??= new(ActivityService, GnomeshadeClient, transactionId);
@@ -185,6 +189,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 			ReconciledAt = Properties.ReconciledAt?.ToInstant(),
 			ImportedAt = Properties.ImportedAt?.ToInstant(),
 			Description = Properties.Description,
+			OwnerId = Properties.Owner?.Id,
 		};
 
 		var id = Id ?? Guid.NewGuid();

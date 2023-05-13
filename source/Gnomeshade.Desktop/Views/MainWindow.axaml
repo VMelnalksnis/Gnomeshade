@@ -52,6 +52,9 @@
 				</MenuItem>
 				<MenuItem Header="A_ccounts" IsVisible="{Binding CanLogOut}">
 					<MenuItem
+						x:Name="Access" Header="_Access"
+						Command="{ReflectionBinding SwitchToAccessOverviewAsync}" />
+					<MenuItem
 						x:Name="Accounts" Header="_Overview"
 						Command="{ReflectionBinding SwitchToAccountOverviewAsync}" />
 					<MenuItem

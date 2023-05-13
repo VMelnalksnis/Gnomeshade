@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
@@ -40,5 +41,7 @@ public static class ServiceCollectionExtensions
 		.AddTransient<BalanceReportViewModel>()
 		.AddTransient<ProductReportViewModel>()
 		.AddTransient<PreferencesViewModel>()
-		.AddTransient<TransactionViewModel>();
+		.AddTransient<TransactionViewModel>()
+		.AddTransient<OwnerViewModel>()
+		.AddTransient<OwnerUpsertionViewModel>();
 }
