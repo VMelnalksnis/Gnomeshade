@@ -83,7 +83,7 @@ public sealed class AuthenticationController : ControllerBase
 
 		var claims = new List<Claim>
 		{
-			new(ClaimTypes.NameIdentifier, user.Id),
+			new(ClaimTypes.NameIdentifier, user.Id.ConvertIdToString()),
 			new(ClaimTypes.Name, user.FullName),
 			new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
 		};
@@ -113,7 +113,6 @@ public sealed class AuthenticationController : ControllerBase
 	public async Task<ActionResult> Register([FromBody] RegistrationModel registration)
 	{
 		var user = _mapper.Map<ApplicationUser>(registration);
-		user.SecurityStamp = Guid.NewGuid().ToString();
 
 		var creationResult = await _userManager.CreateAsync(user, registration.Password);
 		if (!creationResult.Succeeded)

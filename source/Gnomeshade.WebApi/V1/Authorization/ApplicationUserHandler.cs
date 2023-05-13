@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -57,8 +56,7 @@ public sealed class ApplicationUserHandler : AuthorizationHandler<ApplicationUse
 			return;
 		}
 
-		var id = new Guid(identityUser.Id);
-		var applicationUser = await _userRepository.FindByIdAsync(id);
+		var applicationUser = await _userRepository.FindByIdAsync(identityUser.Id);
 		if (applicationUser is null)
 		{
 			context.Fail(new(this, "Failed to find application user"));

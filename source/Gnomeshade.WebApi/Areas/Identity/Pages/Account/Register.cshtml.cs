@@ -83,11 +83,10 @@ public sealed class Register : PageModel
 		ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 		if (ModelState.IsValid)
 		{
-			var user = new ApplicationUser
+			var user = new ApplicationUser(Input.UserName)
 			{
 				Email = Input.Email,
 				FullName = Input.FullName,
-				UserName = Input.UserName,
 			};
 
 			var result = await _userManager.CreateAsync(user, Input.Password);
@@ -96,7 +95,7 @@ public sealed class Register : PageModel
 			{
 				LogMessages.UserCreated(_logger);
 
-				var identityUser = await _userManager.FindByNameAsync(user.UserName);
+				var identityUser = await _userManager.FindByNameAsync(Input.UserName);
 				if (identityUser is null)
 				{
 					throw new InvalidOperationException("Could not find user by name after creating it");

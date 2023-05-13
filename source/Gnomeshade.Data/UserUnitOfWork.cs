@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -46,7 +45,7 @@ public sealed class UserUnitOfWork
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task CreateUserAsync(ApplicationUser applicationUser)
 	{
-		var userId = Guid.ParseExact(applicationUser.Id, "D");
+		var userId = applicationUser.Id;
 		var fullName = applicationUser.FullName;
 		var user = new UserEntity { Id = userId, ModifiedByUserId = userId };
 

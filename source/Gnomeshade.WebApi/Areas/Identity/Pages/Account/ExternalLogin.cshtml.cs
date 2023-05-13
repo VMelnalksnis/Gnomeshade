@@ -160,11 +160,10 @@ public sealed class ExternalLogin : PageModel
 
 		if (ModelState.IsValid)
 		{
-			var user = new ApplicationUser
+			var user = new ApplicationUser(Input.UserName ?? Input.Email)
 			{
 				Email = Input.Email,
 				FullName = Input.FullName,
-				UserName = Input.UserName ?? Input.Email,
 			};
 
 			var result = await _userManager.CreateAsync(user);

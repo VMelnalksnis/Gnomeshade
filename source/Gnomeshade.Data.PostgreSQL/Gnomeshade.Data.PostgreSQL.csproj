@@ -84,6 +84,7 @@
 		<EmbeddedResource Include="Migrations\00000024_refunded_by.sql" />
 		<EmbeddedResource Include="Migrations\00000025_bank_reference.sql" />
 		<EmbeddedResource Include="Migrations\00000027_remove_disabled.sql" />
+		<EmbeddedResource Include="Migrations\00000028_identity_id_type.sql" />
 	</ItemGroup>
 
 </Project>

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +55,7 @@ public sealed class Index : PageModel
 		foreach (var userEntity in userEntities)
 		{
 			var counterparty = counterparties.Single(entity => entity.Id == userEntity.CounterpartyId);
-			var identityUser = identityUsers.SingleOrDefault(user => user.Id == userEntity.Id.ToString());
+			var identityUser = identityUsers.SingleOrDefault(user => user.Id == userEntity.Id);
 
 			var lockoutEnabled = identityUser is null
 				? (bool?)null
@@ -77,7 +76,7 @@ public sealed class Index : PageModel
 
 	private async Task<PageResult> SetLockoutEndDateAsync(Guid id, DateTimeOffset? lockoutEnd)
 	{
-		var identityUser = await _userManager.FindByIdAsync(id.ToString("D", CultureInfo.InvariantCulture));
+		var identityUser = await _userManager.FindByIdAsync(id.ConvertIdToString());
 		if (identityUser is null)
 		{
 			throw new InvalidOperationException();

@@ -2,9 +2,12 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Gnomeshade.Data;
 
@@ -36,5 +39,17 @@ public static class ServiceCollectionExtensions
 			.AddScoped<CategoryRepository>()
 			.AddScoped<TransactionUnitOfWork>()
 			.AddScoped<UserUnitOfWork>();
+	}
+
+	/// <summary>Adds an Entity Framework implementation of identity information stores.</summary>
+	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
+	/// <returns><paramref name="identityBuilder"/> with identity stored added.</returns>
+	public static IdentityBuilder AddIdentityStores(this IdentityBuilder identityBuilder)
+	{
+		var services = identityBuilder.Services;
+		services.TryAddScoped<IUserStore<ApplicationUser>, ApplicationUserStore>();
+		services.TryAddScoped<IRoleStore<ApplicationRole>, ApplicationRoleStore>();
+
+		return identityBuilder;
 	}
 }

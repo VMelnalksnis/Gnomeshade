@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.Data.Identity;
 
 /// <summary>Identity database context for <see cref="ApplicationUser"/>.</summary>
-public abstract class IdentityContext : IdentityDbContext<ApplicationUser>
+public abstract class IdentityContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
 	/// <summary>The name of the Entity Framework migrations history table.</summary>
 	protected const string MigrationHistoryTableName = "__EFMigrationsHistory";

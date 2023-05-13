@@ -77,23 +77,17 @@ public class Startup
 			.AddValidatedOptions<AdminOptions>(_configuration)
 			.AddTransient<IStartupFilter, AdminUserStartupFilter>();
 
-		var databaseProvider = _configuration.GetValid<DatabaseOptions>().Provider;
-		var identityBuilder = databaseProvider switch
+		var databaseProvider = DatabaseProvider.FromName(_configuration.GetValid<DatabaseOptions>().Provider, true);
+		_ = databaseProvider switch
 		{
-			_ when databaseProvider.Equals(DatabaseProvider.PostgreSQL.Name, StringComparison.OrdinalIgnoreCase) => services
-				.AddPostgreSQL(_configuration)
-				.AddIdentity<ApplicationUser, IdentityRole>()
-				.AddPostgreSQLIdentity(),
-
-			_ when databaseProvider.Equals(DatabaseProvider.Sqlite.Name, StringComparison.OrdinalIgnoreCase) => services
-				.AddSqlite(_configuration)
-				.AddIdentity<ApplicationUser, IdentityRole>()
-				.AddSqliteIdentity(),
-
+			_ when databaseProvider == DatabaseProvider.PostgreSQL => services.AddPostgreSQL(_configuration),
+			_ when databaseProvider == DatabaseProvider.Sqlite => services.AddSqlite(_configuration),
 			_ => throw new ArgumentOutOfRangeException(nameof(databaseProvider), databaseProvider, "Unsupported database provider"),
 		};
 
-		identityBuilder
+		services
+			.AddIdentity<ApplicationUser, ApplicationRole>()
+			.AddIdentityStores()
 			.AddDefaultUI()
 			.AddDefaultTokenProviders();
 

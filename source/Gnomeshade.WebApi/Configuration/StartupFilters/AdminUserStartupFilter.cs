@@ -43,7 +43,7 @@ internal sealed partial class AdminUserStartupFilter : IStartupFilter
 		{
 			var adminOptions = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<AdminOptions>>().Value;
 			var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-			var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+			var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 			var userUnitOfWork = scope.ServiceProvider.GetRequiredService<UserUnitOfWork>();
 
 			var (identityUser, created) = GetOrCreateIdentityUser(adminOptions, userManager).GetAwaiter().GetResult();
@@ -77,11 +77,9 @@ internal sealed partial class AdminUserStartupFilter : IStartupFilter
 			return (identityUser, false);
 		}
 
-		var adminUser = new ApplicationUser
+		var adminUser = new ApplicationUser(adminOptions.Username)
 		{
-			UserName = adminOptions.Username,
 			FullName = adminOptions.Username,
-			SecurityStamp = Guid.NewGuid().ToString(),
 		};
 
 		var creationResult = await userManager.CreateAsync(adminUser, adminOptions.Password);
@@ -92,7 +90,7 @@ internal sealed partial class AdminUserStartupFilter : IStartupFilter
 			throw new ApplicationException("Failed to create initial admin user");
 		}
 
-		identityUser = await userManager.FindByNameAsync(adminUser.UserName);
+		identityUser = await userManager.FindByNameAsync(adminOptions.Username);
 		if (identityUser is null)
 		{
 			throw new InvalidOperationException("Could not find user by name after creating it");
@@ -103,7 +101,7 @@ internal sealed partial class AdminUserStartupFilter : IStartupFilter
 
 	private async Task CreateAndAddRequiredRoles(
 		UserManager<ApplicationUser> userManager,
-		RoleManager<IdentityRole> roleManager,
+		RoleManager<ApplicationRole> roleManager,
 		ApplicationUser identityUser)
 	{
 		var roles = await userManager.GetRolesAsync(identityUser);

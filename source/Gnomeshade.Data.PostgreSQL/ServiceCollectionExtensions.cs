@@ -9,7 +9,6 @@ using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.PostgreSQL.Dapper;
 using Gnomeshade.Data.PostgreSQL.Migrations;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,10 +42,4 @@ public static class ServiceCollectionExtensions
 				ServiceLifetime.Scoped)
 			.AddDbContext<IdentityContext, PostgreSQLIdentityContext>();
 	}
-
-	/// <summary>Adds an Entity Framework implementation of identity information stores for PostgreSQL.</summary>
-	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
-	/// <returns><paramref name="identityBuilder"/> with identity stored added.</returns>
-	public static IdentityBuilder AddPostgreSQLIdentity(this IdentityBuilder identityBuilder) => identityBuilder
-		.AddEntityFrameworkStores<PostgreSQLIdentityContext>();
 }

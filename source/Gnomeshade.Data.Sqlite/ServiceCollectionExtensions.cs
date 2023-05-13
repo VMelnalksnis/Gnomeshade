@@ -12,7 +12,6 @@ using Gnomeshade.Data.Migrations;
 using Gnomeshade.Data.Sqlite.Dapper;
 using Gnomeshade.Data.Sqlite.Migrations;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,10 +51,4 @@ public static class ServiceCollectionExtensions
 			.AddSingleton<DbConnection>(provider => provider.GetRequiredService<SqliteConnection>())
 			.AddDbContext<IdentityContext, SqliteIdentityContext>();
 	}
-
-	/// <summary>Adds an Entity Framework implementation of identity information stores for Sqlite.</summary>
-	/// <param name="identityBuilder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
-	/// <returns><paramref name="identityBuilder"/> with identity stored added.</returns>
-	public static IdentityBuilder AddSqliteIdentity(this IdentityBuilder identityBuilder) => identityBuilder
-		.AddEntityFrameworkStores<SqliteIdentityContext>();
 }
