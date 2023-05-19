@@ -4,7 +4,7 @@
 		<PackageVersion Include="AdysTech.CredentialManager" Version="2.6.0"/>
 		<PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="7.0.1"/>
 		<PackageVersion Include="AutoMapper" Version="12.0.1"/>
-		<PackageVersion Include="Avalonia" Version="0.10.19"/>
+		<PackageVersion Include="Avalonia" Version="0.10.21"/>
 		<PackageVersion Include="Avalonia.Controls.DataGrid" Version="0.10.19"/>
 		<PackageVersion Include="Avalonia.Desktop" Version="0.10.19"/>
 		<PackageVersion Include="Avalonia.Diagnostics" Version="0.10.19"/>
