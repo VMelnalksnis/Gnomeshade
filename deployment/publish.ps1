@@ -13,6 +13,8 @@
     $Tag
 )
 
+Set-PSDebug -Trace 1
+
 $version = Get-Content version
 $publish_dir = "source\$Project\bin\Release\net7.0\$Runtime\publish"
 $archive_name = "${Project}_$Runtime.zip"

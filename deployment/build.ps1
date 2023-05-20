@@ -4,6 +4,8 @@
     $Project
 )
 
+Set-PSDebug -Trace 1
+
 $publish_dir = "source\$Project\bin\Release\"
 $archive_name = "${Project}.msi"
 
