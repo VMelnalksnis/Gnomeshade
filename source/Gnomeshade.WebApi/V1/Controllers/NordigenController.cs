@@ -210,7 +210,7 @@ public sealed class NordigenController : ControllerBase
 		"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
 		"INTEREST PAYMENT" => CreditDebitCode.DBIT,
 		"REIMBURSEMENT OF COMMISSION" => CreditDebitCode.DBIT,
-		"CASH DEPOSIT" => CreditDebitCode.DBIT,
+		"PRINCIPAL REPAYMENT" => CreditDebitCode.DBIT,
 		"CASH WITHDRAWAL" => CreditDebitCode.CRDT,
 		"LOAN DRAWDOWN" => CreditDebitCode.CRDT,
 		var information when information?.StartsWith("INWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.CRDT,
