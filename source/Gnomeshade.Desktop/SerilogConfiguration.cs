@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 
 using Serilog;
+using Serilog.Settings.Configuration;
 
 namespace Gnomeshade.Desktop;
 
@@ -36,7 +37,9 @@ internal static class SerilogConfiguration
 
 	internal static ILogger CreateLogger(IConfiguration configuration) => new LoggerConfiguration()
 		.MinimumLevel.Information()
-		.ReadFrom.Configuration(configuration)
+		.ReadFrom.Configuration(configuration, new ConfigurationReaderOptions(
+			typeof(FileLoggerConfigurationExtensions).Assembly,
+			typeof(TraceLoggerConfigurationExtensions).Assembly))
 		.Enrich.FromLogContext()
 		.WriteTo.File(
 			_applicationLogPath,
