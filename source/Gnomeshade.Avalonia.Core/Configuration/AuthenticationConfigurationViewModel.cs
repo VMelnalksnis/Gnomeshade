@@ -56,6 +56,10 @@ public sealed partial class AuthenticationConfigurationViewModel : Configuration
 	{
 		_logger = logger;
 		_httpClient = httpClient;
+
+		_authority = optionsMonitor.CurrentValue.Oidc?.Authority?.ToString();
+		_clientId = optionsMonitor.CurrentValue.Oidc?.ClientId;
+		_clientSecret = optionsMonitor.CurrentValue.Oidc?.ClientSecret;
 	}
 
 	/// <inheritdoc />

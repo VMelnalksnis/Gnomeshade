@@ -14,7 +14,7 @@
 	<StackPanel Orientation="Vertical" Spacing="5">
 		<UserControl Content="{Binding Gnomeshade}" />
 		<CheckBox IsChecked="{Binding EnableAuthentication}">Enable OIDC provider</CheckBox>
-		<UserControl IsVisible="{Binding EnableAuthentication}" Content="{Binding Authentication}" />
+		<UserControl IsEnabled="{Binding EnableAuthentication}" Content="{Binding Authentication}" />
 
 		<Button IsEnabled="{Binding IsValid^}" Command="{ReflectionBinding UpdateConfiguration}">
 			Save

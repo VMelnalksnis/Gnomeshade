@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.Options;
@@ -19,6 +21,7 @@ public sealed partial class ApplicationSettingsViewModel : ViewModelBase
 
 	/// <summary>Gets or sets a value indicating whether authentication configuration is needed.</summary>
 	[Notify]
+	[AlsoNotify(nameof(IsValid))]
 	private bool _enableAuthentication;
 
 	/// <summary>Initializes a new instance of the <see cref="ApplicationSettingsViewModel"/> class.</summary>
@@ -78,17 +81,24 @@ public sealed partial class ApplicationSettingsViewModel : ViewModelBase
 
 	private async Task<bool> IsValidAsync()
 	{
-		var valid = await Gnomeshade.IsValid;
-		if (!valid)
+		var tasks = new List<Task<bool>>
 		{
-			return false;
-		}
+			Gnomeshade.IsValid,
+			Task.Run(async () => !EnableAuthentication || await Authentication.IsValid),
+		};
 
-		if (!EnableAuthentication)
+		do
 		{
-			return true;
-		}
+			var finished = await Task.WhenAny(tasks);
+			if (finished.Result is false)
+			{
+				return false;
+			}
 
-		return await Authentication.IsValid;
+			tasks.Remove(finished);
+		}
+		while (tasks.Any());
+
+		return true;
 	}
 }
