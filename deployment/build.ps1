@@ -14,6 +14,7 @@ $dotnetArgs = $dotnetArgs + "build"
 $dotnetArgs = $dotnetArgs + ".\source\$Project\$Project.wixproj"
 $dotnetArgs = $dotnetArgs + "--configuration" + "Release"
 $dotnetArgs = $dotnetArgs + "--no-restore"
+$dotnetArgs = $dotnetArgs + "--verbosity" + "diagnostic"
 $dotnetArgs = $dotnetArgs + "/nologo"
 
 & dotnet $dotnetArgs
