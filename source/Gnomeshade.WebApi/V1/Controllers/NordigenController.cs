@@ -218,7 +218,10 @@ public sealed class NordigenController : ControllerBase
 		_ => bookedTransaction.BankTransactionCode switch
 		{
 			"PMNT" => CreditDebitCode.DBIT,
-			_ => throw new ArgumentOutOfRangeException(nameof(bookedTransaction.AdditionalInformation), bookedTransaction.AdditionalInformation, string.Empty),
+
+			// This will leak all data about the transaction into logs, but that should not be an issue while self-hosting
+			// While only some fields are needed when this fails, those fields contain private information anyway
+			_ => throw new ArgumentOutOfRangeException(nameof(bookedTransaction.AdditionalInformation), bookedTransaction, "Failed to determine transaction type"),
 		},
 	};
 
