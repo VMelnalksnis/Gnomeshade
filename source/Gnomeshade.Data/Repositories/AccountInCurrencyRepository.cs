@@ -4,6 +4,9 @@
 
 using System;
 using System.Data.Common;
+using System.Threading.Tasks;
+
+using Dapper;
 
 using Gnomeshade.Data.Entities;
 
@@ -39,4 +42,17 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "a.deleted_at IS NULL";
+
+	public Task RestoreDeletedAsync(Guid id, Guid ownerId)
+	{
+		return DbConnection.ExecuteAsync(Queries.AccountInCurrency.RestoreDeleted, new { id, ownerId });
+	}
+
+	public Task RestoreDeletedAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
+	{
+		return DbConnection.ExecuteAsync(
+			Queries.AccountInCurrency.RestoreDeleted,
+			new { id, ownerId },
+			transaction: dbTransaction);
+	}
 }

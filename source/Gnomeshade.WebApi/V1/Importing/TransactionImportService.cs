@@ -335,11 +335,7 @@ public abstract partial class TransactionImportService<TTransaction>
 			if (deletedCurrency is not null)
 			{
 				RestoringDeletedCurrency(otherCurrency.AlphabeticCode, otherAccount.Id);
-				deletedCurrency.DeletedAt = null;
-				deletedCurrency.DeletedByUserId = null;
-				deletedCurrency.ModifiedByUserId = user.Id;
-
-				await _inCurrencyRepository.UpdateAsync(deletedCurrency, dbTransaction);
+				await _inCurrencyRepository.RestoreDeletedAsync(deletedCurrency.Id, user.Id, dbTransaction);
 				otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(deletedCurrency.Id, user.Id, dbTransaction);
 				RestoredDeletedCurrency(otherCurrency.AlphabeticCode, otherAccount.Id);
 			}

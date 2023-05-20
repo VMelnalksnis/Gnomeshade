@@ -91,6 +91,14 @@ public sealed class AccountRepositoryTests
 		getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 		findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 
+		await _inCurrencyRepository.DeleteAsync(firstAccountInCurrency.Id, TestUser.Id);
+		var deleted = await _inCurrencyRepository.FindByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
+		deleted.Should().BeNull();
+
+		await _inCurrencyRepository.RestoreDeletedAsync(getAccountInCurrency.Id, TestUser.Id);
+		var restored = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
+		restored.Should().BeEquivalentTo(getAccountInCurrency, options => options.Excluding(a => a.ModifiedAt));
+
 		(await FluentActions.Awaiting(() => _inCurrencyRepository.AddAsync(firstAccountInCurrency))
 			.Should()
 			.ThrowAsync<NpgsqlException>())

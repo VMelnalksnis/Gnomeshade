@@ -21,6 +21,7 @@
 		<EmbeddedResource Include="Migrations\00000026_linked_product.sql" />
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Delete.sql" />
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Insert.sql" />
+		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\RestoreDeleted.sql" />
 		<EmbeddedResource Include="Repositories\Queries\AccountInCurrency\Select.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Account\Balance.sql" />
 		<EmbeddedResource Include="Repositories\Queries\Account\Delete.sql" />

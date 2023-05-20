@@ -44,6 +44,8 @@ internal static class Queries
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Delete.sql");
 
+		internal static string RestoreDeleted { get; } = Read($"Queries.{nameof(AccountInCurrency)}.RestoreDeleted.sql");
+
 		internal static string Insert { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Select.sql");
