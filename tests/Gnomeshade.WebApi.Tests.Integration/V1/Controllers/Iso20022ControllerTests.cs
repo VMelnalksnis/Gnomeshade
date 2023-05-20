@@ -81,6 +81,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 		var counterparty = await _client.GetMyCounterpartyAsync();
 		var currencies = await _client.GetCurrenciesAsync();
 		var euro = currencies.Should().ContainSingle(currency => currency.AlphabeticCode == "EUR").Subject!;
+		var dollar = currencies.Should().ContainSingle(currency => currency.AlphabeticCode == "USD").Subject!;
 
 		var accounts = await _client.GetAccountsAsync();
 		const string bankAccountName = "TEST BANK";
@@ -107,7 +108,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 			PreferredCurrencyId = euro.Id,
 			Iban = firstTestCase.AccountIban,
 			AccountNumber = firstTestCase.AccountIban,
-			Currencies = new() { new() { CurrencyId = euro.Id } },
+			Currencies = new() { new() { CurrencyId = euro.Id }, new() { CurrencyId = dollar.Id } },
 		};
 
 		var accountId = await _client.CreateAccountAsync(accountCreation);
@@ -134,6 +135,8 @@ public sealed class Iso20022ControllerTests : WebserverTests
 
 		var transferId = Guid.NewGuid();
 		await _client.PutTransferAsync(transferId, transferCreation);
+
+		await _client.RemoveCurrencyFromAccountAsync(accountId, account.Currencies.Single(c => c.Currency.Id == dollar.Id).Id);
 
 		var firstAccountResult = await _client.Import(firstTestCase.Stream, _fileName);
 		var secondAccountResult = await _client.Import(secondTestCase.Stream, _fileName);

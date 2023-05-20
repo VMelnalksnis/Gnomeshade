@@ -329,19 +329,36 @@ public abstract partial class TransactionImportService<TTransaction>
 		var otherAccountCurrency = otherAccount.Currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id);
 		if (otherAccountCurrency is null)
 		{
-			AddingCurrencyToAccount(otherCurrency.AlphabeticCode, otherAccount.Id);
-			otherAccountCurrency = new()
+			var currencies = await _inCurrencyRepository.GetAllAsync(user.Id, true);
+			var deletedCurrency = currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id && aic.AccountId == otherAccount.Id);
+
+			if (deletedCurrency is not null)
 			{
-				AccountId = otherAccount.Id,
-				CreatedByUserId = user.Id,
-				CurrencyId = otherCurrency.Id,
-				Id = Guid.NewGuid(),
-				OwnerId = user.Id,
-				ModifiedByUserId = user.Id,
-			};
-			var otherId = await _inCurrencyRepository.AddAsync(otherAccountCurrency, dbTransaction);
-			otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(otherId, user.Id, dbTransaction);
-			AddedCurrencyToAccount(otherCurrency.AlphabeticCode, otherAccount.Id);
+				RestoringDeletedCurrency(otherCurrency.AlphabeticCode, otherAccount.Id);
+				deletedCurrency.DeletedAt = null;
+				deletedCurrency.DeletedByUserId = null;
+				deletedCurrency.ModifiedByUserId = user.Id;
+
+				await _inCurrencyRepository.UpdateAsync(deletedCurrency, dbTransaction);
+				otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(deletedCurrency.Id, user.Id, dbTransaction);
+				RestoredDeletedCurrency(otherCurrency.AlphabeticCode, otherAccount.Id);
+			}
+			else
+			{
+				AddingCurrencyToAccount(otherCurrency.AlphabeticCode, otherAccount.Id);
+				otherAccountCurrency = new()
+				{
+					AccountId = otherAccount.Id,
+					CreatedByUserId = user.Id,
+					CurrencyId = otherCurrency.Id,
+					Id = Guid.NewGuid(),
+					OwnerId = user.Id,
+					ModifiedByUserId = user.Id,
+				};
+				var otherId = await _inCurrencyRepository.AddAsync(otherAccountCurrency, dbTransaction);
+				otherAccountCurrency = await _inCurrencyRepository.GetByIdAsync(otherId, user.Id, dbTransaction);
+				AddedCurrencyToAccount(otherCurrency.AlphabeticCode, otherAccount.Id);
+			}
 		}
 
 		var transfer = new TransferEntity
@@ -485,44 +502,37 @@ public abstract partial class TransactionImportService<TTransaction>
 	[LoggerMessage(EventId = 1000, Level = Debug, Message = "Searching for bank account by name {AccountName}")]
 	private partial void SearchingBankAccountByName(string accountName);
 
-	[LoggerMessage(EventId = 1001, Level = Information,
-		Message = "Matched bank account {AccountName} to existing account {AccountId}")]
+	[LoggerMessage(EventId = 1001, Level = Information, Message = "Matched bank account {AccountName} to existing account {AccountId}")]
 	private partial void MatchedBankAccountByName(string accountName, Guid accountId);
 
 	[LoggerMessage(EventId = 1002, Level = Debug, Message = "Searching for bank account by BIC {Bic}")]
 	private partial void SearchingBankAccountByBic(string bic);
 
-	[LoggerMessage(EventId = 1003, Level = Information,
-		Message = "Matched bank account {Bic} to existing account {AccountId}")]
+	[LoggerMessage(EventId = 1003, Level = Information, Message = "Matched bank account {Bic} to existing account {AccountId}")]
 	private partial void MatchedBankAccountByBic(string bic, Guid accountId);
 
 	[LoggerMessage(EventId = 1004, Level = Debug, Message = "Could not find existing bank account, creating a new one")]
 	private partial void CreatingNewBankAccount();
 
-	[LoggerMessage(EventId = 1005, Level = Information,
-		Message = "Created bank account {AccountId} with name {AccountName}")]
+	[LoggerMessage(EventId = 1005, Level = Information, Message = "Created bank account {AccountId} with name {AccountName}")]
 	private partial void CreatedNewBankAccount(Guid accountId, string accountName);
 
-	[LoggerMessage(EventId = 1006, Level = Debug,
-		Message = "Searching for currency by alphabetic code {AlphabeticCode}")]
+	[LoggerMessage(EventId = 1006, Level = Debug, Message = "Searching for currency by alphabetic code {AlphabeticCode}")]
 	private partial void SearchingCurrencyByAlphabeticCode(string alphabeticCode);
 
-	[LoggerMessage(EventId = 1007, Level = Information,
-		Message = "Found currency {CurrencyId} by alphabetic code {AlphabeticCode}")]
+	[LoggerMessage(EventId = 1007, Level = Information, Message = "Found currency {CurrencyId} by alphabetic code {AlphabeticCode}")]
 	private partial void FoundCurrencyByAlphabeticCode(string alphabeticCode, Guid currencyId);
 
 	[LoggerMessage(EventId = 1008, Level = Debug, Message = "Searching for user account by IBAN {Iban}")]
 	private partial void SearchingUserAccountByIban(string iban);
 
-	[LoggerMessage(EventId = 1009, Level = Information,
-		Message = "Matched user account {Iban} to existing account {AccountId}")]
+	[LoggerMessage(EventId = 1009, Level = Information, Message = "Matched user account {Iban} to existing account {AccountId}")]
 	private partial void MatchedUserAccountByIban(string iban, Guid accountId);
 
 	[LoggerMessage(EventId = 1010, Level = Debug, Message = "Could not find existing user account, creating a new one")]
 	private partial void CreatingNewUserAccount();
 
-	[LoggerMessage(EventId = 1011, Level = Information,
-		Message = "Created user account {AccountId} with name {AccountName}")]
+	[LoggerMessage(EventId = 1011, Level = Information, Message = "Created user account {AccountId} with name {AccountName}")]
 	private partial void CreatedNewUserAccount(Guid accountId, string accountName);
 
 	[LoggerMessage(EventId = 1012, Level = Debug, Message = "Searching for transfer by {BankReference}")]
@@ -552,8 +562,7 @@ public abstract partial class TransactionImportService<TTransaction>
 	[LoggerMessage(EventId = 1020, Level = Information, Message = "Created unidentified account {AccountId}")]
 	private partial void CreatedUnidentifiedAccount(Guid accountId);
 
-	[LoggerMessage(EventId = 1021, Level = Debug,
-		Message = "Searching for currency {AlphabeticCode} in account {AccountId}")]
+	[LoggerMessage(EventId = 1021, Level = Debug, Message = "Searching for currency {AlphabeticCode} in account {AccountId}")]
 	private partial void SearchingForCurrencyInAccount(string alphabeticCode, Guid accountId);
 
 	[LoggerMessage(EventId = 1022, Level = Debug, Message = "Adding currency {AlphabeticCode} to account {AccountId}")]
@@ -561,6 +570,12 @@ public abstract partial class TransactionImportService<TTransaction>
 
 	[LoggerMessage(EventId = 1023, Level = Debug, Message = "Added currency {AlphabeticCode} to account {AccountId}")]
 	private partial void AddedCurrencyToAccount(string alphabeticCode, Guid accountId);
+
+	[LoggerMessage(EventId = 1024, Level = Debug, Message = "Restoring deleted currency {AlphabeticCode} for account {AccountId}")]
+	private partial void RestoringDeletedCurrency(string alphabeticCode, Guid accountId);
+
+	[LoggerMessage(EventId = 1025, Level = Debug, Message = "Restored deleted currency {AlphabeticCode} for account {AccountId}")]
+	private partial void RestoredDeletedCurrency(string alphabeticCode, Guid accountId);
 }
 
 internal sealed record Bank(string? Name, string? Bic);
