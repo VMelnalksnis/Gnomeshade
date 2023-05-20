@@ -16,8 +16,6 @@
 Set-PSDebug -Trace 1
 
 $version = Get-Content version
-$publish_dir = "source\$Project\bin\Release\net7.0\$Runtime\publish"
-$archive_name = "${Project}_$Runtime.zip"
 
 $dotnetArgs = @()
 $dotnetArgs = $dotnetArgs + "publish"
@@ -33,7 +31,3 @@ $dotnetArgs = $dotnetArgs + "/warnAsError"
 $dotnetArgs = $dotnetArgs + "/nologo"
 
 & dotnet $dotnetArgs
-
-Push-Location $publish_dir
-& 7z a -mx9 -r -w $archive_name
-#Pop-Location

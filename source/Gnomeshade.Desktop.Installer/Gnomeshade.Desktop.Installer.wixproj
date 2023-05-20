@@ -20,7 +20,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="PublishDesktopApp" BeforeTargets="BeforeBuild">
+	<Target Name="PublishDesktopApp" BeforeTargets="PreBuildEvent">
 		<Exec Command="powershell.exe -NonInteractive -NoProfile -ExecutionPolicy Unrestricted deployment\publish.ps1 Gnomeshade.Desktop win10-x64 $(BUILD_NUMBER) '$(BUILD_TAG)'" WorkingDirectory="..\..\" ConsoleToMSBuild="true"/>
 	</Target>
 </Project>
