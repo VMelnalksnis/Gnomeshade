@@ -18,10 +18,6 @@ jobs:
     name: Build for Windows
     runs-on: windows-latest
     timeout-minutes: 20
-    strategy:
-      matrix:
-        project:
-          - Gnomeshade.Desktop.Installer
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
@@ -36,11 +32,18 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - run: dotnet restore --locked-mode /p:Configuration="Release"
-      - name: Publish project
+
+      - name: Publish desktop application
+        run: >
+          deployment/publish.ps1
+          "Gnomeshade.Desktop"
+          "win10-x64"
+          "${{ github.run_number }}"
+          $env:BUILD_TAG
+
+      - name: Build installer
         id: publish
-        run: deployment/build.ps1 ${{ matrix.project }}
-        env:
-          BUILD_NUMBER: ${{ github.run_number }}
+        run: deployment/build.ps1 "Gnomeshade.Desktop.Installer"
 
       - uses: actions/upload-artifact@v3.1.2
         with:

@@ -5,10 +5,10 @@
     [Parameter(Mandatory = $true, Position = 1)]
     [System.String]
     $Runtime,
-    [Parameter(Mandatory = $true, Position = 3)]
+    [Parameter(Mandatory = $true, Position = 2)]
     [System.Int32]
     $RunNumber,
-    [Parameter(Position = 4)]
+    [Parameter(Position = 3)]
     [System.String]
     $Tag
 )
