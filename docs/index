@@ -13,11 +13,11 @@
 <body>
 
 <nav id="top" class="top-navigation">
-	<a href="index.html">Gnomeshade</a>
+	<a href="index">Gnomeshade</a>
 	<ul>
 		<li><a href="https://gnomeshade-demo.azurewebsites.net/">Demo</a></li>
 		<li><a href="https://github.com/VMelnalksnis/Gnomeshade/releases/latest">Download</a></li>
-		<li><a href="changelog.html">Changelog</a></li>
+		<li><a href="changelog">Changelog</a></li>
 		<li><a href="https://github.com/VMelnalksnis/Gnomeshade">Contribute</a></li>
 	</ul>
 </nav>
