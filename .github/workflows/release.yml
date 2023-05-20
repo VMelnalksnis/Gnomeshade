@@ -17,6 +17,7 @@ jobs:
   build-windows:
     name: Build for Windows
     runs-on: windows-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         project:
@@ -54,6 +55,7 @@ jobs:
           - Gnomeshade.WebApi
     name: Build for Linux
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
@@ -90,6 +92,7 @@ jobs:
     name: Build debian package
     needs: build-linux
     runs-on: ubuntu-20.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.2
 
@@ -112,6 +115,7 @@ jobs:
   nuget:
     name: Publish NuGet packages
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: actions/setup-dotnet@v3.0.3
@@ -142,6 +146,7 @@ jobs:
   docker-release:
     name: Build docker image
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.2
       - uses: docker/login-action@v2.1.0
@@ -160,6 +165,7 @@ jobs:
     name: Deploy demo app
     needs: build-linux
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       AZURE_APP_NAME: gnomeshade-demo
       AZURE_APP_DOMAIN: 'https://gnomeshade-demo.azurewebsites.net/'
@@ -238,6 +244,7 @@ jobs:
       - build-linux
       - build-deb
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/download-artifact@v3.0.2
         id: download
