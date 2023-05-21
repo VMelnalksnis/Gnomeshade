@@ -44,7 +44,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	protected override string UpdateSql => Queries.Transaction.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE t.deleted_at IS NULL AND t.id = @id";
+	protected override string FindSql => "WHERE t.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "t.deleted_at IS NULL";
@@ -93,6 +93,7 @@ AND {AccessSql}";
 		var sql = $@"{Queries.Link.Select}
          INNER JOIN transaction_links ON transaction_links.link_id = links.id
          WHERE transaction_links.transaction_id = @id
+           AND links.deleted_at IS NULL 
            AND {AccessSql};";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return DbConnection.QueryAsync<LinkEntity>(command);

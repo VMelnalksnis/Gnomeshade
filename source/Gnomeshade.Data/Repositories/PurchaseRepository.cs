@@ -41,7 +41,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	protected override string UpdateSql => Queries.Purchase.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE purchases.deleted_at IS NULL AND purchases.id = @id";
+	protected override string FindSql => "WHERE purchases.id = @id";
 
 	protected override string NotDeleted => "purchases.deleted_at IS NULL";
 
@@ -52,7 +52,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -64,7 +64,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		DbTransaction dbTransaction)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, dbTransaction);
 		return GetEntitiesAsync(command);
 	}
@@ -80,7 +80,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 		CancellationToken cancellationToken)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.product_id = @{nameof(productId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.product_id = @{nameof(productId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { productId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}

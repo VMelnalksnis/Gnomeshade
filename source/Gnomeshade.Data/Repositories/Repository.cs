@@ -145,7 +145,7 @@ public abstract class Repository<TEntity>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
 	{
 		Logger.GetId(id);
-		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
+		var sql = $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		return GetAsync(command);
 	}
@@ -158,7 +158,7 @@ public abstract class Repository<TEntity>
 	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.GetIdWithTransaction(id);
-		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
+		var sql = $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
 		return GetAsync(command);
 	}
@@ -202,7 +202,7 @@ public abstract class Repository<TEntity>
 	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id);
-		var sql = $"{SelectSql} {FindSql};";
+		var sql = $"{SelectSql} {FindSql} AND {NotDeleted};";
 		var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
 		return FindAsync(command);
 	}
@@ -214,7 +214,7 @@ public abstract class Repository<TEntity>
 	public Task<TEntity?> FindByIdAsync(Guid id, DbTransaction dbTransaction)
 	{
 		Logger.FindIdWithTransaction(id);
-		var sql = $"{SelectSql} {FindSql};";
+		var sql = $"{SelectSql} {FindSql} AND {NotDeleted};";
 		var command = new CommandDefinition(sql, new { id }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -275,9 +275,9 @@ public abstract class Repository<TEntity>
 
 	private string GetAccessSql(AccessLevel accessLevel) => accessLevel switch
 	{
-		AccessLevel.Read => $"{SelectSql} {FindSql} AND {AccessSql}",
-		AccessLevel.Write => $"{SelectSql} {FindSql} AND {WriteAccessSql}",
-		AccessLevel.Delete => $"{SelectSql} {FindSql} AND {DeleteAccessSql}",
+		AccessLevel.Read => $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}",
+		AccessLevel.Write => $"{SelectSql} {FindSql} AND {NotDeleted} AND {WriteAccessSql}",
+		AccessLevel.Delete => $"{SelectSql} {FindSql} AND {NotDeleted} AND {DeleteAccessSql}",
 		_ => throw new ArgumentOutOfRangeException(nameof(accessLevel), accessLevel, null),
 	};
 }

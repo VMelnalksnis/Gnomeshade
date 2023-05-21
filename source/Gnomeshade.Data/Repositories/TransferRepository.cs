@@ -41,7 +41,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	protected override string UpdateSql => Queries.Transfer.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE transfers.deleted_at IS NULL AND transfers.id = @id";
+	protected override string FindSql => "WHERE transfers.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "transfers.deleted_at IS NULL";
@@ -53,7 +53,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.transaction_id = @transactionId AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.transaction_id = @transactionId AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -66,7 +66,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.FindBankReferenceWithTransaction(bankReference);
-		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.bank_reference = @bankReference AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.bank_reference = @bankReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
 		return FindAsync(command);
 	}
@@ -76,7 +76,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 		Guid ownerId,
 		DbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.external_reference = @externalReference AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.external_reference = @externalReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { externalReference, ownerId }, dbTransaction);
 		return GetEntitiesAsync(command);
 	}

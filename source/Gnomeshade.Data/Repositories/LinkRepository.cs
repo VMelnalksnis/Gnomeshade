@@ -34,7 +34,7 @@ public sealed class LinkRepository : Repository<LinkEntity>
 	protected override string UpdateSql => Queries.Link.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE links.deleted_at IS NULL AND links.id = @id";
+	protected override string FindSql => "WHERE links.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "links.deleted_at IS NULL";

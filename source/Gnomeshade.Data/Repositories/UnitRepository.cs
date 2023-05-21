@@ -34,11 +34,11 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	protected override string UpdateSql => Queries.Unit.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE u.deleted_at IS NULL AND u.id = @id";
+	protected override string FindSql => "WHERE u.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "u.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE u.deleted_at IS NULL AND u.normalized_name = upper(@name)";
+	protected override string NameSql => "WHERE u.normalized_name = upper(@name)";
 }

@@ -44,7 +44,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	protected override string NotDeleted => "loans.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE loans.deleted_at IS NULL AND loans.id = @id";
+	protected override string FindSql => "WHERE loans.id = @id";
 
 	/// <inheritdoc />
 	public override Task<IEnumerable<LoanEntity>> GetAllAsync(
@@ -53,7 +53,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
@@ -69,7 +69,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 		CancellationToken cancellationToken)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE loans.deleted_at IS NULL AND (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
+		var sql = $"{SelectSql} WHERE {NotDeleted} AND (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { counterpartyId, ownerId }, cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}

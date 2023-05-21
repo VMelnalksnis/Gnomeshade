@@ -34,11 +34,11 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	protected override string UpdateSql => Queries.Product.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE p.deleted_at IS NULL AND p.id = @id";
+	protected override string FindSql => "WHERE p.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "p.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE p.deleted_at IS NULL AND p.normalized_name = upper(@name)";
+	protected override string NameSql => "WHERE p.normalized_name = upper(@name)";
 }

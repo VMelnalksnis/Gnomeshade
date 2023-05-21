@@ -34,11 +34,11 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	protected override string UpdateSql => Queries.Category.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE c.deleted_at IS NULL AND c.id = @id";
+	protected override string FindSql => "WHERE c.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "c.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.deleted_at IS NULL AND c.normalized_name = upper(@name)";
+	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
 }
