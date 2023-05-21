@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,7 +63,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	/// <param name="ownerId">The id of the owner of the transfer.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, IDbTransaction dbTransaction)
+	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.FindBankReferenceWithTransaction(bankReference);
 		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.bank_reference = @bankReference AND {AccessSql}";
@@ -75,7 +74,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	public Task<IEnumerable<TransferEntity>> GetByExternalReferenceAsync(
 		string externalReference,
 		Guid ownerId,
-		IDbTransaction dbTransaction)
+		DbTransaction dbTransaction)
 	{
 		var sql = $"{SelectSql} WHERE transfers.deleted_at IS NULL AND transfers.external_reference = @externalReference AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { externalReference, ownerId }, dbTransaction);

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +44,7 @@ public abstract class TransactionItemRepository<TEntity> : Repository<TEntity>
 	public virtual Task<IEnumerable<TEntity>> GetAllAsync(
 		Guid transactionId,
 		Guid ownerId,
-		IDbTransaction dbTransaction)
+		DbTransaction dbTransaction)
 	{
 		throw new NotImplementedException();
 	}

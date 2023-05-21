@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,7 +61,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	public override Task<IEnumerable<PurchaseEntity>> GetAllAsync(
 		Guid transactionId,
 		Guid ownerId,
-		IDbTransaction dbTransaction)
+		DbTransaction dbTransaction)
 	{
 		Logger.GetAll();
 		var sql = $"{SelectSql} WHERE purchases.deleted_at IS NULL AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";

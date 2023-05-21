@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -99,7 +98,7 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 	private async Task<ActionResult?> FindConflictingTransaction(
 		Guid transactionId,
 		Guid userId,
-		IDbTransaction dbTransaction)
+		DbTransaction dbTransaction)
 	{
 		var transaction = await _transactionRepository.FindByIdAsync(transactionId, userId, dbTransaction, AccessLevel.Write);
 		if (transaction is not null)

@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,7 +52,7 @@ public sealed class AccountUnitOfWork
 	/// <param name="account">The account to create.</param>
 	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>The id of the created account.</returns>
-	public async Task<Guid> AddAsync(AccountEntity account, IDbTransaction dbTransaction)
+	public async Task<Guid> AddAsync(AccountEntity account, DbTransaction dbTransaction)
 	{
 		if (account.Id == Guid.Empty)
 		{
@@ -84,7 +83,7 @@ public sealed class AccountUnitOfWork
 	/// <param name="account">The account to create.</param>
 	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>The id of the created account.</returns>
-	public async Task<Guid> AddWithCounterpartyAsync(AccountEntity account, IDbTransaction dbTransaction)
+	public async Task<Guid> AddWithCounterpartyAsync(AccountEntity account, DbTransaction dbTransaction)
 	{
 		var counterparty = new CounterpartyEntity
 		{
@@ -123,7 +122,7 @@ public sealed class AccountUnitOfWork
 		await dbTransaction.CommitAsync();
 	}
 
-	private async Task DeleteAsync(AccountEntity account, Guid ownerId, IDbTransaction dbTransaction)
+	private async Task DeleteAsync(AccountEntity account, Guid ownerId, DbTransaction dbTransaction)
 	{
 		foreach (var currency in account.Currencies)
 		{
@@ -133,7 +132,7 @@ public sealed class AccountUnitOfWork
 		await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
 	}
 
-	private Task UpdateAsync(AccountEntity account, UserEntity modifiedBy, IDbTransaction dbTransaction)
+	private Task UpdateAsync(AccountEntity account, UserEntity modifiedBy, DbTransaction dbTransaction)
 	{
 		account.ModifiedByUserId = modifiedBy.Id;
 		return _repository.UpdateAsync(account, dbTransaction);

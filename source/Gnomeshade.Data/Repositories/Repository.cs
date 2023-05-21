@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -75,7 +74,7 @@ public abstract class Repository<TEntity>
 	/// <param name="entity">The entity to add.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created entity.</returns>
-	public Task<Guid> AddAsync(TEntity entity, IDbTransaction dbTransaction)
+	public Task<Guid> AddAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(InsertSql, entity, dbTransaction);
@@ -97,7 +96,7 @@ public abstract class Repository<TEntity>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task DeleteAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
+	public Task DeleteAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
 		var command = new CommandDefinition(DeleteSql, new { id, ownerId }, dbTransaction);
@@ -156,7 +155,7 @@ public abstract class Repository<TEntity>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The entity with the specified id.</returns>
-	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction)
+	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.GetIdWithTransaction(id);
 		var sql = $"{SelectSql} {FindSql} AND {AccessSql}";
@@ -188,7 +187,7 @@ public abstract class Repository<TEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <param name="accessLevel">The access level to check.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, IDbTransaction dbTransaction, AccessLevel accessLevel = AccessLevel.Read)
+	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, DbTransaction dbTransaction, AccessLevel accessLevel = AccessLevel.Read)
 	{
 		Logger.FindIdWithTransaction(id, accessLevel);
 		var sql = GetAccessSql(accessLevel);
@@ -212,7 +211,7 @@ public abstract class Repository<TEntity>
 	/// <param name="id">The id to to search by.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, IDbTransaction dbTransaction)
+	public Task<TEntity?> FindByIdAsync(Guid id, DbTransaction dbTransaction)
 	{
 		Logger.FindIdWithTransaction(id);
 		var sql = $"{SelectSql} {FindSql};";
@@ -233,7 +232,7 @@ public abstract class Repository<TEntity>
 	/// <param name="entity">The entity to update.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task UpdateAsync(TEntity entity, IDbTransaction dbTransaction)
+	public Task UpdateAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.UpdatingEntityWithTransaction();
 		return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);

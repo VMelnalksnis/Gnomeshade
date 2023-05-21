@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 
@@ -43,7 +42,7 @@ public sealed class TransactionUnitOfWork
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created transaction.</returns>
 	/// <exception cref="ArgumentException"><paramref name="transaction"/> does not have any items.</exception>
-	public async Task<Guid> AddAsync(TransactionEntity transaction, IDbTransaction dbTransaction)
+	public async Task<Guid> AddAsync(TransactionEntity transaction, DbTransaction dbTransaction)
 	{
 		if (transaction.Id == Guid.Empty)
 		{
@@ -70,7 +69,7 @@ public sealed class TransactionUnitOfWork
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId, IDbTransaction dbTransaction)
+	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId, DbTransaction dbTransaction)
 	{
 		await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
 	}
@@ -93,7 +92,7 @@ public sealed class TransactionUnitOfWork
 	/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, IDbTransaction dbTransaction)
+	public Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, DbTransaction dbTransaction)
 	{
 		transaction.ModifiedByUserId = modifiedBy.Id;
 		return _repository.UpdateAsync(transaction, dbTransaction);

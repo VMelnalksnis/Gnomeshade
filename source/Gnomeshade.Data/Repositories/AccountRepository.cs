@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Threading;
@@ -57,7 +56,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The account with the IBAN if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, IDbTransaction dbTransaction)
+	public Task<AccountEntity?> FindByIbanAsync(string iban, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.FindByIbanWithTransaction(iban);
 		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.iban = @iban AND {AccessSql};";
@@ -70,7 +69,7 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The account with the BIC if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, IDbTransaction dbTransaction)
+	public Task<AccountEntity?> FindByBicAsync(string bic, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.FindByBicWithTransaction(bic);
 		var sql = $"{SelectSql} WHERE a.deleted_at IS NULL AND aic.deleted_at IS NULL AND a.bic = @bic AND {AccessSql};";

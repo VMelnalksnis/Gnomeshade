@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Data;
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +51,7 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, IDbTransaction dbTransaction, CancellationToken cancellationToken = default)
+	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, DbTransaction dbTransaction, CancellationToken cancellationToken = default)
 	{
 		Logger.FindNameWithTransaction(name);
 		var sql = $"{SelectSql} {NameSql} AND {AccessSql} and {NotDeleted}";
