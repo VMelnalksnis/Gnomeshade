@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 
 using Gnomeshade.Avalonia.Core.Accounts;
@@ -20,15 +21,29 @@ using Gnomeshade.Avalonia.Core.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>A container view which manages navigation and the currently active view.</summary>
-public sealed class MainWindowViewModel : ViewModelBase
+public sealed partial class MainWindowViewModel : ViewModelBase
 {
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
 
 	private ViewModelBase? _activeView;
+
+	/// <summary>Gets or sets the window height.</summary>
+	[Notify]
+	private int _windowHeight;
+
+	/// <summary>Gets or sets the window width.</summary>
+	[Notify]
+	private int _windowWidth;
+
+	/// <summary>Gets or sets the window state.</summary>
+	[Notify]
+	private WindowState _windowState;
 
 	/// <summary>Initializes a new instance of the <see cref="MainWindowViewModel"/> class.</summary>
 	/// <param name="serviceProvider">Dependency injection service provider.</param>
@@ -37,16 +52,17 @@ public sealed class MainWindowViewModel : ViewModelBase
 	{
 		_serviceProvider = serviceProvider;
 		_userConfigurationMonitor = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>();
+
+		var preferences = _userConfigurationMonitor.CurrentValue.Preferences;
+		_windowHeight = preferences?.WindowHeight ?? 600;
+		_windowWidth = preferences?.WindowWidth ?? 800;
+		_windowState = preferences?.WindowState ?? WindowState.Normal;
 	}
 
-	/// <summary>
-	/// Gets a value indicating whether it's possible to log out.
-	/// </summary>
+	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
 	public bool CanLogOut => ActiveView is not null and not LoginViewModel;
 
-	/// <summary>
-	/// Gets or sets the currently active view.
-	/// </summary>
+	/// <summary>Gets or sets the currently active view.</summary>
 	public ViewModelBase? ActiveView
 	{
 		get => _activeView;
@@ -142,6 +158,22 @@ public sealed class MainWindowViewModel : ViewModelBase
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="PreferencesViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToPreferences() => SwitchTo<PreferencesViewModel>();
+
+	/// <summary>Event handler for <see cref="IClassicDesktopStyleApplicationLifetime.ShutdownRequested"/>.</summary>
+	/// <param name="sender">The object that sent the event.</param>
+	/// <param name="eventArgs">Event arguments.</param>
+	public async void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs eventArgs)
+	{
+		var configuration = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>().CurrentValue;
+		var writer = _serviceProvider.GetRequiredService<UserConfigurationWriter>();
+
+		var preferences = configuration.Preferences ??= new();
+		preferences.WindowHeight = WindowHeight;
+		preferences.WindowWidth = WindowWidth;
+		preferences.WindowState = WindowState;
+
+		await writer.Write(configuration);
+	}
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()
 	{

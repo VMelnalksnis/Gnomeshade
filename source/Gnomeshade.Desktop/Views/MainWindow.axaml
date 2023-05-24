@@ -15,6 +15,10 @@
 	WindowStartupLocation="CenterScreen"
 	ExtendClientAreaToDecorationsHint="False"
 
+	Height="{Binding WindowHeight, Mode=TwoWay}"
+	Width="{Binding WindowWidth, Mode=TwoWay}"
+	WindowState="{Binding WindowState, Mode=TwoWay}"
+
 	x:CompileBindings="True"
 	x:DataType="core:MainWindowViewModel">
 

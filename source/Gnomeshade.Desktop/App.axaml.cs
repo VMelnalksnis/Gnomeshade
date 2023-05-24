@@ -115,10 +115,9 @@ public sealed class App : Application
 	{
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
-			desktop.MainWindow = new MainWindow
-			{
-				DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>(),
-			};
+			var viewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
+			desktop.ShutdownRequested += viewModel.OnShutdownRequested;
+			desktop.MainWindow = new MainWindow { DataContext = viewModel };
 		}
 
 		base.OnFrameworkInitializationCompleted();
