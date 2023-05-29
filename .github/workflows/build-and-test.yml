@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3.5.2
-      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
@@ -65,7 +65,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.2
-      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
@@ -150,7 +150,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3.5.2
-      - uses: actions/setup-dotnet@v3.0.3
+      - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
           node-version: 18
