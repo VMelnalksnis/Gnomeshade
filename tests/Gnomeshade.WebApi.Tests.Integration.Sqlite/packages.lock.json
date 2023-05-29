@@ -1590,7 +1590,7 @@
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[7.0.5, )",
           "Microsoft.AspNetCore.Identity.UI": "[7.0.5, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.1.0, )",
-          "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
+          "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.1.0, )",
           "Microsoft.Extensions.Http.Polly": "[7.0.5, )",
           "NodaTime": "[3.1.9, )",
           "NodaTime.Serialization.SystemTextJson": "[1.0.0, )",
@@ -1811,11 +1811,11 @@
       },
       "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": {
         "type": "CentralTransitive",
-        "requested": "[5.0.0, )",
-        "resolved": "5.0.0",
-        "contentHash": "GZH7F1iDtJKw23qkqQaAnBh9Rw+GVUq5SK0ldfAqMh+2syFRtzPkvQUl0V+qe2wuP0QRr1zG82G812ZN8AU6ig==",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "p45pSXCJPbx+p9gFNNQPUC547KpqP5cRJke6aygq/M7UzCrJNmJNqD+65pIpY4muYbINqlgrC47h1oc0WbuP1g==",
         "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0"
+          "Microsoft.AspNetCore.Mvc.Versioning": "5.1.0"
         }
       },
       "Microsoft.Data.Sqlite": {

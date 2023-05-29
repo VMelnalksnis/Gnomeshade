@@ -89,11 +89,11 @@
       },
       "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": {
         "type": "Direct",
-        "requested": "[5.0.0, )",
-        "resolved": "5.0.0",
-        "contentHash": "GZH7F1iDtJKw23qkqQaAnBh9Rw+GVUq5SK0ldfAqMh+2syFRtzPkvQUl0V+qe2wuP0QRr1zG82G812ZN8AU6ig==",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "p45pSXCJPbx+p9gFNNQPUC547KpqP5cRJke6aygq/M7UzCrJNmJNqD+65pIpY4muYbINqlgrC47h1oc0WbuP1g==",
         "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Versioning": "5.0.0"
+          "Microsoft.AspNetCore.Mvc.Versioning": "5.1.0"
         }
       },
       "Microsoft.EntityFrameworkCore.Tools": {
