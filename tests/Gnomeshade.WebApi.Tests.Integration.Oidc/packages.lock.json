@@ -1558,7 +1558,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.5, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[7.0.5, )",
           "Microsoft.AspNetCore.Identity.UI": "[7.0.5, )",
-          "Microsoft.AspNetCore.Mvc.Versioning": "[5.0.0, )",
+          "Microsoft.AspNetCore.Mvc.Versioning": "[5.1.0, )",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[7.0.5, )",
           "NodaTime": "[3.1.9, )",
@@ -1764,9 +1764,9 @@
       },
       "Microsoft.AspNetCore.Mvc.Versioning": {
         "type": "CentralTransitive",
-        "requested": "[5.0.0, )",
-        "resolved": "5.0.0",
-        "contentHash": "mN9IARvNpHMBD2/oGmp5Bxp1Dg45Hfcp+LWaAyTtL2HisWLMOIcf0Ox1qW9IvCvdbHM+2A9dWEInhiqBsNxsJA=="
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "UX8w9BlCiZpr6Ox4YAve1w0CkI1CAovukGNzKd7v0+5pZc8lzuG5tRovucr1RWIKHs0E/Yx8563CN7KzaB3bpw=="
       },
       "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": {
         "type": "CentralTransitive",
