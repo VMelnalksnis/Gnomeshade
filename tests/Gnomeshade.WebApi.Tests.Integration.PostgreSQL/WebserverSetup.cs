@@ -17,6 +17,7 @@ public static class WebserverSetup
 {
 	internal static List<WebserverFixture> WebserverFixtures { get; } = new List<PostgreSQLFixture>
 	{
+		new("16beta1"),
 		new("15"),
 		new("14"),
 		new("13"),
