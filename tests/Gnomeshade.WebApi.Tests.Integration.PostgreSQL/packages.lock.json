@@ -122,11 +122,11 @@
       },
       "Testcontainers.PostgreSql": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "MGtxYQeZLvbZK06A491xA4I5rAo99E1xkDqJ638aMCGl8Q2JBPmNZU28pJrwEvenrhoNF5o37jm58fLprtX2Hw==",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "SpoxXUSgLr3hd3Do9VP0xLxHR+OKcOX34U8bSXhQj4B5U235e2G3z/VikqNm9nPG9qGKKleQED04v4taQwnl/g==",
         "dependencies": {
-          "Testcontainers": "3.1.0"
+          "Testcontainers": "3.2.0"
         }
       },
       "VMelnalksnis.Testcontainers.Keycloak": {
@@ -207,8 +207,8 @@
       },
       "Docker.DotNet": {
         "type": "Transitive",
-        "resolved": "3.125.13",
-        "contentHash": "p1DrW2Sw4ND2jFlIvpHB8/pY5o5HIkDalbGAI8tUvqjJR6n0/ubos7kDGWI+Xbx9+L3US3SUR8r59Zwq+ZxBvw==",
+        "resolved": "3.125.15",
+        "contentHash": "XN8FKxVv8Mjmwu104/Hl9lM61pLY675s70gzwSj8KR5pwblo8HfWLcCuinh9kYsqujBkMH4HVRCEcRuU6al4BQ==",
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.Buffers": "4.5.1",
@@ -217,10 +217,10 @@
       },
       "Docker.DotNet.X509": {
         "type": "Transitive",
-        "resolved": "3.125.13",
-        "contentHash": "+rhZU3AK4cgiRJQwramWZ2ud/tfGDZ5L7sQ6m1AtvFTUi7gEafHahRwLmdeGOov3NgW8aKD+TFRi9Ht97B+jBA==",
+        "resolved": "3.125.15",
+        "contentHash": "ONQN7ImrL3tHStUUCCPHwrFFQVpIpE+7L6jaDAMwSF+yTEmeWBmRARQZDRuvfj/+WtB8RR0oTW0tT3qQMSyHOw==",
         "dependencies": {
-          "Docker.DotNet": "3.125.13"
+          "Docker.DotNet": "3.125.15"
         }
       },
       "Google.Protobuf": {
@@ -1482,11 +1482,11 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "3.1.0",
-        "contentHash": "LHyBFUdqdNaGcCsS3ylXlSMfg8V6Pv9uewbTuztcNdidLH/XAdrBH2eG5Ycvq5O/f3d4mqsCBjOh3YmbTG5OTw==",
+        "resolved": "3.2.0",
+        "contentHash": "q4WXHpfCjOmPs78EWN3Hxe78eVsT4p4wNPy6Azpiwo79yowtsKrwybRNfScoJdVdWAjwXSSm6hiIcZY2CVT6OQ==",
         "dependencies": {
-          "Docker.DotNet": "3.125.13",
-          "Docker.DotNet.X509": "3.125.13",
+          "Docker.DotNet": "3.125.15",
+          "Docker.DotNet.X509": "3.125.15",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.3",
           "Portable.BouncyCastle": "1.9.0",
