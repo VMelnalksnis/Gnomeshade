@@ -51,8 +51,6 @@ public sealed partial class TransactionRefund : ViewModelBase
 		var creation = new TransactionCreation
 		{
 			OwnerId = target.OwnerId,
-			BookedAt = target.BookedAt,
-			ValuedAt = target.ValuedAt,
 			Description = target.Description,
 			ReconciledAt = target.ReconciledAt,
 			ImportedAt = target.ImportedAt,

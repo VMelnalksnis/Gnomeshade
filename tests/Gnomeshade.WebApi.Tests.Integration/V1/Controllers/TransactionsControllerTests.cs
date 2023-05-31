@@ -70,16 +70,34 @@ public sealed class TransactionsControllerTests : WebserverTests
 	[Test]
 	public async Task PutTransaction()
 	{
-		var transactionCreationModel = new TransactionCreation
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
+		var transactionCreationModel = new TransactionCreation();
 
 		var transactionId = Guid.NewGuid();
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
-		var transaction = await _client.GetTransactionAsync(transactionId);
-		var transactions = await _client.GetTransactionsAsync(new(null, null));
+
 		var detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
+		detailedTransactions.Should().NotContain(detailed => detailed.Id == transactionId);
+
+		var transferCreation = new TransferCreation
+		{
+			TransactionId = transactionId,
+			SourceAmount = 1,
+			SourceAccountId = _account1.Currencies.First().Id,
+			TargetAmount = 1,
+			TargetAccountId = _account2.Currencies.First().Id,
+			Order = 2,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
+		};
+
+		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation);
+		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with
+		{
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
+		});
+
+		var transaction = await _client.GetTransactionAsync(transactionId);
+		var transactions = await _client.GetTransactionsAsync();
+		detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
 
 		transactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
 		detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
@@ -97,12 +115,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 	[Test]
 	public async Task Transfers()
 	{
-		var transactionCreationModel = new TransactionCreation
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var transactionId = await _client.CreateTransactionAsync(new());
 
 		var transferId = Guid.NewGuid();
 		var transferCreation = new TransferCreation
@@ -113,6 +126,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			TargetAmount = 1,
 			TargetAccountId = _account2.Currencies.First().Id,
 			Order = 2,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		await _client.PutTransferAsync(transferId, transferCreation);
@@ -122,7 +136,6 @@ public sealed class TransactionsControllerTests : WebserverTests
 
 		transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
 		detailedTransaction.Transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
-		transfer.Should().BeEquivalentTo(transferCreation, options => options.Excluding(creation => creation.OwnerId));
 
 		var bankReference = $"{Guid.NewGuid():N}";
 		transferCreation = transferCreation with { BankReference = bankReference };
@@ -150,6 +163,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			SourceAccountId = _account1.Currencies.First().Id,
 			TargetAmount = 1,
 			TargetAccountId = _account2.Currencies.First().Id,
+			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		(await FluentActions
@@ -163,12 +177,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 	[Test]
 	public async Task Purchases()
 	{
-		var transactionCreationModel = new TransactionCreation
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var transactionId = await _client.CreateTransactionAsync(new());
 
 		var purchaseId = Guid.NewGuid();
 		var purchaseCreation = new PurchaseCreation
@@ -235,8 +244,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 	[Test]
 	public async Task Links()
 	{
-		var transactionCreation = new TransactionCreation { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
-		var transactionId = await _client.CreateTransactionAsync(transactionCreation);
+		var transactionId = await _client.CreateTransactionAsync(new());
 
 		var uri = $"https://localhost/documents/{Guid.NewGuid()}";
 		var linkCreation = new LinkCreation { Uri = new(uri) };
@@ -262,12 +270,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 	[Test]
 	public async Task Loans()
 	{
-		var transactionCreationModel = new TransactionCreation
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
-
-		var transactionId = await _client.CreateTransactionAsync(transactionCreationModel);
+		var transactionId = await _client.CreateTransactionAsync(new());
 		var receiver = _counterparty;
 		var issuer = _otherCounterparty;
 

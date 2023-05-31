@@ -9,8 +9,6 @@
 UPDATE transactions
 SET modified_at           = CURRENT_TIMESTAMP,
 	modified_by_user_id   = @ModifiedByUserId,
-	booked_at             = @BookedAt,
-	valued_at             = @ValuedAt,
 	description           = @Description,
 	imported_at           = @ImportedAt,
 	reconciled_at         = @ReconciledAt,

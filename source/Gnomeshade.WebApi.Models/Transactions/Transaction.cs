@@ -32,12 +32,6 @@ public record Transaction
 	/// <summary>The id of the user that last modified this transaction.</summary>
 	public Guid ModifiedByUserId { get; set; }
 
-	/// <summary>The point in time when this transaction was posted to an account on the account servicer accounting books.</summary>
-	public Instant? BookedAt { get; set; }
-
-	/// <summary>The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	public Instant? ValuedAt { get; set; }
-
 	/// <summary>The description of the transaction.</summary>
 	public string? Description { get; set; }
 

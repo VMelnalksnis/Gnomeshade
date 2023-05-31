@@ -64,4 +64,10 @@ public sealed record Transfer
 
 	/// <summary>The order of the transfer within a transaction.</summary>
 	public uint? Order { get; set; }
+
+	/// <summary>The point in time when this transfer was posted to an account on the account servicer accounting books.</summary>
+	public Instant? BookedAt { get; set; }
+
+	/// <summary>The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public Instant? ValuedAt { get; set; }
 }

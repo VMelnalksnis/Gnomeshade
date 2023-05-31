@@ -10,8 +10,6 @@ public static class TransactionExtensions
 {
 	public static TransactionCreation ToCreation(this Transaction transaction) => new()
 	{
-		BookedAt = transaction.BookedAt,
-		ValuedAt = transaction.ValuedAt,
 		ReconciledAt = transaction.ReconciledAt,
 		Description = transaction.Description,
 	};

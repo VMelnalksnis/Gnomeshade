@@ -11,7 +11,9 @@
      bank_reference,
      external_reference,
      internal_reference,
-     "order")
+     "order",
+     booked_at,
+     valued_at)
 VALUES
     (@Id,
      @OwnerId,
@@ -25,5 +27,7 @@ VALUES
      @BankReference,
      @ExternalReference,
      @InternalReference,
-     @Order)
+     @Order,
+     @BookedAt,
+     @ValuedAt)
 RETURNING id;

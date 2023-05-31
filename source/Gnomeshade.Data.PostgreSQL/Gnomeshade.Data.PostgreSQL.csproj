@@ -85,6 +85,7 @@
 		<EmbeddedResource Include="Migrations\00000025_bank_reference.sql" />
 		<EmbeddedResource Include="Migrations\00000027_remove_disabled.sql" />
 		<EmbeddedResource Include="Migrations\00000028_identity_id_type.sql" />
+		<EmbeddedResource Include="Migrations\00000029_transfer_dates.sql" />
 	</ItemGroup>
 
 </Project>

@@ -68,19 +68,19 @@ public static class Routes
 	/// <summary>Transaction routes.</summary>
 	public static class Transactions
 	{
-		internal const string _uri = "Transactions";
-		private const string _detailedUri = $"{_uri}/Details";
+		internal const string Uri = "Transactions";
+		private const string _detailedUri = $"{Uri}/Details";
 
 		/// <summary>Gets the relative uri for all transactions within the specified interval.</summary>
 		/// <param name="interval">The interval for which to get transactions.</param>
 		/// <returns>Relative uri for all transaction with a query for the specified interval.</returns>
-		public static string DateRangeUri(Interval interval) => DateRangeUri(_uri, interval);
+		public static string DateRangeUri(Interval interval) => DateRangeUri(Uri, interval);
 
 		internal static string DetailedDateRangeUri(Interval interval) => DateRangeUri(_detailedUri, interval);
 
-		internal static string IdUri(Guid id) => $"{_uri}/{Format(id)}";
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
-		internal static string DetailedIdUri(Guid id) => $"{_uri}/{Format(id)}/Details";
+		internal static string DetailedIdUri(Guid id) => $"{Uri}/{Format(id)}/Details";
 
 		internal static string LinkUri(Guid id) => $"{IdUri(id)}/Links";
 
@@ -181,7 +181,7 @@ public static class Routes
 
 		internal static string ForCounterparty(Guid counterpartyId)
 		{
-			const string url = $"{Transactions._uri}/{_uri}";
+			const string url = $"{Transactions.Uri}/{_uri}";
 			return $"{url}?counterpartyId={Format(counterpartyId)}";
 		}
 	}

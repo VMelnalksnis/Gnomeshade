@@ -15,6 +15,8 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
 
+using NodaTime;
+
 using PropertyChanged.SourceGenerator;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
@@ -23,6 +25,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 {
 	private readonly IDialogService _dialogService;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 
 	/// <summary>Gets or sets the amount withdrawn from <see cref="SourceAccount"/>.</summary>
@@ -61,6 +64,22 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private string? _internalReference;
 
+	/// <summary>Gets or sets the date on which the transfer was posted to an account on the account servicer accounting books.</summary>
+	[Notify]
+	private DateTimeOffset? _bookingDate;
+
+	/// <summary>Gets or sets the time at which the transfer was posted to an account on the account servicer accounting books.</summary>
+	[Notify]
+	private TimeSpan? _bookingTime;
+
+	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	[Notify]
+	private DateTimeOffset? _valueDate;
+
+	/// <summary>Gets or sets the time at which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	[Notify]
+	private TimeSpan? _valueTime;
+
 	/// <summary>Gets a collection of all active accounts.</summary>
 	[Notify(Setter.Private)]
 	private List<Account> _accounts;
@@ -77,17 +96,20 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
 	/// <param name="id">The id of the transfer to edit.</param>
 	public TransferUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
+		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
 		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
 		_dialogService = dialogService;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
 		Id = id;
 
@@ -103,6 +125,28 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
+	/// <inheritdoc cref="Transfer.BookedAt"/>
+	public ZonedDateTime? BookedAt => BookingDate.HasValue
+		? new LocalDateTime(
+				BookingDate.Value.Year,
+				BookingDate.Value.Month,
+				BookingDate.Value.Day,
+				BookingTime.GetValueOrDefault().Hours,
+				BookingTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault())
+		: null;
+
+	/// <inheritdoc cref="Transfer.ValuedAt"/>
+	public ZonedDateTime? ValuedAt => ValueDate.HasValue
+		? new LocalDateTime(
+				ValueDate.Value.Year,
+				ValueDate.Value.Month,
+				ValueDate.Value.Day,
+				ValueTime.GetValueOrDefault().Hours,
+				ValueTime.GetValueOrDefault().Minutes)
+			.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault())
+		: null;
+
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>
 	public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;
 
@@ -113,7 +157,8 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		SourceCurrency is not null &&
 		TargetAmount is not null &&
 		TargetAccount is not null &&
-		TargetCurrency is not null;
+		TargetCurrency is not null &&
+		((BookingDate.HasValue && BookingTime.HasValue) || (ValueDate.HasValue && ValueTime.HasValue));
 
 	/// <summary>Shows a modal dialog for creating or editing the <see cref="SourceAccount"/>.</summary>
 	/// <param name="window">The current window.</param>
@@ -173,6 +218,14 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		ExternalReference = transfer.ExternalReference;
 		InternalReference = transfer.InternalReference;
 
+		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
+
+		BookingDate = transfer.BookedAt?.InZone(defaultZone).ToDateTimeOffset();
+		BookingTime = transfer.BookedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+
+		ValueDate = transfer.ValuedAt?.InZone(defaultZone).ToDateTimeOffset();
+		ValueTime = transfer.ValuedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+
 		Order = transfer.Order;
 	}
 
@@ -190,6 +243,8 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 			ExternalReference = ExternalReference,
 			InternalReference = InternalReference,
 			Order = Order,
+			BookedAt = BookedAt?.ToInstant(),
+			ValuedAt = ValuedAt?.ToInstant(),
 		};
 
 		var id = Id ?? Guid.NewGuid();

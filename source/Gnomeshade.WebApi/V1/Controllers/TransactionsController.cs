@@ -75,8 +75,11 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		_accountRepository = accountRepository;
 	}
 
-	/// <inheritdoc />
-	[NonAction]
+	/// <summary>Gets all transactions.</summary>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
+	/// <response code="200">Successfully got all transactions.</response>
+	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
 	public override Task<List<Transaction>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
@@ -104,25 +107,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
 		var detailedTransaction = ToDetailed(transaction, userAccountsInCurrencyIds);
 		return Ok(detailedTransaction);
-	}
-
-	/// <summary>Gets all transactions.</summary>
-	/// <param name="timeRange">A time range for filtering transactions.</param>
-	/// <param name="cancellation">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
-	/// <response code="200">Successfully got all transactions.</response>
-	[HttpGet]
-	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
-	public async Task<List<Transaction>> GetAll(
-		[FromQuery] OptionalTimeRange timeRange,
-		CancellationToken cancellation)
-	{
-		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-		var transactions = (timeRange.From is null && timeRange.To is null) || (timeRange.From == Instant.MinValue && timeRange.To == Instant.MaxValue)
-			? await Repository.GetAllAsync(ApplicationUser.Id, false, cancellation)
-			: await Repository.GetAllAsync(fromDate, toDate, ApplicationUser.Id, cancellation);
-
-		return transactions.Select(MapToModel).ToList();
 	}
 
 	/// <summary>Gets all transactions.</summary>

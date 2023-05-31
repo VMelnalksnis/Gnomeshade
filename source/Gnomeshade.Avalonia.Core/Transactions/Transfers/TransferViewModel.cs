@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Transactions;
 
+using NodaTime;
+
 using PropertyChanged.SourceGenerator;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
@@ -20,6 +22,7 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly IDialogService _dialogService;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
 
 	private TransferUpsertionViewModel _details;
@@ -32,18 +35,21 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
 	public TransferViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
 		IDialogService dialogService,
+		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_dialogService = dialogService;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = new(activityService, gnomeshadeClient, _dialogService, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -64,7 +70,7 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		SetDefaultCurrency(this);
 	}

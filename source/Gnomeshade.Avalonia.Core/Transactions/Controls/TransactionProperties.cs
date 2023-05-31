@@ -15,22 +15,6 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 /// <summary>Transaction information besides transaction items.</summary>
 public sealed partial class TransactionProperties : ViewModelBase
 {
-	/// <summary>Gets or sets the date on which the transaction was posted to an account on the account servicer accounting books.</summary>
-	[Notify]
-	private DateTimeOffset? _bookingDate;
-
-	/// <summary>Gets or sets the time at which the transaction was posted to an account on the account servicer accounting books.</summary>
-	[Notify]
-	private TimeSpan? _bookingTime;
-
-	/// <summary>Gets or sets the date on which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	[Notify]
-	private DateTimeOffset? _valueDate;
-
-	/// <summary>Gets or sets the time at which assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
-	[Notify]
-	private TimeSpan? _valueTime;
-
 	/// <summary>Gets or sets the date on which the transaction was reconciled.</summary>
 	[Notify]
 	private DateTimeOffset? _reconciliationDate;
@@ -70,28 +54,6 @@ public sealed partial class TransactionProperties : ViewModelBase
 	{
 	}
 
-	/// <inheritdoc cref="Transaction.BookedAt"/>
-	public ZonedDateTime? BookedAt => BookingDate.HasValue
-		? new LocalDateTime(
-				BookingDate.Value.Year,
-				BookingDate.Value.Month,
-				BookingDate.Value.Day,
-				BookingTime.GetValueOrDefault().Hours,
-				BookingTime.GetValueOrDefault().Minutes)
-			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
-		: null;
-
-	/// <inheritdoc cref="Transaction.ValuedAt"/>
-	public ZonedDateTime? ValuedAt => ValueDate.HasValue
-		? new LocalDateTime(
-				ValueDate.Value.Year,
-				ValueDate.Value.Month,
-				ValueDate.Value.Day,
-				ValueTime.GetValueOrDefault().Hours,
-				ValueTime.GetValueOrDefault().Minutes)
-			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
-		: null;
-
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
 	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue
 		? new LocalDateTime(
@@ -118,9 +80,5 @@ public sealed partial class TransactionProperties : ViewModelBase
 	public bool IsImported => ImportedAt is not null;
 
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>
-	public bool IsValid =>
-		!Reconciled &&
-		((BookingDate.HasValue && BookingTime.HasValue) ||
-		(ValueDate.HasValue && ValueTime.HasValue)) &&
-		((ReconciledAt is null && ReconciliationTime is null) || ReconciledAt is not null);
+	public bool IsValid => !Reconciled && ((ReconciledAt is null && ReconciliationTime is null) || ReconciledAt is not null);
 }

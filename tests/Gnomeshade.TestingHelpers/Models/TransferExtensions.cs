@@ -18,5 +18,7 @@ public static class TransferExtensions
 		BankReference = transfer.BankReference,
 		ExternalReference = transfer.ExternalReference,
 		InternalReference = transfer.InternalReference,
+		BookedAt = transfer.BookedAt,
+		ValuedAt = transfer.ValuedAt,
 	};
 }

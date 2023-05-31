@@ -20,8 +20,6 @@ public sealed class TransactionFaker : ModifiableEntityFaker<TransactionEntity>
 	public TransactionFaker(Guid userId)
 		: base(userId)
 	{
-		RuleFor(transaction => transaction.BookedAt, faker => faker.Noda().Instant.Recent());
-		RuleFor(transaction => transaction.ValuedAt, faker => faker.Noda().Instant.Recent());
 		RuleFor(transaction => transaction.Description, faker => faker.Lorem.Sentence());
 		RuleFor(transaction => transaction.ImportedAt, faker => faker.Noda().Instant.Recent());
 		RuleFor(transaction => transaction.ReconciledAt, faker => faker.Noda().Instant.Recent());

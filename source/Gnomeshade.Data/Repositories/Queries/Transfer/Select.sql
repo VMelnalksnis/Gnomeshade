@@ -14,7 +14,9 @@
 	   transfers.bank_reference      AS BankReference,
 	   transfers.external_reference  AS ExternalReference,
 	   transfers.internal_reference  AS InternalReference,
-	   transfers."order"             AS "Order"
+	   transfers."order"             AS "Order",
+	   transfers.booked_at           AS BookedAt,
+	   transfers.valued_at           AS ValuedAt
 FROM transfers
 		 INNER JOIN owners ON owners.id = transfers.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id

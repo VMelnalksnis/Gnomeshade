@@ -11,8 +11,6 @@ using Gnomeshade.Data.Tests.Integration.Fakers;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
-using NodaTime;
-
 using static Gnomeshade.Data.Tests.Integration.DatabaseInitialization;
 
 namespace Gnomeshade.Data.Tests.Integration.UnitsOfWork;
@@ -42,8 +40,7 @@ public sealed class TransactionUnitOfWorkTests
 		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
 		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 		await dbTransaction.CommitAsync();
-		var now = SystemClock.Instance.GetCurrentInstant();
-		var allTransactions = await _repository.GetAllAsync(now - Duration.FromDays(31), now, TestUser.Id);
+		var allTransactions = await _repository.GetAllAsync(TestUser.Id);
 
 		findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 		allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);

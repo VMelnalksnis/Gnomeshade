@@ -6,8 +6,6 @@
 	   t.modified_by_user_id   ModifiedByUserId,
 	   t.deleted_at            DeletedAt,
 	   t.deleted_by_user_id    DeletedByUserId,
-	   t.booked_at             BookedAt,
-	   t.valued_at             ValuedAt,
 	   t.description,
 	   t.imported_at           ImportedAt,
 	   t.reconciled_at         ReconciledAt,

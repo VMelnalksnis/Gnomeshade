@@ -110,12 +110,10 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		var creation = new TransactionCreation
 		{
-			BookedAt = transaction.BookedAt,
 			Description = transaction.Description,
 			ImportedAt = transaction.ImportedAt,
 			OwnerId = transaction.OwnerId,
 			ReconciledAt = null,
-			ValuedAt = transaction.ValuedAt,
 		};
 
 		await GnomeshadeClient.PutTransactionAsync(transactionId, creation);
@@ -134,12 +132,6 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 
-		Properties.BookingDate = transaction.BookedAt?.InZone(defaultZone).ToDateTimeOffset();
-		Properties.BookingTime = transaction.BookedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
-
-		Properties.ValueDate = transaction.ValuedAt?.InZone(defaultZone).ToDateTimeOffset();
-		Properties.ValueTime = transaction.ValuedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
-
 		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset();
 		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
 		Properties.Reconciled = transaction.Reconciled;
@@ -149,7 +141,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		if (transaction.RefundedBy is { } refundId)
 		{
-			var refundTransaction = await GnomeshadeClient.GetTransactionAsync(refundId);
+			var refundTransaction = await GnomeshadeClient.GetDetailedTransactionAsync(refundId);
 			var refundTime = (refundTransaction.ValuedAt ?? refundTransaction.BookedAt)!.Value;
 
 			Properties.RefundDate = refundTime.InZone(defaultZone).ToDateTimeOffset();
@@ -158,7 +150,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		Properties.Description = transaction.Description;
 
-		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, transactionId);
+		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
 		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
 		Links ??= new(ActivityService, GnomeshadeClient, transactionId);
 		Loans ??= new(ActivityService, GnomeshadeClient, transactionId);
@@ -190,8 +182,6 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		var creationModel = new TransactionCreation
 		{
-			BookedAt = Properties.BookedAt?.ToInstant(),
-			ValuedAt = Properties.ValuedAt?.ToInstant(),
 			ReconciledAt = Properties.ReconciledAt?.ToInstant(),
 			ImportedAt = Properties.ImportedAt?.ToInstant(),
 			Description = Properties.Description,

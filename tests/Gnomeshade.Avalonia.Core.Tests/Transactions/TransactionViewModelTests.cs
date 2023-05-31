@@ -30,19 +30,19 @@ public class TransactionViewModelTests
 		using (new AssertionScope())
 		{
 			_viewModel.Selected.Should().BeNull();
-			_viewModel.Details.CanSave.Should().BeFalse();
+			_viewModel.Details.Properties.Description.Should().BeNull();
 		}
 
 		_viewModel.Selected = _viewModel.Rows.First();
 		await _viewModel.UpdateSelection();
 
 		_viewModel.Details.Should().NotBeNull();
-		_viewModel.Details.CanSave.Should().BeTrue();
+		_viewModel.Details.Properties.Description.Should().NotBeNull();
 
 		_viewModel.Selected = null;
 		await _viewModel.UpdateSelection();
 
-		_viewModel.Details.CanSave.Should().BeFalse();
+		_viewModel.Details.Properties.Description.Should().BeNull();
 	}
 
 	[Test]

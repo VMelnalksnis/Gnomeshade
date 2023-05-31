@@ -107,11 +107,7 @@ public static class GnomeshadeClientExtensions
 		Guid? ownerId = null)
 	{
 		var transactionId = Guid.NewGuid();
-		var transaction = new TransactionCreation
-		{
-			BookedAt = SystemClock.Instance.GetCurrentInstant(),
-			OwnerId = ownerId,
-		};
+		var transaction = new TransactionCreation { OwnerId = ownerId };
 		await transactionClient.PutTransactionAsync(transactionId, transaction);
 		return await transactionClient.GetTransactionAsync(transactionId);
 	}
@@ -135,6 +131,7 @@ public static class GnomeshadeClientExtensions
 			SourceAmount = 10.5m,
 			TargetAmount = 10.5m,
 			OwnerId = ownerId,
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
 		await gnomeshadeClient.PutTransferAsync(transferId, transfer);

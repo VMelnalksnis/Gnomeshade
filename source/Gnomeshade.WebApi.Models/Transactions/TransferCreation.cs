@@ -7,6 +7,8 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.WebApi.Models.Transactions;
 
 /// <summary>Information needed to create a transfer.</summary>
@@ -45,4 +47,12 @@ public sealed record TransferCreation : TransactionItemCreation
 
 	/// <inheritdoc cref="Transfer.Order"/>
 	public uint? Order { get; set; }
+
+	/// <inheritdoc cref="Transfer.BookedAt"/>
+	[RequiredIfNull(nameof(ValuedAt))]
+	public Instant? BookedAt { get; set; }
+
+	/// <inheritdoc cref="Transfer.ValuedAt"/>
+	[RequiredIfNull(nameof(BookedAt))]
+	public Instant? ValuedAt { get; set; }
 }

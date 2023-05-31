@@ -17,6 +17,8 @@ SET modified_at         = CURRENT_TIMESTAMP,
 	bank_reference      = @BankReference,
 	external_reference  = @ExternalReference,
 	internal_reference  = @InternalReference,
-	"order"             = @Order
+	"order"             = @Order,
+	booked_at           = @BookedAt,
+	valued_at           = @ValuedAt
 FROM t
 WHERE transfers.id IN (SELECT id FROM t);

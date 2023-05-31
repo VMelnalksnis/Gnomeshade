@@ -9,17 +9,25 @@ using System.Threading.Tasks;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 
+using NodaTime;
+
 namespace Gnomeshade.Avalonia.Core.Tests.Transactions.Transfers;
 
 [TestOf(typeof(TransferViewModel))]
-public class TransferViewModelTests
+public sealed class TransferViewModelTests
 {
 	private TransferViewModel _viewModel = null!;
 
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), Guid.Empty);
+		_viewModel = new(
+			new ActivityService(),
+			new DesignTimeGnomeshadeClient(),
+			new DesignTimeDialogService(),
+			DateTimeZoneProviders.Tzdb,
+			Guid.Empty);
+
 		await _viewModel.RefreshAsync();
 	}
 

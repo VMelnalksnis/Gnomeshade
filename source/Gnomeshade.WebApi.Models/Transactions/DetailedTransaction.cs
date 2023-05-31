@@ -6,12 +6,20 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
+using NodaTime;
+
 namespace Gnomeshade.WebApi.Models.Transactions;
 
 /// <summary>A <see cref="Transaction"/> with all sub-resources and additional details.</summary>
 [PublicAPI]
 public sealed record DetailedTransaction : Transaction
 {
+	/// <summary>The point in time when this transaction was posted to an account on the account servicer accounting books.</summary>
+	public Instant? BookedAt { get; set; }
+
+	/// <summary>The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public Instant? ValuedAt { get; set; }
+
 	/// <summary>All transfers in the transaction.</summary>
 	public List<Transfer> Transfers { get; set; } = null!;
 
@@ -44,8 +52,6 @@ public sealed record DetailedTransaction : Transaction
 		CreatedByUserId = transaction.CreatedByUserId,
 		ModifiedAt = transaction.ModifiedAt,
 		ModifiedByUserId = transaction.ModifiedByUserId,
-		BookedAt = transaction.BookedAt,
-		ValuedAt = transaction.ValuedAt,
 		Description = transaction.Description,
 		ImportedAt = transaction.ImportedAt,
 		ReconciledAt = transaction.ReconciledAt,

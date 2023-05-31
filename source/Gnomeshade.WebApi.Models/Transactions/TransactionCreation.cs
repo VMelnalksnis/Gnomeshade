@@ -17,14 +17,6 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 [PublicAPI]
 public sealed record TransactionCreation : Creation
 {
-	/// <inheritdoc cref="Transaction.BookedAt"/>
-	[RequiredIfNull(nameof(ValuedAt))]
-	public Instant? BookedAt { get; set; }
-
-	/// <inheritdoc cref="Transaction.ValuedAt"/>
-	[RequiredIfNull(nameof(BookedAt))]
-	public Instant? ValuedAt { get; set; }
-
 	/// <inheritdoc cref="Transaction.Description"/>
 	public string? Description { get; set; }
 

@@ -107,15 +107,17 @@ public sealed class PrivateByDefaultTests : WebserverTests
 	public async Task Transactions()
 	{
 		var transaction = await _client.CreateTransactionAsync();
+		var counterparty = await _client.CreateCounterpartyAsync();
+		var account1 = await _client.CreateAccountAsync(counterparty.Id);
+		var account2 = await _client.CreateAccountAsync(counterparty.Id);
+		_ = await _client.CreateTransferAsync(transaction.Id, account1.Id, account2.Id);
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 		await ShouldBeNotFoundForOthers(client => client.GetDetailedTransactionAsync(transaction.Id));
-		(await _client.GetTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
-		(await _client.GetTransactionsAsync(new(Instant.MinValue, Instant.MaxValue))).Should().ContainSingle(t => t.Id == transaction.Id);
 		(await _client.GetDetailedTransactionsAsync(new(null, null))).Should().ContainSingle(t => t.Id == transaction.Id);
 		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue))).Should().ContainSingle(t => t.Id == transaction.Id);
 
-		var updatedTransaction = transaction.ToCreation() with { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
+		var updatedTransaction = transaction.ToCreation() with { Description = Guid.NewGuid().ToString() };
 
 		await ShouldBeForbiddenForOthers(client => client.PutTransactionAsync(transaction.Id, updatedTransaction));
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));

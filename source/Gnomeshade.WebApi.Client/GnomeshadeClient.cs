@@ -124,7 +124,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc/>
 	public Task<Guid> CreateTransactionAsync(TransactionCreation transaction) =>
-		PostAsync(Transactions._uri, transaction, _context.TransactionCreation);
+		PostAsync(Transactions.Uri, transaction, _context.TransactionCreation);
 
 	/// <inheritdoc />
 	public Task PutTransactionAsync(Guid id, TransactionCreation transaction) =>
@@ -140,9 +140,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Transaction>> GetTransactionsAsync(
-		Interval interval,
 		CancellationToken cancellationToken = default) =>
-		GetAsync(Transactions.DateRangeUri(interval), _context.ListTransaction, cancellationToken);
+		GetAsync(Transactions.Uri, _context.ListTransaction, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<DetailedTransaction>> GetDetailedTransactionsAsync(

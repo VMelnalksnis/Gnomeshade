@@ -107,11 +107,11 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
 	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
-		InitializeViewModel(new TransferUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, Guid.Empty, null));
+		InitializeViewModel(new TransferUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="TransferViewModel"/> for use during design time.</summary>
 	public static TransferViewModel TransferViewModel { get; } =
-		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, Guid.Empty));
+		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="PurchaseUpsertionViewModel"/> for use during design time.</summary>
 	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel { get; } =

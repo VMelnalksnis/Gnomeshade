@@ -365,6 +365,8 @@ public abstract partial class TransactionImportService<TTransaction>
 			BankReference = bankReference,
 			ExternalReference = externalReference,
 			Order = 0,
+			BookedAt = bookingDate,
+			ValuedAt = valueDate,
 		};
 
 		transfer = creditDebit == CreditDebitCode.CRDT
@@ -388,8 +390,6 @@ public abstract partial class TransactionImportService<TTransaction>
 			OwnerId = user.Id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			BookedAt = bookingDate,
-			ValuedAt = valueDate,
 			ImportedAt = _clock.GetCurrentInstant(),
 			Description = description,
 		};

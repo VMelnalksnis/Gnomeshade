@@ -167,12 +167,8 @@ public sealed class AccountsControllerTests : WebserverTests
 		AccountInCurrency target,
 		decimal targetAmount)
 	{
-		var transaction = new TransactionCreation
-		{
-			BookedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
 		var transactionId = Guid.NewGuid();
-		await _client.PutTransactionAsync(transactionId, transaction);
+		await _client.PutTransactionAsync(transactionId, new());
 
 		var transfer = new TransferCreation
 		{
@@ -181,6 +177,7 @@ public sealed class AccountsControllerTests : WebserverTests
 			SourceAmount = sourceAmount,
 			TargetAccountId = target.Id,
 			TargetAmount = targetAmount,
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 		await _client.PutTransferAsync(Guid.NewGuid(), transfer);
 		return transactionId;

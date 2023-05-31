@@ -116,7 +116,6 @@ public sealed class Iso20022ControllerTests : WebserverTests
 
 		var transactionCreation = new TransactionCreation
 		{
-			BookedAt = Instant.FromUtc(2023, 03, 14, 0, 0, 0),
 			Description = "REIMBURSEMENT OF COMMISSION",
 		};
 
@@ -131,6 +130,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 			TargetAccountId = bankAccount.Currencies.Single(currency => currency.Currency.Id == euro.Id).Id,
 			ExternalReference = "ABC123456",
 			Order = 0,
+			BookedAt = Instant.FromUtc(2023, 03, 14, 0, 0, 0),
 		};
 
 		var transferId = Guid.NewGuid();

@@ -80,7 +80,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		var transaction = new Transaction
 		{
 			Id = Guid.Empty,
-			BookedAt = SystemClock.Instance.GetCurrentInstant(),
 			Description = "Some transaction description",
 		};
 
@@ -95,6 +94,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				SourceAccountId = spending.Currencies.Single().Id,
 				TargetAmount = 125.35m,
 				TargetAccountId = cash.Currencies.First().Id,
+				BookedAt = SystemClock.Instance.GetCurrentInstant(),
 			},
 			new()
 			{
@@ -104,6 +104,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				SourceAccountId = spending.Currencies.Single().Id,
 				TargetAmount = 1.95m,
 				TargetAccountId = cash.Currencies.First().Id,
+				BookedAt = SystemClock.Instance.GetCurrentInstant(),
 			},
 		};
 
@@ -245,8 +246,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_transactions.Add(new()
 		{
 			Id = id,
-			BookedAt = transaction.BookedAt,
-			ValuedAt = transaction.ValuedAt,
 			ReconciledAt = transaction.ReconciledAt,
 			Description = transaction.Description,
 			CreatedAt = Instant.FromDateTimeOffset(DateTimeOffset.UtcNow),
@@ -266,9 +265,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public async Task<DetailedTransaction> GetDetailedTransactionAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		var transaction = await GetTransactionAsync(id, cancellationToken);
+		var transfers = await GetTransfersAsync(cancellationToken);
 		return DetailedTransaction.FromTransaction(transaction) with
 		{
-			Transfers = await GetTransfersAsync(cancellationToken),
+			BookedAt = transfers.Select(transfer => transfer.BookedAt).Max(),
+			ValuedAt = transfers.Select(transfer => transfer.ValuedAt).Max(),
+			Transfers = transfers,
 			Purchases = await GetPurchasesAsync(transaction.Id, cancellationToken),
 			Loans = await GetLoansAsync(transaction.Id, cancellationToken),
 			Links = await GetTransactionLinksAsync(transaction.Id, cancellationToken),
@@ -276,9 +278,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public Task<List<Transaction>> GetTransactionsAsync(
-		Interval interval,
-		CancellationToken cancellationToken = default)
+	public Task<List<Transaction>> GetTransactionsAsync(CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_transactions.ToList());
 	}

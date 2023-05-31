@@ -49,27 +49,6 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string NotDeleted => "t.deleted_at IS NULL";
 
-	/// <summary>Gets all transactions which have their <see cref="TransactionEntity.BookedAt"/> within the specified period.</summary>
-	/// <param name="from">The start of the time range.</param>
-	/// <param name="to">The end of the time range.</param>
-	/// <param name="ownerId">The id of the owner of the transactions.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all transactions.</returns>
-	public async Task<List<TransactionEntity>> GetAllAsync(
-		Instant from,
-		Instant to,
-		Guid ownerId,
-		CancellationToken cancellationToken = default)
-	{
-		Logger.GetAll();
-		var sql =
-			$"{SelectSql} WHERE t.deleted_at IS NULL AND (t.valued_at >= @from OR t.booked_at >= @from) AND (t.valued_at <= @to OR t.booked_at <= @to) AND {AccessSql} ORDER BY t.valued_at DESC";
-		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
-
-		var transactions = await GetEntitiesAsync(command).ConfigureAwait(false);
-		return transactions.ToList();
-	}
-
 	public async Task<DetailedTransactionEntity?> FindDetailedAsync(
 		Guid id,
 		Guid ownerId,
@@ -79,8 +58,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		var sql = @$"{Queries.Transaction.SelectDetailed}
 WHERE transactions.deleted_at IS NULL 
 AND transactions.id = @id
-AND {AccessSql} 
-ORDER BY transactions.valued_at DESC";
+AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
 		var transactions = await GetDetailedTransactions(command);
 		return transactions.SingleOrDefault();
@@ -95,10 +73,9 @@ ORDER BY transactions.valued_at DESC";
 		Logger.GetAll();
 		var sql = @$"{Queries.Transaction.SelectDetailed}
 WHERE transactions.deleted_at IS NULL 
-AND (transactions.valued_at >= @from OR transactions.booked_at >= @from) 
-AND (transactions.valued_at <= @to OR transactions.booked_at <= @to) 
-AND {AccessSql} 
-ORDER BY transactions.valued_at DESC";
+AND (transfers.valued_at >= @from OR transfers.booked_at >= @from) 
+AND (transfers.valued_at <= @to OR transfers.booked_at <= @to) 
+AND {AccessSql}";
 		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
 		return GetDetailedTransactions(command);
 	}

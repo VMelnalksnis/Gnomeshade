@@ -15,8 +15,6 @@ using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
-using NodaTime;
-
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
 [TestFixtureSource(typeof(OwnerTestFixtureSource))]
@@ -151,11 +149,11 @@ public sealed class WriteAccessTests : WebserverTests
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 
-		var transactionCreation = transaction.ToCreation() with { ValuedAt = SystemClock.Instance.GetCurrentInstant() };
+		var transactionCreation = transaction.ToCreation() with { Description = Guid.NewGuid().ToString() };
 
 		await _otherClient.PutTransactionAsync(transaction.Id, transactionCreation);
 		var updatedTransaction = await _client.GetTransactionAsync(transaction.Id);
-		updatedTransaction.ValuedAt.Should().Be(updatedTransaction.ValuedAt);
+		updatedTransaction.Description.Should().Be(updatedTransaction.Description);
 
 		await ShouldBeNotFoundForOthers(client => client.GetTransactionAsync(transaction.Id));
 	}
