@@ -208,6 +208,8 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 					if (transfer is { DeletedAt: null })
 					{
 						detailed.Transfers.Add(transfer);
+						detailed.BookedAt = transfer.BookedAt;
+						detailed.ValuedAt = transfer.ValuedAt;
 					}
 
 					if (loan is { DeletedAt: null })
@@ -226,7 +228,11 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 
 		return transactions
 			.GroupBy(transaction => transaction.Id)
-			.Select(grouping => new DetailedTransactionEntity(grouping.First())
+			.Select(grouping => new DetailedTransactionEntity(grouping.First() with
+			{
+				BookedAt = grouping.Select(transaction => transaction.BookedAt).Max(),
+				ValuedAt = grouping.Select(transaction => transaction.ValuedAt).Max(),
+			})
 			{
 				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id).ToList(),
 				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id).ToList(),

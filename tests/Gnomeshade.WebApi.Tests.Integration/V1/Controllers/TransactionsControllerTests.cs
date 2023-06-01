@@ -100,7 +100,9 @@ public sealed class TransactionsControllerTests : WebserverTests
 		detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
 
 		transactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
-		detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
+		var detailed = detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Subject;
+		detailed.Should().BeEquivalentTo(transaction);
+		detailed.ValuedAt.Should().NotBeNull();
 
 		transactionCreationModel = transactionCreationModel with
 		{

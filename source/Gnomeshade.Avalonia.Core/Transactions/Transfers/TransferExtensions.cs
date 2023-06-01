@@ -8,11 +8,13 @@ using System.Linq;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 
 internal static class TransferExtensions
 {
-	internal static TransferOverview ToOverview(this Transfer transfer, List<Account> accounts)
+	internal static TransferOverview ToOverview(this Transfer transfer, List<Account> accounts, DateTimeZone timeZone)
 	{
 		var sourceAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
 		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
@@ -30,7 +32,9 @@ internal static class TransferExtensions
 			transfer.BankReference,
 			transfer.ExternalReference,
 			transfer.InternalReference,
-			transfer.Order);
+			transfer.Order,
+			transfer.BookedAt?.InZone(timeZone).ToDateTimeOffset(),
+			transfer.ValuedAt?.InZone(timeZone).ToDateTimeOffset());
 	}
 
 	internal static TransferSummary ToSummary(

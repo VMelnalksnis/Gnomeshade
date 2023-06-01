@@ -90,7 +90,7 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 		var overviews = transaction.Transfers
 			.OrderBy(transfer => transfer.Order)
 			.ThenBy(transfer => transfer.ModifiedAt)
-			.Select(transfer => transfer.ToOverview(accounts));
+			.Select(transfer => transfer.ToOverview(accounts, _dateTimeZoneProvider.GetSystemDefault()));
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;

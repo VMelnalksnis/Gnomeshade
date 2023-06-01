@@ -49,6 +49,16 @@
 						</StackPanel>
 					</DataTemplate>
 				</DataGridTemplateColumn>
+				<DataGridTemplateColumn
+					Header="Date" IsReadOnly="True"
+					SortMemberPath="Date" CanUserSort="True">
+					<DataTemplate DataType="transfers:TransferOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top"
+							Margin="5 0"
+							Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn
 					x:DataType="transfers:TransferOverview"
 					Header="Bank" IsReadOnly="True"
@@ -68,7 +78,7 @@
 					<Setter Property="Fill" Value="#05769d" />
 				</Style>
 			</DataGrid.Styles>
-				
+
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
 					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}"/>

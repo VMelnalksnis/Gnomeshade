@@ -23,6 +23,8 @@ public sealed class TransferOverview : PropertyChangedBase
 	/// <param name="externalReference">The external reference code of this transfer.</param>
 	/// <param name="internalReference">The internal reference code of this transfer.</param>
 	/// <param name="order">The order of the transfer within a transaction.</param>
+	/// <param name="bookedAt">The point in time when this transaction was posted to an account on the account servicer accounting books.</param>
+	/// <param name="valuedAt">The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</param>
 	public TransferOverview(
 		Guid id,
 		decimal sourceAmount,
@@ -34,7 +36,9 @@ public sealed class TransferOverview : PropertyChangedBase
 		string? bankReference,
 		string? externalReference,
 		string? internalReference,
-		uint? order)
+		uint? order,
+		DateTimeOffset? bookedAt,
+		DateTimeOffset? valuedAt)
 	{
 		Id = id;
 		SourceAmount = sourceAmount;
@@ -47,6 +51,8 @@ public sealed class TransferOverview : PropertyChangedBase
 		ExternalReference = externalReference;
 		InternalReference = internalReference;
 		Order = order;
+		BookedAt = bookedAt;
+		ValuedAt = valuedAt;
 	}
 
 	/// <summary>Gets the id of the transfer.</summary>
@@ -81,4 +87,13 @@ public sealed class TransferOverview : PropertyChangedBase
 
 	/// <summary>Gets the order of the transfer within a transaction.</summary>
 	public uint? Order { get; }
+
+	/// <summary>Gets the point in time when this transaction was posted to an account on the account servicer accounting books.</summary>
+	public DateTimeOffset? BookedAt { get; }
+
+	/// <summary>Gets the point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</summary>
+	public DateTimeOffset? ValuedAt { get; }
+
+	/// <summary>Gets the date of the transaction.</summary>
+	public DateTimeOffset? Date => ValuedAt ?? BookedAt;
 }
