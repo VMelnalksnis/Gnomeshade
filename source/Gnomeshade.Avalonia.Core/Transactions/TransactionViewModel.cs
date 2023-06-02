@@ -149,6 +149,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var overviews = transactions.Select(transaction =>
 		{
 			var transfers = transaction.Transfers
+				.OrderBy(transfer => transfer.Order)
 				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 				.ToList();
 
@@ -234,8 +235,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var counterparties = counterpartiesTask.Result;
 		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		var transfers = transaction
-			.Transfers
+		var transfers = transaction.Transfers
+			.OrderBy(transfer => transfer.Order)
 			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
 			.ToList();
 
