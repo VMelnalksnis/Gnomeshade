@@ -1,2 +1,19 @@
 ignore:
   - "**/*.axaml"
+
+comment:
+  layout: "header, diff, components"
+
+component_management:
+  individual_components:
+    - component_id: api
+      name: API
+      paths:
+        - source/Gnomeshade.Data*/**
+        - source/Gnomeshade.WebApi*/**
+
+    - component_id: ui
+      name: UI
+      paths:
+        - source/Gnomeshade.Avalonia*/**
+        - source/Gnomeshade.Desktop*/**
