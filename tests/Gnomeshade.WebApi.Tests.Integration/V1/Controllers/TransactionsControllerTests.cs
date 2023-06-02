@@ -89,20 +89,22 @@ public sealed class TransactionsControllerTests : WebserverTests
 			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
 		};
 
-		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation);
-		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with
-		{
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		});
+		await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
+		var expectedDate = SystemClock.Instance.GetCurrentInstant() + Duration.FromDays(1);
+		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with { ValuedAt = expectedDate, Order = 3 });
 
 		var transaction = await _client.GetTransactionAsync(transactionId);
 		var transactions = await _client.GetTransactionsAsync();
-		detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
+		detailedTransactions = await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 
 		transactions.Should().ContainSingle(t => t.Id == transactionId).Which.Should().BeEquivalentTo(transaction);
 		var detailed = detailedTransactions.Should().ContainSingle(t => t.Id == transactionId).Subject;
-		detailed.Should().BeEquivalentTo(transaction);
-		detailed.ValuedAt.Should().NotBeNull();
+		using (new AssertionScope())
+		{
+			detailed.Transfers.Should().HaveCount(2);
+			detailed.Should().BeEquivalentTo(transaction);
+			detailed.ValuedAt?.InUtc().Date.Should().Be(expectedDate.InUtc().Date);
+		}
 
 		transactionCreationModel = transactionCreationModel with
 		{
