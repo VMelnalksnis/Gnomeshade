@@ -32,7 +32,6 @@ public sealed class NordigenControllerTests : WebserverTests
 	}
 
 	[Test]
-	[Ignore("Sandbox institution is broken", Until = "2023-06-08")]
 	public async Task Import_ShouldReturnExpected()
 	{
 		var client = await Fixture.CreateAuthorizedClientAsync();
