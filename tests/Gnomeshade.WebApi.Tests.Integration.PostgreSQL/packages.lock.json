@@ -1506,10 +1506,10 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "1.1.2",
-        "contentHash": "cJY1sxR+yri1/yvGVI1wtSJCvtSD/2b/2j+QcmFMJwl9g5z2Uhsxi78076y1rL8anHabL9Kcfw85pBZ/Cu73qA==",
+        "resolved": "1.1.3",
+        "contentHash": "egE5o1Ma1Tp2cG3gg2bRgr5Gl9kDJmieOOS1WU4xoo7SuTQTVXlS9sfKBKzfxICycS6fO4Pp0j6ByjYkp+XiQw==",
         "dependencies": {
-          "NodaTime": "3.1.6",
+          "NodaTime": "3.1.9",
           "NodaTime.Serialization.SystemTextJson": "1.0.0"
         }
       },
@@ -1614,7 +1614,7 @@
           "Swashbuckle.AspNetCore.Annotations": "[6.5.0, )",
           "System.Linq.Async": "[6.0.1, )",
           "VMelnalksnis.ISO20022DotNet": "[0.3.3, )",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.1.2, )",
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.1.3, )",
           "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.2.0, )"
         }
       },
@@ -2253,9 +2253,9 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[1.1.2, )",
-        "resolved": "1.1.2",
-        "contentHash": "pGOBbxR6Isb4R+8tqDisG53T6n9Jrh1SLP38g42xp9zDrZlYK/J3pGAsGgAtUZlsQhcDUZ4xdMwnWYPAkXauNQ==",
+        "requested": "[1.1.3, )",
+        "resolved": "1.1.3",
+        "contentHash": "BO610Rs8mjxiH5JJtn/xner9j4zoXrxCL8EuS3Qr1e4cuk8dbnP0LDD8+9kgGAPt6Ak5jLW1Bt8SRk0uUbWxxQ==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
@@ -2263,9 +2263,9 @@
           "Microsoft.Extensions.Http": "7.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "7.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "7.0.0",
-          "NodaTime": "3.1.6",
+          "NodaTime": "3.1.9",
           "NodaTime.Serialization.SystemTextJson": "1.0.0",
-          "VMelnalksnis.NordigenDotNet": "1.1.2"
+          "VMelnalksnis.NordigenDotNet": "1.1.3"
         }
       },
       "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
