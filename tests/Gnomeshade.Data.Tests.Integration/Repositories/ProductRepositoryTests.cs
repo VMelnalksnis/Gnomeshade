@@ -34,7 +34,7 @@ public sealed class ProductRepositoryTests
 		var id = await _repository.AddAsync(productToAdd);
 		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
 		var findProduct = await _repository.FindByIdAsync(getProduct.Id, TestUser.Id);
-		var allProducts = await _repository.GetAllAsync(TestUser.Id);
+		var allProducts = await _repository.GetAsync(TestUser.Id);
 
 		var expectedProduct = productToAdd with
 		{

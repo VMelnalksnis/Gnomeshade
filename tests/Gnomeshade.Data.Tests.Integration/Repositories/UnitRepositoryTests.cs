@@ -34,7 +34,7 @@ public sealed class UnitRepositoryTests
 		var id = await _repository.AddAsync(unitToAdd);
 		var getUnit = await _repository.GetByIdAsync(id, TestUser.Id);
 		var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id);
-		var allUnits = await _repository.GetAllAsync(TestUser.Id);
+		var allUnits = await _repository.GetAsync(TestUser.Id);
 
 		var expectedUnit = unitToAdd with
 		{

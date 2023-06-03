@@ -3,12 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
-
-using Dapper;
 
 using Gnomeshade.Data.Entities;
 
@@ -34,26 +30,20 @@ public sealed class OwnerRepository : NamedRepository<OwnerEntity>
 	protected override string InsertSql => Queries.Owner.Insert;
 
 	/// <inheritdoc />
+	protected override string SelectAllSql => Queries.Owner.SelectAll;
+
+	/// <inheritdoc />
 	protected override string SelectSql => Queries.Owner.Select;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => throw new NotImplementedException();
 
-	protected override string FindSql => "WHERE o.id = @id";
-
-	/// <inheritdoc />
-	protected override string AccessSql => "users.id = @ownerId";
+	protected override string FindSql => "o.id = @id";
 
 	protected override string NotDeleted => "o.deleted_at IS NULL";
 
 	public Task AddDefaultAsync(Guid id, DbTransaction dbTransaction)
 	{
 		return AddAsync(new() { Id = id, Name = "Private", CreatedByUserId = id }, dbTransaction);
-	}
-
-	protected override async Task<IEnumerable<OwnerEntity>> GetEntitiesAsync(CommandDefinition command)
-	{
-		var owners = await DbConnection.QueryAsync<OwnerEntity>(command);
-		return owners.DistinctBy(owner => owner.Id).ToList();
 	}
 }

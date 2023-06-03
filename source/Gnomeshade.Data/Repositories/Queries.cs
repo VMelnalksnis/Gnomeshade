@@ -37,6 +37,8 @@ internal static class Queries
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Account)}.Select.sql");
 
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Account)}.SelectAll.sql");
+
 		internal static string Update { get; } = Read($"Queries.{nameof(Account)}.Update.sql");
 	}
 
@@ -49,64 +51,8 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(AccountInCurrency)}.Select.sql");
-	}
 
-	internal static class Counterparty
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Counterparty)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Counterparty)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Counterparty)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Counterparty)}.Update.sql");
-
-		internal static string Merge { get; } = Read($"Queries.{nameof(Counterparty)}.Merge.sql");
-	}
-
-	internal static class Currency
-	{
-		internal static string Select { get; } = Read($"Queries.{nameof(Currency)}.Select.sql");
-	}
-
-	internal static class Owner
-	{
-		internal static string Insert { get; } = Read($"Queries.{nameof(Owner)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Owner)}.Select.sql");
-	}
-
-	internal static class Ownership
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Ownership)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Ownership)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Ownership)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Ownership)}.Update.sql");
-	}
-
-	internal static class Link
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Link)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Link)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Link)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Link)}.Update.sql");
-	}
-
-	internal static class Product
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Product)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Product)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Product)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Product)}.Update.sql");
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(AccountInCurrency)}.SelectAll.sql");
 	}
 
 	internal static class Category
@@ -117,7 +63,103 @@ internal static class Queries
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Category)}.Select.sql");
 
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Category)}.SelectAll.sql");
+
 		internal static string Update { get; } = Read($"Queries.{nameof(Category)}.Update.sql");
+	}
+
+	internal static class Counterparty
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Counterparty)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Counterparty)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Counterparty)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Counterparty)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Counterparty)}.Update.sql");
+
+		internal static string Merge { get; } = Read($"Queries.{nameof(Counterparty)}.Merge.sql");
+	}
+
+	internal static class Currency
+	{
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Currency)}.SelectAll.sql");
+	}
+
+	internal static class Link
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Link)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Link)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Link)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Link)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Link)}.Update.sql");
+	}
+
+	internal static class Loan
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Loan)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Loan)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Loan)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Loan)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Loan)}.Update.sql");
+	}
+
+	internal static class Owner
+	{
+		internal static string Insert { get; } = Read($"Queries.{nameof(Owner)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Owner)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Owner)}.SelectAll.sql");
+	}
+
+	internal static class Ownership
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Ownership)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Ownership)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Ownership)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Ownership)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Ownership)}.Update.sql");
+	}
+
+	internal static class Product
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Product)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Product)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Product)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Product)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Product)}.Update.sql");
+	}
+
+	internal static class Purchase
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Purchase)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Purchase)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Purchase)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Purchase)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Purchase)}.Update.sql");
 	}
 
 	internal static class Transaction
@@ -127,6 +169,8 @@ internal static class Queries
 		internal static string Insert { get; } = Read($"Queries.{nameof(Transaction)}.Insert.sql");
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Transaction)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Transaction)}.SelectAll.sql");
 
 		internal static string SelectDetailed { get; } = Read($"Queries.{nameof(Transaction)}.SelectDetailed.sql");
 
@@ -143,29 +187,9 @@ internal static class Queries
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Transfer)}.Select.sql");
 
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Transfer)}.SelectAll.sql");
+
 		internal static string Update { get; } = Read($"Queries.{nameof(Transfer)}.Update.sql");
-	}
-
-	internal static class Purchase
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Purchase)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Purchase)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Purchase)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Purchase)}.Update.sql");
-	}
-
-	internal static class Loan
-	{
-		internal static string Delete { get; } = Read($"Queries.{nameof(Loan)}.Delete.sql");
-
-		internal static string Insert { get; } = Read($"Queries.{nameof(Loan)}.Insert.sql");
-
-		internal static string Select { get; } = Read($"Queries.{nameof(Loan)}.Select.sql");
-
-		internal static string Update { get; } = Read($"Queries.{nameof(Loan)}.Update.sql");
 	}
 
 	internal static class Unit
@@ -176,6 +200,8 @@ internal static class Queries
 
 		internal static string Select { get; } = Read($"Queries.{nameof(Unit)}.Select.sql");
 
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Unit)}.SelectAll.sql");
+
 		internal static string Update { get; } = Read($"Queries.{nameof(Unit)}.Update.sql");
 	}
 
@@ -183,7 +209,7 @@ internal static class Queries
 	{
 		internal static string Insert { get; } = Read($"Queries.{nameof(User)}.Insert.sql");
 
-		internal static string Select { get; } = Read($"Queries.{nameof(User)}.Select.sql");
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(User)}.SelectAll.sql");
 
 		internal static string Update { get; } = Read($"Queries.{nameof(User)}.Update.sql");
 	}

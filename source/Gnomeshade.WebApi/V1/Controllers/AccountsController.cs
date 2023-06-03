@@ -66,8 +66,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[ProducesResponseType(typeof(List<Account>), Status200OK)]
 	public async Task<List<Account>> GetAll(CancellationToken cancellationToken)
 	{
-		var accounts = await _repository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
-
+		var accounts = await _repository.GetAsync(ApplicationUser.Id, cancellationToken);
 		return accounts.Select(MapToModel).ToList();
 	}
 

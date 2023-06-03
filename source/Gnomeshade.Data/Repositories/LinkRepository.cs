@@ -28,14 +28,17 @@ public sealed class LinkRepository : Repository<LinkEntity>
 	protected override string InsertSql => Queries.Link.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Link.Select;
+	protected override string SelectAllSql => Queries.Link.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Link.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE links.id = @id";
+	protected override string FindSql => "links.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "links.deleted_at IS NULL";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Link.Select;
 }

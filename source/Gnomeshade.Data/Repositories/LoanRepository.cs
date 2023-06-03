@@ -8,12 +8,12 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Dapper;
-
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
+
+using static Gnomeshade.Data.Repositories.AccessLevel;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -35,7 +35,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	protected override string InsertSql => Queries.Loan.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Loan.Select;
+	protected override string SelectAllSql => Queries.Loan.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Loan.Update;
@@ -44,33 +44,38 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	protected override string NotDeleted => "loans.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE loans.id = @id";
+	protected override string FindSql => "loans.id = @id";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Loan.Select;
 
 	/// <inheritdoc />
 	public override Task<IEnumerable<LoanEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND loans.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND loans.transaction_id = @transactionId",
+			new { transactionId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Gets all loans of the specified counterparty.</summary>
 	/// <param name="counterpartyId">The id of the counterparty for which to get the loans.</param>
-	/// <param name="ownerId">The id of the owner of the loans.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all loans for the specified counterparty.</returns>
 	public Task<IEnumerable<LoanEntity>> GetAllForCounterpartyAsync(
 		Guid counterpartyId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND (loans.issuing_counterparty_id = @{nameof(counterpartyId)} OR loans.receiving_counterparty_id = @{nameof(counterpartyId)}) AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { counterpartyId, ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND (loans.issuing_counterparty_id = @counterpartyId OR loans.receiving_counterparty_id = @counterpartyId)",
+			new { counterpartyId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 }

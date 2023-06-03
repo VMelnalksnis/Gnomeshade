@@ -10,6 +10,7 @@ public static class LoanExtensions
 {
 	public static LoanCreation ToCreation(this Loan loan) => new()
 	{
+		OwnerId = loan.OwnerId,
 		TransactionId = loan.TransactionId,
 		IssuingCounterpartyId = loan.IssuingCounterpartyId,
 		ReceivingCounterpartyId = loan.ReceivingCounterpartyId,

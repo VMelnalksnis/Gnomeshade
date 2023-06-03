@@ -35,7 +35,7 @@ public sealed class CategoryRepositoryTests
 
 		var tagId = await _repository.AddAsync(tag);
 
-		(await _repository.GetAllAsync(TestUser.Id))
+		(await _repository.GetAsync(TestUser.Id))
 			.Should()
 			.ContainSingle()
 			.Which.Id.Should()

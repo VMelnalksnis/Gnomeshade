@@ -7,12 +7,12 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Dapper;
-
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
+
+using static Gnomeshade.Data.Repositories.AccessLevel;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -29,33 +29,40 @@ public abstract class NamedRepository<TNamedEntity> : Repository<TNamedEntity>
 	{
 	}
 
-	/// <summary>Gets the SQL query to append to <see cref="Repository{TEntity}.SelectSql"/> to filter for a single entity by name.</summary>
-	protected virtual string NameSql => "WHERE normalized_name = upper(@name)";
+	/// <summary>Gets SQL where clause that filters for specific entity by name.</summary>
+	protected virtual string NameSql => "normalized_name = upper(@name)";
 
 	/// <summary>Finds an entity by its normalized name.</summary>
 	/// <param name="name">The normalized name of the entity to find.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<TNamedEntity?> FindByNameAsync(string name, Guid userId, CancellationToken cancellationToken = default)
 	{
 		Logger.FindName(name);
-		var sql = $"{SelectSql} {NameSql} AND {AccessSql} AND {NotDeleted}";
-		var command = new CommandDefinition(sql, new { name, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectActiveSql} AND {NameSql};",
+			new { name, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Finds an entity by its normalized name.</summary>
 	/// <param name="name">The normalized name of the entity to find.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TNamedEntity?> FindByNameAsync(string name, Guid ownerId, DbTransaction dbTransaction, CancellationToken cancellationToken = default)
+	public Task<TNamedEntity?> FindByNameAsync(
+		string name,
+		Guid userId,
+		DbTransaction dbTransaction,
+		CancellationToken cancellationToken = default)
 	{
 		Logger.FindNameWithTransaction(name);
-		var sql = $"{SelectSql} {NameSql} AND {AccessSql} AND {NotDeleted}";
-		var command = new CommandDefinition(sql, new { name, ownerId }, dbTransaction, cancellationToken: cancellationToken);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectActiveSql} AND {NameSql};",
+			new { name, userId, access = Read.ToParam() },
+			dbTransaction,
+			cancellationToken: cancellationToken));
 	}
 }

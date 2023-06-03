@@ -109,7 +109,7 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 
 	private async Task<ActionResult?> GetConflictResult(LinkCreation creation, UserEntity user, Guid? existingId = null)
 	{
-		var links = await Repository.GetAllAsync(user.Id);
+		var links = await Repository.GetAsync(user.Id);
 		var conflictingLink = links.FirstOrDefault(link => link.Uri == creation.Uri?.ToString());
 		if (conflictingLink is null || conflictingLink.Id == existingId)
 		{

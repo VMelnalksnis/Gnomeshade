@@ -44,7 +44,7 @@ public sealed class OwnerRepositoryTests
 	[Test]
 	public async Task GetAllAsync()
 	{
-		var owners = await _ownerRepository.GetAllAsync(DatabaseInitialization.TestUser.Id);
+		var owners = await _ownerRepository.GetAsync(DatabaseInitialization.TestUser.Id);
 		owners.Should().OnlyHaveUniqueItems();
 	}
 }

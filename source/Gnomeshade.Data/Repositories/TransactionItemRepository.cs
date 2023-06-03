@@ -28,22 +28,22 @@ public abstract class TransactionItemRepository<TEntity> : Repository<TEntity>
 
 	/// <summary>Gets all entities of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the entities.</param>
-	/// <param name="ownerId">The id of the owner of the entities.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all entities for the specified transaction.</returns>
 	public abstract Task<IEnumerable<TEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all entities of the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the entities.</param>
-	/// <param name="ownerId">The id of the owner of the entities.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A collection of all entities for the specified transaction.</returns>
 	public virtual Task<IEnumerable<TEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		DbTransaction dbTransaction)
 	{
 		throw new NotImplementedException();

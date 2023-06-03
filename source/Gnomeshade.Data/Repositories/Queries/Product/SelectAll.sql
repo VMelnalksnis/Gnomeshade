@@ -1,0 +1,15 @@
+﻿SELECT p.id,
+	   p.created_at          CreatedAt,
+	   p.owner_id            OwnerId,
+	   p.created_by_user_id  CreatedByUserId,
+	   p.modified_at         ModifiedAt,
+	   p.modified_by_user_id ModifiedByUserId,
+	   p.name AS             Name,
+	   p.normalized_name     NormalizedName,
+	   p.deleted_at          DeletedAt,
+	   p.deleted_by_user_id  DeletedByUserId,
+	   p.sku  AS             Sku,
+	   p.description,
+	   p.unit_id             UnitId,
+	   p.category_id         CategoryId
+FROM products p

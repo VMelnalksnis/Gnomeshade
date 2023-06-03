@@ -10,6 +10,7 @@ public static class PurchaseExtensions
 {
 	public static PurchaseCreation ToCreation(this Purchase purchase) => new()
 	{
+		OwnerId = purchase.OwnerId,
 		TransactionId = purchase.TransactionId,
 		ProductId = purchase.ProductId,
 		Amount = purchase.Amount,

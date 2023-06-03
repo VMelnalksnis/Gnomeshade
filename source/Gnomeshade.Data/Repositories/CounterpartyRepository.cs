@@ -3,7 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -27,28 +29,28 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	}
 
 	/// <inheritdoc />
-	protected override string AccessSql => $"(({base.AccessSql}) OR \"AspNetUsers\".\"Id\" = c.id)";
-
-	/// <inheritdoc />
 	protected override string DeleteSql => Queries.Counterparty.Delete;
 
 	/// <inheritdoc />
 	protected override string InsertSql => Queries.Counterparty.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Counterparty.Select;
+	protected override string SelectAllSql => Queries.Counterparty.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Counterparty.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE c.id = @id";
+	protected override string FindSql => "c.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "c.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE c.normalized_name = upper(@name)";
+	protected override string NameSql => "c.normalized_name = upper(@name)";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Counterparty.Select;
 
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>
@@ -62,5 +64,15 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
 		await DbConnection.ExecuteAsync(mergeCommand);
 		await DeleteAsync(sourceId, ownerId, dbTransaction);
+	}
+
+	/// <summary>Gets all counterparties ignoring access control.</summary>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all counterparties.</returns>
+	public Task<IEnumerable<CounterpartyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+	{
+		Logger.GetAll(true);
+		var command = new CommandDefinition(SelectAllSql, cancellationToken: cancellationToken);
+		return GetEntitiesAsync(command);
 	}
 }

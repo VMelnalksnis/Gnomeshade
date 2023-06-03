@@ -10,6 +10,7 @@ public static class CategoryExtensions
 {
 	public static CategoryCreation ToCreation(this Category category) => new()
 	{
+		OwnerId = category.OwnerId,
 		Name = category.Name,
 		CategoryId = category.CategoryId,
 		Description = category.Description,

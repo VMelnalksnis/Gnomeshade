@@ -47,7 +47,7 @@ public sealed class Index : PageModel
 	public async Task OnGet(CancellationToken cancellationToken)
 	{
 		var userEntities = await _userRepository.Get(cancellationToken);
-		var counterparties = (await _counterpartyRepository.GetAllAsync(true, cancellationToken))
+		var counterparties = (await _counterpartyRepository.GetAllAsync(cancellationToken))
 			.ToList();
 		var identityUsers = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
 

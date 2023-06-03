@@ -10,6 +10,7 @@ public static class TransactionExtensions
 {
 	public static TransactionCreation ToCreation(this Transaction transaction) => new()
 	{
+		OwnerId = transaction.OwnerId,
 		ReconciledAt = transaction.ReconciledAt,
 		Description = transaction.Description,
 	};

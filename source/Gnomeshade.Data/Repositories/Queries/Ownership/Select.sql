@@ -5,6 +5,8 @@
 	   o.user_id               UserId,
 	   o.access_id             AccessId
 FROM ownerships o
-	INNER JOIN owners on owners.id = o.owner_id
-    INNER JOIN ownerships on ownerships.owner_id = owners.id
-	INNER JOIN access on access.id = ownerships.access_id
+		 INNER JOIN owners on owners.id = o.owner_id
+		 INNER JOIN ownerships on ownerships.owner_id = owners.id
+		 INNER JOIN access on access.id = ownerships.access_id
+WHERE ownerships.user_id = @userId
+  AND (access.normalized_name = @access OR access.normalized_name = 'OWNER')

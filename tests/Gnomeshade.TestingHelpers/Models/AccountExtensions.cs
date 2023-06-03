@@ -12,6 +12,7 @@ public static class AccountExtensions
 {
 	public static AccountCreation ToCreation(this Account account) => new()
 	{
+		OwnerId = account.OwnerId,
 		Name = account.Name,
 		CounterpartyId = account.CounterpartyId,
 		PreferredCurrencyId = account.PreferredCurrency.Id,

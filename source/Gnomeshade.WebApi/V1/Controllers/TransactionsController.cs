@@ -307,7 +307,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	private async Task<List<Guid>> GetUserAccountsInCurrencyIds(CancellationToken cancellationToken)
 	{
 		var userCounterparty = await _counterpartyRepository.GetByIdAsync(ApplicationUser.CounterpartyId, ApplicationUser.Id, cancellationToken);
-		var accounts = await _accountRepository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
+		var accounts = await _accountRepository.GetAsync(ApplicationUser.Id, cancellationToken);
 		return accounts
 			.Where(account => account.CounterpartyId == userCounterparty.Id)
 			.SelectMany(account => account.Currencies)

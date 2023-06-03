@@ -40,7 +40,7 @@ public sealed class TransactionUnitOfWorkTests
 		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
 		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 		await dbTransaction.CommitAsync();
-		var allTransactions = await _repository.GetAllAsync(TestUser.Id);
+		var allTransactions = await _repository.GetAsync(TestUser.Id);
 
 		findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 		allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);

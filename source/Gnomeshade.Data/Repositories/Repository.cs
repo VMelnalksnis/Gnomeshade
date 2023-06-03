@@ -16,6 +16,8 @@ using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
 
+using static Gnomeshade.Data.Repositories.AccessLevel;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>A base class for entity repositories implementing common functionality.</summary>
@@ -37,23 +39,21 @@ public abstract class Repository<TEntity>
 	/// <summary>Gets the database connection for executing queries.</summary>
 	protected DbConnection DbConnection { get; }
 
-	protected virtual string AccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'READ' OR access.normalized_name = 'OWNER')";
-
-	protected virtual string WriteAccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER')";
-
-	protected virtual string DeleteAccessSql => "ownerships.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')";
-
 	/// <summary>Gets the SQL query for deleting entities.</summary>
 	protected abstract string DeleteSql { get; }
 
 	/// <summary>Gets the SQL query for inserting a single entity.</summary>
 	protected abstract string InsertSql { get; }
 
-	/// <summary>Gets the SQL query for getting entities.</summary>
 	protected abstract string SelectSql { get; }
 
-	/// <summary>Gets the SQL query to append to <see cref="SelectSql"/> to filter for a single entity.</summary>
-	protected virtual string FindSql => "WHERE Id = @id";
+	protected string SelectActiveSql => $"{SelectSql} AND {NotDeleted}";
+
+	/// <summary>Gets the SQL query for getting entities.</summary>
+	protected abstract string SelectAllSql { get; }
+
+	/// <summary>Gets SQL where clause that filters for specific entity by id.</summary>
+	protected virtual string FindSql => "id = @id";
 
 	/// <summary>Gets the SQL query for updating entities.</summary>
 	protected abstract string UpdateSql { get; }
@@ -104,95 +104,93 @@ public abstract class Repository<TEntity>
 	}
 
 	/// <summary>Gets all entities.</summary>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
-	/// <param name="includeDeleted">Whether to include deleted entities.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all entities.</returns>
-	public Task<IEnumerable<TEntity>> GetAllAsync(
-		Guid ownerId,
-		bool includeDeleted = false,
+	public Task<IEnumerable<TEntity>> GetIncludingDeletedAsync(
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
-		Logger.GetAll(includeDeleted);
-		var command = includeDeleted
-			? new CommandDefinition($"{SelectSql} WHERE {AccessSql}", new { ownerId }, cancellationToken: cancellationToken)
-			: new($"{SelectSql} WHERE {NotDeleted} AND {AccessSql}", new { ownerId }, cancellationToken: cancellationToken);
-
-		return GetEntitiesAsync(command);
+		Logger.GetAll(true);
+		return GetEntitiesAsync(new(
+			SelectSql,
+			new { userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
-	/// <summary>Gets all entities ignoring access control.</summary>
-	/// <param name="includeDeleted">Whether to include deleted entities.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>A collection of all entities.</returns>
-	public Task<IEnumerable<TEntity>> GetAllAsync(
-		bool includeDeleted = false,
-		CancellationToken cancellationToken = default)
+	public Task<IEnumerable<TEntity>> GetAsync(Guid userId, CancellationToken cancellationToken = default)
 	{
-		Logger.GetAll(includeDeleted);
-		var command = includeDeleted
-			? new CommandDefinition($"{SelectSql}", cancellationToken: cancellationToken)
-			: new($"{SelectSql} WHERE {NotDeleted}", cancellationToken: cancellationToken);
-
-		return GetEntitiesAsync(command);
+		Logger.GetAll();
+		return GetEntitiesAsync(new(
+			SelectActiveSql,
+			new { userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Gets an entity with the specified id.</summary>
 	/// <param name="id">The id of the entity to get.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity with the specified id.</returns>
-	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, CancellationToken cancellationToken = default)
+	public Task<TEntity> GetByIdAsync(Guid id, Guid userId, CancellationToken cancellationToken = default)
 	{
 		Logger.GetId(id);
-		var sql = $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return GetAsync(command);
+		return GetAsync(new(
+			$"{SelectActiveSql} AND {FindSql}",
+			new { id, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Gets an entity with the specified id using the specified database transaction.</summary>
 	/// <param name="id">The id of the entity to get.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The entity with the specified id.</returns>
-	public Task<TEntity> GetByIdAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
+	public Task<TEntity> GetByIdAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.GetIdWithTransaction(id);
-		var sql = $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
-		return GetAsync(command);
+		return GetAsync(new(
+			$"{SelectActiveSql} AND {FindSql}",
+			new { id, userId, access = Read.ToParam() },
+			dbTransaction));
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
 	/// <param name="id">The id to to search by.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="accessLevel">The access level to check.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(
 		Guid id,
-		Guid ownerId,
-		AccessLevel accessLevel = AccessLevel.Read,
+		Guid userId,
+		AccessLevel accessLevel = Read,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id, accessLevel);
-		var sql = GetAccessSql(accessLevel);
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectActiveSql} AND {FindSql}",
+			new { id, userId, access = accessLevel.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Searches for an entity with the specified id using the specified database transaction.</summary>
 	/// <param name="id">The id to to search by.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <param name="accessLevel">The access level to check.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, Guid ownerId, DbTransaction dbTransaction, AccessLevel accessLevel = AccessLevel.Read)
+	public Task<TEntity?> FindByIdAsync(
+		Guid id,
+		Guid userId,
+		DbTransaction dbTransaction,
+		AccessLevel accessLevel = Read)
 	{
 		Logger.FindIdWithTransaction(id, accessLevel);
-		var sql = GetAccessSql(accessLevel);
-		var command = new CommandDefinition(sql, new { id, ownerId }, dbTransaction);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectActiveSql} AND {FindSql}",
+			new { id, userId, access = accessLevel.ToParam() },
+			dbTransaction));
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
@@ -202,9 +200,10 @@ public abstract class Repository<TEntity>
 	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id);
-		var sql = $"{SelectSql} {FindSql} AND {NotDeleted};";
-		var command = new CommandDefinition(sql, new { id }, cancellationToken: cancellationToken);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted};",
+			new { id },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
@@ -214,9 +213,10 @@ public abstract class Repository<TEntity>
 	public Task<TEntity?> FindByIdAsync(Guid id, DbTransaction dbTransaction)
 	{
 		Logger.FindIdWithTransaction(id);
-		var sql = $"{SelectSql} {FindSql} AND {NotDeleted};";
-		var command = new CommandDefinition(sql, new { id }, dbTransaction);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted};",
+			new { id },
+			dbTransaction));
 	}
 
 	/// <summary>Updates an existing entity with the specified id.</summary>
@@ -241,9 +241,10 @@ public abstract class Repository<TEntity>
 	/// <summary>Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.</summary>
 	/// <param name="command">The command to execute.</param>
 	/// <returns>The entities returned by the query.</returns>
-	protected virtual Task<IEnumerable<TEntity>> GetEntitiesAsync(CommandDefinition command)
+	protected virtual async Task<IEnumerable<TEntity>> GetEntitiesAsync(CommandDefinition command)
 	{
-		return DbConnection.QueryAsync<TEntity>(command);
+		var entities = await DbConnection.QueryAsync<TEntity>(command);
+		return entities.DistinctBy(entity => entity.Id);
 	}
 
 	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>
@@ -272,12 +273,4 @@ public abstract class Repository<TEntity>
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return entities.DistinctBy(entity => entity.Id).Single();
 	}
-
-	private string GetAccessSql(AccessLevel accessLevel) => accessLevel switch
-	{
-		AccessLevel.Read => $"{SelectSql} {FindSql} AND {NotDeleted} AND {AccessSql}",
-		AccessLevel.Write => $"{SelectSql} {FindSql} AND {NotDeleted} AND {WriteAccessSql}",
-		AccessLevel.Delete => $"{SelectSql} {FindSql} AND {NotDeleted} AND {DeleteAccessSql}",
-		_ => throw new ArgumentOutOfRangeException(nameof(accessLevel), accessLevel, null),
-	};
 }

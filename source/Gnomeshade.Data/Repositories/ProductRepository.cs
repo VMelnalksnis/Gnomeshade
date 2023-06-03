@@ -28,17 +28,20 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	protected override string InsertSql => Queries.Product.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Product.Select;
+	protected override string SelectAllSql => Queries.Product.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Product.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE p.id = @id";
+	protected override string FindSql => "p.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "p.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE p.normalized_name = upper(@name)";
+	protected override string NameSql => "p.normalized_name = upper(@name)";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Product.Select;
 }

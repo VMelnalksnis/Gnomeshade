@@ -10,6 +10,7 @@ public static class ProductExtensions
 {
 	public static ProductCreation ToCreation(this Product product) => new()
 	{
+		OwnerId = product.OwnerId,
 		Name = product.Name,
 		CategoryId = product.CategoryId,
 		UnitId = product.UnitId,

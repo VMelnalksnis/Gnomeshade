@@ -28,17 +28,20 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	protected override string InsertSql => Queries.Unit.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Unit.Select;
+	protected override string SelectAllSql => Queries.Unit.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Unit.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE u.id = @id";
+	protected override string FindSql => "u.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "u.deleted_at IS NULL";
 
 	/// <inheritdoc />
-	protected override string NameSql => "WHERE u.normalized_name = upper(@name)";
+	protected override string NameSql => "u.normalized_name = upper(@name)";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Unit.Select;
 }

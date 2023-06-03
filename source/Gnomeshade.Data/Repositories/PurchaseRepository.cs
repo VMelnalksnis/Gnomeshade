@@ -8,12 +8,12 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Dapper;
-
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
+
+using static Gnomeshade.Data.Repositories.AccessLevel;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -35,53 +35,59 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	protected override string InsertSql => Queries.Purchase.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Purchase.Select;
+	protected override string SelectAllSql => Queries.Purchase.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Purchase.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE purchases.id = @id";
+	protected override string FindSql => "purchases.id = @id";
 
 	protected override string NotDeleted => "purchases.deleted_at IS NULL";
 
 	/// <inheritdoc />
+	protected override string SelectSql => Queries.Purchase.Select;
+
+	/// <inheritdoc />
 	public override Task<IEnumerable<PurchaseEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId;",
+			new { transactionId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <inheritdoc />
 	public override Task<IEnumerable<PurchaseEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		DbTransaction dbTransaction)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.transaction_id = @{nameof(transactionId)} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, ownerId }, dbTransaction);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId;",
+			new { transactionId, userId, access = Read.ToParam() },
+			dbTransaction));
 	}
 
 	/// <summary>Gets all purchases of the specified product.</summary>
 	/// <param name="productId">The id of the product for which to get all purchases.</param>
-	/// <param name="ownerId">The id of the owner of the purchases.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>A collection of all purchases of the specified product.</returns>
 	public Task<IEnumerable<PurchaseEntity>> GetAllForProduct(
 		Guid productId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND purchases.product_id = @{nameof(productId)} AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { productId, ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND purchases.product_id = @productId;",
+			new { productId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 }

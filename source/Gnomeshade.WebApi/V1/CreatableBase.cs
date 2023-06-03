@@ -64,7 +64,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[HttpGet]
 	public virtual async Task<List<TModel>> Get(CancellationToken cancellationToken)
 	{
-		var entities = await Repository.GetAllAsync(ApplicationUser.Id, false, cancellationToken);
+		var entities = await Repository.GetAsync(ApplicationUser.Id, cancellationToken);
 		return entities.Select(MapToModel).ToList();
 	}
 

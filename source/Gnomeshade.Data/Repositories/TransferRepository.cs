@@ -8,12 +8,12 @@ using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Dapper;
-
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Logging;
 
 using Microsoft.Extensions.Logging;
+
+using static Gnomeshade.Data.Repositories.AccessLevel;
 
 namespace Gnomeshade.Data.Repositories;
 
@@ -35,49 +35,58 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	protected override string InsertSql => Queries.Transfer.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Transfer.Select;
+	protected override string SelectAllSql => Queries.Transfer.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Transfer.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE transfers.id = @id";
+	protected override string FindSql => "transfers.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "transfers.deleted_at IS NULL";
 
 	/// <inheritdoc />
+	protected override string SelectSql => Queries.Transfer.Select;
+
+	/// <inheritdoc />
 	public override Task<IEnumerable<TransferEntity>> GetAllAsync(
 		Guid transactionId,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.transaction_id = @transactionId AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { transactionId, ownerId }, cancellationToken: cancellationToken);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND transfers.transaction_id = @transactionId;",
+			new { transactionId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Searches for a transfer with the specified bank reference.</summary>
 	/// <param name="bankReference">The bank reference by which to get the transfer.</param>
-	/// <param name="ownerId">The id of the owner of the transfer.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The transfer if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TransferEntity?> FindByBankReferenceAsync(string bankReference, Guid ownerId, DbTransaction dbTransaction)
+	public Task<TransferEntity?> FindByBankReferenceAsync(
+		string bankReference,
+		Guid userId,
+		DbTransaction dbTransaction)
 	{
 		Logger.FindBankReferenceWithTransaction(bankReference);
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.bank_reference = @bankReference AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { bankReference, ownerId }, dbTransaction);
-		return FindAsync(command);
+		return FindAsync(new(
+			$"{SelectActiveSql} AND transfers.bank_reference = @bankReference;",
+			new { bankReference, userId, access = Read.ToParam() },
+			dbTransaction));
 	}
 
 	public Task<IEnumerable<TransferEntity>> GetByExternalReferenceAsync(
 		string externalReference,
-		Guid ownerId,
+		Guid userId,
 		DbTransaction dbTransaction)
 	{
-		var sql = $"{SelectSql} WHERE {NotDeleted} AND transfers.external_reference = @externalReference AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { externalReference, ownerId }, dbTransaction);
-		return GetEntitiesAsync(command);
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND transfers.external_reference = @externalReference;",
+			new { externalReference, userId, access = Read.ToParam() },
+			dbTransaction));
 	}
 }

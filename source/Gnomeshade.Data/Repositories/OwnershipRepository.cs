@@ -3,9 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Dapper;
@@ -35,13 +33,16 @@ public sealed class OwnershipRepository : Repository<OwnershipEntity>
 	protected override string InsertSql => Queries.Ownership.Insert;
 
 	/// <inheritdoc />
+	protected override string SelectAllSql => Queries.Ownership.SelectAll;
+
+	/// <inheritdoc />
 	protected override string SelectSql => Queries.Ownership.Select;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Ownership.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE o.id = @id";
+	protected override string FindSql => "o.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "1 = 1";
@@ -54,11 +55,5 @@ public sealed class OwnershipRepository : Repository<OwnershipEntity>
 		var accessId = await DbConnection.QuerySingleAsync<Guid>(accessCommand);
 
 		await AddAsync(new() { Id = id, OwnerId = id, UserId = id, AccessId = accessId });
-	}
-
-	protected override async Task<IEnumerable<OwnershipEntity>> GetEntitiesAsync(CommandDefinition command)
-	{
-		var ownerships = await DbConnection.QueryAsync<OwnershipEntity>(command);
-		return ownerships.DistinctBy(ownership => ownership.Id).ToList();
 	}
 }

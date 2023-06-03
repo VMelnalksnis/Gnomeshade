@@ -18,6 +18,8 @@ using Microsoft.Extensions.Logging;
 
 using NodaTime;
 
+using static Gnomeshade.Data.Repositories.AccessLevel;
+
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="TransactionEntity"/> repository.</summary>
@@ -38,16 +40,19 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	protected override string InsertSql => Queries.Transaction.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectSql => Queries.Transaction.Select;
+	protected override string SelectAllSql => Queries.Transaction.SelectAll;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Transaction.Update;
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE t.id = @id";
+	protected override string FindSql => "t.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "t.deleted_at IS NULL";
+
+	/// <inheritdoc />
+	protected override string SelectSql => Queries.Transaction.Select;
 
 	public async Task<DetailedTransactionEntity?> FindDetailedAsync(
 		Guid id,
@@ -55,48 +60,44 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id);
-		var sql = @$"{Queries.Transaction.SelectDetailed}
-WHERE transactions.deleted_at IS NULL 
-AND transactions.id = @id
-AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		var transactions = await GetDetailedTransactions(command);
+		var transactions = await GetDetailedTransactions(new(
+			@$"{Queries.Transaction.SelectDetailed} AND transactions.id = @id;",
+			new { id, userId = ownerId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
+
 		return transactions.SingleOrDefault();
 	}
 
 	public Task<IEnumerable<DetailedTransactionEntity>> GetAllDetailedAsync(
 		Instant from,
 		Instant to,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll();
-		var sql = @$"{Queries.Transaction.SelectDetailed}
-WHERE transactions.deleted_at IS NULL 
-AND (transfers.valued_at >= @from OR transfers.booked_at >= @from) 
-AND (transfers.valued_at <= @to OR transfers.booked_at <= @to) 
-AND {AccessSql}";
-		var command = new CommandDefinition(sql, new { from, to, ownerId }, cancellationToken: cancellationToken);
-		return GetDetailedTransactions(command);
+		return GetDetailedTransactions(new(
+			@$"{Queries.Transaction.SelectDetailed}
+  AND (transfers.valued_at >= @from OR transfers.booked_at >= @from) 
+  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to)",
+			new { from, to, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Gets all links of the specified transaction.</summary>
 	/// <param name="id">The id of the transaction for which to get all links.</param>
-	/// <param name="ownerId">The id of the owner of the transaction and links.</param>
+	/// <param name="userId">The id of the owner of the transaction and links.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>All links of the specified transaction.</returns>
 	public Task<IEnumerable<LinkEntity>> GetAllLinksAsync(
 		Guid id,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = $@"{Queries.Link.Select}
-         INNER JOIN transaction_links ON transaction_links.link_id = links.id
-         WHERE transaction_links.transaction_id = @id
-           AND links.deleted_at IS NULL 
-           AND {AccessSql};";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return DbConnection.QueryAsync<LinkEntity>(command);
+		return DbConnection.QueryAsync<LinkEntity>(new(
+			$@"{Queries.Link.Select}
+AND transaction_links.transaction_id = @id;",
+			new { id, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	/// <summary>Adds the specified link to the specified transaction.</summary>
@@ -149,20 +150,23 @@ WHERE transaction_links.transaction_id = @id
 
 	public Task<IEnumerable<TransactionEntity>> GetRelatedAsync(
 		Guid id,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
-		var sql = @$"WITH r AS (SELECT ""second"" FROM related_transactions WHERE related_transactions.first = @id)
-{SelectSql}
-WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
-		var command = new CommandDefinition(sql, new { id, ownerId }, cancellationToken: cancellationToken);
-		return DbConnection.QueryAsync<TransactionEntity>(command);
+		return DbConnection.QueryAsync<TransactionEntity>(new(
+			$"""
+WITH r AS (SELECT "second" FROM related_transactions WHERE related_transactions.first = @id)
+{SelectActiveSql}
+AND t.id IN (SELECT "second" FROM r);
+""",
+			new { id, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
 	}
 
 	public async Task AddRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, AccessLevel.Write);
+		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, Write);
 		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
 		if (transaction is null || relatedTransaction is null)
 		{
@@ -178,7 +182,7 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 	public async Task RemoveRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, AccessLevel.Write);
+		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, Write);
 		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
 		if (transaction is null || relatedTransaction is null)
 		{
@@ -235,8 +239,10 @@ WHERE t.id IN (SELECT ""second"" FROM r) AND {NotDeleted} AND {AccessSql};";
 				ValuedAt = grouping.Select(transaction => transaction.ValuedAt).Max(),
 			})
 			{
-				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id).ToList(),
-				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id).ToList(),
+				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id)
+					.ToList(),
+				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id)
+					.ToList(),
 				Loans = grouping.SelectMany(detailed => detailed.Loans).DistinctBy(loan => loan.Id).ToList(),
 				Links = grouping.SelectMany(detailed => detailed.Links).DistinctBy(link => link.Id).ToList(),
 			});

@@ -10,6 +10,7 @@ public static class UnitExtensions
 {
 	public static UnitCreation ToCreation(this Unit unit) => new()
 	{
+		OwnerId = unit.OwnerId,
 		Name = unit.Name,
 		ParentUnitId = unit.ParentUnitId,
 		Multiplier = unit.Multiplier,

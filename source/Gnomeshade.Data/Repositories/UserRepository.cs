@@ -50,7 +50,7 @@ public sealed class UserRepository
 	public Task<UserEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		_logger.FindId(id);
-		var commandDefinition = new CommandDefinition($"{Queries.User.Select} WHERE id = @id LIMIT 2;", new { id }, cancellationToken: cancellationToken);
+		var commandDefinition = new CommandDefinition($"{Queries.User.SelectAll} WHERE id = @id;", new { id }, cancellationToken: cancellationToken);
 		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
 	}
 
@@ -68,7 +68,7 @@ public sealed class UserRepository
 	public Task<IEnumerable<UserEntity>> Get(CancellationToken cancellationToken = default)
 	{
 		_logger.GetAll();
-		var command = new CommandDefinition(Queries.User.Select, cancellationToken: cancellationToken);
+		var command = new CommandDefinition(Queries.User.SelectAll, cancellationToken: cancellationToken);
 		return _dbConnection.QueryAsync<UserEntity>(command);
 	}
 }

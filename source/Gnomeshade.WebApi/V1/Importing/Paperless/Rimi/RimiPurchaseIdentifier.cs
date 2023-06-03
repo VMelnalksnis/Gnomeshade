@@ -49,8 +49,8 @@ public sealed partial class RimiPurchaseIdentifier : IPurchaseIdentifier
 		var amount = GetProductAmount(purchase, unitSymbols);
 
 		var match = products
-			.Select(product => (product: (ProductEntity?)product, Fuzz.Ratio(product.Name, purchase.Product)))
-			.DefaultIfEmpty((null, 0))
+			.Select(product => (product, Fuzz.Ratio(product.Name, purchase.Product)))
+			.DefaultIfEmpty((new(), 0))
 			.MaxBy(tuple => tuple.Item2);
 
 		var identifiedPurchase = new IdentifiedPurchase(

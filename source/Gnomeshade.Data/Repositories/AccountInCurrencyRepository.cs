@@ -32,13 +32,16 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	protected override string InsertSql => Queries.AccountInCurrency.Insert;
 
 	/// <inheritdoc />
+	protected override string SelectAllSql => Queries.AccountInCurrency.SelectAll;
+
+	/// <inheritdoc />
 	protected override string SelectSql => Queries.AccountInCurrency.Select;
 
 	/// <inheritdoc />
 	protected override string UpdateSql => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	protected override string FindSql => "WHERE a.id = @id";
+	protected override string FindSql => "a.id = @id";
 
 	/// <inheritdoc />
 	protected override string NotDeleted => "a.deleted_at IS NULL";

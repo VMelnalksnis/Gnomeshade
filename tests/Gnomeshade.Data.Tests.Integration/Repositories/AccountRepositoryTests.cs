@@ -59,7 +59,7 @@ public sealed class AccountRepositoryTests
 		var getAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
 		var findAccount = await _repository.FindByIdAsync(getAccount.Id, TestUser.Id);
 		var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName, TestUser.Id);
-		var accounts = await _repository.GetAllAsync(TestUser.Id);
+		var accounts = await _repository.GetAsync(TestUser.Id);
 
 		var expectedAccount = account with
 		{

@@ -85,9 +85,9 @@ public sealed class PaperlessService : IPaperlessService
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
 
 		var rawPurchases = _documentParser.ParsePurchases(document);
-		var products = (await _productRepository.GetAllAsync(ownerId, true)).ToList();
+		var products = (await _productRepository.GetIncludingDeletedAsync(ownerId)).ToList();
 		var currencies = await _currencyRepository.GetAllAsync();
-		var units = (await _unitRepository.GetAllAsync(ownerId)).ToList();
+		var units = (await _unitRepository.GetAsync(ownerId)).ToList();
 		var defaultUnit = units.SingleOrDefault(u => u.Name == "Piece");
 
 		var identifiedPurchases = rawPurchases

@@ -329,7 +329,7 @@ public abstract partial class TransactionImportService<TTransaction>
 		var otherAccountCurrency = otherAccount.Currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id);
 		if (otherAccountCurrency is null)
 		{
-			var currencies = await _inCurrencyRepository.GetAllAsync(user.Id, true);
+			var currencies = await _inCurrencyRepository.GetIncludingDeletedAsync(user.Id);
 			var deletedCurrency = currencies.SingleOrDefault(aic => aic.CurrencyId == otherCurrency.Id && aic.AccountId == otherAccount.Id);
 
 			if (deletedCurrency is not null)
