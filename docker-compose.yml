@@ -11,7 +11,7 @@ services:
       Database__Provider: "PostgreSQL"
       ConnectionStrings__Gnomeshade: "Server = database; Port = 5432; Database = gnomeshade_postgres; User Id = postgres; Password = Password2!; Maximum Pool Size = 20"
     depends_on:
-      database:
+      gnomeshade_postgres:
         condition: service_started
 
   gnomeshade_postgres:
