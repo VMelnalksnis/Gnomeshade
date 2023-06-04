@@ -46,16 +46,16 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	/// <inheritdoc />
 	protected override string NotDeleted => "a.deleted_at IS NULL";
 
-	public Task RestoreDeletedAsync(Guid id, Guid ownerId)
+	public Task RestoreDeletedAsync(Guid id, Guid userId)
 	{
-		return DbConnection.ExecuteAsync(Queries.AccountInCurrency.RestoreDeleted, new { id, ownerId });
+		return DbConnection.ExecuteAsync(Queries.AccountInCurrency.RestoreDeleted, new { id, userId });
 	}
 
-	public Task RestoreDeletedAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
+	public Task RestoreDeletedAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		return DbConnection.ExecuteAsync(
 			Queries.AccountInCurrency.RestoreDeleted,
-			new { id, ownerId },
+			new { id, userId },
 			transaction: dbTransaction);
 	}
 }

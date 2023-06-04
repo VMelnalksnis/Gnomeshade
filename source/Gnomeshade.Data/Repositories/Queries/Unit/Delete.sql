@@ -19,9 +19,9 @@
 				   LEFT JOIN owners accounts_owners ON accounts_owners.id = accounts.owner_id
 				   LEFT JOIN ownerships acc_own ON accounts_owners.id = acc_own.owner_id
 				   LEFT JOIN access acc_acc ON acc_acc.id = acc_own.access_id
-		  WHERE ((unit_own.user_id = @ownerId
+		  WHERE ((unit_own.user_id = @userId
 			  AND (Unit_acc.normalized_name = 'DELETE' OR Unit_acc.normalized_name = 'OWNER'))
-			  OR (acc_own.user_id = @ownerId
+			  OR (acc_own.user_id = @userId
 				  AND (acc_acc.normalized_name = 'DELETE' OR acc_acc.normalized_name = 'OWNER')
 				  AND products.deleted_at IS NULL
 				  AND purchases.deleted_at IS NULL
@@ -29,7 +29,7 @@
 				  AND transfers.deleted_at IS NULL
 				  AND accounts_in_currency.deleted_at IS NULL
 				  AND accounts.deleted_at IS NULL)
-			  OR (tran_own.user_id = @ownerId
+			  OR (tran_own.user_id = @userId
 				  AND (tran_acc.normalized_name = 'DELETE' OR tran_acc.normalized_name = 'OWNER')
 				  AND purchases.deleted_at IS NULL
 				  AND transactions.deleted_at IS NULL))
@@ -38,6 +38,6 @@
 
 UPDATE units
 SET deleted_at         = CURRENT_TIMESTAMP,
-	deleted_by_user_id = @ownerId
+	deleted_by_user_id = @userId
 FROM accessable
 WHERE units.id IN (SELECT id FROM accessable);

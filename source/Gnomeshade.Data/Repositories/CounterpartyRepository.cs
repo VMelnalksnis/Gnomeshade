@@ -55,15 +55,15 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <summary>Merges one counterparty into another.</summary>
 	/// <param name="targetId">The id of the counterparty into which to merge.</param>
 	/// <param name="sourceId">The id of the counterparty which to merge into the other one.</param>
-	/// <param name="ownerId">The id of the owner of the counterparties.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
+	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.MergeCounterparties(sourceId, targetId);
-		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
+		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, userId }, dbTransaction);
 		await DbConnection.ExecuteAsync(mergeCommand);
-		await DeleteAsync(sourceId, ownerId, dbTransaction);
+		await DeleteAsync(sourceId, userId, dbTransaction);
 	}
 
 	/// <summary>Gets all counterparties ignoring access control.</summary>

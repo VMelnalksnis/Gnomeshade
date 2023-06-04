@@ -55,23 +55,23 @@ public sealed class TransactionUnitOfWork
 
 	/// <summary>Deletes the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to delete.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the owner of the entity.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId)
+	public async Task DeleteAsync(TransactionEntity transaction, Guid userId)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		await DeleteAsync(transaction, ownerId, dbTransaction);
+		await DeleteAsync(transaction, userId, dbTransaction);
 		await dbTransaction.CommitAsync();
 	}
 
 	/// <summary>Deletes the specified transaction and all its items.</summary>
 	/// <param name="transaction">The transaction to delete.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteAsync(TransactionEntity transaction, Guid ownerId, DbTransaction dbTransaction)
+	public async Task DeleteAsync(TransactionEntity transaction, Guid userId, DbTransaction dbTransaction)
 	{
-		await _repository.DeleteAsync(transaction.Id, ownerId, dbTransaction).ConfigureAwait(false);
+		await _repository.DeleteAsync(transaction.Id, userId, dbTransaction).ConfigureAwait(false);
 	}
 
 	/// <summary>

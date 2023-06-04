@@ -11,8 +11,8 @@
 				   LEFT JOIN owners transactions_owners ON transactions_owners.id = transactions.owner_id
 				   LEFT JOIN ownerships tran_own ON transactions_owners.id = tran_own.owner_id
 				   LEFT JOIN access tran_acc ON tran_acc.id = tran_own.access_id
-		  WHERE (own.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')
-			  OR (tran_own.user_id = @ownerId
+		  WHERE (own.user_id = @userId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')
+			  OR (tran_own.user_id = @userId
 				  AND (tran_acc.normalized_name = 'DELETE' OR tran_acc.normalized_name = 'OWNER')
 				  AND products.deleted_at IS NULL
 				  AND purchases.deleted_at IS NULL
@@ -22,6 +22,6 @@
 
 UPDATE categories
 SET deleted_at         = CURRENT_TIMESTAMP,
-	deleted_by_user_id = @ownerId
+	deleted_by_user_id = @userId
 FROM accessable
 WHERE categories.id IN (SELECT id FROM accessable);

@@ -9,7 +9,7 @@
 				   INNER JOIN owners on owners.id = ownerships.owner_id
 				   INNER JOIN ownerships o on o.owner_id = owners.id
 				   INNER JOIN access on access.id = o.access_id
-		  WHERE (o.user_id = @ownerId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER'))
+		  WHERE (o.user_id = @userId AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER'))
 			AND ownerships.id = @id)
 
 DELETE

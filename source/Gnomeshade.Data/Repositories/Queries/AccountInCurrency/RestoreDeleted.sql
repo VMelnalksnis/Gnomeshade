@@ -5,7 +5,7 @@
 				   INNER JOIN owners ON owners.id = accounts.owner_id
 				   INNER JOIN ownerships ON owners.id = ownerships.owner_id
 				   INNER JOIN access ON access.id = ownerships.access_id
-		  WHERE (ownerships.user_id = @ownerId
+		  WHERE (ownerships.user_id = @userId
 			  AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')
 			  AND accounts.deleted_at IS NULL)
 			AND accounts_in_currency.deleted_at IS NOT NULL
@@ -13,7 +13,7 @@
 
 UPDATE accounts_in_currency
 SET modified_at         = CURRENT_TIMESTAMP,
-	modified_by_user_id = @ownerId,
+	modified_by_user_id = @userId,
 	deleted_at          = NULL,
 	deleted_by_user_id  = NULL
 FROM accessable

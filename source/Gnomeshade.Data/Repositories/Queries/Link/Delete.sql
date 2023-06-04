@@ -18,14 +18,14 @@
 				   LEFT JOIN owners accounts_owners ON accounts_owners.id = accounts.owner_id
 				   LEFT JOIN ownerships acc_own ON accounts_owners.id = acc_own.owner_id
 				   LEFT JOIN access acc_access ON acc_access.id = acc_own.access_id
-		  WHERE ((link_own.user_id = @ownerId
+		  WHERE ((link_own.user_id = @userId
 			  AND (link_acc.normalized_name = 'DELETE' OR link_acc.normalized_name = 'OWNER'))
-			  OR (acc_own.user_id = @ownerId
+			  OR (acc_own.user_id = @userId
 				  AND (acc_access.normalized_name = 'DELETE' OR acc_access.normalized_name = 'OWNER')
 				  AND transfers.deleted_at IS NULL
 				  AND accounts_in_currency.deleted_at IS NULL
 				  AND accounts.deleted_at IS NULL)
-			  OR (tran_own.user_id = @ownerId
+			  OR (tran_own.user_id = @userId
 				  AND (tran_acc.normalized_name = 'DELETE' OR tran_acc.normalized_name = 'OWNER')
 				  AND transactions.deleted_at IS NULL))
 			AND links.deleted_at IS NULL
@@ -33,6 +33,6 @@
 
 UPDATE links
 SET deleted_at         = CURRENT_TIMESTAMP,
-	deleted_by_user_id = @ownerId
+	deleted_by_user_id = @userId
 FROM accessable
 WHERE links.id IN (SELECT id FROM accessable);

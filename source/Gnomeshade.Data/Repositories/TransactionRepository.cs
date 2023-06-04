@@ -56,13 +56,13 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 
 	public async Task<DetailedTransactionEntity?> FindDetailedAsync(
 		Guid id,
-		Guid ownerId,
+		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id);
 		var transactions = await GetDetailedTransactions(new(
 			@$"{Queries.Transaction.SelectDetailed} AND transactions.id = @id;",
-			new { id, userId = ownerId, access = Read.ToParam() },
+			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 
 		return transactions.SingleOrDefault();
@@ -83,69 +83,52 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 			cancellationToken: cancellationToken));
 	}
 
-	/// <summary>Gets all links of the specified transaction.</summary>
-	/// <param name="id">The id of the transaction for which to get all links.</param>
-	/// <param name="userId">The id of the owner of the transaction and links.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>All links of the specified transaction.</returns>
 	public Task<IEnumerable<LinkEntity>> GetAllLinksAsync(
 		Guid id,
 		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
 		return DbConnection.QueryAsync<LinkEntity>(new(
-			$@"{Queries.Link.Select}
-AND transaction_links.transaction_id = @id;",
+			$"{Queries.Link.Select} AND transaction_links.transaction_id = @id;",
 			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
 
-	/// <summary>Adds the specified link to the specified transaction.</summary>
-	/// <param name="id">The id of the transaction to which to add the link.</param>
-	/// <param name="linkId">The id of the link to add to the transaction.</param>
-	/// <param name="ownerId">The id of the owner of the transaction and link.</param>
-	/// <returns>The number of rows affected.</returns>
-	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid ownerId)
+	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid userId)
 	{
 		const string sql = @"
 INSERT INTO transaction_links 
     (created_at, created_by_user_id, link_id, transaction_id) 
 VALUES 
-    (CURRENT_TIMESTAMP, @ownerId, @linkId, @id);";
+    (CURRENT_TIMESTAMP, @userId, @linkId, @id);";
 
-		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
+		var command = new CommandDefinition(sql, new { id, linkId, userId });
 		return DbConnection.ExecuteAsync(command);
 	}
 
-	/// <summary>Removes the specified link to the specified transaction.</summary>
-	/// <param name="id">The id of the transaction from which to remove the link.</param>
-	/// <param name="linkId">The id of the link to remove from the transaction.</param>
-	/// <param name="ownerId">The id of the owner of the transaction and link.</param>
-	/// <returns>The number of rows affected.</returns>
-	public Task<int> RemoveLinkAsync(Guid id, Guid linkId, Guid ownerId)
+	public Task<int> RemoveLinkAsync(Guid id, Guid linkId, Guid userId)
 	{
 		const string sql = @"
 DELETE FROM transaction_links
 WHERE transaction_links.transaction_id = @id
   AND transaction_links.link_id = @linkId;";
 
-		var command = new CommandDefinition(sql, new { id, linkId, ownerId });
+		var command = new CommandDefinition(sql, new { id, linkId, userId });
 		return DbConnection.ExecuteAsync(command);
 	}
 
 	/// <summary>Merges one transaction into another.</summary>
 	/// <param name="targetId">The id of the transaction into which to merge.</param>
 	/// <param name="sourceId">The id of the transaction which to merge into the other one.</param>
-	/// <param name="ownerId">The id of the owner of the transactions.</param>
+	/// <param name="userId">The id of the owner of the transactions.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid ownerId, DbTransaction dbTransaction)
+	public async Task MergeAsync(Guid targetId, Guid sourceId, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.MergeTransactions(sourceId, targetId);
-		var moveDetailsCommand =
-			new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, ownerId }, dbTransaction);
+		var moveDetailsCommand = new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, userId }, dbTransaction);
 		await DbConnection.ExecuteAsync(moveDetailsCommand);
-		await DeleteAsync(sourceId, ownerId, dbTransaction);
+		await DeleteAsync(sourceId, userId, dbTransaction);
 	}
 
 	public Task<IEnumerable<TransactionEntity>> GetRelatedAsync(
@@ -163,11 +146,11 @@ AND t.id IN (SELECT "second" FROM r);
 			cancellationToken: cancellationToken));
 	}
 
-	public async Task AddRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
+	public async Task AddRelatedAsync(Guid id, Guid relatedId, Guid userId)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, Write);
-		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
+		var transaction = await FindByIdAsync(id, userId, dbTransaction, Write);
+		var relatedTransaction = await FindByIdAsync(relatedId, userId, dbTransaction);
 		if (transaction is null || relatedTransaction is null)
 		{
 			throw new InvalidOperationException();
@@ -179,11 +162,11 @@ AND t.id IN (SELECT "second" FROM r);
 		await dbTransaction.CommitAsync();
 	}
 
-	public async Task RemoveRelatedAsync(Guid id, Guid relatedId, Guid ownerId)
+	public async Task RemoveRelatedAsync(Guid id, Guid relatedId, Guid userId)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		var transaction = await FindByIdAsync(id, ownerId, dbTransaction, Write);
-		var relatedTransaction = await FindByIdAsync(relatedId, ownerId, dbTransaction);
+		var transaction = await FindByIdAsync(id, userId, dbTransaction, Write);
+		var relatedTransaction = await FindByIdAsync(relatedId, userId, dbTransaction);
 		if (transaction is null || relatedTransaction is null)
 		{
 			throw new InvalidOperationException();

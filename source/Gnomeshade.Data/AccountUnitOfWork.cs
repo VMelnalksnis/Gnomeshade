@@ -102,12 +102,12 @@ public sealed class AccountUnitOfWork
 
 	/// <summary>Deletes the specified account and all its currencies.</summary>
 	/// <param name="account">The account to delete.</param>
-	/// <param name="ownerId">The id of the owner of the entity.</param>
+	/// <param name="userId">The id of the owner of the entity.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteAsync(AccountEntity account, Guid ownerId)
+	public async Task DeleteAsync(AccountEntity account, Guid userId)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		await DeleteAsync(account, ownerId, dbTransaction).ConfigureAwait(false);
+		await DeleteAsync(account, userId, dbTransaction).ConfigureAwait(false);
 		await dbTransaction.CommitAsync();
 	}
 
@@ -122,14 +122,14 @@ public sealed class AccountUnitOfWork
 		await dbTransaction.CommitAsync();
 	}
 
-	private async Task DeleteAsync(AccountEntity account, Guid ownerId, DbTransaction dbTransaction)
+	private async Task DeleteAsync(AccountEntity account, Guid userId, DbTransaction dbTransaction)
 	{
 		foreach (var currency in account.Currencies)
 		{
-			await _inCurrencyRepository.DeleteAsync(currency.Id, ownerId, dbTransaction).ConfigureAwait(false);
+			await _inCurrencyRepository.DeleteAsync(currency.Id, userId, dbTransaction).ConfigureAwait(false);
 		}
 
-		await _repository.DeleteAsync(account.Id, ownerId, dbTransaction).ConfigureAwait(false);
+		await _repository.DeleteAsync(account.Id, userId, dbTransaction).ConfigureAwait(false);
 	}
 
 	private Task UpdateAsync(AccountEntity account, UserEntity modifiedBy, DbTransaction dbTransaction)

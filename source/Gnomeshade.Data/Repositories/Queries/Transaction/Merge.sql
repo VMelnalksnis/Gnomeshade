@@ -4,11 +4,11 @@
 					INNER JOIN ownerships ON owners.id = ownerships.owner_id
 					INNER JOIN access ON access.id = ownerships.access_id
 		   WHERE transfers.transaction_id = @sourceId
-			 AND ownerships.user_id = @ownerId
+			 AND ownerships.user_id = @userId
 			 AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER'))
 UPDATE transfers
 SET modified_at         = CURRENT_TIMESTAMP,
-	modified_by_user_id = @ownerId,
+	modified_by_user_id = @userId,
 	transaction_id      = @targetId
 FROM t
 WHERE transfers.id IN (SELECT id FROM t);
@@ -19,11 +19,11 @@ WITH p AS (SELECT purchases.id
 					INNER JOIN ownerships ON owners.id = ownerships.owner_id
 					INNER JOIN access ON access.id = ownerships.access_id
 		   WHERE purchases.transaction_id = @sourceId
-			 AND ownerships.user_id = @ownerId
+			 AND ownerships.user_id = @userId
 			 AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER'))
 UPDATE purchases
 SET modified_at         = CURRENT_TIMESTAMP,
-	modified_by_user_id = @ownerId,
+	modified_by_user_id = @userId,
 	transaction_id      = @targetId
 FROM p
 WHERE purchases.id IN (SELECT id FROM p);
@@ -34,11 +34,11 @@ WITH l AS (SELECT loans.id
 					INNER JOIN ownerships ON owners.id = ownerships.owner_id
 					INNER JOIN access ON access.id = ownerships.access_id
 		   WHERE loans.transaction_id = @sourceId
-			 AND ownerships.user_id = @ownerId
+			 AND ownerships.user_id = @userId
 			 AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER'))
 UPDATE loans
 SET modified_at         = CURRENT_TIMESTAMP,
-	modified_by_user_id = @ownerId,
+	modified_by_user_id = @userId,
 	transaction_id      = @targetId
 FROM l
 WHERE loans.id IN (SELECT id FROM l);
@@ -50,7 +50,7 @@ WITH l AS (SELECT links.id
 					INNER JOIN access ON access.id = ownerships.access_id
 					INNER JOIN transaction_links tl ON links.id = tl.link_id
 		   WHERE tl.transaction_id = @sourceId
-			 AND ownerships.user_id = @ownerId
+			 AND ownerships.user_id = @userId
 			 AND (access.normalized_name = 'WRITE' OR access.normalized_name = 'OWNER'))
 UPDATE transaction_links
 SET transaction_id = @targetId
