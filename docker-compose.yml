@@ -9,12 +9,12 @@ services:
     environment:
       Admin__Password: "Password1!"
       Database__Provider: "PostgreSQL"
-      ConnectionStrings__Gnomeshade: "Server = database; Port = 5432; Database = gnomeshade_postgres; User Id = postgres; Password = Password2!; Maximum Pool Size = 20"
+      ConnectionStrings__Gnomeshade: "Server = database; Port = 5432; Database = database; User Id = postgres; Password = Password2!; Maximum Pool Size = 20"
     depends_on:
-      gnomeshade_postgres:
+      database:
         condition: service_started
 
-  gnomeshade_postgres:
+  database:
     image: postgres:15.3
     restart: unless-stopped
     volumes:
