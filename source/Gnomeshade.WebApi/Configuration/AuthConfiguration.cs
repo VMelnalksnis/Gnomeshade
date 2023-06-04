@@ -88,27 +88,18 @@ internal static class AuthConfiguration
 				})
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()
-				.AddAuthentication(options =>
-				{
-					options.DefaultScheme = IdentityConstants.ApplicationScheme;
-					options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-					options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-				});
+				.AddAuthentication();
 
 		if (jwtOptionsDefined)
 		{
 			services.AddValidatedOptions<JwtOptions>(configuration);
-			authenticationBuilder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+			authenticationBuilder.AddJwtBearer(options =>
 			{
 				options.ClaimsIssuer = jwtOptions!.ValidIssuer;
 				options.Audience = jwtOptions.ValidAudience;
 				options.SaveToken = true;
-				options.RequireHttpsMetadata = true;
 				options.TokenValidationParameters = new()
 				{
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateLifetime = true,
 					ValidateIssuerSigningKey = true,
 					ValidAudience = jwtOptions.ValidAudience,
 					ValidIssuer = jwtOptions.ValidIssuer,
@@ -139,9 +130,6 @@ internal static class AuthConfiguration
 
 				options.TokenValidationParameters = new()
 				{
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateLifetime = true,
 					ValidateIssuerSigningKey = true,
 					ValidAudience = providerOptions.ClientId,
 					ClockSkew = TimeSpan.Zero,
@@ -171,9 +159,6 @@ internal static class AuthConfiguration
 				{
 					NameClaimType = "name",
 					RoleClaimType = ClaimTypes.Role,
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidateLifetime = true,
 					ValidateIssuerSigningKey = true,
 					ValidAudience = providerOptions.ClientId,
 					ClockSkew = TimeSpan.Zero,
