@@ -88,4 +88,10 @@ internal static partial class Messages
 
 	[LoggerMessage(EventId = 24, Level = Debug, Message = "Found entity {EntityId}, deleted at {DeletedAt}")]
 	internal static partial void FoundEntity(this ILogger logger, Guid entityId, Instant? deletedAt);
+
+	[LoggerMessage(EventId = 25, Level = Debug, Message = "Updated {RowCount} rows")]
+	internal static partial void UpdatedRows(this ILogger logger, int rowCount);
+
+	[LoggerMessage(EventId = 26, Level = Debug, Message = "Deleted {RowCount} rows")]
+	internal static partial void DeletedRows(this ILogger logger, int rowCount);
 }

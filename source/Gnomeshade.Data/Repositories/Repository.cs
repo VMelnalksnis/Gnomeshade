@@ -85,10 +85,11 @@ public abstract class Repository<TEntity>
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task DeleteAsync(Guid id, Guid ownerId)
+	public async Task DeleteAsync(Guid id, Guid ownerId)
 	{
 		Logger.DeletingEntity(id);
-		return DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId });
+		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId });
+		Logger.DeletedRows(count);
 	}
 
 	/// <summary>Deletes the entity with the specified id using the specified database transaction.</summary>
@@ -96,11 +97,11 @@ public abstract class Repository<TEntity>
 	/// <param name="ownerId">The id of the owner of the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task DeleteAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
+	public async Task DeleteAsync(Guid id, Guid ownerId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
-		var command = new CommandDefinition(DeleteSql, new { id, ownerId }, dbTransaction);
-		return DbConnection.ExecuteAsync(command);
+		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, ownerId }, dbTransaction);
+		Logger.DeletedRows(count);
 	}
 
 	/// <summary>Gets all entities.</summary>
@@ -222,20 +223,22 @@ public abstract class Repository<TEntity>
 	/// <summary>Updates an existing entity with the specified id.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task UpdateAsync(TEntity entity)
+	public async Task UpdateAsync(TEntity entity)
 	{
 		Logger.UpdatingEntity();
-		return DbConnection.ExecuteAsync(UpdateSql, entity);
+		var count = await DbConnection.ExecuteAsync(UpdateSql, entity);
+		Logger.UpdatedRows(count);
 	}
 
 	/// <summary>Updates an existing entity with the specified id using the specified database transaction.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public Task UpdateAsync(TEntity entity, DbTransaction dbTransaction)
+	public async Task UpdateAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.UpdatingEntityWithTransaction();
-		return DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
+		var count = await DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
+		Logger.UpdatedRows(count);
 	}
 
 	/// <summary>Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.</summary>
