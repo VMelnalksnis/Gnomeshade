@@ -67,11 +67,10 @@ public sealed partial class PreferencesViewModel : ViewModelBase
 	public async Task Save()
 	{
 		var userConfiguration = _optionsMonitor.CurrentValue;
-		userConfiguration.Preferences = new()
-		{
-			NordigenCountry = NordigenCountry,
-			NoridgenInstitutionId = SelectedInstitutionId,
-		};
+
+		var preferences = userConfiguration.Preferences ?? new();
+		preferences.NordigenCountry = NordigenCountry;
+		preferences.NoridgenInstitutionId = SelectedInstitutionId;
 
 		await _userConfigurationWriter.Write(userConfiguration);
 	}

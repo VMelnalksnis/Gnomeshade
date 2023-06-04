@@ -17,6 +17,8 @@ public sealed class UserConfigurationWriter
 	/// <summary>Gets the filepath of the user configuration file.</summary>
 	public const string Filepath = "appsettings.user.json";
 
+	private const string _tempPath = $"{Filepath}.tmp";
+
 	private static readonly UserConfigurationSerializationContext _context = new(new(JsonSerializerDefaults.Web)
 	{
 		WriteIndented = true,
@@ -40,13 +42,21 @@ public sealed class UserConfigurationWriter
 		var changed = false;
 		using var change = _optionsMonitor.OnChange(_ => changed = true);
 
-		var fileStream = File.Open(Filepath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
+		var fileStream = File.Open(_tempPath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
 		var writer = new Utf8JsonWriter(fileStream);
 		await using (fileStream)
 		await using (writer)
 		{
 			await JsonSerializer.SerializeAsync(fileStream, userConfiguration, _context.UserConfiguration);
+			await fileStream.FlushAsync();
 		}
+
+		if (new FileInfo(_tempPath).Length is 0)
+		{
+			throw new ApplicationException("Failed to save user configuration");
+		}
+
+		File.Move(_tempPath, Filepath, true);
 
 		var delay = TimeSpan.FromMilliseconds(100);
 		while (!changed)
