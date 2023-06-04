@@ -135,6 +135,8 @@ internal static class AuthConfiguration
 					ClockSkew = TimeSpan.Zero,
 					AuthenticationType = providerName,
 				};
+
+				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 			});
 
 			var displayName = providerOptions.DisplayName ?? providerName;
@@ -177,6 +179,7 @@ internal static class AuthConfiguration
 					options.ClientId = providerOptions.ClientId;
 					options.ClientSecret = providerOptions.ClientSecret!;
 					options.Events.OnRedirectToAuthorizationEndpoint = OnRedirectToAuthorizationEndpoint;
+					options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 				});
 			}
 		}
