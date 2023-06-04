@@ -26,8 +26,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
 
-using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
-
 namespace Gnomeshade.WebApi.Configuration;
 
 internal static class AuthConfiguration
@@ -153,10 +151,7 @@ internal static class AuthConfiguration
 				options.Scope.Add("profile");
 				options.SaveTokens = true;
 				options.ResponseType = OpenIdConnectResponseType.Code;
-				options.NonceCookie.SameSite = SameSiteMode.Unspecified;
-				options.CorrelationCookie.SameSite = SameSiteMode.Unspecified;
 				options.AuthenticationMethod = OpenIdConnectRedirectBehavior.RedirectGet;
-				options.SaveTokens = true;
 				options.TokenValidationParameters = new()
 				{
 					NameClaimType = "name",
@@ -166,6 +161,8 @@ internal static class AuthConfiguration
 					ClockSkew = TimeSpan.Zero,
 					AuthenticationType = providerName,
 				};
+
+				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 			});
 		}
 
@@ -201,14 +198,14 @@ internal static class AuthConfiguration
 			return null;
 		}
 
-		var token = authorization[(JwtBearerDefaults.AuthenticationScheme.Length + 1)..];
+		var token = authorization[JwtBearerDefaults.AuthenticationScheme.Length..].TrimStart();
 		if (!_tokenHandler.CanReadToken(token))
 		{
 			return null;
 		}
 
 		var jwtToken = _tokenHandler.ReadToken(token);
-		return issuers.TryGetValue(jwtToken.Issuer, out var scheme) && scheme != currentScheme
+		return issuers.TryGetValue(jwtToken.Issuer, out var scheme) && !currentScheme.Equals(scheme, StringComparison.OrdinalIgnoreCase)
 			? scheme
 			: null;
 	}
