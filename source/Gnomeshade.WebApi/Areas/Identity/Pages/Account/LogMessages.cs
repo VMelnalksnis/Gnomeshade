@@ -44,4 +44,7 @@ internal static partial class LogMessages
 
 	[LoggerMessage(EventId = 1010, Level = Warning, Message = "Invalid recovery code entered for user with ID '{UserId}' ")]
 	internal static partial void InvalidRecoveryCode(ILogger logger, string userId);
+
+	[LoggerMessage(EventId = 1011, Level = Debug, Message = "User created an account using {LoginProvider} ({ProviderKey}) provider")]
+	internal static partial void RetrievedExternalUserInfo(this ILogger logger, string loginProvider, string providerKey);
 }

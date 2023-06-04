@@ -100,6 +100,8 @@ public sealed class ExternalLogin : PageModel
 			return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
 		}
 
+		_logger.RetrievedExternalUserInfo(info.LoginProvider, info.ProviderKey);
+
 		// Sign in the user with this external login provider if the user already has a login.
 		var result = await _signInManager.ExternalLoginSignInAsync(
 			info.LoginProvider,
@@ -177,7 +179,8 @@ public sealed class ExternalLogin : PageModel
 					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 					if (identityUser is null)
 					{
-						throw new InvalidOperationException("Could not find user by login after creating and adding the login");
+						throw new InvalidOperationException(
+							"Could not find user by login after creating and adding the login");
 					}
 
 					try
