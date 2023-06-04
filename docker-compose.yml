@@ -1,0 +1,27 @@
+services:
+  gnomeshade:
+    image: ghcr.io/vmelnalksnis/gnomeshade:0.6.3
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - gnomeshade_data:/data
+    environment:
+      Admin__Password: "Password1!"
+      Database__Provider: "PostgreSQL"
+      ConnectionStrings__Gnomeshade: "Server = database; Port = 5432; Database = gnomeshade_postgres; User Id = postgres; Password = Password2!; Maximum Pool Size = 20"
+    depends_on:
+      database:
+        condition: service_started
+
+  gnomeshade_postgres:
+    image: postgres:15.3
+    restart: unless-stopped
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: Password2!
+
+volumes:
+  gnomeshade_data:
+  postgresql_data:
