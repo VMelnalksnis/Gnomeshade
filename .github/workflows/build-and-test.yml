@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
@@ -106,7 +106,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - uses: actions/download-artifact@v3.0.2
         id: download
         with:
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - run: >
           docker build
           --tag ghcr.io/vmelnalksnis/gnomeshade:test
@@ -149,7 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v3.5.3
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.6.0
         with:
