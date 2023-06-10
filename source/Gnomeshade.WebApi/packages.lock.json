@@ -195,11 +195,11 @@
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "Direct",
-        "requested": "[1.1.0-rc.2, )",
-        "resolved": "1.1.0-rc.2",
-        "contentHash": "1KKUd/W3U5oIAQcjUEv5FR1UTYKNQYnBdGKaGEavU1dtwEKQugvSbDgaepZruQ31ecA+XeLU3OoAqKarcm74RA==",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "t7HClhnf/7bXeEK+6mXRaibUUgP+LVmNLBo+MaCfHmX1yEOIEuTg2jcvw6PrxkjJxAqmzyKIRNIqiH77R5xQVA==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.4.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.5.0, 2.0.0)"
         }
       },
       "StyleCop.Analyzers": {

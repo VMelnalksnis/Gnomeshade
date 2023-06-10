@@ -1132,7 +1132,7 @@
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.Http": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.2, )",
-          "OpenTelemetry.Instrumentation.Runtime": "[1.1.0-rc.2, )",
+          "OpenTelemetry.Instrumentation.Runtime": "[1.5.0, )",
           "Swashbuckle.AspNetCore": "[6.5.0, )",
           "Swashbuckle.AspNetCore.Annotations": "[6.5.0, )",
           "System.Linq.Async": "[6.0.1, )",
@@ -1512,11 +1512,11 @@
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "CentralTransitive",
-        "requested": "[1.1.0-rc.2, )",
-        "resolved": "1.1.0-rc.2",
-        "contentHash": "1KKUd/W3U5oIAQcjUEv5FR1UTYKNQYnBdGKaGEavU1dtwEKQugvSbDgaepZruQ31ecA+XeLU3OoAqKarcm74RA==",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "t7HClhnf/7bXeEK+6mXRaibUUgP+LVmNLBo+MaCfHmX1yEOIEuTg2jcvw6PrxkjJxAqmzyKIRNIqiH77R5xQVA==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.4.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.5.0, 2.0.0)"
         }
       },
       "Serilog": {
