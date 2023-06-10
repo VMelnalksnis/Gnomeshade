@@ -151,7 +151,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="CategoryReportViewModel"/> for use during design time.</summary>
 	public static CategoryReportViewModel CategoryReportViewModel { get; } =
-		CategoryReportViewModel.CreateAsync(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider).Result;
+		InitializeViewModel(new CategoryReportViewModel(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="ProductReportViewModel"/> for use during design time.</summary>
 	public static ProductReportViewModel ProductReportViewModel { get; } =

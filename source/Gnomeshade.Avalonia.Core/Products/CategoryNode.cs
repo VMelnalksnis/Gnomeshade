@@ -36,7 +36,7 @@ public sealed class CategoryNode
 	/// <returns>A new instance of the <see cref="CategoryNode"/> class.</returns>
 	public static CategoryNode FromCategory(Category category, List<Category> categories)
 	{
-		var nodes = categories.Where(c => c.CategoryId == category.Id).Select(c => CategoryNode.FromCategory(c, categories));
+		var nodes = categories.Where(c => c.CategoryId == category.Id).Select(c => FromCategory(c, categories));
 		return new(new(nodes), category.Name, category.Id);
 	}
 

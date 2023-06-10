@@ -78,23 +78,6 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
 	public List<ICartesianAxis> XAxes { get; }
 
-	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
-	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
-	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="clock">Clock which can provide the current instant.</param>
-	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
-	/// <returns>A new instance of the <see cref="CategoryReportViewModel"/> class.</returns>
-	public static async Task<CategoryReportViewModel> CreateAsync(
-		IActivityService activityService,
-		IGnomeshadeClient gnomeshadeClient,
-		IClock clock,
-		IDateTimeZoneProvider dateTimeZoneProvider)
-	{
-		var viewModel = new CategoryReportViewModel(activityService, gnomeshadeClient, clock, dateTimeZoneProvider);
-		await viewModel.RefreshAsync();
-		return viewModel;
-	}
-
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
@@ -119,8 +102,10 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 
 		var products = await _gnomeshadeClient.GetProductsAsync();
 		var categories = await _gnomeshadeClient.GetCategoriesAsync();
-		var nodes = categories.Where(c => c.CategoryId == SelectedCategory?.Id)
-			.Select(category => CategoryNode.FromCategory(category, categories)).ToList();
+		var nodes = categories
+			.Where(category => category.CategoryId == SelectedCategory?.Id || category.Id == SelectedCategory?.Id)
+			.Select(category => CategoryNode.FromCategory(category, categories))
+			.ToList();
 
 		var data = transactions
 			.Select(transaction =>
@@ -147,7 +132,12 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			.Select(purchase =>
 			{
 				var product = products.SingleOrDefault(product => product.Id == purchase.purchase.ProductId);
-				var node = product?.CategoryId is not { } id ? null : nodes.SingleOrDefault(node => node.Contains(id));
+				var node = product?.CategoryId is not { } id
+					? null
+					: id == SelectedCategory?.Id
+						? nodes.SingleOrDefault(node => node.Id == SelectedCategory?.Id)
+						: nodes.SingleOrDefault(node => node.Id != SelectedCategory?.Id && node.Contains(id));
+
 				return new PurchaseData(purchase.purchase, purchase.date, purchase.Transfers, node);
 			})
 			.Concat(uncategorizedTransfers)
