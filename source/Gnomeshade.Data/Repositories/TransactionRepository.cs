@@ -83,15 +83,17 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 			cancellationToken: cancellationToken));
 	}
 
-	public Task<IEnumerable<LinkEntity>> GetAllLinksAsync(
+	public async Task<IEnumerable<LinkEntity>> GetAllLinksAsync(
 		Guid id,
 		Guid userId,
 		CancellationToken cancellationToken = default)
 	{
-		return DbConnection.QueryAsync<LinkEntity>(new(
+		var entities = await DbConnection.QueryAsync<LinkEntity>(new(
 			$"{Queries.Link.Select} AND transaction_links.transaction_id = @id;",
 			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
+
+		return entities.DistinctBy(entity => entity.Id);
 	}
 
 	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid userId)

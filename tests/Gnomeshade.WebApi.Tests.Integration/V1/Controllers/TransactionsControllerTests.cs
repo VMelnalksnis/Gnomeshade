@@ -249,6 +249,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 	public async Task Links()
 	{
 		var transactionId = await _client.CreateTransactionAsync(new());
+		await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
 
 		var uri = $"https://localhost/documents/{Guid.NewGuid()}";
 		var linkCreation = new LinkCreation { Uri = new(uri) };
