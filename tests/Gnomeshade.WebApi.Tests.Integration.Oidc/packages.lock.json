@@ -1565,7 +1565,7 @@
           "NodaTime.Serialization.SystemTextJson": "[1.0.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.5.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs": "[1.4.0-rc.4, )",
-          "OpenTelemetry.Extensions.Hosting": "[1.4.0, )",
+          "OpenTelemetry.Extensions.Hosting": "[1.5.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.Http": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.2, )",
@@ -1989,12 +1989,12 @@
       },
       "OpenTelemetry.Extensions.Hosting": {
         "type": "CentralTransitive",
-        "requested": "[1.4.0, )",
-        "resolved": "1.4.0",
-        "contentHash": "fPg1cKLke/kAJhztAo8WYZ3Rspe94dpqxGDdonRF+M0nrzd1T9WCwMrpuVEXl0JPpJvsjF0H0KVSQTQLiZtP5w==",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "jFnYfeOcTdag7/OEAZq39JwmVs4073i8FTM344uFILGMzljIsR28hPkCAE//4SLyptib5deC5QPm0hYDlLw35A==",
         "dependencies": {
           "Microsoft.Extensions.Hosting.Abstractions": "2.1.0",
-          "OpenTelemetry": "1.4.0"
+          "OpenTelemetry": "1.5.0"
         }
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
