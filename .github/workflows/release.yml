@@ -191,7 +191,7 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: '.'
 
-      - uses: VMelnalksnis/appservice-settings@42083aec9c97f3c1e848af1f46a66087f872bc33
+      - uses: azure/appservice-settings@v1
         with:
           app-name: ${{ env.AZURE_APP_NAME }}
           app-settings-json: |
