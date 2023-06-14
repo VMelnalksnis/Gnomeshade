@@ -38,7 +38,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	/// <inheritdoc cref="IAccountClient.GetCounterpartyAsync"/>
 	/// <response code="200">Counterparty with the specified id exists.</response>
 	/// <response code="404">Counterparty with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Counterparty), Status200OK)]
+	[ProducesResponseType<Counterparty>(Status200OK)]
 	public override Task<ActionResult<Counterparty>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
@@ -46,7 +46,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	/// <response code="200">Successfully got the counterparty.</response>
 	/// <response code="404">No counterparty was linked to the user.</response>
 	[HttpGet("me")]
-	[ProducesResponseType(typeof(Counterparty), Status200OK)]
+	[ProducesResponseType<Counterparty>(Status200OK)]
 	[ProducesStatus404NotFound]
 	public Task<ActionResult<Counterparty>> GetMe(CancellationToken cancellationToken)
 	{
@@ -55,7 +55,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 
 	/// <inheritdoc cref="IAccountClient.GetCounterpartiesAsync"/>
 	/// <response code="200">Successfully got all counterparties.</response>
-	[ProducesResponseType(typeof(List<Counterparty>), Status200OK)]
+	[ProducesResponseType<List<Counterparty>>(Status200OK)]
 	public override Task<List<Counterparty>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 

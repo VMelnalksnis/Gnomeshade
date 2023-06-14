@@ -41,13 +41,13 @@ public sealed class PurchasesController : TransactionItemController<PurchaseRepo
 	/// <inheritdoc cref="ITransactionClient.GetPurchaseAsync"/>
 	/// <response code="200">Successfully got the purchase.</response>
 	/// <response code="404">Purchase with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Purchase), Status200OK)]
+	[ProducesResponseType<Purchase>(Status200OK)]
 	public override Task<ActionResult<Purchase>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all purchases.</response>
-	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
+	[ProducesResponseType<List<Purchase>>(Status200OK)]
 	public override Task<List<Purchase>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 

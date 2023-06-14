@@ -38,7 +38,7 @@ public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntit
 
 	/// <inheritdoc cref="IOwnerClient.GetOwnersAsync"/>
 	/// <response code="200">Successfully got the owners.</response>
-	[ProducesResponseType(typeof(List<Owner>), Status200OK)]
+	[ProducesResponseType<List<Owner>>(Status200OK)]
 	public override Task<List<Owner>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 

@@ -44,14 +44,14 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 
 	/// <inheritdoc cref="IProductClient.GetCategoriesAsync"/>
 	/// <response code="200">Successfully got the categories.</response>
-	[ProducesResponseType(typeof(List<Category>), Status200OK)]
+	[ProducesResponseType<List<Category>>(Status200OK)]
 	public override Task<List<Category>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetCategoryAsync"/>
 	/// <response code="200">Successfully got the category.</response>
 	/// <response code="404">Category with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Category), Status200OK)]
+	[ProducesResponseType<Category>(Status200OK)]
 	public override Task<ActionResult<Category>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 

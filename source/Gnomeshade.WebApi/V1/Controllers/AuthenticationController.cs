@@ -60,7 +60,7 @@ public sealed class AuthenticationController : ControllerBase
 	/// <returns>Information about the authentication section.</returns>
 	[AllowAnonymous]
 	[HttpPost]
-	[ProducesResponseType(typeof(LoginResponse), Status200OK)]
+	[ProducesResponseType<LoginResponse>(Status200OK)]
 	[ProducesResponseType(Status401Unauthorized)]
 	public async Task<ActionResult<LoginResponse>> Login([FromBody] Login login)
 	{

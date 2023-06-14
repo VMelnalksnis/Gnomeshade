@@ -37,7 +37,7 @@ public sealed class AccessController : FinanceControllerBase<AccessEntity, Acces
 	/// <inheritdoc cref="IOwnerClient.GetAccessesAsync"/>
 	/// <response code="200">Successfully got all accesses.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(List<Access>), Status200OK)]
+	[ProducesResponseType<List<Access>>(Status200OK)]
 	public async Task<List<Access>> Get(CancellationToken cancellationToken)
 	{
 		var accesses = await _repository.GetAllAsync(cancellationToken);

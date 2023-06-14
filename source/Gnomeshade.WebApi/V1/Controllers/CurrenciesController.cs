@@ -37,7 +37,7 @@ public sealed class CurrenciesController : FinanceControllerBase<CurrencyEntity,
 	/// <inheritdoc cref="IAccountClient.GetCurrenciesAsync"/>
 	/// <response code="200">Successfully got all currencies.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(List<Currency>), Status200OK)]
+	[ProducesResponseType<List<Currency>>(Status200OK)]
 	public async Task<ActionResult<List<Currency>>> GetCurrencies(CancellationToken cancellationToken)
 	{
 		var currencies = await _repository.GetAllAsync(cancellationToken);

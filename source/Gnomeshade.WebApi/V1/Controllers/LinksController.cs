@@ -36,14 +36,14 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 
 	/// <inheritdoc cref="IGnomeshadeClient.GetLinksAsync"/>
 	/// <response code="200">Successfully got all links.</response>
-	[ProducesResponseType(typeof(List<Link>), Status200OK)]
+	[ProducesResponseType<List<Link>>(Status200OK)]
 	public override Task<List<Link>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="IGnomeshadeClient.GetLinkAsync"/>
 	/// <response code="200">Link with the specified id exists.</response>
 	/// <response code="404">Link with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Link), Status200OK)]
+	[ProducesResponseType<Link>(Status200OK)]
 	public override Task<ActionResult<Link>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 

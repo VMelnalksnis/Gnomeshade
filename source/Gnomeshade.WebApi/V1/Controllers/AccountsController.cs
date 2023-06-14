@@ -60,7 +60,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	/// <returns>A collection of all accounts.</returns>
 	/// <response code="200">Successfully got all accounts.</response>
 	[HttpGet]
-	[ProducesResponseType(typeof(List<Account>), Status200OK)]
+	[ProducesResponseType<List<Account>>(Status200OK)]
 	public async Task<List<Account>> GetAll(CancellationToken cancellationToken)
 	{
 		var accounts = await _repository.GetAsync(ApplicationUser.Id, cancellationToken);
@@ -70,7 +70,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	/// <inheritdoc cref="IAccountClient.GetAccountAsync"/>
 	/// <response code="200">Successfully got the account.</response>
 	/// <response code="404">Account with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Account), Status200OK)]
+	[ProducesResponseType<Account>(Status200OK)]
 	public override Task<ActionResult<Account>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 

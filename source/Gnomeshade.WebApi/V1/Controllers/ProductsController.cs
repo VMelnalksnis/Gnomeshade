@@ -47,13 +47,13 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	/// <inheritdoc cref="IProductClient.GetProductAsync"/>
 	/// <response code="200">Successfully got the product.</response>
 	/// <response code="404">Product with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Product), Status200OK)]
+	[ProducesResponseType<Product>(Status200OK)]
 	public override Task<ActionResult<Product>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetProductsAsync"/>
 	/// <response code="200">Successfully got all products.</response>
-	[ProducesResponseType(typeof(List<Product>), Status200OK)]
+	[ProducesResponseType<List<Product>>(Status200OK)]
 	public override Task<List<Product>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
@@ -68,7 +68,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	/// <response code="200">Successfully got the purchases.</response>
 	/// <response code="404">Product with the specified id does not exist.</response>
 	[HttpGet("{id:guid}/Purchases")]
-	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
+	[ProducesResponseType<List<Purchase>>(Status200OK)]
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<List<Purchase>>> Purchases(Guid id, CancellationToken cancellationToken)
 	{

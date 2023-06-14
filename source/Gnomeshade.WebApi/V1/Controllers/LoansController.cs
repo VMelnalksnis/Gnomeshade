@@ -41,13 +41,13 @@ public sealed class LoansController : TransactionItemController<LoanRepository, 
 	/// <inheritdoc cref="ITransactionClient.GetLoanAsync"/>
 	/// <response code="200">Successfully got the loan.</response>
 	/// <response code="404">Loan with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Loan), Status200OK)]
+	[ProducesResponseType<Loan>(Status200OK)]
 	public override Task<ActionResult<Loan>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="ITransactionClient.GetLoansAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all loans.</response>
-	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
+	[ProducesResponseType<List<Loan>>(Status200OK)]
 	public override Task<List<Loan>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 

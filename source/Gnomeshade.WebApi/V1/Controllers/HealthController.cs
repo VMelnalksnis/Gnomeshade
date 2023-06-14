@@ -40,8 +40,8 @@ public sealed class HealthController : ControllerBase
 	/// <response code="503">The API is not operational.</response>
 	[HttpGet]
 	[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-	[ProducesResponseType(typeof(string), Status200OK)]
-	[ProducesResponseType(typeof(string), Status503ServiceUnavailable)]
+	[ProducesResponseType<string>(Status200OK)]
+	[ProducesResponseType<string>(Status503ServiceUnavailable)]
 	public async Task<ActionResult<string>> Get(CancellationToken cancellationToken)
 	{
 		var report = await _healthCheckService.CheckHealthAsync(cancellationToken);

@@ -73,14 +73,14 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 	/// <response code="200">Successfully got all transactions.</response>
-	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
+	[ProducesResponseType<List<Transaction>>(Status200OK)]
 	public override Task<List<Transaction>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
 	/// <inheritdoc cref="ITransactionClient.GetTransactionAsync"/>
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Transaction), Status200OK)]
+	[ProducesResponseType<Transaction>(Status200OK)]
 	public override Task<ActionResult<Transaction>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
@@ -88,7 +88,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
 	[HttpGet("{id:guid}/Details")]
-	[ProducesResponseType(typeof(DetailedTransaction), Status200OK)]
+	[ProducesResponseType<DetailedTransaction>(Status200OK)]
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult<DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
 	{
@@ -109,7 +109,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 	/// <response code="200">Successfully got all transactions.</response>
 	[HttpGet("Details")]
-	[ProducesResponseType(typeof(List<DetailedTransaction>), Status200OK)]
+	[ProducesResponseType<List<DetailedTransaction>>(Status200OK)]
 	public async IAsyncEnumerable<DetailedTransaction> GetAllDetailed(
 		[FromQuery] OptionalTimeRange timeRange,
 		[EnumeratorCancellation] CancellationToken cancellationToken)
@@ -145,7 +145,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetTransactionLinksAsync"/>
 	/// <response code="200">Successfully got all links.</response>
 	[HttpGet("{transactionId:guid}/Links")]
-	[ProducesResponseType(typeof(List<Link>), Status200OK)]
+	[ProducesResponseType<List<Link>>(Status200OK)]
 	public async Task<List<Link>> GetLinks(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var links = await Repository.GetAllLinksAsync(transactionId, ApplicationUser.Id, cancellationToken);
@@ -189,7 +189,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all transfers.</response>
 	[HttpGet("{transactionId:guid}/Transfers")]
-	[ProducesResponseType(typeof(List<Transfer>), Status200OK)]
+	[ProducesResponseType<List<Transfer>>(Status200OK)]
 	public async Task<List<Transfer>> GetTransfers(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var transfers = await _transferRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
@@ -199,7 +199,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetPurchasesAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all purchases.</response>
 	[HttpGet("{transactionId:guid}/Purchases")]
-	[ProducesResponseType(typeof(List<Purchase>), Status200OK)]
+	[ProducesResponseType<List<Purchase>>(Status200OK)]
 	public async Task<List<Purchase>> GetPurchases(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var purchases = await _purchaseRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
@@ -210,7 +210,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetLoansAsync(Guid, CancellationToken)"/>
 	/// <response code="200">Successfully got all loans.</response>
 	[HttpGet("{transactionId:guid}/Loans")]
-	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
+	[ProducesResponseType<List<Loan>>(Status200OK)]
 	public async Task<List<Loan>> GetLoans(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var loans = await _loanRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
@@ -220,7 +220,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetCounterpartyLoansAsync"/>
 	/// <response code="200">Successfully got all loans.</response>
 	[HttpGet("Loans")]
-	[ProducesResponseType(typeof(List<Loan>), Status200OK)]
+	[ProducesResponseType<List<Loan>>(Status200OK)]
 	public async Task<List<Loan>> GetCounterpartyLoans(Guid counterpartyId, CancellationToken cancellationToken)
 	{
 		var loans = await _loanRepository.GetAllForCounterpartyAsync(counterpartyId, ApplicationUser.Id, cancellationToken);
@@ -242,7 +242,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetRelatedTransactionAsync"/>
 	/// <response code="200">Successfully got all related transactions.</response>
 	[HttpGet("{id:guid}/Related")]
-	[ProducesResponseType(typeof(List<Transaction>), Status200OK)]
+	[ProducesResponseType<List<Transaction>>(Status200OK)]
 	public async Task<IEnumerable<Transaction>> GetRelated(Guid id, CancellationToken cancellationToken)
 	{
 		var transactions = await Repository.GetRelatedAsync(id, ApplicationUser.Id, cancellationToken);

@@ -90,7 +90,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <param name="creation">The entity to create or replace.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[HttpPut("{id:guid}")]
-	[ProducesResponseType(typeof(Guid), Status201Created)]
+	[ProducesResponseType<Guid>(Status201Created)]
 	[ProducesResponseType(Status204NoContent)]
 	[ProducesResponseType(Status403Forbidden)]
 	[ProducesStatus409Conflict]

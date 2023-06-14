@@ -37,13 +37,13 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 	/// <inheritdoc cref="IProductClient.GetUnitAsync"/>
 	/// <response code="200">Unit with the specified id exists.</response>
 	/// <response code="404">Unit with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Unit), Status200OK)]
+	[ProducesResponseType<Unit>(Status200OK)]
 	public override Task<ActionResult<Unit>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="IProductClient.GetUnitsAsync"/>
 	/// <response code="200">Successfully got all units.</response>
-	[ProducesResponseType(typeof(List<Unit>), Status200OK)]
+	[ProducesResponseType<List<Unit>>(Status200OK)]
 	public override Task<List<Unit>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 

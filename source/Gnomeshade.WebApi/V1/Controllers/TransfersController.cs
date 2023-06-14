@@ -41,13 +41,13 @@ public sealed class TransfersController : TransactionItemController<TransferRepo
 	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
 	/// <response code="200">Successfully got the transfer.</response>
 	/// <response code="404">Transfer with the specified id does not exist.</response>
-	[ProducesResponseType(typeof(Transfer), Status200OK)]
+	[ProducesResponseType<Transfer>(Status200OK)]
 	public override Task<ActionResult<Transfer>> Get(Guid id, CancellationToken cancellationToken) =>
 		base.Get(id, cancellationToken);
 
 	/// <inheritdoc cref="ITransactionClient.GetTransfersAsync(CancellationToken)"/>
 	/// <response code="200">Successfully got all transfers.</response>
-	[ProducesResponseType(typeof(List<Transfer>), Status200OK)]
+	[ProducesResponseType<List<Transfer>>(Status200OK)]
 	public override Task<List<Transfer>> Get(CancellationToken cancellationToken) =>
 		base.Get(cancellationToken);
 
