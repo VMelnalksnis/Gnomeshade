@@ -23,7 +23,8 @@ namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 public sealed class KeycloakFixture : IAsyncDisposable
 {
-	internal const int Port = 8297;
+	internal const string ApiBaseUri = "https://localhost:5001/";
+	internal const string DesktopBaseUri = "http://localhost:8297/";
 	private const string _databasePath = "gnomeshade.db";
 
 	private readonly KeycloakContainer _keycloak;
@@ -33,16 +34,28 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	{
 		File.Delete(_databasePath);
 
-		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper");
-		Client = new("gnomeshade", new($"http://localhost:{Port}/"))
+		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper")
+		{
+			IncludedClientAudience = "gnomeshade",
+		};
+
+		Client = new("gnomeshade")
 		{
 			Mappers = new[] { mapper },
 			Secret = Guid.NewGuid().ToString(),
+			RedirectUris = new[] { $"{ApiBaseUri}*" },
+		};
+
+		DesktopClient = new("gnomeshade_desktop")
+		{
+			Mappers = new[] { mapper },
+			Secret = Guid.NewGuid().ToString(),
+			RedirectUris = new[] { DesktopBaseUri },
 		};
 
 		var realmConfiguration = new RealmConfiguration(
 			"demorealm",
-			new List<KeycloakClient> { Client },
+			new List<KeycloakClient> { Client, DesktopClient },
 			new List<User> { User });
 
 		_keycloak = new KeycloakBuilder().WithRealm(realmConfiguration).Build();
@@ -50,7 +63,9 @@ public sealed class KeycloakFixture : IAsyncDisposable
 
 	internal Realm Realm { get; private set; } = null!;
 
-	internal KeycloakClient Client { get; private set; }
+	internal KeycloakClient Client { get; }
+
+	internal KeycloakClient DesktopClient { get; }
 
 	internal User User { get; } = new("john.doe", "password123")
 	{
@@ -75,9 +90,6 @@ public sealed class KeycloakFixture : IAsyncDisposable
 				{ "Oidc:Keycloak:ClientId", Client.Name },
 				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
 				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
-				{ "Jwt:ValidAudience", $"http://localhost:{Port}/" },
-				{ "Jwt:ValidIssuer", $"http://localhost:{Port}/" },
-				{ "Jwt:Secret", Guid.NewGuid().ToString() },
 			})
 			.AddEnvironmentVariables()
 			.Build();

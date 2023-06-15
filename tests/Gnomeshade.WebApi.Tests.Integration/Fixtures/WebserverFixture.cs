@@ -5,18 +5,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 using Bogus;
 
 using DotNet.Testcontainers.Containers;
 
+using Gnomeshade.Data;
+using Gnomeshade.Data.Identity;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Authentication;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,14 +69,13 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	internal async Task<Login> CreateApplicationUserAsync()
 	{
-		var client = _webApplicationFactory.CreateClient();
 		var registrationFaker = new Faker<RegistrationModel>()
 			.RuleFor(registration => registration.Email, faker => faker.Internet.Email())
 			.RuleFor(registration => registration.Password, faker => faker.Internet.Password(10, 12))
 			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
 			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
 
-		return await RegisterUser(client, registrationFaker.Generate());
+		return await RegisterUser(registrationFaker.Generate());
 	}
 
 	internal async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
@@ -91,17 +91,42 @@ public abstract class WebserverFixture : IAsyncDisposable
 
 	protected abstract IConfiguration GetAdditionalConfiguration();
 
-	private static async Task<Login> RegisterUser(HttpClient client, RegistrationModel registrationModel)
+	private async Task<Login> RegisterUser(RegistrationModel registration)
 	{
-		var response = await client.PostAsJsonAsync("api/v1.0/authentication/register", registrationModel);
-		if (response.StatusCode is HttpStatusCode.InternalServerError)
+		using var scope = _webApplicationFactory.Services.CreateScope();
+		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+		var unitOfWork = scope.ServiceProvider.GetRequiredService<UserUnitOfWork>();
+
+		var user = new ApplicationUser
 		{
-			throw new(await response.Content.ReadAsStringAsync());
+			UserName = registration.Username,
+			Email = registration.Email,
+			FullName = registration.FullName,
+		};
+
+		var creationResult = await userManager.CreateAsync(user, registration.Password);
+		if (!creationResult.Succeeded)
+		{
+			throw new(string.Join(Environment.NewLine, creationResult.Errors.Select(error => error.Description)));
 		}
 
-		response.EnsureSuccessStatusCode();
+		var identityUser = await userManager.FindByNameAsync(registration.Username);
+		if (identityUser is null)
+		{
+			throw new InvalidOperationException("Could not find user by name after creating it");
+		}
 
-		return new() { Username = registrationModel.Username, Password = registrationModel.Password };
+		try
+		{
+			await unitOfWork.CreateUserAsync(identityUser);
+		}
+		catch (Exception)
+		{
+			await userManager.DeleteAsync(identityUser);
+			throw;
+		}
+
+		return new() { Username = registration.Username, Password = registration.Password };
 	}
 
 	private async Task<IGnomeshadeClient> CreateAuthorizedClientAsync(Login login)

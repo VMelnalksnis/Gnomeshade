@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Client.Results;
 
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
@@ -44,24 +45,25 @@ public sealed class AuthorizationTests
 	{
 		var services = new ServiceCollection();
 
-		var redirectUri = $"http://localhost:{KeycloakFixture.Port}/";
 		services
 			.AddHttpClient()
-			.AddLogging()
-			.AddSingleton<IBrowser, MockBrowser>(provider =>
+			.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug))
+			.AddSingleton<MockBrowser>(provider =>
 			{
 				var handler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var httpClient = provider.GetRequiredService<HttpClient>();
-				return new(handler, httpClient) { Username = _fixture.User.Username, Password = _fixture.User.Password };
+				var internalClient = _fixture.CreateHttpClient();
+				return new(handler, httpClient, internalClient, _fixture.User.Username, _fixture.User.Password);
 			})
-			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(redirectUri))
+			.AddSingleton<IBrowser, MockBrowser>(provider => provider.GetRequiredService<MockBrowser>())
+			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(KeycloakFixture.DesktopBaseUri))
 			.AddTransient<OidcClient>(provider => new(new()
 			{
 				Authority = _fixture.Realm.ServerRealm.ToString(),
-				ClientId = _fixture.Client.Name,
-				ClientSecret = _fixture.Client.Secret,
+				ClientId = _fixture.DesktopClient.Name,
+				ClientSecret = _fixture.DesktopClient.Secret,
 				Scope = "openid profile",
-				RedirectUri = redirectUri,
+				RedirectUri = KeycloakFixture.DesktopBaseUri,
 				Browser = provider.GetRequiredService<IBrowser>(),
 				LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
 				HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),
@@ -77,8 +79,17 @@ public sealed class AuthorizationTests
 		var handler = provider.GetRequiredService<TokenDelegatingHandler>();
 		var gnomeshadeClient = _fixture.CreateUnauthorizedClient(handler);
 
-		await gnomeshadeClient.SocialRegister();
+		var result = await gnomeshadeClient.SocialRegister();
+		var redirectUri = result.Should().BeOfType<RequiresRegistration>().Subject.RedirectUri;
 
+		var mockBrowser = provider.GetRequiredService<MockBrowser>();
+		await mockBrowser.RegisterUser(redirectUri.ToString());
+
+		// this works
+		var secondResult = await gnomeshadeClient.SocialRegister();
+		secondResult.Should().BeOfType<LoggedIn>();
+
+		// this doesn't ???
 		var counterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
 		counterparty.Name.Should().Be("John Doe");
 	}

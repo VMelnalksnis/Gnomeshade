@@ -14,6 +14,7 @@ using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
@@ -67,10 +68,21 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
-	public async Task SocialRegister()
+	public async Task<ExternalLoginResult> SocialRegister()
 	{
 		using var response = await _httpClient.PostAsync(_socialRegisterUri, null);
-		await ThrowIfNotSuccessCode(response);
+		if (response.StatusCode is HttpStatusCode.NoContent)
+		{
+			return new LoggedIn();
+		}
+
+		if (response.StatusCode is HttpStatusCode.Redirect && response.Headers.Location is { } location)
+		{
+			return new RequiresRegistration(location);
+		}
+
+		var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+		throw new HttpRequestException($"{response.StatusCode}; Details: '{message}'", null, response.StatusCode);
 	}
 
 	/// <inheritdoc />
@@ -412,7 +424,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		}
 
 		var message = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-		throw new HttpRequestException($"Failed with message: {message}", null, responseMessage.StatusCode);
+		throw new HttpRequestException($"{responseMessage.StatusCode}; Details: '{message}'", null, responseMessage.StatusCode);
 	}
 
 	private async Task<TResult> GetAsync<TResult>(

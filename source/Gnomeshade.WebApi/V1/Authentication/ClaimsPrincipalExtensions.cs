@@ -7,9 +7,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 
+using Gnomeshade.WebApi.Configuration;
+
 namespace Gnomeshade.WebApi.V1.Authentication;
 
-internal static class UserPrincipalExtensions
+internal static class ClaimsPrincipalExtensions
 {
 	internal static bool TryGetFirstClaimValue(
 		this ClaimsPrincipal principal,
@@ -19,5 +21,20 @@ internal static class UserPrincipalExtensions
 		var claim = principal.Claims.FirstOrDefault(claim => StringComparer.OrdinalIgnoreCase.Equals(claim.Type, claimType));
 		claimValue = claim?.Value;
 		return claim is not null;
+	}
+
+	internal static Claim? GetSingleOrDefaultClaim(this ClaimsPrincipal principal, string claimType)
+	{
+		return principal.FindAll(claimType).DistinctBy(claim => claim.Value).SingleOrDefault();
+	}
+
+	internal static string? GetLoginProvider(this ClaimsPrincipal principal)
+	{
+		if (principal.Identity?.AuthenticationType is null)
+		{
+			return null;
+		}
+
+		return principal.Identity.AuthenticationType + AuthConfiguration.OidcSuffix;
 	}
 }

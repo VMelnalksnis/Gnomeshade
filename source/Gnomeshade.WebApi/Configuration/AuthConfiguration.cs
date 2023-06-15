@@ -30,6 +30,8 @@ namespace Gnomeshade.WebApi.Configuration;
 
 internal static class AuthConfiguration
 {
+	internal const string OidcSuffix = "_oidc";
+
 	private static readonly JwtSecurityTokenHandler _tokenHandler = new();
 	private static readonly string[] _supportedOAuthProviders =
 	{
@@ -138,7 +140,7 @@ internal static class AuthConfiguration
 			});
 
 			var displayName = providerOptions.DisplayName ?? providerName;
-			authenticationBuilder.AddOpenIdConnect($"{providerName}_oidc", displayName, options =>
+			authenticationBuilder.AddOpenIdConnect(providerName + OidcSuffix, displayName, options =>
 			{
 				options.SignInScheme = IdentityConstants.ExternalScheme;
 				options.Authority = providerOptions.ServerRealm.AbsoluteUri;

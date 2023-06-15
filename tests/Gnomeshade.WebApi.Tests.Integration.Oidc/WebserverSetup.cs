@@ -4,6 +4,8 @@
 
 using System.Threading.Tasks;
 
+[assembly: Parallelizable(ParallelScope.Children)]
+
 namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 [SetUpFixture]

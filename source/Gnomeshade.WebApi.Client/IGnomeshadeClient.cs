@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Authentication;
 
@@ -22,7 +23,7 @@ public interface IGnomeshadeClient : IAccountClient, IProductClient, ITransactio
 
 	/// <summary>Register using an OIDC provider token.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task SocialRegister();
+	Task<ExternalLoginResult> SocialRegister();
 
 	/// <summary>Log out.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

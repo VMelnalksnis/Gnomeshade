@@ -2,20 +2,15 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.WebApi.V1.Authentication;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-
-using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.WebApi.V1.Controllers;
 
@@ -26,21 +21,12 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 public sealed class ExternalAuthenticationController : ControllerBase
 {
 	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly ProblemDetailsFactory _problemDetailFactory;
-	private readonly UserUnitOfWork _userUnitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="ExternalAuthenticationController"/> class.</summary>
 	/// <param name="userManager">Identity user persistence store.</param>
-	/// <param name="problemDetailFactory"><see cref="ProblemDetailsFactory"/>.</param>
-	/// <param name="userUnitOfWork">Application user persistence store.</param>
-	public ExternalAuthenticationController(
-		UserManager<ApplicationUser> userManager,
-		ProblemDetailsFactory problemDetailFactory,
-		UserUnitOfWork userUnitOfWork)
+	public ExternalAuthenticationController(UserManager<ApplicationUser> userManager)
 	{
 		_userManager = userManager;
-		_problemDetailFactory = problemDetailFactory;
-		_userUnitOfWork = userUnitOfWork;
 	}
 
 	/// <summary>Registers or authenticates a user using and OIDC provider.</summary>
@@ -48,68 +34,18 @@ public sealed class ExternalAuthenticationController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult> SocialRegister()
 	{
-		if (User.Identity is not ClaimsIdentity identity)
+		var loginProvider = User.GetLoginProvider();
+		var providerKeyClaim = User.GetSingleOrDefaultClaim(ClaimTypes.NameIdentifier);
+
+		if (loginProvider is null || providerKeyClaim is null)
 		{
-			return Unauthorized();
+			return StatusCode(StatusCodes.Status401Unauthorized);
 		}
 
-		var providerKeyClaim = identity.FindAll(ClaimTypes.NameIdentifier).Single();
-		var existingUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-		if (existingUser is not null)
-		{
-			return Ok();
-		}
+		var applicationUser = await _userManager.FindByLoginAsync(loginProvider, providerKeyClaim.Value);
 
-		var applicationUser = new ApplicationUser
-		{
-			Email = User.FindFirstValue(ClaimTypes.Email),
-			UserName = User.FindFirstValue("preferred_username"),
-		};
-
-		if (User.TryGetFirstClaimValue(ClaimTypes.Name, out var fullName))
-		{
-			applicationUser.FullName = fullName;
-		}
-		else if (User.TryGetFirstClaimValue("name", out var alternativeFullName))
-		{
-			applicationUser.FullName = alternativeFullName;
-		}
-		else
-		{
-			throw new ArgumentException("User does not have a name claim", nameof(User));
-		}
-
-		var userCreationResult = await _userManager.CreateAsync(applicationUser);
-		if (!userCreationResult.Succeeded)
-		{
-			var problemDetails = userCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-			return BadRequest(problemDetails);
-		}
-
-		var userLoginInfo = new UserLoginInfo(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value, "Keycloak");
-		var loginCreationResult = await _userManager.AddLoginAsync(applicationUser, userLoginInfo);
-		if (!loginCreationResult.Succeeded)
-		{
-			var problemDetails = loginCreationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-			return BadRequest(problemDetails);
-		}
-
-		var identityUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
-		if (identityUser is null)
-		{
-			throw new InvalidOperationException("Could not find user by login after creating and adding the login");
-		}
-
-		try
-		{
-			await _userUnitOfWork.CreateUserAsync(identityUser);
-		}
-		catch (Exception)
-		{
-			await _userManager.DeleteAsync(identityUser);
-			throw;
-		}
-
-		return StatusCode(Status201Created);
+		return applicationUser is not null
+			? NoContent()
+			: LocalRedirect("/Identity/Account/Register");
 	}
 }

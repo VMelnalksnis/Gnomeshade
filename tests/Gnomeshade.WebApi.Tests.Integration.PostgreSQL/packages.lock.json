@@ -131,13 +131,13 @@
       },
       "VMelnalksnis.Testcontainers.Keycloak": {
         "type": "Direct",
-        "requested": "[0.2.0, )",
-        "resolved": "0.2.0",
-        "contentHash": "fe/IpfbtXTfBGQ/8CeeZwY1LVJLBZeunIbvPhFre7tddHbB2nRIsnf1ouiLONs3nJmuiMgGGfeNYmFaRQsWuGg==",
+        "requested": "[0.2.1, )",
+        "resolved": "0.2.1",
+        "contentHash": "QoVoIDTp0ltUgLvWoXBgy1s3Jz/msplWRkhi52wOC+jSFldnt8es7RzlWubIvhVtWWluZogFzr4+IOoc68LHSA==",
         "dependencies": {
           "System.Text.Encodings.Web": "7.0.0",
           "System.Text.Json": "7.0.2",
-          "Testcontainers": "3.1.0"
+          "Testcontainers": "3.2.0"
         }
       },
       "Avalonia.Angle.Windows.Natives": {

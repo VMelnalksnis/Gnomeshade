@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -44,10 +45,14 @@ public sealed class ApplicationUserHandler : AuthorizationHandler<ApplicationUse
 		ApplicationUserRequirement requirement)
 	{
 		var identityUser = await _userManager.GetUserAsync(context.User);
-		var providerKeyClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
-		if (identityUser is null && providerKeyClaim is not null)
+		var loginProvider = context.User.GetLoginProvider();
+		var providerKeyClaim = context.User.GetSingleOrDefaultClaim(ClaimTypes.NameIdentifier);
+
+		if (identityUser is null &&
+			loginProvider is not null &&
+			providerKeyClaim is not null)
 		{
-			identityUser = await _userManager.FindByLoginAsync(providerKeyClaim.OriginalIssuer, providerKeyClaim.Value);
+			identityUser = await _userManager.FindByLoginAsync(loginProvider, providerKeyClaim.Value);
 		}
 
 		if (identityUser is null)

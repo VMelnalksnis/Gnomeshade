@@ -9,18 +9,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-using AutoMapper;
-
-using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Models.Authentication;
-using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -37,33 +32,21 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 public sealed class AuthenticationController : ControllerBase
 {
 	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly UserUnitOfWork _userUnitOfWork;
-	private readonly Mapper _mapper;
 	private readonly JwtOptions _jwtOptions;
 	private readonly JwtSecurityTokenHandler _securityTokenHandler;
-	private readonly ProblemDetailsFactory _problemDetailFactory;
 
 	/// <summary>Initializes a new instance of the <see cref="AuthenticationController"/> class.</summary>
 	/// <param name="userManager">Identity user persistence store.</param>
-	/// <param name="userUnitOfWork">Application user persistence store.</param>
-	/// <param name="mapper">Repository and API model mapper.</param>
 	/// <param name="jwtOptions">Built-in authentication options.</param>
 	/// <param name="securityTokenHandler">JWT token writer.</param>
-	/// <param name="problemDetailsFactory"><see cref="ProblemDetailsFactory"/>.</param>
 	public AuthenticationController(
 		UserManager<ApplicationUser> userManager,
-		UserUnitOfWork userUnitOfWork,
-		Mapper mapper,
 		IOptions<JwtOptions> jwtOptions,
-		JwtSecurityTokenHandler securityTokenHandler,
-		ProblemDetailsFactory problemDetailsFactory)
+		JwtSecurityTokenHandler securityTokenHandler)
 	{
 		_userManager = userManager;
-		_userUnitOfWork = userUnitOfWork;
-		_mapper = mapper;
 		_jwtOptions = jwtOptions.Value;
 		_securityTokenHandler = securityTokenHandler;
-		_problemDetailFactory = problemDetailsFactory;
 	}
 
 	/// <summary>Authenticates a user using the specified login information.</summary>
@@ -102,42 +85,6 @@ public sealed class AuthenticationController : ControllerBase
 			new(authSigningKey, SecurityAlgorithms.HmacSha256));
 
 		return Ok(new LoginResponse(_securityTokenHandler.WriteToken(token), Instant.FromDateTimeUtc(token.ValidTo)));
-	}
-
-	/// <summary>Registers a new user.</summary>
-	/// <param name="registration">The information about the user to register.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	[AllowAnonymous]
-	[HttpPost]
-	[ProducesResponseType(Status204NoContent)]
-	public async Task<ActionResult> Register([FromBody] RegistrationModel registration)
-	{
-		var user = _mapper.Map<ApplicationUser>(registration);
-
-		var creationResult = await _userManager.CreateAsync(user, registration.Password);
-		if (!creationResult.Succeeded)
-		{
-			var problemDetails = creationResult.GetProblemDetails(_problemDetailFactory, HttpContext);
-			return BadRequest(problemDetails);
-		}
-
-		var identityUser = await _userManager.FindByNameAsync(registration.Username);
-		if (identityUser is null)
-		{
-			throw new InvalidOperationException("Could not find user by name after creating it");
-		}
-
-		try
-		{
-			await _userUnitOfWork.CreateUserAsync(identityUser);
-		}
-		catch (Exception)
-		{
-			await _userManager.DeleteAsync(identityUser);
-			throw;
-		}
-
-		return NoContent();
 	}
 
 	/// <summary>Logs out the currently signed in user.</summary>

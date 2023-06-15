@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
@@ -195,7 +196,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task SocialRegister() => throw new NotImplementedException();
+	public Task<ExternalLoginResult> SocialRegister() => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task LogOutAsync() => throw new NotImplementedException();
