@@ -1,4 +1,4 @@
-﻿<?define ProductId = "{0a346c75-b8fa-4371-9ed0-f6fd7ff13867}" ?>
+﻿<?define ProductId = "{e7b68153-cf9b-4078-8d2a-cc362c50ebdd}" ?>
 <?define Name = "Gnomeshade" ?>
 <?define Description = "Gnomeshade desktop client" ?>
 <?define Manufacturer = "Valters Melnalksnis" ?>
