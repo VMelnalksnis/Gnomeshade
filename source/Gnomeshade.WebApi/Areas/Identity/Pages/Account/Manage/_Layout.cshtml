@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+	if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout is not null)
+	{
+		Layout = parentLayout.ToString();
+	}
+	else
+	{
+		Layout = "~/Views/Shared/_Layout.cshtml";
+	}
+}
+
+<h1>Manage your account</h1>
+
+<div>
+	<h2>Change your account settings</h2>
+	<hr/>
+	<div class="row">
+		<div class="col-md-3">
+			<partial name="_ManageNav"/>
+		</div>
+		<div class="col-md-9">
+			@RenderBody()
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	@await RenderSectionAsync("Scripts", false)
+}

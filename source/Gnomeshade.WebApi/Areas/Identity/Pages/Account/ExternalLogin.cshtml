@@ -1,39 +1,39 @@
 ﻿@page
 @model ExternalLogin
 @{
-    ViewData["Title"] = "Register";
+	ViewData["Title"] = "Register";
 }
 
 <h1>@ViewData["Title"]</h1>
 <h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<hr/>
 
 <p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
+	You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+	Please enter an email address for this site below and click the Register button to finish
+	logging in.
 </p>
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-floating">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" />
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.FullName" class="form-control" autocomplete="name" />
-                <label asp-for="Input.FullName" class="form-label">Full Name</label>
-                <span asp-validation-for="Input.FullName" class="text-danger"></span>
-            </div>
-            <div class="form-floating">
-                <input asp-for="Input.UserName" class="form-control" autocomplete="nickname" />
-                <label asp-for="Input.UserName" class="form-label">User Name</label>
-                <span asp-validation-for="Input.UserName" class="text-danger"></span>
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
+	<div class="col-md-4">
+		<form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-floating">
+				<input asp-for="Input.Email" class="form-control" autocomplete="email"/>
+				<label asp-for="Input.Email" class="form-label"></label>
+				<span asp-validation-for="Input.Email" class="text-danger"></span>
+			</div>
+			<div class="form-floating">
+				<input asp-for="Input.FullName" class="form-control" autocomplete="name"/>
+				<label asp-for="Input.FullName" class="form-label">Full Name</label>
+				<span asp-validation-for="Input.FullName" class="text-danger"></span>
+			</div>
+			<div class="form-floating">
+				<input asp-for="Input.UserName" class="form-control" autocomplete="nickname"/>
+				<label asp-for="Input.UserName" class="form-label">User Name</label>
+				<span asp-validation-for="Input.UserName" class="text-danger"></span>
+			</div>
+			<button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+		</form>
+	</div>
 </div>

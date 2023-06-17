@@ -10,6 +10,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Sqlite;
+using Gnomeshade.WebApi.Areas.Identity;
 using Gnomeshade.WebApi.Configuration;
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Configuration.StartupFilters;
@@ -88,8 +89,8 @@ public class Startup
 		services
 			.AddIdentity<ApplicationUser, ApplicationRole>()
 			.AddIdentityStores()
-			.AddDefaultUI()
-			.AddDefaultTokenProviders();
+			.AddDefaultTokenProviders()
+			.Services.AddTransient<IEmailSender, EmailSender>();
 
 		services.AddAuthenticationAndAuthorization(_configuration);
 

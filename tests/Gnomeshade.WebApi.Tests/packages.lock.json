@@ -263,18 +263,10 @@
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "NyawiW9ZT/liQb34k9YqBSNPLuuPkrjMgQZ24Y/xXX1RoiBkLUdPMaQTmxhZ5TYu8ZKZ9qayzil75JX95vGQUg==",
+        "resolved": "2.1.0",
+        "contentHash": "itv+7XBu58pxi8mykxx9cUO1OOVYe0jmQIZVSZVp5lOcLxB7sSV2bnHiI1RSu6Nxne/s6+oBla3ON5CCMSmwhQ==",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "7.0.0"
-        }
-      },
-      "Microsoft.Extensions.FileProviders.Embedded": {
-        "type": "Transitive",
-        "resolved": "7.0.7",
-        "contentHash": "XEB8Dmiqa13buwoRIZyEbKTOHaL+LQjjuHv7gZmQw9b/biykNmhtW4CtZ9uaa/DHhh8itdoE8FTt5HUssVp3iw==",
-        "dependencies": {
-          "Microsoft.Extensions.FileProviders.Abstractions": "7.0.0"
+          "Microsoft.Extensions.Primitives": "2.1.0"
         }
       },
       "Microsoft.Extensions.Hosting.Abstractions": {
@@ -1120,7 +1112,6 @@
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.7, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[7.0.7, )",
-          "Microsoft.AspNetCore.Identity.UI": "[7.0.7, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.1.0, )",
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.1.0, )",
           "Microsoft.Extensions.Http.Polly": "[7.0.7, )",
@@ -1270,16 +1261,6 @@
         "contentHash": "3W0NUZ538YiPPAUQqBkW+2c4cTjcpYoSYXxbkiIQTa48WwjTR6Ejtha6Jc/GR6GsP07KEz+RdjlNHodCLps01Q==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "7.0.7",
-          "Microsoft.Extensions.Identity.Stores": "7.0.7"
-        }
-      },
-      "Microsoft.AspNetCore.Identity.UI": {
-        "type": "CentralTransitive",
-        "requested": "[7.0.7, )",
-        "resolved": "7.0.7",
-        "contentHash": "5SWyk280d2j7TRg3ySq1lHab6bc8j00Jna9ZBX3mFSPdd+GdBZfuEzvxulon3rc2CRyyriVdPlETE0miF9t7uw==",
-        "dependencies": {
-          "Microsoft.Extensions.FileProviders.Embedded": "7.0.7",
           "Microsoft.Extensions.Identity.Stores": "7.0.7"
         }
       },

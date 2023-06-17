@@ -21,7 +21,8 @@ internal static partial class LogMessages
 	[LoggerMessage(EventId = 1002, Level = Information, Message = "User with ID '{UserId}' logged in with 2fa")]
 	internal static partial void UserLoggedIn2Fa(ILogger logger, string userId);
 
-	[LoggerMessage(EventId = 1003, Level = Information, Message = "User with ID '{UserId}' logged in with a recovery code")]
+	[LoggerMessage(EventId = 1003, Level = Information,
+		Message = "User with ID '{UserId}' logged in with a recovery code")]
 	internal static partial void UserLoggedInRecoveryCode(ILogger logger, string userId);
 
 	[LoggerMessage(EventId = 1004, Level = Information, Message = "{Name} logged in with {LoginProvider} provider")]
@@ -30,7 +31,8 @@ internal static partial class LogMessages
 	[LoggerMessage(EventId = 1005, Level = Information, Message = "User created a new account with password")]
 	internal static partial void UserCreated(ILogger logger);
 
-	[LoggerMessage(EventId = 1006, Level = Information, Message = "User created an account using {LoginProvider} provider")]
+	[LoggerMessage(EventId = 1006, Level = Information,
+		Message = "User created an account using {LoginProvider} provider")]
 	internal static partial void UserCreatedExternal(ILogger logger, string loginProvider);
 
 	[LoggerMessage(EventId = 1007, Level = Warning, Message = "User account locked out")]
@@ -39,12 +41,18 @@ internal static partial class LogMessages
 	[LoggerMessage(EventId = 1008, Level = Warning, Message = "User with ID '{UserId}' account locked out")]
 	internal static partial void UserLockedOut(ILogger logger, string userId);
 
-	[LoggerMessage(EventId = 1009, Level = Warning, Message = "Invalid authenticator code entered for user with ID '{UserId}'")]
+	[LoggerMessage(EventId = 1009, Level = Warning,
+		Message = "Invalid authenticator code entered for user with ID '{UserId}'")]
 	internal static partial void InvalidAuthenticatorCode(ILogger logger, string userId);
 
-	[LoggerMessage(EventId = 1010, Level = Warning, Message = "Invalid recovery code entered for user with ID '{UserId}' ")]
+	[LoggerMessage(EventId = 1010, Level = Warning,
+		Message = "Invalid recovery code entered for user with ID '{UserId}' ")]
 	internal static partial void InvalidRecoveryCode(ILogger logger, string userId);
 
-	[LoggerMessage(EventId = 1011, Level = Debug, Message = "User created an account using {LoginProvider} ({ProviderKey}) provider")]
-	internal static partial void RetrievedExternalUserInfo(this ILogger logger, string loginProvider, string providerKey);
+	[LoggerMessage(EventId = 1011, Level = Debug,
+		Message = "User created an account using {LoginProvider} ({ProviderKey}) provider")]
+	internal static partial void RetrievedExternalUserInfo(
+		this ILogger logger,
+		string loginProvider,
+		string providerKey);
 }

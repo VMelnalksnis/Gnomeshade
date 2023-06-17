@@ -18,7 +18,6 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -116,9 +115,9 @@ public sealed class Register : PageModel
 				code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 				var callbackUrl = Url.Page(
 					"/Account/ConfirmEmail",
-					pageHandler: null,
-					values: new { area = "Identity", userId, code, returnUrl },
-					protocol: Request.Scheme);
+					null,
+					new { area = "Identity", userId, code, returnUrl },
+					Request.Scheme);
 
 				if (callbackUrl is null)
 				{
@@ -135,7 +134,7 @@ public sealed class Register : PageModel
 					return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
 				}
 
-				await _signInManager.SignInAsync(user, isPersistent: false);
+				await _signInManager.SignInAsync(user, false);
 				return LocalRedirect(returnUrl);
 			}
 

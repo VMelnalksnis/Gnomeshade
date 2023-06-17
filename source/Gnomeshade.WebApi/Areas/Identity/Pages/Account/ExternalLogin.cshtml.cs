@@ -15,7 +15,6 @@ using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
@@ -76,7 +75,7 @@ public sealed class ExternalLogin : PageModel
 	public IActionResult OnPost(string provider, string? returnUrl = null)
 	{
 		// Request a redirect to the external login provider.
-		var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+		var redirectUrl = Url.Page("./ExternalLogin", "Callback", new { returnUrl });
 		var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 		return new ChallengeResult(provider, properties);
 	}
@@ -106,8 +105,8 @@ public sealed class ExternalLogin : PageModel
 		var result = await _signInManager.ExternalLoginSignInAsync(
 			info.LoginProvider,
 			info.ProviderKey,
-			isPersistent: false,
-			bypassTwoFactor: true);
+			false,
+			true);
 
 		if (result.Succeeded)
 		{
@@ -160,78 +159,87 @@ public sealed class ExternalLogin : PageModel
 			return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
 		}
 
-		if (ModelState.IsValid)
+		ProviderDisplayName = info.ProviderDisplayName ?? info.LoginProvider;
+		ReturnUrl = returnUrl;
+
+		if (!ModelState.IsValid)
 		{
-			var user = new ApplicationUser(Input.UserName ?? Input.Email)
-			{
-				Email = Input.Email,
-				FullName = Input.FullName,
-			};
+			return Page();
+		}
 
-			var result = await _userManager.CreateAsync(user);
-			if (result.Succeeded)
-			{
-				result = await _userManager.AddLoginAsync(user, info);
-				if (result.Succeeded)
-				{
-					LogMessages.UserCreatedExternal(_logger, info.LoginProvider);
+		var user = new ApplicationUser(Input.UserName ?? Input.Email)
+		{
+			Email = Input.Email,
+			FullName = Input.FullName,
+		};
 
-					var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-					if (identityUser is null)
-					{
-						throw new InvalidOperationException(
-							"Could not find user by login after creating and adding the login");
-					}
-
-					try
-					{
-						await _userUnitOfWork.CreateUserAsync(identityUser);
-					}
-					catch (Exception)
-					{
-						await _userManager.DeleteAsync(identityUser);
-						throw;
-					}
-
-					var userId = await _userManager.GetUserIdAsync(user);
-					var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-					code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-					var callbackUrl = Url.Page(
-						"/Account/ConfirmEmail",
-						pageHandler: null,
-						values: new { area = "Identity", userId, code },
-						protocol: Request.Scheme);
-
-					if (callbackUrl is null)
-					{
-						throw new InvalidOperationException("Expected callback url to have a value");
-					}
-
-					await _emailSender.SendEmailAsync(
-						Input.Email,
-						"Confirm your email",
-						$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-					// If account confirmation is required, we need to show the link if we don't have a real email sender
-					if (_userManager.Options.SignIn.RequireConfirmedAccount)
-					{
-						return RedirectToPage("./RegisterConfirmation", new { Input.Email });
-					}
-
-					await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-					return LocalRedirect(returnUrl);
-				}
-			}
-
+		var result = await _userManager.CreateAsync(user);
+		if (!result.Succeeded)
+		{
 			foreach (var error in result.Errors)
 			{
 				ModelState.AddModelError(string.Empty, error.Description);
 			}
+
+			return Page();
 		}
 
-		ProviderDisplayName = info.ProviderDisplayName ?? info.LoginProvider;
-		ReturnUrl = returnUrl;
-		return Page();
+		result = await _userManager.AddLoginAsync(user, info);
+		if (!result.Succeeded)
+		{
+			foreach (var error in result.Errors)
+			{
+				ModelState.AddModelError(string.Empty, error.Description);
+			}
+
+			return Page();
+		}
+
+		LogMessages.UserCreatedExternal(_logger, info.LoginProvider);
+
+		var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+		if (identityUser is null)
+		{
+			throw new InvalidOperationException("Could not find user by login after creating and adding the login");
+		}
+
+		try
+		{
+			await _userUnitOfWork.CreateUserAsync(identityUser);
+		}
+		catch (Exception)
+		{
+			await _userManager.DeleteAsync(identityUser);
+			throw;
+		}
+
+		var userId = await _userManager.GetUserIdAsync(user);
+		var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+		code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+		var callbackUrl = Url.Page(
+			"/Account/ConfirmEmail",
+			null,
+			new { area = "Identity", userId, code },
+			Request.Scheme);
+
+		if (callbackUrl is null)
+		{
+			throw new InvalidOperationException("Expected callback url to have a value");
+		}
+
+		await _emailSender.SendEmailAsync(
+			Input.Email,
+			"Confirm your email",
+			$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+		// If account confirmation is required, we need to show the link if we don't have a real email sender
+		if (_userManager.Options.SignIn.RequireConfirmedAccount)
+		{
+			return RedirectToPage("./RegisterConfirmation", new { Input.Email });
+		}
+
+		await _signInManager.SignInAsync(user, false, info.LoginProvider);
+		return LocalRedirect(returnUrl);
 	}
 
 	/// <summary>Data needed to register a user from an external provider.</summary>

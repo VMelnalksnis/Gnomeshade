@@ -11,35 +11,27 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account.Manage;
 
 internal static class ManageNavPages
 {
-	private static string Index => "Index";
+	internal static string Index => "Index";
 
-	private static string Email => "Email";
+	internal static string Email => "Email";
 
-	private static string ChangePassword => "ChangePassword";
+	internal static string ChangePassword => "ChangePassword";
 
-	private static string DownloadPersonalData => "DownloadPersonalData";
+	internal static string ExternalLogins => "ExternalLogins";
 
-	private static string DeletePersonalData => "DeletePersonalData";
+	internal static string PersonalData => "PersonalData";
 
-	private static string ExternalLogins => "ExternalLogins";
-
-	private static string PersonalData => "PersonalData";
-
-	private static string TwoFactorAuthentication => "TwoFactorAuthentication";
+	internal static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
 	internal static string? IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
 	internal static string? EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
-	internal static string? ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+	internal static string? ChangePasswordNavClass(ViewContext viewContext) =>
+		PageNavClass(viewContext, ChangePassword);
 
-	internal static string? DownloadPersonalDataNavClass(ViewContext viewContext) =>
-		PageNavClass(viewContext, DownloadPersonalData);
-
-	internal static string? DeletePersonalDataNavClass(ViewContext viewContext) =>
-		PageNavClass(viewContext, DeletePersonalData);
-
-	internal static string? ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
+	internal static string? ExternalLoginsNavClass(ViewContext viewContext) =>
+		PageNavClass(viewContext, ExternalLogins);
 
 	internal static string? PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
 
