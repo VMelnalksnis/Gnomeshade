@@ -4,10 +4,14 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Gnomeshade.Data.Identity;
+
 using JetBrains.Annotations;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
 
@@ -31,5 +35,29 @@ internal static class ServiceCollectionExtensions
 			.ValidateDataAnnotations();
 
 		return services;
+	}
+
+	internal static IdentityBuilder AddIdentity(this IServiceCollection services)
+	{
+		services.AddHttpContextAccessor();
+
+		// Identity services
+		services.TryAddScoped<IUserValidator<ApplicationUser>, UserValidator<ApplicationUser>>();
+		services.TryAddScoped<IPasswordValidator<ApplicationUser>, PasswordValidator<ApplicationUser>>();
+		services.TryAddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
+		services.TryAddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+		services.TryAddScoped<IRoleValidator<ApplicationRole>, RoleValidator<ApplicationRole>>();
+
+		// No interface for the error describer so we can add errors without rev'ing the interface
+		services.TryAddScoped<IdentityErrorDescriber>();
+		services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<ApplicationUser>>();
+		services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<ApplicationUser>>();
+		services.TryAddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>>();
+		services.TryAddScoped<IUserConfirmation<ApplicationUser>, DefaultUserConfirmation<ApplicationUser>>();
+		services.TryAddScoped<UserManager<ApplicationUser>>();
+		services.TryAddScoped<SignInManager<ApplicationUser>>();
+		services.TryAddScoped<RoleManager<ApplicationRole>>();
+
+		return new(typeof(ApplicationUser), typeof(ApplicationRole), services);
 	}
 }

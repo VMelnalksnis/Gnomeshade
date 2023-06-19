@@ -40,11 +40,9 @@ public sealed class GenerateRecoveryCodes : PageModel
 			return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 		}
 
-		var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-		if (!isTwoFactorEnabled)
+		if (!await _userManager.GetTwoFactorEnabledAsync(user))
 		{
-			throw new InvalidOperationException(
-				$"Cannot generate recovery codes for user because they do not have 2FA enabled.");
+			return RedirectToPage("TwoFactorAuthentication");
 		}
 
 		return Page();
@@ -58,11 +56,9 @@ public sealed class GenerateRecoveryCodes : PageModel
 			return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 		}
 
-		var isTwoFactorEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
-		if (!isTwoFactorEnabled)
+		if (!await _userManager.GetTwoFactorEnabledAsync(user))
 		{
-			throw new InvalidOperationException(
-				$"Cannot generate recovery codes for user as they do not have 2FA enabled.");
+			return RedirectToPage("TwoFactorAuthentication");
 		}
 
 		var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10) ??

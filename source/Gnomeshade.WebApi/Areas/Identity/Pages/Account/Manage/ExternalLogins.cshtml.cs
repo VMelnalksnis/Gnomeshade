@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Identity;
+using Gnomeshade.WebApi.Configuration;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -87,7 +88,7 @@ public sealed class ExternalLogins : PageModel
 	public async Task<IActionResult> OnPostLinkLoginAsync(string provider)
 	{
 		// Clear the existing external cookie to ensure a clean login process
-		await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+		await HttpContext.SignOutAsync(Schemes.External);
 
 		// Request a redirect to the external login provider to link a login for the current user
 		var redirectUrl = Url.Page("./ExternalLogins", "LinkLoginCallback");
@@ -119,7 +120,7 @@ public sealed class ExternalLogins : PageModel
 		}
 
 		// Clear the existing external cookie to ensure a clean login process
-		await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+		await HttpContext.SignOutAsync(Schemes.External);
 
 		StatusMessage = "The external login was added.";
 		return RedirectToPage();

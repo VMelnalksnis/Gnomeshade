@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Configuration.Options;
@@ -59,8 +60,8 @@ public sealed class EndpointTests : WebserverTests
 		response.StatusCode.Should().Be(HttpStatusCode.OK);
 	}
 
-	[TestCaseSource(nameof(AdminEndpoints))]
-	public async Task ShouldBeForbiddenForUser(Uri requestUri)
+	[TestCaseSource(nameof(UserRedirects))]
+	public async Task ShouldRedirectForUser(Uri requestUri, Uri redirectUri)
 	{
 		using var apiClient = await GetUserClient();
 
@@ -68,9 +69,16 @@ public sealed class EndpointTests : WebserverTests
 
 		using var scope = new AssertionScope();
 		response.StatusCode.Should().Be(HttpStatusCode.Redirect);
-		response.Headers.Location
-			.Should()
-			.Match((Uri location) => location.LocalPath == "/Identity/Account/AccessDenied");
+
+		var location = response.Headers.Location;
+		if (location?.IsAbsoluteUri ?? false)
+		{
+			location.LocalPath.Should().BeEquivalentTo(redirectUri.ToString());
+		}
+		else
+		{
+			location?.ToString().Should().BeEquivalentTo(redirectUri.ToString());
+		}
 	}
 
 	[TestCaseSource(nameof(Redirects))]
@@ -84,7 +92,15 @@ public sealed class EndpointTests : WebserverTests
 		response.StatusCode.Should().Be(HttpStatusCode.Found);
 
 		var location = response.Headers.Location;
-		location.Should().BeEquivalentTo(redirectUri);
+		if (location?.IsAbsoluteUri ?? false)
+		{
+			location.LocalPath.Should().BeEquivalentTo(redirectUri.ToString());
+			location.Query.Should().BeEquivalentTo($"?ReturnUrl={UrlEncoder.Default.Encode(requestUri.ToString())}");
+		}
+		else
+		{
+			location?.ToString().Should().BeEquivalentTo(redirectUri.ToString());
+		}
 	}
 
 	private static IEnumerable Endpoints()
@@ -93,6 +109,8 @@ public sealed class EndpointTests : WebserverTests
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
 		yield return new Uri("/swagger/index.html", UriKind.Relative);
 		yield return new Uri("/swagger/v1/swagger.json", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
+		yield return new Uri("/Identity/Account/ResendEmailConfirmation", UriKind.Relative);
 	}
 
 	private static IEnumerable AdminEndpoints()
@@ -103,12 +121,41 @@ public sealed class EndpointTests : WebserverTests
 	private static IEnumerable UserEndpoints()
 	{
 		yield return new Uri("/Identity/Account/Manage", UriKind.Relative);
-		yield return new Uri("/Identity/Account/Manage/Email", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/ChangePassword", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/DeletePersonalData", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Manage/Email", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Manage/EnableAuthenticator", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/ExternalLogins", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/PersonalData", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Manage/ResetAuthenticator", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/TwoFactorAuthentication", UriKind.Relative);
+		yield return new Uri("/Identity/Account/ForgotPasswordConfirmation", UriKind.Relative);
+		yield return new Uri("/Identity/Account/AccessDenied", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Lockout", UriKind.Relative);
+		yield return new Uri("/Identity/Account/Logout", UriKind.Relative);
+	}
+
+	private static IEnumerable UserRedirects()
+	{
+		yield return new TestCaseData(
+			new Uri("/Admin/Users", UriKind.Relative),
+			new Uri("/Identity/Account/AccessDenied", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/Manage/Disable2fa", UriKind.Relative),
+			new Uri("/Identity/Account/Manage/TwoFactorAuthentication", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/Manage/GenerateRecoveryCodes", UriKind.Relative),
+			new Uri("/Identity/Account/Manage/TwoFactorAuthentication", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/Manage/SetPassword", UriKind.Relative),
+			new Uri("/Identity/Account/Manage/ChangePassword", UriKind.Relative));
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/Manage/ShowRecoveryCodes", UriKind.Relative),
+			new Uri("/Identity/Account/Manage/TwoFactorAuthentication", UriKind.Relative));
 	}
 
 	private static IEnumerable Redirects()
@@ -123,6 +170,10 @@ public sealed class EndpointTests : WebserverTests
 
 		yield return new TestCaseData(
 			new Uri("/Identity/Account/LoginWithRecoveryCode", UriKind.Relative),
+			_loginUri);
+
+		yield return new TestCaseData(
+			new Uri("/Identity/Account/Logout", UriKind.Relative),
 			_loginUri);
 	}
 

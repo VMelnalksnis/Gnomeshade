@@ -11,7 +11,6 @@ using System.Xml.XPath;
 
 using Gnomeshade.WebApi.OpenApi;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
@@ -107,7 +106,7 @@ internal static class SwaggerConfigurationExtensions
 		{
 			Description = "JWT Authorization header using the Bearer scheme.",
 			BearerFormat = "JWT",
-			Scheme = JwtBearerDefaults.AuthenticationScheme,
+			Scheme = Schemes.Bearer,
 			In = ParameterLocation.Header,
 			Type = SecuritySchemeType.Http,
 		});

@@ -46,12 +46,16 @@ public sealed class AuthorizationTests
 		var services = new ServiceCollection();
 
 		services
+			.AddHttpClient("Keycloak")
+			.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+
+		services
 			.AddHttpClient()
 			.AddLogging(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Debug))
 			.AddSingleton<MockBrowser>(provider =>
 			{
 				var handler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
-				var httpClient = provider.GetRequiredService<HttpClient>();
+				var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("Keycloak");
 				var internalClient = _fixture.CreateHttpClient();
 				return new(handler, httpClient, internalClient, _fixture.User.Username, _fixture.User.Password);
 			})
@@ -85,11 +89,9 @@ public sealed class AuthorizationTests
 		var mockBrowser = provider.GetRequiredService<MockBrowser>();
 		await mockBrowser.RegisterUser(redirectUri.ToString());
 
-		// this works
 		var secondResult = await gnomeshadeClient.SocialRegister();
 		secondResult.Should().BeOfType<LoggedIn>();
 
-		// this doesn't ???
 		var counterparty = await gnomeshadeClient.GetMyCounterpartyAsync();
 		counterparty.Name.Should().Be("John Doe");
 	}

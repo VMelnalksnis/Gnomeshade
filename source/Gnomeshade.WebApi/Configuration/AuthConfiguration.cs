@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 using AspNet.Security.OAuth.GitHub;
 
 using Gnomeshade.WebApi.Configuration.Options;
+using Gnomeshade.WebApi.V1.Authentication;
 using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
@@ -23,8 +23,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.Net.Http.Headers;
 
 namespace Gnomeshade.WebApi.Configuration;
 
@@ -32,7 +32,6 @@ internal static class AuthConfiguration
 {
 	internal const string OidcSuffix = "_oidc";
 
-	private static readonly JwtSecurityTokenHandler _tokenHandler = new();
 	private static readonly string[] _supportedOAuthProviders =
 	{
 		GitHubAuthenticationDefaults.AuthenticationScheme,
@@ -50,8 +49,8 @@ internal static class AuthConfiguration
 		var jwtOptionsDefined = configuration.GetValidIfDefined<JwtOptions>(out var jwtOptions);
 		if (jwtOptionsDefined)
 		{
-			issuers.Add(jwtOptions!.ValidIssuer, JwtBearerDefaults.AuthenticationScheme);
-			authenticationSchemes.Add(JwtBearerDefaults.AuthenticationScheme);
+			issuers.Add(jwtOptions!.ValidIssuer, Schemes.Bearer);
+			authenticationSchemes.Add(Schemes.Bearer);
 		}
 
 		var oidcProviderSection = configuration.GetSection(OidcProviderOptions.OidcProviderSectionName);
@@ -71,24 +70,65 @@ internal static class AuthConfiguration
 			services
 				.AddAuthorization(options =>
 				{
-					options.DefaultPolicy = new AuthorizationPolicyBuilder()
-						.RequireAuthenticatedUser()
-						.AddAuthenticationSchemes(authenticationSchemes.ToArray())
-						.Build();
-
 					options.AddPolicy(
 						Policies.ApplicationUser,
-						policy => policy.AddRequirements(new ApplicationUserRequirement()));
+						policy => policy
+							.AddAuthenticationSchemes(authenticationSchemes.ToArray())
+							.AddRequirements(new ApplicationUserRequirement()));
 
 					options.AddPolicy(
 						Policies.Administrator,
 						policy => policy
+							.AddAuthenticationSchemes(authenticationSchemes.ToArray())
 							.AddRequirements(new ApplicationUserRequirement())
 							.AddRequirements(new AdministratorRoleRequirement()));
+
+					options.AddPolicy(
+						Policies.Identity,
+						policy => policy
+							.AddAuthenticationSchemes(Schemes.Application)
+							.AddRequirements(new ApplicationUserRequirement()));
 				})
 				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddScoped<ApplicationUserContext>()
-				.AddAuthentication();
+				.AddAuthentication(options =>
+				{
+					options.DefaultAuthenticateScheme = Schemes.Application;
+					options.DefaultChallengeScheme = Schemes.Application;
+					options.DefaultSignInScheme = Schemes.External;
+				})
+				.AddCookie(Schemes.Application, options =>
+				{
+					options.Cookie.Name = Schemes.Application;
+					options.LoginPath = new("/Identity/Account/Login");
+					options.LogoutPath = new("/Identity/Account/Logout");
+					options.AccessDeniedPath = new("/Identity/Account/AccessDenied");
+					options.Events = new()
+					{
+						OnValidatePrincipal = SecurityStampValidator.ValidatePrincipalAsync,
+					};
+				})
+				.AddCookie(Schemes.External, options =>
+				{
+					options.Cookie.Name = Schemes.External;
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+				})
+				.AddCookie(Schemes.TwoFactorRememberMe, options =>
+				{
+					options.LoginPath = new("/Identity/Account/Login");
+					options.LogoutPath = new("/Identity/Account/Logout");
+					options.AccessDeniedPath = new("/Identity/Account/AccessDenied");
+					options.Cookie.Name = Schemes.TwoFactorRememberMe;
+					options.Events = new()
+					{
+						OnValidatePrincipal = SecurityStampValidator.ValidateAsync<ITwoFactorSecurityStampValidator>,
+					};
+				})
+				.AddCookie(Schemes.TwoFactorUserId, options =>
+				{
+					options.Cookie.Name = Schemes.TwoFactorUserId;
+					options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+				});
 
 		if (jwtOptionsDefined)
 		{
@@ -106,14 +146,11 @@ internal static class AuthConfiguration
 					IssuerSigningKey = jwtOptions.SecurityKey,
 					ClockSkew = TimeSpan.Zero,
 				};
-
-				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, JwtBearerDefaults.AuthenticationScheme);
 			});
 		}
 		else
 		{
-			authenticationBuilder.AddJwtBearer(options => options.ForwardDefaultSelector =
-				context => ForwardDefaultSelector(context, issuers, JwtBearerDefaults.AuthenticationScheme));
+			authenticationBuilder.AddJwtBearer();
 		}
 
 		foreach (var providerName in oidcProviderNames)
@@ -135,14 +172,12 @@ internal static class AuthConfiguration
 					ClockSkew = TimeSpan.Zero,
 					AuthenticationType = providerName,
 				};
-
-				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 			});
 
 			var displayName = providerOptions.DisplayName ?? providerName;
 			authenticationBuilder.AddOpenIdConnect(providerName + OidcSuffix, displayName, options =>
 			{
-				options.SignInScheme = IdentityConstants.ExternalScheme;
+				options.SignInScheme = Schemes.External;
 				options.Authority = providerOptions.ServerRealm.AbsoluteUri;
 				options.ClientId = providerOptions.ClientId;
 				options.ClientSecret = providerOptions.ClientSecret;
@@ -163,8 +198,6 @@ internal static class AuthConfiguration
 					ClockSkew = TimeSpan.Zero,
 					AuthenticationType = providerName,
 				};
-
-				options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 			});
 		}
 
@@ -178,44 +211,25 @@ internal static class AuthConfiguration
 					options.ClientId = providerOptions.ClientId;
 					options.ClientSecret = providerOptions.ClientSecret!;
 					options.Events.OnRedirectToAuthorizationEndpoint = OnRedirectToAuthorizationEndpoint;
-					options.ForwardDefaultSelector = context => ForwardDefaultSelector(context, issuers, providerName);
 				});
 			}
 		}
 
+		services.AddSingleton<IAuthenticationSchemeProvider, CustomAuthenticationSchemeProvider>(provider =>
+		{
+			var options = provider.GetRequiredService<IOptions<AuthenticationOptions>>();
+			var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+			var tokenHandler = provider.GetRequiredService<JwtSecurityTokenHandler>();
+			return new(options, accessor, tokenHandler, issuers);
+		});
+
 		return services;
-	}
-
-	private static string? ForwardDefaultSelector(HttpContext context, IReadOnlyDictionary<string, string> issuers, string currentScheme)
-	{
-		if (context.Request.Cookies.Keys.Any(key => key.EndsWith(IdentityConstants.ApplicationScheme)))
-		{
-			return IdentityConstants.ApplicationScheme;
-		}
-
-		string? authorization = context.Request.Headers[HeaderNames.Authorization];
-		if (string.IsNullOrWhiteSpace(authorization) ||
-			!authorization.StartsWith(JwtBearerDefaults.AuthenticationScheme, StringComparison.OrdinalIgnoreCase))
-		{
-			return null;
-		}
-
-		var token = authorization[JwtBearerDefaults.AuthenticationScheme.Length..].TrimStart();
-		if (!_tokenHandler.CanReadToken(token))
-		{
-			return null;
-		}
-
-		var jwtToken = _tokenHandler.ReadToken(token);
-		return issuers.TryGetValue(jwtToken.Issuer, out var scheme) && !currentScheme.Equals(scheme, StringComparison.OrdinalIgnoreCase)
-			? scheme
-			: null;
 	}
 
 	/// <seealso cref="OAuthEvents.OnRedirectToAuthorizationEndpoint"/>
 	private static Task OnRedirectToAuthorizationEndpoint(RedirectContext<OAuthOptions> context)
 	{
-		if (context.Request.Path.StartsWithSegments("/api"))
+		if (context.Request.IsApiRequest())
 		{
 			context.Response.StatusCode = StatusCodes.Status401Unauthorized;
 		}

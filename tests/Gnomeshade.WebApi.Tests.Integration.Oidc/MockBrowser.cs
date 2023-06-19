@@ -116,6 +116,9 @@ internal sealed class MockBrowser : Browser
 		_httpClient.DefaultRequestHeaders.Add("Cookie", cookie);
 
 		var loginResponse = await _httpClient.PostAsync(loginUrl, formContent, cancellationToken);
+		var location = loginResponse.GetRedirect();
+		loginResponse = await _httpClient.GetAsync(location, cancellationToken);
+
 		if (loginResponse.StatusCode is not HttpStatusCode.NoContent)
 		{
 			var content = await loginResponse.Content.ReadAsStringAsync(cancellationToken);

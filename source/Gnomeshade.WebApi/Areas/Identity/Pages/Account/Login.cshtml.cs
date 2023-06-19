@@ -8,10 +8,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data.Identity;
+using Gnomeshade.WebApi.Configuration;
 
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -20,6 +22,7 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 
 /// <summary>Page for handling user login.</summary>
+[AllowAnonymous]
 public sealed class Login : PageModel
 {
 	private readonly SignInManager<ApplicationUser> _signInManager;
@@ -61,7 +64,7 @@ public sealed class Login : PageModel
 		returnUrl ??= Url.Content("~/");
 
 		// Clear the existing external cookie to ensure a clean login process
-		await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+		await HttpContext.SignOutAsync(Schemes.External);
 
 		ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

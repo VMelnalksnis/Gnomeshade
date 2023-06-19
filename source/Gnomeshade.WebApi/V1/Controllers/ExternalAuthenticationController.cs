@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.WebApi.V1.Authentication;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>External authentication endpoints.</summary>
+[AllowAnonymous]
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]/[action]")]

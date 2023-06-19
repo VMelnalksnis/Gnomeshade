@@ -7,7 +7,6 @@ using System;
 using AutoMapper;
 
 using Gnomeshade.Data;
-using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.PostgreSQL;
 using Gnomeshade.Data.Sqlite;
 using Gnomeshade.WebApi.Areas.Identity;
@@ -87,7 +86,7 @@ public class Startup
 		};
 
 		services
-			.AddIdentity<ApplicationUser, ApplicationRole>()
+			.AddIdentity()
 			.AddIdentityStores()
 			.AddDefaultTokenProviders()
 			.Services.AddTransient<IEmailSender, EmailSender>();
@@ -138,8 +137,8 @@ public class Startup
 
 		application.UseEndpoints(builder =>
 		{
-			builder.MapRazorPages();
-			builder.MapControllers().RequireAuthorization();
+			builder.MapRazorPages().RequireAuthorization(Policies.Identity);
+			builder.MapControllers().RequireAuthorization(Policies.ApplicationUser);
 		});
 
 		application.UseGnomeshadeApiExplorer();
