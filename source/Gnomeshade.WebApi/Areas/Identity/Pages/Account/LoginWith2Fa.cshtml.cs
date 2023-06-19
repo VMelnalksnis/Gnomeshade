@@ -21,20 +21,14 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 public sealed class LoginWith2Fa : PageModel
 {
 	private readonly SignInManager<ApplicationUser> _signInManager;
-	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly ILogger<LoginWith2Fa> _logger;
 
 	/// <summary>Initializes a new instance of the <see cref="LoginWith2Fa"/> class.</summary>
 	/// <param name="signInManager">Application user sign in manager.</param>
-	/// <param name="userManager">Application user manager.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public LoginWith2Fa(
-		SignInManager<ApplicationUser> signInManager,
-		UserManager<ApplicationUser> userManager,
-		ILogger<LoginWith2Fa> logger)
+	public LoginWith2Fa(SignInManager<ApplicationUser> signInManager, ILogger<LoginWith2Fa> logger)
 	{
 		_signInManager = signInManager;
-		_userManager = userManager;
 		_logger = logger;
 	}
 
@@ -87,21 +81,20 @@ public sealed class LoginWith2Fa : PageModel
 		var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
 		var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe, Input.RememberMachine);
-		var userId = await _userManager.GetUserIdAsync(user);
 
 		if (result.Succeeded)
 		{
-			LogMessages.UserLoggedIn2Fa(_logger, userId);
+			_logger.UserLoggedIn2Fa(user.Id);
 			return LocalRedirect(returnUrl);
 		}
 
 		if (result.IsLockedOut)
 		{
-			LogMessages.UserLockedOut(_logger, userId);
+			_logger.UserLockedOut(user.Id);
 			return RedirectToPage("./Lockout");
 		}
 
-		LogMessages.InvalidAuthenticatorCode(_logger, userId);
+		_logger.InvalidAuthenticatorCode(user.Id);
 		ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
 		return Page();
 	}

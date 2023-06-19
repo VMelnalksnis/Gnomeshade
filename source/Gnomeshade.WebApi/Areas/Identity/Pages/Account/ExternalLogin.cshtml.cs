@@ -110,7 +110,7 @@ public sealed class ExternalLogin : PageModel
 
 		if (result.Succeeded)
 		{
-			LogMessages.UserLoggedInExternal(_logger, info.Principal.Identity?.Name, info.LoginProvider);
+			_logger.UserLoggedInExternal(info.Principal.Identity?.Name, info.LoginProvider);
 			return LocalRedirect(returnUrl);
 		}
 
@@ -195,7 +195,7 @@ public sealed class ExternalLogin : PageModel
 			return Page();
 		}
 
-		LogMessages.UserCreatedExternal(_logger, info.LoginProvider);
+		_logger.UserCreatedExternal(info.LoginProvider);
 
 		var identityUser = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 		if (identityUser is null)

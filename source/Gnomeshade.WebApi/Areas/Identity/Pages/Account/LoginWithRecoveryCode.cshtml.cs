@@ -21,20 +21,14 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 public sealed class LoginWithRecoveryCode : PageModel
 {
 	private readonly SignInManager<ApplicationUser> _signInManager;
-	private readonly UserManager<ApplicationUser> _userManager;
 	private readonly ILogger<LoginWithRecoveryCode> _logger;
 
 	/// <summary>Initializes a new instance of the <see cref="LoginWithRecoveryCode"/> class.</summary>
 	/// <param name="signInManager">Application user sign in manager.</param>
-	/// <param name="userManager">Application user manager.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public LoginWithRecoveryCode(
-		SignInManager<ApplicationUser> signInManager,
-		UserManager<ApplicationUser> userManager,
-		ILogger<LoginWithRecoveryCode> logger)
+	public LoginWithRecoveryCode(SignInManager<ApplicationUser> signInManager, ILogger<LoginWithRecoveryCode> logger)
 	{
 		_signInManager = signInManager;
-		_userManager = userManager;
 		_logger = logger;
 	}
 
@@ -79,21 +73,20 @@ public sealed class LoginWithRecoveryCode : PageModel
 		var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 
 		var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
-		var userId = await _userManager.GetUserIdAsync(user);
 
 		if (result.Succeeded)
 		{
-			LogMessages.UserLoggedInRecoveryCode(_logger, userId);
+			_logger.UserLoggedInRecoveryCode(user.Id);
 			return LocalRedirect(returnUrl ?? Url.Content("~/"));
 		}
 
 		if (result.IsLockedOut)
 		{
-			LogMessages.UserLockedOut(_logger, userId);
+			_logger.UserLockedOut(user.Id);
 			return RedirectToPage("./Lockout");
 		}
 
-		LogMessages.InvalidRecoveryCode(_logger, userId);
+		_logger.InvalidRecoveryCode(user.Id);
 		ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
 		return Page();
 	}

@@ -78,7 +78,7 @@ public sealed class ChangePassword : PageModel
 		}
 
 		await _signInManager.RefreshSignInAsync(user);
-		_logger.LogInformation("User changed their password successfully");
+		_logger.UserChangedPassword();
 		StatusMessage = "Your password has been changed.";
 
 		return RedirectToPage();

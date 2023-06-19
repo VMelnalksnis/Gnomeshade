@@ -84,10 +84,10 @@ public sealed class Login : PageModel
 		// This doesn't count login failures towards account lockout
 		// To enable password failures to trigger account lockout, set lockoutOnFailure: true
 		var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, false);
-		LogMessages.PasswordSignIn(_logger, result);
+		_logger.PasswordSignIn(result);
 		if (result.Succeeded)
 		{
-			LogMessages.UserLoggedIn(_logger);
+			_logger.UserLoggedIn();
 			return LocalRedirect(returnUrl);
 		}
 
@@ -98,7 +98,7 @@ public sealed class Login : PageModel
 
 		if (result.IsLockedOut)
 		{
-			LogMessages.UserLockedOut(_logger);
+			_logger.UserLockedOut();
 			return RedirectToPage("./Lockout");
 		}
 

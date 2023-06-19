@@ -27,7 +27,8 @@ public sealed class Logout : PageModel
 	public async Task<IActionResult> OnPost(string? returnUrl = null)
 	{
 		await _signInManager.SignOutAsync();
-		_logger.LogInformation("User logged out");
+		_logger.UserLoggedOut();
+
 		if (returnUrl is not null)
 		{
 			return LocalRedirect(returnUrl);

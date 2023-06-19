@@ -92,7 +92,7 @@ public sealed class Register : PageModel
 
 			if (result.Succeeded)
 			{
-				LogMessages.UserCreated(_logger);
+				_logger.UserCreated();
 
 				var identityUser = await _userManager.FindByNameAsync(Input.UserName);
 				if (identityUser is null)
