@@ -21,7 +21,12 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 	{
 		Name = version;
 
-		_databaseContainer = new PostgreSqlBuilder().WithImage($"postgres:{version}").Build();
+		_databaseContainer = new PostgreSqlBuilder()
+			.WithImage($"postgres:{version}")
+			.WithCommand("-c", "fsync=off")
+			.WithCommand("-c", "full_page_writes=off")
+			.Build();
+
 		_containers = new IContainer[] { _databaseContainer };
 	}
 
