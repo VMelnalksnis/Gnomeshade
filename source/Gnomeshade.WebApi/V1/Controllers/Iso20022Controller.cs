@@ -13,7 +13,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Models.Importing;
-using Gnomeshade.WebApi.V1.Authorization;
+using Gnomeshade.WebApi.V1.Authentication;
 using Gnomeshade.WebApi.V1.Importing;
 using Gnomeshade.WebApi.V1.Importing.Results;
 
@@ -34,11 +34,9 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Authorize]
-[AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]
 public sealed class Iso20022Controller : ControllerBase
 {
-	private readonly ApplicationUserContext _applicationUserContext;
 	private readonly ILogger<Iso20022Controller> _logger;
 	private readonly Iso20022AccountReportReader _reportReader;
 	private readonly TransactionRepository _transactionRepository;
@@ -50,7 +48,6 @@ public sealed class Iso20022Controller : ControllerBase
 	private readonly Iso20022ImportService _importService;
 
 	/// <summary>Initializes a new instance of the <see cref="Iso20022Controller"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="logger">Context specific logger.</param>
 	/// <param name="reportReader">Bank account report reader.</param>
 	/// <param name="transactionRepository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
@@ -61,7 +58,6 @@ public sealed class Iso20022Controller : ControllerBase
 	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
 	/// <param name="importService">Service for importing transactions from external sources.</param>
 	public Iso20022Controller(
-		ApplicationUserContext applicationUserContext,
 		ILogger<Iso20022Controller> logger,
 		Iso20022AccountReportReader reportReader,
 		TransactionRepository transactionRepository,
@@ -72,7 +68,6 @@ public sealed class Iso20022Controller : ControllerBase
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Iso20022ImportService importService)
 	{
-		_applicationUserContext = applicationUserContext;
 		_logger = logger;
 		_reportReader = reportReader;
 		_transactionRepository = transactionRepository;
@@ -99,7 +94,7 @@ public sealed class Iso20022Controller : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var user = _applicationUserContext.User;
+		var user = User.ToApplicationUser();
 		_logger.LogDebug("Resolved user {UserId}", user.Id);
 
 		var accountReport = await ReadReport(report.Report);

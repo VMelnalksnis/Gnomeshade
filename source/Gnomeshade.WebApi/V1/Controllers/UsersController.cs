@@ -13,7 +13,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Authentication;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,14 +24,10 @@ public sealed class UsersController : FinanceControllerBase<UserEntity, UserMode
 	private readonly UserRepository _repository;
 
 	/// <summary>Initializes a new instance of the <see cref="UsersController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="UserEntity"/>.</param>
-	public UsersController(
-		ApplicationUserContext applicationUserContext,
-		Mapper mapper,
-		UserRepository repository)
-		: base(applicationUserContext, mapper)
+	public UsersController(Mapper mapper, UserRepository repository)
+		: base(mapper)
 	{
 		_repository = repository;
 	}

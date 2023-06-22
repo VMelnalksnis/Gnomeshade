@@ -89,8 +89,7 @@ internal static class AuthConfiguration
 							.AddAuthenticationSchemes(Schemes.Application)
 							.AddRequirements(new ApplicationUserRequirement()));
 				})
-				.AddScoped<IAuthorizationHandler, ApplicationUserHandler>()
-				.AddScoped<ApplicationUserContext>()
+				.AddSingleton<IAuthorizationHandler, ApplicationUserHandler>()
 				.AddAuthentication(options =>
 				{
 					options.DefaultAuthenticateScheme = Schemes.Application;

@@ -17,7 +17,6 @@ using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.OpenApi;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,20 +32,18 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	private readonly AccountUnitOfWork _accountUnitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="AccountsController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccountEntity"/>.</param>
 	/// <param name="inCurrencyRepository">The repository for performing CRUD operations on <see cref="AccountInCurrencyEntity"/>.</param>
 	/// <param name="accountUnitOfWork">Unit of work for managing accounts and all related entities.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public AccountsController(
-		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		AccountRepository repository,
 		AccountInCurrencyRepository inCurrencyRepository,
 		AccountUnitOfWork accountUnitOfWork,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, repository, dbConnection)
+		: base(mapper, repository, dbConnection)
 	{
 		_repository = repository;
 		_inCurrencyRepository = inCurrencyRepository;

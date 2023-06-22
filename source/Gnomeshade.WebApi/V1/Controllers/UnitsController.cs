@@ -14,7 +14,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -27,16 +26,11 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, Unit, UnitCreation>
 {
 	/// <summary>Initializes a new instance of the <see cref="UnitsController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="UnitEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public UnitsController(
-		ApplicationUserContext applicationUserContext,
-		Mapper mapper,
-		UnitRepository repository,
-		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, repository, dbConnection)
+	public UnitsController(Mapper mapper, UnitRepository repository, DbConnection dbConnection)
+		: base(mapper, repository, dbConnection)
 	{
 	}
 

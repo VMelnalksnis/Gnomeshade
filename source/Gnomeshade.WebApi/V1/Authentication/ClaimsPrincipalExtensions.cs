@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.WebApi.Configuration;
 
 namespace Gnomeshade.WebApi.V1.Authentication;
@@ -36,5 +37,31 @@ internal static class ClaimsPrincipalExtensions
 		}
 
 		return principal.Identity.AuthenticationType + AuthConfiguration.OidcSuffix;
+	}
+
+	internal static bool TryGetUserId(this ClaimsPrincipal principal, out Guid id)
+	{
+		id = Guid.Empty;
+
+		var claims = principal.FindAll(ClaimTypes.NameIdentifier).DistinctBy(claim => claim.Value).ToArray();
+		if (claims.Length is not 1)
+		{
+			return false;
+		}
+
+		var claim = claims.Single();
+		return Guid.TryParseExact(claim.Value, "D", out id);
+	}
+
+	internal static Guid GetUserId(this ClaimsPrincipal principal)
+	{
+		var claim = principal.FindAll(ClaimTypes.NameIdentifier).DistinctBy(claim => claim.Value).Single();
+		return Guid.ParseExact(claim.Value, "D");
+	}
+
+	internal static UserEntity ToApplicationUser(this ClaimsPrincipal principal)
+	{
+		var id = principal.GetUserId();
+		return new() { Id = id, CounterpartyId = id };
 	}
 }

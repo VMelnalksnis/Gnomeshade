@@ -9,7 +9,7 @@ using AutoMapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
-using Gnomeshade.WebApi.V1.Authorization;
+using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,20 +21,15 @@ namespace Gnomeshade.WebApi.V1;
 /// <typeparam name="TModel">The type of the public API model.</typeparam>
 [ApiController]
 [Authorize]
-[AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]
 public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 	where TEntity : class, IEntity
 	where TModel : class
 {
-	private readonly ApplicationUserContext _applicationUserContext;
-
 	/// <summary>Initializes a new instance of the <see cref="FinanceControllerBase{TEntity, TModel}"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	protected FinanceControllerBase(ApplicationUserContext applicationUserContext, Mapper mapper)
+	protected FinanceControllerBase(Mapper mapper)
 	{
-		_applicationUserContext = applicationUserContext;
 		Mapper = mapper;
 	}
 
@@ -42,7 +37,7 @@ public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 	protected Mapper Mapper { get; }
 
 	/// <summary>Gets the <see cref="UserEntity"/> associated with the executing action.</summary>
-	protected UserEntity ApplicationUser => _applicationUserContext.User;
+	protected UserEntity ApplicationUser => User.ToApplicationUser();
 
 	/// <summary>Finds a <typeparamref name="TModel"/> by the specified <paramref name="selector"/>.</summary>
 	/// <param name="selector">Asynchronous function for finding an instance of <typeparamref name="TEntity"/>.</param>

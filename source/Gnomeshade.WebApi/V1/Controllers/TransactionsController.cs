@@ -19,7 +19,6 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Transactions;
 using Gnomeshade.WebApi.OpenApi;
-using Gnomeshade.WebApi.V1.Authorization;
 using Gnomeshade.WebApi.V1.Transactions;
 
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +42,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
 	/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
@@ -54,7 +52,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	public TransactionsController(
 		TransactionRepository repository,
 		TransactionUnitOfWork unitOfWork,
-		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		TransferRepository transferRepository,
 		PurchaseRepository purchaseRepository,
@@ -62,7 +59,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		CounterpartyRepository counterpartyRepository,
 		AccountRepository accountRepository,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, repository, dbConnection)
+		: base(mapper, repository, dbConnection)
 	{
 		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;

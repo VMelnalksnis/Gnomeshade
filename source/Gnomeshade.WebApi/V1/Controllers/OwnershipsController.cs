@@ -14,7 +14,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Owners;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,16 +27,11 @@ public sealed class OwnershipsController : CreatableBase<OwnershipRepository, Ow
 	private readonly OwnershipRepository _repository;
 
 	/// <summary>Initializes a new instance of the <see cref="OwnershipsController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnershipEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public OwnershipsController(
-		ApplicationUserContext applicationUserContext,
-		Mapper mapper,
-		OwnershipRepository repository,
-		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, repository, dbConnection)
+	public OwnershipsController(Mapper mapper, OwnershipRepository repository, DbConnection dbConnection)
+		: base(mapper, repository, dbConnection)
 	{
 		_repository = repository;
 	}

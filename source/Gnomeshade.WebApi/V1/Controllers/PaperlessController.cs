@@ -10,7 +10,7 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.OpenApi;
-using Gnomeshade.WebApi.V1.Authorization;
+using Gnomeshade.WebApi.V1.Authentication;
 using Gnomeshade.WebApi.V1.Importing.Paperless;
 
 using Microsoft.AspNetCore.Http;
@@ -20,25 +20,18 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>Integrations with paperless.</summary>
 [ApiController]
-[AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]
 public sealed class PaperlessController : ControllerBase
 {
-	private readonly ApplicationUserContext _applicationUserContext;
 	private readonly TransactionRepository _transactionRepository;
 	private readonly IPaperlessService _paperlessService;
 
 	/// <summary>Initializes a new instance of the <see cref="PaperlessController"/> class.</summary>
 	/// <param name="transactionRepository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="paperlessService">Service for working with paperless documents.</param>
-	public PaperlessController(
-		TransactionRepository transactionRepository,
-		ApplicationUserContext applicationUserContext,
-		IPaperlessService paperlessService)
+	public PaperlessController(TransactionRepository transactionRepository, IPaperlessService paperlessService)
 	{
 		_transactionRepository = transactionRepository;
-		_applicationUserContext = applicationUserContext;
 		_paperlessService = paperlessService;
 	}
 
@@ -50,7 +43,7 @@ public sealed class PaperlessController : ControllerBase
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> Post(Guid transactionId, Guid linkId)
 	{
-		var links = await _transactionRepository.GetAllLinksAsync(transactionId, _applicationUserContext.User.Id);
+		var links = await _transactionRepository.GetAllLinksAsync(transactionId, User.GetUserId());
 		var link = links.SingleOrDefault(link => link.Id == linkId);
 		if (link is null)
 		{
@@ -69,7 +62,7 @@ public sealed class PaperlessController : ControllerBase
 			return NotFound();
 		}
 
-		await _paperlessService.AddPurchasesToTransaction(_applicationUserContext.User.Id, transactionId, document);
+		await _paperlessService.AddPurchasesToTransaction(User.GetUserId(), transactionId, document);
 		return NoContent();
 	}
 }

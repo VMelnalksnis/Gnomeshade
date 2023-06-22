@@ -13,7 +13,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Owners;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,14 +26,10 @@ public sealed class AccessController : FinanceControllerBase<AccessEntity, Acces
 	private readonly AccessRepository _repository;
 
 	/// <summary>Initializes a new instance of the <see cref="AccessController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="AccessEntity"/>.</param>
-	public AccessController(
-		ApplicationUserContext applicationUserContext,
-		Mapper mapper,
-		AccessRepository repository)
-		: base(applicationUserContext, mapper)
+	public AccessController(Mapper mapper, AccessRepository repository)
+		: base(mapper)
 	{
 		_repository = repository;
 	}

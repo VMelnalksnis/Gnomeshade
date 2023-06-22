@@ -17,7 +17,7 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Importing;
-using Gnomeshade.WebApi.V1.Authorization;
+using Gnomeshade.WebApi.V1.Authentication;
 using Gnomeshade.WebApi.V1.Importing;
 using Gnomeshade.WebApi.V1.Importing.Results;
 
@@ -38,11 +38,9 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Authorize]
-[AuthorizeApplicationUser]
 [Route("api/v{version:apiVersion}/[controller]")]
 public sealed class NordigenController : ControllerBase
 {
-	private readonly ApplicationUserContext _applicationUserContext;
 	private readonly ILogger<NordigenController> _logger;
 	private readonly INordigenClient _nordigenClient;
 	private readonly DbConnection _dbConnection;
@@ -54,7 +52,6 @@ public sealed class NordigenController : ControllerBase
 	private readonly NordigenImportService _importService;
 
 	/// <summary>Initializes a new instance of the <see cref="NordigenController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="logger">Context specific logger.</param>
 	/// <param name="nordigenClient">Client for making calls to the Nordigen API.</param>
 	/// <param name="dbConnection">Database connection for managing transactions.</param>
@@ -65,7 +62,6 @@ public sealed class NordigenController : ControllerBase
 	/// <param name="dateTimeZoneProvider">Provider of time zone information.</param>
 	/// <param name="importService">Service for importing transactions from external sources.</param>
 	public NordigenController(
-		ApplicationUserContext applicationUserContext,
 		ILogger<NordigenController> logger,
 		INordigenClient nordigenClient,
 		DbConnection dbConnection,
@@ -76,7 +72,6 @@ public sealed class NordigenController : ControllerBase
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		NordigenImportService importService)
 	{
-		_applicationUserContext = applicationUserContext;
 		_logger = logger;
 		_nordigenClient = nordigenClient;
 		_dbConnection = dbConnection;
@@ -126,7 +121,7 @@ public sealed class NordigenController : ControllerBase
 
 		var tasks = existing.Accounts.Select(async accountId => await _nordigenClient.Accounts.Get(accountId));
 		var accounts = await Task.WhenAll(tasks);
-		var user = _applicationUserContext.User;
+		var user = User.ToApplicationUser();
 		var results = new List<AccountReportResult>();
 
 		var dataTasks = accounts.Select(async account =>

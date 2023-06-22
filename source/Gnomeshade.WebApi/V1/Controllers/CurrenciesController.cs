@@ -13,7 +13,6 @@ using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,13 +27,9 @@ public sealed class CurrenciesController : FinanceControllerBase<CurrencyEntity,
 
 	/// <summary>Initializes a new instance of the <see cref="CurrenciesController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="CurrencyEntity"/>.</param>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
-	public CurrenciesController(
-		CurrencyRepository repository,
-		ApplicationUserContext applicationUserContext,
-		Mapper mapper)
-		: base(applicationUserContext, mapper)
+	public CurrenciesController(CurrencyRepository repository, Mapper mapper)
+		: base(mapper)
 	{
 		_repository = repository;
 	}

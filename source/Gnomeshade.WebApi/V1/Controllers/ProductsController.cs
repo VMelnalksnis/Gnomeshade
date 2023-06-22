@@ -17,7 +17,6 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
 using Gnomeshade.WebApi.OpenApi;
-using Gnomeshade.WebApi.V1.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,18 +30,16 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	private readonly PurchaseRepository _purchaseRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="ProductsController"/> class.</summary>
-	/// <param name="applicationUserContext">Context for getting the current application user.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="ProductEntity"/>.</param>
 	/// <param name="purchaseRepository">The repository for performing CRUD operations on <see cref="PurchaseEntity"/>.</param>
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public ProductsController(
-		ApplicationUserContext applicationUserContext,
 		Mapper mapper,
 		ProductRepository repository,
 		PurchaseRepository purchaseRepository,
 		DbConnection dbConnection)
-		: base(applicationUserContext, mapper, repository, dbConnection)
+		: base(mapper, repository, dbConnection)
 	{
 		_purchaseRepository = purchaseRepository;
 	}
