@@ -18,7 +18,7 @@ public static class AccountExtensions
 		PreferredCurrencyId = account.PreferredCurrency.Id,
 		Currencies = account.Currencies.Select(currency => new AccountInCurrencyCreation
 		{
-			CurrencyId = currency.Currency.Id,
+			CurrencyId = currency.CurrencyId,
 		}).ToList(),
 		AccountNumber = account.AccountNumber,
 		Iban = account.Iban,

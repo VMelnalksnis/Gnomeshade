@@ -139,18 +139,19 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
 		var productsTask = _gnomeshadeClient.GetProductsAsync();
 		var categoriesTask = _gnomeshadeClient.GetCategoriesAsync();
+		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
+		var counterpartyTask = _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask, categoriesTask);
+		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask, categoriesTask, currenciesTask, counterpartyTask);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
-		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var overviews = transactions.Select(transaction =>
 		{
 			var transfers = transaction.Transfers
 				.OrderBy(transfer => transfer.Order)
-				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
+				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterpartyTask.Result))
 				.ToList();
 
 			return new TransactionOverview(
@@ -228,16 +229,17 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		var transactionTask = _gnomeshadeClient.GetDetailedTransactionAsync(e.Id);
 		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
 		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
+		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
+		var counterpartyTask = _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		await Task.WhenAll(transactionTask, accountsTask, counterpartiesTask);
+		await Task.WhenAll(transactionTask, accountsTask, counterpartiesTask, currenciesTask, counterpartyTask);
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
 		var counterparties = counterpartiesTask.Result;
-		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var transfers = transaction.Transfers
 			.OrderBy(transfer => transfer.Order)
-			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterparty))
+			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterpartyTask.Result))
 			.ToList();
 
 		var overview = new TransactionOverview(

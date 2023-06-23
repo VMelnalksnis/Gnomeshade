@@ -125,9 +125,9 @@ public sealed class Iso20022ControllerTests : WebserverTests
 		{
 			TransactionId = transactionId,
 			SourceAmount = 235,
-			SourceAccountId = account.Currencies.Single(currency => currency.Currency.Id == euro.Id).Id,
+			SourceAccountId = account.Currencies.Single(currency => currency.CurrencyId == euro.Id).Id,
 			TargetAmount = 235,
-			TargetAccountId = bankAccount.Currencies.Single(currency => currency.Currency.Id == euro.Id).Id,
+			TargetAccountId = bankAccount.Currencies.Single(currency => currency.CurrencyId == euro.Id).Id,
 			ExternalReference = "ABC123456",
 			Order = 0,
 			BookedAt = Instant.FromUtc(2023, 03, 14, 0, 0, 0),
@@ -136,7 +136,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 		var transferId = Guid.NewGuid();
 		await _client.PutTransferAsync(transferId, transferCreation);
 
-		await _client.RemoveCurrencyFromAccountAsync(accountId, account.Currencies.Single(c => c.Currency.Id == dollar.Id).Id);
+		await _client.RemoveCurrencyFromAccountAsync(accountId, account.Currencies.Single(c => c.CurrencyId == dollar.Id).Id);
 
 		var firstAccountResult = await _client.Import(firstTestCase.Stream, _fileName);
 		var secondAccountResult = await _client.Import(secondTestCase.Stream, _fileName);

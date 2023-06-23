@@ -122,13 +122,13 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 
 	private async Task SetDefaultCurrency()
 	{
-		var currencies = Rows.Select(overview => overview.CurrencyName).Distinct().ToList();
-		if (currencies.Count > 1)
+		var currencyNames = Rows.Select(overview => overview.CurrencyName).Distinct().ToList();
+		if (currencyNames.Count > 1)
 		{
 			return;
 		}
 
-		var currencyName = currencies.FirstOrDefault();
+		var currencyName = currencyNames.FirstOrDefault();
 		var transfers = await _gnomeshadeClient.GetTransfersAsync(_transactionId);
 		if (string.IsNullOrWhiteSpace(currencyName))
 		{
@@ -138,7 +138,7 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 			var c = transfers
 				.Select(transfer => transfer.SourceAccountId)
 				.Concat(transfers.Select(transfer => transfer.TargetAccountId))
-				.Select(id => accounts.Single(ac => ac.Id == id).Currency.AlphabeticCode)
+				.Select(id => accounts.Single(ac => ac.Id == id).CurrencyAlphabeticCode)
 				.Distinct()
 				.ToList();
 

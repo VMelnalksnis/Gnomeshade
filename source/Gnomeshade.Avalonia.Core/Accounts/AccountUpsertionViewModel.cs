@@ -165,7 +165,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 
 		AdditionalCurrencies.Clear();
 		var additionalCurrencies = Currencies.Where(currency =>
-			account.Currencies.Any(c => c.Currency.Id == currency.Id) &&
+			account.Currencies.Any(c => c.CurrencyId == currency.Id) &&
 			_preferredCurrency?.Id != currency.Id);
 
 		foreach (var currency in additionalCurrencies)
@@ -206,14 +206,14 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 
 		var account = await GnomeshadeClient.GetAccountAsync(id);
 		var missingCurrencies = currencyIds
-			.Where(currencyId => account.Currencies.All(c => c.Currency.Id != currencyId));
+			.Where(currencyId => account.Currencies.All(c => c.CurrencyId != currencyId));
 		foreach (var missingCurrency in missingCurrencies)
 		{
 			await GnomeshadeClient.AddCurrencyToAccountAsync(id, new() { CurrencyId = missingCurrency });
 		}
 
 		var extraCurrencies = account.Currencies
-			.Where(currency => currencyIds.All(currencyId => currencyId != currency.Currency.Id));
+			.Where(currency => currencyIds.All(currencyId => currencyId != currency.CurrencyId));
 
 		foreach (var extraCurrency in extraCurrencies)
 		{

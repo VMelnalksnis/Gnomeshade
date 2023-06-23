@@ -188,7 +188,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 		{
 			TransactionId = transactionId,
 			Price = 2.53m,
-			CurrencyId = _account1.Currencies.First().Currency.Id,
+			CurrencyId = _account1.Currencies.First().CurrencyId,
 			ProductId = _productId,
 			Amount = 1,
 			Order = 2,
@@ -232,7 +232,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 		{
 			TransactionId = transactionId,
 			Price = 2.53m,
-			CurrencyId = _account1.Currencies.First().Currency.Id,
+			CurrencyId = _account1.Currencies.First().CurrencyId,
 			ProductId = _productId,
 			Amount = 1,
 		};
@@ -285,7 +285,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			TransactionId = transactionId,
 			IssuingCounterpartyId = issuer.Id,
 			ReceivingCounterpartyId = receiver.Id,
-			CurrencyId = _account1.Currencies.First().Currency.Id,
+			CurrencyId = _account1.Currencies.First().CurrencyId,
 			Amount = 1,
 		};
 
@@ -331,7 +331,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			TransactionId = transactionId,
 			IssuingCounterpartyId = issuer.Id,
 			ReceivingCounterpartyId = receiver.Id,
-			CurrencyId = _account1.Currencies.First().Currency.Id,
+			CurrencyId = _account1.Currencies.First().CurrencyId,
 			Amount = 1,
 		};
 

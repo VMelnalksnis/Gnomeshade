@@ -25,9 +25,9 @@ public sealed record AccountInCurrencyEntity : Entity, IOwnableEntity, IModifiab
 	/// <summary>Gets or sets the id of the <see cref="AccountEntity"/> which holds this currency.</summary>
 	public Guid AccountId { get; set; }
 
-	/// <summary>Gets or sets the id of the <see cref="Currency"/> this account represents.</summary>
+	/// <summary>Gets or sets the id of the <see cref="CurrencyEntity"/> this account represents.</summary>
 	public Guid CurrencyId { get; set; }
 
-	/// <summary>Gets or sets the currency this account represents.</summary>
-	public CurrencyEntity Currency { get; set; } = null!;
+	/// <summary>Gets or sets the alphabetic code of the <see cref="CurrencyEntity"/> this account represents.</summary>
+	public string CurrencyAlphabeticCode { get; set; } = null!;
 }

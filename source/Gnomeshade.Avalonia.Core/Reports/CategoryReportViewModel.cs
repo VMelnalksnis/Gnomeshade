@@ -155,14 +155,14 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 								var sourceCurrencyIds = accounts
 									.SelectMany(account => account.Currencies)
 									.Where(account => grouping.Transfers.Any(transfer => transfer.SourceAccountId == account.Id))
-									.Select(account => account.Currency.Id)
+									.Select(account => account.CurrencyId)
 									.Distinct()
 									.ToList();
 
 								var targetCurrencyIds = accounts
 									.SelectMany(account => account.Currencies)
 									.Where(account => grouping.Transfers.Any(transfer => transfer.TargetAccountId == account.Id))
-									.Select(account => account.Currency.Id)
+									.Select(account => account.CurrencyId)
 									.Distinct()
 									.ToList();
 

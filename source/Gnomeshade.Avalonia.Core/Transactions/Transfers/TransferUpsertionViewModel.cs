@@ -208,11 +208,11 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 
 		SourceAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
 		SourceAmount = transfer.SourceAmount;
-		SourceCurrency = SourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
+		SourceCurrency = Currencies.Single(cur => cur.Id == SourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).CurrencyId);
 
 		TargetAccount = Accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
 		TargetAmount = transfer.TargetAmount;
-		TargetCurrency = TargetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
+		TargetCurrency = Currencies.Single(cur => cur.Id == TargetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).CurrencyId);
 
 		BankReference = transfer.BankReference;
 		ExternalReference = transfer.ExternalReference;
@@ -236,9 +236,9 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		{
 			TransactionId = _transactionId,
 			SourceAmount = SourceAmount,
-			SourceAccountId = SourceAccount!.Currencies.Single(c => c.Currency.Id == SourceCurrency!.Id).Id,
+			SourceAccountId = SourceAccount!.Currencies.Single(c => c.CurrencyId == SourceCurrency!.Id).Id,
 			TargetAmount = TargetAmount,
-			TargetAccountId = TargetAccount!.Currencies.Single(c => c.Currency.Id == TargetCurrency!.Id).Id,
+			TargetAccountId = TargetAccount!.Currencies.Single(c => c.CurrencyId == TargetCurrency!.Id).Id,
 			BankReference = BankReference,
 			ExternalReference = ExternalReference,
 			InternalReference = InternalReference,

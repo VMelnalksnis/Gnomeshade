@@ -85,7 +85,8 @@ public sealed class AccountRepositoryTests
 		{
 			CreatedAt = getAccountInCurrency.CreatedAt,
 			ModifiedAt = getAccountInCurrency.ModifiedAt,
-			Currency = getAccountInCurrency.Currency,
+			CurrencyId = getAccountInCurrency.CurrencyId,
+			CurrencyAlphabeticCode = getAccountInCurrency.CurrencyAlphabeticCode,
 		};
 
 		getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);

@@ -106,12 +106,11 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	{
 		var oneToOnes =
 			await DbConnection
-				.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, CurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
+				.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
 					command,
-					(account, preferredCurrency, inCurrency, currency) =>
+					(account, preferredCurrency, inCurrency) =>
 					{
 						account.PreferredCurrency = preferredCurrency;
-						inCurrency.Currency = currency;
 						return new(account, inCurrency);
 					})
 				.ConfigureAwait(false);

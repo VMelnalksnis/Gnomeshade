@@ -27,7 +27,7 @@ internal static class AccountExtensions
 				return new AccountOverviewRow(
 					tuple.account.Id,
 					tuple.account.Name,
-					tuple.inCurrency.Currency.AlphabeticCode,
+					tuple.inCurrency.CurrencyAlphabeticCode,
 					0,
 					counterparty.Name,
 					tuple.inCurrency.Id);

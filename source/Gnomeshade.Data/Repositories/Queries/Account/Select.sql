@@ -31,18 +31,7 @@
 	   aic.modified_by_user_id ModifiedByUserId,
 	   aic.account_id          AccountId,
 	   aic.currency_id         CurrencyId,
-	   c.id,
-	   c.created_at            CreatedAt,
-	   c.name,
-	   c.normalized_name       NormalizedName,
-	   c.numeric_code          NumericCode,
-	   c.alphabetic_code       AlphabeticCode,
-	   c.minor_unit            MinorUnit,
-	   c.official,
-	   c.crypto,
-	   c.historical,
-	   c.active_from           ActiveFrom,
-	   c.active_until          ActiveUntil
+	   c.alphabetic_code       CurrencyAlphabeticCode
 FROM accounts a
 		 INNER JOIN owners ON owners.id = a.owner_id
 		 INNER JOIN ownerships ON owners.id = ownerships.owner_id

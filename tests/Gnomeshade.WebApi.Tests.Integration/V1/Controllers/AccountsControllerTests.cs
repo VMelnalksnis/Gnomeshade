@@ -61,12 +61,12 @@ public sealed class AccountsControllerTests : WebserverTests
 		currencies
 			.Should()
 			.SatisfyRespectively(
-				inCurrency => inCurrency.Currency.Id.Should().Be(_firstCurrency.Id),
-				inCurrency => inCurrency.Currency.Id.Should().Be(_secondCurrency.Id));
+				inCurrency => inCurrency.CurrencyId.Should().Be(_firstCurrency.Id),
+				inCurrency => inCurrency.CurrencyId.Should().Be(_secondCurrency.Id));
 
 		await _client.RemoveCurrencyFromAccountAsync(accountId, currencies.First().Id);
 		account = await _client.GetAccountAsync(accountId);
-		account.Currencies.Should().ContainSingle().Which.Currency.Id.Should().Be(_secondCurrency.Id);
+		account.Currencies.Should().ContainSingle().Which.CurrencyId.Should().Be(_secondCurrency.Id);
 	}
 
 	[Test]

@@ -17,18 +17,18 @@ internal static class TransferExtensions
 	internal static TransferOverview ToOverview(this Transfer transfer, List<Account> accounts, DateTimeZone timeZone)
 	{
 		var sourceAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
-		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
+		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId);
 		var targetAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
-		var targetCurrency = targetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
+		var targetCurrency = targetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId);
 
 		return new(
 			transfer.Id,
 			transfer.SourceAmount,
 			sourceAccount.Name,
-			sourceCurrency.AlphabeticCode,
+			sourceCurrency.CurrencyAlphabeticCode,
 			transfer.TargetAmount,
 			targetAccount.Name,
-			targetCurrency.AlphabeticCode,
+			targetCurrency.CurrencyAlphabeticCode,
 			transfer.BankReference,
 			transfer.ExternalReference,
 			transfer.InternalReference,
@@ -44,32 +44,32 @@ internal static class TransferExtensions
 		Counterparty userCounterparty)
 	{
 		var sourceAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.SourceAccountId));
-		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId).Currency;
+		var sourceCurrency = sourceAccount.Currencies.Single(c => c.Id == transfer.SourceAccountId);
 		var targetAccount = accounts.Single(a => a.Currencies.Any(c => c.Id == transfer.TargetAccountId));
-		var targetCurrency = targetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId).Currency;
+		var targetCurrency = targetAccount.Currencies.Single(c => c.Id == transfer.TargetAccountId);
 
 		return sourceAccount.CounterpartyId == userCounterparty.Id
 			? new(
-				sourceCurrency.AlphabeticCode,
-				sourceAccount.PreferredCurrency.Id != sourceCurrency.Id,
+				sourceCurrency.CurrencyAlphabeticCode,
+				sourceAccount.PreferredCurrency.Id != sourceCurrency.CurrencyId,
 				transfer.SourceAmount,
 				sourceAccount.Name,
 				"→",
 				targetAccount.CounterpartyId == userCounterparty.Id,
 				counterparties.Single(counterparty => targetAccount.CounterpartyId == counterparty.Id).Name,
 				targetAccount.Name,
-				targetCurrency.AlphabeticCode,
+				targetCurrency.CurrencyAlphabeticCode,
 				transfer.TargetAmount)
 			: new(
-				targetCurrency.AlphabeticCode,
-				targetAccount.PreferredCurrency.Id != targetCurrency.Id,
+				targetCurrency.CurrencyAlphabeticCode,
+				targetAccount.PreferredCurrency.Id != targetCurrency.CurrencyId,
 				transfer.TargetAmount,
 				targetAccount.Name,
 				"←",
 				false,
 				counterparties.Single(counterparty => sourceAccount.CounterpartyId == counterparty.Id).Name,
 				sourceAccount.Name,
-				sourceCurrency.AlphabeticCode,
+				sourceCurrency.CurrencyAlphabeticCode,
 				transfer.SourceAmount);
 	}
 }

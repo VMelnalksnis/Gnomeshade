@@ -32,6 +32,9 @@ public sealed record AccountInCurrency
 	/// <summary>The id of the user which last modified this account in currency.</summary>
 	public Guid ModifiedByUserId { get; set; }
 
-	/// <summary>The currency of the account in currency.</summary>
-	public Currency Currency { get; set; } = null!;
+	/// <summary>The id of the currency of the account in currency.</summary>
+	public Guid CurrencyId { get; set; }
+
+	/// <summary>The alphabetic code of the currency of the account in currency.</summary>
+	public string CurrencyAlphabeticCode { get; set; } = null!;
 }
