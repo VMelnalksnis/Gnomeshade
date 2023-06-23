@@ -46,6 +46,8 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "loans.id = @id";
 
+	protected override string GroupBy => "GROUP BY loans.id";
+
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.Loan.Select;
 
@@ -57,7 +59,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND loans.transaction_id = @transactionId",
+			$"{SelectActiveSql} AND loans.transaction_id = @transactionId {GroupBy};",
 			new { transactionId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -74,7 +76,7 @@ public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND (loans.issuing_counterparty_id = @counterpartyId OR loans.receiving_counterparty_id = @counterpartyId)",
+			$"{SelectActiveSql} AND (loans.issuing_counterparty_id = @counterpartyId OR loans.receiving_counterparty_id = @counterpartyId) {GroupBy};",
 			new { counterpartyId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}

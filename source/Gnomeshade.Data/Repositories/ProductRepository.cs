@@ -36,6 +36,8 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "p.id = @id";
 
+	protected override string GroupBy => "GROUP BY p.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "p.deleted_at IS NULL";
 

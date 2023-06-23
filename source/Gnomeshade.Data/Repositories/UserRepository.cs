@@ -43,17 +43,6 @@ public sealed class UserRepository
 		return _dbConnection.QuerySingleAsync<Guid>(command);
 	}
 
-	/// <summary>Searches for a user with the specified id.</summary>
-	/// <param name="id">The id to search by.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The <see cref="UserEntity"/> if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<UserEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
-	{
-		_logger.FindId(id);
-		var commandDefinition = new CommandDefinition($"{Queries.User.SelectAll} WHERE id = @id;", new { id }, cancellationToken: cancellationToken);
-		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity>(commandDefinition)!;
-	}
-
 	/// <summary>Updates the specified user.</summary>
 	/// <param name="user">The user to update with the new information.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>

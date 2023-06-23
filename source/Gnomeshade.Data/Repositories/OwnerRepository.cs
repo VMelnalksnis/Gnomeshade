@@ -40,6 +40,8 @@ public sealed class OwnerRepository : NamedRepository<OwnerEntity>
 
 	protected override string FindSql => "o.id = @id";
 
+	protected override string GroupBy => "GROUP BY o.id";
+
 	protected override string NotDeleted => "o.deleted_at IS NULL";
 
 	public Task AddDefaultAsync(Guid id, DbTransaction dbTransaction)

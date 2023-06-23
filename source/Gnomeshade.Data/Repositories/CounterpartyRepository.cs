@@ -43,6 +43,8 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "c.id = @id";
 
+	protected override string GroupBy => "GROUP BY c.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "c.deleted_at IS NULL";
 
@@ -72,7 +74,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	public Task<IEnumerable<CounterpartyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll(true);
-		var command = new CommandDefinition(SelectAllSql, cancellationToken: cancellationToken);
+		var command = new CommandDefinition($"{SelectAllSql} {GroupBy};", cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
 }

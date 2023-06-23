@@ -36,6 +36,8 @@ public sealed class LinkRepository : Repository<LinkEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "links.id = @id";
 
+	protected override string GroupBy => "GROUP BY links.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "links.deleted_at IS NULL";
 

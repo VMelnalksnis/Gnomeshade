@@ -43,6 +43,8 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	/// <inheritdoc />
 	protected override string FindSql => "a.id = @id";
 
+	protected override string GroupBy => "GROUP BY a.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "a.deleted_at IS NULL";
 

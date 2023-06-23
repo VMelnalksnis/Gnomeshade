@@ -44,6 +44,8 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "a.id = @id";
 
+	protected override string GroupBy => string.Empty;
+
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Account.Update;
 

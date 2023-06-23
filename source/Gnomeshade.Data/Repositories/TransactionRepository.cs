@@ -48,6 +48,8 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "t.id = @id";
 
+	protected override string GroupBy => "GROUP BY t.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "t.deleted_at IS NULL";
 
@@ -89,7 +91,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		CancellationToken cancellationToken = default)
 	{
 		var entities = await DbConnection.QueryAsync<LinkEntity>(new(
-			$"{Queries.Link.Select} AND transaction_links.transaction_id = @id;",
+			$"{Queries.Link.Select} AND transaction_links.transaction_id = @id GROUP BY links.id;",
 			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 
@@ -142,7 +144,8 @@ WHERE transaction_links.transaction_id = @id
 			$"""
 WITH r AS (SELECT "second" FROM related_transactions WHERE related_transactions.first = @id)
 {SelectActiveSql}
-AND t.id IN (SELECT "second" FROM r);
+AND t.id IN (SELECT "second" FROM r)
+{GroupBy};
 """,
 			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));

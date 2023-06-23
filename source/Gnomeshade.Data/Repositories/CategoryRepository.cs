@@ -36,6 +36,8 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "c.id = @id";
 
+	protected override string GroupBy => "GROUP BY c.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "c.deleted_at IS NULL";
 

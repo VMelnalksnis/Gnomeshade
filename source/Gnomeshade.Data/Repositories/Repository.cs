@@ -53,13 +53,15 @@ public abstract class Repository<TEntity>
 	protected abstract string SelectAllSql { get; }
 
 	/// <summary>Gets SQL where clause that filters for specific entity by id.</summary>
-	protected virtual string FindSql => "id = @id";
+	protected abstract string FindSql { get; }
+
+	protected abstract string GroupBy { get; }
 
 	/// <summary>Gets the SQL query for updating entities.</summary>
 	protected abstract string UpdateSql { get; }
 
 	/// <summary>Gets the SQL for filtering out deleted rows.</summary>
-	protected virtual string NotDeleted => "deleted_at IS NULL";
+	protected abstract string NotDeleted { get; }
 
 	/// <summary>Adds a new entity.</summary>
 	/// <param name="entity">The entity to add.</param>
@@ -114,7 +116,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.GetAll(true);
 		return GetEntitiesAsync(new(
-			SelectSql,
+			$"{SelectSql} {GroupBy};",
 			new { userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -123,7 +125,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			SelectActiveSql,
+			$"{SelectActiveSql} {GroupBy};",
 			new { userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -137,7 +139,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.GetId(id);
 		return GetAsync(new(
-			$"{SelectActiveSql} AND {FindSql}",
+			$"{SelectActiveSql} AND {FindSql} {GroupBy};",
 			new { id, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -151,7 +153,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.GetIdWithTransaction(id);
 		return GetAsync(new(
-			$"{SelectActiveSql} AND {FindSql}",
+			$"{SelectActiveSql} AND {FindSql} {GroupBy};",
 			new { id, userId, access = Read.ToParam() },
 			dbTransaction));
 	}
@@ -170,7 +172,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.FindId(id, accessLevel);
 		return FindAsync(new(
-			$"{SelectActiveSql} AND {FindSql}",
+			$"{SelectActiveSql} AND {FindSql} {GroupBy};",
 			new { id, userId, access = accessLevel.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -189,7 +191,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.FindIdWithTransaction(id, accessLevel);
 		return FindAsync(new(
-			$"{SelectActiveSql} AND {FindSql}",
+			$"{SelectActiveSql} AND {FindSql} {GroupBy};",
 			new { id, userId, access = accessLevel.ToParam() },
 			dbTransaction));
 	}
@@ -202,7 +204,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.FindId(id);
 		return FindAsync(new(
-			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted};",
+			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted} {GroupBy};",
 			new { id },
 			cancellationToken: cancellationToken));
 	}
@@ -215,7 +217,7 @@ public abstract class Repository<TEntity>
 	{
 		Logger.FindIdWithTransaction(id);
 		return FindAsync(new(
-			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted};",
+			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted} {GroupBy};",
 			new { id },
 			dbTransaction));
 	}
@@ -244,10 +246,9 @@ public abstract class Repository<TEntity>
 	/// <summary>Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.</summary>
 	/// <param name="command">The command to execute.</param>
 	/// <returns>The entities returned by the query.</returns>
-	protected virtual async Task<IEnumerable<TEntity>> GetEntitiesAsync(CommandDefinition command)
+	protected virtual Task<IEnumerable<TEntity>> GetEntitiesAsync(CommandDefinition command)
 	{
-		var entities = await DbConnection.QueryAsync<TEntity>(command);
-		return entities.DistinctBy(entity => entity.Id);
+		return DbConnection.QueryAsync<TEntity>(command);
 	}
 
 	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>
@@ -274,6 +275,6 @@ public abstract class Repository<TEntity>
 	protected async Task<TEntity> GetAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
-		return entities.DistinctBy(entity => entity.Id).Single();
+		return entities.Single();
 	}
 }

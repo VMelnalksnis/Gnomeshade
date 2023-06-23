@@ -44,6 +44,8 @@ public sealed class OwnershipRepository : Repository<OwnershipEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "o.id = @id";
 
+	protected override string GroupBy => "GROUP BY o.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "1 = 1";
 

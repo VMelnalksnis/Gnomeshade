@@ -43,6 +43,8 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	/// <inheritdoc />
 	protected override string FindSql => "purchases.id = @id";
 
+	protected override string GroupBy => "GROUP BY purchases.id";
+
 	protected override string NotDeleted => "purchases.deleted_at IS NULL";
 
 	/// <inheritdoc />
@@ -56,7 +58,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId;",
+			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId {GroupBy};",
 			new { transactionId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -69,7 +71,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId;",
+			$"{SelectActiveSql} AND purchases.transaction_id = @transactionId {GroupBy};",
 			new { transactionId, userId, access = Read.ToParam() },
 			dbTransaction));
 	}
@@ -86,7 +88,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND purchases.product_id = @productId;",
+			$"{SelectActiveSql} AND purchases.product_id = @productId {GroupBy};",
 			new { productId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}

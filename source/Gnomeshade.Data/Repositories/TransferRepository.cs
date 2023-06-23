@@ -43,6 +43,8 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	/// <inheritdoc />
 	protected override string FindSql => "transfers.id = @id";
 
+	protected override string GroupBy => "GROUP BY transfers.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "transfers.deleted_at IS NULL";
 
@@ -57,7 +59,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	{
 		Logger.GetAll();
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND transfers.transaction_id = @transactionId;",
+			$"{SelectActiveSql} AND transfers.transaction_id = @transactionId {GroupBy};",
 			new { transactionId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -74,7 +76,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	{
 		Logger.FindBankReferenceWithTransaction(bankReference);
 		return FindAsync(new(
-			$"{SelectActiveSql} AND transfers.bank_reference = @bankReference;",
+			$"{SelectActiveSql} AND transfers.bank_reference = @bankReference {GroupBy};",
 			new { bankReference, userId, access = Read.ToParam() },
 			dbTransaction));
 	}
@@ -85,7 +87,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 		DbTransaction dbTransaction)
 	{
 		return GetEntitiesAsync(new(
-			$"{SelectActiveSql} AND transfers.external_reference = @externalReference;",
+			$"{SelectActiveSql} AND transfers.external_reference = @externalReference {GroupBy};",
 			new { externalReference, userId, access = Read.ToParam() },
 			dbTransaction));
 	}

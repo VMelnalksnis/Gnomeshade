@@ -36,6 +36,8 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	/// <inheritdoc />
 	protected override string FindSql => "u.id = @id";
 
+	protected override string GroupBy => "GROUP BY u.id";
+
 	/// <inheritdoc />
 	protected override string NotDeleted => "u.deleted_at IS NULL";
 
