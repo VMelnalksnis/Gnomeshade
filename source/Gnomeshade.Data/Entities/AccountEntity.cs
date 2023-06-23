@@ -37,9 +37,6 @@ public sealed record AccountEntity : Entity, IOwnableEntity, IModifiableEntity, 
 	/// <summary>Gets or sets the id of the preferred <see cref="AccountInCurrencyEntity"/>.</summary>
 	public Guid PreferredCurrencyId { get; set; }
 
-	/// <summary>Gets or sets the preferred currency.</summary>
-	public CurrencyEntity PreferredCurrency { get; set; } = null!;
-
 	/// <summary>Gets or sets the Business Identifier Code (BIC).</summary>
 	public string? Bic { get; set; }
 

@@ -11,18 +11,6 @@
 	   a.bic,
 	   a.iban,
 	   a.account_number        AccountNumber,
-	   pc.id,
-	   pc.created_at           CreatedAt,
-	   pc.name,
-	   pc.normalized_name      NormalizedName,
-	   pc.numeric_code         NumericCode,
-	   pc.alphabetic_code      AlphabeticCode,
-	   pc.minor_unit           MinorUnit,
-	   pc.official,
-	   pc.crypto,
-	   pc.historical,
-	   pc.active_from          ActiveFrom,
-	   pc.active_until         ActiveUntil,
 	   aic.id,
 	   aic.created_at          CreatedAt,
 	   aic.owner_id            OwnerId,
@@ -33,6 +21,5 @@
 	   aic.currency_id         CurrencyId,
 	   c.alphabetic_code       CurrencyAlphabeticCode
 FROM accounts a
-		 LEFT JOIN currencies pc ON a.preferred_currency_id = pc.id
 		 LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id
 		 LEFT JOIN currencies c ON aic.currency_id = c.id

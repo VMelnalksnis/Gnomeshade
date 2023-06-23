@@ -106,13 +106,9 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	{
 		var oneToOnes =
 			await DbConnection
-				.QueryAsync<AccountEntity, CurrencyEntity, AccountInCurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
+				.QueryAsync<AccountEntity, AccountInCurrencyEntity, OneToOne<AccountEntity, AccountInCurrencyEntity>>(
 					command,
-					(account, preferredCurrency, inCurrency) =>
-					{
-						account.PreferredCurrency = preferredCurrency;
-						return new(account, inCurrency);
-					})
+					(account, inCurrency) => new(account, inCurrency))
 				.ConfigureAwait(false);
 
 		// ReSharper disable once ConvertClosureToMethodGroup

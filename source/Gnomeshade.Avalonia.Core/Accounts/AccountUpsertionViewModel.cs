@@ -42,7 +42,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private Counterparty? _counterparty;
 
-	/// <inheritdoc cref="Account.PreferredCurrency"/>
+	/// <inheritdoc cref="Account.PreferredCurrencyId"/>
 	[Notify]
 	private Currency? _preferredCurrency;
 
@@ -156,7 +156,7 @@ public sealed partial class AccountUpsertionViewModel : UpsertionViewModel
 		var account = await GnomeshadeClient.GetAccountAsync(id);
 
 		Counterparty = Counterparties.Single(counterparty => counterparty.Id == account.CounterpartyId);
-		PreferredCurrency = account.PreferredCurrency;
+		PreferredCurrency = Currencies.Single(currency => currency.Id == account.PreferredCurrencyId);
 		Name = account.Name;
 		Bic = account.Bic;
 		Iban = account.Iban;

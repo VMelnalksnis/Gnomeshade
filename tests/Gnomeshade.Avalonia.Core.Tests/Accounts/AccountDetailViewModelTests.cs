@@ -36,7 +36,7 @@ public class AccountDetailViewModelTests
 			viewModel.Bic.Should().Be(_account.Bic);
 			viewModel.Iban.Should().Be(_account.Iban);
 			viewModel.AccountNumber.Should().Be(_account.AccountNumber);
-			viewModel.PreferredCurrency.Should().Be(_account.PreferredCurrency);
+			viewModel.PreferredCurrency?.Id.Should().Be(_account.PreferredCurrencyId);
 
 			viewModel.Currencies.Should().HaveCount(2);
 			viewModel.CanSave.Should().BeTrue();

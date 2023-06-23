@@ -39,8 +39,8 @@ public sealed record Account
 	/// <summary>The id of the counterparty to which this account belongs to.</summary>
 	public Guid CounterpartyId { get; set; }
 
-	/// <summary>The preferred currency of the account.</summary>
-	public Currency PreferredCurrency { get; set; } = null!;
+	/// <summary>The id of the preferred currency of the account.</summary>
+	public Guid PreferredCurrencyId { get; set; }
 
 	/// <summary>The BIC (Business Identifier Code) of the account.</summary>
 	public string? Bic { get; set; }

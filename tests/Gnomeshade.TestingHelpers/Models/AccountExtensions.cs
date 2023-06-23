@@ -15,7 +15,7 @@ public static class AccountExtensions
 		OwnerId = account.OwnerId,
 		Name = account.Name,
 		CounterpartyId = account.CounterpartyId,
-		PreferredCurrencyId = account.PreferredCurrency.Id,
+		PreferredCurrencyId = account.PreferredCurrencyId,
 		Currencies = account.Currencies.Select(currency => new AccountInCurrencyCreation
 		{
 			CurrencyId = currency.CurrencyId,

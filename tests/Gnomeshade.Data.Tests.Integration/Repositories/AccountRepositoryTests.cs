@@ -66,7 +66,7 @@ public sealed class AccountRepositoryTests
 			Id = accountId,
 			CreatedAt = getAccount.CreatedAt,
 			ModifiedAt = getAccount.ModifiedAt,
-			PreferredCurrency = getAccount.PreferredCurrency,
+			PreferredCurrencyId = getAccount.PreferredCurrencyId,
 			Currencies = getAccount.Currencies,
 		};
 
