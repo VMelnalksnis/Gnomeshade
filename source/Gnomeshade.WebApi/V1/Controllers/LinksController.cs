@@ -55,7 +55,7 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 	/// <response code="204">Link was successfully deleted.</response>
 	/// <response code="404">Link with the specified id does not exist.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
 	/// <inheritdoc />

@@ -73,7 +73,7 @@ public static class GnomeshadeClientExtensions
 		return await accountClient.GetCounterpartyAsync(counterpartyId);
 	}
 
-	public static async Task<Category> CreateCategoryAsync(this IGnomeshadeClient productClient, Guid? ownerId = null)
+	public static async Task<Category> CreateCategoryAsync(this IProductClient productClient, Guid? ownerId = null)
 	{
 		var categoryId = Guid.NewGuid();
 		var category = new CategoryCreation { Name = $"{categoryId:N}", OwnerId = ownerId };

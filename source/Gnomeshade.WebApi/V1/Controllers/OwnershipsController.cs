@@ -51,7 +51,7 @@ public sealed class OwnershipsController : CreatableBase<OwnershipRepository, Ow
 	/// <inheritdoc cref="IOwnerClient.DeleteOwnershipAsync"/>
 	/// <response code="204">The ownership was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
 	/// <inheritdoc />

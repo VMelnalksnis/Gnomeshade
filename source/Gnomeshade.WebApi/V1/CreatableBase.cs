@@ -117,7 +117,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[HttpDelete("{id:guid}")]
-	public virtual async Task<StatusCodeResult> Delete(Guid id)
+	public virtual async Task<ActionResult> Delete(Guid id)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 
@@ -127,9 +127,14 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 			return NotFound();
 		}
 
-		await Repository.DeleteAsync(id, ApplicationUser.Id, dbTransaction);
+		var deletedCount = await Repository.DeleteAsync(id, ApplicationUser.Id, dbTransaction);
 		await dbTransaction.CommitAsync();
-		return NoContent();
+		return deletedCount > 0
+			? NoContent()
+			: Problem(
+				"Cannot delete this resource because something is still referencing it",
+				Url.Action(nameof(Delete), new { id }),
+				Status409Conflict);
 	}
 
 	/// <summary>Updates an existing <typeparamref name="TEntity"/> with details from <paramref name="creation"/>.</summary>

@@ -5,8 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -48,6 +46,7 @@ public sealed class AccountsControllerTests : WebserverTests
 		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
 
 		var accountId = await _client.CreateAccountAsync(accountCreationModel);
+		var firstInCurrencyId = (await _client.GetAccountAsync(accountId)).Currencies.Single().Id;
 
 		var newAccountInCurrency = new AccountInCurrencyCreation { CurrencyId = _secondCurrency.Id };
 		var addCurrencyId = await _client.AddCurrencyToAccountAsync(accountId, newAccountInCurrency);
@@ -56,7 +55,7 @@ public sealed class AccountsControllerTests : WebserverTests
 		var accounts = await _client.GetAccountsAsync();
 		accounts.Should().Contain(a => a.Id == accountId);
 
-		addCurrencyId.Should().Be(accountId);
+		addCurrencyId.Should().Be(account.Currencies.Single(c => c.Id != firstInCurrencyId).Id);
 		var currencies = account.Currencies.OrderBy(c => c.CreatedAt).ToArray();
 		currencies
 			.Should()
@@ -67,6 +66,43 @@ public sealed class AccountsControllerTests : WebserverTests
 		await _client.RemoveCurrencyFromAccountAsync(accountId, currencies.First().Id);
 		account = await _client.GetAccountAsync(accountId);
 		account.Currencies.Should().ContainSingle().Which.CurrencyId.Should().Be(_secondCurrency.Id);
+	}
+
+	[Test]
+	public async Task RemoveCurrency()
+	{
+		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
+
+		var accountId = await _client.CreateAccountAsync(accountCreationModel);
+
+		var newAccountInCurrency = new AccountInCurrencyCreation { CurrencyId = _secondCurrency.Id };
+		var addCurrencyId = await _client.AddCurrencyToAccountAsync(accountId, newAccountInCurrency);
+		var account = await _client.GetAccountAsync(accountId);
+
+		var transactionId = await _client.CreateTransactionAsync(new());
+		var transferId = Guid.NewGuid();
+		var transfer = new TransferCreation
+		{
+			TransactionId = transactionId,
+			SourceAccountId = account.Currencies.First(currency => currency.Id != addCurrencyId).Id,
+			TargetAccountId = addCurrencyId,
+			SourceAmount = 10.5m,
+			TargetAmount = 10.5m,
+			BookedAt = SystemClock.Instance.GetCurrentInstant(),
+		};
+
+		await _client.PutTransferAsync(transferId, transfer);
+
+		await ShouldThrowConflict(() => _client.RemoveCurrencyFromAccountAsync(accountId, addCurrencyId));
+
+		var accountAfterDelete = await _client.GetAccountAsync(accountId);
+		accountAfterDelete.Should().BeEquivalentTo(account);
+
+		await _client.DeleteTransferAsync(transferId);
+		await _client.RemoveCurrencyFromAccountAsync(accountId, addCurrencyId);
+
+		accountAfterDelete = await _client.GetAccountAsync(accountId);
+		accountAfterDelete.Currencies.Should().ContainSingle();
 	}
 
 	[Test]
@@ -94,13 +130,7 @@ public sealed class AccountsControllerTests : WebserverTests
 		var accountCreationModel = GetAccountCreationModel(_firstCurrency);
 		await _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel);
 
-		var exception =
-			await FluentActions
-				.Awaiting(() => _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>();
-
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.Conflict);
+		await ShouldThrowConflict(() => _client.PutAccountAsync(Guid.NewGuid(), accountCreationModel));
 	}
 
 	[Test]

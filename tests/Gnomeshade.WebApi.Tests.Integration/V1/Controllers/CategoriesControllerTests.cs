@@ -3,11 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
+using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 using Gnomeshade.WebApi.V1.Controllers;
@@ -52,14 +50,10 @@ public sealed class CategoriesControllerTests : WebserverTests
 		updatedCategory.ModifiedAt.Should().BeGreaterThanOrEqualTo(category.ModifiedAt);
 		updatedCategory.CategoryId.Should().Be(otherCategoryId);
 
+		await _client.DeleteCategoryAsync(_categoryId);
 		await _client.DeleteCategoryAsync(otherCategoryId);
 
-		(await FluentActions
-				.Awaiting(() => _client.GetCategoryAsync(otherCategoryId))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode.Should()
-			.Be(HttpStatusCode.NotFound);
+		await ShouldThrowNotFound(() => _client.GetCategoryAsync(otherCategoryId));
 	}
 
 	[Test]
@@ -83,14 +77,37 @@ public sealed class CategoriesControllerTests : WebserverTests
 		updatedCategory.LinkedProductId.Should().BeNull();
 	}
 
-	[TearDown]
-	public async Task TearDownAsync()
+	[Test]
+	public async Task Delete_CategoryReference()
 	{
-		var categories = await _client.GetCategoriesAsync();
-		var category = categories.SingleOrDefault(category => category.Id == _categoryId);
-		if (category is not null)
-		{
-			await _client.DeleteCategoryAsync(category.Id);
-		}
+		var category = await _client.CreateCategoryAsync();
+		var id = category.Id;
+
+		var linkedId = Guid.NewGuid();
+		await _client.PutCategoryAsync(linkedId, new() { Name = $"{linkedId:N}", CategoryId = id });
+
+		await ShouldThrowConflict(() => _client.DeleteCategoryAsync(id));
+		(await _client.GetCategoryAsync(id)).Should().BeEquivalentTo(category);
+
+		await _client.DeleteCategoryAsync(linkedId);
+		await _client.DeleteCategoryAsync(id);
+
+		await ShouldThrowNotFound(() => _client.GetCategoryAsync(id));
+	}
+
+	[Test]
+	public async Task Delete_ProductReference()
+	{
+		var id = Guid.NewGuid();
+		await _client.PutCategoryAsync(id, new() { Name = $"{id:N}", LinkProduct = true });
+		var category = await _client.GetCategoryAsync(id);
+
+		await ShouldThrowConflict(() => _client.DeleteCategoryAsync(id));
+		(await _client.GetCategoryAsync(id)).Should().BeEquivalentTo(category);
+
+		await _client.DeleteProductAsync(id);
+		await _client.DeleteCategoryAsync(id);
+
+		await ShouldThrowNotFound(() => _client.GetCategoryAsync(id));
 	}
 }

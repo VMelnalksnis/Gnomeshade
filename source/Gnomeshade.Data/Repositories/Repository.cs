@@ -87,11 +87,12 @@ public abstract class Repository<TEntity>
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <returns>The number of affected rows.</returns>
-	public async Task DeleteAsync(Guid id, Guid userId)
+	public async Task<int> DeleteAsync(Guid id, Guid userId)
 	{
 		Logger.DeletingEntity(id);
 		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, userId });
 		Logger.DeletedRows(count);
+		return count;
 	}
 
 	/// <summary>Deletes the entity with the specified id using the specified database transaction.</summary>
@@ -99,11 +100,12 @@ public abstract class Repository<TEntity>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public async Task DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
+	public async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
 		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, userId }, dbTransaction);
 		Logger.DeletedRows(count);
+		return count;
 	}
 
 	/// <summary>Gets all entities.</summary>

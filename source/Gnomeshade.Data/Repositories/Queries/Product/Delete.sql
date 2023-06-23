@@ -32,10 +32,18 @@
 				  AND purchases.deleted_at IS NULL
 				  AND transactions.deleted_at IS NULL))
 			AND products.deleted_at IS NULL
+			AND products.id = @id),
+
+	 referencing_purchases AS
+		 (SELECT purchases.id
+		  FROM purchases
+				   INNER JOIN products on products.id = purchases.product_id
+		  WHERE purchases.deleted_at IS NULL
 			AND products.id = @id)
 
 UPDATE products
 SET deleted_at         = CURRENT_TIMESTAMP,
 	deleted_by_user_id = @userId
 FROM accessable
-WHERE products.id IN (SELECT id FROM accessable);
+WHERE products.id IN (SELECT id FROM accessable)
+  AND (SELECT count(id) FROM referencing_purchases) = 0;

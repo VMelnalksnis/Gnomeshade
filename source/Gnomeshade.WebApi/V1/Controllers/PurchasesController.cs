@@ -62,6 +62,6 @@ public sealed class PurchasesController : TransactionItemController<PurchaseRepo
 	/// <response code="204">Purchase was successfully deleted.</response>
 	/// <response code="404">Purchase with the specified id does not exist.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 }

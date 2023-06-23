@@ -71,7 +71,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	/// <inheritdoc cref="IProductClient.DeleteCategoryAsync"/>
 	/// <response code="204">The category was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
 	/// <inheritdoc />

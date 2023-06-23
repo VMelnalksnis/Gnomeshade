@@ -4,8 +4,6 @@
 
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -39,13 +37,7 @@ public class CounterpartiesControllerTests : WebserverTests
 		var id = Guid.NewGuid();
 		var creationModel = new CounterpartyCreation { Name = $"{id:N}" };
 
-		(await FluentActions
-				.Awaiting(() => _gnomeshadeClient.GetCounterpartyAsync(id))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode
-			.Should()
-			.Be(HttpStatusCode.NotFound);
+		await ShouldThrowNotFound(() => _gnomeshadeClient.GetCounterpartyAsync(id));
 
 		await _gnomeshadeClient.PutCounterpartyAsync(id, creationModel);
 
@@ -63,13 +55,7 @@ public class CounterpartiesControllerTests : WebserverTests
 	{
 		var existingName = (await _gnomeshadeClient.GetCounterpartiesAsync()).First().Name;
 
-		(await FluentActions
-				.Awaiting(() => _gnomeshadeClient.PutCounterpartyAsync(Guid.NewGuid(), new() { Name = existingName }))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode
-			.Should()
-			.Be(HttpStatusCode.Conflict);
+		await ShouldThrowConflict(() => _gnomeshadeClient.PutCounterpartyAsync(Guid.NewGuid(), new() { Name = existingName }));
 	}
 
 	[Test]
@@ -82,23 +68,13 @@ public class CounterpartiesControllerTests : WebserverTests
 		var firstAccount = await _gnomeshadeClient.GetAccountAsync(firstAccountId);
 		var secondAccount = await _gnomeshadeClient.GetAccountAsync(secondAccountId);
 
-		using (new AssertionScope())
-		{
-			firstAccount.CounterpartyId.Should().Be(firstCounterpartyId);
-			secondAccount.CounterpartyId.Should().Be(firstCounterpartyId);
+		using var scope = new AssertionScope();
 
-			await FluentActions
-				.Awaiting(() => _gnomeshadeClient.GetCounterpartyAsync(firstCounterpartyId))
-				.Should()
-				.NotThrowAsync();
+		firstAccount.CounterpartyId.Should().Be(firstCounterpartyId);
+		secondAccount.CounterpartyId.Should().Be(firstCounterpartyId);
 
-			(await FluentActions
-					.Awaiting(() => _gnomeshadeClient.GetCounterpartyAsync(secondCounterpartyId))
-					.Should()
-					.ThrowAsync<HttpRequestException>())
-				.Which.StatusCode.Should()
-				.Be(HttpStatusCode.NotFound);
-		}
+		await ShouldThrowNotFound(() => _gnomeshadeClient.GetCounterpartyAsync(secondCounterpartyId));
+		_ = await _gnomeshadeClient.GetCounterpartyAsync(firstCounterpartyId);
 	}
 
 	private async Task<(Guid CounterpartyId, Guid AccountId)> CreateCounterpartyWithAccount()

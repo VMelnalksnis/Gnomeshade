@@ -52,7 +52,7 @@ public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntit
 	/// <inheritdoc cref="IOwnerClient.DeleteOwnerAsync"/>
 	/// <response code="204">The owner was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
 	/// <inheritdoc />

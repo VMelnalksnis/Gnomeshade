@@ -62,6 +62,6 @@ public sealed class LoansController : TransactionItemController<LoanRepository, 
 	/// <response code="204">Loan was successfully deleted.</response>
 	/// <response code="404">Loan with the specified id does not exist.</response>
 	// ReSharper disable once RedundantOverriddenMember
-	public override Task<StatusCodeResult> Delete(Guid id) =>
+	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 }

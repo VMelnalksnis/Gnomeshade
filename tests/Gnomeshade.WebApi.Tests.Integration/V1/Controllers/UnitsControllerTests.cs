@@ -3,8 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -40,13 +38,7 @@ public sealed class UnitsControllerTests : WebserverTests
 		var creationModel = CreateUniqueUnit() with { ParentUnitId = _parentUnit.Id, Multiplier = 10 };
 		await _client.PutUnitAsync(Guid.NewGuid(), creationModel);
 
-		var exception =
-			await FluentActions
-				.Awaiting(() => _client.PutUnitAsync(Guid.NewGuid(), creationModel))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>();
-
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.Conflict);
+		await ShouldThrowConflict(() => _client.PutUnitAsync(Guid.NewGuid(), creationModel));
 	}
 
 	[Test]

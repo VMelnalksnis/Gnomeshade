@@ -9,10 +9,20 @@
 			  AND (access.normalized_name = 'DELETE' OR access.normalized_name = 'OWNER')
 			  AND accounts.deleted_at IS NULL)
 			AND accounts_in_currency.deleted_at IS NULL
+			AND accounts_in_currency.id = @id),
+
+	 referencing_transfers AS
+		 (SELECT transfers.id
+		  FROM transfers
+				   INNER JOIN accounts_in_currency accounts_in_currency on
+					  accounts_in_currency.id = transfers.source_account_id
+				  or accounts_in_currency.id = transfers.target_account_id
+		  WHERE transfers.deleted_at IS NULL
 			AND accounts_in_currency.id = @id)
 
 UPDATE accounts_in_currency
 SET deleted_at         = CURRENT_TIMESTAMP,
 	deleted_by_user_id = @userId
 FROM accessable
-WHERE accounts_in_currency.id IN (SELECT id FROM accessable);
+WHERE accounts_in_currency.id IN (SELECT id FROM accessable)
+  AND (SELECT count(id) FROM referencing_transfers) = 0;

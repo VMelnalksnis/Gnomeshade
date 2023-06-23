@@ -18,10 +18,25 @@
 				  AND purchases.deleted_at IS NULL
 				  AND transactions.deleted_at IS NULL))
 			AND categories.deleted_at IS NULL
-			AND categories.id = @id)
+			AND categories.id = @id),
+
+	 referencing_products AS
+		 (SELECT products.id
+		  FROM products
+				   INNER JOIN categories on products.category_id = categories.id
+		  WHERE products.deleted_at IS NULL
+			and categories.id = @id),
+
+	 referencing_categories AS
+		 (SELECT categories.id
+		  FROM categories
+		  where categories.deleted_at IS NULL
+			and categories.category_id = @id)
 
 UPDATE categories
 SET deleted_at         = CURRENT_TIMESTAMP,
 	deleted_by_user_id = @userId
 FROM accessable
-WHERE categories.id IN (SELECT id FROM accessable);
+WHERE categories.id IN (SELECT id FROM accessable)
+  AND (SELECT count(id) FROM referencing_products) = 0
+  AND (SELECT count(id) FROM referencing_categories) = 0;

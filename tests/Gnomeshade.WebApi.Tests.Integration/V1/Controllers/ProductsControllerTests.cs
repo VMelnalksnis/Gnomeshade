@@ -3,10 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
+using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
@@ -36,31 +35,20 @@ public sealed class ProductsControllerTests : WebserverTests
 		var creationModel = CreateUniqueProduct() with { Description = "Foo" };
 		await _client.PutProductAsync(Guid.NewGuid(), creationModel);
 
-		var exception =
-			await FluentActions
-				.Awaiting(() => _client.PutProductAsync(Guid.NewGuid(), creationModel))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>();
-
-		exception.Which.StatusCode.Should().Be(HttpStatusCode.Conflict);
+		await ShouldThrowConflict(() => _client.PutProductAsync(Guid.NewGuid(), creationModel));
 	}
 
 	[Test]
 	public async Task Put()
 	{
-		var unitId = Guid.NewGuid();
-		var unit = new UnitCreation { Name = $"{unitId:N}" };
-		await _client.PutUnitAsync(unitId, unit);
-
-		var categoryId = Guid.NewGuid();
-		var category = new CategoryCreation { Name = $"{categoryId:N}" };
-		await _client.PutCategoryAsync(categoryId, category);
+		var unit = await _client.CreateUnitAsync();
+		var category = await _client.CreateCategoryAsync();
 
 		var creationModel = CreateUniqueProduct() with
 		{
 			Description = "Foo",
-			UnitId = unitId,
-			CategoryId = categoryId,
+			UnitId = unit.Id,
+			CategoryId = category.Id,
 		};
 		var productId = Guid.NewGuid();
 		var product = await PutAndGet(productId, creationModel);
@@ -69,8 +57,8 @@ public sealed class ProductsControllerTests : WebserverTests
 		{
 			product.Name.Should().Be(creationModel.Name);
 			product.Description.Should().Be(creationModel.Description);
-			product.UnitId.Should().Be(unitId);
-			product.CategoryId.Should().Be(categoryId);
+			product.UnitId.Should().Be(unit.Id);
+			product.CategoryId.Should().Be(category.Id);
 		}
 
 		var productWithoutChanges = await PutAndGet(productId, creationModel);
@@ -91,12 +79,27 @@ public sealed class ProductsControllerTests : WebserverTests
 	[Test]
 	public async Task Purchases_ShouldReturnNotFound()
 	{
-		(await FluentActions
-				.Awaiting(() => _client.GetProductPurchasesAsync(Guid.NewGuid()))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode.Should()
-			.Be(HttpStatusCode.NotFound);
+		await ShouldThrowNotFound(() => _client.GetProductPurchasesAsync(Guid.NewGuid()));
+	}
+
+	[Test]
+	public async Task Delete_PurchaseReference()
+	{
+		var unit = await _client.CreateUnitAsync();
+		var category = await _client.CreateCategoryAsync();
+		var product = await _client.CreateProductAsync(unit.Id, category.Id);
+
+		var transaction = await _client.CreateTransactionAsync();
+		var purchase = await _client.CreatePurchaseAsync(transaction.Id, product.Id);
+
+		await ShouldThrowConflict(() => _client.DeleteProductAsync(product.Id));
+
+		(await _client.GetProductAsync(product.Id)).Should().BeEquivalentTo(product);
+
+		await _client.DeletePurchaseAsync(purchase.Id);
+		await _client.DeleteProductAsync(product.Id);
+
+		await ShouldThrowNotFound(() => _client.GetProductAsync(product.Id));
 	}
 
 	private static ProductCreation CreateUniqueProduct()

@@ -121,7 +121,7 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 			AccountId = account.Id,
 		};
 
-		_ = await _inCurrencyRepository.AddAsync(accountInCurrency);
+		id = await _inCurrencyRepository.AddAsync(accountInCurrency);
 
 		// todo should this point to account or account in currency?
 		return CreatedAtAction(nameof(Get), new { id }, id);
@@ -135,20 +135,27 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> RemoveCurrency(Guid id, Guid currencyId)
 	{
-		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Delete);
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
 		if (account is null)
 		{
 			return NotFound();
 		}
 
-		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id, AccessLevel.Delete);
+		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
 		if (currency is null)
 		{
 			return NotFound();
 		}
 
-		await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id);
-		return NoContent();
+		var count = await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return count > 0
+			? NoContent()
+			: Problem(
+				"Cannot delete because something is still referencing this currency",
+				Url.Action(nameof(RemoveCurrency), new { id, currencyId }),
+				Status409Conflict);
 	}
 
 	/// <inheritdoc cref="IAccountClient.GetAccountBalanceAsync"/>
