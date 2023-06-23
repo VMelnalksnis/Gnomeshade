@@ -76,7 +76,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 		await _client.PutTransactionAsync(transactionId, transactionCreationModel);
 
 		var detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
-		detailedTransactions.Should().NotContain(detailed => detailed.Id == transactionId);
+		detailedTransactions.Should().Contain(detailed => detailed.Id == transactionId);
 
 		var transferCreation = new TransferCreation
 		{
@@ -92,6 +92,10 @@ public sealed class TransactionsControllerTests : WebserverTests
 		await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
 		var expectedDate = SystemClock.Instance.GetCurrentInstant() + Duration.FromDays(1);
 		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with { ValuedAt = expectedDate, Order = 3 });
+
+		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, SystemClock.Instance.GetCurrentInstant())))
+			.Should()
+			.NotContain(detailedTransaction => detailedTransaction.Id == transactionId);
 
 		var transaction = await _client.GetTransactionAsync(transactionId);
 		var transactions = await _client.GetTransactionsAsync();
@@ -453,6 +457,17 @@ public sealed class TransactionsControllerTests : WebserverTests
 			detailed.Loans.Should().BeEmpty();
 			detailed.Links.Should().BeEmpty();
 		}
+	}
+
+	[Test]
+	public async Task Test()
+	{
+		var transaction = await _client.CreateTransactionAsync();
+
+		var detailedTransaction = await _client.GetDetailedTransactionAsync(transaction.Id);
+		var detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
+
+		detailedTransactions.Should().ContainEquivalentOf(detailedTransaction);
 	}
 
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)

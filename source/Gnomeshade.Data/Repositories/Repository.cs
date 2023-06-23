@@ -261,7 +261,6 @@ public abstract class Repository<TEntity>
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return entities
-			.DistinctBy(entity => entity.Id)
 			.Select(entity =>
 			{
 				Logger.FoundEntity(entity.Id, entity.DeletedAt);

@@ -79,8 +79,9 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Logger.GetAll();
 		return GetDetailedTransactions(new(
 			@$"{Queries.Transaction.SelectDetailed}
-  AND (transfers.valued_at >= @from OR transfers.booked_at >= @from) 
-  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to)",
+ AND (((transfers.valued_at >= @from OR transfers.booked_at >= @from)
+  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to))
+   OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
 			new { from, to, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
