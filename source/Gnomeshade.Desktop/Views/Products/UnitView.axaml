@@ -44,12 +44,6 @@
 					Header="Multiplier" IsReadOnly="True"
 					Binding="{Binding Multiplier, Mode=OneWay}" />
 			</DataGrid.Columns>
-
-			<DataGrid.Styles>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
 		</DataGrid>
 
 		<UserControl

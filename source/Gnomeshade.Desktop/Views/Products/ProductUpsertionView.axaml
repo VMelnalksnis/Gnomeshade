@@ -103,12 +103,6 @@
 					Header="Delivery" IsReadOnly="True"
 					Binding="{Binding DeliveryDate, Mode=OneWay, StringFormat=\{0:g\}}" />
 			</DataGrid.Columns>
-
-			<DataGrid.Styles>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
 		</DataGrid>
 	</Grid>
 </UserControl>

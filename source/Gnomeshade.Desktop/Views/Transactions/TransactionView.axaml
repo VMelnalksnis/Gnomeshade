@@ -155,7 +155,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserResize="False">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -226,12 +226,6 @@
 						</DataTemplate>
 					</DataGridTemplateColumn>
 				</DataGrid.Columns>
-
-				<DataGrid.Styles>
-					<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-						<Setter Property="Fill" Value="#05769d" />
-					</Style>
-				</DataGrid.Styles>
 
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">

@@ -44,12 +44,6 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
-			<DataGrid.Styles>
-				<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-					<Setter Property="Fill" Value="#05769d" />
-				</Style>
-			</DataGrid.Styles>
-
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
 					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />

@@ -3,8 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:desktop="clr-namespace:Gnomeshade.Desktop"
-	x:Class="Gnomeshade.Desktop.App"
-	RequestedThemeVariant="Default">
+	x:Class="Gnomeshade.Desktop.App">
 
 	<Application.DataTemplates>
 		<core:ViewLocator x:TypeArguments="desktop:App" />
@@ -12,6 +11,19 @@
 
 	<Application.Styles>
 		<FluentTheme />
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Simple.xaml" />
+		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+
+		<Style Selector="DataGridColumnHeader">
+			<Setter Property="Background" Value="{x:Null}"/>
+		</Style>
+
+		<Style Selector="DataGridCell">
+			<Setter Property="MinHeight" Value="20" />
+			<Setter Property="FontSize" Value="14"/>
+		</Style>
+
+		<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+			<Setter Property="Fill" Value="#05769d" />
+		</Style>
 	</Application.Styles>
 </Application>
