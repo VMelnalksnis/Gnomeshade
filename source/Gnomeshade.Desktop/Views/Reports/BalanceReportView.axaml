@@ -14,7 +14,7 @@
 
 	<Grid RowDefinitions="*">
 		<liveChartsCore:CartesianChart
-			Series="{Binding Series}" XAxes="{Binding XAxes}"
-			ZoomMode="X" TooltipPosition="Hidden" />
+			Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
+			ZoomMode="X" LegendPosition="Hidden" />
 	</Grid>
 </UserControl>

@@ -61,15 +61,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 
 		_categories = new();
 		_series = new();
-		XAxes = new()
-		{
-			new Axis
-			{
-				Labeler = value => new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString("yyyy MM"),
-				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
-				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-			},
-		};
+		XAxes = new() { DateAxis.GetXAxis() };
 	}
 
 	/// <summary>Gets a delegate for formatting an category in an <see cref="AutoCompleteBox"/>.</summary>

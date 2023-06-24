@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,10 +29,6 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	[Notify(Setter.Private)]
 	private List<CandlesticksSeries<FinancialPoint>> _series;
 
-	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	[Notify(Setter.Private)]
-	private List<ICartesianAxis> _xAxes;
-
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
@@ -50,8 +45,17 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_series = new();
-		_xAxes = new();
+
+		// If this is not initialized, the chart will throw due to index out of bounds
+		YAxes = new() { new Axis() };
+		XAxes = new() { DateAxis.GetXAxis() };
 	}
+
+	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
+	public List<ICartesianAxis> XAxes { get; }
+
+	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
+	public List<ICartesianAxis> YAxes { get; }
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
@@ -83,18 +87,6 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = minDate.SplitByMonthUntil(maxDate);
 
-		XAxes = new()
-		{
-			new Axis
-			{
-				Labeler = value =>
-					new DateTime(Math.Clamp((long)value, DateTime.MinValue.Ticks, DateTime.MaxValue.Ticks)).ToString(
-						"yyyy MM"),
-				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
-				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-			},
-		};
-
 		var values = splits.Select(split =>
 		{
 			var splitZonedDate = split.AtStartOfDayInZone(timeZone);
@@ -125,6 +117,6 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 				(double?)sums.Min());
 		});
 
-		Series = new() { new() { Values = values.ToList() } };
+		Series = new() { new() { Values = values.ToList(), Name = counterparty.Name } };
 	}
 }

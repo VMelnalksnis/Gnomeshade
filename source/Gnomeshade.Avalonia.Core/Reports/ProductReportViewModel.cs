@@ -93,15 +93,7 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 
 		_products = new();
 		_displayedProducts = new();
-		XAxes = new()
-		{
-			new Axis
-			{
-				Labeler = value => new DateTime((long)value).ToString("yyyy MM"),
-				UnitWidth = TimeSpan.FromDays(30.4375).Ticks,
-				MinStep = TimeSpan.FromDays(30.4375).Ticks,
-			},
-		};
+		XAxes = new() { DateAxis.GetXAxis() };
 		_yAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
 		_series = new();
 
