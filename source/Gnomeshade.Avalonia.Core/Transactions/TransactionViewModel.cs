@@ -25,6 +25,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	private bool _disposed;
 	private TransactionUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
@@ -182,6 +183,24 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	{
 		await _gnomeshadeClient.DeleteTransactionAsync(row.Id);
 		await RefreshAsync();
+	}
+
+	/// <inheritdoc />
+	protected override void Dispose(bool disposing)
+	{
+		if (!_disposed)
+		{
+			if (disposing)
+			{
+				_details.Upserted -= DetailsOnUpserted;
+				PropertyChanged -= OnPropertyChanged;
+				Filter.PropertyChanged -= FilterOnPropertyChanged;
+			}
+
+			_disposed = true;
+		}
+
+		base.Dispose(disposing);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

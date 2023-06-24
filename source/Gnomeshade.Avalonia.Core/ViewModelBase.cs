@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Base class for all view models.</summary>
-public abstract class ViewModelBase : PropertyChangedBase
+public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 {
+	private bool _disposed;
+
 	/// <summary>Initializes a new instance of the <see cref="ViewModelBase"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	protected ViewModelBase(IActivityService activityService)
@@ -38,13 +40,37 @@ public abstract class ViewModelBase : PropertyChangedBase
 		await Refresh();
 	}
 
-	/// <summary>Refreshes all data loaded from API.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	protected virtual Task Refresh() => Task.CompletedTask;
+	/// <inheritdoc />
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
 
 	/// <param name="name"></param>
 	/// <inheritdoc cref="IActivityService.BeginActivity"/>
 	protected IDisposable BeginActivity(string name) => ActivityService.BeginActivity(name);
+
+	/// <summary>Refreshes all data loaded from API.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	protected virtual Task Refresh() => Task.CompletedTask;
+
+	/// <summary>Releases and/ord resets any resources, such as event handlers.</summary>
+	/// <param name="disposing"><c>true</c> when called from <see cref="IDisposable.Dispose"/>, or <c>false</c> when called from finalizer.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		if (disposing)
+		{
+			ActivityService.PropertyChanged -= ActivityServiceOnPropertyChanged;
+		}
+
+		_disposed = true;
+	}
 
 	private void ActivityServiceOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
