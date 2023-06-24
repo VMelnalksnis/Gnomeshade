@@ -13,23 +13,16 @@
 
 	<Grid VerticalAlignment="Center"
 	      ColumnDefinitions="*,auto,auto,*"
-	      RowDefinitions="auto,auto,auto,auto,auto,*">
-
-		<TextBlock
-			Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
-			VerticalAlignment="Center"
-			MaxWidth="300" Margin="0 0 0 20" TextWrapping="Wrap" Foreground="Red"
-			Text="{Binding ErrorMessage}"
-			IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+	      RowDefinitions="auto,auto,auto,auto,*">
 
 		<!--Username-->
 		<TextBlock
-			Grid.Row="2" Grid.Column="1"
+			Grid.Row="1" Grid.Column="1"
 			VerticalAlignment="Center" HorizontalAlignment="Left"
 			Margin="0 0 5 10"
 			Text="Username:" />
 		<TextBox
-			Grid.Row="2" Grid.Column="2"
+			Grid.Row="1" Grid.Column="2"
 			MinWidth="350" Margin="0 0 0 10"
 			Text="{Binding Username}">
 
@@ -40,17 +33,17 @@
 
 		<!--Password-->
 		<TextBlock
-			Grid.Row="3" Grid.Column="1"
+			Grid.Row="2" Grid.Column="1"
 			VerticalAlignment="Center" HorizontalAlignment="Left"
 			Margin="0 0 5 10"
 			Text="Password:" />
 		<TextBox
-			Grid.Row="3" Grid.Column="2"
+			Grid.Row="2" Grid.Column="2"
 			MinWidth="350" Margin="0 0 0 10"
 			Text="{Binding Password}" PasswordChar="*" />
 
 		<StackPanel
-			Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+			Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
 			Orientation="Horizontal" HorizontalAlignment="Center" Spacing="5">
 
 			<Button

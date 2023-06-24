@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
+using Avalonia.Controls.Notifications;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Service for indicating the activity of the application to the user.</summary>
@@ -21,4 +23,12 @@ public interface IActivityService : INotifyPropertyChanged
 	/// <param name="name">The name of the activity.</param>
 	/// <returns>An <see cref="IDisposable"/> whose lifetime represents the lifetime of the activity.</returns>
 	IDisposable BeginActivity(string name);
+
+	/// <summary>Shows a notification.</summary>
+	/// <param name="notification">The notification to show.</param>
+	void ShowNotification(Notification notification);
+
+	/// <summary>Shows a notification of an error.</summary>
+	/// <param name="message">Details about the error.</param>
+	void ShowErrorNotification(string message);
 }

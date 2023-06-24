@@ -5,6 +5,8 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+using Avalonia.Controls.Notifications;
+
 using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
@@ -37,7 +39,7 @@ public static class DesignTimeData
 
 	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
 
-	private static IActivityService ActivityService => new ActivityService();
+	private static IActivityService ActivityService => new ActivityService(new(() => new WindowNotificationManager(null)));
 
 	private static DesignTimeGnomeshadeClient GnomeshadeClient => new();
 
@@ -216,6 +218,7 @@ public static class DesignTimeData
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
+			.AddSingleton<Lazy<IManagedNotificationManager>>(_ => new(() => new WindowNotificationManager(null)))
 			.AddSingleton<IActivityService, ActivityService>()
 			.AddTransient<ApplicationSettingsViewModel>()
 			.AddTransient<PreferencesViewModel>()

@@ -12,7 +12,7 @@
 	x:CompileBindings="True"
 	x:DataType="products:CategoryUpsertionViewModel">
 
-	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 		<TextBox
 			Grid.Row="0"
 			Watermark="Name" Text="{Binding Name}">
@@ -47,9 +47,5 @@
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
-		<TextBlock
-			Grid.Row="5"
-			VerticalAlignment="Center"
-			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

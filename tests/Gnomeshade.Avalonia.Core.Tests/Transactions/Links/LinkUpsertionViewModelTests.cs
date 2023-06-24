@@ -21,12 +21,11 @@ public sealed class LinkUpsertionViewModelTests
 
 		for (var i = 0; i < 2; i++)
 		{
-			var viewModel = new LinkUpsertionViewModel(new ActivityService(), client, Guid.Empty, null);
+			var viewModel = new LinkUpsertionViewModel(new StubbedActivityService(), client, Guid.Empty, null);
 			await viewModel.RefreshAsync();
 
 			viewModel.UriValue = linkValue;
 			await viewModel.SaveAsync();
-			viewModel.ErrorMessage.Should().BeNull();
 
 			(await client.GetLinksAsync()).Should().ContainSingle(link => link.Uri == linkValue);
 		}

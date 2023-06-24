@@ -27,7 +27,7 @@ public class AccountDetailViewModelTests
 	[Test]
 	public async Task CreateAsync_ShouldHaveExpectedInitialValues()
 	{
-		var viewModel = new AccountUpsertionViewModel(new ActivityService(), _gnomeshadeClient, _account.Id);
+		var viewModel = new AccountUpsertionViewModel(new StubbedActivityService(), _gnomeshadeClient, _account.Id);
 		await viewModel.RefreshAsync();
 
 		using (new AssertionScope())
@@ -46,7 +46,7 @@ public class AccountDetailViewModelTests
 	[Test]
 	public async Task UpdateAccountAsync_ShouldPutAccount()
 	{
-		var viewModel = new AccountUpsertionViewModel(new ActivityService(), _gnomeshadeClient, _account.Id);
+		var viewModel = new AccountUpsertionViewModel(new StubbedActivityService(), _gnomeshadeClient, _account.Id);
 		await viewModel.RefreshAsync();
 		viewModel.Bic = $"{viewModel.Bic}123";
 
@@ -54,6 +54,5 @@ public class AccountDetailViewModelTests
 			.Awaiting(() => viewModel.SaveAsync())
 			.Should()
 			.NotThrowAsync();
-		viewModel.ErrorMessage.Should().NotBeNullOrWhiteSpace();
 	}
 }

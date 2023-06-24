@@ -17,7 +17,7 @@ public class UnitViewModelTests
 	[Test]
 	public async Task Unit_CreateUnitAsync_ShouldUpdateDataGridView()
 	{
-		var viewModel = new UnitViewModel(new ActivityService(), new DesignTimeGnomeshadeClient());
+		var viewModel = new UnitViewModel(new StubbedActivityService(), new DesignTimeGnomeshadeClient());
 		await viewModel.RefreshAsync();
 		viewModel.Rows.Should().HaveCount(2);
 
@@ -31,7 +31,7 @@ public class UnitViewModelTests
 	[Test]
 	public async Task SelectedUnit_ShouldUpdateUnitCreationViewModel()
 	{
-		var viewModel = new UnitViewModel(new ActivityService(), new DesignTimeGnomeshadeClient());
+		var viewModel = new UnitViewModel(new StubbedActivityService(), new DesignTimeGnomeshadeClient());
 		await viewModel.RefreshAsync();
 		viewModel.Details.Name.Should().BeNullOrWhiteSpace();
 

@@ -54,11 +54,20 @@ public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBas
 	{
 		if (!CanDelete || Selected is null)
 		{
-			throw new InvalidOperationException();
+			ActivityService.ShowErrorNotification("Cannot delete, please check your selection");
+			return;
 		}
 
 		using var activity = BeginActivity("Deleting");
-		await DeleteAsync(Selected);
+
+		try
+		{
+			await DeleteAsync(Selected);
+		}
+		catch (Exception exception)
+		{
+			ActivityService.ShowErrorNotification(exception.Message);
+		}
 	}
 
 	/// <summary>Called when <see cref="Selected"/> has been updated.</summary>

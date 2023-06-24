@@ -17,7 +17,7 @@ public sealed class OwnerUpsertionViewModelTests
 	public async Task CreateNewOwner()
 	{
 		var client = new DesignTimeGnomeshadeClient();
-		var viewModel = new OwnerUpsertionViewModel(new ActivityService(), client, null);
+		var viewModel = new OwnerUpsertionViewModel(new StubbedActivityService(), client, null);
 		await viewModel.RefreshAsync();
 
 		viewModel.SelectedAccess = viewModel.Accesses.First();

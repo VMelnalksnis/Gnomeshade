@@ -28,8 +28,5 @@
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
-		<TextBlock
-			Grid.Column="1" Grid.Row="1"
-			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

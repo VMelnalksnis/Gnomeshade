@@ -21,7 +21,7 @@ public class PurchaseViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new ActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), DateTimeZoneProviders.Tzdb, Guid.Empty);
+		_viewModel = new(new StubbedActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), DateTimeZoneProviders.Tzdb, Guid.Empty);
 		await _viewModel.RefreshAsync();
 	}
 
@@ -54,7 +54,6 @@ public class PurchaseViewModelTests
 		_viewModel.Details.Product = _viewModel.Details.Products.First();
 		_viewModel.Details.Amount = 1;
 		await _viewModel.Details.SaveAsync();
-		_viewModel.Details.ErrorMessage.Should().BeNullOrWhiteSpace();
 		await _viewModel.RefreshAsync();
 
 		_viewModel.Selected = _viewModel.Rows.First();

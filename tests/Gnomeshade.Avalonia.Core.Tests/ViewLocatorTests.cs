@@ -14,7 +14,7 @@ public sealed class ViewLocatorTests
 	[Test]
 	public void Build_ShouldReturnExpected()
 	{
-		var viewModel = new TestViewModel(new ActivityService());
+		var viewModel = new TestViewModel(new StubbedActivityService());
 
 		var accountView = _viewLocator.Build(viewModel);
 		accountView.Should().BeOfType<TestView>();
@@ -26,7 +26,7 @@ public sealed class ViewLocatorTests
 	[Test]
 	public void Match_ShouldMatchOnlyViewModels()
 	{
-		var viewModel = new TestViewModel(new ActivityService());
+		var viewModel = new TestViewModel(new StubbedActivityService());
 
 		using var scope = new AssertionScope();
 		_viewLocator.Match(viewModel).Should().BeTrue();

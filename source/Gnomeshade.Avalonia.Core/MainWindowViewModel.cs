@@ -219,6 +219,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 		ActiveView = loginViewModel;
 
+		// The first notification does not show up, and subsequent calls work after some delay
+		ActivityService.ShowNotification(new(null, null));
+
 		if (credentialStorageService.TryGetRefreshToken(out _))
 		{
 			await loginViewModel.AuthenticateExternallyAsync();

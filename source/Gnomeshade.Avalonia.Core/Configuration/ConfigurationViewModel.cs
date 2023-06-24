@@ -7,22 +7,16 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Options;
 
-using PropertyChanged.SourceGenerator;
-
 namespace Gnomeshade.Avalonia.Core.Configuration;
 
 /// <summary>Base class for view models that edit configuration.</summary>
-public abstract partial class ConfigurationViewModel : ViewModelBase
+public abstract class ConfigurationViewModel : ViewModelBase
 {
 	/// <summary>How long to wait after user input before validating.</summary>
 	protected static readonly TimeSpan UserInputDelay = TimeSpan.FromMilliseconds(350);
 
 	private readonly IOptionsMonitor<UserConfiguration> _optionsMonitor;
 	private readonly UserConfigurationWriter _configurationWriter;
-
-	/// <summary>Gets the validation error message.</summary>
-	[Notify(Setter.Protected)]
-	private string? _errorMessage;
 
 	/// <summary>Initializes a new instance of the <see cref="ConfigurationViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>

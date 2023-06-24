@@ -68,7 +68,6 @@ public sealed partial class GnomeshadeConfigurationViewModel : ConfigurationView
 
 	private async Task<bool> IsValidAsync()
 	{
-		ErrorMessage = null;
 		_cancellationTokenSource?.Cancel();
 
 		if (BaseAddress is null)
@@ -89,7 +88,7 @@ public sealed partial class GnomeshadeConfigurationViewModel : ConfigurationView
 			using var response = await _httpClient.GetAsync(uriBuilder.Uri, cancellationToken);
 			if (response.StatusCode is not HttpStatusCode.OK)
 			{
-				ErrorMessage = $"Received status code {response.StatusCode:G} from API";
+				ActivityService.ShowErrorNotification($"Received status code {response.StatusCode:G} from API");
 				return false;
 			}
 
@@ -99,13 +98,13 @@ public sealed partial class GnomeshadeConfigurationViewModel : ConfigurationView
 				return true;
 			}
 
-			ErrorMessage = $"Expected API to be healthy, actual status: {content}";
+			ActivityService.ShowErrorNotification($"Expected API to be healthy, actual status: {content}");
 			return false;
 		}
 		catch (Exception exception) when (exception is not TaskCanceledException)
 		{
 			_logger.LogWarning(exception, "Failed to check Gnomeshade API status");
-			ErrorMessage = $"Failed to check the status of the API.{Environment.NewLine}{exception.Message}";
+			ActivityService.ShowErrorNotification($"Failed to check the status of the API.{Environment.NewLine}{exception.Message}");
 			return false;
 		}
 	}

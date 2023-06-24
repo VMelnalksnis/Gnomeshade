@@ -22,7 +22,7 @@ public sealed class TransferViewModelTests
 	public async Task SetUp()
 	{
 		_viewModel = new(
-			new ActivityService(),
+			new StubbedActivityService(),
 			new DesignTimeGnomeshadeClient(),
 			new DesignTimeDialogService(),
 			DateTimeZoneProviders.Tzdb,

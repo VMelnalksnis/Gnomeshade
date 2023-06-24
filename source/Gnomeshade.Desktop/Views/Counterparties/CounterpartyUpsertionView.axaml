@@ -13,7 +13,6 @@
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 		<TextBox Text="{Binding Name}" />
-		<TextBlock Text="{Binding ErrorMessage}" />
 		<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>

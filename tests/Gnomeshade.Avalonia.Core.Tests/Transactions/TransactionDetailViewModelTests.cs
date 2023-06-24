@@ -23,7 +23,7 @@ public sealed class TransactionDetailViewModelTests
 	public async Task SaveAsync_ShouldUpdate()
 	{
 		var client = new DesignTimeGnomeshadeClient();
-		var viewModel = new TransactionUpsertionViewModel(new ActivityService(), client, new DesignTimeDialogService(), _clock, _dateTimeZoneProvider, Guid.Empty);
+		var viewModel = new TransactionUpsertionViewModel(new StubbedActivityService(), client, new DesignTimeDialogService(), _clock, _dateTimeZoneProvider, Guid.Empty);
 		await viewModel.RefreshAsync();
 
 		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
@@ -35,7 +35,6 @@ public sealed class TransactionDetailViewModelTests
 
 		await viewModel.SaveAsync();
 
-		viewModel.ErrorMessage.Should().BeNullOrWhiteSpace();
 		viewModel.Properties.ReconciledAt.Should().BeEquivalentTo(
 			new ZonedDateTime(
 				Instant.FromUtc(2022, 04, 15, 9, 50, 0),

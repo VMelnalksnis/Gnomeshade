@@ -169,9 +169,5 @@
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
-		<TextBlock
-			Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="3"
-			TextAlignment="Left"
-			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>

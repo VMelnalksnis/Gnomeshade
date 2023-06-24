@@ -27,9 +27,7 @@ public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 	/// <summary>Gets the name of all current activities.</summary>
 	public string ActivityName => string.Join(", ", ActivityService.Activities);
 
-	/// <summary>
-	/// Gets a service for managing application activity indicators.
-	/// </summary>
+	/// <summary>Gets a service for managing application activity indicators.</summary>
 	protected IActivityService ActivityService { get; }
 
 	/// <summary>Refreshes all data loaded from API.</summary>
@@ -37,7 +35,15 @@ public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 	public async Task RefreshAsync()
 	{
 		using var activity = BeginActivity("Refreshing");
-		await Refresh();
+
+		try
+		{
+			await Refresh();
+		}
+		catch (Exception exception)
+		{
+			ActivityService.ShowErrorNotification(exception.Message);
+		}
 	}
 
 	/// <inheritdoc />

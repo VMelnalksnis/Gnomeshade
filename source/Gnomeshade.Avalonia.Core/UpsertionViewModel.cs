@@ -3,8 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
+
+using Avalonia.Controls.Notifications;
 
 using Gnomeshade.WebApi.Client;
 
@@ -18,10 +19,6 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 	/// <summary>Gets or sets the id of the entity being edited.</summary>
 	[Notify(Setter.Protected)]
 	private Guid? _id;
-
-	/// <summary>Gets or sets error message when <see cref="SaveAsync"/> fails.</summary>
-	[Notify(Setter.Protected)]
-	private string? _errorMessage;
 
 	/// <summary>Initializes a new instance of the <see cref="UpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -47,7 +44,7 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 	{
 		if (!CanSave)
 		{
-			ErrorMessage = $"{nameof(CanSave)} must be true when calling {nameof(SaveAsync)}";
+			ActivityService.ShowNotification(new("Cannot save", "Please check whether all data is valid before saving", NotificationType.Warning));
 			return;
 		}
 
@@ -57,12 +54,10 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 			var id = await SaveValidatedAsync();
 			OnUpserted(id);
 			Id = id;
-			ErrorMessage = null;
 		}
 		catch (Exception exception)
 		{
-			Debug.WriteLine(exception.ToString());
-			ErrorMessage = exception.Message;
+			ActivityService.ShowErrorNotification(exception.Message);
 		}
 	}
 

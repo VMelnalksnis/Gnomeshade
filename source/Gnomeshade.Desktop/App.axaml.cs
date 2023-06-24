@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Notifications;
 using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Avalonia.Core;
@@ -57,6 +58,15 @@ public sealed class App : Application
 		serviceCollection
 			.AddSingleton<IClock>(SystemClock.Instance)
 			.AddSingleton(DateTimeZoneProviders.Tzdb)
+			.AddSingleton<Lazy<IManagedNotificationManager>>(_ => new(() =>
+			{
+				if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime { MainWindow: not null } lifetime)
+				{
+					throw new InvalidOperationException("Failed to get current window for notification manager");
+				}
+
+				return new WindowNotificationManager(lifetime.MainWindow);
+			}))
 			.AddSingleton<IActivityService, ActivityService>()
 			.AddSingleton<IBrowser, SystemBrowser>(provider =>
 			{

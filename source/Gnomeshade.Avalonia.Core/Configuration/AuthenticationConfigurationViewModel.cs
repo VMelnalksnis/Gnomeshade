@@ -81,7 +81,6 @@ public sealed partial class AuthenticationConfigurationViewModel : Configuration
 
 	private async Task<bool> IsValidAsync()
 	{
-		ErrorMessage = null;
 		_cancellationTokenSource?.Cancel();
 
 		if (Authority is null || ClientId is null)
@@ -103,13 +102,13 @@ public sealed partial class AuthenticationConfigurationViewModel : Configuration
 				return true;
 			}
 
-			ErrorMessage = $"Received status code {response.StatusCode:G} from authentication provider";
+			ActivityService.ShowErrorNotification($"Received status code {response.StatusCode:G} from authentication provider");
 			return false;
 		}
 		catch (Exception exception) when (exception is not TaskCanceledException)
 		{
 			_logger.LogWarning(exception, "Failed to check authentication provider status");
-			ErrorMessage = $"Failed to check the status of the authentication provider.{Environment.NewLine}{exception.Message}";
+			ActivityService.ShowErrorNotification($"Failed to check the status of the authentication provider.{Environment.NewLine}{exception.Message}");
 			return false;
 		}
 	}

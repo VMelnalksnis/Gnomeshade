@@ -51,7 +51,6 @@ internal static class Program
 		catch (Exception exception)
 		{
 			Log.Fatal(exception, "Avalonia App terminated unexpectedly");
-			throw;
 		}
 		finally
 		{

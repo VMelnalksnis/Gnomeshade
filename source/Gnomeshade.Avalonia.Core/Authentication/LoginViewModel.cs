@@ -17,10 +17,6 @@ public sealed partial class LoginViewModel : ViewModelBase
 {
 	private readonly IAuthenticationService _authenticationService;
 
-	/// <summary>Gets or sets the error message to display after a failed log in attempt.</summary>
-	[Notify]
-	private string? _errorMessage;
-
 	/// <summary>Gets or sets the username entered by the user.</summary>
 	[Notify]
 	private string? _username;
@@ -54,9 +50,9 @@ public sealed partial class LoginViewModel : ViewModelBase
 			await _authenticationService.SocialLogin();
 			OnUserLoggedIn();
 		}
-		catch (Exception e)
+		catch (Exception exception)
 		{
-			ErrorMessage = e.Message;
+			ActivityService.ShowErrorNotification(exception.Message);
 		}
 	}
 
@@ -66,7 +62,6 @@ public sealed partial class LoginViewModel : ViewModelBase
 	public async Task LogInAsync()
 	{
 		using var activity = BeginActivity("Logging in");
-		ErrorMessage = string.Empty;
 
 		var login = new Login { Username = Username!, Password = Password! };
 		var loginResult = await _authenticationService.Login(login);
@@ -74,7 +69,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 		switch (loginResult)
 		{
 			case FailedLogin failedLogin:
-				ErrorMessage = failedLogin.Message;
+				ActivityService.ShowErrorNotification(failedLogin.Message);
 				break;
 
 			case SuccessfulLogin:
@@ -82,7 +77,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 				break;
 
 			default:
-				ErrorMessage = $"Unexpected login result: {loginResult}";
+				ActivityService.ShowErrorNotification($"Unexpected login result: {loginResult}");
 				break;
 		}
 	}

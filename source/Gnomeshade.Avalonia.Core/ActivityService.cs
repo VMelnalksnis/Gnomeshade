@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 
+using Avalonia.Controls.Notifications;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <inheritdoc cref="IActivityService"/>
@@ -15,9 +17,14 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 {
 	private static readonly ObservableCollection<ActivityScope> _activityScopes = new();
 
+	// This needs to be lazy, because this needs to be created before MainWindow to create its DataContext
+	private readonly Lazy<IManagedNotificationManager> _lazyNotificationManager;
+
 	/// <summary>Initializes a new instance of the <see cref="ActivityService"/> class.</summary>
-	public ActivityService()
+	/// <param name="notificationManager">Used for displaying notifications.</param>
+	public ActivityService(Lazy<IManagedNotificationManager> notificationManager)
 	{
+		_lazyNotificationManager = notificationManager;
 		_activityScopes.CollectionChanged += ValueOnCollectionChanged;
 	}
 
@@ -35,6 +42,13 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 		var scope = new ActivityScope(_activityScopes, name);
 		return scope;
 	}
+
+	/// <inheritdoc />
+	public void ShowNotification(Notification notification) => _lazyNotificationManager.Value.Show(notification);
+
+	/// <inheritdoc />
+	public void ShowErrorNotification(string message) =>
+		ShowNotification(new("Unexpected error", message, NotificationType.Error));
 
 	/// <inheritdoc />
 	public void Dispose() => _activityScopes.CollectionChanged -= ValueOnCollectionChanged;

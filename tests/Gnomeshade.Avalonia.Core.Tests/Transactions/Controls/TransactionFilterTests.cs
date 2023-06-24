@@ -18,7 +18,7 @@ public sealed class TransactionFilterTests
 
 	public TransactionFilterTests()
 	{
-		_filter = new(new ActivityService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
+		_filter = new(new StubbedActivityService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
 	}
 
 	[Test]

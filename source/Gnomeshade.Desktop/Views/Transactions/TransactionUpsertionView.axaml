@@ -19,21 +19,19 @@
 				<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 					Save
 				</Button>
-				
-				<Button 
+
+				<Button
 					IsVisible="{Binding !Transfers.IsReadOnly, FallbackValue=false}"
 					IsEnabled="{Binding CanSave}"
 					Command="{ReflectionBinding Reconcile}">
 					Reconcile
 				</Button>
-				
-				<Button 
+
+				<Button
 					IsVisible="{Binding Transfers.IsReadOnly, FallbackValue=false}"
 					Command="{ReflectionBinding Edit}">
 					Edit
 				</Button>
-				
-				<TextBlock Text="{Binding ErrorMessage}" />
 			</StackPanel>
 
 			<UserControl Grid.Row="2" Content="{Binding Transfers}" Margin="0 10" />

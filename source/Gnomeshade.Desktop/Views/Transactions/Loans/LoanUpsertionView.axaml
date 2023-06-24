@@ -65,8 +65,6 @@
 			<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 				Save
 			</Button>
-
-			<TextBlock Text="{Binding ErrorMessage}" />
 		</StackPanel>
 	</Grid>
 </UserControl>

@@ -80,10 +80,5 @@
 			Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
-		<TextBlock
-			Grid.Column="1" Grid.Row="4"
-			Padding="10 0"
-			VerticalAlignment="Center"
-			Text="{Binding ErrorMessage}" />
 	</Grid>
 </UserControl>
