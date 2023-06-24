@@ -146,13 +146,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask, categoriesTask, currenciesTask, counterpartyTask);
 		var transactions = transactionsTask.Result;
 		var accounts = accountsTask.Result;
+		var accountsInCurrency = accounts.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account))).ToArray();
 		var counterparties = counterpartiesTask.Result;
 
 		var overviews = transactions.Select(transaction =>
 		{
 			var transfers = transaction.Transfers
 				.OrderBy(transfer => transfer.Order)
-				.Select(transfer => transfer.ToSummary(accounts, counterparties, counterpartyTask.Result))
+				.Select(transfer => transfer.ToSummary(counterparties, counterpartyTask.Result, accountsInCurrency))
 				.ToList();
 
 			return new TransactionOverview(
@@ -254,11 +255,12 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		await Task.WhenAll(transactionTask, accountsTask, counterpartiesTask, currenciesTask, counterpartyTask);
 		var transaction = transactionTask.Result;
 		var accounts = accountsTask.Result;
+		var accountsInCurrency = accounts.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account))).ToArray();
 		var counterparties = counterpartiesTask.Result;
 
 		var transfers = transaction.Transfers
 			.OrderBy(transfer => transfer.Order)
-			.Select(transfer => transfer.ToSummary(accounts, counterparties, counterpartyTask.Result))
+			.Select(transfer => transfer.ToSummary(counterparties, counterpartyTask.Result, accountsInCurrency))
 			.ToList();
 
 		var overview = new TransactionOverview(

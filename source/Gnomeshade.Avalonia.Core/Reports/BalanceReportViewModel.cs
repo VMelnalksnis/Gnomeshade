@@ -97,17 +97,17 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 
 		var values = splits.Select(split =>
 		{
+			var splitZonedDate = split.AtStartOfDayInZone(timeZone);
+			var splitInstant = splitZonedDate.ToInstant();
+
 			var transactionsBefore = transactions
 				.Where(transaction =>
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).ToInstant() <
-					split.AtStartOfDayInZone(timeZone).ToInstant());
+					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).ToInstant() < splitInstant);
 
 			var transactionsIn = transactions
 				.Where(transaction =>
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Year ==
-					split.AtStartOfDayInZone(timeZone).Year &&
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Month ==
-					split.AtStartOfDayInZone(timeZone).Month)
+					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Year == splitZonedDate.Year &&
+					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Month == splitZonedDate.Month)
 				.ToList();
 
 			var sumBefore = transactionsBefore.Sum(transaction => transaction.TransferBalance);
