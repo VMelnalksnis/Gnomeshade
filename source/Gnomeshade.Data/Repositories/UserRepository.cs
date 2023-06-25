@@ -39,8 +39,7 @@ public sealed class UserRepository
 	public Task<Guid> AddWithIdAsync(UserEntity entity, DbTransaction dbTransaction)
 	{
 		_logger.AddingEntityWithTransaction();
-		var command = new CommandDefinition(Queries.User.Insert, entity, dbTransaction);
-		return _dbConnection.QuerySingleAsync<Guid>(command);
+		return _dbConnection.QuerySingleAsync<Guid>(new(Queries.User.Insert, entity, dbTransaction));
 	}
 
 	/// <summary>Updates the specified user.</summary>
@@ -50,14 +49,21 @@ public sealed class UserRepository
 	public Task<int> UpdateAsync(UserEntity user, DbTransaction dbTransaction)
 	{
 		_logger.UpdatingEntityWithTransaction();
-		var command = new CommandDefinition(Queries.User.Update, user, dbTransaction);
-		return _dbConnection.ExecuteAsync(command);
+		return _dbConnection.ExecuteAsync(new(Queries.User.Update, user, dbTransaction));
 	}
 
 	public Task<IEnumerable<UserEntity>> Get(CancellationToken cancellationToken = default)
 	{
 		_logger.GetAll();
-		var command = new CommandDefinition(Queries.User.SelectAll, cancellationToken: cancellationToken);
-		return _dbConnection.QueryAsync<UserEntity>(command);
+		return _dbConnection.QueryAsync<UserEntity>(new(Queries.User.SelectAll, cancellationToken: cancellationToken));
+	}
+
+	public Task<UserEntity?> FindById(Guid id, CancellationToken cancellationToken = default)
+	{
+		_logger.FindId(id);
+		return _dbConnection.QuerySingleOrDefaultAsync<UserEntity?>(new(
+			$"{Queries.User.SelectAll} WHERE id = @id;",
+			new { id },
+			cancellationToken: cancellationToken));
 	}
 }

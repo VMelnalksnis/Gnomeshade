@@ -9,7 +9,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Configuration.Options;
 using Gnomeshade.WebApi.Models.Authentication;
 
@@ -32,6 +34,7 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 public sealed class AuthenticationController : ControllerBase
 {
 	private readonly UserManager<ApplicationUser> _userManager;
+	private readonly UserRepository _userRepository;
 	private readonly JwtOptions _jwtOptions;
 	private readonly JwtSecurityTokenHandler _securityTokenHandler;
 
@@ -39,14 +42,17 @@ public sealed class AuthenticationController : ControllerBase
 	/// <param name="userManager">Identity user persistence store.</param>
 	/// <param name="jwtOptions">Built-in authentication options.</param>
 	/// <param name="securityTokenHandler">JWT token writer.</param>
+	/// <param name="userRepository">The repository for performing CRUD operations on <see cref="UserEntity"/>.</param>
 	public AuthenticationController(
 		UserManager<ApplicationUser> userManager,
 		IOptions<JwtOptions> jwtOptions,
-		JwtSecurityTokenHandler securityTokenHandler)
+		JwtSecurityTokenHandler securityTokenHandler,
+		UserRepository userRepository)
 	{
 		_userManager = userManager;
 		_jwtOptions = jwtOptions.Value;
 		_securityTokenHandler = securityTokenHandler;
+		_userRepository = userRepository;
 	}
 
 	/// <summary>Authenticates a user using the specified login information.</summary>
@@ -59,7 +65,9 @@ public sealed class AuthenticationController : ControllerBase
 	public async Task<ActionResult<LoginResponse>> Login([FromBody] Login login)
 	{
 		var user = await _userManager.FindByNameAsync(login.Username);
-		if (user is null || !await _userManager.CheckPasswordAsync(user, login.Password))
+		if (user is null ||
+			!await _userManager.CheckPasswordAsync(user, login.Password) ||
+			await _userRepository.FindById(user.Id) is null)
 		{
 			return Unauthorized();
 		}

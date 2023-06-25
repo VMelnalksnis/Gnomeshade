@@ -78,7 +78,8 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 		if (response.StatusCode is HttpStatusCode.Redirect && response.Headers.Location is { } location)
 		{
-			return new RequiresRegistration(location);
+			var uri = new UriBuilder(_httpClient.BaseAddress!) { Path = location.OriginalString }.Uri;
+			return new RequiresRegistration(uri);
 		}
 
 		var message = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

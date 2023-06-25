@@ -83,6 +83,14 @@ public sealed class AuthorizationTests
 		var handler = provider.GetRequiredService<TokenDelegatingHandler>();
 		var gnomeshadeClient = _fixture.CreateUnauthorizedClient(handler);
 
+		await FluentActions
+			.Awaiting(() => gnomeshadeClient.GetMyCounterpartyAsync())
+			.Should()
+			.ThrowExactlyAsync<HttpRequestException>()
+			.Where(
+				exception => exception.StatusCode == HttpStatusCode.Forbidden,
+				"has valid token from provider, but has not register in the application");
+
 		var result = await gnomeshadeClient.SocialRegister();
 		var redirectUri = result.Should().BeOfType<RequiresRegistration>().Subject.RedirectUri;
 

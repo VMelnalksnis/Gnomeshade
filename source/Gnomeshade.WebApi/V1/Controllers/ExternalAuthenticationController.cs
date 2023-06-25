@@ -5,7 +5,9 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
@@ -23,12 +25,15 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 public sealed class ExternalAuthenticationController : ControllerBase
 {
 	private readonly UserManager<ApplicationUser> _userManager;
+	private readonly UserRepository _userRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="ExternalAuthenticationController"/> class.</summary>
 	/// <param name="userManager">Identity user persistence store.</param>
-	public ExternalAuthenticationController(UserManager<ApplicationUser> userManager)
+	/// <param name="userRepository">The repository for performing CRUD operations on <see cref="UserEntity"/>.</param>
+	public ExternalAuthenticationController(UserManager<ApplicationUser> userManager, UserRepository userRepository)
 	{
 		_userManager = userManager;
+		_userRepository = userRepository;
 	}
 
 	/// <summary>Registers or authenticates a user using and OIDC provider.</summary>
@@ -45,9 +50,14 @@ public sealed class ExternalAuthenticationController : ControllerBase
 		}
 
 		var applicationUser = await _userManager.FindByLoginAsync(loginProvider, providerKeyClaim.Value);
+		if (applicationUser is null)
+		{
+			return Redirect("/Identity/Account/Register");
+		}
 
-		return applicationUser is not null
+		var user = await _userRepository.FindById(applicationUser.Id);
+		return user is not null
 			? NoContent()
-			: LocalRedirect("/Identity/Account/Register");
+			: Redirect("/Identity/Account/Register");
 	}
 }
