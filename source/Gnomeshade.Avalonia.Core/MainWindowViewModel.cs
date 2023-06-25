@@ -81,6 +81,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public async Task InitializeActiveViewAsync()
 	{
+		// The first notification does not show up, and subsequent calls work after some delay
+		ActivityService.ShowNotification(new(null, null, expiration: TimeSpan.FromMilliseconds(1)));
+
 		if (ActiveView is not null)
 		{
 			return;
@@ -218,9 +221,6 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		var loginViewModel = _serviceProvider.GetRequiredService<LoginViewModel>();
 		loginViewModel.UserLoggedIn += OnUserLoggedIn;
 		ActiveView = loginViewModel;
-
-		// The first notification does not show up, and subsequent calls work after some delay
-		ActivityService.ShowNotification(new(null, null));
 
 		if (credentialStorageService.TryGetRefreshToken(out _))
 		{
