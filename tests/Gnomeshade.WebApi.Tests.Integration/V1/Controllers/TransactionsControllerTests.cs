@@ -90,10 +90,11 @@ public sealed class TransactionsControllerTests : WebserverTests
 		};
 
 		await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
-		var expectedDate = SystemClock.Instance.GetCurrentInstant() + Duration.FromDays(1);
+		var currentTime = SystemClock.Instance.GetCurrentInstant();
+		var expectedDate = currentTime + Duration.FromDays(2);
 		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with { ValuedAt = expectedDate, Order = 3 });
 
-		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, SystemClock.Instance.GetCurrentInstant())))
+		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, currentTime)))
 			.Should()
 			.NotContain(detailedTransaction => detailedTransaction.Id == transactionId);
 

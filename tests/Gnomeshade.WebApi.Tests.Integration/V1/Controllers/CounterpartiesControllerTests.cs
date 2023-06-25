@@ -53,7 +53,7 @@ public class CounterpartiesControllerTests : WebserverTests
 	[Test]
 	public async Task Put_ShouldReturnConflictOnDuplicateName()
 	{
-		var existingName = (await _gnomeshadeClient.GetCounterpartiesAsync()).First().Name;
+		var existingName = (await _gnomeshadeClient.GetMyCounterpartyAsync()).Name;
 
 		await ShouldThrowConflict(() => _gnomeshadeClient.PutCounterpartyAsync(Guid.NewGuid(), new() { Name = existingName }));
 	}
