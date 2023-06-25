@@ -171,7 +171,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <summary>Event handler for <see cref="IClassicDesktopStyleApplicationLifetime.ShutdownRequested"/>.</summary>
 	/// <param name="sender">The object that sent the event.</param>
 	/// <param name="eventArgs">Event arguments.</param>
-	public async void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs eventArgs)
+	public void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs eventArgs)
 	{
 		var configuration = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>().CurrentValue;
 		var writer = _serviceProvider.GetRequiredService<UserConfigurationWriter>();
@@ -181,7 +181,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		preferences.WindowWidth = WindowWidth;
 		preferences.WindowState = WindowState;
 
-		await writer.Write(configuration);
+		writer.Write(configuration);
 	}
 
 	private static IClassicDesktopStyleApplicationLifetime GetApplicationLifetime()

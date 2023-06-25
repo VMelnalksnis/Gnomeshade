@@ -75,7 +75,7 @@ public sealed partial class ApplicationSettingsViewModel : ViewModelBase
 			configuration.Oidc = null;
 		}
 
-		await _userConfigurationWriter.Write(configuration);
+		await _userConfigurationWriter.WriteAsync(configuration);
 		Updated?.Invoke(this, EventArgs.Empty);
 	}
 

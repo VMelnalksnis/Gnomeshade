@@ -72,7 +72,7 @@ public sealed partial class PreferencesViewModel : ViewModelBase
 		preferences.NordigenCountry = NordigenCountry;
 		preferences.NoridgenInstitutionId = SelectedInstitutionId;
 
-		await _userConfigurationWriter.Write(userConfiguration);
+		await _userConfigurationWriter.WriteAsync(userConfiguration);
 	}
 
 	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -46,7 +46,7 @@ public abstract class ConfigurationViewModel : ViewModelBase
 
 		var configuration = _optionsMonitor.CurrentValue;
 		UpdateConfiguration(configuration);
-		await _configurationWriter.Write(configuration);
+		await _configurationWriter.WriteAsync(configuration);
 
 		Updated?.Invoke(this, EventArgs.Empty);
 	}

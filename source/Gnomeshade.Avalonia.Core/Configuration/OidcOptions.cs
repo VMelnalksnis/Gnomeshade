@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 using IdentityModel.OidcClient;
 
@@ -24,16 +25,17 @@ public sealed class OidcOptions
 	public string? ClientSecret { get; set; }
 
 	/// <inheritdoc cref="OidcClientOptions.RedirectUri"/>
-	[Required]
-	public Uri RedirectUri { get; set; } = new("gnomeshade://localhost");
+	[JsonIgnore]
+	public Uri RedirectUri => new("gnomeshade://localhost");
 
 	/// <inheritdoc cref="OidcClientOptions.Scope"/>
-	[Required]
+	[JsonIgnore]
 	public string Scope => "openid profile offline_access";
 
 	/// <summary>Gets or sets the time in seconds to wait until OIDC signin is completed by the user.</summary>
 	public int? SigninTimeoutSeconds { get; set; }
 
 	/// <summary>Gets the time to wait until OIDC signin is completed by the user.</summary>
+	[JsonIgnore]
 	public TimeSpan SigninTimeout => TimeSpan.FromSeconds(SigninTimeoutSeconds ?? 60);
 }
