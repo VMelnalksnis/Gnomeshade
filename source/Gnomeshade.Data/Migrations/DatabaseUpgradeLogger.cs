@@ -6,10 +6,6 @@ using DbUp.Engine.Output;
 
 using Microsoft.Extensions.Logging;
 
-// ReSharper disable ContextualLoggerProblem
-// ReSharper disable TemplateIsNotCompileTimeConstantProblem
-#pragma warning disable CA2254
-
 namespace Gnomeshade.Data.Migrations;
 
 internal sealed class DatabaseUpgradeLogger<TCategoryName> : IUpgradeLog

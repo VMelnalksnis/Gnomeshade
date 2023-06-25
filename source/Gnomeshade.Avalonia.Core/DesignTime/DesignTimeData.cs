@@ -33,6 +33,7 @@ using NodaTime;
 namespace Gnomeshade.Avalonia.Core.DesignTime;
 
 /// <summary>Data needed only during design time.</summary>
+[SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1202:Elements should be ordered by access", Justification = "Static member order is important due to initialization order")]
 public static class DesignTimeData
 {
 	private static IClock Clock => SystemClock.Instance;
@@ -47,9 +48,6 @@ public static class DesignTimeData
 
 	private static IAuthenticationService AuthenticationService { get; } =
 		new AuthenticationService(GnomeshadeClient, new(Clock), new DesignTimeCredentialStorage(), new NullOidcClient());
-
-	// Static member order is important due to initialization order
-#pragma warning disable SA1202
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
 	public static MainWindowViewModel MainWindowViewModel { get; } =

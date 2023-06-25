@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Avalonia;
@@ -32,6 +33,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
 
+	/// <summary>Gets the currently active view.</summary>
+	[Notify(Setter.Private)]
 	private ViewModelBase? _activeView;
 
 	/// <summary>Gets or sets the window height.</summary>
@@ -58,21 +61,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		_windowHeight = preferences?.WindowHeight ?? 600;
 		_windowWidth = preferences?.WindowWidth ?? 800;
 		_windowState = preferences?.WindowState ?? WindowState.Normal;
+
+		PropertyChanging += OnPropertyChanging;
 	}
 
 	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
 	public bool CanLogOut => ActiveView is not null and not LoginViewModel;
-
-	/// <summary>Gets or sets the currently active view.</summary>
-	public ViewModelBase? ActiveView
-	{
-		get => _activeView;
-		set
-		{
-			Unsubscribe(ActiveView);
-			SetAndNotifyWithGuard(ref _activeView, value, nameof(ActiveView), nameof(CanLogOut));
-		}
-	}
 
 	/// <summary>Safely stops the application.</summary>
 	public static void Exit() => GetApplicationLifetime().Shutdown();
@@ -267,6 +261,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private async void ConfigurationWizardViewModelOnUpdated(object? sender, EventArgs e)
 	{
 		await SwitchToLogin();
+	}
+
+	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
+	{
+		if (e.PropertyName is not nameof(ActiveView))
+		{
+			return;
+		}
+
+		Unsubscribe(ActiveView);
 	}
 
 	private void Unsubscribe(ViewModelBase? viewModel)

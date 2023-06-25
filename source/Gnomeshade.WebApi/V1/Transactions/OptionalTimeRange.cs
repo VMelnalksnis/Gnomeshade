@@ -12,23 +12,17 @@ using NodaTime;
 
 namespace Gnomeshade.WebApi.V1.Transactions;
 
-/// <summary>
-/// A date range with optional start and end dates.
-/// </summary>
+/// <summary>A date range with optional start and end dates.</summary>
 [PublicAPI]
-[SuppressMessage("ReSharper", "SA1623", Justification = "Documentation for public API.")]
+[SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1623:Property summary documentation should match accessors", Justification = "Documentation for public API.")]
 public sealed record OptionalTimeRange : IValidatableObject
 {
 	private const string _errorMessage = "The 'to' date must be before the 'from' date";
 
-	/// <summary>
-	/// The start of the date range.
-	/// </summary>
+	/// <summary>The start of the date range.</summary>
 	public Instant? From { get; init; }
 
-	/// <summary>
-	/// The end of the date range.
-	/// </summary>
+	/// <summary>The end of the date range.</summary>
 	public Instant? To { get; init; }
 
 	/// <inheritdoc />

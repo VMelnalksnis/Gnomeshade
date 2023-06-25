@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@{
+﻿@{
 	if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout is not null)
 	{
 		Layout = parentLayout.ToString();

@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
@@ -15,7 +14,6 @@ namespace Gnomeshade.Avalonia.Core;
 /// <summary>Base class for view models which display all available entities of a specific type.</summary>
 /// <typeparam name="TRow">The type of items displayed in data grid.</typeparam>
 /// <typeparam name="TUpsertion">The view model type for creating or updating rows.</typeparam>
-[SuppressMessage("ReSharper", "StaticMemberInGenericType", Justification = "Better than allocating per call")]
 public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBase
 	where TRow : PropertyChangedBase
 	where TUpsertion : UpsertionViewModel?

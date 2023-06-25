@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 
 using JetBrains.Annotations;
 
-#pragma warning disable SA1623
 namespace Gnomeshade.WebApi.Models.Authentication;
 
 /// <summary>The information needed to log in.</summary>

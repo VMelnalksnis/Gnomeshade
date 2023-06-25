@@ -19,9 +19,9 @@
 	<div class="col-md-12">
 		@for (var row = 0; row < (Model.RecoveryCodes?.Length ?? 0); row += 2)
 		{
-			<code class="recovery-code">@Model.RecoveryCodes?[row]</code>
+			<code>@Model.RecoveryCodes?[row]</code>
 			<text>&nbsp;</text>
-			<code class="recovery-code">@Model.RecoveryCodes?[row + 1]</code>
+			<code>@Model.RecoveryCodes?[row + 1]</code>
 			<br/>
 		}
 	</div>
