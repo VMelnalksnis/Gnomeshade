@@ -1,5 +1,6 @@
 <Project Sdk="WixToolset.Sdk/4.0.1">
 	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
 		<SuppressIces>ICE38</SuppressIces>
 		<SuppressSpecificWarnings>0204</SuppressSpecificWarnings>
 	</PropertyGroup>

@@ -147,7 +147,6 @@ jobs:
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3.5.3
       - uses: actions/setup-dotnet@v3.2.0
@@ -166,8 +165,10 @@ jobs:
       - run: ./deployment/build.sh
 
       - name: ReSharper annotations
+        timeout-minutes: 10
         uses: VMelnalksnis/resharper-inspect-action@v0.2.5
         with:
           solution: Gnomeshade.sln
-          resharper-version: 2022.3.2
+          dotnet-version: 7.0.305
+          resharper-version: 2023.2.0-eap05
           treat-warnings-as-errors: false # ReSharper CLI still has false positives
