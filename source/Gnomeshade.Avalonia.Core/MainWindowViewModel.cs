@@ -106,8 +106,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	public async Task LogOut()
 	{
 		var authenticationService = _serviceProvider.GetRequiredService<IAuthenticationService>();
-		await authenticationService.Logout();
-		await SwitchToLogin();
+		try
+		{
+			await authenticationService.Logout();
+			await SwitchToLogin();
+		}
+		catch (Exception exception)
+		{
+			ActivityService.ShowErrorNotification(exception.Message);
+		}
 	}
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="CounterpartyMergeViewModel"/>.</summary>

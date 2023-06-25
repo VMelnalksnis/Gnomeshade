@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models.Authentication;
 
 using PropertyChanged.SourceGenerator;
@@ -47,8 +48,22 @@ public sealed partial class LoginViewModel : ViewModelBase
 		using var activity = BeginActivity("Logging in");
 		try
 		{
-			await _authenticationService.SocialLogin();
-			OnUserLoggedIn();
+			var result = await _authenticationService.SocialLogin();
+			switch (result)
+			{
+				case LoggedIn:
+					OnUserLoggedIn();
+					break;
+
+				case RequiresRegistration requiresRegistration:
+					ActivityService.ShowNotification(new("Not registered", "Please register using the external provider first, and then try logging in again"));
+					SystemBrowser.OpenBrowser(requiresRegistration.RedirectUri.AbsoluteUri);
+					break;
+
+				default:
+					ActivityService.ShowErrorNotification($"Unexpected login result: {result}");
+					break;
+			}
 		}
 		catch (Exception exception)
 		{

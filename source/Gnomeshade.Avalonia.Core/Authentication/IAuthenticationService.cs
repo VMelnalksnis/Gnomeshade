@@ -5,6 +5,7 @@
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models.Authentication;
 
 namespace Gnomeshade.Avalonia.Core.Authentication;
@@ -14,7 +15,7 @@ public interface IAuthenticationService
 {
 	/// <summary>Logs in using an external identity provider.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	Task SocialLogin();
+	Task<ExternalLoginResult> SocialLogin();
 
 	/// <summary>Logs in an application user.</summary>
 	/// <param name="login">Parameters needed for logging in.</param>

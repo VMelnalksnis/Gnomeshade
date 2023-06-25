@@ -44,6 +44,14 @@ public sealed class GnomeshadeTokenCache
 		RefreshTokenChanged?.Invoke(this, new(refresh));
 	}
 
+	/// <summary>Clears all stored token data.</summary>
+	public void Clear()
+	{
+		Refresh = null;
+		Access = null;
+		AccessExpiresAt = null;
+	}
+
 	internal void SetRefreshToken(string refresh, string access, DateTimeOffset accessExpires)
 	{
 		Refresh = refresh;
