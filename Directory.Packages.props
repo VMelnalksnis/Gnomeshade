@@ -73,7 +73,7 @@
 		<PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.0.0-rc9.14"/>
 		<PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.5.0"/>
 		<PackageVersion Include="PropertyChanged.SourceGenerator" Version="1.0.8"/>
-		<PackageVersion Include="Serilog" Version="2.12.0"/>
+		<PackageVersion Include="Serilog" Version="3.0.1"/>
 		<PackageVersion Include="Serilog.Extensions.Hosting" Version="7.0.0"/>
 		<PackageVersion Include="Serilog.Settings.Configuration" Version="7.0.0"/>
 		<PackageVersion Include="Serilog.Sinks.Console" Version="4.1.0"/>

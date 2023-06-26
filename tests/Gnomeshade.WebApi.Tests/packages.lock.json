@@ -1502,7 +1502,7 @@
       },
       "Serilog": {
         "type": "CentralTransitive",
-        "requested": "[2.12.0, )",
+        "requested": "[3.0.1, )",
         "resolved": "2.12.0",
         "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
       },
