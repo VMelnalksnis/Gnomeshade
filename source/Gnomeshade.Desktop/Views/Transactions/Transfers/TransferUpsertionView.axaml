@@ -3,7 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:transfers="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Transfers;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
@@ -26,13 +25,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Accounts}"
 			ItemSelector="{Binding AccountSelector}"
-			SelectedItem="{Binding SourceAccount, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Account">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SourceAccount, Mode=TwoWay}"/>
 		<TextBox
 			Grid.Column="2" Grid.Row="0"
 			Watermark="Amount" Text="{Binding SourceAmount}" />
@@ -43,13 +36,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
-			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Currency">
-					<TextBlock Text="{Binding AlphabeticCode}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SourceCurrency, Mode=TwoWay}"/>
 
 		<Button
 			Grid.Column="4" Grid.Row="0"
@@ -70,13 +57,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Accounts}"
 			ItemSelector="{Binding AccountSelector}"
-			SelectedItem="{Binding TargetAccount, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Account">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding TargetAccount, Mode=TwoWay}"/>
 		<TextBox
 			Grid.Column="2" Grid.Row="1"
 			Watermark="Amount" Text="{Binding TargetAmount}"
@@ -88,13 +69,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
-			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Currency">
-					<TextBlock Text="{Binding AlphabeticCode}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding TargetCurrency, Mode=TwoWay}"/>
 
 		<Button
 			Grid.Column="4" Grid.Row="1"

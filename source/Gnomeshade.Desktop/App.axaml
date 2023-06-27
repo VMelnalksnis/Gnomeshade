@@ -3,11 +3,46 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:desktop="clr-namespace:Gnomeshade.Desktop"
+	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
+	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
+	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	x:Class="Gnomeshade.Desktop.App"
 	RequestedThemeVariant="Dark">
 
 	<Application.DataTemplates>
 		<core:ViewLocator x:TypeArguments="desktop:App" />
+
+		<DataTemplate x:DataType="owners:Access">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="accounts:Account">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="products:Category">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="accounts:Counterparty">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="accounts:Currency">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="owners:Owner">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="products:Product">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="products:Unit">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
 	</Application.DataTemplates>
 
 	<Application.Resources>

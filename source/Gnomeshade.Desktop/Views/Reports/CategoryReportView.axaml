@@ -6,7 +6,6 @@
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
-	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.CategoryReportViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Reports.CategoryReportView"
@@ -23,11 +22,6 @@
 			ItemSelector="{Binding CategorySelector}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
 			IsEnabled="{Binding !IsBusy}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="products:Category">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
 
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">

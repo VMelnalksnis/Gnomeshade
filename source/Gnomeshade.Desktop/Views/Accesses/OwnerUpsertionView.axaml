@@ -5,8 +5,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:accesses="clr-namespace:Gnomeshade.Avalonia.Core.Accesses;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
-	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.OwnerUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Accesses.OwnerUpsertionView"
@@ -60,28 +58,14 @@
 			Watermark="User"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CounterpartySelector}" ItemsSource="{Binding AddableCounterparties}"
-			SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}">
-
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Counterparty">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}"/>
 
 		<AutoCompleteBox
 			Grid.Row="3"
 			Watermark="Access"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding AccessSelector}" ItemsSource="{Binding Accesses}"
-			SelectedItem="{Binding SelectedAccess, Mode=TwoWay}">
-
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="owners:Access">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SelectedAccess, Mode=TwoWay}"/>
 
 		<Grid Grid.Row="8" ColumnDefinitions="*,*" RowDefinitions="Auto">
 			<Button

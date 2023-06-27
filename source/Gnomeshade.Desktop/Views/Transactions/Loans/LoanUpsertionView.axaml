@@ -4,7 +4,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
 	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.LoanUpsertionViewModel}"
@@ -20,13 +19,8 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Counterparties}"
 			ItemSelector="{Binding CounterpartySelector}"
-			SelectedItem="{Binding IssuingCounterparty, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Counterparty">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding IssuingCounterparty, Mode=TwoWay}"/>
+
 		<AutoCompleteBox
 			Grid.Column="1" Grid.Row="0"
 			Watermark="Receiving counterparty"
@@ -34,13 +28,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Counterparties}"
 			ItemSelector="{Binding CounterpartySelector}"
-			SelectedItem="{Binding ReceivingCounterparty, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Counterparty">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding ReceivingCounterparty, Mode=TwoWay}"/>
 
 		<TextBox
 			Grid.Column="0" Grid.Row="1"
@@ -53,13 +41,7 @@
 			IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
-			SelectedItem="{Binding Currency, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="accounts:Currency">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding Currency, Mode=TwoWay}"/>
 
 		<StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
 			<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">

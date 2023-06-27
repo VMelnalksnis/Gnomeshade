@@ -6,7 +6,6 @@
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:controls="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Controls;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.TransactionProperties}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Controls.TransactionPropertiesView"
@@ -53,13 +52,7 @@
 			IsTextCompletionEnabled="True"
 			ItemSelector="{Binding OwnerSelector}"
 			ItemsSource="{Binding Owners}"
-			SelectedItem="{Binding Owner, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="owners:Owner">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding Owner, Mode=TwoWay}"/>
 
 		<TextBox
 			Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding !Reconciled}"

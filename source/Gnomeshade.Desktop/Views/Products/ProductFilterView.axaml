@@ -4,7 +4,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:productsCore="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.ProductFilter}"
@@ -21,13 +20,7 @@
 			Watermark="Unit"
 			ItemsSource="{Binding Units}"
 			ItemSelector="{Binding UnitSelector}"
-			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="products:Unit">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"/>
 
 		<CheckBox Grid.Row="2" Grid.Column="0" />
 		<AutoCompleteBox
@@ -37,12 +30,6 @@
 			Watermark="Category"
 			ItemsSource="{Binding Categories}"
 			ItemSelector="{Binding CategorySelector}"
-			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="products:Category">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
 	</Grid>
 </UserControl>

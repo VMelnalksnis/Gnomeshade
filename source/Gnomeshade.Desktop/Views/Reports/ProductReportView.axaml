@@ -7,7 +7,6 @@
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:reports="clr-namespace:Gnomeshade.Avalonia.Core.Reports;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:liveChartsCore="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
-	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:aggregates="clr-namespace:Gnomeshade.Avalonia.Core.Reports.Aggregates;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:calculations="clr-namespace:Gnomeshade.Avalonia.Core.Reports.Calculations;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -74,11 +73,6 @@
 						ItemSelector="{Binding ProductSelector}"
 						SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
 						IsEnabled="{Binding !IsBusy}">
-						<AutoCompleteBox.ItemTemplate>
-							<DataTemplate x:DataType="products:Product">
-								<TextBlock Text="{Binding Name}" />
-							</DataTemplate>
-						</AutoCompleteBox.ItemTemplate>
 
 						<Interaction.Behaviors>
 							<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
@@ -87,13 +81,7 @@
 						</Interaction.Behaviors>
 					</AutoCompleteBox>
 
-					<ListBox ItemsSource="{Binding DisplayedProducts}" SelectedItem="{Binding SelectedDisplayedProduct, Mode=TwoWay}">
-						<ListBox.ItemTemplate>
-							<DataTemplate x:DataType="products:Product">
-								<TextBlock Text="{Binding Name}" />
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
+					<ListBox ItemsSource="{Binding DisplayedProducts}" SelectedItem="{Binding SelectedDisplayedProduct, Mode=TwoWay}"/>
 
 					<Button
 						HorizontalAlignment="Stretch"
