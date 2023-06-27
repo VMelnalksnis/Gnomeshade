@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gnomeshade.Avalonia.Core;
@@ -25,7 +26,7 @@ public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 	public bool IsBusy => ActivityService.IsBusy;
 
 	/// <summary>Gets the name of all current activities.</summary>
-	public string ActivityName => string.Join(", ", ActivityService.Activities);
+	public Task<string> ActivityName => GetActivityName();
 
 	/// <summary>Gets a service for managing application activity indicators.</summary>
 	protected IActivityService ActivityService { get; }
@@ -76,6 +77,17 @@ public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 		}
 
 		_disposed = true;
+	}
+
+	private async Task<string> GetActivityName()
+	{
+		if (!ActivityService.Activities.Any())
+		{
+			return string.Empty;
+		}
+
+		await Task.Delay(Delays.ActivityDelay);
+		return string.Join(", ", ActivityService.Activities);
 	}
 
 	private void ActivityServiceOnPropertyChanged(object? sender, PropertyChangedEventArgs e)

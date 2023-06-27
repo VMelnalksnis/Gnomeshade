@@ -12,9 +12,6 @@ namespace Gnomeshade.Avalonia.Core.Configuration;
 /// <summary>Base class for view models that edit configuration.</summary>
 public abstract class ConfigurationViewModel : ViewModelBase
 {
-	/// <summary>How long to wait after user input before validating.</summary>
-	protected static readonly TimeSpan UserInputDelay = TimeSpan.FromMilliseconds(350);
-
 	private readonly IOptionsMonitor<UserConfiguration> _optionsMonitor;
 	private readonly UserConfigurationWriter _configurationWriter;
 

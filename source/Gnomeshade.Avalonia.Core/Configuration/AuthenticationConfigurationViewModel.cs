@@ -93,7 +93,7 @@ public sealed partial class AuthenticationConfigurationViewModel : Configuration
 
 		try
 		{
-			await Task.Delay(UserInputDelay, cancellationToken);
+			await Task.Delay(Delays.UserInputDelay, cancellationToken);
 			using var activity = ActivityService.BeginActivity("Checking connectivity to authentication provider");
 
 			using var response = await _httpClient.GetAsync(new Uri(Authority), cancellationToken);

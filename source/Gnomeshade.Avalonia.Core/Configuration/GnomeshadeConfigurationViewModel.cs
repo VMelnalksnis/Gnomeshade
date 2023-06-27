@@ -82,7 +82,7 @@ public sealed partial class GnomeshadeConfigurationViewModel : ConfigurationView
 		{
 			var uriBuilder = new UriBuilder(BaseAddress) { Path = "/api/v1.0/health" };
 
-			await Task.Delay(UserInputDelay, cancellationToken);
+			await Task.Delay(Delays.UserInputDelay, cancellationToken);
 			using var activity = ActivityService.BeginActivity("Checking connectivity to API");
 
 			using var response = await _httpClient.GetAsync(uriBuilder.Uri, cancellationToken);

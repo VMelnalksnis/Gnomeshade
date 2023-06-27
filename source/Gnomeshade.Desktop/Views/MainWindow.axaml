@@ -102,9 +102,12 @@
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" />
 
-			<StackPanel Grid.Row="2" Orientation="Vertical">
-				<TextBlock HorizontalAlignment="Center" Text="{Binding ActivityName}"/>
-				<ProgressBar IsIndeterminate="{Binding IsBusy}"/>
+			<StackPanel
+				Grid.Row="2" Orientation="Vertical"
+				IsVisible="{Binding ActivityName^, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+
+				<TextBlock HorizontalAlignment="Center" Text="{Binding ActivityName^}" />
+				<ProgressBar IsIndeterminate="{Binding IsBusy}" />
 			</StackPanel>
 		</Grid>
 	</Panel>
