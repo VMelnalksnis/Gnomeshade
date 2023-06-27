@@ -10,7 +10,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Controls.DataGrid" />
 		<PackageReference Include="IdentityModel.OidcClient" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />

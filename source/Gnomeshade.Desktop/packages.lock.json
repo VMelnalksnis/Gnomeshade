@@ -8,18 +8,6 @@
         "resolved": "2.6.0",
         "contentHash": "3R3DB9ezOHC39upAwdrTEnju18k6lQ/BNmxjlLJhDPiE/09cWOeg9u1s8K1a85CGikn77KrASB+C0Vf2m+JNIA=="
       },
-      "Avalonia": {
-        "type": "Direct",
-        "requested": "[11.0.0-rc1.1, )",
-        "resolved": "11.0.0-rc1.1",
-        "contentHash": "IQ/pV0UlmZ+trXNxCzTRPjYHXrodEsa7RR4qvW2UGT22Z40jNgbefDWH0bCUAkfoBIaKzwSIp+asc6vcDtCHTA==",
-        "dependencies": {
-          "Avalonia.BuildServices": "0.0.19",
-          "Avalonia.Remote.Protocol": "11.0.0-rc1.1",
-          "MicroCom.Runtime": "0.11.0",
-          "System.ComponentModel.Annotations": "4.5.0"
-        }
-      },
       "Avalonia.Desktop": {
         "type": "Direct",
         "requested": "[11.0.0-rc1.1, )",
@@ -38,15 +26,6 @@
         "requested": "[11.0.0-rc1.1, )",
         "resolved": "11.0.0-rc1.1",
         "contentHash": "rvp/E+KPfIOjGbFEiO/qaFu3sXaNrkBkqY69EBHwaYIXQA1vtyoq/rSgo0/R73ciGXZTeyIOuF6+tV3MA9zl/g==",
-        "dependencies": {
-          "Avalonia": "11.0.0-rc1.1"
-        }
-      },
-      "Avalonia.Themes.Simple": {
-        "type": "Direct",
-        "requested": "[11.0.0-rc1.1, )",
-        "resolved": "11.0.0-rc1.1",
-        "contentHash": "mD/MzClZ4Wi1Akll8M1l7b3pka8dClsCxPD1wiLdUYJHIH1ziWHDquue/YCRiiGnaXafKQGzjdN8fuxfQWaIJA==",
         "dependencies": {
           "Avalonia": "11.0.0-rc1.1"
         }
@@ -160,6 +139,17 @@
         "contentHash": "/FtugDT66cKJJ+GGH7rNpG6UDrT4iIWz45M6lrXXHobDUFDHw+q5VgkbiR+6ffTO564ge7w6fQh/eoQhVdJO8Q==",
         "dependencies": {
           "StyleCop.Analyzers.Unstable": "1.2.0.507"
+        }
+      },
+      "Avalonia": {
+        "type": "Transitive",
+        "resolved": "11.0.0-rc1.1",
+        "contentHash": "IQ/pV0UlmZ+trXNxCzTRPjYHXrodEsa7RR4qvW2UGT22Z40jNgbefDWH0bCUAkfoBIaKzwSIp+asc6vcDtCHTA==",
+        "dependencies": {
+          "Avalonia.BuildServices": "0.0.19",
+          "Avalonia.Remote.Protocol": "11.0.0-rc1.1",
+          "MicroCom.Runtime": "0.11.0",
+          "System.ComponentModel.Annotations": "4.5.0"
         }
       },
       "Avalonia.Angle.Windows.Natives": {
@@ -621,7 +611,6 @@
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia": "[11.0.0-rc1.1, )",
           "Avalonia.Controls.DataGrid": "[11.0.0-rc1.1, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.2.1, )",

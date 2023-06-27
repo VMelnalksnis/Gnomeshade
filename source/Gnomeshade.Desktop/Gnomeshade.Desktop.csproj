@@ -19,9 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AdysTech.CredentialManager" />
-		<PackageReference Include="Avalonia" />
 		<PackageReference Include="Avalonia.Desktop" />
-		<PackageReference Include="Avalonia.Themes.Simple" />
 		<PackageReference Include="Avalonia.Themes.Fluent" />
 		<PackageReference Include="Avalonia.Xaml.Behaviors" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
