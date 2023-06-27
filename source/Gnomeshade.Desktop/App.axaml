@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:desktop="clr-namespace:Gnomeshade.Desktop"
-	x:Class="Gnomeshade.Desktop.App">
+	x:Class="Gnomeshade.Desktop.App"
+	RequestedThemeVariant="Dark">
 
 	<Application.DataTemplates>
 		<core:ViewLocator x:TypeArguments="desktop:App" />
