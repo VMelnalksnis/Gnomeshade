@@ -10,17 +10,26 @@
 		<core:ViewLocator x:TypeArguments="desktop:App" />
 	</Application.DataTemplates>
 
+	<Application.Resources>
+		<SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" />
+		<SolidColorBrush x:Key="DataGridGridLinesBrush" />
+	</Application.Resources>
+
 	<Application.Styles>
 		<FluentTheme />
 		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
 
 		<Style Selector="DataGridColumnHeader">
-			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="Padding" Value="5 0" />
 		</Style>
 
 		<Style Selector="DataGridCell">
 			<Setter Property="MinHeight" Value="20" />
-			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="FontSize" Value="14" />
+		</Style>
+
+		<Style Selector="DataGridCell:focus Grid#FocusVisual">
+			<Setter Property="IsVisible" Value="False" />
 		</Style>
 
 		<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
