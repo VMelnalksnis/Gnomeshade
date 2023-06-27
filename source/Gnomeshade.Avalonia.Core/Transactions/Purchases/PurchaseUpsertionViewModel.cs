@@ -47,11 +47,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets or sets the date when the <see cref="Product"/> was delivered.</summary>
 	[Notify]
-	private DateTimeOffset? _deliveryDate;
-
-	/// <summary>Gets or sets the time when the <see cref="Product"/> was delivered.</summary>
-	[Notify]
-	private TimeSpan? _deliveryTime;
+	private LocalDateTime? _deliveryDate;
 
 	/// <summary>Gets a collection of all currencies.</summary>
 	[Notify(Setter.Private)]
@@ -150,9 +146,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
 			Amount = purchase.Amount;
 			Product = Products.Single(product => product.Id == purchase.ProductId);
-			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset();
-			DeliveryTime = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset()
-				.TimeOfDay;
+			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).LocalDateTime;
 			Order = purchase.Order;
 		}
 	}
@@ -160,15 +154,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var deliveryDate = DeliveryDate.HasValue
-			? new LocalDateTime(
-					DeliveryDate.Value.Year,
-					DeliveryDate.Value.Month,
-					DeliveryDate.Value.Day,
-					DeliveryTime.GetValueOrDefault().Hours,
-					DeliveryTime.GetValueOrDefault().Minutes)
-				.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault())
-			: default(ZonedDateTime?);
+		var deliveryDate = DeliveryDate?.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault());
 
 		var purchaseCreation = new PurchaseCreation
 		{

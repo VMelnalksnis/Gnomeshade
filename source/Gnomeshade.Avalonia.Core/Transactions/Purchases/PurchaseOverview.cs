@@ -6,6 +6,8 @@ using System;
 
 using Gnomeshade.WebApi.Models.Transactions;
 
+using NodaTime;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Purchases;
 
 /// <summary>Overview of a single <see cref="Purchase"/>.</summary>
@@ -27,7 +29,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 		string productName,
 		decimal amount,
 		string? unitName,
-		DateTimeOffset? deliveryDate,
+		LocalDateTime? deliveryDate,
 		uint? order)
 	{
 		Id = id;
@@ -59,7 +61,7 @@ public sealed class PurchaseOverview : PropertyChangedBase
 	public string? UnitName { get; }
 
 	/// <summary>Gets the date when the <see cref="ProductName"/> was delivered.</summary>
-	public DateTimeOffset? DeliveryDate { get; }
+	public LocalDateTime? DeliveryDate { get; }
 
 	/// <summary>Gets the order of the purchase within a transaction.</summary>
 	public uint? Order { get; }

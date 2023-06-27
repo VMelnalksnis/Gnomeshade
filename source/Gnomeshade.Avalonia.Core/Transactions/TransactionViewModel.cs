@@ -166,8 +166,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transfers,
-				transaction.Purchases,
-				transaction.Refunded);
+				transaction.Purchases);
 		}).ToList();
 
 		var selected = Selected;
@@ -273,8 +272,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transfers,
-			transaction.Purchases,
-			transaction.Refunded);
+			transaction.Purchases);
 
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(Rows.Where(row => row.Id != updatedOverview?.Id).Append(overview).ToList());

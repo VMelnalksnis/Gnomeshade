@@ -32,7 +32,7 @@ internal static class PurchaseExtensions
 			product.Name,
 			purchase.Amount,
 			unit?.Name,
-			purchase.DeliveryDate?.InZone(dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
+			purchase.DeliveryDate?.InZone(dateTimeZoneProvider.GetSystemDefault()).LocalDateTime,
 			purchase.Order);
 	}
 }

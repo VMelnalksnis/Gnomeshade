@@ -1,4 +1,4 @@
-﻿// Copyright 2021 Valters Melnalksnis
+// Copyright 2021 Valters Melnalksnis
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
@@ -9,13 +9,13 @@ using NodaTime.Text;
 
 namespace Gnomeshade.Avalonia.Core;
 
-/// <summary>Converts a binding value of type <see cref="LocalDate"/>.</summary>
-public sealed class LocalDateConverter : NodaTimeValueConverter<LocalDate>
+/// <summary>Converts a binding value of type <see cref="LocalDateTime"/>.</summary>
+public sealed class LocalDateTimeConverter : NodaTimeValueConverter<LocalDateTime>
 {
 	/// <inheritdoc />
 	public override string PatternText => GetPattern(CultureInfo.CurrentCulture).PatternText;
 
 	/// <inheritdoc />
-	protected override LocalDatePattern GetPattern(CultureInfo culture) =>
-		LocalDatePattern.Create("d", culture);
+	protected override LocalDateTimePattern GetPattern(CultureInfo culture) =>
+		LocalDateTimePattern.Create("g", culture);
 }

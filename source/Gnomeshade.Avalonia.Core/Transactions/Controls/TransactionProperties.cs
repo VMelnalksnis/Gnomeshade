@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 using Avalonia.Controls;
@@ -21,11 +20,7 @@ public sealed partial class TransactionProperties : ViewModelBase
 {
 	/// <summary>Gets or sets the date on which the transaction was reconciled.</summary>
 	[Notify]
-	private DateTimeOffset? _reconciliationDate;
-
-	/// <summary>Gets or sets the time when the transaction was reconciled.</summary>
-	[Notify]
-	private TimeSpan? _reconciliationTime;
+	private LocalDateTime? _reconciliationDate;
 
 	/// <summary>Gets or sets a value indicating whether the transaction is reconciled.</summary>
 	[Notify]
@@ -33,19 +28,11 @@ public sealed partial class TransactionProperties : ViewModelBase
 
 	/// <summary>Gets or sets the date on which the transaction was imported.</summary>
 	[Notify]
-	private DateTimeOffset? _importDate;
-
-	/// <summary>Gets or sets the time when the transaction was imported.</summary>
-	[Notify]
-	private TimeSpan? _importTime;
+	private LocalDateTime? _importDate;
 
 	/// <summary>Gets or sets the date on which the transaction was refunded.</summary>
 	[Notify]
-	private DateTimeOffset? _refundDate;
-
-	/// <summary>Gets or sets the time when the transaction was refunded.</summary>
-	[Notify]
-	private TimeSpan? _refundTime;
+	private LocalDateTime? _refundDate;
 
 	/// <summary>Gets or sets the description of the transaction.</summary>
 	[Notify]
@@ -71,30 +58,15 @@ public sealed partial class TransactionProperties : ViewModelBase
 	public AutoCompleteSelector<object> OwnerSelector => AutoCompleteSelectors.Owner;
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
-	public ZonedDateTime? ReconciledAt => ReconciliationDate.HasValue
-		? new LocalDateTime(
-				ReconciliationDate.Value.Year,
-				ReconciliationDate.Value.Month,
-				ReconciliationDate.Value.Day,
-				ReconciliationTime.GetValueOrDefault().Hours,
-				ReconciliationTime.GetValueOrDefault().Minutes)
-			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
-		: null;
+	public ZonedDateTime? ReconciledAt =>
+		ReconciliationDate?.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault());
 
 	/// <inheritdoc cref="Transaction.ReconciledAt"/>
-	public ZonedDateTime? ImportedAt => ImportDate.HasValue
-		? new LocalDateTime(
-				ImportDate.Value.Year,
-				ImportDate.Value.Month,
-				ImportDate.Value.Day,
-				ImportTime.GetValueOrDefault().Hours,
-				ImportTime.GetValueOrDefault().Minutes)
-			.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault())
-		: null;
+	public ZonedDateTime? ImportedAt => ImportDate?.InZoneStrictly(DateTimeZoneProviders.Tzdb.GetSystemDefault());
 
 	/// <summary>Gets a value indicating whether the transaction was imported.</summary>
 	public bool IsImported => ImportedAt is not null;
 
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>
-	public bool IsValid => !Reconciled && ((ReconciledAt is null && ReconciliationTime is null) || ReconciledAt is not null);
+	public bool IsValid => !(Reconciled && ReconciledAt is null);
 }

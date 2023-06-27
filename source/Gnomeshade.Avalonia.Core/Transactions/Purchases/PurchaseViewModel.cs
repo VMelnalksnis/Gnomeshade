@@ -155,9 +155,9 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 		Details.Currency = Details.Currencies.Single(currency => currency.AlphabeticCode == currencyName);
 		Details.Price ??= transfers.Sum(transfer => transfer.SourceAmount) - Rows.Sum(row => row.Price);
 
-		var deliveryDate = Rows.Select(purchase => purchase.DeliveryDate).LastOrDefault(date => date is not null);
-		Details.DeliveryDate = deliveryDate?.Date;
-		Details.DeliveryTime = deliveryDate?.TimeOfDay;
+		Details.DeliveryDate = Rows
+			.Select(purchase => purchase.DeliveryDate)
+			.LastOrDefault(date => date is not null);
 
 		var lastOrder = Rows.Select(purchase => purchase.Order).Max() ?? default;
 		Details.Order ??= lastOrder + 1;

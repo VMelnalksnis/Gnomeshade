@@ -86,9 +86,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		var currentZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant().InZone(currentZone).LocalDateTime;
-
-		Properties.ReconciliationDate = currentTime.ToDateTimeUnspecified();
-		Properties.ReconciliationTime = currentTime.TimeOfDay.ToTimeOnly().ToTimeSpan();
+		Properties.ReconciliationDate = currentTime;
 
 		await SaveAsync();
 	}
@@ -132,20 +130,17 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 
-		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset();
-		Properties.ReconciliationTime = transaction.ReconciledAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+		Properties.ReconciliationDate = transaction.ReconciledAt?.InZone(defaultZone).LocalDateTime;
 		Properties.Reconciled = transaction.Reconciled;
 
-		Properties.ImportDate = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset();
-		Properties.ImportTime = transaction.ImportedAt?.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+		Properties.ImportDate = transaction.ImportedAt?.InZone(defaultZone).LocalDateTime;
 
 		if (transaction.RefundedBy is { } refundId)
 		{
 			var refundTransaction = await GnomeshadeClient.GetDetailedTransactionAsync(refundId);
 			var refundTime = (refundTransaction.ValuedAt ?? refundTransaction.BookedAt)!.Value;
 
-			Properties.RefundDate = refundTime.InZone(defaultZone).ToDateTimeOffset();
-			Properties.RefundTime = refundTime.InZone(defaultZone).ToDateTimeOffset().TimeOfDay;
+			Properties.RefundDate = refundTime.InZone(defaultZone).LocalDateTime;
 		}
 
 		Properties.Description = transaction.Description;

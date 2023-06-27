@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections;
 
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
@@ -27,15 +26,7 @@ public class TransactionPropertiesTests
 		yield return new TestCaseData(
 			new TransactionProperties(new StubbedActivityService())
 			{
-				Reconciled = true,
-				ReconciliationTime = TimeSpan.FromHours(6.5d),
-			},
-			false);
-
-		yield return new TestCaseData(
-			new TransactionProperties(new StubbedActivityService())
-			{
-				ReconciliationDate = new DateTimeOffset(new(2023, 05, 31)),
+				ReconciliationDate = new(2023, 05, 31, 00, 00, 00),
 			},
 			true);
 

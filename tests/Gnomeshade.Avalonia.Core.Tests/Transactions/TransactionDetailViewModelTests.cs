@@ -26,19 +26,16 @@ public sealed class TransactionDetailViewModelTests
 		var viewModel = new TransactionUpsertionViewModel(new StubbedActivityService(), client, new DesignTimeDialogService(), _clock, _dateTimeZoneProvider, Guid.Empty);
 		await viewModel.RefreshAsync();
 
-		var reconciledAt = new DateTimeOffset(2022, 04, 15, 12, 50, 30, TimeSpan.FromHours(3));
+		var instant = Instant.FromUtc(2022, 04, 15, 9, 50, 30);
+		var reconciledAt = instant.InZone(_dateTimeZoneProvider.GetSystemDefault()).LocalDateTime;
 
 		viewModel.Properties.ReconciliationDate = reconciledAt;
-		viewModel.Properties.ReconciliationTime = reconciledAt.ToLocalTime().TimeOfDay;
 
 		viewModel.CanSave.Should().BeTrue();
 
 		await viewModel.SaveAsync();
 
-		viewModel.Properties.ReconciledAt.Should().BeEquivalentTo(
-			new ZonedDateTime(
-				Instant.FromUtc(2022, 04, 15, 9, 50, 0),
-				_dateTimeZoneProvider.GetSystemDefault()));
+		viewModel.Properties.ReconciledAt.Should().BeEquivalentTo(new ZonedDateTime(instant, _dateTimeZoneProvider.GetSystemDefault()));
 
 		var transaction = await client.GetTransactionAsync(Guid.Empty);
 		var creation = transaction.ToCreation() with { ReconciledAt = null };

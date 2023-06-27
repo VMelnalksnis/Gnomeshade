@@ -20,12 +20,8 @@
 			Text="Reconciled at" />
 		<TextBox
 			Grid.Column="1" Grid.Row="0" IsEnabled="{Binding !Reconciled}"
-			Text="{Binding ReconciliationDate, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Date" />
-		<TextBox
-			Grid.Column="2" Grid.Row="0" IsEnabled="{Binding !Reconciled}"
-			Text="{Binding ReconciliationTime, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Time" />
+			Text="{Binding ReconciliationDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
+			Watermark="Reconciled at" />
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="1"
@@ -33,12 +29,8 @@
 			Text="Refunded at" />
 		<TextBox
 			Grid.Column="1" Grid.Row="1" IsEnabled="False"
-			Text="{Binding RefundDate, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Date" />
-		<TextBox
-			Grid.Column="2" Grid.Row="1" IsEnabled="False"
-			Text="{Binding RefundTime, Mode=TwoWay, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Time" />
+			Text="{Binding RefundDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
+			Watermark="Refunded at" />
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="2" IsVisible="{Binding IsImported}"
@@ -46,12 +38,8 @@
 			Text="Imported at" />
 		<TextBox
 			Grid.Column="1" Grid.Row="2" IsVisible="{Binding IsImported}" IsEnabled="False"
-			Text="{Binding ImportDate, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Date" />
-		<TextBox
-			Grid.Column="2" Grid.Row="2" IsVisible="{Binding IsImported}" IsEnabled="False"
-			Text="{Binding ImportTime, Converter={x:Static core:Converters.DateTime}}"
-			Watermark="Time" />
+			Text="{Binding ImportDate, Converter={x:Static core:Converters.LocalDateTime}}"
+			Watermark="Imported at" />
 
 		<TextBlock
 			Grid.Column="0" Grid.Row="3"
