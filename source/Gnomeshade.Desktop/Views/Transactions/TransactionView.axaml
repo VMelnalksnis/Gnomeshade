@@ -72,23 +72,10 @@
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate DataType="transactions:TransactionOverview">
 								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
-									<CheckBox IsChecked="{Binding Reconciled}" IsEnabled="False">
+									<CheckBox IsChecked="{Binding Reconciled}" Padding="0" IsEnabled="False">
 									</CheckBox>
 									<LayoutTransformControl.LayoutTransform>
-										<ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
-									</LayoutTransformControl.LayoutTransform>
-								</LayoutTransformControl>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-					<DataGridTemplateColumn Header="Ref" IsReadOnly="True" CanUserSort="False">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate DataType="transactions:TransactionOverview">
-								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
-									<CheckBox IsChecked="{Binding Refunded}" IsEnabled="False">
-									</CheckBox>
-									<LayoutTransformControl.LayoutTransform>
-										<ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
+										<ScaleTransform ScaleX="0.6" ScaleY="0.6" />
 									</LayoutTransformControl.LayoutTransform>
 								</LayoutTransformControl>
 							</DataTemplate>

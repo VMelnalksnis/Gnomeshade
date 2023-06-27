@@ -34,8 +34,7 @@ public sealed class TransactionFilterTests
 				new("EUR", false, 100, "Foo", "→", false, "Bar", "Bar", "EUR", 100),
 				new("EUR", false, 100, "Foo", "←", false, "Bar", "Bar", "EUR", 100),
 			},
-			new(),
-			false);
+			new());
 
 		_filter.Uncategorized = true;
 		var filtered = _filter.Filter(overview);

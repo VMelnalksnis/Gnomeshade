@@ -27,5 +27,5 @@ public sealed class TransactionOverviewComparerTests
 	}
 
 	private static TransactionOverview GetOverviewWithDate(DateTimeOffset date) =>
-		new(Guid.NewGuid(), date, null, null, new(), new(), false);
+		new(Guid.NewGuid(), date, null, null, new(), new());
 }

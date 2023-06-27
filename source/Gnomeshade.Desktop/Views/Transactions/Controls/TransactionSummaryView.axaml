@@ -11,13 +11,7 @@
 	x:CompileBindings="True"
 	x:DataType="t:TransactionSummary">
 
-	<StackPanel Orientation="Horizontal">
-		<TextBlock Text="Transactions: " />
-		<TextBlock Padding="0 0 10 0" Text="{Binding TransactionCount, Mode=OneWay, StringFormat=\{0:N0\}}" />
-		<TextBlock Text="Transfers: " />
-		<TextBlock Padding="0 0 10 0" Text="{Binding TransferCount, Mode=OneWay, StringFormat=\{0:N0\}}" />
-
-		<TextBlock Text="Received: " />
+	<StackPanel Orientation="Horizontal"><TextBlock Text="Received: " />
 		<TextBlock Padding="0 0 10 0" Text="{Binding Received, Mode=OneWay, StringFormat=\{0:N2\}}" />
 		<TextBlock Text="Withdrawn: " />
 		<TextBlock Padding="0 0 10 0" Text="{Binding Withdrawn, Mode=OneWay, StringFormat=\{0:N2\}}" />
