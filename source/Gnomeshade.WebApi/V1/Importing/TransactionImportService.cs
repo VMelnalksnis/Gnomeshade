@@ -214,7 +214,7 @@ public abstract partial class TransactionImportService<TTransaction>
 			var transfers =
 				(await _transferRepository.GetByExternalReferenceAsync(externalReference, user.Id, dbTransaction))
 				.ToArray();
-			if (transfers is[var existingTransfer])
+			if (transfers is [var existingTransfer])
 			{
 				FoundTransferByExternalReference(externalReference, existingTransfer.Id);
 
@@ -572,25 +572,8 @@ public abstract partial class TransactionImportService<TTransaction>
 
 	[LoggerMessage(EventId = 1025, Level = Debug, Message = "Restored deleted currency {AlphabeticCode} for account {AccountId}")]
 	private partial void RestoredDeletedCurrency(string alphabeticCode, Guid accountId);
+
+	internal sealed record Bank(string? Name, string? Bic);
+
+	internal sealed record UserAccount(string? Iban, string? CurrencyCode);
 }
-
-internal sealed record Bank(string? Name, string? Bic);
-
-internal sealed record UserAccount(string? Iban, string? CurrencyCode);
-
-internal sealed record ImportableTransaction(
-	string? BankReference,
-	string? ExternalReference,
-	decimal Amount,
-	string CurrencyCode,
-	CreditDebitCode CreditDebitCode,
-	Instant BookingDate,
-	Instant? ValueDate,
-	string? Description,
-	string OtherCurrencyCode,
-	decimal OtherAmount,
-	string? OtherAccountIban,
-	string? OtherAccountName,
-	string? DomainCode,
-	string? FamilyCode,
-	string? SubFamilyCode);

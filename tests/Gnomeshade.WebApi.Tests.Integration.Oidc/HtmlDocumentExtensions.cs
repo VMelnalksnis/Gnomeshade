@@ -13,7 +13,7 @@ namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 internal static class HtmlDocumentExtensions
 {
-	internal static FormData GetForm(this HtmlDocument htmlDocument, string xpath)
+	internal static (string Action, FormUrlEncodedContent Content) GetForm(this HtmlDocument htmlDocument, string xpath)
 	{
 		var formNode = htmlDocument.DocumentNode.SelectSingleNode(xpath);
 		var action = formNode.Attributes["action"].Value.Replace("&amp;", "&");
@@ -42,8 +42,6 @@ internal static class HtmlDocumentExtensions
 				return new KeyValuePair<string, string?>(grouping.Key, value);
 			});
 
-		return new(action, new(inputs));
+		return (action, new(inputs));
 	}
 }
-
-internal sealed record FormData(string Action, FormUrlEncodedContent Content);
