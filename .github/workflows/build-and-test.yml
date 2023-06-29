@@ -131,7 +131,6 @@ jobs:
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
-    if: false # Too many false positives, latest versions don't work
     steps:
       - uses: actions/checkout@v4.1.1
       - uses: actions/setup-dotnet@v4.0.0
@@ -151,7 +150,9 @@ jobs:
 
       - name: ReSharper annotations
         timeout-minutes: 10
-        uses: VMelnalksnis/resharper-inspect-action@v0.2.5
+        uses: VMelnalksnis/resharper-inspect-action@v0.3.0
         with:
           solution: Gnomeshade.sln
           resharper-version: 2023.3.0
+          treat-warnings-as-errors: true
+          extra-args: '--exclude=**.wixproj --exclude=**.wxs --no-build' # Hangs if WiX is not excluded
