@@ -85,7 +85,7 @@
 
 					<Button
 						HorizontalAlignment="Stretch"
-						IsVisible="{Binding DisplayedProducts, Converter={x:Static core:Converters.IsNotEmptyCollection}}"
+						IsVisible="{Binding DisplayedProducts, Converter={x:Static core:Converters.NotEmpty}}"
 						IsEnabled="{Binding CanRemoveProduct}"
 						Command="{ReflectionBinding RemoveSelectedProduct}">
 						Remove Product

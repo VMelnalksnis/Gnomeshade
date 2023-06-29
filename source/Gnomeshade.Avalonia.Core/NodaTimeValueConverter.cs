@@ -16,8 +16,8 @@ namespace Gnomeshade.Avalonia.Core;
 public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
 	where TTime : struct
 {
-	/// <summary>Gets the string format that will be used to convert <typeparamref name="TTime"/> to and from text.</summary>
-	public abstract string PatternText { get; }
+	/// <summary>Gets a value to use for displaying example value on validation error.</summary>
+	protected abstract TTime TemplateValue { get; }
 
 	/// <inheritdoc />
 	public override object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -54,22 +54,25 @@ public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
 			return AvaloniaProperty.UnsetValue;
 		}
 
-		if (targetType.IsAssignableTo(typeof(TTime)) || targetType.IsAssignableTo(typeof(TTime?)))
+		if (!targetType.IsAssignableTo(typeof(TTime)) && !targetType.IsAssignableTo(typeof(TTime?)))
 		{
-			var parseResult = GetPattern(culture).Parse(text);
-			if (parseResult.Success)
-			{
-				return parseResult.Value;
-			}
-
-			return new BindingNotification(new FormatException(), BindingErrorType.DataValidationError);
+			return InvalidCastNotification;
 		}
 
-		return InvalidCastNotification;
+		var parseResult = GetPattern(culture).Parse(text);
+		if (parseResult.Success)
+		{
+			return parseResult.Value;
+		}
+
+		var exception = new DataValidationException($"Expected format is {GetPatternText(culture)}");
+		return new BindingNotification(exception, BindingErrorType.DataValidationError);
 	}
 
 	/// <summary>Gets the pattern using which <typeparamref name="TTime"/> will be convert to and from text.</summary>
 	/// <param name="culture">The culture to use.</param>
 	/// <returns>A pattern that can convert <typeparamref name="TTime"/> to and form text.</returns>
 	protected abstract IPattern<TTime> GetPattern(CultureInfo culture);
+
+	private string GetPatternText(CultureInfo culture) => GetPattern(culture).Format(TemplateValue);
 }

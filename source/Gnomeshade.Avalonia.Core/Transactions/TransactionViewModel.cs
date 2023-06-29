@@ -60,6 +60,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		_details = new(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
+		PropertyChanging += OnPropertyChanging;
 		PropertyChanged += OnPropertyChanged;
 
 		Filter = new(ActivityService, clock, dateTimeZoneProvider);
@@ -86,6 +87,19 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	/// <summary>Gets a value indicating whether transactions can be refreshed.</summary>
 	public bool CanRefresh => Filter.IsValid;
+
+	/// <summary>Gets a value indicating whether the <see cref="TransferSummary.UserCurrency"/> column needs to be shown.</summary>
+	public bool ShowUserCurrency => Rows
+		.SelectMany(transaction => transaction.Transfers)
+		.Any(transfer => !string.IsNullOrWhiteSpace(transfer.UserCurrency));
+
+	/// <summary>
+	/// Gets a value indicating whether the <see cref="TransferSummary.OtherCurrency"/> and
+	/// <see cref="TransferSummary.OtherAmount"/> columns needs to be shown.
+	/// </summary>
+	public bool ShowOtherAmount => Rows
+		.SelectMany(transaction => transaction.Transfers)
+		.Any(transfer => transfer.DisplayTarget);
 
 	/// <inheritdoc />
 	public override TransactionUpsertionViewModel Details
@@ -207,17 +221,32 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		base.Dispose(disposing);
 	}
 
+	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
+	{
+		if (e.PropertyName is nameof(Rows))
+		{
+			OnPropertyChanging(nameof(ShowUserCurrency));
+			OnPropertyChanging(nameof(ShowOtherAmount));
+		}
+	}
+
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(DataGridView))
+		switch (e.PropertyName)
 		{
-			DataGridView.Filter = Filter.Filter;
-		}
+			case nameof(DataGridView):
+				DataGridView.Filter = Filter.Filter;
+				break;
 
-		if (e.PropertyName is nameof(Selected))
-		{
-			OnPropertyChanged(nameof(CanSelectSource));
-			OnPropertyChanged(nameof(CanSelectTarget));
+			case nameof(Selected):
+				OnPropertyChanged(nameof(CanSelectSource));
+				OnPropertyChanged(nameof(CanSelectTarget));
+				break;
+
+			case nameof(Rows):
+				OnPropertyChanged(nameof(ShowUserCurrency));
+				OnPropertyChanged(nameof(ShowOtherAmount));
+				break;
 		}
 	}
 

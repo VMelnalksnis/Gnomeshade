@@ -126,6 +126,9 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>
 	public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;
 
+	/// <summary>Gets a value indicating whether can create a new account with <see cref="ShowAccountDialogAsync"/>.</summary>
+	public bool CanCreate => SourceAccount is null || TargetAccount is null;
+
 	/// <inheritdoc />
 	public override bool CanSave =>
 		SourceAmount is not null &&
@@ -136,32 +139,12 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		TargetCurrency is not null &&
 		(BookingDate.HasValue || ValueDate.HasValue);
 
-	/// <summary>Shows a modal dialog for creating or editing the <see cref="SourceAccount"/>.</summary>
+	/// <summary>Shows a modal dialog for creating an account.</summary>
 	/// <param name="window">The current window.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task ShowSourceAccountDialog(Window window)
+	public async Task ShowAccountDialogAsync(Window window)
 	{
-		var initialId = SourceAccount?.Id;
-		var resultId = await ShowAccountDialog(window, initialId);
-
-		if (resultId is { } id && id != initialId)
-		{
-			SourceAccount = Accounts.SingleOrDefault(account => account.Id == id);
-		}
-	}
-
-	/// <summary>Shows a modal dialog for creating or editing the <see cref="TargetAccount"/>.</summary>
-	/// <param name="window">The current window.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task ShowTargetAccountDialog(Window window)
-	{
-		var initialId = TargetAccount?.Id;
-		var resultId = await ShowAccountDialog(window, initialId);
-
-		if (resultId is { } id && id != initialId)
-		{
-			TargetAccount = Accounts.SingleOrDefault(account => account.Id == id);
-		}
+		 await ShowAccountDialog(window, null);
 	}
 
 	/// <inheritdoc />
@@ -225,20 +208,19 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		return id;
 	}
 
-	private async Task<Guid?> ShowAccountDialog(Window window, Guid? id)
+	private async Task ShowAccountDialog(Window window, Guid? id)
 	{
 		using var activity = BeginActivity("Waiting for account creation");
 		var viewModel = new AccountUpsertionViewModel(ActivityService, GnomeshadeClient, id);
 		await viewModel.RefreshAsync();
 
-		var result = await _dialogService.ShowDialogValue<AccountUpsertionViewModel, Guid>(window, viewModel, dialog =>
+		_ = await _dialogService.ShowDialogValue<AccountUpsertionViewModel, Guid>(window, viewModel, dialog =>
 		{
 			dialog.Title = id.HasValue ? "Edit account" : "Create account";
 			viewModel.Upserted += (_, args) => dialog.Close(args.Id);
 		});
 
 		await RefreshAsync();
-		return result;
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

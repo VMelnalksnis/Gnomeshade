@@ -5,27 +5,31 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:products="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static dd:DesignTimeData.ProductViewModel}"
+	mc:Ignorable="d" d:DesignWidth="1000" d:DataContext="{x:Static dd:DesignTimeData.ProductViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Products.ProductView"
 	x:CompileBindings="True"
 	x:DataType="products:ProductViewModel">
 
-	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="*">
+	<Grid RowDefinitions="*">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
+			<ColumnDefinition Width="4*" />
+			<ColumnDefinition Width="2*" MinWidth="300" MaxWidth="600"/>
+		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
 			<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
-			<Border Background="White" HorizontalAlignment="Stretch" Height="1"/>
+			<Border Background="White" HorizontalAlignment="Stretch" Height="1" />
 
 			<Button
-				HorizontalAlignment="Center"
+				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
 				IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
 				Delete Selected
 			</Button>
 		</StackPanel>
 
 		<DataGrid
-			Grid.Column="1" Grid.Row="0"
+			Grid.Column="1"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
@@ -43,12 +47,6 @@
 					x:DataType="products:ProductRow"
 					Header="SKU" IsReadOnly="True"
 					Binding="{Binding Sku, Mode=OneWay}" />
-			</DataGrid.Columns>
-			<DataGrid.Columns>
-				<DataGridTextColumn
-					x:DataType="products:ProductRow"
-					Header="Description" IsReadOnly="True"
-					Binding="{Binding Description, Mode=OneWay}" />
 			</DataGrid.Columns>
 			<DataGrid.Columns>
 				<DataGridTextColumn
@@ -76,8 +74,6 @@
 			</Interaction.Behaviors>
 		</DataGrid>
 
-		<UserControl
-			Grid.Column="2" Grid.Row="0"
-			Content="{Binding Details, Mode=OneWay}" />
+		<UserControl Grid.Column="2" Content="{Binding Details, Mode=OneWay}" />
 	</Grid>
 </UserControl>

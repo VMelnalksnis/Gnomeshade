@@ -11,7 +11,7 @@
 	x:CompileBindings="True"
 	x:DataType="transactions:TransactionViewModel">
 
-	<Grid ColumnDefinitions="Auto,Auto,*" RowDefinitions="*">
+	<Grid RowDefinitions="*" ColumnDefinitions="Auto,Auto,*">
 		<StackPanel Orientation="Vertical" Spacing="5">
 			<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
@@ -57,7 +57,7 @@
 			</Grid>
 		</StackPanel>
 
-		<Grid Grid.Column="1" ColumnDefinitions="Auto" RowDefinitions="*, Auto">
+		<Grid Grid.Column="1" ColumnDefinitions="*" RowDefinitions="*, Auto">
 			<DataGrid
 				Grid.Row="0"
 				x:Name="DataGrid"
@@ -66,14 +66,13 @@
 				ItemsSource="{Binding DataGridView, Mode=TwoWay}"
 				SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
 				AutoGenerateColumns="False" IsReadOnly="False"
-				CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+				CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
 					<DataGridTemplateColumn Header="Rec" IsReadOnly="True" CanUserSort="False">
 						<DataGridTemplateColumn.CellTemplate>
 							<DataTemplate DataType="transactions:TransactionOverview">
 								<LayoutTransformControl HorizontalAlignment="Center" VerticalAlignment="Top">
-									<CheckBox IsChecked="{Binding Reconciled}" Padding="0" IsEnabled="False">
-									</CheckBox>
+									<CheckBox IsChecked="{Binding Reconciled}" Padding="0" IsEnabled="False" />
 									<LayoutTransformControl.LayoutTransform>
 										<ScaleTransform ScaleX="0.6" ScaleY="0.6" />
 									</LayoutTransformControl.LayoutTransform>
@@ -91,7 +90,7 @@
 								Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowUserCurrency}">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -107,7 +106,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -126,7 +125,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -142,7 +141,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn CanUserResize="False">
+					<DataGridTemplateColumn CanUserResize="False" CanUserSort="False" IsReadOnly="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -158,7 +157,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -174,7 +173,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowOtherAmount}">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>
@@ -193,7 +192,7 @@
 							</ItemsControl>
 						</DataTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTemplateColumn>
+					<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowOtherAmount}">
 						<DataTemplate DataType="transactions:TransactionOverview">
 							<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
 								<ItemsControl.ItemsPanel>

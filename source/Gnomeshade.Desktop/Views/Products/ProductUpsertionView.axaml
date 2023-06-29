@@ -3,78 +3,54 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:mp="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:p="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
-	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	mc:Ignorable="d"
 	x:Class="Gnomeshade.Desktop.Views.Products.ProductUpsertionView"
 	d:DataContext="{x:Static dd:DesignTimeData.ProductUpsertionViewModel}"
 	x:CompileBindings="True"
 	x:DataType="p:ProductUpsertionViewModel">
 
-	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*">
-		<TextBox
-			Grid.Row="0"
-			Watermark="Name" Text="{Binding Name}">
+	<StackPanel Orientation="Vertical">
+		<WrapPanel>
+			<TextBox TextWrapping="Wrap" MinWidth="300" Watermark="Name" Text="{Binding Name}" />
 
-			<Interaction.Behaviors>
-				<FocusOnAttachedToVisualTreeBehavior />
-			</Interaction.Behaviors>
-		</TextBox>
+			<StackPanel Orientation="Horizontal">
+				<AutoCompleteBox
+					Watermark="Unit"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+					ItemSelector="{Binding UnitSelector}" ItemsSource="{Binding Units}"
+					SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
+				</AutoCompleteBox>
 
-		<TextBox
-			Grid.Row="1"
-			Watermark="SKU" Text="{Binding Sku}" />
+				<AutoCompleteBox
+					Watermark="Category"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
+					ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
+					SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+				</AutoCompleteBox>
+			</StackPanel>
 
-		<TextBox
-			Grid.Row="2"
-			AcceptsReturn="True"
-			Watermark="Description" Text="{Binding Description}" />
+			<TextBox
+				MinWidth="300" AcceptsReturn="True"
+				Watermark="Description" Text="{Binding Description}" />
 
-		<AutoCompleteBox
-			Grid.Row="3"
-			Watermark="Unit"
-			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding UnitSelector}" ItemsSource="{Binding Units}"
-			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
 
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="mp:Unit">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
-
-		<AutoCompleteBox
-			Grid.Row="4"
-			Watermark="Category"
-			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
-			ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
-			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
-
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="mp:Category">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
+			<TextBox Watermark="SKU" Text="{Binding Sku}" />
+		</WrapPanel>
 
 		<Button
-			Grid.Row="5"
-			Padding="25 5"
-			HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+			Width="140" Margin="5 0" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 
 		<Border
-			Grid.Row="6" Margin="0 10"
+			Margin="0 10"
 			Background="White" HorizontalAlignment="Stretch" Height="1"/>
 
 		<DataGrid
-			Grid.Row="7"
-			x:Name="DataGrid"
 			ItemsSource="{Binding Purchases, Mode=TwoWay}"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
@@ -101,5 +77,5 @@
 					Binding="{Binding DeliveryDate, Mode=OneWay, StringFormat=\{0:g\}}" />
 			</DataGrid.Columns>
 		</DataGrid>
-	</Grid>
+	</StackPanel>
 </UserControl>

@@ -4,7 +4,6 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:models="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:products="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	x:Class="Gnomeshade.Desktop.Views.Products.CategoryUpsertionView"
@@ -12,40 +11,20 @@
 	x:CompileBindings="True"
 	x:DataType="products:CategoryUpsertionViewModel">
 
-	<Grid ColumnDefinitions="*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
-		<TextBox
-			Grid.Row="0"
-			Watermark="Name" Text="{Binding Name}">
-
-			<Interaction.Behaviors>
-				<FocusOnAttachedToVisualTreeBehavior />
-			</Interaction.Behaviors>
-		</TextBox>
-		<TextBox
-			Grid.Row="1"
-			AcceptsReturn="True"
-			Watermark="Description" Text="{Binding Description}" />
+	<StackPanel Orientation="Vertical">
+		<TextBox Watermark="Name" UseFloatingWatermark="True" Text="{Binding Name}" />
+		<TextBox AcceptsReturn="True" Watermark="Description" UseFloatingWatermark="True" Text="{Binding Description}" />
 
 		<AutoCompleteBox
-			Grid.Row="2"
 			Watermark="Category"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
-			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
+			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
 
-			<AutoCompleteBox.ItemTemplate>
-				<DataTemplate x:DataType="models:Category">
-					<TextBlock Text="{Binding Name}" />
-				</DataTemplate>
-			</AutoCompleteBox.ItemTemplate>
-		</AutoCompleteBox>
-		<CheckBox Grid.Column="0" Grid.Row="3" IsChecked="{Binding LinkProduct}">Create linked product</CheckBox>
+		<CheckBox IsChecked="{Binding LinkProduct}">Create linked product</CheckBox>
 
-		<Button
-			Grid.Column="0" Grid.Row="4"
-			Padding="25 5"
-			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
-	</Grid>
+	</StackPanel>
 </UserControl>

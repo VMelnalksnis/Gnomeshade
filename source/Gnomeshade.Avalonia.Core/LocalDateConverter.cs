@@ -13,7 +13,7 @@ namespace Gnomeshade.Avalonia.Core;
 public sealed class LocalDateConverter : NodaTimeValueConverter<LocalDate>
 {
 	/// <inheritdoc />
-	public override string PatternText => GetPattern(CultureInfo.CurrentCulture).PatternText;
+	protected override LocalDate TemplateValue { get; } = new(2000, 12, 31);
 
 	/// <inheritdoc />
 	protected override LocalDatePattern GetPattern(CultureInfo culture) =>

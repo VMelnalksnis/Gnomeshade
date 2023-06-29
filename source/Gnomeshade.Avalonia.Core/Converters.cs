@@ -18,6 +18,10 @@ public static class Converters
 	public static LocalDateTimeConverter LocalDateTime { get; } = new();
 
 	/// <summary>Gets a <see cref="ICollection"/> converter that checks whether the collection is not empty.</summary>
-	public static IValueConverter IsNotEmptyCollection { get; } =
+	public static IValueConverter NotEmpty { get; } =
 		new FuncValueConverter<ICollection?, bool>(collection => collection?.Count > 0);
+
+	/// <summary>Gets a <see cref="IEnumerable"/> converter that checks whether it is not empty.</summary>
+	public static IValueConverter Any { get; } =
+		new FuncValueConverter<IEnumerable?, bool>(enumerable => enumerable?.GetEnumerator().MoveNext() ?? false);
 }

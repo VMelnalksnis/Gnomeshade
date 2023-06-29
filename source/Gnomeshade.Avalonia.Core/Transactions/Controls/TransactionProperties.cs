@@ -67,6 +67,9 @@ public sealed partial class TransactionProperties : ViewModelBase
 	/// <summary>Gets a value indicating whether the transaction was imported.</summary>
 	public bool IsImported => ImportedAt is not null;
 
+	/// <summary>Gets a value indicating whether the transaction was refunded.</summary>
+	public bool IsRefunded => RefundDate is not null;
+
 	/// <summary>Gets a value indicating whether the current value of other properties are valid for a transaction.</summary>
 	public bool IsValid => !(Reconciled && ReconciledAt is null);
 }

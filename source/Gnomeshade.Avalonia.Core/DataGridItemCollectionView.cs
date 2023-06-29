@@ -27,18 +27,14 @@ public sealed class DataGridItemCollectionView<T> : IEnumerable<T>, INotifyColle
 {
 	private readonly DataGridCollectionView _dataGridCollectionView;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class from a collection of items.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class from a collection of items.</summary>
 	/// <param name="source">The source for the collection.</param>
 	public DataGridItemCollectionView(IEnumerable<T> source)
 		: this(new DataGridCollectionView(source))
 	{
 	}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class from a <see cref="DataGridCollectionView"/>.
-	/// </summary>
+	/// <summary>Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class from a <see cref="DataGridCollectionView"/>.</summary>
 	/// <param name="dataGridCollectionView">The data grid view to wrap.</param>
 	public DataGridItemCollectionView(DataGridCollectionView dataGridCollectionView)
 	{
@@ -50,15 +46,10 @@ public sealed class DataGridItemCollectionView<T> : IEnumerable<T>, INotifyColle
 		}
 	}
 
-	/// <summary>
-	/// Occurs when the underlying <see cref="DataGridCollectionView.CollectionChanged"/> is raised,
-	/// or when <see cref="INotifyPropertyChanged.PropertyChanged"/> is raised by one of the items.
-	/// </summary>
+	/// <inheritdoc />
 	public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
-	/// <summary>
-	/// Implicitly converts a <see cref="DataGridItemCollectionView{T}"/> to the underlying <see cref="DataGridCollectionView"/>.
-	/// </summary>
+	/// <summary>Implicitly converts a <see cref="DataGridItemCollectionView{T}"/> to the underlying <see cref="DataGridCollectionView"/>.</summary>
 	/// <param name="view">The collection view to convert.</param>
 	/// <returns>The underlying <see cref="DataGridCollectionView"/>.</returns>
 	public static implicit operator DataGridCollectionView(DataGridItemCollectionView<T> view)
@@ -67,11 +58,9 @@ public sealed class DataGridItemCollectionView<T> : IEnumerable<T>, INotifyColle
 	}
 
 	/// <inheritdoc />
-	public IEnumerator<T> GetEnumerator()
-	{
-		return _dataGridCollectionView.Cast<T>().GetEnumerator();
-	}
+	public IEnumerator<T> GetEnumerator() => _dataGridCollectionView.Cast<T>().GetEnumerator();
 
+	/// <inheritdoc />
 	IEnumerator IEnumerable.GetEnumerator() => _dataGridCollectionView.GetEnumerator();
 
 	private void DataGridCollectionViewOnCollectionChanged(

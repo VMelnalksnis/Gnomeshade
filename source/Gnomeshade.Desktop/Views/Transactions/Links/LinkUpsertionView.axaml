@@ -5,28 +5,14 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:links="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Links;assembly=Gnomeshade.Avalonia.Core"
-	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static design:DesignTimeData.LinkUpsertionViewModel}"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.LinkUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Links.LinkUpsertionView"
 	x:CompileBindings="True"
 	x:DataType="links:LinkUpsertionViewModel">
 
-	<Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto">
-		<TextBlock
-			Grid.Column="0" Grid.Row="0"
-			Margin="5"
-			VerticalAlignment="Center"
-			Text="Link:" />
+	<StackPanel Orientation="Horizontal">
 		<TextBox
-			Grid.Column="1" Grid.Row="0"
-			MinWidth="150"
-			Text="{Binding UriValue}" />
-
-		<Button
-			Grid.Column="0" Grid.Row="1"
-			IsEnabled="{Binding CanSave}"
-			Command="{ReflectionBinding SaveAsync}">
-			Save
-		</Button>
-	</Grid>
+			MinWidth="300" Watermark="Link" UseFloatingWatermark="True"
+			Text="{Binding UriValue}" TextWrapping="Wrap" />
+	</StackPanel>
 </UserControl>

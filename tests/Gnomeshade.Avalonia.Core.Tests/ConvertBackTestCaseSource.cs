@@ -38,7 +38,7 @@ internal sealed class ConvertBackTestCaseSource : IEnumerable
 				typeof(LocalDate),
 				null,
 				CultureInfo.InvariantCulture,
-				new BindingNotification(new DataValidationException("Expected format is 31.12.2000"), BindingErrorType.DataValidationError))
+				new BindingNotification(new DataValidationException("Expected format is 12/31/2000"), BindingErrorType.DataValidationError))
 			.SetName("Invalid local date pattern to data validation notification");
 
 		yield return new TestCaseData(

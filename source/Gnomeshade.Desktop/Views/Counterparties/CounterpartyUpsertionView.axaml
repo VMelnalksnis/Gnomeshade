@@ -12,8 +12,8 @@
 	x:DataType="c:CounterpartyUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="5">
-		<TextBox Text="{Binding Name}" />
-		<Button IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+		<TextBox MinWidth="300" Text="{Binding Name}" Watermark="Name" UseFloatingWatermark="True" />
+		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
 			Save
 		</Button>
 	</StackPanel>
