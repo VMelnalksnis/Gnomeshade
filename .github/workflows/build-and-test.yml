@@ -228,7 +228,7 @@ jobs:
       - name: 'Create Qodana config'
         shell: bash
         run: >
-          printf "version: 1.0\nprofile:\n  name: 'qodana.recommended'\nlinter: 'jetbrains/qodana-js:2023.1-eap'\nbootstrap: 'npm install .\source\Gnomeshade.WebApi\Node\'" >> qodana.yml
+          printf "version: 1.0\nprofile:\n  name: 'qodana.recommended'\nlinter: 'jetbrains/qodana-js:2023.1-eap'\nbootstrap: 'npm install ./source/Gnomeshade.WebApi/Node/'" >> qodana.yml
 
       - name: 'Qodana Scan'
         uses: JetBrains/qodana-action@v2023.1.5
