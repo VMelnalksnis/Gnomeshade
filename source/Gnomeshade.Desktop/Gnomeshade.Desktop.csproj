@@ -11,6 +11,8 @@
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">

@@ -9,7 +9,6 @@
 	mc:Ignorable="d"
 	x:Class="Gnomeshade.Desktop.Views.Products.ProductUpsertionView"
 	d:DataContext="{x:Static dd:DesignTimeData.ProductUpsertionViewModel}"
-	x:CompileBindings="True"
 	x:DataType="p:ProductUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical">

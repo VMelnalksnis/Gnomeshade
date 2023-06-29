@@ -8,7 +8,6 @@
 	mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="300"
 	d:DataContext="{x:Static dd:DesignTimeData.ApplicationSettingsViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Configuration.ApplicationSettingsView"
-	x:CompileBindings="True"
 	x:DataType="configuration:ApplicationSettingsViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="5">

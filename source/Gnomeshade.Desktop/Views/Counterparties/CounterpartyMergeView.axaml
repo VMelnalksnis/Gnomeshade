@@ -8,7 +8,6 @@
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.CounterpartyMergeViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Counterparties.CounterpartyMergeView"
-	x:CompileBindings="True"
 	x:DataType="c:CounterpartyMergeViewModel">
 
 	<Grid ColumnDefinitions="*,Auto,*" RowDefinitions="*">

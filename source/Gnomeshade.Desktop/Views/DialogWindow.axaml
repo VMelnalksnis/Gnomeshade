@@ -6,9 +6,7 @@
 	FontFamily="/Assets/Inconsolata-Regular.ttf"
 
 	WindowStartupLocation="CenterScreen"
-	ExtendClientAreaToDecorationsHint="False"
-
-	x:CompileBindings="True">
+	ExtendClientAreaToDecorationsHint="False">
 
 	<Panel>
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">

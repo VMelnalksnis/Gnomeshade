@@ -7,7 +7,6 @@
 	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.LoanUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.LoanUpsertionView"
-	x:CompileBindings="True"
 	x:DataType="loans:LoanUpsertionViewModel">
 
 	<WrapPanel>

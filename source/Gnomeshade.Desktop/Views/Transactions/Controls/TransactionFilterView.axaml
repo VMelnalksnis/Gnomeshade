@@ -9,7 +9,6 @@
 	mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
 	d:DataContext="{x:Static design:DesignTimeData.TransactionFilter}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Controls.TransactionFilterView"
-	x:CompileBindings="True"
 	x:DataType="controls:TransactionFilter">
 
 	<StackPanel Orientation="Vertical" Spacing="5">

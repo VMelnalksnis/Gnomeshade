@@ -8,7 +8,6 @@
 	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.PurchaseUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Purchases.PurchaseUpsertionView"
-	x:CompileBindings="True"
 	x:DataType="purchases:PurchaseUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical">

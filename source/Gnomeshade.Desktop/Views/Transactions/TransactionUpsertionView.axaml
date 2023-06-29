@@ -8,7 +8,6 @@
 	mc:Ignorable="d" d:DesignWidth="900"
 	d:DataContext="{x:Static design:DesignTimeData.TransactionUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.TransactionUpsertionView"
-	x:CompileBindings="True"
 	x:DataType="transactions:TransactionUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical" MinWidth="300">
