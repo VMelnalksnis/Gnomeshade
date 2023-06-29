@@ -1,8 +1,8 @@
 name: build and test
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-    cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -172,3 +172,65 @@ jobs:
           solution: Gnomeshade.sln
           resharper-version: 2022.3.2
           treat-warnings-as-errors: false # ReSharper CLI still has false positives
+
+  qodana-dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v3.2.0
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: ./deployment/build.sh
+
+      - name: 'Create Qodana config'
+        shell: bash
+        run: >
+          printf "version: 1.0\nprofile:\n  name: 'qodana.recommended'\nlinter: 'jetbrains/qodana-dotnet:2023.1-eap'\ndotnet:\n  solution: 'Gnomeshade.sln'\n  configuration: Release" >> qodana.yml
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2023.1.5
+        with:
+          pr-mode: false
+
+  qodana-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v3.2.0
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - run: ./deployment/build.sh
+
+      - name: 'Create Qodana config'
+        shell: bash
+        run: >
+          printf "version: 1.0\nprofile:\n  name: 'qodana.recommended'\nlinter: 'jetbrains/qodana-js:2023.1-eap'\nbootstrap: 'npm install .\source\Gnomeshade.WebApi\Node\'" >> qodana.yml
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2023.1.5
+        with:
+          pr-mode: false
