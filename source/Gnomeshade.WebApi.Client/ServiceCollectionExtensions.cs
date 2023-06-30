@@ -53,7 +53,11 @@ public static class ServiceCollectionExtensions
 				client.DefaultRequestVersion = HttpVersion.Version30;
 				client.DefaultRequestHeaders.UserAgent.Add(_userAgent);
 			})
-			.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false })
+			.ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+			{
+				AllowAutoRedirect = false,
+				KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always,
+			})
 			.AddHttpMessageHandler<TokenDelegatingHandler>();
 	}
 }
