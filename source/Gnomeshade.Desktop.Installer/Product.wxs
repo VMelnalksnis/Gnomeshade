@@ -2,7 +2,7 @@
 <?define Name = "Gnomeshade" ?>
 <?define Description = "Gnomeshade desktop client" ?>
 <?define Manufacturer = "Valters Melnalksnis" ?>
-<?define Version = "!(bind.fileVersion.Gnomeshade.Desktop.exe)" ?>
+<?define Version = "!(bind.fileVersion.Gnomeshade.exe)" ?>
 <?define UpgradeCode = "{7bf2e236-d07d-4622-b190-7424bf463ecd}" ?>
 <?define CabName = "Gnomeshade.cab" ?>
 
@@ -59,8 +59,8 @@
 				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
 			</Component>
 
-			<Component Id="Gnomeshade.Desktop.exe">
-				<File Id="Gnomeshade.Desktop.exe" Name="Gnomeshade.Desktop.exe"
+			<Component Id="Gnomeshade.exe">
+				<File Id="Gnomeshade.exe" Name="Gnomeshade.exe"
 					  Source="$(var.BuildDir)Gnomeshade.Desktop.exe"/>
 
 				<RemoveFile Id="DllRemove" Name="*.dll" On="both"/>
@@ -92,7 +92,7 @@
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
 						  Icon="Logo.ico"
-						  Target="[#Gnomeshade.Desktop.exe]"
+						  Target="[#Gnomeshade.exe]"
 						  WorkingDirectory="INSTALLFOLDER"/>
 				<!--Remove application shortcut from Program Menu on uninstall-->
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
@@ -108,7 +108,7 @@
 		<StandardDirectory Id="DesktopFolder">
 			<Component Id="ComponentDesktopShortcut">
 				<Shortcut Id="AppDesktopShortcut" Name="$(var.Name)" Description="$(var.Description)"
-						  Target="[INSTALLFOLDER]Gnomeshade.Desktop.exe" Icon="Logo.ico"/>
+						  Target="[INSTALLFOLDER]Gnomeshade.exe" Icon="Logo.ico"/>
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
 				<RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1"
 							   KeyPath="yes"/>
@@ -125,7 +125,7 @@
 					<RegistryValue Type="string" Value="" Name="URL Protocol" KeyPath="yes"/>
 					<RegistryKey Key="shell\open\command" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
 						<RegistryValue Type="string"
-									   Value="&quot;[INSTALLFOLDER]Gnomeshade.Desktop.exe&quot; &quot;%1&quot;"/>
+									   Value="&quot;[INSTALLFOLDER]Gnomeshade.exe&quot; &quot;%1&quot;"/>
 					</RegistryKey>
 				</RegistryKey>
 			</Component>
