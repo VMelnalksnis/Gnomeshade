@@ -67,7 +67,7 @@ public sealed partial class LoginViewModel : ViewModelBase
 		}
 		catch (Exception exception)
 		{
-			ActivityService.ShowErrorNotification(exception.Message);
+			ActivityService.ShowErrorNotification(exception);
 		}
 	}
 

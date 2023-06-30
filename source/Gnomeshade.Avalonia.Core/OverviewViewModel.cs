@@ -64,7 +64,7 @@ public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBas
 		}
 		catch (Exception exception)
 		{
-			ActivityService.ShowErrorNotification(exception.Message);
+			ActivityService.ShowErrorNotification(exception);
 		}
 	}
 

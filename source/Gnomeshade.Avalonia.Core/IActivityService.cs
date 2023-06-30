@@ -31,4 +31,8 @@ public interface IActivityService : INotifyPropertyChanged
 	/// <summary>Shows a notification of an error.</summary>
 	/// <param name="message">Details about the error.</param>
 	void ShowErrorNotification(string message);
+
+	/// <summary>Shows a notification of an error.</summary>
+	/// <param name="exception">Details about the error.</param>
+	void ShowErrorNotification(Exception exception);
 }

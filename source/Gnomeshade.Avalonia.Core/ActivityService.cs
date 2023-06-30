@@ -10,6 +10,8 @@ using System.Linq;
 
 using Avalonia.Controls.Notifications;
 
+using Microsoft.Extensions.Logging;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <inheritdoc cref="IActivityService"/>
@@ -19,12 +21,15 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 
 	// This needs to be lazy, because this needs to be created before MainWindow to create its DataContext
 	private readonly Lazy<IManagedNotificationManager> _lazyNotificationManager;
+	private readonly ILogger<ActivityService> _logger;
 
 	/// <summary>Initializes a new instance of the <see cref="ActivityService"/> class.</summary>
 	/// <param name="notificationManager">Used for displaying notifications.</param>
-	public ActivityService(Lazy<IManagedNotificationManager> notificationManager)
+	/// <param name="logger">Logger for logging in the specified category.</param>
+	public ActivityService(Lazy<IManagedNotificationManager> notificationManager, ILogger<ActivityService> logger)
 	{
 		_lazyNotificationManager = notificationManager;
+		_logger = logger;
 		_activityScopes.CollectionChanged += ValueOnCollectionChanged;
 	}
 
@@ -49,6 +54,13 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 	/// <inheritdoc />
 	public void ShowErrorNotification(string message) =>
 		ShowNotification(new("Unexpected error", message, NotificationType.Error));
+
+	/// <inheritdoc />
+	public void ShowErrorNotification(Exception exception)
+	{
+		_logger.LogWarning(exception, "Unexpected error");
+		ShowErrorNotification(exception.Message);
+	}
 
 	/// <inheritdoc />
 	public void Dispose() => _activityScopes.CollectionChanged -= ValueOnCollectionChanged;

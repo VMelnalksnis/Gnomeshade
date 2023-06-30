@@ -43,7 +43,7 @@ public abstract class ViewModelBase : PropertyChangedBase, IDisposable
 		}
 		catch (Exception exception)
 		{
-			ActivityService.ShowErrorNotification(exception.Message);
+			ActivityService.ShowErrorNotification(exception);
 		}
 	}
 

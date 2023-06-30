@@ -107,7 +107,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		}
 		catch (Exception exception)
 		{
-			ActivityService.ShowErrorNotification(exception.Message);
+			ActivityService.ShowErrorNotification(exception);
 		}
 	}
 

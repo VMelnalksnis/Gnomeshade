@@ -40,7 +40,9 @@ public static class DesignTimeData
 
 	private static IDateTimeZoneProvider DateTimeZoneProvider => DateTimeZoneProviders.Tzdb;
 
-	private static IActivityService ActivityService => new ActivityService(new(() => new WindowNotificationManager(null)));
+	private static IActivityService ActivityService => new ActivityService(
+		new(() => new WindowNotificationManager(null)),
+		NullLogger<ActivityService>.Instance);
 
 	private static DesignTimeGnomeshadeClient GnomeshadeClient => new();
 

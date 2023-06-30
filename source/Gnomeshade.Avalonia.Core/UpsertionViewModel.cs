@@ -57,7 +57,7 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 		}
 		catch (Exception exception)
 		{
-			ActivityService.ShowErrorNotification(exception.Message);
+			ActivityService.ShowErrorNotification(exception);
 		}
 	}
 

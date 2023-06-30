@@ -24,4 +24,8 @@ internal sealed class StubbedActivityService : PropertyChangedBase, IActivitySer
 	public void ShowErrorNotification(string message)
 	{
 	}
+
+	public void ShowErrorNotification(Exception exception)
+	{
+	}
 }
