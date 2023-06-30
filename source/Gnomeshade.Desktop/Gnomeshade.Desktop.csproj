@@ -4,6 +4,7 @@
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
 		<AssemblyTitle>Gnomeshade</AssemblyTitle>
+		<ApplicationIcon>Assets/avalonia-logo.ico</ApplicationIcon>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>copyused</TrimMode>
