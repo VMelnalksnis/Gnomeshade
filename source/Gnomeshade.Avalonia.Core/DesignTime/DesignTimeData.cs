@@ -10,8 +10,10 @@ using Avalonia.Controls.Notifications;
 using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
+using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
@@ -197,6 +199,12 @@ public static class DesignTimeData
 	public static OwnerViewModel OwnerViewModel { get; } =
 		InitializeViewModel<OwnerViewModel, OwnerRow, OwnerUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
+	/// <summary>Gets an instance of <see cref="AboutViewModel"/> for use during design time.</summary>
+	public static AboutViewModel AboutViewModel { get; } = CreateViewModel<AboutViewModel>();
+
+	/// <summary>Gets an instance of <see cref="LicensesViewModel"/> for use during design time.</summary>
+	public static LicensesViewModel LicensesViewModel { get; } = CreateViewModel<LicensesViewModel>();
+
 	[UnconditionalSuppressMessage(
 		"Trimming",
 		"IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
@@ -228,6 +236,13 @@ public static class DesignTimeData
 			.AddHttpClient();
 
 		return serviceCollection.BuildServiceProvider();
+	}
+
+	private static TViewModel CreateViewModel<TViewModel>()
+		where TViewModel : ViewModelBase
+	{
+		var viewModel = GetServiceProvider().GetRequiredService<TViewModel>();
+		return InitializeViewModel(viewModel);
 	}
 
 	private static TViewModel InitializeViewModel<TViewModel>(TViewModel viewModel)

@@ -1,0 +1,49 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:help="clr-namespace:Gnomeshade.Avalonia.Core.Help;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DataContext="{x:Static dd:DesignTimeData.AboutViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Help.AboutView"
+	x:DataType="help:AboutViewModel">
+
+	<StackPanel Orientation="Vertical" Spacing="5">
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Gnomeshade version: " />
+			<TextBlock Text="{Binding Version}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text=".NET version: " />
+			<TextBlock Text="{Binding DotnetVersion}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="CPU: " />
+			<TextBlock Text="{Binding Cores}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Operating system: " />
+			<TextBlock Text="{Binding OsVersion}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Memory: " />
+			<TextBlock Text="{Binding MemoryMegabytes, StringFormat='\{0\}M'}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="GC: " />
+			<TextBlock Text="{Binding GarbageCollector}" />
+		</StackPanel>
+
+		<Button
+			Width="140" Margin="5 0" HorizontalContentAlignment="Center"
+			Command="{Binding Copy}" CommandParameter="{Binding $parent[Window].Clipboard}">
+			Copy
+		</Button>
+	</StackPanel>
+</UserControl>

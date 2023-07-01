@@ -7,6 +7,7 @@ using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
+using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
@@ -43,5 +44,7 @@ public static class ServiceCollectionExtensions
 		.AddTransient<PreferencesViewModel>()
 		.AddTransient<TransactionViewModel>()
 		.AddTransient<OwnerViewModel>()
-		.AddTransient<OwnerUpsertionViewModel>();
+		.AddTransient<OwnerUpsertionViewModel>()
+		.AddTransient<AboutViewModel>()
+		.AddTransient<LicensesViewModel>();
 }

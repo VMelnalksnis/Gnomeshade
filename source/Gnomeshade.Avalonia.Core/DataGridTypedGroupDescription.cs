@@ -18,13 +18,13 @@ namespace Gnomeshade.Avalonia.Core;
 public class DataGridTypedGroupDescription<TItem, TKey> : DataGridGroupDescription
 	where TKey : class
 {
-	private readonly Func<TItem, TKey> _keySelector;
+	private readonly Func<TItem, TKey?> _keySelector;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="DataGridTypedGroupDescription{TItem, TKey}"/> class.
 	/// </summary>
 	/// <param name="keySelector">Function for getting the value by which to group items.</param>
-	public DataGridTypedGroupDescription(Expression<Func<TItem, TKey>> keySelector)
+	public DataGridTypedGroupDescription(Expression<Func<TItem, TKey?>> keySelector)
 	{
 		_keySelector = keySelector.Compile();
 		PropertyName =

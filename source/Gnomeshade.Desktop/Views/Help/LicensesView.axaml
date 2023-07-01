@@ -1,0 +1,58 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:help="clr-namespace:Gnomeshade.Avalonia.Core.Help;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:interactivity="clr-namespace:Gnomeshade.Avalonia.Core.Interactivity;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="800"
+	d:DataContext="{x:Static dd:DesignTimeData.LicensesViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Help.LicensesView"
+	x:DataType="help:LicensesViewModel">
+
+	<Grid ColumnDefinitions="*" RowDefinitions="Auto,*,Auto">
+		<TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
+
+		<DataGrid
+			Grid.Row="1" x:Name="DataGrid"
+			ItemsSource="{Binding DataGridView}" SelectedItem="{Binding Selected}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="True"
+			CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False">
+
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="help:PackageInfo"
+					Header="Package" IsReadOnly="True"
+					Binding="{Binding PackageId, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="help:PackageInfo"
+					Header="Version" IsReadOnly="True"
+					Binding="{Binding PackageVersion, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="help:PackageInfo"
+					Header="License" IsReadOnly="True"
+					Binding="{Binding License, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<DataGrid.Styles>
+				<Style Selector="DataGridRowGroupHeader">
+					<Setter Property="IsItemCountVisible" Value="True" />
+				</Style>
+			</DataGrid.Styles>
+
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="View project information" Command="{Binding OpenProject}" />
+					<MenuItem Header="View license" Command="{Binding OpenLicense}"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+
+			<Interaction.Behaviors>
+				<interactivity:ElementDoubleTappedTrigger>
+					<InvokeCommandAction Command="{Binding OpenProject}" />
+				</interactivity:ElementDoubleTappedTrigger>
+			</Interaction.Behaviors>
+		</DataGrid>
+	</Grid>
+</UserControl>

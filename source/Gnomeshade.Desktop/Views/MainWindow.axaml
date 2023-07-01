@@ -94,6 +94,14 @@
 						x:Name="ProductReport" Header="_Products"
 						Command="{ReflectionBinding SwitchToProductReportAsync}" />
 				</MenuItem>
+				<MenuItem Header="_Help">
+					<MenuItem
+						x:Name="About" Header="_About"
+						Command="{Binding About}" CommandParameter="{Binding $parent[Window]}" />
+					<MenuItem
+						x:Name="Licenses" Header="_Licenses"
+						Command="{Binding License}" CommandParameter="{Binding $parent[Window]}" />
+				</MenuItem>
 			</Menu>
 
 			<UserControl

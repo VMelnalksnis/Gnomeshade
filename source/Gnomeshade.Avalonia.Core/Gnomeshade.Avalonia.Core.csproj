@@ -23,4 +23,8 @@
 		<PackageReference Include="System.Drawing.Common" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="Help\licenses.json" />
+	</ItemGroup>
+
 </Project>

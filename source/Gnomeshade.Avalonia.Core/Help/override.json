@@ -1,0 +1,67 @@
+[
+	{
+		"Id": "Ardalis.SmartEnum",
+		"Version": "2.1.0",
+		"License": "MIT"
+	},
+	{
+		"Id": "Avalonia.Angle.Windows.Natives",
+		"Version": "2.1.0.2023020321",
+		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.0.2023020321/License"
+	},
+	{
+		"Id": "Avalonia.BuildServices",
+		"Version": "0.0.19",
+		"License": "No license"
+	},
+	{
+		"Id": "Docker.DotNet",
+		"Version": "3.125.15",
+		"License": "MIT"
+	},
+	{
+		"Id": "Docker.DotNet.X509",
+		"Version": "3.125.15",
+		"License": "MIT"
+	},
+	{
+		"Id": "DotNet.ReproducibleBuilds.Isolated",
+		"Version": "1.1.1",
+		"License": "MIT"
+	},
+	{
+		"Id": "Microsoft.CodeCoverage",
+		"Version": "17.6.2",
+		"License": "MS-EULA"
+	},
+	{
+		"Id": "Microsoft.NET.Test.Sdk",
+		"Version": "17.6.2",
+		"License": "MS-EULA"
+	},
+	{
+		"Id": "Microsoft.TestPlatform.ObjectModel",
+		"Version": "17.6.2",
+		"License": "MS-EULA"
+	},
+	{
+		"Id": "Microsoft.TestPlatform.TestHost",
+		"Version": "17.6.2",
+		"License": "MS-EULA"
+	},
+	{
+		"Id": "NUnit",
+		"Version": "3.13.3",
+		"License": "MIT"
+	},
+	{
+		"Id": "Testcontainers",
+		"Version": "3.2.0",
+		"License": "MIT"
+	},
+	{
+		"Id": "Testcontainers.PostgreSql",
+		"Version": "3.2.0",
+		"License": "MIT"
+	}
+]

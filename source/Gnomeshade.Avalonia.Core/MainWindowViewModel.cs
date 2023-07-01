@@ -13,8 +13,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
+using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
@@ -31,6 +33,7 @@ namespace Gnomeshade.Avalonia.Core;
 public sealed partial class MainWindowViewModel : ViewModelBase
 {
 	private readonly IServiceProvider _serviceProvider;
+	private readonly IDialogService _dialogService;
 	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
 
 	private bool _initialized;
@@ -57,6 +60,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		: base(serviceProvider.GetRequiredService<IActivityService>())
 	{
 		_serviceProvider = serviceProvider;
+
+		_dialogService = _serviceProvider.GetRequiredService<IDialogService>();
 		_userConfigurationMonitor = _serviceProvider.GetRequiredService<IOptionsMonitor<UserConfiguration>>();
 
 		var preferences = _userConfigurationMonitor.CurrentValue.Preferences;
@@ -66,11 +71,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
 		var commandFactory = _serviceProvider.GetRequiredService<ICommandFactory>();
 		Initialize = commandFactory.Create(InitializeActiveViewAsync, () => _initialized, "Initializing");
+		About = commandFactory.Create<Window>(ShowAboutWindow, "Waiting for About window to be closed");
+		License = commandFactory.Create<Window>(ShowLicenseWindow, "Waiting for License window to be closed");
+
 		PropertyChanging += OnPropertyChanging;
 	}
 
 	/// <summary>Gets a command for initializing the view model.</summary>
 	public CommandBase Initialize { get; }
+
+	/// <summary>Gets a command for showing <see cref="AboutViewModel"/>.</summary>
+	public CommandBase About { get; }
+
+	/// <summary>Gets a command for showing <see cref="LicensesViewModel"/>.</summary>
+	public CommandBase License { get; }
 
 	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
 	public bool CanLogOut => ActiveView is not null and not LoginViewModel and not ConfigurationWizardViewModel;
@@ -263,6 +277,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
 		ActiveView = viewModel;
 		return viewModel.RefreshAsync();
+	}
+
+	private async Task ShowAboutWindow(Window window)
+	{
+		var viewModel = _serviceProvider.GetRequiredService<AboutViewModel>();
+		await viewModel.RefreshAsync();
+
+		await _dialogService.ShowDialog(window, viewModel, dialog => dialog.Title = "About");
+	}
+
+	private async Task ShowLicenseWindow(Window window)
+	{
+		var viewModel = _serviceProvider.GetRequiredService<LicensesViewModel>();
+		await viewModel.RefreshAsync();
+
+		await _dialogService.ShowDialog(window, viewModel, dialog => dialog.Title = "Licenses");
 	}
 
 	private async void OnUserLoggedIn(object? sender, EventArgs e)
