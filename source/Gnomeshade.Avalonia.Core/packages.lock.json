@@ -12,6 +12,15 @@
           "Avalonia.Remote.Protocol": "11.0.0-rc1.1"
         }
       },
+      "Avalonia.Xaml.Interactivity": {
+        "type": "Direct",
+        "requested": "[11.0.0-rc1.1, )",
+        "resolved": "11.0.0-rc1.1",
+        "contentHash": "4g3SqzTl5y3fHAGuYaXKzGmWHL4//JzWE/Qj97ZTMzXllk1ycOlul55qy7XFczW69ZvJu09VD0Df68AS0EKw7g==",
+        "dependencies": {
+          "Avalonia": "11.0.0-rc1.1"
+        }
+      },
       "DotNet.ReproducibleBuilds": {
         "type": "Direct",
         "requested": "[1.1.1, )",

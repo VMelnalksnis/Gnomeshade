@@ -33,6 +33,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
 
+	private bool _initialized;
+
 	/// <summary>Gets the currently active view.</summary>
 	[Notify(Setter.Private)]
 	private ViewModelBase? _activeView;
@@ -62,38 +64,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		_windowWidth = preferences?.WindowWidth ?? 800;
 		_windowState = preferences?.WindowState ?? WindowState.Normal;
 
+		var commandFactory = _serviceProvider.GetRequiredService<ICommandFactory>();
+		Initialize = commandFactory.Create(InitializeActiveViewAsync, () => _initialized, "Initializing");
 		PropertyChanging += OnPropertyChanging;
 	}
 
+	/// <summary>Gets a command for initializing the view model.</summary>
+	public CommandBase Initialize { get; }
+
 	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
-	public bool CanLogOut => ActiveView is not null and not LoginViewModel;
+	public bool CanLogOut => ActiveView is not null and not LoginViewModel and not ConfigurationWizardViewModel;
 
 	/// <summary>Safely stops the application.</summary>
 	public static void Exit() => GetApplicationLifetime().Shutdown();
-
-	/// <summary>Asynchronously initializes <see cref="ActiveView"/> after the window is displayed.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task InitializeActiveViewAsync()
-	{
-		// The first notification does not show up, and subsequent calls work after some delay
-		ActivityService.ShowNotification(new(null, null, expiration: TimeSpan.FromMilliseconds(1)));
-
-		if (ActiveView is not null)
-		{
-			return;
-		}
-
-		var apiBaseAddress = _userConfigurationMonitor.CurrentValue.Gnomeshade?.BaseAddress;
-		if (apiBaseAddress is not null)
-		{
-			await SwitchToLogin();
-			return;
-		}
-
-		var configurationWizardViewModel = _serviceProvider.GetRequiredService<ConfigurationWizardViewModel>();
-		configurationWizardViewModel.Completed += ConfigurationWizardViewModelOnUpdated;
-		ActiveView = configurationWizardViewModel;
-	}
 
 	/// <summary>Logs out the current user.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -214,6 +197,35 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		var message =
 			$"Did not expected {typeof(Application)}.{nameof(Application.Current)}.{nameof(Application.Current.ApplicationLifetime)} to be null";
 		return new NullReferenceException(message);
+	}
+
+	private async Task InitializeActiveViewAsync()
+	{
+		// The first notification does not show up, and subsequent calls work after some delay
+		ActivityService.ShowNotification(new(null, null, expiration: TimeSpan.FromMilliseconds(1)));
+
+		if (ActiveView is not null)
+		{
+			_initialized = true;
+			Initialize.InvokeExecuteChanged();
+			return;
+		}
+
+		var apiBaseAddress = _userConfigurationMonitor.CurrentValue.Gnomeshade?.BaseAddress;
+		if (apiBaseAddress is not null)
+		{
+			await SwitchToLogin();
+			_initialized = true;
+			Initialize.InvokeExecuteChanged();
+			return;
+		}
+
+		var configurationWizardViewModel = _serviceProvider.GetRequiredService<ConfigurationWizardViewModel>();
+		configurationWizardViewModel.Completed += ConfigurationWizardViewModelOnUpdated;
+		ActiveView = configurationWizardViewModel;
+
+		_initialized = true;
+		Initialize.InvokeExecuteChanged();
 	}
 
 	private async Task SwitchToLogin()

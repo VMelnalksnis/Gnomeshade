@@ -11,6 +11,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Avalonia.Controls.DataGrid" />
+		<PackageReference Include="Avalonia.Xaml.Interactivity" />
 		<PackageReference Include="IdentityModel.OidcClient" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />

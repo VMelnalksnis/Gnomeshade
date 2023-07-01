@@ -217,14 +217,6 @@
           "Avalonia.Xaml.Interactivity": "11.0.0-rc1.1"
         }
       },
-      "Avalonia.Xaml.Interactivity": {
-        "type": "Transitive",
-        "resolved": "11.0.0-rc1.1",
-        "contentHash": "4g3SqzTl5y3fHAGuYaXKzGmWHL4//JzWE/Qj97ZTMzXllk1ycOlul55qy7XFczW69ZvJu09VD0Df68AS0EKw7g==",
-        "dependencies": {
-          "Avalonia": "11.0.0-rc1.1"
-        }
-      },
       "HarfBuzzSharp": {
         "type": "Transitive",
         "resolved": "2.8.2.3",
@@ -610,6 +602,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia.Controls.DataGrid": "[11.0.0-rc1.1, )",
+          "Avalonia.Xaml.Interactivity": "[11.0.0-rc1.1, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.2.1, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-beta.800-11.0.0-rc1.1, )",
@@ -711,6 +704,15 @@
           "Avalonia.Xaml.Interactions.Reactive": "11.0.0-rc1.1",
           "Avalonia.Xaml.Interactions.Responsive": "11.0.0-rc1.1",
           "Avalonia.Xaml.Interactivity": "11.0.0-rc1.1"
+        }
+      },
+      "Avalonia.Xaml.Interactivity": {
+        "type": "CentralTransitive",
+        "requested": "[11.0.0-rc1.1, )",
+        "resolved": "11.0.0-rc1.1",
+        "contentHash": "4g3SqzTl5y3fHAGuYaXKzGmWHL4//JzWE/Qj97ZTMzXllk1ycOlul55qy7XFczW69ZvJu09VD0Df68AS0EKw7g==",
+        "dependencies": {
+          "Avalonia": "11.0.0-rc1.1"
         }
       },
       "IdentityModel.OidcClient": {
