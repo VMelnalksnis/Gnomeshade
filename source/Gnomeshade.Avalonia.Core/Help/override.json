@@ -11,8 +11,8 @@
 	},
 	{
 		"Id": "Avalonia.BuildServices",
-		"Version": "0.0.19",
-		"License": "No license"
+		"Version": "0.0.27",
+		"License": "MIT"
 	},
 	{
 		"Id": "Docker.DotNet",
