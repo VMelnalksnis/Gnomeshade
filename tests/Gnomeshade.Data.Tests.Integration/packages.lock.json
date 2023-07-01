@@ -141,11 +141,11 @@
       },
       "Testcontainers.PostgreSql": {
         "type": "Direct",
-        "requested": "[3.2.0, )",
-        "resolved": "3.2.0",
-        "contentHash": "SpoxXUSgLr3hd3Do9VP0xLxHR+OKcOX34U8bSXhQj4B5U235e2G3z/VikqNm9nPG9qGKKleQED04v4taQwnl/g==",
+        "requested": "[3.3.0, )",
+        "resolved": "3.3.0",
+        "contentHash": "J37ht3Iqbs4DYuhPz0Fc4a8yWvv08XlCQvUtjx4M3zl3C8oae3p2QG+Xkt9t4esVBlCEdiDWnlH2FmYH/INE9w==",
         "dependencies": {
-          "Testcontainers": "3.2.0"
+          "Testcontainers": "3.3.0"
         }
       },
       "Docker.DotNet": {
@@ -691,8 +691,8 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "3.2.0",
-        "contentHash": "q4WXHpfCjOmPs78EWN3Hxe78eVsT4p4wNPy6Azpiwo79yowtsKrwybRNfScoJdVdWAjwXSSm6hiIcZY2CVT6OQ==",
+        "resolved": "3.3.0",
+        "contentHash": "PNl479gZH7U54sGzQKM9MhAt8eos678gsNOlu/MMc0qecTAYBGronT0GGsBwaJtrsMGqD5bQr6ylcmRI+HwAtw==",
         "dependencies": {
           "Docker.DotNet": "3.125.15",
           "Docker.DotNet.X509": "3.125.15",
