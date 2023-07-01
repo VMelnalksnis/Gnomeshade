@@ -40,11 +40,8 @@
 		</WrapPanel>
 
 		<UserControl Content="{Binding Transfers}" Margin="0 10" />
-
-		<WrapPanel>
-			<UserControl Content="{Binding Purchases}" Margin="0 10" />
-			<UserControl Content="{Binding Links}" Margin="0 10" />
-			<UserControl Content="{Binding Loans}" Margin="0 10" />
-		</WrapPanel>
+		<UserControl Content="{Binding Purchases}" Margin="0 10" />
+		<UserControl Content="{Binding Links}" Margin="0 10" />
+		<UserControl Content="{Binding Loans}" Margin="0 10" />
 	</StackPanel>
 </UserControl>

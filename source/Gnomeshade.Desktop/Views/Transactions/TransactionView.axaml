@@ -5,58 +5,61 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:transactions="clr-namespace:Gnomeshade.Avalonia.Core.Transactions;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:interactivity="clr-namespace:Gnomeshade.Avalonia.Core.Interactivity;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="600"
 	d:DataContext="{x:Static design:DesignTimeData.TransactionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.TransactionView"
 	x:DataType="transactions:TransactionViewModel">
 
-	<Grid RowDefinitions="*" ColumnDefinitions="Auto,Auto,*">
-		<StackPanel Orientation="Vertical" Spacing="5">
-			<UserControl Content="{Binding Filter, Mode=OneWay}" />
+	<Grid RowDefinitions="*" ColumnDefinitions="Auto,Auto,Auto,Auto,*" x:Name="Container">
+		<Expander Grid.Column="0" ExpandDirection="Right" VerticalAlignment="Stretch" IsExpanded="True">
+			<StackPanel Orientation="Vertical" Spacing="5">
+				<UserControl Content="{Binding Filter, Mode=OneWay}" />
 
-			<Grid ColumnDefinitions="*, *" RowDefinitions="Auto, 5, Auto, Auto, Auto">
-				<Button
-					Grid.Row="0" Grid.Column="0"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
-					Refresh
-				</Button>
-				<Button
-					Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
-					Delete Selected
-				</Button>
-				<Button
-					Grid.Row="2" Grid.Column="0"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding CanSelectSource}" Command="{ReflectionBinding SelectSource}">
-					Select Source
-				</Button>
-				<Button
-					Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding CanSelectTarget}" Command="{ReflectionBinding SelectTarget}">
-					Select Target
-				</Button>
-				<Button
-					Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
-					HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					Command="{ReflectionBinding ClearMerge}">
-					Clear
-				</Button>
-				<Button
-					Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding Merge.CanMerge}" Command="{ReflectionBinding Merge.MergeAsync}">
-					Merge
-				</Button>
-				<Button
-					Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-					IsEnabled="{Binding Refund.CanRefund}" Command="{ReflectionBinding Refund.RefundAsync}">
-					Refund
-				</Button>
-			</Grid>
-		</StackPanel>
+				<Grid ColumnDefinitions="*, *" RowDefinitions="Auto, 5, Auto, Auto, Auto">
+					<Button
+						Grid.Row="0" Grid.Column="0"
+						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
+						Refresh
+					</Button>
+					<Button
+						Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+						Delete Selected
+					</Button>
+					<Button
+						Grid.Row="2" Grid.Column="0"
+						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding CanSelectSource}" Command="{ReflectionBinding SelectSource}">
+						Select Source
+					</Button>
+					<Button
+						Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding CanSelectTarget}" Command="{ReflectionBinding SelectTarget}">
+						Select Target
+					</Button>
+					<Button
+						Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						Command="{ReflectionBinding ClearMerge}">
+						Clear
+					</Button>
+					<Button
+						Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding Merge.CanMerge}" Command="{ReflectionBinding Merge.MergeAsync}">
+						Merge
+					</Button>
+					<Button
+						Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+						IsEnabled="{Binding Refund.CanRefund}" Command="{ReflectionBinding Refund.RefundAsync}">
+						Refund
+					</Button>
+				</Grid>
+			</StackPanel>
+		</Expander>
 
-		<Grid Grid.Column="1" ColumnDefinitions="*" RowDefinitions="*, Auto">
+		<Grid Grid.Column="2" ColumnDefinitions="*" RowDefinitions="*, Auto">
 			<DataGrid
 				Grid.Row="0"
 				x:Name="DataGrid"
@@ -222,6 +225,17 @@
 			<UserControl Grid.Row="1" Content="{Binding Summary}" />
 		</Grid>
 
-		<UserControl Grid.Column="2" Content="{Binding Details}" />
+		<GridSplitter Grid.Column="3">
+			<Interaction.Behaviors>
+				<interactivity:ElementDoubleTappedTrigger>
+					<!-- Grid splitter changes sets a specific Width instead of Auto, this resets it -->
+					<ChangePropertyAction
+						TargetObject="{Binding #Container.ColumnDefinitions[2]}"
+						PropertyName="Width" Value="{x:Static GridLength.Auto}" />
+				</interactivity:ElementDoubleTappedTrigger>
+			</Interaction.Behaviors>
+		</GridSplitter>
+
+		<UserControl Grid.Column="4" Content="{Binding Details}" />
 	</Grid>
 </UserControl>

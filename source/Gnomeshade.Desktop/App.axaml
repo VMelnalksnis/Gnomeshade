@@ -49,6 +49,13 @@
 		<SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" />
 		<SolidColorBrush x:Key="DataGridGridLinesBrush" />
 
+		<!-- Override default values for expander -->
+		<Thickness x:Key="ExpanderChevronMargin">0</Thickness>
+		<x:Double x:Key="FlyoutThemeMinWidth">0</x:Double>
+		<SolidColorBrush x:Key="ExpanderHeaderBackground" />
+		<SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver" />
+		<SolidColorBrush x:Key="ExpanderChevronBackground" />
+
 		<!-- Copied from source, as currently cannot be modified -->
 		<StreamGeometry x:Key="DataGridSortIconDescendingPath">M1875 1011l-787 787v-1798h-128v1798l-787 -787l-90 90l941 941l941 -941z</StreamGeometry>
 		<StreamGeometry x:Key="DataGridSortIconAscendingPath">M1965 947l-941 -941l-941 941l90 90l787 -787v1798h128v-1798l787 787z</StreamGeometry>
@@ -214,6 +221,10 @@
 		<Style Selector="WrapPanel > StackPanel > TextBox">
 			<Setter Property="MinWidth" Value="150" />
 			<Setter Property="UseFloatingWatermark" Value="True" />
+		</Style>
+
+		<Style Selector="Expander ToggleButton">
+			<Setter Property="Padding" Value="0" />
 		</Style>
 	</Application.Styles>
 </Application>
