@@ -70,7 +70,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		_windowState = preferences?.WindowState ?? WindowState.Normal;
 
 		var commandFactory = _serviceProvider.GetRequiredService<ICommandFactory>();
-		Initialize = commandFactory.Create(InitializeActiveViewAsync, () => _initialized, "Initializing");
+		Initialize = commandFactory.Create(InitializeActiveViewAsync, () => !_initialized, "Initializing");
 		About = commandFactory.Create<Window>(ShowAboutWindow, "Waiting for About window to be closed");
 		License = commandFactory.Create<Window>(ShowLicenseWindow, "Waiting for License window to be closed");
 
