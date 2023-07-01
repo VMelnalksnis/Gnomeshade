@@ -220,13 +220,11 @@ public static class DesignTimeData
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
 			.AddSingleton<Lazy<IManagedNotificationManager>>(_ => new(() => new WindowNotificationManager(null)))
 			.AddSingleton<IActivityService, ActivityService>()
-			.AddTransient<ApplicationSettingsViewModel>()
-			.AddTransient<PreferencesViewModel>()
-			.AddTransient<GnomeshadeConfigurationViewModel>()
-			.AddTransient<AuthenticationConfigurationViewModel>()
-			.AddTransient<ConfigurationWizardViewModel>()
+			.AddTransient<ICommandFactory, CommandFactory>()
+			.AddTransient<ILoggerFactory>(_ => NullLoggerFactory.Instance)
 			.AddTransient<ILogger<PreferencesViewModel>>(_ => NullLogger<PreferencesViewModel>.Instance)
 			.AddTransient<IGnomeshadeClient>(_ => GnomeshadeClient)
+			.AddViewModels()
 			.AddHttpClient();
 
 		return serviceCollection.BuildServiceProvider();
