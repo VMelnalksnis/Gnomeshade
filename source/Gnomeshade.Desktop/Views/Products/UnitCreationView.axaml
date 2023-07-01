@@ -25,13 +25,7 @@
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding UnitSelector}"
 					ItemsSource="{Binding Units}"
-					SelectedItem="{Binding ParentUnit, Mode=TwoWay}">
-					<AutoCompleteBox.ItemTemplate>
-						<DataTemplate x:DataType="mp:Unit">
-							<TextBlock Text="{Binding Name}" />
-						</DataTemplate>
-					</AutoCompleteBox.ItemTemplate>
-				</AutoCompleteBox>
+					SelectedItem="{Binding ParentUnit, Mode=TwoWay}"/>
 
 				<TextBox Watermark="Multiplier" Text="{Binding  Multiplier}" />
 			</StackPanel>
