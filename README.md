@@ -12,36 +12,17 @@ A free, open source and self-hosted personal finance manager.
 
 ## Getting Started
 
-> ⚠️ WARNING: **NOT READY FOR PRODUCTION!**. This project is under heavy development, there will be continuous functions, features and api changes.
+Before installing the server yourself, you can try out the client using the
+[demo server](https://gnomeshade-demo.azurewebsites.net/).
+For instructions on how to install the client see
+[gnomeshade.org/getting-started#install-client](https://www.gnomeshade.org/getting-started#install-client).
+Note that the demo server is publicly accessible by anyone, so be careful entering person information.
+The demo server is also periodically wiped.
 
-Currently all applications are publish as self-contained, so they can be run after extracting and editing the
-appsettings.json file.
-The latest release can be found [here](https://github.com/VMelnalksnis/Gnomeshade/releases/latest).
-The latest build results are added to
-the [nightly release](https://github.com/VMelnalksnis/Gnomeshade/releases/tag/nightly).
-
-### Server
-
-* A debian package is provided in releases, which can be installed using `sudo dpkg -i gnomeshade.deb`
-* A [docker image](https://github.com/VMelnalksnis/Gnomeshade/pkgs/container/gnomeshade) is also provided; currently only `amd64` is supported 
-* An unpublished Ansible role ([see issue](https://github.com/VMelnalksnis/Gnomeshade/issues/523)) is also available; for supported platforms see [tests](.github/workflows/build-and-test.yml)
-* The server requires a database, currently the following are supported:
-	* SQLite
-	* PostgreSQL (for [supported versions](https://www.postgresql.org/support/versioning/) see [integration tests](tests/Gnomeshade.WebApi.Tests.Integration.PostgreSQL/WebserverSetup.cs))
-* For additional web server setup,
-  see [Microsoft docs](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-6.0)
-* To automatically import data with Nordigen,
-  see [Nordigen docs](https://nordigen.com/en/account_information_documenation/integration/quickstart_guide/)
-  and [configuration](https://github.com/VMelnalksnis/NordigenDotNet#usage)
-* To import purchases from receipts from [Paperless](https://github.com/paperless-ngx/paperless-ngx),
-  see [configuration](https://github.com/VMelnalksnis/PaperlessDotNet#usage)
-	
-
-### Client
-
-An `.msi` installer is provided for the windows client application. 
-
-A linux version of the same client is also built and provided in the releases in a zip file, however they have not been tested on linux desktop. 
+Instructions for setting up the server yourself can be found
+at [gnomeshade.org/getting-started#install](https://www.gnomeshade.org/getting-started#install).
+For more detailed information about server configuration
+see [gnomeshade.org/configuration](https://www.gnomeshade.org/configuration).
 
 ## Contributing
 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Gnomeshade - Getting Started</title>
+	<meta name="description" content="Gnomeshade - Getting Started">
+	<meta name="author" content="Valters Melnalksnis">
+
+	<link href="site.css" rel="stylesheet">
+	<style>
+		main > section {
+			margin-bottom: 4em;
+		}
+	</style>
+</head>
+<body>
+
+<nav id="side" class="side-navigation">
+	<a href="index.html">Gnomeshade</a>
+	<ul>
+		<li><a href="https://gnomeshade-demo.azurewebsites.net/">Demo</a></li>
+		<li><a href="getting-started.html">Getting started</a></li>
+		<li><a href="configuration.html">Configuration</a></li>
+		<li><a href="changelog.html">Changelog</a></li>
+		<li><a href="https://github.com/VMelnalksnis/Gnomeshade/releases/latest">Latest release</a></li>
+		<li><a href="https://github.com/VMelnalksnis/Gnomeshade">GitHub repo</a></li>
+	</ul>
+
+	<label>Getting started:</label>
+	<ul>
+		<li><a href="#download">Downloading</a></li>
+		<li>
+			<a href="#install">Installing the server</a>
+			<ul>
+				<li><a href="#install-debian">Debian/Ubuntu</a></li>
+				<li><a href="#install-docker">Docker</a></li>
+			</ul>
+		</li>
+		<li><a href="#register">Create a user account</a></li>
+		<li><a href="#install-client">Installing the client</a></li>
+	</ul>
+</nav>
+
+<main id="top" class="content">
+	<h1>Getting started</h1>
+
+	<section id="download">
+		<h2>Downloading</h2>
+		Gnomeshade can be downloaded from
+		<ul>
+			<li>
+				the <a href="https://github.com/VMelnalksnis/Gnomeshade/releases/latest">latest release</a> on GitHub
+			</li>
+			<li>
+				the GitHub <a href="https://github.com/VMelnalksnis/Gnomeshade/pkgs/container/gnomeshade">container
+				registry</a>
+			</li>
+		</ul>
+		A nightly version is also available, however it is not recommended to use it in production systems.
+		Some features might not work, and there might not be an update path to future versions.
+	</section>
+
+	<section id="install">
+		<h2>Installing the server</h2>
+
+		<h3 id="install-debian">Installing on Debian/Ubuntu</h3>
+		<ol>
+			<li>Download the DEB package from the release</li>
+			<li>Install the package:
+				<br>
+				<code>
+					sudo dpkg -i gnomeshade.deb
+				</code>
+			</li>
+			<li>
+				Configure the <a href="configuration.html#admin">admin user</a>
+				and <a href="configuration.html#database">database</a>
+			</li>
+			<li>Start the server:
+				<br>
+				<code>
+					sudo systemctl restart gnomeshade
+				</code>
+			</li>
+			<li>
+				The server should be available on <a href="http://localhost:5000">http://localhost:5000</a>,
+				and <a href="http://localhost:5000/api/v1.0/health">http://localhost:5000/api/v1.0/health</a>
+				should return <code>Healthy</code>
+			</li>
+		</ol>
+
+		<h3 id="install-docker">Installing on Docker</h3>
+		<ol>
+			<li>
+				Download the example
+				<a href="https://github.com/VMelnalksnis/Gnomeshade/blob/master/docker-compose.yml">docker-compose.yml</a>
+				file
+			</li>
+			<li>
+				Configure the <a href="configuration.html#admin">admin user</a>
+				and <a href="configuration.html#database">database</a>
+			</li>
+			<li>
+				Start the server:
+				<br>
+				<code>
+					docker-compose up --detached
+				</code>
+			</li>
+			<li>
+				The server should be available on <a href="http://localhost:8080/">http://localhost:8080/</a>,
+				and <a href="http://localhost:8080/api/v1.0/health">http://localhost:8080/api/v1.0/health</a>
+				should return <code>Healthy</code>
+			</li>
+		</ol>
+	</section>
+
+	<section id="register">
+		<h2>Create a user account</h2>
+		Before you can start using Gnomeshade, first you must create an account for yourself.
+		<ol>
+			<li>
+				Either go to the home page <a href="http://localhost:8080/">http://localhost:8080/</a>
+				click "Register" in the top right corner, or go to the registration page
+				<a href="http://localhost:8080/Identity/Account/Register">http://localhost:8080/Identity/Account/Register</a>
+			</li>
+			<li>
+				Depending on your configuration either create a new account with a username/password,
+				or register using an external identity provider
+			</li>
+		</ol>
+	</section>
+
+	<section id="install-client">
+		<h2>Installing the client</h2>
+
+		<h3>Installing on Windows</h3>
+		<ol>
+			<li>Download the MSI installer from the release</li>
+			<li>Run the installer</li>
+			<li>Run Gnomeshade</li>
+			<li>
+				On first run you will be prompted for some configuration:
+				<ol>
+					<li>
+						The address of the server, by default
+						<a href="http://localhost:8080/">http://localhost:8080/</a>
+					</li>
+					<li>
+						Optionally, you can provide the configuration for an external identity provider
+					</li>
+				</ol>
+			</li>
+			<li>Log in with the account you created before</li>
+		</ol>
+	</section>
+</main>
+
+<footer>
+	<nav class="bottom-navigation">
+		<a href="#top">Back to top</a>
+	</nav>
+</footer>
+</body>
+</html>

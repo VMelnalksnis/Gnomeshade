@@ -26,16 +26,27 @@ nav * {
 	text-decoration: none;
 }
 
-.top-navigation ul {
-	list-style-type: none;
-	overflow: hidden;
-	margin: 0;
-	padding: 0;
-	float: right;
+.bottom-navigation {
+	display: flex;
+	justify-content: center;
 }
 
-.top-navigation li:not(:last-child) {
-	margin: 0 14px 0 0;
+.side-navigation {
+	height: 100%;
+	width: 250px;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	padding-top: 20px;
+}
+
+.side-navigation ul {
+	padding-left: 16px;
+}
+
+.side-navigation * {
+	display: block;
 }
 
 .content {
@@ -45,9 +56,9 @@ nav * {
 	margin: 0 auto;
 }
 
-.bottom-navigation {
-	display: flex;
-	justify-content: center;
+pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
 }
 
 @media (prefers-color-scheme: dark) {

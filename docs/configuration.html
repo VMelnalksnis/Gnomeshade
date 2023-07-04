@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Gnomeshade - Configuration</title>
+	<meta name="description" content="Gnomeshade - Configuration">
+	<meta name="author" content="Valters Melnalksnis">
+
+	<link href="site.css" rel="stylesheet">
+	<style>
+		main > section {
+			margin-bottom: 4em;
+		}
+	</style>
+</head>
+<body>
+
+<nav id="side" class="side-navigation">
+	<a href="index.html">Gnomeshade</a>
+	<ul>
+		<li><a href="https://gnomeshade-demo.azurewebsites.net/">Demo</a></li>
+		<li><a href="getting-started.html">Getting started</a></li>
+		<li><a href="configuration.html">Configuration</a></li>
+		<li><a href="changelog.html">Changelog</a></li>
+		<li><a href="https://github.com/VMelnalksnis/Gnomeshade/releases/latest">Latest release</a></li>
+		<li><a href="https://github.com/VMelnalksnis/Gnomeshade">GitHub repo</a></li>
+	</ul>
+
+	<label>Configuration:</label>
+	<ul>
+		<li>
+			<a href="#sources">Configuration sources</a>
+			<ul>
+				<li><a href="#config-changes">Applying changes</a></li>
+			</ul>
+		</li>
+		<li><a href="#admin">Admin user</a></li>
+		<li><a href="#database">Database</a></li>
+		<li>
+			<a href="#auth">Authentication</a>
+			<ul>
+				<li><a href="#auth-local">Local accounts</a></li>
+				<li><a href="#auth-external">External providers</a></li>
+				<li><a href="#auth-keycloak">Keycloak</a></li>
+				<li><a href="#auth-github">GitHub</a></li>
+			</ul>
+		</li>
+		<li><a href="#webserver">Web server</a></li>
+		<li><a href="#nordigen">Nordigen</a></li>
+		<li><a href="#paperless">Paperless</a></li>
+		<li><a href="#otel">Open telemetry</a></li>
+	</ul>
+</nav>
+
+<main id="top" class="content">
+	<h1>Configuration</h1>
+
+	<section id="sources">
+		<h2>Configuration sources</h2>
+
+		Gnomeshade can be configured from:
+		<ul>
+			<li>
+				<code>appsettings.json</code> and <code>appsettings.{Environment}.json</code>
+				in the content root directory;
+			</li>
+			<li>
+				environment variables, where <code>__</code> separates categories/keys,
+				for example <code>Logging__LogLevel__Default=Warning</code>.
+				On linux the value of the variable must be escaped,
+				which can be done using the <code>systemd-escape</code> tool
+			</li>
+			<li>
+				command line arguments, which can be formatted in the following ways:
+				<ol>
+					<li><code>Logging:LogLevel:Default=Warning</code></li>
+					<li><code>/Logging:LogLevel:Default=Warning</code></li>
+					<li><code>--Logging:LogLevel:Default="Warning"</code></li>
+				</ol>
+			</li>
+		</ul>
+		<p>
+			These sources are layered on top of each other in that order,
+			meaning that if all configuration sources contain the same configuration key, the last one will be used.
+			For example, if
+		</p>
+		<ul>
+			<li>environment variable <code>Logging__LogLevel__Default=Warning</code></li>
+			<li>command line argument <code>--Logging:LogLevel:Default="Information"</code></li>
+		</ul>
+		<p>
+			are set, the final value will be <code>Information</code>.
+			<strong>NB</strong>&nbsp;Each array index is a separate key, so if, for example,
+			there are 2 items in an array in <code>appsettings.json</code>
+			and the first is also set in an environment variable,
+			the second value from <code>appsettings.json</code> will remain. For more detailed documentation, see
+			<a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-7.0#default-application-configuration-sources">Microsoft documentation</a>.
+		</p>
+
+		<section id="config-changes">
+			<h3>Applying changes</h3>
+			<p>
+				Some configuration sources support automatic reloading on changes during runtime,
+				for example the <code>appsettings.json</code> files.
+				Some configuration, such as <code>Oidc</code> and <code>OAuth</code>, is only read and applied on
+				startup,
+				so these will still require a restart in order to apply.
+				However, other configuration such as <code>Logging</code> is automatically applied during runtime,
+				so it's possible to change the minimum log levels without restarting.
+			</p>
+		</section>
+	</section>
+
+	<section id="admin">
+		<h2>Admin user</h2>
+		<p>
+			Gnomeshade requires and initial admin user.
+			The default username is <code>Admin</code>, but the password needs to be specified.
+			Here's an example configuration section:
+		</p>
+		<pre><code>"Admin": {
+	"Password": "******"
+}</code></pre>
+	</section>
+
+	<section id="database">
+		<h2>Database</h2>
+
+		<p>
+			Gnomeshade currently supports <a href="https://www.postgresql.org/">PostgreSQL</a>
+			from version 11 up to version 16beta1 and <a href="https://www.sqlite.org/index.html">SQLite</a>.
+			The database provider can be selected using the <code>Database:Provider</code> key,
+			and as PostgreSQL is the preferred database for production use, it is the default value.
+			For PostgreSQL connection string parameters see
+			<a href="https://www.npgsql.org/doc/connection-string-parameters.html">Npgsql documentation</a>;
+			for SQLite see
+			<a href="https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/connection-strings">Microsoft
+				documentation</a>.
+		</p>
+
+		Here's an example configuration for PostgreSQL:
+		<pre><code>"ConnectionStrings": {
+	"Gnomeshade": "Host=localhost; Port=5432; Database=gnomeshade; Username=gnomeshade; Password=******;"
+}</code></pre>
+
+		<section id="migrations">
+			<h3>Migrations</h3>
+
+			Database migrations are automatically applied on server startup.
+		</section>
+	</section>
+
+	<section id="auth">
+		<h2>Authentication</h2>
+
+		<h3>Local accounts</h3>
+		<section id="auth-local">
+			<p>
+				Gnomeshade supports creating user accounts with multi-factor authentication.
+				While it's always possible to use the web UI with username/password login,
+				in order to use the API from client apps additional configuration is needed:
+			</p>
+			<pre><code>"Jwt": {
+	"ValidAudience": "http://localhost:8080",
+	"ValidIssuer": "http://localhost:8080",
+	"Secret": "E5G90jPHVfDdo3eNUX0q8h7fnazir3HR6QPe3P82McvpTJsAbmttO2kTOwhU22DE"
+}</code></pre>
+			<p>
+				<code>ValidAudience</code>/<code>ValidIssuer</code> should be endpoint the server is listening on.
+			</p>
+		</section>
+
+		<h3>External providers</h3>
+		<section id="auth-external">
+			<p>
+				Gnomeshade supports using OIDC compliant external identity providers such as Keycloak.
+				Here's an example configuration section with a realm <code>realm-name</code>:
+			</p>
+			<pre><code>"Oidc": {
+	"Keycloak": {
+		"ServerRealm": "https://keycloak.home/realms/realm-name",
+		"Metadata": "https://keycloak.home/realms/realm-name/.well-known/openid-configuration",
+		"ClientId": "gnomeshade",
+		"ClientSecret": "******"
+	}
+}</code></pre>
+			<p>
+				You can configure multiple OIDC providers by adding multiple such sections under the <code>Oidc</code>
+				key.
+				<strong>NB</strong>&nbsp;Changing the configuration section name, <code>Keycloak</code> in the example,
+				will break any existing linked accounts using that provider.
+			</p>
+
+			<section id="auth-keycloak">
+				<h3>Keycloak</h3>
+				<p>
+					You will need to create a confidential client (meaning it has a client secret),
+					specifying your configured endpoint as a valid redirect URI. The example contains the default value.
+					Gnomeshade also expects the access token have the audience set to the client id.
+					In order to do that in Keycloak, you will need to create a new mapper for the client.
+					Here's an example of the configuration that you will need to change for a new client in Keycloak:
+				</p>
+				<ul>
+					<li>Access Type = confidential</li>
+					<li>Valid Redirect URIs = http://localhost:8080/*</li>
+					<li>
+						Mapper:
+						<ul>
+							<li>Mapper Type = Audience</li>
+							<li>Included Client Audience = {ClientId}</li>
+							<li>Add to access token = true</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+
+			<section id="auth-github">
+				<h3>GitHub</h3>
+				<p>
+					Gnomeshade also supports using GitHub as an external identity provider.
+					It's under the <code>OAuth</code> section instead of <code>Oidc</code>,
+					because it GitHub currently does not support OIDC.
+					Since some of the configuration for GitHub is already known, it's a little shorter:
+				</p>
+				<pre><code>"OAuth": {
+	"GitHub": {
+		"ClientId": "5cde36402ea04bb5bdb1",
+		"ClientSecret": "******"
+	}
+}</code></pre>
+			</section>
+		</section>
+	</section>
+
+	<section id="webserver">
+		<h2>Web server</h2>
+
+		<p>
+			Here's an example configuration for production use according to Mozilla's
+			<a href="https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility">modern compatability</a>
+			guide:
+		</p>
+		<pre><code>"Kestrel": {
+	"Endpoints": {
+		"Https": {
+			"Url": "https://gnomeshade.home:443",
+
+			"CheckCertificateRevocation": true,
+			"ClientCertificateMode": "Optional",
+			"SslProtocols": ["Tls13"],
+		}
+	},
+	"Certificates": {
+		"Default": {
+			"Path": "/path/to/certificate.p12",
+			"Password": "******"
+		}
+	}
+},
+"Tls": {
+	"CipherSuites": [
+		"TLS_AES_128_GCM_SHA256",
+		"TLS_AES_256_GCM_SHA384",
+		"TLS_CHACHA20_POLY1305_SHA256"
+	]
+}</code></pre>
+		<p>
+			In order to be a bit more backwards compatible you can stick with intermediate compatability,
+			by changing <code>SslProtocols</code> to <code>["Tls13", "Tls12"]</code>
+			and removing the <code>Tls</code> section. If the <code>Tls</code> section is not set,
+			the system default cipher suites will be used.
+		</p>
+		<p>
+			For more detailed information on how to configure the Kestrel web server see the
+			<a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-7.0">
+				Microsoft documentation
+			</a>
+		</p>
+	</section>
+
+	<section id="nordigen">
+		<h2>Nordigen</h2>
+
+		<p>
+			Gnomeshade can automatically import transactions from your bank accounts via <a
+			href="https://nordigen.com/en/">Nordigen</a>.
+			Using it requires register an account for free, and create a new secret.
+			<strong>NB</strong>&nbsp;All secrets for a single Nordigen account have the same access.
+			In order to have a development/testing secret which does not have access to production data,
+			you need to create another Nordigen account, for which you can use a +alias.
+			Here's an example configuration section:
+		</p>
+		<pre><code>"Nordigen": {
+	"SecretId": "da20e745-5292-4765-874e-1d0a1a4ee25a",
+	"SecretKey": "******"
+}</code></pre>
+	</section>
+
+	<section id="paperless">
+		<h2>Paperless</h2>
+
+		<p>
+			Gnomeshade can automatically import purchases from linked documents from <a
+			href="https://github.com/paperless-ngx/paperless-ngx">paperless-ngx</a>.
+			Here's an example configuration section:
+		</p>
+
+		<pre><code>"Paperless": {
+	"BaseAddress": "https://paperless.home/",
+	"Token": ""******""
+}</code></pre>
+
+		<p>
+			For information on how to create an API token see
+			<a href="https://docs.paperless-ngx.com/api/#authorization">paperless documentation</a>.
+		</p>
+	</section>
+
+	<section id="otel">
+		<h2>Open telemetry</h2>
+
+		<p>
+			Gnomeshade supports sending traces, metrics and logs to an
+			<a href="https://opentelemetry.io/">OpenTelemetry</a> compatible collector.
+			Here's the default configuration (version is automatically set to the release version):
+		</p>
+		<pre><code>"OpenTelemetry": {
+	"Enabled": "true",
+	"ServiceName": "Gnomeshade",
+	"ServiceVersion": "1.0.0.0",
+	"ExporterEndpoint": "http://localhost:4317",
+	"ExportProtocol": "Grpc"
+}</code></pre>
+		<p>
+			Signals can be exported in both <code>Grpc</code> and <code>HttpProtobuf</code> protocols.
+			In practice it should only be required to set the <code>ExporterEndpoint</code>,
+			and <code>ExportProtocol</code> if needed.
+		</p>
+		<pre><code>"OpenTelemetry": {
+	"ExporterEndpoint": "https://otel-colletor.home:4317"
+}</code></pre>
+	</section>
+</main>
+
+<footer>
+	<nav class="bottom-navigation">
+		<a href="#top">Back to top</a>
+	</nav>
+</footer>
+</body>
+</html>
