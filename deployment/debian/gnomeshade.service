@@ -9,6 +9,7 @@ WorkingDirectory=/etc/opt/gnomeshade
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 Environment="ASPNETCORE_WEBROOT=/opt/gnomeshade/wwwroot"
 Environment="ENVIRONMENT=Production"
+Environment="DOTNET_gcServer=0"
 
 ExecStart=/opt/gnomeshade/Gnomeshade.WebApi
 ExecReload=/bin/kill -s HUP $MAINPID

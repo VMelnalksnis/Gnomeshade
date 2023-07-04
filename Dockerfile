@@ -13,7 +13,8 @@ COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/*.xml /gnomeshade/
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/wwwroot/ /gnomeshade/wwwroot
 
-ENV Database__Provider="Sqlite" \
+ENV DOTNET_gcServer=0 \
+	Database__Provider="Sqlite" \
 	ConnectionStrings__Gnomeshade="Data Source=/data/gnomeshade.db" \
 	Jwt__ValidAudience="http://localhost:5000" \
 	Jwt__ValidIssuer="http://localhost:5000" \
