@@ -61,6 +61,10 @@ pre {
 	word-wrap: break-word;
 }
 
+main > section {
+	margin-bottom: 4em;
+}
+
 @media (prefers-color-scheme: dark) {
 	body {
 		color: #c9d1d9;
