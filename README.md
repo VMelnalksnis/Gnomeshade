@@ -10,6 +10,8 @@
 
 A free, open source and self-hosted personal finance manager.
 
+![Overview of all transactions over the past two months](docs/assets/transactions.jpg)
+
 ## Getting Started
 
 Before installing the server yourself, you can try out the client using the
