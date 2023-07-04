@@ -1,8 +1,8 @@
 [Unit]
 Description=Gnomeshade server
 
-After=network-online.target
-Wants=network-online.target
+After=network-online.target sssd.service
+Wants=network-online.target sssd.service
 
 [Service]
 WorkingDirectory=/etc/opt/gnomeshade
