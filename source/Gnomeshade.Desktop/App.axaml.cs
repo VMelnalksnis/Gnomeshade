@@ -24,6 +24,9 @@ using IdentityModel.OidcClient.Browser;
 
 using JetBrains.Annotations;
 
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -118,6 +121,11 @@ public sealed class App : Application
 	public override void Initialize()
 	{
 		AvaloniaXamlLoader.Load(this);
+
+		LiveCharts.Configure(settings => settings
+			.AddSkiaSharp()
+			.AddDefaultMappers()
+			.AddDarkTheme());
 	}
 
 	/// <inheritdoc />
