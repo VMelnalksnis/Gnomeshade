@@ -6,7 +6,7 @@ on:
     tags: [ v*.*.* ]
     paths-ignore:
       - '**.md'
-      - '/docs'
+      - 'docs/**'
 
 env:
   DOTNET_NOLOGO: true
