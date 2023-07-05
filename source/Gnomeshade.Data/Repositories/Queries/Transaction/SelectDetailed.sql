@@ -84,8 +84,9 @@ FROM transactions
 		 LEFT JOIN owners accounts_owners ON accounts_owners.id = accounts.owner_id
 		 LEFT JOIN ownerships acc_own ON accounts_owners.id = acc_own.owner_id
 		 LEFT JOIN access acc_acc ON acc_acc.id = acc_own.access_id
-WHERE ((ownerships.user_id = @userId AND (access.normalized_name = @access OR access.normalized_name = 'OWNER'))
+WHERE (((ownerships.user_id = @userId AND (access.normalized_name = @access OR access.normalized_name = 'OWNER'))
 	OR (acc_own.user_id = @userId AND (acc_acc.normalized_name = @access OR acc_acc.normalized_name = 'OWNER') AND
 		transfers.deleted_at IS NULL AND
 		accounts_in_currency.deleted_at IS NULL AND
 		accounts.deleted_at IS NULL))
+    AND transactions.deleted_at IS NULL)

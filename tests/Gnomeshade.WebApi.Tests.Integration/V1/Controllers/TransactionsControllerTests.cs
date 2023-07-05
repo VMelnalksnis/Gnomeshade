@@ -373,12 +373,11 @@ public sealed class TransactionsControllerTests : WebserverTests
 
 		using (new AssertionScope())
 		{
-			(await FluentActions
-					.Awaiting(() => _client.GetTransactionAsync(sourceTransaction.Id))
-					.Should()
-					.ThrowExactlyAsync<HttpRequestException>())
-				.Which.StatusCode.Should()
-				.Be(HttpStatusCode.NotFound);
+			await ShouldThrowNotFound(() => _client.GetTransactionAsync(sourceTransaction.Id));
+			await ShouldThrowNotFound(() => _client.GetDetailedTransactionAsync(sourceTransaction.Id));
+			(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)))
+				.Should()
+				.NotContain(detailed => detailed.Id == sourceTransaction.Id);
 
 			var mergedTransaction = await _client.GetDetailedTransactionAsync(targetTransaction.Id);
 
