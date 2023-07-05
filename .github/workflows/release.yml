@@ -118,6 +118,7 @@ jobs:
   nuget:
     name: Publish NuGet packages
     runs-on: ubuntu-latest
+    concurrency: release-nuget
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3.5.3
@@ -149,6 +150,7 @@ jobs:
   docker-release:
     name: Build docker image
     runs-on: ubuntu-latest
+    concurrency: release-docker-release
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.3
@@ -168,6 +170,7 @@ jobs:
     name: Deploy demo app
     needs: build-linux
     runs-on: ubuntu-latest
+    concurrency: deploy-demo
     timeout-minutes: 10
     env:
       AZURE_APP_NAME: gnomeshade-demo
@@ -247,6 +250,7 @@ jobs:
       - build-linux
       - build-deb
     runs-on: ubuntu-latest
+    concurrency: create-release
     timeout-minutes: 5
     steps:
       - uses: actions/download-artifact@v3.0.2
