@@ -15,7 +15,7 @@ gnomeshade_url: 'http://localhost:8297'
 gnomeshade_certificate_path: 'certificate.pfx'
 gnomeshade_certificate_password: 'changeme'
 
-gnomeshade_connection_string: 'Data Source=gnomeshade.db'
+gnomeshade_connection_string: 'Data Source={{ gnomeshade_install_directory }}/gnomeshade.db'
 gnomeshade_database_provider: 'Sqlite'
 
 gnomeshade_allowed_hosts: '*'

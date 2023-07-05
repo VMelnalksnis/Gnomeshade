@@ -6,7 +6,6 @@ Wants=network-online.target sssd.service
 
 [Service]
 WorkingDirectory=/etc/opt/gnomeshade
-AmbientCapabilities=CAP_NET_BIND_SERVICE
 Environment="ASPNETCORE_WEBROOT=/opt/gnomeshade/wwwroot"
 Environment="ENVIRONMENT=Production"
 Environment="DOTNET_gcServer=0"
@@ -17,6 +16,48 @@ ExecStop=/bin/kill -s QUIT $MAINPID
 
 User=gnomeshade
 Group=gnomeshade
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+ProtectSystem=full
+PrivateTmp=yes
+PrivateDevices=yes
+PrivateIPC=yes
+RemoveIPC=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=yes
+
+LockPersonality=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+SystemCallFilter=@system-service
+SystemCallFilter=~@chown @mount @privileged
+SystemCallErrorNumber=EPERM
+
+CapabilityBoundingSet=~CAP_SETUID CAP_SETGID CAP_SETPCAP
+CapabilityBoundingSet=~CAP_SYS_ADMIN CAP_NET_ADMIN
+CapabilityBoundingSet=~CAP_SYS_PTRACE
+CapabilityBoundingSet=~CAP_CHOWN CAP_FSETID CAP_SETFCAP
+CapabilityBoundingSet=~CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_FOWNER CAP_IPC_OWNER
+CapabilityBoundingSet=~CAP_AUDIT_CONTROL CAP_AUDIT_READ CAP_AUDIT_WRITE
+CapabilityBoundingSet=~CAP_KILL
+CapabilityBoundingSet=~CAP_MAC_ADMIN CAP_MAC_OVERRIDE
+CapabilityBoundingSet=~CAP_SYS_BOOT
+CapabilityBoundingSet=~CAP_LINUX_IMMUTABLE
+CapabilityBoundingSet=~CAP_SYS_CHROOT
+CapabilityBoundingSet=~CAP_BLOCK_SUSPEND
+CapabilityBoundingSet=~CAP_LEASE
+CapabilityBoundingSet=~CAP_SYS_PACCT
+CapabilityBoundingSet=~CAP_SYS_TTY_CONFIG
+
+NoNewPrivileges=yes
 
 [Install]
 WantedBy=multi-user.target

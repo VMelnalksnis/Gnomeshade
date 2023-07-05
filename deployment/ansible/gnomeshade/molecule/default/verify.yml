@@ -18,6 +18,12 @@
         ansible.builtin.uri:
           url: 'http://localhost:8297/api/v1.0/health'
         register: verify
+
+      - name: Check systemd security report
+        become: true
+        command: 'systemd-analyze security gnomeshade.service'
+        register: security
+
       rescue:
         - name: Display logs
           when: wait.failed or verify.failed
