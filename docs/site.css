@@ -17,8 +17,11 @@ p {
 nav {
 	border: 1px solid #d2d2d2;
 	background-color: #e8e8e8;
-	padding: 14px 16px;
 	overflow: auto;
+}
+
+nav div {
+	padding: 14px 16px;
 }
 
 nav * {
@@ -38,7 +41,6 @@ nav * {
 	z-index: 1;
 	top: 0;
 	left: 0;
-	padding-top: 20px;
 }
 
 .side-navigation ul {
@@ -50,10 +52,11 @@ nav * {
 }
 
 .content {
-	width: 75%;
+	width: auto;
 	min-width: 325px;
 	max-width: 850px;
-	margin: 0 auto;
+	margin-left: 300px;
+	margin-right: 50px;
 }
 
 pre {
@@ -82,5 +85,31 @@ main > section {
 
 	a:visited {
 		color: #8e96f0
+	}
+}
+
+@media screen and (max-width: 650px) {
+	.side-navigation {
+		height: auto;
+		width: 100%;
+		position: relative;
+		z-index: 1;
+		top: 0;
+		left: 0;
+	}
+
+	.side-navigation a {
+	}
+
+	code {
+		word-break: break-all;
+	}
+
+	.content {
+		width: auto;
+		min-width: 0;
+		margin-left: 16px;
+		margin-right: 16px;
+		padding: 16px 0;
 	}
 }
