@@ -51,6 +51,11 @@
 		<PackageReference Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" />
 	</ItemGroup>
 
+	<!--Vulnerable transitive dependencies-->
+	<ItemGroup>
+		<PackageReference Include="Grpc.Net.Client" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
 		<ProjectReference Include="..\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj" />

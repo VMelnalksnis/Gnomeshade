@@ -47,6 +47,16 @@
         "resolved": "2.0.2",
         "contentHash": "sBKqWxw3g//peYxDZ8JipRlyPbIyBtgzqBVA5GqwHVeqtIrw75maGXAllztf+1aJhchD+drcQIgf2mFho8ZV8A=="
       },
+      "Grpc.Net.Client": {
+        "type": "Direct",
+        "requested": "[2.55.0, )",
+        "resolved": "2.55.0",
+        "contentHash": "cQyNEAIVs/5npjSHuCKCT5kQJm3AyOnUw7h7s2lXt9rSWC/bhCGPbNAtiFGNvKiQAYgIt4zV13BS983viZP9pg==",
+        "dependencies": {
+          "Grpc.Net.Common": "2.55.0",
+          "Microsoft.Extensions.Logging.Abstractions": "3.0.3"
+        }
+      },
       "JetBrains.Annotations": {
         "type": "Direct",
         "requested": "[2022.3.1, )",
@@ -280,27 +290,18 @@
       },
       "Grpc.Core.Api": {
         "type": "Transitive",
-        "resolved": "2.43.0",
-        "contentHash": "mikPMVE2I1AaNde1JQvR3ud8HsUmpeA4blqTt4SfCnDSNVN1GCd2UUEZsiID4MRPUzXwflMYl7/HhFytb6d+Ww==",
+        "resolved": "2.55.0",
+        "contentHash": "qtJauqAZ4jAM6A2TQyenhpZWPfJBow7/HV/KiRbxJvYHo9jVtUL7SBIs3cjvBh5DXIUaNFIFfBQ3QGyv3nLKCw==",
         "dependencies": {
           "System.Memory": "4.5.3"
         }
       },
-      "Grpc.Net.Client": {
-        "type": "Transitive",
-        "resolved": "2.43.0",
-        "contentHash": "ZhkxEOT3YPsJufsSYwIixwnPyZbjy3xOZgO61J2ZwEby3StwBDFQ5eHoxSjNVSpOP+ax8WMbgbmZfzjO+hBW8A==",
-        "dependencies": {
-          "Grpc.Net.Common": "2.43.0",
-          "Microsoft.Extensions.Logging.Abstractions": "3.0.3"
-        }
-      },
       "Grpc.Net.Common": {
         "type": "Transitive",
-        "resolved": "2.43.0",
-        "contentHash": "kt0Hb1N1tlb5UdN17bTHEPNbKP3LUHEZQSKD47etAVI5KLDtmVGO4YsUGM/krrNMwHRjhUCy0EhUU8uVMc3upA==",
+        "resolved": "2.55.0",
+        "contentHash": "s1tzY9Z3jKq+mcYGSkZSTTs8Gwi9M5zfXltSDIx7XvFIdSbh+QtfWiV/4n+vP8yDvFDQASaW+6BzkGUbHEftRA==",
         "dependencies": {
-          "Grpc.Core.Api": "2.43.0"
+          "Grpc.Core.Api": "2.55.0"
         }
       },
       "Humanizer.Core": {
