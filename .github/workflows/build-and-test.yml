@@ -126,23 +126,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3.5.3
-      - run: >
-          docker build
-          --tag ghcr.io/vmelnalksnis/gnomeshade:test
-          --build-arg "BUILD_NUMBER=${{ github.run_number }}"
-          ./
-      - run: docker run --name test -d -p 8000:80 -e "Admin__Password=${{ secrets.DEMO_ADMIN_PASSWORD }}" ghcr.io/vmelnalksnis/gnomeshade:test
-      - run: wget --tries=10 --retry-connrefused --waitretry=1 --timeout=15 "http://localhost:8000/api/v1.0/health"
-      - run: >
-          [[ $(cat health) = "Healthy" ]] || exit 1
-      - run: >
-          curl
-          --header "Content-Type: application/json"
-          --request POST
-          --data '{"username":"john.doe", "password": "Password123!", "email": "john.doe@example.com", "fullName": "John Doe" }'
-          http://localhost:8000/Authorization/Register
-      - run: docker logs test
-        if: always()
+      - run: ./deployment/test-docker.sh ${{ github.run_number }} ${{ secrets.DEMO_ADMIN_PASSWORD }}
 
   resharper:
     name: Resharper
