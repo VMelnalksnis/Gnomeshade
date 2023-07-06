@@ -10,19 +10,19 @@ updates:
     reviewers:
       - "VMelnalksnis"
     groups:
-      avalonia:
+      Avalonia:
         patterns:
           - "Avalonia*"
-      microsoft:
+      Microsoft:
         patterns:
           - "Microsoft*"
-      npgsql:
+      Npgsql:
         patterns:
           - "Npgsql*"
-      nunit:
+      NUnit:
         patterns:
           - "NUnit*"
-      otel:
+      OTEL:
         patterns:
           - "OpenTelemetry*"
 
@@ -54,3 +54,7 @@ updates:
       time: "18:00"
       timezone: "Europe/Riga"
     open-pull-requests-limit: 100
+    assignees:
+      - "VMelnalksnis"
+    reviewers:
+      - "VMelnalksnis"
