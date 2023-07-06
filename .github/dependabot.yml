@@ -58,3 +58,15 @@ updates:
       - "VMelnalksnis"
     reviewers:
       - "VMelnalksnis"
+
+  - package-ecosystem: docker
+    directory: "/deployment/docker"
+    schedule:
+      interval: daily
+      time: "18:00"
+      timezone: "Europe/Riga"
+    open-pull-requests-limit: 100
+    assignees:
+      - "VMelnalksnis"
+    reviewers:
+      - "VMelnalksnis"
