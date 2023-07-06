@@ -9,6 +9,22 @@ updates:
       - "VMelnalksnis"
     reviewers:
       - "VMelnalksnis"
+    groups:
+      avalonia:
+        patterns:
+          - "Avalonia*"
+      microsoft:
+        patterns:
+          - "Microsoft*"
+      npgsql:
+        patterns:
+          - "Npgsql*"
+      nunit:
+        patterns:
+          - "NUnit*"
+      otel:
+        patterns:
+          - "OpenTelemetry*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
