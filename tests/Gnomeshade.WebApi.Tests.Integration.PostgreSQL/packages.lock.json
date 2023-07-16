@@ -1515,7 +1515,7 @@
           "Microsoft.NET.Test.Sdk": "[17.6.3, )",
           "NUnit": "[3.13.3, )",
           "NUnit3TestAdapter": "[4.5.0, )",
-          "NodaTime.Bogus": "[3.0.1, )"
+          "NodaTime.Bogus": "[3.0.2, )"
         }
       },
       "gnomeshade.webapi": {
@@ -1866,12 +1866,12 @@
       },
       "NodaTime.Bogus": {
         "type": "CentralTransitive",
-        "requested": "[3.0.1, )",
-        "resolved": "3.0.1",
-        "contentHash": "a6XEqZBI2tsB30bRkjzO9LaZZPctSmiIUU4Sz6pTyQNI5NaeZOGl2Jd2RQKBTBuqgDBPIgv+YJlSff0twRkxIQ==",
+        "requested": "[3.0.2, )",
+        "resolved": "3.0.2",
+        "contentHash": "0X3qY/I4hYSCBoCT8yXezNCFhd01YWQ4kTtBiC8X4ZpE0ZpjqQkMOndv1bz2lpzQiP4oFiv3XBM7sqGPIulytw==",
         "dependencies": {
-          "Bogus": "29.0.2",
-          "NodaTime": "2.4.8"
+          "Bogus": "34.0.2",
+          "NodaTime": "3.1.9"
         }
       },
       "NodaTime.Serialization.SystemTextJson": {
