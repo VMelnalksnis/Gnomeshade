@@ -1,8 +1,11 @@
 [Unit]
 Description=Gnomeshade server
 
-After=network-online.target sssd.service
-Wants=network-online.target sssd.service
+After=network-online.target nss-lookup.target sssd.service systemd-resolved.service
+Wants=network-online.target nss-lookup.target sssd.service systemd-resolved.service
+
+StartLimitBurst=3
+StartLimitIntervalSec=1d
 
 [Service]
 WorkingDirectory=/etc/opt/gnomeshade
@@ -13,6 +16,9 @@ Environment="DOTNET_gcServer=0"
 ExecStart=/opt/gnomeshade/Gnomeshade.WebApi
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s QUIT $MAINPID
+
+Restart=on-failure
+RestartSec=3
 
 User=gnomeshade
 Group=gnomeshade
