@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
@@ -68,6 +69,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="PurchaseUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the purchase to.</param>
@@ -75,6 +77,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	public PurchaseUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
+		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
@@ -89,6 +92,7 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		_currencies = new();
 		_products = new();
 
+		CreateProduct = commandFactory.Create<Window>(ShowNewProductDialog, "Waiting for product creation");
 		PropertyChanged += OnPropertyChanged;
 	}
 
@@ -105,29 +109,8 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		Product is not null &&
 		Amount is not null;
 
-	/// <summary>Shows a modal dialog for creating a new product.</summary>
-	/// <param name="window">The current window.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task ShowNewProductDialog(Window window)
-	{
-		using var activity = BeginActivity("Waiting for product creation");
-		var viewModel = new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, _dateTimeZoneProvider, null);
-		await viewModel.RefreshAsync();
-
-		var result = await _dialogService.ShowDialogValue<ProductUpsertionViewModel, Guid>(window, viewModel, dialog =>
-		{
-			dialog.Title = "Create product";
-			viewModel.Upserted += (_, args) => dialog.Close(args.Id);
-		});
-
-		await RefreshAsync();
-		if (result is not { } createdId)
-		{
-			return;
-		}
-
-		Product = Products.SingleOrDefault(product => product.Id == createdId);
-	}
+	/// <summary>Gets a command for showing a modal dialog for creating a new product.</summary>
+	public CommandBase CreateProduct { get; }
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
@@ -170,6 +153,26 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		var id = Id ?? Guid.NewGuid(); // todo should this be saved?
 		await GnomeshadeClient.PutPurchaseAsync(id, purchaseCreation);
 		return id;
+	}
+
+	private async Task ShowNewProductDialog(Window window)
+	{
+		var viewModel = new ProductUpsertionViewModel(ActivityService, GnomeshadeClient, _dateTimeZoneProvider, null);
+		await viewModel.RefreshAsync();
+
+		var result = await _dialogService.ShowDialogValue<ProductUpsertionViewModel, Guid>(window, viewModel, dialog =>
+		{
+			dialog.Title = "Create product";
+			viewModel.Upserted += (_, args) => dialog.Close(args.Id);
+		});
+
+		await RefreshAsync();
+		if (result is not { } createdId)
+		{
+			return;
+		}
+
+		Product = Products.SingleOrDefault(product => product.Id == createdId);
 	}
 
 	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

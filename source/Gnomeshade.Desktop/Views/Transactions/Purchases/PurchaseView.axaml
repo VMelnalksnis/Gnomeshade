@@ -71,7 +71,7 @@
 
 			<Button
 				IsVisible="{Binding Details.Product, Converter={x:Static ObjectConverters.IsNull}}"
-				Command="{ReflectionBinding Details.ShowNewProductDialog}" CommandParameter="{Binding $parent[Window]}">
+				Command="{Binding Details.CreateProduct}" CommandParameter="{Binding $parent[Window]}">
 				Create product
 			</Button>
 

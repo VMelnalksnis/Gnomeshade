@@ -5,9 +5,12 @@
 using System;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.TestingHelpers.Models;
+
+using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -23,7 +26,16 @@ public sealed class TransactionDetailViewModelTests
 	public async Task SaveAsync_ShouldUpdate()
 	{
 		var client = new DesignTimeGnomeshadeClient();
-		var viewModel = new TransactionUpsertionViewModel(new StubbedActivityService(), client, new DesignTimeDialogService(), _clock, _dateTimeZoneProvider, Guid.Empty);
+		var activityService = new StubbedActivityService();
+		var viewModel = new TransactionUpsertionViewModel(
+			activityService,
+			client,
+			new CommandFactory(NullLoggerFactory.Instance, activityService),
+			new DesignTimeDialogService(),
+			_clock,
+			_dateTimeZoneProvider,
+			Guid.Empty);
+
 		await viewModel.RefreshAsync();
 
 		var instant = Instant.FromUtc(2022, 04, 15, 9, 50, 30);

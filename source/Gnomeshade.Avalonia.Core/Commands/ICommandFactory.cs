@@ -31,4 +31,12 @@ public interface ICommandFactory
 	/// <typeparam name="T">The expected type of the command parameter.</typeparam>
 	/// <returns>The command.</returns>
 	CommandBase Create<T>(Func<T, Task> execute, string activity);
+
+	/// <summary>Creates an async command that can always execute.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="canExecute">The function that will be invoked on <see cref="ICommand.CanExecute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <typeparam name="T">The expected type of the command parameter.</typeparam>
+	/// <returns>The command.</returns>
+	CommandBase Create<T>(Func<T, Task> execute, Func<T, bool> canExecute, string activity);
 }

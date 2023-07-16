@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core.Accounts;
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Transactions;
@@ -87,6 +88,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
@@ -94,6 +96,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	public TransferUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
+		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
@@ -108,6 +111,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		_accounts = new();
 		_currencies = new();
 
+		CreateAccount = commandFactory.Create<Window>(window => ShowAccountDialog(window, null), _ => CanCreate, "Waiting for account creation");
 		PropertyChanged += OnPropertyChanged;
 	}
 
@@ -126,7 +130,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Gets a value indicating whether <see cref="TargetAmount"/> should not be editable.</summary>
 	public bool IsTargetAmountReadOnly => SourceCurrency == TargetCurrency;
 
-	/// <summary>Gets a value indicating whether can create a new account with <see cref="ShowAccountDialogAsync"/>.</summary>
+	/// <summary>Gets a value indicating whether <see cref="CreateAccount"/> can be invoked.</summary>
 	public bool CanCreate => SourceAccount is null || TargetAccount is null;
 
 	/// <inheritdoc />
@@ -139,13 +143,8 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		TargetCurrency is not null &&
 		(BookingDate.HasValue || ValueDate.HasValue);
 
-	/// <summary>Shows a modal dialog for creating an account.</summary>
-	/// <param name="window">The current window.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task ShowAccountDialogAsync(Window window)
-	{
-		 await ShowAccountDialog(window, null);
-	}
+	/// <summary>Gets a command for showing a dialog for creating a new account.</summary>
+	public CommandBase CreateAccount { get; }
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
@@ -210,7 +209,6 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 
 	private async Task ShowAccountDialog(Window window, Guid? id)
 	{
-		using var activity = BeginActivity("Waiting for account creation");
 		var viewModel = new AccountUpsertionViewModel(ActivityService, GnomeshadeClient, id);
 		await viewModel.RefreshAsync();
 
@@ -225,6 +223,11 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
+		if (e.PropertyName is nameof(CanCreate))
+		{
+			CreateAccount.InvokeExecuteChanged();
+		}
+
 		if (!IsTargetAmountReadOnly)
 		{
 			return;

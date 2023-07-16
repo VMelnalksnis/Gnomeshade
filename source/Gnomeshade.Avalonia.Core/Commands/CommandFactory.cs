@@ -39,9 +39,12 @@ public sealed class CommandFactory : ICommandFactory
 	}
 
 	/// <inheritdoc />
-	public CommandBase Create<T>(Func<T, Task> execute, string activity)
+	public CommandBase Create<T>(Func<T, Task> execute, string activity) => Create(execute, static _ => true, activity);
+
+	/// <inheritdoc />
+	public CommandBase Create<T>(Func<T, Task> execute, Func<T, bool> canExecute, string activity)
 	{
 		var logger = _loggerFactory.CreateLogger<AsyncCommand<T>>();
-		return new AsyncCommand<T>(logger, _activityService, execute, activity);
+		return new AsyncCommand<T>(logger, _activityService, execute, canExecute, activity);
 	}
 }

@@ -5,8 +5,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions;
+
+using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -20,7 +23,14 @@ public class TransactionViewModelTests
 	[SetUp]
 	public async Task SetUp()
 	{
-		_viewModel = new(new StubbedActivityService(), new DesignTimeGnomeshadeClient(), new DesignTimeDialogService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
+		var activityService = new StubbedActivityService();
+		_viewModel = new(
+			activityService,
+			new DesignTimeGnomeshadeClient(),
+			new CommandFactory(NullLoggerFactory.Instance, activityService),
+			new DesignTimeDialogService(),
+			SystemClock.Instance,
+			DateTimeZoneProviders.Tzdb);
 		await _viewModel.RefreshAsync();
 	}
 

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
@@ -24,6 +25,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions;
 /// <summary>Create or update a transaction.</summary>
 public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 {
+	private readonly ICommandFactory _commandFactory;
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
@@ -47,6 +49,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
+	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
@@ -54,12 +57,14 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	public TransactionUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
+		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
+		_commandFactory = commandFactory;
 		_dialogService = dialogService;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
@@ -149,8 +154,8 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 		Properties.Owners = owners;
 		Properties.Owner = owners.SingleOrDefault(owner => owner.Id == transaction.OwnerId);
 
-		Transfers ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
-		Purchases ??= new(ActivityService, GnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId);
+		Transfers ??= new(ActivityService, GnomeshadeClient, _commandFactory, _dialogService, _dateTimeZoneProvider, transactionId);
+		Purchases ??= new(ActivityService, GnomeshadeClient, _commandFactory, _dialogService, _dateTimeZoneProvider, transactionId);
 		Links ??= new(ActivityService, GnomeshadeClient, transactionId);
 		Loans ??= new(ActivityService, GnomeshadeClient, transactionId);
 

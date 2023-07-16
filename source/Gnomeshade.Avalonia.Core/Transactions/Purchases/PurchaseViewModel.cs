@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Transactions;
 
@@ -21,6 +22,7 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Purchases;
 public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOverview, PurchaseUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly ICommandFactory _commandFactory;
 	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
@@ -34,22 +36,25 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 	/// <summary>Initializes a new instance of the <see cref="PurchaseViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a purchase overview.</param>
 	public PurchaseViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
+		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_commandFactory = commandFactory;
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = new(activityService, gnomeshadeClient, _dialogService, dateTimeZoneProvider, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, _commandFactory, _dialogService, dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -70,7 +75,7 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _commandFactory, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		await SetDefaultCurrency();
 	}

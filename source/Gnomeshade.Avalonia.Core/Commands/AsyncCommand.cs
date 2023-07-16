@@ -61,22 +61,35 @@ public sealed class AsyncCommand<T> : CommandBase
 	private readonly ILogger<AsyncCommand<T>> _logger;
 	private readonly IActivityService _activityService;
 	private readonly Func<T, Task> _execute;
+	private readonly Func<T, bool> _canExecute;
 	private readonly string _activity;
 
 	internal AsyncCommand(
 		ILogger<AsyncCommand<T>> logger,
 		IActivityService activityService,
 		Func<T, Task> execute,
+		Func<T, bool> canExecute,
 		string activity)
 	{
 		_logger = logger;
 		_activityService = activityService;
 		_execute = execute;
+		_canExecute = canExecute;
 		_activity = activity;
 	}
 
 	/// <inheritdoc />
-	public override bool CanExecute(object? parameter) => true;
+	public override bool CanExecute(object? parameter)
+	{
+		// parameter can be null even if CommandParameter is bound to non-nullable value, for example, the parent window
+		if (parameter is null)
+		{
+			return false;
+		}
+
+		var expected = GetParameter(parameter);
+		return _canExecute(expected);
+	}
 
 	/// <inheritdoc />
 	public override async void Execute(object? parameter)
