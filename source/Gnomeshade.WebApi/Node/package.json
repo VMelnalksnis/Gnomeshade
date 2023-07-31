@@ -4,7 +4,7 @@
 		"gulp": "4.0.2"
 	},
 	"dependencies": {
-		"bootstrap": "5.3.0",
+		"bootstrap": "5.3.1",
 		"jquery": "3.7.0",
 		"jquery-validation": "1.19.5",
 		"jquery-validation-unobtrusive": "4.0.0"
