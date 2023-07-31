@@ -42,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
 
       - name: Cache Docker images
-        uses: ScribeMD/docker-cache@0.3.3
+        uses: ScribeMD/docker-cache@0.3.4
         with:
           key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
 
