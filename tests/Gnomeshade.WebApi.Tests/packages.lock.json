@@ -1094,7 +1094,7 @@
         "type": "Project",
         "dependencies": {
           "Ardalis.SmartEnum": "[2.1.0, )",
-          "AspNet.Security.OAuth.GitHub": "[7.0.2, )",
+          "AspNet.Security.OAuth.GitHub": "[7.0.4, )",
           "AutoMapper": "[12.0.1, )",
           "FuzzySharp": "[2.0.2, )",
           "Gnomeshade.Data.PostgreSQL": "[1.0.0, )",
@@ -1152,9 +1152,9 @@
       },
       "AspNet.Security.OAuth.GitHub": {
         "type": "CentralTransitive",
-        "requested": "[7.0.2, )",
-        "resolved": "7.0.2",
-        "contentHash": "bD+nmPMs57cBK/qtFwAsOrOVljmwgNf+gGszyjnseju46OXGtF+EncSKbFxwJpFHzHwBYD1gUYa5r3nBIVxs5Q=="
+        "requested": "[7.0.4, )",
+        "resolved": "7.0.4",
+        "contentHash": "a8gsHU07focF61bCVCEPZgkq55yUJU7LTLCfFjfSmJlcOfVFQt/n1A4WaKOPt4Ee3VKSxzE4bEFP5aOMNNL1pQ=="
       },
       "AutoMapper": {
         "type": "CentralTransitive",
