@@ -191,18 +191,15 @@
       },
       "Grpc.Core.Api": {
         "type": "Transitive",
-        "resolved": "2.55.0",
-        "contentHash": "qtJauqAZ4jAM6A2TQyenhpZWPfJBow7/HV/KiRbxJvYHo9jVtUL7SBIs3cjvBh5DXIUaNFIFfBQ3QGyv3nLKCw==",
-        "dependencies": {
-          "System.Memory": "4.5.3"
-        }
+        "resolved": "2.56.0",
+        "contentHash": "9owvft0MG5ZKFNdkNvpF2ePEs/Ggg1UgByQ0Dpubf1r95FyHV9Xit27+9pgE6/CodB0Ij0VfrB+5wJ+6ssJ3Lw=="
       },
       "Grpc.Net.Common": {
         "type": "Transitive",
-        "resolved": "2.55.0",
-        "contentHash": "s1tzY9Z3jKq+mcYGSkZSTTs8Gwi9M5zfXltSDIx7XvFIdSbh+QtfWiV/4n+vP8yDvFDQASaW+6BzkGUbHEftRA==",
+        "resolved": "2.56.0",
+        "contentHash": "ajflN6MVJC3Nr1KBkqQ7X8nBYwAZredrodVfdtFqh8lltuYg8reosIOAOQtd0Qnxvw9DrIqg4h4VO80H0RND3Q==",
         "dependencies": {
-          "Grpc.Core.Api": "2.55.0"
+          "Grpc.Core.Api": "2.56.0"
         }
       },
       "HarfBuzzSharp": {
@@ -1520,7 +1517,7 @@
           "Gnomeshade.Data.Sqlite": "[1.0.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
-          "Grpc.Net.Client": "[2.55.0, )",
+          "Grpc.Net.Client": "[2.56.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.10, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[7.0.10, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.1.0, )",
@@ -1648,11 +1645,11 @@
       },
       "Grpc.Net.Client": {
         "type": "CentralTransitive",
-        "requested": "[2.55.0, )",
-        "resolved": "2.55.0",
-        "contentHash": "cQyNEAIVs/5npjSHuCKCT5kQJm3AyOnUw7h7s2lXt9rSWC/bhCGPbNAtiFGNvKiQAYgIt4zV13BS983viZP9pg==",
+        "requested": "[2.56.0, )",
+        "resolved": "2.56.0",
+        "contentHash": "SVVzApBpESvYJB9x31t3TWqj+9Earw1sG6PUgCGY/jh4lPA+y3WNru7qI4KTIBjerJR9+p4MlRKxZbnCCBfkRg==",
         "dependencies": {
-          "Grpc.Net.Common": "2.55.0",
+          "Grpc.Net.Common": "2.56.0",
           "Microsoft.Extensions.Logging.Abstractions": "3.0.3"
         }
       },
