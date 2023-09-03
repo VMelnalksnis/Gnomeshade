@@ -167,9 +167,14 @@ public sealed class ExternalLogin : PageModel
 			return Page();
 		}
 
+		if (!Guid.TryParseExact(info.ProviderKey, "D", out var id))
+		{
+			id = Guid.NewGuid();
+		}
+
 		var user = new ApplicationUser(Input.UserName ?? Input.Email)
 		{
-			Id = Guid.ParseExact(info.ProviderKey, "D"),
+			Id = id,
 			Email = Input.Email,
 			FullName = Input.FullName,
 		};
