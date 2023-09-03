@@ -1,4 +1,4 @@
-FROM ghcr.io/vmelnalksnis/gnomeshade-build:7.0.306 AS build
+FROM ghcr.io/vmelnalksnis/gnomeshade-build:7.0.400 AS build
 
 WORKDIR /gnomeshade
 COPY ./ ./
