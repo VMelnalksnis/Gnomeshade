@@ -122,11 +122,11 @@
       },
       "Testcontainers.PostgreSql": {
         "type": "Direct",
-        "requested": "[3.4.0, )",
-        "resolved": "3.4.0",
-        "contentHash": "IeO8lHobP3a6UK1GwcemsXCMcl5/fsMHvAClppS09tdg8lDtefonHHDgbG7r/o4+yGKCaZ2hcuWZ6SwsygR47w==",
+        "requested": "[3.5.0, )",
+        "resolved": "3.5.0",
+        "contentHash": "Z/cpR9hOURxgl8ksarqSInkmmISseXkRRpthTgc2o2XX8ckrIQtOYNqpuJ6Hx7mELzRc6xw0/Xgz7998MMalAw==",
         "dependencies": {
-          "Testcontainers": "3.4.0"
+          "Testcontainers": "3.5.0"
         }
       },
       "VMelnalksnis.Testcontainers.Keycloak": {
@@ -174,6 +174,11 @@
           "SkiaSharp.NativeAssets.Linux": "2.88.3",
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.3"
         }
+      },
+      "BouncyCastle.Cryptography": {
+        "type": "Transitive",
+        "resolved": "2.2.1",
+        "contentHash": "A6Zr52zVqJKt18ZBsTnX0qhG0kwIQftVAjLmszmkiR/trSp8H+xj1gUOzk7XHwaKgyREMSV1v9XaKrBUeIOdvQ=="
       },
       "Docker.DotNet": {
         "type": "Transitive",
@@ -786,11 +791,6 @@
         "dependencies": {
           "Polly": "7.1.0"
         }
-      },
-      "Portable.BouncyCastle": {
-        "type": "Transitive",
-        "resolved": "1.9.0",
-        "contentHash": "eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1422,14 +1422,14 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "3.4.0",
-        "contentHash": "zAQOLMxrxlfD8zYiLOgbZmXqGSr2h/ng+IRBfmFe/027sEZSaiS4Oo1W5wv+xtDLSlGyRORkkT1TSSudyFJ5hg==",
+        "resolved": "3.5.0",
+        "contentHash": "UYMCZ778ZjjHPZtr5VpemtI8kjkchFJf+taoH4fUwuzBXbWm+0VgAfBTzOIfrKSVBCKqG0gPm5PSOU8eAhFTpg==",
         "dependencies": {
+          "BouncyCastle.Cryptography": "2.2.1",
           "Docker.DotNet": "3.125.15",
           "Docker.DotNet.X509": "3.125.15",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "6.0.4",
-          "Portable.BouncyCastle": "1.9.0",
           "SSH.NET": "2020.0.2",
           "SharpZipLib": "1.4.2",
           "System.Text.Json": "6.0.8"
