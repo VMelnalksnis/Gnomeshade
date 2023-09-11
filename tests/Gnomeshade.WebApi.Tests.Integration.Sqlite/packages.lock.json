@@ -53,9 +53,9 @@
       },
       "HtmlAgilityPack": {
         "type": "Direct",
-        "requested": "[1.11.48, )",
-        "resolved": "1.11.48",
-        "contentHash": "BTYfqMoTtnlUz5hqJZ3qxh/SDWMtJAulcz2vIr2TRj5BhfdJZD1E1HSpNI9rvIQiYJzl2xoVtCNzCcANjzbScQ=="
+        "requested": "[1.11.53, )",
+        "resolved": "1.11.53",
+        "contentHash": "FeBqVmrMVoKFcsg6BhMJ5FYSx476AKDic9oHk5DsYSj606agR1XuxaaicxJ28X/LZkPTX51e3NaB8QJ5G+1B/w=="
       },
       "JetBrains.Annotations": {
         "type": "Direct",
