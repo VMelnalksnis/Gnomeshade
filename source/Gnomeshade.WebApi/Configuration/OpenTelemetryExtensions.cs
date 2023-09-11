@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 
 using Npgsql;
 
+using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
@@ -74,8 +75,10 @@ internal static class OpenTelemetryExtensions
 
 		services.AddLogging(builder => builder.AddOpenTelemetry(options =>
 		{
-			options.AddOtlpExporter(exporterOptions =>
+			options.AddOtlpExporter((exporterOptions, loggerOptions) =>
 			{
+				loggerOptions.ExportProcessorType = ExportProcessorType.Simple;
+
 				// HACK: Force the open telemetry endpoint environment variable to be populated even if
 				// the value is already provided through other configuration means.
 				//

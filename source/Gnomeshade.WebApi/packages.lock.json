@@ -137,13 +137,13 @@
       },
       "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "X38qRXriUTEaX8BOt6/DfVg6INuRujwIKnMDwCSFxUe0t6+IBNqibOqnzh+LOeXGMxl/5fgTdZpnne0YZ9bM+A==",
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "Xfb4ouRSerQe8Kgg6JBHMaPnjD7cPzdPIk4df6JDLO8G/S0K7uTMngw5qbVm88cqGs0p+YcQTg6FvXMQ6kL/dw==",
         "dependencies": {
           "Google.Protobuf": "[3.19.4, 4.0.0)",
-          "Grpc.Net.Client": "[2.43.0, 3.0.0)",
-          "OpenTelemetry": "1.5.1"
+          "Grpc.Net.Client": "[2.52.0, 3.0.0)",
+          "OpenTelemetry": "1.6.0"
         }
       },
       "OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs": {
@@ -158,12 +158,12 @@
       },
       "OpenTelemetry.Extensions.Hosting": {
         "type": "Direct",
-        "requested": "[1.5.1, )",
-        "resolved": "1.5.1",
-        "contentHash": "cCYypDciv6k3AnOxeMpClH0T5tLG1sw+VwXDF2d3tbGdZCLt5CAn+/8pq/csun+DMrYDqxQM2MAfDmbBCE2S2w==",
+        "requested": "[1.6.0, )",
+        "resolved": "1.6.0",
+        "contentHash": "Bu9biIlX1mLOtHiXYJ+IJJ2AfuiXcUjswxo5FD+pV+V+miRS0AtJrnZoWzlL2ATVY0QlVbSBJFDULPbgb0vylw==",
         "dependencies": {
           "Microsoft.Extensions.Hosting.Abstractions": "2.1.0",
-          "OpenTelemetry": "1.5.1"
+          "OpenTelemetry": "1.6.0"
         }
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
@@ -195,11 +195,11 @@
       },
       "OpenTelemetry.Instrumentation.Runtime": {
         "type": "Direct",
-        "requested": "[1.5.0, )",
-        "resolved": "1.5.0",
-        "contentHash": "t7HClhnf/7bXeEK+6mXRaibUUgP+LVmNLBo+MaCfHmX1yEOIEuTg2jcvw6PrxkjJxAqmzyKIRNIqiH77R5xQVA==",
+        "requested": "[1.5.1, )",
+        "resolved": "1.5.1",
+        "contentHash": "F3uYt/T5+2YZCxZmAdoK7u5AZxqDLYaTj5ddZ//Cnn9x+Lys9D9wRzqizQgKpAQJJ6prVh0TcBEbCCpEKKDZvw==",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.5.0, 2.0.0)"
+          "OpenTelemetry.Api": "[1.5.1, 2.0.0)"
         }
       },
       "StyleCop.Analyzers": {
@@ -692,28 +692,28 @@
       },
       "OpenTelemetry": {
         "type": "Transitive",
-        "resolved": "1.5.1",
-        "contentHash": "bWTspK1v8OnYgGa84+o9pESro3uO5xsfw0CX8ZvuERxbGbvPO4rCcpL2Q36f3tjTORyDszVi8GIDMTCM9YUFZQ==",
+        "resolved": "1.6.0",
+        "contentHash": "bTvLk9YIg0nUDb6K+f8mJkMK8b7sfGEyD0Zmg6ckD7kDCkBq1Hk1KjqlA/jEsypJIVnyclP0CGDcOELGYXGpAA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Configuration": "3.1.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.5.1"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.6.0"
         }
       },
       "OpenTelemetry.Api": {
         "type": "Transitive",
-        "resolved": "1.5.1",
-        "contentHash": "kSvofM5w4PXwINv2UBgyf248N1MQtUiy96q4PBmuEdtXAH6ooyhfu70JYYc/VpVTR4Eja91k7kHFlGtkHHy+Rg==",
+        "resolved": "1.6.0",
+        "contentHash": "LTF4PB6UicJlgrBBg0rblAMyJJLMAVBujg8T9pGPQsl1vVgPNZoJNTLadhC3ZdYUzuKsvYLS31vT0/wl97JtEw==",
         "dependencies": {
-          "System.Diagnostics.DiagnosticSource": "7.0.0"
+          "System.Diagnostics.DiagnosticSource": "7.0.2"
         }
       },
       "OpenTelemetry.Api.ProviderBuilderExtensions": {
         "type": "Transitive",
-        "resolved": "1.5.1",
-        "contentHash": "wX+eoSA3WLiAA7tpoDrv/EtvR7xOapAkMb1jZ0xn60wFJ+XnL5OKccbliCvb298hlCnk751BJUaZXASqL5MOnQ==",
+        "resolved": "1.6.0",
+        "contentHash": "k8lqUAxjXkCV6yKdXfCbxsHMh5x7F7q8lAKm61rP/iP3EJPG1XhOy3j9nyubBYCm/xqlIy4ugWcqY1Inxolozw==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.0",
-          "OpenTelemetry.Api": "1.5.1"
+          "OpenTelemetry.Api": "1.6.0"
         }
       },
       "Polly": {
@@ -968,8 +968,8 @@
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "9W0ewWDuAyDqS2PigdTxk6jDKonfgscY/hP8hm7VpxYhNHZHKvZTdRckberlFk3VnCmr3xBUyMBut12Q+T2aOw=="
+        "resolved": "7.0.2",
+        "contentHash": "hYr3I9N9811e0Bjf2WNwAGGyTuAFbbTgX1RPLt/3Wbm68x3IGcX5Cl75CMmgT6WlNwLQ2tCCWfqYPpypjaf2xA=="
       },
       "System.Diagnostics.Tools": {
         "type": "Transitive",
