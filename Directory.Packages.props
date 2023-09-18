@@ -58,10 +58,10 @@
 		<PackageVersion Include="NodaTime" Version="3.1.9"/>
 		<PackageVersion Include="NodaTime.Bogus" Version="3.0.2"/>
 		<PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2"/>
-		<PackageVersion Include="Npgsql.DependencyInjection" Version="7.0.4"/>
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
-		<PackageVersion Include="Npgsql.NodaTime" Version="7.0.4"/>
-		<PackageVersion Include="Npgsql.OpenTelemetry" Version="7.0.4"/>
+		<PackageVersion Include="Npgsql.DependencyInjection" Version="7.0.6"/>
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11"/>
+		<PackageVersion Include="Npgsql.NodaTime" Version="7.0.6"/>
+		<PackageVersion Include="Npgsql.OpenTelemetry" Version="7.0.6"/>
 		<PackageVersion Include="NUnit" Version="3.13.3"/>
 		<PackageVersion Include="NUnit3TestAdapter" Version="4.5.0"/>
 		<PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.5.0-rc.1"/>
