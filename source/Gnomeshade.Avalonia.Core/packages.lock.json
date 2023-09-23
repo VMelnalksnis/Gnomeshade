@@ -57,13 +57,13 @@
       },
       "LiveChartsCore.SkiaSharpView.Avalonia": {
         "type": "Direct",
-        "requested": "[2.0.0-beta.800-11.0.0-rc1.1, )",
-        "resolved": "2.0.0-beta.800-11.0.0-rc1.1",
-        "contentHash": "2c9oaqkMQUFVhil6n/lSOHEqli/0fpwnCak8WBloS+CZCdUT7lRP50nV1WNNQzuLql5CSrQGqsi7WZ/LEhzchA==",
+        "requested": "[2.0.0-rc1, )",
+        "resolved": "2.0.0-rc1",
+        "contentHash": "9Ws07EEr8I1wFHXHsju4w9S4m77HiGS0jDmH/ZnwT/bbrZWfpUBqk68uu+yWldrhcbeuK16hQjO+fc7CJxc/Uw==",
         "dependencies": {
-          "Avalonia": "11.0.0-rc1.1",
-          "Avalonia.Skia": "11.0.0-rc1.1",
-          "LiveChartsCore.SkiaSharpView": "2.0.0-beta.800"
+          "Avalonia": "11.0.0",
+          "Avalonia.Skia": "11.0.0",
+          "LiveChartsCore.SkiaSharpView": "2.0.0-rc1"
         }
       },
       "Microsoft.Extensions.Configuration.EnvironmentVariables": {
@@ -174,10 +174,10 @@
       },
       "Avalonia.Skia": {
         "type": "Transitive",
-        "resolved": "11.0.0-rc1.1",
-        "contentHash": "mfqqLmRxYi9SfgQ4p873um33bMTDLgYUdsX4l6TARJ3qOY1s4sRTyjep1D9Fqs3rLpA8aJesg59wsNKjrLg+sw==",
+        "resolved": "11.0.0",
+        "contentHash": "lWix1cBPFV4UEjdwE1b1fF1+xxWGbXak1oP2Fmqa8qjgMDxaxEz4B6+f+9mPhs042D3m9EGE8ZMs8eEJQpo0pQ==",
         "dependencies": {
-          "Avalonia": "11.0.0-rc1.1",
+          "Avalonia": "11.0.0",
           "HarfBuzzSharp": "2.8.2.3",
           "HarfBuzzSharp.NativeAssets.Linux": "2.8.2.3",
           "HarfBuzzSharp.NativeAssets.WebAssembly": "2.8.2.3",
@@ -188,11 +188,11 @@
       },
       "HarfBuzzSharp": {
         "type": "Transitive",
-        "resolved": "2.8.2.3",
-        "contentHash": "8MwXm9J4dXHuTdzPo29nHgDbt4+6P+RrPrH/qrxcERf29cpLlFbjvP3eFPwHmdUrl4KL2SHEZi2ZuQ5ndeIL1w==",
+        "resolved": "2.8.2.5",
+        "contentHash": "cw+5/IBmpX3i/cebrbZr14sP82DuXcE3lyHOOvHs9hqiOxR00O7pOpTEhFZEr4RE4WmxCdu7cZdFqqIL2ARWIA==",
         "dependencies": {
-          "HarfBuzzSharp.NativeAssets.Win32": "2.8.2.3",
-          "HarfBuzzSharp.NativeAssets.macOS": "2.8.2.3"
+          "HarfBuzzSharp.NativeAssets.Win32": "2.8.2.5",
+          "HarfBuzzSharp.NativeAssets.macOS": "2.8.2.5"
         }
       },
       "HarfBuzzSharp.NativeAssets.Linux": {
@@ -205,8 +205,8 @@
       },
       "HarfBuzzSharp.NativeAssets.macOS": {
         "type": "Transitive",
-        "resolved": "2.8.2.3",
-        "contentHash": "uwz9pB3hMuxzI/bSkjVrsOJH7Wo1L+0Md5ZmEMDM/j7xDHtR9d3mfg/CfxhMIcTiUC4JgX49FZK0y2ojgu1dww=="
+        "resolved": "2.8.2.5",
+        "contentHash": "nlDITOIUo9UrevzkXqeHqIS3bSzEu8n6SnZqjhEi5oI+rM/NiJ0obX7xQNu5QGWF7warmMwqNWDLqlc+vefXvQ=="
       },
       "HarfBuzzSharp.NativeAssets.WebAssembly": {
         "type": "Transitive",
@@ -215,8 +215,8 @@
       },
       "HarfBuzzSharp.NativeAssets.Win32": {
         "type": "Transitive",
-        "resolved": "2.8.2.3",
-        "contentHash": "Wo6QpE4+a+PFVdfIBoLkLr4wq2uC0m9TZC8FAfy4ZnLsUc10WL0Egk9EBHHhDCeokNOXDse5YtvuTYtS/rbHfg=="
+        "resolved": "2.8.2.5",
+        "contentHash": "478O/W0P50YbRWmcgDPzkHNWmH9ak6zsjQ0XEKY8LmGNcOtH5eIvrJE720Qa7lNq/JreRH7rRlHsGbNuK1+WvA=="
       },
       "IdentityModel": {
         "type": "Transitive",
@@ -225,17 +225,17 @@
       },
       "LiveChartsCore": {
         "type": "Transitive",
-        "resolved": "2.0.0-beta.800",
-        "contentHash": "S59x4dc22wXLHV/HG9+l3+nQ+W6ePJg4tJgejlsCmjwuRRA1U0fQLf4OVkDq2CebiiYsO20x0+gjy3zURMwn5Q=="
+        "resolved": "2.0.0-rc1",
+        "contentHash": "ypZDwLfS3C3u3BhoumH3UBrlo5acqifiyJ0WfOgX7usg1umJRhwXyBG8DO0CHKIh01EF58EiC6jtfdSmsEOMDw=="
       },
       "LiveChartsCore.SkiaSharpView": {
         "type": "Transitive",
-        "resolved": "2.0.0-beta.800",
-        "contentHash": "DBhp5M4Nz8dIyNLI78kOkoQDjanT5AFCJeTynLuwBm9wr7Dj5xei0kz00k4XdHehDHunCQTCiYIFOVLfipXONg==",
+        "resolved": "2.0.0-rc1",
+        "contentHash": "RnG4Q5QS1i99rbYEMxACwV2pKVKgdHksoBG5/XLb+6pq+QBcWV0pnStGlhXZj5q0YsZT4ebwb9FcezuzMZKGqw==",
         "dependencies": {
-          "LiveChartsCore": "2.0.0-beta.800",
-          "SkiaSharp": "2.88.3",
-          "SkiaSharp.HarfBuzz": "2.88.3"
+          "LiveChartsCore": "2.0.0-rc1",
+          "SkiaSharp": "2.88.5",
+          "SkiaSharp.HarfBuzz": "2.88.5"
         }
       },
       "MicroCom.Runtime": {
@@ -350,11 +350,11 @@
       },
       "SkiaSharp.HarfBuzz": {
         "type": "Transitive",
-        "resolved": "2.88.3",
-        "contentHash": "hH6v4ltTb34eqn5tx1qLSAN7O+ppZCV5DnZw0FR7RwxXYqCeQYbBNgsaPyrZ1nkvtCDD1pH79taeO6SvqG+IAg==",
+        "resolved": "2.88.5",
+        "contentHash": "qmE+eHiDsXkuNzsWO/FnM8PONM+3byu9F18GhuYt6V69apqYuq16RkFJzvtA3TT/UvJmtZnTgJWCe7LzlzggTA==",
         "dependencies": {
-          "HarfBuzzSharp": "2.8.2.3",
-          "SkiaSharp": "2.88.3"
+          "HarfBuzzSharp": "2.8.2.5",
+          "SkiaSharp": "2.88.5"
         }
       },
       "SkiaSharp.NativeAssets.Linux": {
