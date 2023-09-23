@@ -9,6 +9,7 @@
 		<TrimMode>partial</TrimMode>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<InvariantGlobalization>true</InvariantGlobalization>
+		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
 
 		<NoWarn>$(NoWarn); CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>
