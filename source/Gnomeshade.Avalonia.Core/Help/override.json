@@ -11,7 +11,12 @@
 	},
 	{
 		"Id": "Avalonia.BuildServices",
-		"Version": "0.0.28",
+		"Version": "0.0.29",
+		"License": "MIT"
+	},
+	{
+		"Id": "BouncyCastle.Cryptography",
+		"Version": "2.2.1",
 		"License": "MIT"
 	},
 	{
@@ -31,22 +36,22 @@
 	},
 	{
 		"Id": "Microsoft.CodeCoverage",
-		"Version": "17.6.3",
+		"Version": "17.7.2",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.NET.Test.Sdk",
-		"Version": "17.6.3",
+		"Version": "17.7.2",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.TestPlatform.ObjectModel",
-		"Version": "17.6.3",
+		"Version": "17.7.2",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.TestPlatform.TestHost",
-		"Version": "17.6.3",
+		"Version": "17.7.2",
 		"License": "MS-EULA"
 	},
 	{
@@ -60,8 +65,13 @@
 		"License": "MIT"
 	},
 	{
+		"Id": "Testcontainers",
+		"Version": "3.5.0",
+		"License": "MIT"
+	},
+	{
 		"Id": "Testcontainers.PostgreSql",
-		"Version": "3.2.0",
+		"Version": "3.5.0",
 		"License": "MIT"
 	}
 ]
