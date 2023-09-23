@@ -23,7 +23,7 @@ public class DatabaseInitialization
 
 	static DatabaseInitialization()
 	{
-		_postgreSqlContainer = new PostgreSqlBuilder().Build();
+		_postgreSqlContainer = new PostgreSqlBuilder().WithImage("postgres:16").Build();
 		_postgreSqlContainer.StartAsync().GetAwaiter().GetResult();
 
 		var configuration = new ConfigurationBuilder()
