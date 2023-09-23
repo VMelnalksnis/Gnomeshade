@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.8.1
         with:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.8.1
         with:
@@ -106,7 +106,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - uses: actions/download-artifact@v3.0.2
         id: download
         with:
@@ -125,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - run: ./deployment/test-docker.sh ${{ github.run_number }} ${{ secrets.DEMO_ADMIN_PASSWORD }}
 
   resharper:
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     if: false # Too many false positives, latest versions don't work
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - uses: actions/setup-dotnet@v3.2.0
       - uses: actions/setup-node@v3.8.1
         with:
