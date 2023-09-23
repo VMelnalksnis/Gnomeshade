@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
-		<RuntimeIdentifiers>win10-x64;linux-x64</RuntimeIdentifiers>
+		<RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 		<AssemblyTitle>Gnomeshade</AssemblyTitle>
 		<ApplicationIcon>Assets/avalonia-logo.ico</ApplicationIcon>
 

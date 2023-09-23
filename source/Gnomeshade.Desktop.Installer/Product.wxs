@@ -9,7 +9,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 
 	<!--Variable for Sample Application Directory-->
-	<?define BuildDir=$(var.Gnomeshade.Desktop.TargetDir)win10-x64\publish\?>
+	<?define BuildDir=$(var.Gnomeshade.Desktop.TargetDir)win-x64\publish\?>
 
 	<Package Name="$(var.Name)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)"
 			 Version="$(var.Version)" Language="1033" InstallerVersion="200" Scope="perUser"

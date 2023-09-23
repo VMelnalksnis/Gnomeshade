@@ -37,7 +37,7 @@ jobs:
         run: >
           deployment/publish.ps1
           "Gnomeshade.Desktop"
-          "win10-x64"
+          "win-x64"
           "${{ github.run_number }}"
           $env:BUILD_TAG
 
