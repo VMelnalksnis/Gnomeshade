@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 using Gnomeshade.WebApi.Configuration.Options;
 
 using Microsoft.AspNetCore.Hosting;
@@ -22,10 +24,10 @@ internal static class HttpsOptionsExtensions
 
 		options.OnAuthenticate = (_, sslAuthenticationOptions) =>
 		{
-// TlsOptions validation checks for platform todo
-#pragma warning disable CA1416
-			sslAuthenticationOptions.CipherSuitesPolicy = new(tlsOptions.CipherSuites);
-#pragma warning restore CA1416
+			if (!OperatingSystem.IsWindows())
+			{
+				sslAuthenticationOptions.CipherSuitesPolicy = new(tlsOptions.CipherSuites);
+			}
 		};
 	}
 }
