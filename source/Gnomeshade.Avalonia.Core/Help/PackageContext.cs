@@ -10,6 +10,4 @@ namespace Gnomeshade.Avalonia.Core.Help;
 /// <inheritdoc cref="System.Text.Json.Serialization.JsonSerializerContext" />
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(List<PackageInfo>))]
-internal sealed partial class PackageContext : JsonSerializerContext
-{
-}
+internal sealed partial class PackageContext : JsonSerializerContext;

@@ -5,6 +5,4 @@
 namespace Gnomeshade.WebApi.Client;
 
 /// <summary>The result of account transaction import from Nordigen.</summary>
-public abstract class ImportResult
-{
-}
+public abstract class ImportResult;

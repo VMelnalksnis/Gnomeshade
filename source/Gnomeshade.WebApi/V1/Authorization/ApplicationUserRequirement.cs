@@ -9,6 +9,4 @@ using Microsoft.AspNetCore.Authorization;
 namespace Gnomeshade.WebApi.V1.Authorization;
 
 /// <summary>An <see cref="IAuthorizationRequirement"/> that indicates that an <see cref="ApplicationUser"/> is required.</summary>
-public sealed class ApplicationUserRequirement : IAuthorizationRequirement
-{
-}
+public sealed class ApplicationUserRequirement : IAuthorizationRequirement;

@@ -34,15 +34,7 @@ public sealed class ViewLocatorTests
 		_viewLocator.Match(null).Should().BeFalse();
 	}
 
-	private sealed class TestViewModel : ViewModelBase
-	{
-		public TestViewModel(IActivityService activityService)
-			: base(activityService)
-		{
-		}
-	}
+	private sealed class TestViewModel(IActivityService activityService) : ViewModelBase(activityService);
 
-	private sealed class TestView : UserControl, IView<TestView, TestViewModel>
-	{
-	}
+	private sealed class TestView : UserControl, IView<TestView, TestViewModel>;
 }

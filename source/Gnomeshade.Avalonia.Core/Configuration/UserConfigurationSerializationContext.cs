@@ -8,6 +8,4 @@ namespace Gnomeshade.Avalonia.Core.Configuration;
 
 /// <inheritdoc cref="System.Text.Json.Serialization.JsonSerializerContext" />
 [JsonSerializable(typeof(UserConfiguration))]
-internal partial class UserConfigurationSerializationContext : JsonSerializerContext
-{
-}
+internal partial class UserConfigurationSerializationContext : JsonSerializerContext;

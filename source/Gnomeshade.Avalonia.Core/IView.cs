@@ -21,6 +21,4 @@ public interface IView<
 	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TView,
 	[UsedImplicitly(InstantiatedNoFixedConstructorSignature), DynamicallyAccessedMembers(PublicConstructors)] out TViewModel>
 	where TView : Control
-	where TViewModel : ViewModelBase
-{
-}
+	where TViewModel : ViewModelBase;

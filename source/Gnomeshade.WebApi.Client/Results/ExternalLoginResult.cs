@@ -5,6 +5,4 @@
 namespace Gnomeshade.WebApi.Client.Results;
 
 /// <summary>Result of logging in with an external provider.</summary>
-public abstract class ExternalLoginResult
-{
-}
+public abstract class ExternalLoginResult;

@@ -5,6 +5,4 @@
 namespace Gnomeshade.WebApi.Client.Results;
 
 /// <summary>User is already registered and is successfully logged in.</summary>
-public sealed class LoggedIn : ExternalLoginResult
-{
-}
+public sealed class LoggedIn : ExternalLoginResult;
