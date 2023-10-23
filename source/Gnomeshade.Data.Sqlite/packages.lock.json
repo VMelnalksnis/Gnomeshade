@@ -4,13 +4,13 @@
     "net8.0": {
       "dbup-sqlite": {
         "type": "Direct",
-        "requested": "[5.0.8, )",
-        "resolved": "5.0.8",
-        "contentHash": "OsBTb9riEqoC3IvM7bF+dTo3uDljBtyPkDaCMjjvCVv13WDvq8rqq5+O0FbzWBRsWYeEOvvbSoQNTG8DgajAaA==",
+        "requested": "[5.0.37, )",
+        "resolved": "5.0.37",
+        "contentHash": "l+9J/3o+u0yuVdUytkDeh0onv/VIYGl64NxL2bXYEvGGnf2kzy0KHInBXIjBHnV6heHUisfi79CM5r8VNY7cuA==",
         "dependencies": {
           "Microsoft.Data.Sqlite": "1.0.1",
           "NETStandard.Library": "1.6.1",
-          "dbup-core": "5.0.8"
+          "dbup-core": "5.0.37"
         }
       },
       "DotNet.ReproducibleBuilds": {
