@@ -1541,7 +1541,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.0, )",
           "Npgsql.NodaTime": "[8.0.1, )",
           "Npgsql.OpenTelemetry": "[8.0.1, )",
-          "dbup-postgresql": "[5.0.8, )"
+          "dbup-postgresql": "[5.0.37, )"
         }
       },
       "gnomeshade.data.sqlite": {
@@ -1678,12 +1678,12 @@
       },
       "dbup-postgresql": {
         "type": "CentralTransitive",
-        "requested": "[5.0.8, )",
-        "resolved": "5.0.8",
-        "contentHash": "kQP23BBRIHN7rv0UYG/0EQEh8lpI5RYZF20T5cuUk2PFpGCaz6zxLFwYdthfKbZjbYC6fc3i1ZR2nUUTkrdwSw==",
+        "requested": "[5.0.37, )",
+        "resolved": "5.0.37",
+        "contentHash": "ADV/PWi1W6D3KoqZjhASLrPswjGnDQzZZfIJOyRtlaPrBuePFU1KZmt6vhkYzAmtjWAA8lpRf4g0+CzeWDmRdg==",
         "dependencies": {
           "Npgsql": "3.2.7",
-          "dbup-core": "5.0.8"
+          "dbup-core": "5.0.37"
         }
       },
       "dbup-sqlite": {
