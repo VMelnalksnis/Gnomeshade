@@ -5,7 +5,7 @@ COPY ./ ./
 ARG BUILD_NUMBER=123
 RUN ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:7.0.11-alpine3.18 as gnomeshade
+FROM mcr.microsoft.com/dotnet/runtime-deps:7.0.13-alpine3.18 as gnomeshade
 
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/Gnomeshade.WebApi /gnomeshade/
 COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net7.0/linux-musl-x64/publish/libe_sqlite3.so /gnomeshade/
