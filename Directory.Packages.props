@@ -74,7 +74,6 @@
 		<PackageVersion Include="Serilog" Version="3.1.1"/>
 		<PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0"/>
 		<PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.0"/>
-		<PackageVersion Include="Serilog.Sinks.Console" Version="4.1.0"/>
 		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0"/>
 		<PackageVersion Include="Serilog.Sinks.Trace" Version="3.0.0"/>
 		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
