@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: actions/setup-dotnet@v3.2.0
+      - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v3.8.1
         with:
           node-version: 18
@@ -65,7 +65,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: actions/setup-dotnet@v3.2.0
+      - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v3.8.1
         with:
           node-version: 18
@@ -134,7 +134,7 @@ jobs:
     if: false # Too many false positives, latest versions don't work
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: actions/setup-dotnet@v3.2.0
+      - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v3.8.1
         with:
           node-version: 18
