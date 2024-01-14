@@ -231,11 +231,11 @@
       },
       "VMelnalksnis.ISO20022DotNet": {
         "type": "Direct",
-        "requested": "[0.3.3, )",
-        "resolved": "0.3.3",
-        "contentHash": "axo6yF3ZAgRFN8IH7MzTUGdOLXWE5Xe7mafim/aSJeYDJLx33ZXVh/I1LuRKn7BQbSKuwdYbkCH+tFI3ZG9ufw==",
+        "requested": "[0.3.4, )",
+        "resolved": "0.3.4",
+        "contentHash": "WUxiOMgk8hTPK0jLR2ypPYjdsLzW5hQAnKrgFFJ5pRe7AScIXdIkAlBwxb2yrpb7kMkAklZ0uBYsLuXdZgm7ZA==",
         "dependencies": {
-          "NodaTime": "3.1.4"
+          "NodaTime": "3.1.10"
         }
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
