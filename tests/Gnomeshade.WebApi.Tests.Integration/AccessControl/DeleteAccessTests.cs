@@ -248,11 +248,11 @@ public sealed class DeleteAccessTests : WebserverTests
 		var deletedEntity = await Fixture.GetEntityRepository(scope).FindByIdAsync<TEntity>(id);
 		var userId = (await client.GetMyCounterpartyAsync()).CreatedByUserId;
 
-		using (new AssertionScope())
-		{
-			deletedEntity.DeletedAt.Should().NotBeNull();
-			deletedEntity.DeletedByUserId.Should().Be(userId);
-		}
+		using var assertionScope = new AssertionScope();
+
+		deletedEntity.Should().NotBeNull();
+		deletedEntity?.DeletedAt.Should().NotBeNull();
+		deletedEntity?.DeletedByUserId.Should().Be(userId);
 	}
 
 	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)

@@ -43,7 +43,7 @@ internal sealed class EntityRepository
 		_dbConnection = dbConnection;
 	}
 
-	internal async Task<IEntity> FindByIdAsync<TEntity>(Guid id)
+	internal async Task<IEntity?> FindByIdAsync<TEntity>(Guid id)
 		where TEntity : Entity
 	{
 		var tableName = _tableNames[typeof(TEntity)];
