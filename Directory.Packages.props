@@ -99,6 +99,6 @@
 
 	<!--Vulnerable transient dependencies-->
 	<ItemGroup>
-		<PackageVersion Include="SkiaSharp" Version="2.88.6"/>
+		<PackageVersion Include="SkiaSharp" Version="2.88.7"/>
 	</ItemGroup>
 </Project>
