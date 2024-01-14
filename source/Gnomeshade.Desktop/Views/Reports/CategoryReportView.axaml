@@ -24,7 +24,7 @@
 
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
-					<InvokeCommandAction Command="{ReflectionBinding RefreshAsync}" />
+					<InvokeCommandAction Command="{Binding RefreshAsync}" />
 				</EventTriggerBehavior>
 			</Interaction.Behaviors>
 		</AutoCompleteBox>

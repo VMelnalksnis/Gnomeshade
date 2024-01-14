@@ -56,7 +56,7 @@
 
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
 				</EventTriggerBehavior>
 			</Interaction.Behaviors>
 		</DataGrid>
@@ -65,7 +65,7 @@
 
 		<WrapPanel IsVisible="{Binding !IsReadOnly}">
 
-			<Button IsEnabled="{Binding Details.CanSave}" Command="{ReflectionBinding Details.SaveAsync}">
+			<Button IsEnabled="{Binding Details.CanSave}" Command="{Binding Details.SaveAsync}">
 				Save
 			</Button>
 
@@ -75,7 +75,7 @@
 				Create product
 			</Button>
 
-			<Button IsVisible="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+			<Button IsVisible="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
 				Delete Selected
 			</Button>
 		</WrapPanel>

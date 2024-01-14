@@ -47,7 +47,7 @@
 
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
 				</EventTriggerBehavior>
 			</Interaction.Behaviors>
 		</DataGrid>
@@ -70,14 +70,14 @@
 			<Button
 				Grid.Column="0"
 				IsEnabled="{Binding CanSaveRow}"
-				Command="{ReflectionBinding SaveRow}"
+				Command="{Binding SaveRow}"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
 				Save Row
 			</Button>
 
 			<Button
 				Grid.Column="1"
-				Command="{ReflectionBinding RemoveRow}"
+				Command="{Binding RemoveRow}"
 				IsEnabled="{Binding SelectedRow, Converter={x:Static ObjectConverters.IsNotNull}}"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
 				Remove Row
@@ -89,7 +89,7 @@
 			Padding="25 5"
 			HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
 			IsEnabled="{Binding CanSave}"
-			Command="{ReflectionBinding SaveAsync}">
+			Command="{Binding SaveAsync}">
 			Save
 		</Button>
 	</Grid>

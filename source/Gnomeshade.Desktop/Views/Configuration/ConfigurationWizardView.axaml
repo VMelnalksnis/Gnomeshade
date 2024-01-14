@@ -19,13 +19,13 @@
 		<StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="20">
 			<Button
 				Width="60" HorizontalContentAlignment="Center"
-				IsEnabled="{Binding CanSkip}" Command="{ReflectionBinding Skip}">
+				IsEnabled="{Binding CanSkip}" Command="{Binding Skip}">
 				Skip
 			</Button>
 
 			<Button
 				Width="60" HorizontalContentAlignment="Center"
-				IsEnabled="{Binding Current.IsValid^}" Command="{ReflectionBinding Current.UpdateConfigurationAsync}">
+				IsEnabled="{Binding Current.IsValid^}" Command="{Binding Current.UpdateConfigurationAsync}">
 				Next
 			</Button>
 		</StackPanel>

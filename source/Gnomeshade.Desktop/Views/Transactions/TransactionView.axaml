@@ -20,39 +20,39 @@
 					<Button
 						Grid.Row="0" Grid.Column="0"
 						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding CanRefresh}" Command="{ReflectionBinding RefreshAsync}">
+						IsEnabled="{Binding CanRefresh}" Command="{Binding RefreshAsync}">
 						Refresh
 					</Button>
 					<Button
 						Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+						IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
 						Delete Selected
 					</Button>
 					<Button
 						Grid.Row="2" Grid.Column="0"
 						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding CanSelectSource}" Command="{ReflectionBinding SelectSource}">
+						IsEnabled="{Binding CanSelectSource}" Command="{Binding SelectSource}">
 						Select Source
 					</Button>
 					<Button
 						Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding CanSelectTarget}" Command="{ReflectionBinding SelectTarget}">
+						IsEnabled="{Binding CanSelectTarget}" Command="{Binding SelectTarget}">
 						Select Target
 					</Button>
 					<Button
 						Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
 						HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						Command="{ReflectionBinding ClearMerge}">
+						Command="{Binding ClearMerge}">
 						Clear
 					</Button>
 					<Button
 						Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding Merge.CanMerge}" Command="{ReflectionBinding Merge.MergeAsync}">
+						IsEnabled="{Binding Merge.CanMerge}" Command="{Binding Merge.MergeAsync}">
 						Merge
 					</Button>
 					<Button
 						Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding Refund.CanRefund}" Command="{ReflectionBinding Refund.RefundAsync}">
+						IsEnabled="{Binding Refund.CanRefund}" Command="{Binding Refund.RefundAsync}">
 						Refund
 					</Button>
 				</Grid>
@@ -217,7 +217,7 @@
 
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-						<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
+						<InvokeCommandAction Command="{Binding UpdateSelection}" />
 					</EventTriggerBehavior>
 				</Interaction.Behaviors>
 			</DataGrid>

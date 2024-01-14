@@ -32,18 +32,18 @@
 		<StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal">
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
-				Command="{ReflectionBinding RefreshAsync}">
+				Command="{Binding RefreshAsync}">
 				Refresh
 			</Button>
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
-				Command="{ReflectionBinding ShowFilePicker}" CommandParameter="{Binding $parent[Window]}">
+				Command="{Binding ShowFilePicker}" CommandParameter="{Binding $parent[Window]}">
 				Select File
 			</Button>
 			<Button
 				MinWidth="100" HorizontalContentAlignment="Center"
 				IsEnabled="{Binding CanImport}"
-				Command="{ReflectionBinding ImportAsync}">
+				Command="{Binding ImportAsync}">
 				Import
 				<Interaction.Behaviors>
 					<FocusOnAttachedToVisualTreeBehavior />

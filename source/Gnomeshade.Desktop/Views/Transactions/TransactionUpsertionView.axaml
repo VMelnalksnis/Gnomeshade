@@ -17,7 +17,7 @@
 			<Button
 				Width="140"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5"
-				IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+				IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
 				Save
 			</Button>
 
@@ -26,7 +26,7 @@
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5"
 				IsVisible="{Binding !Transfers.IsReadOnly, FallbackValue=false}"
 				IsEnabled="{Binding CanSave}"
-				Command="{ReflectionBinding Reconcile}">
+				Command="{Binding Reconcile}">
 				Reconcile
 			</Button>
 
@@ -34,7 +34,7 @@
 				Width="140"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5"
 				IsVisible="{Binding Transfers.IsReadOnly, FallbackValue=false}"
-				Command="{ReflectionBinding Edit}">
+				Command="{Binding Edit}">
 				Edit
 			</Button>
 		</WrapPanel>

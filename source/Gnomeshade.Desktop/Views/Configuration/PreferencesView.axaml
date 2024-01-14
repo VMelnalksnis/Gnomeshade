@@ -21,7 +21,7 @@
 			ItemsSource="{Binding Institutions}"
 			SelectedItem="{Binding SelectedInstitutionId}" />
 
-		<Button Grid.Row="2" Grid.Column="0" Command="{ReflectionBinding Save}">
+		<Button Grid.Row="2" Grid.Column="0" Command="{Binding Save}">
 			Save
 		</Button>
 	</Grid>

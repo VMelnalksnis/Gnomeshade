@@ -22,7 +22,7 @@
 
 		<CheckBox IsChecked="{Binding LinkProduct}">Create linked product</CheckBox>
 
-		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
 			Save
 		</Button>
 	</StackPanel>

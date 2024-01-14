@@ -34,7 +34,7 @@
 
 					<Interaction.Behaviors>
 						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
-							<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
+							<InvokeCommandAction Command="{Binding UpdateSelectedAggregate}" />
 						</EventTriggerBehavior>
 					</Interaction.Behaviors>
 				</AutoCompleteBox>
@@ -56,7 +56,7 @@
 
 					<Interaction.Behaviors>
 						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Calculator}">
-							<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedAggregate}" />
+							<InvokeCommandAction Command="{Binding UpdateSelectedAggregate}" />
 						</EventTriggerBehavior>
 					</Interaction.Behaviors>
 				</AutoCompleteBox>
@@ -75,7 +75,7 @@
 
 						<Interaction.Behaviors>
 							<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
-								<InvokeCommandAction Command="{ReflectionBinding UpdateSelectedProduct}" />
+								<InvokeCommandAction Command="{Binding UpdateSelectedProduct}" />
 							</EventTriggerBehavior>
 						</Interaction.Behaviors>
 					</AutoCompleteBox>
@@ -86,7 +86,7 @@
 						HorizontalAlignment="Stretch"
 						IsVisible="{Binding DisplayedProducts, Converter={x:Static core:Converters.NotEmpty}}"
 						IsEnabled="{Binding CanRemoveProduct}"
-						Command="{ReflectionBinding RemoveSelectedProduct}">
+						Command="{Binding RemoveSelectedProduct}">
 						Remove Product
 					</Button>
 				</StackPanel>

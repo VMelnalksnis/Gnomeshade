@@ -47,14 +47,14 @@
 
 			<Button
 				HorizontalAlignment="Center" Padding="20 5"
-				Command="{ReflectionBinding LogInAsync}"
+				Command="{Binding LogInAsync}"
 				IsEnabled="{Binding CanLogIn, FallbackValue=false}">
 				Log In
 			</Button>
 
 			<Button
 				HorizontalAlignment="Center" Padding="20 5"
-				Command="{ReflectionBinding AuthenticateExternallyAsync}">
+				Command="{Binding AuthenticateExternallyAsync}">
 				Keycloak
 			</Button>
 		</StackPanel>

@@ -41,7 +41,7 @@
 
 		<Button
 			Width="140" Margin="5 0" HorizontalContentAlignment="Center"
-			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+			IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
 			Save
 		</Button>
 

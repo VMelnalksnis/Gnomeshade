@@ -12,7 +12,7 @@
 
 	<StackPanel Orientation="Vertical" Spacing="5">
 		<TextBox MinWidth="300" Text="{Binding Name}" Watermark="Name" UseFloatingWatermark="True" />
-		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+		<Button Width="140" Margin="5 0" IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
 			Save
 		</Button>
 	</StackPanel>

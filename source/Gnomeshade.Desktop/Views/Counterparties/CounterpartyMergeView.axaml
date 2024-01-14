@@ -29,7 +29,7 @@
 
 		<Button
 			Grid.Column="1" Grid.Row="0"
-			IsEnabled="{Binding CanMerge}" Command="{ReflectionBinding MergeAsync}">
+			IsEnabled="{Binding CanMerge}" Command="{Binding MergeAsync}">
 			Merge Into
 		</Button>
 

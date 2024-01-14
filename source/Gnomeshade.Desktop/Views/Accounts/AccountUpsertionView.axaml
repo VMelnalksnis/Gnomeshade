@@ -63,7 +63,7 @@
 					SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" SelectionMode="Single,Toggle" />
 
 				<Button
-					Command="{ReflectionBinding RemoveAdditionalCurrency}"
+					Command="{Binding RemoveAdditionalCurrency}"
 					IsEnabled="{Binding SelectedCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 					Remove Currency
 				</Button>
@@ -79,7 +79,7 @@
 					SelectedItem="{Binding AddableCurrency, Mode=TwoWay}" />
 
 				<Button
-					Command="{ReflectionBinding AddAdditionalCurrency}"
+					Command="{Binding AddAdditionalCurrency}"
 					IsEnabled="{Binding AddableCurrency, Converter={x:Static ObjectConverters.IsNotNull}}">
 					Add Currency
 				</Button>
@@ -88,7 +88,7 @@
 
 		<Button
 			HorizontalContentAlignment="Center"
-			IsEnabled="{Binding CanSave}" Command="{ReflectionBinding SaveAsync}">
+			IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
 			Save
 		</Button>
 

@@ -22,7 +22,7 @@
 
 			<Button
 				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-				IsEnabled="{Binding CanDelete}" Command="{ReflectionBinding DeleteSelectedAsync}">
+				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
 				Delete Selected
 			</Button>
 		</StackPanel>
@@ -68,7 +68,7 @@
 
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-					<InvokeCommandAction Command="{ReflectionBinding UpdateSelection}" />
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
 				</EventTriggerBehavior>
 			</Interaction.Behaviors>
 		</DataGrid>
