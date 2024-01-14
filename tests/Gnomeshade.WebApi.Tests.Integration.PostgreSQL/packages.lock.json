@@ -4,9 +4,9 @@
     "net8.0": {
       "Bogus": {
         "type": "Direct",
-        "requested": "[34.0.2, )",
-        "resolved": "34.0.2",
-        "contentHash": "2KQAuMn3fLAQ2r6jeiffZnpv0bi3GCW3iRB2v1KeHIEBu8MNTh9dBlLTZwGvM0pr+9doKkU8L5JgCURmTmT88A=="
+        "requested": "[35.3.2, )",
+        "resolved": "35.3.2",
+        "contentHash": "x9SZux8lYDnoG+xhorJC6I342GFBX4nPdb96qrwQzE9YyQijcPn5HIAZhCCRkJS3gxnh8i/lyxnvdIvTyrM0Aw=="
       },
       "coverlet.collector": {
         "type": "Direct",
@@ -1558,7 +1558,7 @@
       "gnomeshade.testinghelpers": {
         "type": "Project",
         "dependencies": {
-          "Bogus": "[34.0.2, )",
+          "Bogus": "[35.3.2, )",
           "FluentAssertions": "[6.12.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
