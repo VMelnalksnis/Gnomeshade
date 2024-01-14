@@ -449,7 +449,7 @@
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
-          "Dapper": "[2.0.151, )",
+          "Dapper": "[2.1.28, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.1, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.1, )",
           "NodaTime": "[3.1.10, )",
@@ -458,9 +458,9 @@
       },
       "Dapper": {
         "type": "CentralTransitive",
-        "requested": "[2.0.151, )",
-        "resolved": "2.0.151",
-        "contentHash": "mMcZgx1lim0/i1Ozu+lgnBM4GwNIHpCuxV6BV2ovsEfZAXRAq4jb6RIhxGDcVjtmXMLPpdp85jHPdDjBMMwejw=="
+        "requested": "[2.1.28, )",
+        "resolved": "2.1.28",
+        "contentHash": "ha49pzOEDmCPkMxwfPSR/wxa/6RD3r42TESIgpzpi7FXq/gNVUuJVEO+wtUzntNRhtmq3BKCl0s0aAlSZLkBUA=="
       },
       "dbup-core": {
         "type": "CentralTransitive",
