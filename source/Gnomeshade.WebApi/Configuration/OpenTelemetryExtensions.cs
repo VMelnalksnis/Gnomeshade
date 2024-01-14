@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 using Gnomeshade.WebApi.Configuration.Options;
@@ -75,22 +74,7 @@ internal static class OpenTelemetryExtensions
 
 		services.AddLogging(builder => builder.AddOpenTelemetry(options =>
 		{
-			options.AddOtlpExporter((exporterOptions, loggerOptions) =>
-			{
-				loggerOptions.ExportProcessorType = ExportProcessorType.Simple;
-
-				// HACK: Force the open telemetry endpoint environment variable to be populated even if
-				// the value is already provided through other configuration means.
-				//
-				// https://github.com/open-telemetry/opentelemetry-dotnet/issues/4014
-
-				var defaultOptions = new OpenTelemetryOptions();
-				var endpoint = configuration.GetValue<Uri>($"{OpenTelemetryOptions.SectionName}:{nameof(OpenTelemetryOptions.ExporterEndpoint)}") ?? defaultOptions.ExporterEndpoint;
-				var protocol = configuration.GetValue<OtlpExportProtocol>($"{OpenTelemetryOptions.SectionName}:{nameof(OpenTelemetryOptions.ExportProtocol)}");
-
-				exporterOptions.Endpoint = endpoint;
-				exporterOptions.Protocol = protocol;
-			});
+			options.AddOtlpExporter((_, loggerOptions) => loggerOptions.ExportProcessorType = ExportProcessorType.Simple);
 			options.SetResourceBuilder(resourceBuilder);
 			options.IncludeScopes = true;
 			options.IncludeFormattedMessage = true;
