@@ -100,6 +100,8 @@
 	</ItemGroup>
 	<!--Vulnerable transient dependencies-->
 	<ItemGroup>
+		<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.34.0"/>
 		<PackageVersion Include="SkiaSharp" Version="2.88.6"/>
+		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.34.0"/>
 	</ItemGroup>
 </Project>
