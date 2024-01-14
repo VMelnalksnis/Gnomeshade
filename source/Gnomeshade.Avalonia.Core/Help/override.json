@@ -36,22 +36,22 @@
 	},
 	{
 		"Id": "Microsoft.CodeCoverage",
-		"Version": "17.7.2",
+		"Version": "17.8.0",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.NET.Test.Sdk",
-		"Version": "17.7.2",
+		"Version": "17.8.0",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.TestPlatform.ObjectModel",
-		"Version": "17.7.2",
+		"Version": "17.8.0",
 		"License": "MS-EULA"
 	},
 	{
 		"Id": "Microsoft.TestPlatform.TestHost",
-		"Version": "17.7.2",
+		"Version": "17.8.0",
 		"License": "MS-EULA"
 	},
 	{
