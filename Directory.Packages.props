@@ -91,7 +91,7 @@
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556"/>
 		<PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1"/>
 		<PackageVersion Include="Testcontainers.PostgreSql" Version="3.5.0"/>
-		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.3"/>
+		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.4"/>
 		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.1.3"/>
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="0.2.0"/>
 		<PackageVersion Include="VMelnalksnis.Testcontainers.Keycloak" Version="0.2.1"/>
