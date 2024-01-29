@@ -37,9 +37,9 @@
       },
       "HtmlAgilityPack": {
         "type": "Direct",
-        "requested": "[1.11.57, )",
-        "resolved": "1.11.57",
-        "contentHash": "zDxnHcAvi+qhZG602eKaPJKmzm0T8npKVML0RMwjrRBabpmTRtu2OVpfNkMUfYMgQ+5EllOkSeGxu0uFVV2zFw=="
+        "requested": "[1.11.58, )",
+        "resolved": "1.11.58",
+        "contentHash": "/LzjIKoAWdyXOn6o+zJTN2qpNIwfaDWbSQ974pVRwnzHsUFohIOSILdtkPrSO6YC38MNj4nDbpr1RkVBDE1RWQ=="
       },
       "IdentityModel.OidcClient": {
         "type": "Direct",
