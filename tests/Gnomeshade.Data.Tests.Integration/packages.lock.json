@@ -16,9 +16,12 @@
       },
       "CsvHelper": {
         "type": "Direct",
-        "requested": "[30.0.1, )",
-        "resolved": "30.0.1",
-        "contentHash": "rcZtgbWR+As4G3Vpgx0AMNmShGuQLFjkHAPIIflzrfkJCx8/AOd4m96ZRmiU1Wi39qS5UVjV0P8qdgqOo5Cwyg=="
+        "requested": "[30.1.0, )",
+        "resolved": "30.1.0",
+        "contentHash": "R7sRLng2mOBOCtpg9q3B8Wna7qw4CARq9d68t4rBh09obGjEP2OC2RzGojtnIN0LBau15VRMmh1MfYpQwk2Kbw==",
+        "dependencies": {
+          "System.Linq.Async": "4.0.0"
+        }
       },
       "DotNet.ReproducibleBuilds": {
         "type": "Direct",
@@ -839,6 +842,12 @@
           "Npgsql": "8.0.1",
           "OpenTelemetry.API": "1.6.0"
         }
+      },
+      "System.Linq.Async": {
+        "type": "CentralTransitive",
+        "requested": "[6.0.1, )",
+        "resolved": "4.0.0",
+        "contentHash": "WbiYEedFZeM+psmMyoCt1AKbZppAZg8Eq1ZTQ+521fGNeXqlgJj0tZYV5n1LsKRO5osQuitYxGNuzPTy3213sg=="
       }
     }
   }
