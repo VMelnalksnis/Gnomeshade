@@ -4,9 +4,9 @@
     "net8.0": {
       "dbup-postgresql": {
         "type": "Direct",
-        "requested": "[5.0.37, )",
-        "resolved": "5.0.37",
-        "contentHash": "ADV/PWi1W6D3KoqZjhASLrPswjGnDQzZZfIJOyRtlaPrBuePFU1KZmt6vhkYzAmtjWAA8lpRf4g0+CzeWDmRdg==",
+        "requested": "[5.0.40, )",
+        "resolved": "5.0.40",
+        "contentHash": "w7uUc6ZIOIfp0BYV3PashcLP+GZTCG5oOkDJSk3pO/7B3zCbaeKTATtdnBzWbgL8ci6SYrCWgth3KvMtNMkvmg==",
         "dependencies": {
           "Npgsql": "3.2.7",
           "dbup-core": "5.0.37"
