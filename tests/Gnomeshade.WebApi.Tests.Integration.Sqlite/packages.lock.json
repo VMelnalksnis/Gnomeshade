@@ -140,6 +140,15 @@
           "Testcontainers": "3.2.0"
         }
       },
+      "Ardalis.SmartEnum.SystemTextJson": {
+        "type": "Transitive",
+        "resolved": "2.1.0",
+        "contentHash": "2Qxut1JqP14OEyH/T6meC1Byndb+UnJ2h2CeZsYZ8mwAWPEjhhqut0tTlv0trZT66b84119xyYo1OldWSZSEUQ==",
+        "dependencies": {
+          "Ardalis.SmartEnum": "2.1.0",
+          "System.Text.Json": "6.0.2"
+        }
+      },
       "Avalonia": {
         "type": "Transitive",
         "resolved": "11.0.7",
@@ -1693,8 +1702,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "OdrZO2WjkiEG6ajEFRABTRCi/wuXQPxeV6g8xvUJqdxMvvuCCEk86zPla8UiIQJz3durtUEbNyY/3lIhS0yZvQ==",
+        "resolved": "8.0.1",
+        "contentHash": "7AWk2za1hSEJBppe/Lg+uDcam2TrDqwIKa9XcPssSwyjC2xa39EKEGul3CO5RWNF+hMuZG4zlBDrvhBdDTg4lg==",
         "dependencies": {
           "System.Text.Encodings.Web": "8.0.0"
         }
@@ -1800,11 +1809,14 @@
       },
       "VMelnalksnis.PaperlessDotNet": {
         "type": "Transitive",
-        "resolved": "0.2.0",
-        "contentHash": "RZCG5njqXxe5JWsq2AgQSJSVe2673HEBXCjCR1LSwbInzRSTL1QiyeXjeVgvOJah+RrXY7DLTLNpBsfsC8hKKA==",
+        "resolved": "0.3.1",
+        "contentHash": "q+WQckgq2yG4ZbWgF7rnD6YAAye6TvWSwPEVzN8eLLa+mmKSFQUALHi+e9z5Bu70BRCgnUCn2XXwc29uhByE4A==",
         "dependencies": {
-          "NodaTime": "3.1.5",
-          "NodaTime.Serialization.SystemTextJson": "1.0.0"
+          "Ardalis.SmartEnum": "2.1.0",
+          "Ardalis.SmartEnum.SystemTextJson": "2.1.0",
+          "NodaTime": "3.1.10",
+          "NodaTime.Serialization.SystemTextJson": "1.1.2",
+          "System.Text.Json": "8.0.1"
         }
       },
       "gnomeshade.avalonia.core": {
@@ -1899,7 +1911,7 @@
           "System.Linq.Async": "[6.0.1, )",
           "VMelnalksnis.ISO20022DotNet": "[0.3.4, )",
           "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.1.3, )",
-          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.2.0, )"
+          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.3.1, )"
         }
       },
       "gnomeshade.webapi.client": {
@@ -2528,18 +2540,21 @@
       },
       "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[0.2.0, )",
-        "resolved": "0.2.0",
-        "contentHash": "WvKVSSEanO0jyLGD85rR9BgqpdoJ5WCEEtQjEoZSKMze4YO6iaNLvloT3es46b3hhdoicJiyqnHf1XkjE+XUvg==",
+        "requested": "[0.3.1, )",
+        "resolved": "0.3.1",
+        "contentHash": "wGLTBUCzAb9YBJ1FOBfYtA4Xh+5POPLn5J12qJryjs7EJ3Irf7V1/NRufodPIeVikUu8c1aXBhb7F/uLYxbeMg==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
-          "Microsoft.Extensions.Http": "7.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "7.0.0",
-          "Microsoft.Extensions.Options.DataAnnotations": "7.0.0",
-          "NodaTime": "3.1.5",
-          "NodaTime.Serialization.SystemTextJson": "1.0.0",
-          "VMelnalksnis.PaperlessDotNet": "0.2.0"
+          "Ardalis.SmartEnum": "2.1.0",
+          "Ardalis.SmartEnum.SystemTextJson": "2.1.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Http": "8.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "8.0.0",
+          "NodaTime": "3.1.10",
+          "NodaTime.Serialization.SystemTextJson": "1.1.2",
+          "System.Text.Json": "8.0.1",
+          "VMelnalksnis.PaperlessDotNet": "0.3.1"
         }
       }
     }
