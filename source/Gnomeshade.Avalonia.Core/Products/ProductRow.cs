@@ -28,7 +28,6 @@ public sealed partial class ProductRow : PropertyChangedBase
 		Id = product.Id;
 		Name = product.Name;
 		Sku = product.Sku;
-		Description = product.Description;
 
 		var unit = product.UnitId is null ? null : unitRows.Single(unit => unit.Id == product.UnitId.Value);
 		UnitName = unit?.Name;
@@ -42,9 +41,6 @@ public sealed partial class ProductRow : PropertyChangedBase
 
 	/// <inheritdoc cref="Product.Name"/>
 	public string Name { get; }
-
-	/// <inheritdoc cref="Product.Description"/>
-	public string? Description { get; }
 
 	/// <inheritdoc cref="Product.Sku"/>
 	public string? Sku { get; }

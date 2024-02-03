@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections;
 
 using Avalonia.Data.Converters;
@@ -22,6 +23,10 @@ public static class Converters
 		new FuncValueConverter<ICollection?, bool>(collection => collection?.Count > 0);
 
 	/// <summary>Gets a <see cref="IEnumerable"/> converter that checks whether it is not empty.</summary>
-	public static IValueConverter Any { get; } =
-		new FuncValueConverter<IEnumerable?, bool>(enumerable => enumerable?.GetEnumerator().MoveNext() ?? false);
+	public static IValueConverter Any { get; } = new FuncValueConverter<IEnumerable?, bool>(enumerable =>
+	{
+		var enumerator = enumerable?.GetEnumerator();
+		using var disposable = enumerator as IDisposable;
+		return enumerator?.MoveNext() ?? false;
+	});
 }
