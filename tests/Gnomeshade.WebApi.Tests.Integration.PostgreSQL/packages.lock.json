@@ -1552,7 +1552,7 @@
           "Microsoft.EntityFrameworkCore.Sqlite": "[8.0.1, )",
           "System.Net.Http": "[4.3.4, )",
           "System.Text.RegularExpressions": "[4.3.1, )",
-          "dbup-sqlite": "[5.0.37, )"
+          "dbup-sqlite": "[5.0.40, )"
         }
       },
       "gnomeshade.testinghelpers": {
@@ -1691,8 +1691,8 @@
       "dbup-sqlite": {
         "type": "CentralTransitive",
         "requested": "[5.0.37, )",
-        "resolved": "5.0.37",
-        "contentHash": "l+9J/3o+u0yuVdUytkDeh0onv/VIYGl64NxL2bXYEvGGnf2kzy0KHInBXIjBHnV6heHUisfi79CM5r8VNY7cuA==",
+        "resolved": "5.0.40",
+        "contentHash": "0/QsCVPpQHMbHAr6/A8OxsbGwCNes3KsKbo53yeWn7tGen2/XMV7+h8kpQC2wZWvbhbsZqTrrW/35UDjlB9MPQ==",
         "dependencies": {
           "Microsoft.Data.Sqlite": "1.0.1",
           "NETStandard.Library": "1.6.1",
