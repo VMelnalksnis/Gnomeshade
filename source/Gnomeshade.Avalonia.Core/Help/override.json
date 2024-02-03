@@ -5,6 +5,11 @@
 		"License": "MIT"
 	},
 	{
+		"Id": "Ardalis.SmartEnum.SystemTextJson",
+		"Version": "2.1.0",
+		"License": "MIT"
+	},
+	{
 		"Id": "Avalonia.Angle.Windows.Natives",
 		"Version": "2.1.0.2023020321",
 		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.0.2023020321/License"
@@ -56,7 +61,12 @@
 	},
 	{
 		"Id": "NUnit",
-		"Version": "3.13.3",
+		"Version": "4.0.1",
+		"License": "MIT"
+	},
+	{
+		"Id": "NUnit.Analyzer",
+		"Version": "4.0.1",
 		"License": "MIT"
 	},
 	{
