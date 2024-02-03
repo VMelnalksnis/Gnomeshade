@@ -65,7 +65,7 @@
 		"License": "MIT"
 	},
 	{
-		"Id": "NUnit.Analyzer",
+		"Id": "NUnit.Analyzers",
 		"Version": "4.0.1",
 		"License": "MIT"
 	},
