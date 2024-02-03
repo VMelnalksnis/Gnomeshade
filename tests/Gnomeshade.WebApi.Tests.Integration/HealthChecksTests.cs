@@ -19,6 +19,7 @@ public sealed class HealthChecksTests : WebserverTests
 	}
 
 	[Test]
+	[Parallelizable(ParallelScope.None)] // Hitting some Nordigen limits
 	public async Task Health_ShouldReturnHealthy()
 	{
 		var apiClient = Fixture.CreateHttpClient();

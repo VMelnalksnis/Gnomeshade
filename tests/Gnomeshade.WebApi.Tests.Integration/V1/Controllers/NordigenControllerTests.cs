@@ -32,6 +32,7 @@ public sealed class NordigenControllerTests : WebserverTests
 	}
 
 	[Test]
+	[Parallelizable(ParallelScope.None)] // Hitting some account endpoint limits
 	public async Task Import_ShouldReturnExpected()
 	{
 		var client = await Fixture.CreateAuthorizedClientAsync();
