@@ -258,7 +258,7 @@ public sealed class NordigenController : ControllerBase
 			amount,
 			bookedTransaction.TransactionAmount.Currency,
 			GetCreditDebitCode(bookedTransaction),
-			bookedTransaction.BookingDate.AtStartOfDayInZone(dateTimeZone).ToInstant(),
+			bookedTransaction.BookingDate!.Value.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.ValueDate?.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.UnstructuredInformation,
 			bookedTransaction.TransactionAmount.Currency,
