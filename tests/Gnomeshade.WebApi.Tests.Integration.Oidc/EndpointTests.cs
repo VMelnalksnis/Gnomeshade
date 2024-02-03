@@ -24,11 +24,11 @@ public sealed class EndpointTests
 		_fixture = fixture;
 	}
 
-	[SetUp]
-	public void SetUp()
-	{
-		_client = _fixture.CreateHttpClient();
-	}
+	[OneTimeSetUp]
+	public void SetUp() => _client = _fixture.CreateHttpClient();
+
+	[OneTimeTearDown]
+	public void TearDown() => _client.Dispose();
 
 	[TestCaseSource(nameof(Endpoints))]
 	public async Task ShouldReturnOk(Uri requestUri)
