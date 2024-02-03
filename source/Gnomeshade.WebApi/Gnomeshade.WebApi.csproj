@@ -10,6 +10,7 @@
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
 
 		<NoWarn>$(NoWarn); CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>
