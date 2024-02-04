@@ -77,7 +77,7 @@ public sealed partial class ImportViewModel : ViewModelBase
 		using var activity = BeginActivity("Waiting for bank report file");
 		var storageFiles = await window.StorageProvider.OpenFilePickerAsync(_filePickerOpenOptions);
 
-		FilePath = storageFiles.SingleOrDefault()?.Name;
+		FilePath = storageFiles.SingleOrDefault()?.TryGetLocalPath();
 	}
 
 	/// <summary>Imports the located at <see cref="FilePath"/>.</summary>
