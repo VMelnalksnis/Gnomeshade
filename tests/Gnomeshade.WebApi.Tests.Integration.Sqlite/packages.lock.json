@@ -1887,7 +1887,7 @@
         "dependencies": {
           "Ardalis.SmartEnum": "[2.1.0, )",
           "AspNet.Security.OAuth.GitHub": "[8.0.0, )",
-          "AutoMapper": "[12.0.1, )",
+          "AutoMapper": "[13.0.1, )",
           "FuzzySharp": "[2.0.2, )",
           "Gnomeshade.Data.PostgreSQL": "[1.0.0, )",
           "Gnomeshade.Data.Sqlite": "[1.0.0, )",
@@ -1948,11 +1948,11 @@
       },
       "AutoMapper": {
         "type": "CentralTransitive",
-        "requested": "[12.0.1, )",
-        "resolved": "12.0.1",
-        "contentHash": "hvV62vl6Hp/WfQ24yzo3Co9+OPl8wH8hApwVtgWpiAynVJkUcs7xvehnSftawL8Pe8FrPffBRM3hwzLQqWDNjA==",
+        "requested": "[13.0.1, )",
+        "resolved": "13.0.1",
+        "contentHash": "/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
         "dependencies": {
-          "Microsoft.CSharp": "4.7.0"
+          "Microsoft.Extensions.Options": "6.0.0"
         }
       },
       "Avalonia.Controls.DataGrid": {
