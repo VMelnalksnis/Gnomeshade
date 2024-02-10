@@ -5,7 +5,7 @@ version=$(tr -d '[:space:]' <version)
 publish_dir="./source/$1/bin/Release/net8.0/$2/publish"
 archive_name="$1_$2.zip"
 
-./deployment/restore.sh
+./deployment/restore.sh "$1"
 
 dotnet publish \
 	./source/"$1"/"$1".csproj \

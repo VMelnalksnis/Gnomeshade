@@ -10,7 +10,7 @@ fi
 package_name="$1.$package_version.nupkg"
 symbols_name="$1.$package_version.snupkg"
 
-./deployment/restore.sh
+./deployment/restore.sh "$1"
 
 dotnet pack \
 	./source/"$1"/"$1".csproj \
