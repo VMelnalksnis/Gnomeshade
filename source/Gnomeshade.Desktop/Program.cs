@@ -33,9 +33,12 @@ internal static class Program
 	public static void Main(string[] args)
 	{
 		SerilogConfiguration.InitializeBootstrapLogger();
+		Log.Debug("Working directory: {WorkingDirectory}", Environment.CurrentDirectory);
+
 		if (AnotherInstanceIsRunning())
 		{
 			SendArgumentsToRunningInstance(args);
+			Log.CloseAndFlush();
 			return;
 		}
 
@@ -97,10 +100,10 @@ internal static class Program
 	}
 
 	[SupportedOSPlatform("windows")]
-	private static IDisposable GetApplicationHandle()
+	private static EventWaitHandle GetApplicationHandle()
 	{
 		Log.Debug("Getting an application handle");
-		return new EventWaitHandle(false, EventResetMode.AutoReset, WindowsProtocolHandler.Name);
+		return new(false, EventResetMode.AutoReset, WindowsProtocolHandler.Name);
 	}
 
 	private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)

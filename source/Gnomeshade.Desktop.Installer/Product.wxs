@@ -107,11 +107,17 @@
 		<!--Desktop Shortcut-->
 		<StandardDirectory Id="DesktopFolder">
 			<Component Id="ComponentDesktopShortcut">
-				<Shortcut Id="AppDesktopShortcut" Name="$(var.Name)" Description="$(var.Description)"
-						  Target="[INSTALLFOLDER]Gnomeshade.exe" Icon="Logo.ico"/>
+				<Shortcut Id="AppDesktopShortcut"
+						  Name="$(var.Name)"
+						  Description="$(var.Description)"
+						  Icon="Logo.ico"
+						  Target="[#Gnomeshade.exe]"
+						  WorkingDirectory="INSTALLFOLDER"/>
+
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
-				<RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed" Type="integer" Value="1"
-							   KeyPath="yes"/>
+
+				<RegistryValue Root="HKCU" Key="Software\$(var.Name)" Name="installed"
+							   Type="integer" Value="1" KeyPath="yes"/>
 			</Component>
 		</StandardDirectory>
 	</Fragment>
