@@ -43,8 +43,7 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Process" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="VMelnalksnis.ISO20022DotNet" />
 		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" />

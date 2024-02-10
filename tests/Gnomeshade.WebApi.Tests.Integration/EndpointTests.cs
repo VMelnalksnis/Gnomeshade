@@ -107,7 +107,6 @@ public sealed class EndpointTests : WebserverTests
 	{
 		yield return new Uri("/", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
-		yield return new Uri("/swagger/index.html", UriKind.Relative);
 		yield return new Uri("/swagger/v1/swagger.json", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
 		yield return new Uri("/Identity/Account/ResendEmailConfirmation", UriKind.Relative);

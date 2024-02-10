@@ -12,7 +12,6 @@ using System.Xml.XPath;
 using Gnomeshade.WebApi.OpenApi;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -26,7 +25,6 @@ internal static class SwaggerConfigurationExtensions
 		services.AddSwaggerGen(options =>
 		{
 			options.SupportNonNullableReferenceTypes();
-			options.EnableAnnotations();
 
 			options.SchemaFilter<ValidationProblemDetailsFilter>();
 			options.SchemaFilter<ValidationProblemDetailsSchemaFilter>();
@@ -45,17 +43,6 @@ internal static class SwaggerConfigurationExtensions
 	internal static void UseGnomeshadeApiExplorer(this IApplicationBuilder application)
 	{
 		application.UseSwagger();
-
-		var provider = application.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
-		application.UseSwaggerUI(options =>
-		{
-			foreach (var versionDescription in provider.ApiVersionDescriptions)
-			{
-				options.SwaggerEndpoint(
-					$"/swagger/{versionDescription.GroupName}/swagger.json",
-					versionDescription.ApiVersion.ToString());
-			}
-		});
 	}
 
 	/// <summary>
