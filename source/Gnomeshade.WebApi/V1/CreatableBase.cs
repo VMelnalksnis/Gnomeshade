@@ -117,6 +117,9 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[HttpDelete("{id:guid}")]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesStatus404NotFound]
+	[ProducesStatus409Conflict]
 	public virtual async Task<ActionResult> Delete(Guid id)
 	{
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();

@@ -32,6 +32,8 @@ using VMelnalksnis.NordigenDotNet;
 using VMelnalksnis.NordigenDotNet.Accounts;
 using VMelnalksnis.NordigenDotNet.Requisitions;
 
+using static Microsoft.AspNetCore.Http.StatusCodes;
+
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>Import data from Nordigen.</summary>
@@ -93,6 +95,8 @@ public sealed class NordigenController : ControllerBase
 
 	/// <inheritdoc cref="IImportClient.ImportAsync"/>
 	[HttpPost("{id}")]
+	[ProducesResponseType<List<AccountReportResult>>(Status200OK)]
+	[ProducesResponseType(Status302Found)]
 	public async Task<ActionResult> Import(string id, [Required] string timeZone)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();

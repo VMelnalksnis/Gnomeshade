@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -53,6 +54,11 @@ public abstract class WebserverFixture : IAsyncDisposable
 			.AddConfiguration(GetAdditionalConfiguration())
 			.AddEnvironmentVariables()
 			.Build();
+
+		if (File.Exists("MvcTestingAppManifest.json"))
+		{
+			File.Delete("MvcTestingAppManifest.json");
+		}
 
 		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration);
 		_webApplicationFactory.CreateClient();

@@ -35,9 +35,9 @@ public sealed class UsersController : FinanceControllerBase<UserEntity, UserMode
 	/// <inheritdoc cref="IOwnerClient.GetUsersAsync"/>
 	/// <response code="200">Successfully got all units.</response>
 	[HttpGet]
-	public async Task<IEnumerable<UserModel>> Get(CancellationToken cancellationToken)
+	public async Task<List<UserModel>> Get(CancellationToken cancellationToken)
 	{
 		var entities = await _repository.Get(cancellationToken);
-		return entities.Select(MapToModel);
+		return entities.Select(MapToModel).ToList();
 	}
 }

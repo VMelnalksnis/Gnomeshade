@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
+using Gnomeshade.WebApi.OpenApi;
 using Gnomeshade.WebApi.V1.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.WebApi.V1.Controllers;
 
@@ -39,6 +41,9 @@ public sealed class ExternalAuthenticationController : ControllerBase
 	/// <summary>Registers or authenticates a user using and OIDC provider.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	[HttpPost]
+	[ProducesResponseType(Status204NoContent)]
+	[ProducesResponseType(Status302Found)]
+	[ProducesStatus404NotFound]
 	public async Task<ActionResult> SocialRegister()
 	{
 		var loginProvider = User.GetLoginProvider();
@@ -46,7 +51,7 @@ public sealed class ExternalAuthenticationController : ControllerBase
 
 		if (loginProvider is null || providerKeyClaim is null)
 		{
-			return StatusCode(StatusCodes.Status401Unauthorized);
+			return StatusCode(Status401Unauthorized);
 		}
 
 		var applicationUser = await _userManager.FindByLoginAsync(loginProvider, providerKeyClaim.Value);

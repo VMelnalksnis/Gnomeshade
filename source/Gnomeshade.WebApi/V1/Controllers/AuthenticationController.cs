@@ -98,5 +98,6 @@ public sealed class AuthenticationController : ControllerBase
 	/// <summary>Logs out the currently signed in user.</summary>
 	/// <returns><see cref="SignOutResult"/>.</returns>
 	[HttpPost]
+	[ProducesResponseType(Status204NoContent)]
 	public SignOutResult Logout() => SignOut();
 }
