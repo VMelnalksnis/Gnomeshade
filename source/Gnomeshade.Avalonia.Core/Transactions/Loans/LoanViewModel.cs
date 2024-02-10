@@ -36,13 +36,19 @@ public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, Loan
 		_details = new(activityService, gnomeshadeClient, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
+		_details.Upserted += DetailsOnUpserted;
 	}
 
 	/// <inheritdoc />
 	public override LoanUpsertionViewModel Details
 	{
 		get => _details;
-		set => SetAndNotify(ref _details, value);
+		set
+		{
+			_details.Upserted -= DetailsOnUpserted;
+			SetAndNotify(ref _details, value);
+			_details.Upserted += DetailsOnUpserted;
+		}
 	}
 
 	/// <inheritdoc />
@@ -91,5 +97,10 @@ public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, Loan
 		{
 			OnPropertyChanged(nameof(Total));
 		}
+	}
+
+	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
+	{
+		await RefreshAsync();
 	}
 }
