@@ -3,7 +3,7 @@ services:
     image: ghcr.io/vmelnalksnis/gnomeshade:0.7.2
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - gnomeshade_data:/data
     environment:
