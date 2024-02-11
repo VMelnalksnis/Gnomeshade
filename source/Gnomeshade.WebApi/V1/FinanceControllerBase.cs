@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using AutoMapper;
@@ -14,6 +15,8 @@ using Gnomeshade.WebApi.V1.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
+
 namespace Gnomeshade.WebApi.V1;
 
 /// <summary>Base class for controllers handling Gnomeshade specific entities.</summary>
@@ -22,7 +25,7 @@ namespace Gnomeshade.WebApi.V1;
 [ApiController]
 [Authorize]
 [Route("api/v{version:apiVersion}/[controller]")]
-public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
+public abstract class FinanceControllerBase<[DynamicallyAccessedMembers(All)] TEntity, [DynamicallyAccessedMembers(All)] TModel> : ControllerBase
 	where TEntity : class, IEntity
 	where TModel : class
 {
@@ -57,5 +60,8 @@ public abstract class FinanceControllerBase<TEntity, TModel> : ControllerBase
 	/// <summary>Maps a repository entity to an API model.</summary>
 	/// <param name="entity">The repository entity to map.</param>
 	/// <returns>An API model equivalent to <paramref name="entity"/>.</returns>
-	protected TModel MapToModel(TEntity entity) => Mapper.Map<TModel>(entity);
+	protected TModel MapToModel(TEntity entity)
+	{
+		return Mapper.Map<TModel>(entity);
+	}
 }
