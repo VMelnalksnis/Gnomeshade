@@ -33,9 +33,9 @@
 					</AutoCompleteBox.ItemTemplate>
 
 					<Interaction.Behaviors>
-						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
+						<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Aggregate">
 							<InvokeCommandAction Command="{Binding UpdateSelectedAggregate}" />
-						</EventTriggerBehavior>
+						</RoutedEventTriggerBehavior>
 					</Interaction.Behaviors>
 				</AutoCompleteBox>
 
@@ -55,9 +55,9 @@
 					</AutoCompleteBox.ItemTemplate>
 
 					<Interaction.Behaviors>
-						<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Calculator}">
+						<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Calculator">
 							<InvokeCommandAction Command="{Binding UpdateSelectedAggregate}" />
-						</EventTriggerBehavior>
+						</RoutedEventTriggerBehavior>
 					</Interaction.Behaviors>
 				</AutoCompleteBox>
 			</StackPanel>
@@ -74,9 +74,9 @@
 						IsEnabled="{Binding !IsBusy}">
 
 						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Product}">
+							<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Product">
 								<InvokeCommandAction Command="{Binding UpdateSelectedProduct}" />
-							</EventTriggerBehavior>
+							</RoutedEventTriggerBehavior>
 						</Interaction.Behaviors>
 					</AutoCompleteBox>
 

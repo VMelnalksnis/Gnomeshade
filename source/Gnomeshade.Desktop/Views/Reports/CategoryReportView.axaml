@@ -23,9 +23,9 @@
 			IsEnabled="{Binding !IsBusy}">
 
 			<Interaction.Behaviors>
-				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #Aggregate}">
+				<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Aggregate">
 					<InvokeCommandAction Command="{Binding RefreshAsync}" />
-				</EventTriggerBehavior>
+				</RoutedEventTriggerBehavior>
 			</Interaction.Behaviors>
 		</AutoCompleteBox>
 
