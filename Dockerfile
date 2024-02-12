@@ -8,12 +8,14 @@ RUN ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.1-alpine3.18 as gnomeshade
 
 WORKDIR /gnomeshade
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/Gnomeshade.WebApi ./
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/libe_sqlite3.so ./
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/appsettings.json ./
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/*.xml ./
-COPY --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/wwwroot/ ./wwwroot
-RUN chmod -R -w *
+COPY --chmod=-w --from=build [ \
+"/gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/Gnomeshade.WebApi", \
+"/gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/libe_sqlite3.so", \
+"/gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/appsettings.json", \
+"/gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/*.xml", \
+"./" ]
+
+COPY --chmod=-w --from=build /gnomeshade/source/Gnomeshade.WebApi/bin/Release/net8.0/linux-musl-x64/publish/wwwroot/ ./wwwroot
 
 ENV DOTNET_gcServer=0 \
 	Database__Provider="Sqlite" \
