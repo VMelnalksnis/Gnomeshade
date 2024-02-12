@@ -559,8 +559,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "/XQX6n2gKQPnRoP5AhOnz33qL5V6CEY2vqluHPIvK4VZqY/sE/dHOFj+/8Ok7Y5Cbkj6/OZOFLZCiaKcryhS9A==",
+        "resolved": "8.0.2",
+        "contentHash": "MuJzLoWCaQhQAR3oh66YR0Ir6mxuezncGX3f8wxvAc21g0+9HICktJQlqMoODhxztZKXE5k9GxRxqUAN+vPb4g==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
@@ -1471,10 +1471,10 @@
         "type": "Project",
         "dependencies": {
           "Gnomeshade.Data": "[1.0.0, )",
-          "Npgsql.DependencyInjection": "[8.0.1, )",
+          "Npgsql.DependencyInjection": "[8.0.2, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.0, )",
-          "Npgsql.NodaTime": "[8.0.1, )",
-          "Npgsql.OpenTelemetry": "[8.0.1, )",
+          "Npgsql.NodaTime": "[8.0.2, )",
+          "Npgsql.OpenTelemetry": "[8.0.2, )",
           "dbup-postgresql": "[5.0.40, )"
         }
       },
@@ -1785,12 +1785,12 @@
       },
       "Npgsql.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "zXyCraSSEbqd/o7EWfehuNqKV7T1kAtA8sXpTVtLTdlDVicxCpY7KjxTLrGVtGszjt61qJLpwINYBBfrYuiwvg==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "tVsfeoz6RCJI9zkJO6h6UDLKAmkfPksprEGNfWG8rcLS65L6XS4bORscyhU3xxTnkUb3PIQdlK4LbgAq1Xm5Qg==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Npgsql": "8.0.1"
+          "Npgsql": "8.0.2"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
@@ -1807,21 +1807,21 @@
       },
       "Npgsql.NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "zAkpB7AK3lRSTF0JZgrSbfAIS7MaNqqnj9J6p4xGq49lhwkhACqF06FSaecO8l0Yju+H3bLouiw35rwuNdR/XQ==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "F4fnGaf/zRuckORksd4oDsEcb8JCS41egk1rQE4opCHbA5b0QJhAxrq8zvf+RWLLUNye66mf4PdGTJtFc6G4fQ==",
         "dependencies": {
           "NodaTime": "3.1.9",
-          "Npgsql": "8.0.1"
+          "Npgsql": "8.0.2"
         }
       },
       "Npgsql.OpenTelemetry": {
         "type": "CentralTransitive",
-        "requested": "[8.0.1, )",
-        "resolved": "8.0.1",
-        "contentHash": "j012K2EESwTCj2fd6Ad7eAyY9B6n80wqRd4y/rJ7XMMqB+Cm2x5KY7CT0t2dCR39LXVMW7jAxAovzU/S7dGcjg==",
+        "requested": "[8.0.2, )",
+        "resolved": "8.0.2",
+        "contentHash": "6REWP95qb4AKr4w9wCH+DT+WA9fhVdgcR3uuCO+vJpfOtO9AO94dOo28f+WsPXgu4Tel52vKC+tuCYDkHjKeDQ==",
         "dependencies": {
-          "Npgsql": "8.0.1",
+          "Npgsql": "8.0.2",
           "OpenTelemetry.API": "1.6.0"
         }
       },
