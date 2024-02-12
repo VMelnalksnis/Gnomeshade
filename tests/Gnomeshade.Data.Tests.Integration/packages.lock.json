@@ -997,7 +997,7 @@
           "Dapper": "[2.1.28, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.1, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.1, )",
-          "NodaTime": "[3.1.10, )",
+          "NodaTime": "[3.1.11, )",
           "dbup-core": "[5.0.76, )"
         }
       },
@@ -1092,9 +1092,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.10, )",
-        "resolved": "3.1.10",
-        "contentHash": "56V8ELg9Az1S0Nij44xILAtfUQs3WTLIwbTQTuWZxL8EagsfUkkPAoWxv/HyZccmfaUEqFHfHiAuqfj/NfbfrA==",
+        "requested": "[3.1.11, )",
+        "resolved": "3.1.11",
+        "contentHash": "AYSiCHp1PLzWKVf7hEL3MJ0q9kzOWMNIaTVysXk4XKrDBzK5PF2wpd4LsAl+EIQ2Hbvu+vw4oFaexcXzCuY1lQ==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
