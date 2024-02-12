@@ -86,11 +86,11 @@
       },
       "Avalonia": {
         "type": "Transitive",
-        "resolved": "11.0.7",
-        "contentHash": "TQYVRzZgv7lWlJzLfIQgAEQpUzhNJr2Bhu609H858FdpzR1x5v1M2N25VxcmbqsvSUKfrCgJRAmfknzPrYG6PQ==",
+        "resolved": "11.0.9",
+        "contentHash": "G8cFJvcMo1pZiJVCpp6bLyumLDUskoFxfLp7n1WsTXE8WYjaBC+EyfLttWgth2+lVjiOaGHxhQ/NckltxM/Bdw==",
         "dependencies": {
           "Avalonia.BuildServices": "0.0.29",
-          "Avalonia.Remote.Protocol": "11.0.7",
+          "Avalonia.Remote.Protocol": "11.0.9",
           "MicroCom.Runtime": "0.11.0",
           "System.ComponentModel.Annotations": "4.5.0"
         }
@@ -102,8 +102,8 @@
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "11.0.7",
-        "contentHash": "eKfTDTgLoz8LFdL7pwCPrHVbqFqZ6i7JJn3I1gqjLueXEwLTrgG10ui3znUbkJNkk/9cz77ORxbCBQrwn7n4wA=="
+        "resolved": "11.0.9",
+        "contentHash": "n7GXzwiVk8qIxwXcugovZnmZSi6IoCVEbL2CDu2znNH+m1m6f7JH91TbHtx1HQzG6EFAj6HEy8f/8k/8U8vQZQ=="
       },
       "Avalonia.Skia": {
         "type": "Transitive",
@@ -419,7 +419,7 @@
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia.Controls.DataGrid": "[11.0.7, )",
+          "Avalonia.Controls.DataGrid": "[11.0.9, )",
           "Avalonia.Xaml.Interactivity": "[11.0.6, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.2.1, )",
@@ -469,12 +469,12 @@
       },
       "Avalonia.Controls.DataGrid": {
         "type": "CentralTransitive",
-        "requested": "[11.0.7, )",
-        "resolved": "11.0.7",
-        "contentHash": "RpqeW/nn6btV+TWiFiGizIU/Z4Tj+ALD/TkOtmv/ryJ9EmBSN9S4fED3Unck7I/339NaxeImIO5hhENAQgrW1A==",
+        "requested": "[11.0.9, )",
+        "resolved": "11.0.9",
+        "contentHash": "tueNBwc3lyhxKJMQAi4oXX3H4eZkK+GnFliUDkRYbgpAUacwO8/O6ALjvB5bpdBTqogKFhgxiviEVcfpQcbUdw==",
         "dependencies": {
-          "Avalonia": "11.0.7",
-          "Avalonia.Remote.Protocol": "11.0.7"
+          "Avalonia": "11.0.9",
+          "Avalonia.Remote.Protocol": "11.0.9"
         }
       },
       "Avalonia.Xaml.Interactivity": {
