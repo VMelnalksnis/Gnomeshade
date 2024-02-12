@@ -3,7 +3,8 @@ FROM ghcr.io/vmelnalksnis/gnomeshade-build:8.0.101 AS build
 WORKDIR /gnomeshade
 COPY ./ ./
 ARG BUILD_NUMBER=123
-RUN ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
+RUN --mount=type=cache,target=/root/.nuget/packages \
+    ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.1-alpine3.18 as gnomeshade
 
