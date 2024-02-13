@@ -59,6 +59,44 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
+  test-published:
+    name: Test published applications
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            command: ./deployment/test-published.sh "Gnomeshade.WebApi.Tests.Integration.Sqlite" "linux-x64" "${{ github.run_number }}"
+          - os: windows-latest
+            command: ./deployment/test-published.ps1 "Gnomeshade.Desktop.Tests" "win-x64" "${{ github.run_number }}"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-dotnet@v4.0.0
+      - uses: actions/setup-node@v4.0.2
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4.0.0
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.3.7
+        with:
+          key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
+
+      - run: ${{ matrix.command }}
+        env:
+          Admin__Password: ${{ secrets.DEMO_ADMIN_PASSWORD }}
+          Nordigen__SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
+          Nordigen__SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
+          Serilog__MinimumLevel: Warning
+
   build-deb:
     name: Build debian package
     runs-on: ubuntu-20.04

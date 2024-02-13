@@ -4,6 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<RootNamespace>Gnomeshade.WebApi.Tests.Integration</RootNamespace>
 		<JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+		<RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<ItemGroup>

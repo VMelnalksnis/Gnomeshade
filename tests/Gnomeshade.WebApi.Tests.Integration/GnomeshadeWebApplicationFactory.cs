@@ -24,7 +24,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 	{
 		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddConfiguration(_configuration));
 		builder.ConfigureServices(collection => collection.AddTransient<EntityRepository>());
-		builder.UseContentRoot("../../../../../source/Gnomeshade.WebApi");
+		builder.UseContentRoot("../../../../../../../source/Gnomeshade.WebApi");
 		return base.CreateHost(builder);
 	}
 
