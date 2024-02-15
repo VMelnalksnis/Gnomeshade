@@ -7,6 +7,7 @@
 		<ApplicationIcon>Assets/avalonia-logo.ico</ApplicationIcon>
 
 		<PublishTrimmed>true</PublishTrimmed>
+		<PublishReadyToRun>true</PublishReadyToRun>
 		<TrimMode>partial</TrimMode>
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
