@@ -29,17 +29,17 @@
 		<PackageVersion Include="IdentityModel.OidcClient" Version="5.2.1"/>
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0"/>
 		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.2"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
+		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
@@ -48,9 +48,9 @@
 		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
@@ -78,7 +78,7 @@
 		<PackageVersion Include="Serilog.Sinks.File" Version="5.0.0"/>
 		<PackageVersion Include="Serilog.Sinks.Trace" Version="3.0.0"/>
 		<PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0"/>
-		<PackageVersion Include="System.Drawing.Common" Version="8.0.1"/>
+		<PackageVersion Include="System.Drawing.Common" Version="8.0.2"/>
 		<PackageVersion Include="System.Diagnostics.Tracing" Version="4.3.0"/>
 		<PackageVersion Include="System.IO.FileSystem" Version="4.3.0"/>
 		<PackageVersion Include="System.IO.FileSystem.Primitives" Version="4.3.0"/>
