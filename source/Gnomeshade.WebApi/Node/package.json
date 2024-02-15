@@ -1,8 +1,5 @@
 {
 	"name": "gnomeshade",
-	"devDependencies": {
-		"gulp": "4.0.2"
-	},
 	"dependencies": {
 		"bootstrap": "5.3.2",
 		"jquery": "3.7.1",

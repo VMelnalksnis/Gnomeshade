@@ -57,9 +57,24 @@
 		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
 	</ItemGroup>
 
-	<Target Name="JavascriptLibraries" BeforeTargets="Build;Publish" Condition="'$(ContinuousIntegrationBuild)' == 'true'">
-		<Exec WorkingDirectory="./Node" Command="npm ci" />
-		<Exec WorkingDirectory="./Node" Command="node ./node_modules/gulp/bin/gulp.js build" />
+	<Target Name="JavascriptLibraries" BeforeTargets="Build;Publish">
+		<Exec WorkingDirectory="./Node" Command="npm ci" Condition="'$(ContinuousIntegrationBuild)' == 'true'"/>
+
+		<ItemGroup>
+			<BootstrapJs Include="Node/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"/>
+			<BootstrapCss Include="Node/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+
+			<JQuery Include="Node/node_modules/jquery/dist/jquery.min.js"/>
+			<JQueryValidation Include="Node/node_modules/jquery-validation/dist/jquery.validate.min.js"/>
+			<JQueryValidationUnobstrusive Include="Node/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"/>
+		</ItemGroup>
+
+		<Copy SourceFiles="@(BootstrapJs)" DestinationFolder="wwwroot/lib/bootstrap/dist/js"/>
+		<Copy SourceFiles="@(BootstrapCss)" DestinationFolder="wwwroot/lib/bootstrap/dist/css"/>
+
+		<Copy SourceFiles="@(JQuery)" DestinationFolder="wwwroot/lib/jquery/dist"/>
+		<Copy SourceFiles="@(JQueryValidation)" DestinationFolder="wwwroot/lib/jquery-validation/dist"/>
+		<Copy SourceFiles="@(JQueryValidationUnobstrusive)" DestinationFolder="wwwroot/lib/jquery-validation-unobtrusive"/>
 	</Target>
 
 </Project>
