@@ -10,25 +10,31 @@
 	x:Class="Gnomeshade.Desktop.Views.Products.ProductFilterView"
 	x:DataType="productsCore:ProductFilter">
 
-	<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto" MinWidth="200">
-		<CheckBox Grid.Row="0" Grid.Column="0" />
-		<AutoCompleteBox
+	<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto" MinWidth="200">
+		<CheckBox Grid.Row="0" Grid.Column="0" IsEnabled="False" />
+		<TextBox
 			Grid.Row="0" Grid.Column="1"
+			Watermark="Name" AcceptsReturn="False"
+			Text="{Binding FilterText, Mode=TwoWay}"/>
+
+		<CheckBox Grid.Row="2" Grid.Column="0" IsEnabled="False" />
+		<AutoCompleteBox
+			Grid.Row="2" Grid.Column="1"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Watermark="Unit"
 			ItemsSource="{Binding Units}"
 			ItemSelector="{Binding UnitSelector}"
-			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"/>
+			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}" />
 
-		<CheckBox Grid.Row="2" Grid.Column="0" />
+		<CheckBox Grid.Row="4" Grid.Column="0" IsEnabled="False" />
 		<AutoCompleteBox
-			Grid.Row="2" Grid.Column="1"
+			Grid.Row="4" Grid.Column="1"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
 			Watermark="Category"
 			ItemsSource="{Binding Categories}"
 			ItemSelector="{Binding CategorySelector}"
-			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"/>
+			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
 	</Grid>
 </UserControl>

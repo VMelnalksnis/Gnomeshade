@@ -102,7 +102,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 
 	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName is nameof(ProductFilter.SelectedUnit) or nameof(ProductFilter.SelectedCategory))
+		if (e.PropertyName is not (nameof(ProductFilter.Units) or nameof(ProductFilter.Categories)))
 		{
 			DataGridView.Refresh();
 		}
