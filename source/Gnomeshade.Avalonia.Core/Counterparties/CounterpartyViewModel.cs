@@ -3,8 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Avalonia.Collections;
 
 using Gnomeshade.WebApi.Client;
 
@@ -13,6 +16,11 @@ namespace Gnomeshade.Avalonia.Core.Counterparties;
 /// <summary>List of all counterparties.</summary>
 public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, CounterpartyUpsertionViewModel>
 {
+	private static readonly DataGridSortDescription[] _sortDescriptions =
+	[
+		new DataGridComparerSortDescription(new CounterpartyComparer(), ListSortDirection.Ascending),
+	];
+
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 
 	private CounterpartyUpsertionViewModel _details;
@@ -26,6 +34,11 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 		_gnomeshadeClient = gnomeshadeClient;
 		_details = new(activityService, gnomeshadeClient, null);
 
+		DataGridView.SortDescriptions.AddRange(_sortDescriptions);
+
+		Filter = new(activityService);
+
+		Filter.PropertyChanged += FilterOnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
 	}
 
@@ -41,6 +54,9 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 		}
 	}
 
+	/// <summary>Gets the counterparty filter.</summary>
+	public CounterpartyFilter Filter { get; }
+
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
@@ -54,8 +70,16 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
 		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
+		var selected = Selected;
+		var sort = DataGridView.SortDescriptions;
+
 		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
 		Rows = new(counterpartyRows);
+
+		DataGridView.SortDescriptions.AddRange(sort);
+		DataGridView.Filter = Filter.Filter;
+
+		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
 
 		foreach (var row in Rows.ToList())
 		{
@@ -86,5 +110,10 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
 		await RefreshAsync();
+	}
+
+	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		DataGridView.Refresh();
 	}
 }

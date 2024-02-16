@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+             xmlns:counterparties="clr-namespace:Gnomeshade.Avalonia.Core.Counterparties;assembly=Gnomeshade.Avalonia.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             d:DataContext="{x:Static design:DesignTimeData.CounterpartyFilter}"
+             x:Class="Gnomeshade.Desktop.Views.Counterparties.CounterpartyFilterView"
+             x:DataType="counterparties:CounterpartyFilter">
+
+	<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto" MinWidth="200">
+		<CheckBox Grid.Row="0" Grid.Column="0" IsEnabled="False" />
+		<TextBox
+			Grid.Row="0" Grid.Column="1"
+			AcceptsReturn="False"
+			Watermark="Counterparty"
+			Text="{Binding FilterText, Mode=TwoWay}" />
+	</Grid>
+</UserControl>
