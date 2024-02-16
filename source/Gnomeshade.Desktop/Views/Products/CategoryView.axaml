@@ -10,9 +10,27 @@
 	x:Class="Gnomeshade.Desktop.Views.Products.CategoryView"
 	x:DataType="products:CategoryViewModel">
 
-	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
+	<Grid RowDefinitions="*">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
+			<ColumnDefinition Width="4*" />
+			<ColumnDefinition Width="2*" MinWidth="300" MaxWidth="600"/>
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+			<UserControl Content="{Binding Filter, Mode=OneWay}" />
+
+			<Border Background="White" HorizontalAlignment="Stretch" Height="1" />
+
+			<Button
+				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
 		<DataGrid
-			Grid.Column="0"
+			Grid.Column="1"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
@@ -45,7 +63,7 @@
 			</Interaction.Behaviors>
 		</DataGrid>
 
-		<Grid Grid.Column="1" RowDefinitions="Auto,*">
+		<Grid Grid.Column="2" RowDefinitions="Auto,*">
 			<UserControl Grid.Row="0" Content="{Binding Details, Mode=OneWay}"/>
 			<TreeView Grid.Row="1" ItemsSource="{Binding Nodes}">
 				<TreeView.ItemTemplate>

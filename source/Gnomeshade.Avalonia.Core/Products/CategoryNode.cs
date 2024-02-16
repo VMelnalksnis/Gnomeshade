@@ -44,4 +44,22 @@ public sealed class CategoryNode
 	/// <param name="id">The id for which to check.</param>
 	/// <returns><see langword="true"/> if this node or any node in <see cref="Nodes"/> has the <paramref name="id"/>; otherwise <see langword="false"/>.</returns>
 	public bool Contains(Guid id) => Id == id || Nodes.Any(node => node.Contains(id));
+
+	/// <summary>Finds the node with the specified id.</summary>
+	/// <param name="id">The id of the node to find.</param>
+	/// <returns>The node with the specified id if it exists; otherwise <c>null</c>.</returns>
+	public CategoryNode? Find(Guid id)
+	{
+		if (Id == id)
+		{
+			return this;
+		}
+
+		if (Nodes.FirstOrDefault(node => node.Id == id) is { } foundNode)
+		{
+			return foundNode;
+		}
+
+		return Nodes.SelectMany(node => node.Nodes).Select(node => node.Find(id)).FirstOrDefault();
+	}
 }

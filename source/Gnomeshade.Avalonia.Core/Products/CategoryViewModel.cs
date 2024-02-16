@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,8 +27,11 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	{
 		_gnomeshadeClient = gnomeshadeClient;
 		_details = new(activityService, _gnomeshadeClient, null);
-		_nodes = new();
+		_nodes = [];
 
+		Filter = new(activityService);
+
+		Filter.PropertyChanged += FilterOnPropertyChanged;
 		Details.Upserted += OnCategoryUpserted;
 	}
 
@@ -50,6 +54,9 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 		private set => SetAndNotify(ref _nodes, value);
 	}
 
+	/// <summary>Gets the category filter.</summary>
+	public CategoryFilter Filter { get; }
+
 	/// <inheritdoc />
 	public override Task UpdateSelection()
 	{
@@ -67,13 +74,18 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 			return new CategoryRow(category.Id, category.Name, category.Description, c?.Name);
 		}).ToList();
 
-		var rootNodes = categories.Where(category => category.CategoryId is null).Select(category => CategoryNode.FromCategory(category, categories));
+		var rootNodes = categories.Where(category => category.CategoryId is null).Select(category => CategoryNode.FromCategory(category, categories)).ToList();
 		Nodes = new(rootNodes);
 
 		var sortDescriptions = DataGridView.SortDescriptions;
 		var selected = Selected;
 		Rows = new(categoryRows);
+
+		Filter.Nodes = rootNodes;
+		Filter.Categories = categories;
+
 		DataGridView.SortDescriptions.AddRange(sortDescriptions);
+		DataGridView.Filter = Filter.Filter;
 		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
 
 		if (Details.Categories.Count is 0)
@@ -92,5 +104,13 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	private async void OnCategoryUpserted(object? sender, UpsertedEventArgs e)
 	{
 		await RefreshAsync();
+	}
+
+	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is not nameof(CategoryFilter.Categories))
+		{
+			DataGridView.Refresh();
+		}
 	}
 }

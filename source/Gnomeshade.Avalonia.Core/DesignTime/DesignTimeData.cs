@@ -180,6 +180,9 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="CounterpartyFilter"/> for use during design time.</summary>
 	public static CounterpartyFilter CounterpartyFilter { get; } = new(ActivityService);
 
+	/// <summary>Gets an instance of <see cref="CategoryFilter"/> for use during design time.</summary>
+	public static CategoryFilter CategoryFilter { get; } = new(ActivityService);
+
 	/// <summary>Gets an instance of <see cref="ApplicationSettingsViewModel"/> for use during design time.</summary>
 	public static ApplicationSettingsViewModel ApplicationSettingsViewModel { get; } =
 		GetServiceProvider().GetRequiredService<ApplicationSettingsViewModel>();

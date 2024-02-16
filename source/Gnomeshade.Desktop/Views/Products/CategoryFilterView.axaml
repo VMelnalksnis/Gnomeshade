@@ -1,0 +1,31 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:productsCore="clr-namespace:Gnomeshade.Avalonia.Core.Products;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.CategoryFilter}"
+	x:Class="Gnomeshade.Desktop.Views.Products.CategoryFilterView"
+	x:DataType="productsCore:CategoryFilter">
+
+	<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto" MinWidth="200">
+		<CheckBox Grid.Row="0" Grid.Column="0" IsEnabled="False" />
+		<TextBox
+			Grid.Row="0" Grid.Column="1"
+			AcceptsReturn="False"
+			Watermark="Name"
+			Text="{Binding FilterText, Mode=TwoWay}" />
+
+		<CheckBox Grid.Row="2" Grid.Column="0" IsEnabled="False" />
+		<AutoCompleteBox
+			Grid.Row="2" Grid.Column="1"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Watermark="Category"
+			ItemsSource="{Binding Categories}"
+			ItemSelector="{Binding CategorySelector}"
+			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />
+	</Grid>
+</UserControl>
