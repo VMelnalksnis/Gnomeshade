@@ -1,0 +1,31 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:accounts="clr-namespace:Gnomeshade.Avalonia.Core.Accounts;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.AccountFilter}"
+	x:Class="Gnomeshade.Desktop.Views.Accounts.AccountFilterView"
+	x:DataType="accounts:AccountFilter">
+
+	<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto" MinWidth="200">
+		<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertFilterText}" />
+		<TextBox
+			Grid.Row="0" Grid.Column="1"
+			AcceptsReturn="False"
+			Watermark="Counterparty"
+			Text="{Binding FilterText, Mode=TwoWay}" />
+
+		<CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding InvertCurrency}" />
+		<AutoCompleteBox
+			Grid.Row="2" Grid.Column="1"
+			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+			IsTextCompletionEnabled="True"
+			Watermark="Currency"
+			ItemsSource="{Binding Currencies}"
+			ItemSelector="{Binding CurrencySelector}"
+			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" />
+	</Grid>
+</UserControl>

@@ -45,14 +45,9 @@
 		</WrapPanel>
 
 		<WrapPanel>
-			<StackPanel Orientation="Horizontal">
-				<TextBox MinWidth="300" Watermark="Account number" Text="{Binding AccountNumber}" />
-				<TextBox MinWidth="300" Watermark="IBAN" Text="{Binding Iban}" />
-			</StackPanel>
-
-			<StackPanel Orientation="Horizontal">
-				<TextBox Watermark="BIC" Text="{Binding Bic}" />
-			</StackPanel>
+			<TextBox MinWidth="300" Watermark="Account number" Text="{Binding AccountNumber}" />
+			<TextBox MinWidth="300" Watermark="IBAN" Text="{Binding Iban}" />
+			<TextBox MinWidth="300" Watermark="BIC" Text="{Binding Bic}" />
 		</WrapPanel>
 
 		<WrapPanel>

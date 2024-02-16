@@ -3,8 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Avalonia.Collections;
 
 using Gnomeshade.WebApi.Client;
 
@@ -13,6 +16,11 @@ namespace Gnomeshade.Avalonia.Core.Accounts;
 /// <summary>Overview of all accounts.</summary>
 public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, AccountUpsertionViewModel>
 {
+	private static readonly DataGridSortDescription[] _sortDescriptions =
+	[
+		new DataGridComparerSortDescription(new AccountOverviewComparer(), ListSortDirection.Ascending),
+	];
+
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private AccountUpsertionViewModel _details;
 
@@ -25,6 +33,11 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 		_gnomeshadeClient = gnomeshadeClient;
 		_details = new(activityService, _gnomeshadeClient, null);
 
+		DataGridView.SortDescriptions.AddRange(_sortDescriptions);
+
+		Filter = new(activityService);
+
+		Filter.PropertyChanged += FilterOnPropertyChanged;
 		Details.Upserted += DetailsOnUpserted;
 	}
 
@@ -39,6 +52,9 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 			Details.Upserted += DetailsOnUpserted;
 		}
 	}
+
+	/// <summary>Gets the account filter.</summary>
+	public AccountFilter Filter { get; }
 
 	/// <inheritdoc />
 	public override Task UpdateSelection()
@@ -58,9 +74,13 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(accountOverviewRows);
 
+		var currencies = await _gnomeshadeClient.GetCurrenciesAsync();
+		Filter.Currencies = currencies;
+
 		var group = new DataGridTypedGroupDescription<AccountOverviewRow, string>(row => row.Counterparty);
 		DataGridView.GroupDescriptions.Add(group);
 		DataGridView.SortDescriptions.AddRange(sort);
+		DataGridView.Filter = Filter.Filter;
 
 		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id && overview.InCurrencyId == selected.InCurrencyId);
 
@@ -84,5 +104,13 @@ public sealed class AccountViewModel : OverviewViewModel<AccountOverviewRow, Acc
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
 		await RefreshAsync();
+	}
+
+	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is not nameof(AccountFilter.Currencies))
+		{
+			DataGridView.Refresh();
+		}
 	}
 }

@@ -10,9 +10,29 @@
 	x:Class="Gnomeshade.Desktop.Views.Accounts.AccountView"
 	x:DataType="a:AccountViewModel">
 
-	<Grid ColumnDefinitions="*,*" RowDefinitions="*">
+	<Grid RowDefinitions="*">
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
+			<ColumnDefinition Width="4*" />
+			<ColumnDefinition Width="2*" MinWidth="300" MaxWidth="600"/>
+		</Grid.ColumnDefinitions>
+
+
+		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+			<UserControl Content="{Binding Filter, Mode=OneWay}" />
+
+			<Border Background="White" HorizontalAlignment="Stretch" Height="1" />
+
+			<Button
+				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
 		<DataGrid
-			Grid.Column="0" Grid.Row="0"
+			Grid.Column="1" Grid.Row="0"
 			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 			x:Name="DataGrid"
 			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
@@ -50,6 +70,6 @@
 			</Interaction.Behaviors>
 		</DataGrid>
 
-		<UserControl Grid.Column="1" Content="{Binding Details}" />
+		<UserControl Grid.Column="2" Content="{Binding Details}" />
 	</Grid>
 </UserControl>
