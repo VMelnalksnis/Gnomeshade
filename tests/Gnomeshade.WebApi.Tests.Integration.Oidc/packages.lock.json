@@ -1758,10 +1758,10 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "1.3.0",
-        "contentHash": "VCqjj2V5WnnVn8w7mLeJO8CYEljy+u290UeAyuXPB3IjO60jTu/qi4OnTANTBQnKYtVk91yT4VR+6Qk8zuNY4g==",
+        "resolved": "1.4.0",
+        "contentHash": "h5bUiL6WNEyKJxqEnWrzu6rWqnvjE33Nd9CipeNa1bKoHp4AOHdvKhj78nLfqI12Zyczm2KjQNosmT8p8Q5iZw==",
         "dependencies": {
-          "NodaTime": "3.1.10",
+          "NodaTime": "3.1.11",
           "NodaTime.Serialization.SystemTextJson": "1.1.2"
         }
       },
@@ -1854,7 +1854,7 @@
           "Swashbuckle.AspNetCore.SwaggerGen": "[6.5.0, )",
           "System.Linq.Async": "[6.0.1, )",
           "VMelnalksnis.ISO20022DotNet": "[0.3.4, )",
-          "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.3.0, )",
+          "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.4.0, )",
           "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.3.1, )"
         }
       },
@@ -2447,19 +2447,20 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[1.3.0, )",
-        "resolved": "1.3.0",
-        "contentHash": "5ENk2pAccF1qUH1GJNik+VkiygWtlUkl+ASWxsP/4/vDejdS3sxMjpSl0D3QrcsVTqpGxLMnPbeaVD+LaKsNfg==",
+        "requested": "[1.4.0, )",
+        "resolved": "1.4.0",
+        "contentHash": "4hQNMx5Jcp9CQZTAptBt1KobkDegO26qHrlpw8vutJonIE1AG8gElgaw5pnJ2fdBJkefdjj53r5LAWobcYn6Mg==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
-          "Microsoft.Extensions.DependencyInjection": "7.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
-          "Microsoft.Extensions.Http": "7.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "7.0.0",
-          "Microsoft.Extensions.Options.DataAnnotations": "7.0.0",
-          "NodaTime": "3.1.10",
+          "Microsoft.Extensions.Configuration": "8.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Http": "8.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+          "Microsoft.Extensions.Options.DataAnnotations": "8.0.0",
+          "NodaTime": "3.1.11",
           "NodaTime.Serialization.SystemTextJson": "1.1.2",
-          "VMelnalksnis.NordigenDotNet": "1.3.0"
+          "VMelnalksnis.NordigenDotNet": "1.4.0"
         }
       },
       "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
