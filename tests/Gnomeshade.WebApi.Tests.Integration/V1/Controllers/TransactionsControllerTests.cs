@@ -22,7 +22,7 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(TransactionsController))]
-public sealed class TransactionsControllerTests : WebserverTests
+public sealed class TransactionsControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private IGnomeshadeClient _client = null!;
 
@@ -31,11 +31,6 @@ public sealed class TransactionsControllerTests : WebserverTests
 	private Account _account1 = null!;
 	private Account _account2 = null!;
 	private Guid _productId;
-
-	public TransactionsControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -278,77 +273,6 @@ public sealed class TransactionsControllerTests : WebserverTests
 	}
 
 	[Test]
-	public async Task Loans()
-	{
-		var transactionId = await _client.CreateTransactionAsync(new());
-		var receiver = _counterparty;
-		var issuer = _otherCounterparty;
-
-		var loanId = Guid.NewGuid();
-		var loanCreation = new LoanCreation
-		{
-			TransactionId = transactionId,
-			IssuingCounterpartyId = issuer.Id,
-			ReceivingCounterpartyId = receiver.Id,
-			CurrencyId = _account1.Currencies.First().CurrencyId,
-			Amount = 1,
-		};
-
-		await _client.PutLoanAsync(loanId, loanCreation);
-		var loan = await _client.GetLoanAsync(loanId);
-		var loans = await _client.GetLoansAsync(transactionId);
-		var receiverLoans = await _client.GetCounterpartyLoansAsync(receiver.Id);
-		var issuerLoans = await _client.GetCounterpartyLoansAsync(issuer.Id);
-		var detailedTransaction = await _client.GetDetailedTransactionAsync(transactionId);
-
-		loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
-		receiverLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
-		issuerLoans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
-		detailedTransaction.Loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
-		loan.Should().BeEquivalentTo(loanCreation, options => options.Excluding(creation => creation.OwnerId));
-
-		loanCreation = loanCreation with { Amount = 2 };
-		await _client.PutLoanAsync(loanId, loanCreation);
-		var updatedLoan = await _client.GetLoanAsync(loanId);
-		updatedLoan.Amount.Should().Be(2);
-
-		await _client.DeleteLoanAsync(loanId);
-		(await _client.GetLoansAsync(transactionId)).Should().BeEmpty();
-		(await FluentActions
-				.Awaiting(() => _client.GetLoanAsync(loanId))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode.Should()
-			.Be(HttpStatusCode.NotFound);
-	}
-
-	[Test]
-	public async Task PutLoan_NonExistentTransaction()
-	{
-		var transactionId = Guid.NewGuid();
-		var counterparties = await _client.GetCounterpartiesAsync();
-		var receiver = await _client.GetMyCounterpartyAsync();
-		var issuer = counterparties.First(counterparty => counterparty.Id != receiver.Id);
-
-		var loanId = Guid.NewGuid();
-		var loanCreation = new LoanCreation
-		{
-			TransactionId = transactionId,
-			IssuingCounterpartyId = issuer.Id,
-			ReceivingCounterpartyId = receiver.Id,
-			CurrencyId = _account1.Currencies.First().CurrencyId,
-			Amount = 1,
-		};
-
-		(await FluentActions
-				.Awaiting(() => _client.PutLoanAsync(loanId, loanCreation))
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode.Should()
-			.Be(HttpStatusCode.NotFound);
-	}
-
-	[Test]
 	public async Task Merge()
 	{
 		var counterparties = await _client.GetCounterpartiesAsync();
@@ -389,9 +313,9 @@ public sealed class TransactionsControllerTests : WebserverTests
 				.ContainEquivalentOf(sourceTransaction.Purchases.Single(), options => options.WithoutTransaction())
 				.And.ContainEquivalentOf(targetTransaction.Purchases.Single(), options => options.WithoutTransaction());
 
-			mergedTransaction.Loans.Should()
-				.ContainEquivalentOf(sourceTransaction.Loans.Single(), options => options.WithoutTransaction())
-				.And.ContainEquivalentOf(targetTransaction.Loans.Single(), options => options.WithoutTransaction());
+			mergedTransaction.LoanPayments.Should()
+				.ContainEquivalentOf(sourceTransaction.LoanPayments.Single(), options => options.WithoutTransaction())
+				.And.ContainEquivalentOf(targetTransaction.LoanPayments.Single(), options => options.WithoutTransaction());
 
 			mergedTransaction.Links.Should()
 				.ContainEquivalentOf(sourceTransaction.Links.Single(), options => options.WithoutModifiedAt())
@@ -427,7 +351,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 		var transfer = await _client.CreateTransferAsync(transaction.Id, _account1.Id, _account2.Id);
 		var purchase = await _client.CreatePurchaseAsync(transaction.Id, _productId);
 		await _client.CreatePurchaseAsync(transaction.Id, _productId);
-		var loan = await _client.CreateLoanAsync(transaction.Id, _counterparty.Id, _otherCounterparty.Id);
+		var payment = await _client.CreateLoanPayment(transaction.Id, _counterparty.Id, _otherCounterparty.Id);
 		var linkCreation = new LinkCreation { Uri = new($"https://localhost/documents/{Guid.NewGuid()}") };
 		var linkId = Guid.NewGuid();
 		await _client.PutLinkAsync(linkId, linkCreation);
@@ -439,13 +363,13 @@ public sealed class TransactionsControllerTests : WebserverTests
 			detailed.Should().BeEquivalentTo(transaction);
 			detailed.Transfers.Should().ContainSingle().Which.Should().BeEquivalentTo(transfer);
 			detailed.Purchases.Should().HaveCount(2).And.ContainEquivalentOf(purchase);
-			detailed.Loans.Should().ContainSingle().Which.Should().BeEquivalentTo(loan);
+			detailed.LoanPayments.Should().ContainSingle().Which.Should().BeEquivalentTo(payment);
 			detailed.Links.Should().ContainSingle().Which.Id.Should().Be(linkId);
 		}
 
 		await _client.DeleteTransferAsync(transfer.Id);
 		await _client.DeletePurchaseAsync(purchase.Id);
-		await _client.DeleteLoanAsync(loan.Id);
+		await _client.DeleteLoanPaymentAsync(payment.Id);
 		await _client.DeleteLinkAsync(linkId);
 
 		detailed = await _client.GetDetailedTransactionAsync(transaction.Id);
@@ -454,7 +378,7 @@ public sealed class TransactionsControllerTests : WebserverTests
 			detailed.Should().BeEquivalentTo(transaction);
 			detailed.Transfers.Should().BeEmpty();
 			detailed.Purchases.Should().HaveCount(1);
-			detailed.Loans.Should().BeEmpty();
+			detailed.LoanPayments.Should().BeEmpty();
 			detailed.Links.Should().BeEmpty();
 		}
 	}

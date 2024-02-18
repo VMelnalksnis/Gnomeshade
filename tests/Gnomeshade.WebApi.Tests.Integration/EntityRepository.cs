@@ -25,7 +25,8 @@ internal sealed class EntityRepository
 		{ typeof(CounterpartyEntity), "counterparties" },
 		{ typeof(CurrencyEntity), "currencies" },
 		{ typeof(LinkEntity), "links" },
-		{ typeof(LoanEntity), "loans" },
+		{ typeof(Loan2Entity), "loans2" },
+		{ typeof(LoanPaymentEntity), "loan_payments" },
 		{ typeof(OwnerEntity), "owners" },
 		{ typeof(OwnershipEntity), "ownerships" },
 		{ typeof(ProductEntity), "products" },
@@ -34,6 +35,9 @@ internal sealed class EntityRepository
 		{ typeof(TransferEntity), "transfers" },
 		{ typeof(UnitEntity), "units" },
 		{ typeof(UserEntity), "users" },
+#pragma warning disable CS0612 // Type or member is obsolete
+		{ typeof(LoanEntity), "loans" },
+#pragma warning restore CS0612 // Type or member is obsolete
 	};
 
 	private readonly DbConnection _dbConnection;

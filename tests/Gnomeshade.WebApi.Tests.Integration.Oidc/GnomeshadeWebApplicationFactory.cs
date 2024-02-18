@@ -27,6 +27,6 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 
 	protected override void ConfigureClient(HttpClient client)
 	{
-		client.BaseAddress = new("https://localhost:5001/api/v1.0/");
+		client.BaseAddress = new("https://localhost:5001/api/");
 	}
 }

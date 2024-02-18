@@ -19,13 +19,18 @@ public static class ServiceCollectionExtensions
 	/// <returns><paramref name="services"/>.</returns>
 	public static IServiceCollection AddRepositories(this IServiceCollection services)
 	{
+#pragma warning disable CS0612 // Type or member is obsolete
+		services.AddScoped<LoanRepository>();
+#pragma warning restore CS0612 // Type or member is obsolete
+
 		return services
 			.AddScoped<OwnerRepository>()
 			.AddScoped<OwnershipRepository>()
 			.AddScoped<TransactionRepository>()
 			.AddScoped<PurchaseRepository>()
 			.AddScoped<TransferRepository>()
-			.AddScoped<LoanRepository>()
+			.AddScoped<Loan2Repository>()
+			.AddScoped<LoanPaymentRepository>()
 			.AddScoped<UserRepository>()
 			.AddScoped<AccountRepository>()
 			.AddScoped<AccountInCurrencyRepository>()

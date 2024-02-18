@@ -101,6 +101,7 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Link)}.Update.sql");
 	}
 
+	[Obsolete]
 	internal static class Loan
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Loan)}.Delete.sql");
@@ -112,6 +113,32 @@ internal static class Queries
 		internal static string SelectAll { get; } = Read($"Queries.{nameof(Loan)}.SelectAll.sql");
 
 		internal static string Update { get; } = Read($"Queries.{nameof(Loan)}.Update.sql");
+	}
+
+	internal static class Loan2
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Loan2)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Loan2)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Loan2)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Loan2)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Loan2)}.Update.sql");
+	}
+
+	internal static class LoanPayment
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(LoanPayment)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(LoanPayment)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(LoanPayment)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(LoanPayment)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(LoanPayment)}.Update.sql");
 	}
 
 	internal static class Owner
@@ -173,6 +200,8 @@ internal static class Queries
 		internal static string SelectAll { get; } = Read($"Queries.{nameof(Transaction)}.SelectAll.sql");
 
 		internal static string SelectDetailed { get; } = Read($"Queries.{nameof(Transaction)}.SelectDetailed.sql");
+
+		internal static string SelectDetailed2 { get; } = Read($"Queries.{nameof(Transaction)}.SelectDetailed2.sql");
 
 		internal static string Update { get; } = Read($"Queries.{nameof(Transaction)}.Update.sql");
 

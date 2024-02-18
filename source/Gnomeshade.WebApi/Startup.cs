@@ -20,6 +20,7 @@ using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Services;
 using Gnomeshade.WebApi.V1;
 using Gnomeshade.WebApi.V1.Importing;
+using Gnomeshade.WebApi.V2;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,7 +103,12 @@ public class Startup
 			.AddTransient<Mapper>()
 			.AddSingleton<AutoMapper.IConfigurationProvider>(_ =>
 			{
-				var config = new MapperConfiguration(options => options.CreateMapsForV1_0());
+				var config = new MapperConfiguration(options =>
+				{
+					options.AllowNullCollections = true;
+					options.CreateMapsForV1_0();
+					options.CreateMapsForV2_0();
+				});
 				config.CompileMappings();
 				return config;
 			});

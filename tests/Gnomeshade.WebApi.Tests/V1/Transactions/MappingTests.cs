@@ -19,6 +19,7 @@ public class MappingTests
 	{
 		var mapper = new MapperConfiguration(options =>
 		{
+			options.AllowNullCollections = true;
 			options.CreateMapsForV1_0();
 			options.CreateMap<NullableSource, NullableTarget>();
 			options.CreateMap<NullableSource, NonNullableTarget>();

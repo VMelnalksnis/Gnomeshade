@@ -186,19 +186,33 @@ public sealed class ReadAccessTests : WebserverTests
 	[Test]
 	public async Task Loans()
 	{
-		var transaction = await _client.CreateTransactionAsync(_ownerId);
-		var counterparty1 = await _client.GetMyCounterpartyAsync();
-		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
-
-		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+		var loan = await _client.CreateLoanAsync(_ownerId);
 
 		await ShouldReturnTheSame(client => client.GetLoanAsync(loan.Id));
 
-		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
+		var updatedLoan = loan.ToCreation() with { Principal = loan.Principal + 10 };
 
 		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(loan.Id, updatedLoan));
 		await ShouldReturnTheSame(client => client.GetLoanAsync(loan.Id));
 		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
+	}
+
+	[Test]
+	public async Task LoanPayments()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty1 = await _client.GetMyCounterpartyAsync();
+		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
+
+		var loanPayment = await _client.CreateLoanPayment(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+
+		await ShouldReturnTheSame(client => client.GetLoanPaymentAsync(loanPayment.Id));
+
+		var updatedLoan = loanPayment.ToCreation() with { Amount = loanPayment.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLoanPaymentAsync(loanPayment.Id, updatedLoan));
+		await ShouldReturnTheSame(client => client.GetLoanPaymentAsync(loanPayment.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanPaymentAsync(loanPayment.Id), true);
 	}
 
 	[Test]

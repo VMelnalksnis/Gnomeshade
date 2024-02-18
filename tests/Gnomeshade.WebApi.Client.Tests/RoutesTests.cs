@@ -13,7 +13,7 @@ public class RoutesTests
 	[Test]
 	public void AccountUri_ShouldFormatGuidWithoutSeparators()
 	{
-		Routes.Accounts.IdUri(Guid.Empty).Should().Be("Accounts/00000000000000000000000000000000");
+		Routes.Accounts.IdUri(Guid.Empty).Should().Be("v1.0/Accounts/00000000000000000000000000000000");
 	}
 
 	[TestCaseSource(typeof(TransactionUriTestCaseSource))]

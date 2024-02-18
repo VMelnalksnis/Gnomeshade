@@ -34,7 +34,9 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 {
 	private readonly TransferRepository _transferRepository;
 	private readonly PurchaseRepository _purchaseRepository;
+#pragma warning disable CS0612 // Type or member is obsolete
 	private readonly LoanRepository _loanRepository;
+#pragma warning restore CS0612 // Type or member is obsolete
 	private readonly TransactionUnitOfWork _unitOfWork;
 	private readonly CounterpartyRepository _counterpartyRepository;
 	private readonly AccountRepository _accountRepository;
@@ -55,7 +57,9 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		Mapper mapper,
 		TransferRepository transferRepository,
 		PurchaseRepository purchaseRepository,
+#pragma warning disable CS0612 // Type or member is obsolete
 		LoanRepository loanRepository,
+#pragma warning restore CS0612 // Type or member is obsolete
 		CounterpartyRepository counterpartyRepository,
 		AccountRepository accountRepository,
 		DbConnection dbConnection)
@@ -87,10 +91,13 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <inheritdoc cref="ITransactionClient.GetDetailedTransactionAsync"/>
 	/// <response code="200">Transaction with the specified id exists.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
+	[Obsolete]
 	[HttpGet("{id:guid}/Details")]
-	[ProducesResponseType<DetailedTransaction>(Status200OK)]
+#pragma warning disable CS0612 // Type or member is obsolete
+	[ProducesResponseType<Transactions.DetailedTransaction>(Status200OK)]
+#pragma warning restore CS0612 // Type or member is obsolete
 	[ProducesStatus404NotFound]
-	public async Task<ActionResult<DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
+	public async Task<ActionResult<Transactions.DetailedTransaction>> GetDetailed(Guid id, CancellationToken cancellationToken)
 	{
 		var transaction = await Repository.FindDetailedAsync(id, ApplicationUser.Id, cancellationToken);
 		if (transaction is null)
@@ -108,14 +115,18 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns><see cref="OkObjectResult"/> with the transactions.</returns>
 	/// <response code="200">Successfully got all transactions.</response>
+	[Obsolete]
 	[HttpGet("Details")]
-	[ProducesResponseType<List<DetailedTransaction>>(Status200OK)]
-	public async IAsyncEnumerable<DetailedTransaction> GetAllDetailed(
+#pragma warning disable CS0612 // Type or member is obsolete
+	[ProducesResponseType<List<Transactions.DetailedTransaction>>(Status200OK)]
+#pragma warning restore CS0612 // Type or member is obsolete
+	public async IAsyncEnumerable<Transactions.DetailedTransaction> GetAllDetailed(
 		[FromQuery] OptionalTimeRange timeRange,
 		[EnumeratorCancellation] CancellationToken cancellationToken)
 	{
 		var (fromDate, toDate) = TimeRange.FromOptional(timeRange, SystemClock.Instance.GetCurrentInstant());
-		var transactions = await Repository.GetAllDetailedAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
+		var transactions =
+			await Repository.GetAllDetailedAsync(fromDate, toDate, ApplicationUser.Id, cancellationToken);
 		var userAccountsInCurrencyIds = await GetUserAccountsInCurrencyIds(cancellationToken);
 
 		foreach (var transaction in transactions)
@@ -207,20 +218,31 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return models;
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetLoansAsync(Guid, CancellationToken)"/>
-	/// <response code="200">Successfully got all loans.</response>
+	/// <summary>Gets all loans for the specified transaction.</summary>
+	/// <param name="transactionId">The id of the transaction for which to get all the loans.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All loans for the specified transaction.</returns>
+	[Obsolete]
 	[HttpGet("{transactionId:guid}/Loans")]
+#pragma warning disable CS0612 // Type or member is obsolete
 	[ProducesResponseType<List<Loan>>(Status200OK)]
+#pragma warning restore CS0612 // Type or member is obsolete
 	public async Task<List<Loan>> GetLoans(Guid transactionId, CancellationToken cancellationToken)
 	{
 		var loans = await _loanRepository.GetAllAsync(transactionId, ApplicationUser.Id, cancellationToken);
 		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
 	}
 
-	/// <inheritdoc cref="ITransactionClient.GetCounterpartyLoansAsync"/>
+	/// <summary>Gets all loans issued or received by the specified counterparty.</summary>
+	/// <param name="counterpartyId">The id of the counterparty for which to get all the loans for.</param>
+	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+	/// <returns>All loans for the specified counterparty.</returns>
 	/// <response code="200">Successfully got all loans.</response>
+	[Obsolete]
 	[HttpGet("Loans")]
+#pragma warning disable CS0612 // Type or member is obsolete
 	[ProducesResponseType<List<Loan>>(Status200OK)]
+#pragma warning restore CS0612 // Type or member is obsolete
 	public async Task<List<Loan>> GetCounterpartyLoans(Guid counterpartyId, CancellationToken cancellationToken)
 	{
 		var loans = await _loanRepository.GetAllForCounterpartyAsync(counterpartyId, ApplicationUser.Id, cancellationToken);
@@ -293,7 +315,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			Id = id,
 			CreatedByUserId = user.Id,
 			ModifiedByUserId = user.Id,
-			ImportedAt = creation.ImportedAt ?? (creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant()),
+			ImportedAt = creation.ImportedAt ??
+			(creation.ImportHash is null ? null : SystemClock.Instance.GetCurrentInstant()),
 			ReconciledByUserId = creation.ReconciledAt is null ? null : user.Id,
 		};
 
@@ -312,7 +335,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			.ToList();
 	}
 
-	private DetailedTransaction ToDetailed(DetailedTransactionEntity transaction, List<Guid> userAccountsInCurrencyIds)
+	[Obsolete]
+	private Transactions.DetailedTransaction ToDetailed(DetailedTransactionEntity transaction, List<Guid> userAccountsInCurrencyIds)
 	{
 		var transferBalance = transaction.Transfers.Sum(transfer =>
 		{
@@ -330,7 +354,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		var purchaseTotal = transaction.Purchases.Sum(purchase => purchase.Price);
 		var loanTotal = transaction.Loans.Sum(loan => loan.Amount);
 
-		return Mapper.Map<DetailedTransaction>(transaction) with
+		return Mapper.Map<Transactions.DetailedTransaction>(transaction) with
 		{
 			Transfers = transaction.Transfers.Select(transfer => Mapper.Map<Transfer>(transfer)).ToList(),
 			TransferBalance = transferBalance,

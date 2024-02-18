@@ -41,7 +41,7 @@ public sealed class TokenDelegatingHandler : DelegatingHandler
 	/// <inheritdoc />
 	protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 	{
-		if (request.RequestUri?.ToString().EndsWith(Routes._loginUri) ?? false)
+		if (request.RequestUri?.ToString().EndsWith(Routes.LoginUri) ?? false)
 		{
 			return HandleBuiltInUsers(request, cancellationToken);
 		}

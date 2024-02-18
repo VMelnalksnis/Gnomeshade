@@ -56,6 +56,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.Transaction.Select;
 
+	[Obsolete]
 	public async Task<DetailedTransactionEntity?> FindDetailedAsync(
 		Guid id,
 		Guid userId,
@@ -70,6 +71,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return transactions.SingleOrDefault();
 	}
 
+	[Obsolete]
 	public Task<IEnumerable<DetailedTransactionEntity>> GetAllDetailedAsync(
 		Instant from,
 		Instant to,
@@ -79,6 +81,36 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Logger.GetAll();
 		return GetDetailedTransactions(new(
 			@$"{Queries.Transaction.SelectDetailed}
+ AND (((transfers.valued_at >= @from OR transfers.booked_at >= @from)
+  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to))
+   OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
+			new { from, to, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
+	}
+
+	public async Task<DetailedTransaction2Entity?> FindDetailed2Async(
+		Guid id,
+		Guid userId,
+		CancellationToken cancellationToken = default)
+	{
+		Logger.FindId(id);
+		var transactions = await GetDetailedTransactions2(new(
+			$"{Queries.Transaction.SelectDetailed2} AND transactions.id = @id;",
+			new { id, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
+
+		return transactions.SingleOrDefault();
+	}
+
+	public Task<IEnumerable<DetailedTransaction2Entity>> GetAllDetailed2Async(
+		Instant from,
+		Instant to,
+		Guid userId,
+		CancellationToken cancellationToken = default)
+	{
+		Logger.GetAll();
+		return GetDetailedTransactions2(new(
+			@$"{Queries.Transaction.SelectDetailed2}
  AND (((transfers.valued_at >= @from OR transfers.booked_at >= @from)
   AND (transfers.valued_at <= @to OR transfers.booked_at <= @to))
    OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
@@ -184,8 +216,10 @@ AND t.id IN (SELECT "second" FROM r)
 		await dbTransaction.CommitAsync();
 	}
 
+	[Obsolete]
 	private async Task<IEnumerable<DetailedTransactionEntity>> GetDetailedTransactions(CommandDefinition command)
 	{
+#pragma warning disable CS0612 // Type or member is obsolete
 		var transactions = await DbConnection
 			.QueryAsync<TransactionEntity, PurchaseEntity, TransferEntity, LoanEntity, LinkEntity,
 				DetailedTransactionEntity>(
@@ -233,6 +267,57 @@ AND t.id IN (SELECT "second" FROM r)
 				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id)
 					.ToList(),
 				Loans = grouping.SelectMany(detailed => detailed.Loans).DistinctBy(loan => loan.Id).ToList(),
+				Links = grouping.SelectMany(detailed => detailed.Links).DistinctBy(link => link.Id).ToList(),
+			});
+#pragma warning restore CS0612 // Type or member is obsolete
+	}
+
+	private async Task<IEnumerable<DetailedTransaction2Entity>> GetDetailedTransactions2(CommandDefinition command)
+	{
+		var transactions = await DbConnection
+			.QueryAsync<TransactionEntity, PurchaseEntity, TransferEntity, LoanPaymentEntity, LinkEntity, DetailedTransaction2Entity>(
+				command,
+				(transaction, purchase, transfer, payment, link) =>
+				{
+					var detailed = new DetailedTransaction2Entity(transaction);
+
+					if (purchase is { DeletedAt: null })
+					{
+						detailed.Purchases.Add(purchase);
+					}
+
+					if (transfer is { DeletedAt: null })
+					{
+						detailed.Transfers.Add(transfer);
+						detailed.BookedAt = transfer.BookedAt;
+						detailed.ValuedAt = transfer.ValuedAt;
+					}
+
+					if (payment is { DeletedAt: null })
+					{
+						detailed.LoanPayments.Add(payment);
+					}
+
+					if (link is { DeletedAt: null })
+					{
+						detailed.Links.Add(link);
+					}
+
+					return detailed;
+				},
+				splitOn: "Id,Id,Id,Id");
+
+		return transactions
+			.GroupBy(transaction => transaction.Id)
+			.Select(grouping => new DetailedTransaction2Entity(grouping.First() with
+			{
+				BookedAt = grouping.Select(transaction => transaction.BookedAt).Max(),
+				ValuedAt = grouping.Select(transaction => transaction.ValuedAt).Max(),
+			})
+			{
+				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id).ToList(),
+				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id).ToList(),
+				LoanPayments = grouping.SelectMany(detailed => detailed.LoanPayments).DistinctBy(paymentEntity => paymentEntity.Id).ToList(),
 				Links = grouping.SelectMany(detailed => detailed.Links).DistinctBy(link => link.Id).ToList(),
 			});
 	}

@@ -15,6 +15,7 @@ using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Importing;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
@@ -37,21 +38,22 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Link> _links;
 	private static readonly List<KeyValuePair<Guid, Guid>> _transactionLinks;
 	private static readonly List<Category> _categories;
-	private static readonly List<Loan> _loans;
 	private static readonly List<User> _users;
 	private static readonly List<Ownership> _ownerships;
 	private static readonly List<Owner> _owners;
 	private static readonly List<Access> _accesses;
+	private static readonly List<Loan> _loans;
+	private static readonly List<LoanPayment> _loanPayments;
 
 	static DesignTimeGnomeshadeClient()
 	{
 		var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
 		var usd = new Currency { Id = Guid.NewGuid(), Name = "United States Dollar", AlphabeticCode = "USD" };
-		_currencies = new() { euro, usd };
+		_currencies = [euro, usd];
 
 		var counterparty = new Counterparty { Id = Guid.Empty, Name = "John Doe" };
 		var otherCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Jane Doe" };
-		_counterparties = new() { counterparty, otherCounterparty };
+		_counterparties = [counterparty, otherCounterparty];
 
 		var cash = new Account
 		{
@@ -59,11 +61,11 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Name = "Cash",
 			CounterpartyId = counterparty.Id,
 			PreferredCurrencyId = euro.Id,
-			Currencies = new()
-			{
+			Currencies =
+			[
 				new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode },
-				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode },
-			},
+				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode }
+			],
 		};
 		var spending = new Account
 		{
@@ -71,20 +73,21 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Name = "Spending",
 			CounterpartyId = counterparty.Id,
 			PreferredCurrencyId = euro.Id,
-			Currencies = new() { new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode } },
+			Currencies =
+				[new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
 		};
-		_accounts = new() { cash, spending };
+		_accounts = [cash, spending];
 
 		var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
 		var gram = new Unit { Id = Guid.NewGuid(), Name = "Gram", ParentUnitId = kilogram.Id, Multiplier = 1000m };
-		_units = new() { kilogram, gram };
+		_units = [kilogram, gram];
 
 		var food = new Category { Id = Guid.Empty, Name = "Food" };
-		_categories = new() { food };
+		_categories = [food];
 
 		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id, UnitId = kilogram.Id };
 		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk", CategoryId = food.Id };
-		_products = new() { bread, milk };
+		_products = [bread, milk];
 
 		var transaction = new Transaction
 		{
@@ -92,9 +95,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Description = "Some transaction description",
 		};
 
-		_transactions = new() { transaction };
-		_transfers = new()
-		{
+		_transactions = [transaction];
+		_transfers =
+		[
 			new()
 			{
 				Id = Guid.NewGuid(),
@@ -105,6 +108,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				TargetAccountId = cash.Currencies.First().Id,
 				BookedAt = SystemClock.Instance.GetCurrentInstant(),
 			},
+
 			new()
 			{
 				Id = Guid.NewGuid(),
@@ -114,11 +118,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				TargetAmount = 1.95m,
 				TargetAccountId = cash.Currencies.First().Id,
 				BookedAt = SystemClock.Instance.GetCurrentInstant(),
-			},
-		};
+			}
 
-		_purchases = new()
-		{
+		];
+
+		_purchases =
+		[
 			new()
 			{
 				Id = Guid.NewGuid(),
@@ -128,6 +133,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Amount = 2,
 				ProductId = milk.Id,
 			},
+
 			new()
 			{
 				Id = Guid.NewGuid(),
@@ -137,63 +143,69 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Amount = 500,
 				ProductId = bread.Id,
 				DeliveryDate = SystemClock.Instance.GetCurrentInstant(),
-			},
-		};
+			}
 
-		_links = new()
-		{
+		];
+
+		_links =
+		[
 			new() { Id = Guid.Empty, Uri = "https://localhost/documents/1" },
-			new() { Id = Guid.NewGuid(), Uri = "https://localhost/documents/1" },
-		};
+			new() { Id = Guid.NewGuid(), Uri = "https://localhost/documents/1" }
+		];
 
-		_transactionLinks = new()
-		{
+		_transactionLinks =
+		[
 			new(Guid.Empty, Guid.Empty),
-			new(Guid.Empty, _links.Last().Id),
-		};
-
-		_loans = new()
-		{
-			new()
-			{
-				TransactionId = transaction.Id,
-				IssuingCounterpartyId = counterparty.Id,
-				ReceivingCounterpartyId = otherCounterparty.Id,
-				Amount = 100,
-				CurrencyId = euro.Id,
-			},
-			new()
-			{
-				TransactionId = transaction.Id,
-				IssuingCounterpartyId = counterparty.Id,
-				ReceivingCounterpartyId = otherCounterparty.Id,
-				Amount = -5,
-				CurrencyId = euro.Id,
-			},
-		};
+			new(Guid.Empty, _links.Last().Id)
+		];
 
 		var owner = new Access { Id = Guid.NewGuid(), Name = "Owner" };
 		var read = new Access { Id = Guid.NewGuid(), Name = "Read" };
-		_accesses = new() { owner, read };
+		_accesses = [owner, read];
 
-		_users = new()
-		{
+		_users =
+		[
 			new() { Id = counterparty.Id },
-			new() { Id = otherCounterparty.Id },
-		};
+			new() { Id = otherCounterparty.Id }
+		];
 
-		_owners = new()
-		{
+		_owners =
+		[
 			new() { Id = counterparty.Id, Name = "Private" },
-			new() { Id = otherCounterparty.Id, Name = "Private" },
-		};
+			new() { Id = otherCounterparty.Id, Name = "Private" }
+		];
 
-		_ownerships = new()
-		{
+		_ownerships =
+		[
 			new() { Id = counterparty.Id, OwnerId = counterparty.Id, UserId = counterparty.Id, AccessId = owner.Id },
 			new() { Id = otherCounterparty.Id, OwnerId = otherCounterparty.Id, UserId = otherCounterparty.Id, AccessId = owner.Id },
-			new() { Id = Guid.NewGuid(), OwnerId = counterparty.Id, UserId = otherCounterparty.Id, AccessId = read.Id },
-		};
+			new() { Id = Guid.NewGuid(), OwnerId = counterparty.Id, UserId = otherCounterparty.Id, AccessId = read.Id }
+		];
+
+		_loans =
+		[
+			new()
+			{
+				Id = Guid.Empty,
+				Name = "Mortgage",
+				IssuingCounterpartyId = otherCounterparty.Id,
+				ReceivingCounterpartyId = counterparty.Id,
+				Principal = 100_000,
+				CurrencyId = euro.Id,
+			}
+		];
+
+		_loanPayments =
+		[
+			new()
+			{
+				Id = Guid.Empty,
+				LoanId = Guid.Empty,
+				TransactionId = Guid.Empty,
+				Amount = 500m,
+				Interest = 150m,
+			}
+		];
 	}
 
 	/// <inheritdoc />
@@ -307,7 +319,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			ValuedAt = transfers.Select(transfer => transfer.ValuedAt).Max(),
 			Transfers = transfers,
 			Purchases = await GetPurchasesAsync(transaction.Id, cancellationToken),
-			Loans = await GetLoansAsync(transaction.Id, cancellationToken),
+			LoanPayments = await GetLoanPaymentsForTransactionAsync(transaction.Id, cancellationToken),
 			Links = await GetTransactionLinksAsync(transaction.Id, cancellationToken),
 		};
 	}
@@ -437,69 +449,6 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		throw new NotImplementedException();
 
 	/// <inheritdoc />
-	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default)
-	{
-		return Task.FromResult(_loans.ToList());
-	}
-
-	/// <inheritdoc />
-	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default)
-	{
-		var loans = _loans.Where(loan => loan.TransactionId == transactionId).ToList();
-		return Task.FromResult(loans);
-	}
-
-	/// <inheritdoc />
-	public Task<List<Loan>> GetCounterpartyLoansAsync(
-		Guid counterpartyId,
-		CancellationToken cancellationToken = default)
-	{
-		var loans = _loans
-			.Where(loan =>
-				loan.IssuingCounterpartyId == counterpartyId ||
-				loan.ReceivingCounterpartyId == counterpartyId)
-			.ToList();
-		return Task.FromResult(loans);
-	}
-
-	/// <inheritdoc />
-	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default)
-	{
-		var loan = _loans.Single(loan => loan.Id == id);
-		return Task.FromResult(loan);
-	}
-
-	/// <inheritdoc />
-	public Task PutLoanAsync(Guid id, LoanCreation loan)
-	{
-		var existing = _loans.SingleOrDefault(l => l.Id == id);
-		if (existing is not null)
-		{
-			_loans.Remove(existing);
-		}
-
-		existing ??= new() { TransactionId = loan.TransactionId!.Value, Id = id };
-		existing = existing with
-		{
-			IssuingCounterpartyId = loan.IssuingCounterpartyId!.Value,
-			ReceivingCounterpartyId = loan.ReceivingCounterpartyId!.Value,
-			Amount = loan.Amount!.Value,
-			CurrencyId = loan.CurrencyId!.Value,
-		};
-
-		_loans.Add(existing);
-		return Task.CompletedTask;
-	}
-
-	/// <inheritdoc />
-	public Task DeleteLoanAsync(Guid id)
-	{
-		var loan = _loans.Single(loan => loan.Id == id);
-		_loans.Remove(loan);
-		return Task.CompletedTask;
-	}
-
-	/// <inheritdoc />
 	public Task<List<Transaction>> GetRelatedTransactionAsync(Guid id, CancellationToken cancellationToken = default) =>
 		throw new NotImplementedException();
 
@@ -510,6 +459,15 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId) =>
 		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	[Obsolete]
+	public Task<List<LegacyLoan>> GetLegacyLoans(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	[Obsolete]
+	public Task DeleteLegacyLoan(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id, CancellationToken cancellationToken = default)
@@ -767,4 +725,46 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<List<User>> GetUsersAsync(CancellationToken cancellationToken = default) =>
 		Task.FromResult(_users.ToList());
+
+	/// <inheritdoc />
+	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loans.Single(loan => loan.Id == id));
+
+	/// <inheritdoc />
+	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loans.ToList());
+
+	/// <inheritdoc />
+	public Task<Guid> CreateLoanAsync(LoanCreation loan) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutLoanAsync(Guid id, LoanCreation loan) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteLoanAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<LoanPayment> GetLoanPaymentAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loanPayments.Single(payment => payment.Id == id));
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loanPayments.ToList());
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loanPayments.Where(payment => payment.LoanId == id).ToList());
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsForTransactionAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_loanPayments.Where(payment => payment.LoanId == id).ToList());
+
+	/// <inheritdoc />
+	public Task<Guid> CreateLoanPaymentAsync(LoanPaymentCreation loanPayment) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutLoanPaymentAsync(Guid id, LoanPaymentCreation loanPayment) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeleteLoanPaymentAsync(Guid id) => throw new NotImplementedException();
 }

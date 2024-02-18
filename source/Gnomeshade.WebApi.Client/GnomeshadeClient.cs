@@ -19,6 +19,7 @@ using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Importing;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
@@ -52,7 +53,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		try
 		{
-			using var response = await _httpClient.PostAsJsonAsync(_loginUri, login, _context.Login).ConfigureAwait(false);
+			using var response = await _httpClient.PostAsJsonAsync(LoginUri, login, _context.Login).ConfigureAwait(false);
 			if (response.IsSuccessStatusCode)
 			{
 				return new SuccessfulLogin();
@@ -70,7 +71,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public async Task<ExternalLoginResult> SocialRegister()
 	{
-		using var response = await _httpClient.PostAsync(_socialRegisterUri, null);
+		using var response = await _httpClient.PostAsync(SocialRegisterUri, null);
 		if (response.StatusCode is HttpStatusCode.NoContent)
 		{
 			return new LoggedIn();
@@ -91,13 +92,13 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	{
 		_httpClient.DefaultRequestHeaders.Authorization = null;
 		using var response =
-			await _httpClient.PostAsync(_logOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
+			await _httpClient.PostAsync(LogOutUri, new StringContent(string.Empty)).ConfigureAwait(false);
 		await ThrowIfNotSuccessCode(response).ConfigureAwait(false);
 	}
 
 	/// <inheritdoc />
 	public Task<List<Link>> GetLinksAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Links._uri, _context.ListLink, cancellationToken);
+		GetAsync(Links.Uri, _context.ListLink, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Link> GetLinkAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -113,7 +114,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetMyCounterpartyAsync(CancellationToken cancellationToken = default) =>
-		GetAsync($"{_counterpartyUri}/Me", _context.Counterparty, cancellationToken);
+		GetAsync($"{CounterpartyUri}/Me", _context.Counterparty, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Counterparty> GetCounterpartyAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -121,11 +122,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Counterparty>> GetCounterpartiesAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(_counterpartyUri, _context.ListCounterparty, cancellationToken);
+		GetAsync(CounterpartyUri, _context.ListCounterparty, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCounterpartyAsync(CounterpartyCreation counterparty) =>
-		PostAsync(_counterpartyUri, counterparty, _context.CounterpartyCreation);
+		PostAsync(CounterpartyUri, counterparty, _context.CounterpartyCreation);
 
 	/// <inheritdoc />
 	public Task PutCounterpartyAsync(Guid id, CounterpartyCreation counterparty) =>
@@ -188,7 +189,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Transfer>> GetTransfersAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Transfers._uri, _context.ListTransfer, cancellationToken);
+		GetAsync(Transfers.Uri, _context.ListTransfer, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Transfer> GetTransferAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -204,7 +205,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Purchase>> GetPurchasesAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Purchases._uri, _context.ListPurchase, cancellationToken);
+		GetAsync(Purchases.Uri, _context.ListPurchase, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Purchase>> GetPurchasesAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
@@ -223,30 +224,6 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Purchases.IdUri(id));
 
 	/// <inheritdoc />
-	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Loans._uri, _context.ListLoan, cancellationToken);
-
-	/// <inheritdoc />
-	public Task<List<Loan>> GetLoansAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
-		GetAsync(Loans.TransactionUri(transactionId), _context.ListLoan, cancellationToken);
-
-	/// <inheritdoc />
-	public Task<List<Loan>> GetCounterpartyLoansAsync(Guid counterpartyId, CancellationToken cancellationToken = default) =>
-		GetAsync(Loans.ForCounterparty(counterpartyId), _context.ListLoan, cancellationToken);
-
-	/// <inheritdoc />
-	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default) =>
-		GetAsync(Loans.IdUri(id), _context.Loan, cancellationToken);
-
-	/// <inheritdoc />
-	public Task PutLoanAsync(Guid id, LoanCreation loan) =>
-		PutAsync(Loans.IdUri(id), loan, _context.LoanCreation);
-
-	/// <inheritdoc />
-	public Task DeleteLoanAsync(Guid id) =>
-		DeleteAsync(Loans.IdUri(id));
-
-	/// <inheritdoc />
 	public Task<List<Transaction>> GetRelatedTransactionAsync(Guid id, CancellationToken cancellationToken = default) =>
 		GetAsync(Transactions.RelatedUri(id), _context.ListTransaction, cancellationToken);
 
@@ -259,16 +236,26 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Transactions.RelatedUri(id, relatedId));
 
 	/// <inheritdoc />
+	[Obsolete]
+	public Task<List<LegacyLoan>> GetLegacyLoans(CancellationToken cancellationToken = default) =>
+		GetAsync("v1.0/Loans", _context.ListLegacyLoan, cancellationToken);
+
+	/// <inheritdoc />
+	[Obsolete]
+	public Task DeleteLegacyLoan(Guid id) =>
+		DeleteAsync($"v1.0/Loans/{Format(id)}");
+
+	/// <inheritdoc />
 	public Task<Account> GetAccountAsync(Guid id, CancellationToken cancellationToken = default) =>
 		GetAsync(Accounts.IdUri(id), _context.Account, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Account>> GetAccountsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Accounts._allUri, _context.ListAccount, cancellationToken);
+		GetAsync(Accounts.AllUri, _context.ListAccount, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Guid> CreateAccountAsync(AccountCreation account) =>
-		PostAsync(Accounts._uri, account, _context.AccountCreation);
+		PostAsync(Accounts.Uri, account, _context.AccountCreation);
 
 	/// <inheritdoc />
 	public Task PutAccountAsync(Guid id, AccountCreation account) =>
@@ -284,7 +271,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Currency>> GetCurrenciesAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(_currencyUri, _context.ListCurrency, cancellationToken);
+		GetAsync(CurrencyUri, _context.ListCurrency, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Balance>> GetAccountBalanceAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -292,7 +279,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Product>> GetProductsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Products._uri, _context.ListProduct, cancellationToken);
+		GetAsync(Products.Uri, _context.ListProduct, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -308,7 +295,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Unit>> GetUnitsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(_unitUri, _context.ListUnit, cancellationToken);
+		GetAsync(UnitUri, _context.ListUnit, cancellationToken);
 
 	/// <inheritdoc />
 	public Task PutProductAsync(Guid id, ProductCreation product) =>
@@ -327,7 +314,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		multipartContent.Add(streamContent, "Report", name);
 		multipartContent.Add(new StringContent(DateTimeZoneProviders.Tzdb.GetSystemDefault().Id), "TimeZone");
 
-		using var importResponse = await _httpClient.PostAsync(_iso20022, multipartContent);
+		using var importResponse = await _httpClient.PostAsync(Iso20022, multipartContent);
 		await ThrowIfNotSuccessCode(importResponse);
 
 		return (await importResponse.Content.ReadFromJsonAsync(_context.AccountReportResult))!;
@@ -364,7 +351,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Categories._uri, _context.ListCategory, cancellationToken);
+		GetAsync(Categories.Uri, _context.ListCategory, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<Category> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default) =>
@@ -372,7 +359,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<Guid> CreateCategoryAsync(CategoryCreation category) =>
-		PostAsync(Categories._uri, category, _context.CategoryCreation);
+		PostAsync(Categories.Uri, category, _context.CategoryCreation);
 
 	/// <inheritdoc />
 	public Task PutCategoryAsync(Guid id, CategoryCreation category) =>
@@ -387,7 +374,7 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Access>> GetAccessesAsync(CancellationToken cancellationToken = default) =>
-		GetAsync("Access", _context.ListAccess, cancellationToken);
+		GetAsync("v1.0/Access", _context.ListAccess, cancellationToken);
 
 	/// <inheritdoc />
 	public Task DeleteOwnerAsync(Guid id) =>
@@ -395,11 +382,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task<List<Ownership>> GetOwnershipsAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Ownerships._uri, _context.ListOwnership, cancellationToken);
+		GetAsync(Ownerships.Uri, _context.ListOwnership, cancellationToken);
 
 	/// <inheritdoc />
 	public Task<List<Owner>> GetOwnersAsync(CancellationToken cancellationToken = default) =>
-		GetAsync(Owners._uri, _context.ListOwner, cancellationToken);
+		GetAsync(Owners.Uri, _context.ListOwner, cancellationToken);
 
 	/// <inheritdoc />
 	public Task PutOwnerAsync(Guid id, OwnerCreation owner) =>
@@ -416,6 +403,54 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<List<User>> GetUsersAsync(CancellationToken cancellationToken = default) =>
 		GetAsync(Users.Uri, _context.ListUser, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Loan> GetLoanAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(Loans.IdUri(id), _context.Loan, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<Loan>> GetLoansAsync(CancellationToken cancellationToken = default) =>
+		GetAsync(Loans.Uri, _context.ListLoan, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateLoanAsync(LoanCreation loan) =>
+		PostAsync(Loans.Uri, loan, _context.LoanCreation);
+
+	/// <inheritdoc />
+	public Task PutLoanAsync(Guid id, LoanCreation loan) =>
+		PutAsync(Loans.IdUri(id), loan, _context.LoanCreation);
+
+	/// <inheritdoc />
+	public Task DeleteLoanAsync(Guid id) =>
+		DeleteAsync(Loans.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<LoanPayment> GetLoanPaymentAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(LoanPayments.IdUri(id), _context.LoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsAsync(CancellationToken cancellationToken = default) =>
+		GetAsync(LoanPayments.Uri, _context.ListLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(LoanPayments.ForLoan(id), _context.ListLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<LoanPayment>> GetLoanPaymentsForTransactionAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(LoanPayments.ForTransaction(id), _context.ListLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateLoanPaymentAsync(LoanPaymentCreation loanPayment) =>
+		PostAsync(LoanPayments.Uri, loanPayment, _context.LoanPaymentCreation);
+
+	/// <inheritdoc />
+	public Task PutLoanPaymentAsync(Guid id, LoanPaymentCreation loanPayment) =>
+		PutAsync(LoanPayments.IdUri(id), loanPayment, _context.LoanPaymentCreation);
+
+	/// <inheritdoc />
+	public Task DeleteLoanPaymentAsync(Guid id) =>
+		DeleteAsync(LoanPayments.IdUri(id));
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{

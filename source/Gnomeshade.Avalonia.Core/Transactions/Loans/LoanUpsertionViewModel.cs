@@ -97,7 +97,7 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var loan = await GnomeshadeClient.GetLoanAsync(Id.Value);
+		var loan = await GnomeshadeClient.GetTransactionLoanAsync(Id.Value);
 		IssuingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId);
 		ReceivingCounterparty = Counterparties.Single(counterparty => counterparty.Id == loan.ReceivingCounterpartyId);
 		Amount = loan.Amount;

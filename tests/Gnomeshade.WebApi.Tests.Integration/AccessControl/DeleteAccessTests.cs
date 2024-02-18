@@ -184,15 +184,11 @@ public sealed class DeleteAccessTests : WebserverTests
 	[Test]
 	public async Task Loans()
 	{
-		var transaction = await _client.CreateTransactionAsync(_ownerId);
-		var counterparty1 = await _client.GetMyCounterpartyAsync();
-		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
-
-		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+		var loan = await _client.CreateLoanAsync(_ownerId);
 
 		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
 
-		var updatedLoan = loan.ToCreation() with { Amount = loan.Amount + 1 };
+		var updatedLoan = loan.ToCreation() with { Principal = loan.Principal + 1 };
 
 		await ShouldBeForbiddenForOthers(client => client.PutLoanAsync(loan.Id, updatedLoan));
 		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
@@ -209,7 +205,38 @@ public sealed class DeleteAccessTests : WebserverTests
 			.Which.StatusCode.Should()
 			.Be(HttpStatusCode.NotFound);
 
-		await ShouldBeDeletedWithClient<LoanEntity>(loan.Id, _otherClient);
+		await ShouldBeDeletedWithClient<Loan2Entity>(loan.Id, _otherClient);
+	}
+
+	[Test]
+	public async Task LoanPayments()
+	{
+		var transaction = await _client.CreateTransactionAsync(_ownerId);
+		var counterparty1 = await _client.GetMyCounterpartyAsync();
+		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
+
+		var loanPayment = await _client.CreateLoanPayment(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLoanPaymentAsync(loanPayment.Id));
+
+		var updatedLoan = loanPayment.ToCreation() with { Amount = loanPayment.Amount + 1 };
+
+		await ShouldBeForbiddenForOthers(client => client.PutLoanPaymentAsync(loanPayment.Id, updatedLoan));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanPaymentAsync(loanPayment.Id));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeleteLoanPaymentAsync(loanPayment.Id))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetLoanPaymentAsync(loanPayment.Id))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<LoanPaymentEntity>(loanPayment.Id, _otherClient);
 	}
 
 	[Test]

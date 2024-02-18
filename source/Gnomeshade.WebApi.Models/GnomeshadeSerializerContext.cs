@@ -22,8 +22,6 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(List<DetailedTransaction>))]
 [JsonSerializable(typeof(List<Transaction>))]
 [JsonSerializable(typeof(TransactionCreation))]
-[JsonSerializable(typeof(List<Loan>))]
-[JsonSerializable(typeof(LoanCreation))]
 [JsonSerializable(typeof(List<Purchase>))]
 [JsonSerializable(typeof(PurchaseCreation))]
 [JsonSerializable(typeof(List<Transfer>))]
@@ -52,4 +50,11 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(RegistrationModel))]
 [JsonSerializable(typeof(List<User>))]
+[JsonSerializable(typeof(List<Loans.Loan>))]
+[JsonSerializable(typeof(Loans.LoanCreation))]
+[JsonSerializable(typeof(List<Loans.LoanPayment>))]
+[JsonSerializable(typeof(Loans.LoanPaymentCreation))]
+#pragma warning disable CS0612 // Type or member is obsolete
+[JsonSerializable(typeof(List<LegacyLoan>))]
+#pragma warning restore CS0612 // Type or member is obsolete
 public sealed partial class GnomeshadeSerializerContext : JsonSerializerContext;

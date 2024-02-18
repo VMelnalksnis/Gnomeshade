@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
 
@@ -22,7 +23,7 @@ public static class GnomeshadeClientExtensions
 		Guid counterpartyId,
 		Guid? ownerId = null)
 	{
-		var currency = (await gnomeshadeClient.GetCurrenciesAsync()).First();
+		var currency = await gnomeshadeClient.GetCurrencyAsync();
 		var accountId = Guid.NewGuid();
 		var account = new AccountCreation
 		{
@@ -93,7 +94,7 @@ public static class GnomeshadeClientExtensions
 		var transaction = await gnomeshadeClient.CreateTransactionAsync(ownerId);
 		_ = await gnomeshadeClient.CreateTransferAsync(transaction.Id, account1Id, account2Id, ownerId);
 		_ = await gnomeshadeClient.CreatePurchaseAsync(transaction.Id, productId, ownerId);
-		_ = await gnomeshadeClient.CreateLoanAsync(transaction.Id, issuingId, receivingId, ownerId);
+		_ = await gnomeshadeClient.CreateLoanPayment(transaction.Id, issuingId, receivingId, ownerId);
 
 		var linkId = Guid.NewGuid();
 		await gnomeshadeClient.PutLinkAsync(linkId, new() { OwnerId = ownerId, Uri = new($"https://localhost/{Guid.NewGuid().ToString()}") });
@@ -144,7 +145,7 @@ public static class GnomeshadeClientExtensions
 		Guid productId,
 		Guid? ownerId = null)
 	{
-		var currency = (await gnomeshadeClient.GetCurrenciesAsync()).First();
+		var currency = await gnomeshadeClient.GetCurrencyAsync();
 		var purchaseId = Guid.NewGuid();
 		var purchase = new PurchaseCreation
 		{
@@ -160,26 +161,59 @@ public static class GnomeshadeClientExtensions
 		return await gnomeshadeClient.GetPurchaseAsync(purchaseId);
 	}
 
-	public static async Task<Loan> CreateLoanAsync(
+	public static async Task<LoanPayment> CreateLoanPayment(
 		this IGnomeshadeClient gnomeshadeClient,
 		Guid transactionId,
 		Guid issuingId,
 		Guid receivingId,
 		Guid? ownerId = null)
 	{
-		var currency = (await gnomeshadeClient.GetCurrenciesAsync()).First();
-		var loanId = Guid.NewGuid();
-		var purchase = new LoanCreation
+		var loan = await gnomeshadeClient.CreateLoanAsync(issuingId, receivingId, ownerId);
+		var paymentId = await gnomeshadeClient.CreateLoanPaymentAsync(new()
 		{
+			OwnerId = ownerId,
+			LoanId = loan.Id,
 			TransactionId = transactionId,
-			CurrencyId = currency.Id,
-			Amount = 1,
+			Amount = 500m,
+			Interest = 150m,
+		});
+
+		return await gnomeshadeClient.GetLoanPaymentAsync(paymentId);
+	}
+
+	public static async Task<Loan> CreateLoanAsync(this IGnomeshadeClient gnomeshadeClient, Guid? ownerId = null)
+	{
+		var first = await gnomeshadeClient.CreateCounterpartyAsync();
+		var second = await gnomeshadeClient.CreateCounterpartyAsync();
+		return await gnomeshadeClient.CreateLoanAsync(first.Id, second.Id, ownerId);
+	}
+
+	public static async Task<Loan> CreateLoanAsync(
+		this IGnomeshadeClient gnomeshadeClient,
+		Guid issuingId,
+		Guid receivingId,
+		Guid? ownerId = null)
+	{
+		var currency = await gnomeshadeClient.GetCurrencyAsync();
+
+		var loanId = Guid.NewGuid();
+		var loan = new LoanCreation
+		{
+			OwnerId = ownerId,
+			Name = loanId.ToString(),
 			IssuingCounterpartyId = issuingId,
 			ReceivingCounterpartyId = receivingId,
-			OwnerId = ownerId,
+			Principal = 10_000m,
+			CurrencyId = currency.Id,
 		};
 
-		await gnomeshadeClient.PutLoanAsync(loanId, purchase);
+		await gnomeshadeClient.PutLoanAsync(loanId, loan);
 		return await gnomeshadeClient.GetLoanAsync(loanId);
+	}
+
+	public static async Task<Currency> GetCurrencyAsync(this IGnomeshadeClient gnomeshadeClient)
+	{
+		var currencies = await gnomeshadeClient.GetCurrenciesAsync();
+		return currencies.First();
 	}
 }

@@ -17,22 +17,22 @@ public sealed class TransactionUriTestCaseSource : IEnumerable
 
 		yield return new TestCaseData(
 				new Interval(null, null),
-				"Transactions")
+				"v1.0/Transactions")
 			.SetName("Without parameters");
 
 		yield return new TestCaseData(
 				new Interval(firstDay, null),
-				"Transactions?from=2021-05-01T00:00:00Z")
+				"v1.0/Transactions?from=2021-05-01T00:00:00Z")
 			.SetName("With only from date");
 
 		yield return new TestCaseData(
 				new Interval(null, now),
-				"Transactions?to=2021-05-21T13:05:29Z")
+				"v1.0/Transactions?to=2021-05-21T13:05:29Z")
 			.SetName("With only to date");
 
 		yield return new TestCaseData(
 				new Interval(firstDay, now),
-				"Transactions?from=2021-05-01T00:00:00Z&to=2021-05-21T13:05:29Z")
+				"v1.0/Transactions?from=2021-05-01T00:00:00Z&to=2021-05-21T13:05:29Z")
 			.SetName("With both dates");
 	}
 }

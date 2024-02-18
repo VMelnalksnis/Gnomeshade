@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
 			.AddHttpClient<IGnomeshadeClient, GnomeshadeClient>((provider, client) =>
 			{
 				var gnomeshadeOptions = provider.GetRequiredService<IOptionsSnapshot<GnomeshadeOptions>>();
-				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress!) { Path = "api/v1.0/" };
+				var uriBuilder = new UriBuilder(gnomeshadeOptions.Value.BaseAddress!) { Path = "api/" };
 				client.BaseAddress = uriBuilder.Uri;
 				client.DefaultRequestVersion = HttpVersion.Version30;
 				client.DefaultRequestHeaders.UserAgent.Add(_userAgent);

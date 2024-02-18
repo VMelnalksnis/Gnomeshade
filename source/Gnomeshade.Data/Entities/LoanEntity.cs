@@ -11,6 +11,7 @@ using NodaTime;
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>An amount that was loaned or payed back as a part of a transaction.</summary>
+[Obsolete]
 public sealed record LoanEntity : Entity, IOwnableEntity, IModifiableEntity
 {
 	/// <inheritdoc />

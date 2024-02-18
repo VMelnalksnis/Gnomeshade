@@ -208,22 +208,39 @@ public sealed class WriteAccessTests : WebserverTests
 	[Test]
 	public async Task Loans()
 	{
+		var loan = await _client.CreateLoanAsync(_ownerId);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
+
+		var loanCreation = loan.ToCreation() with { Principal = loan.Principal + 10 };
+
+		await _otherClient.PutLoanAsync(loan.Id, loanCreation);
+		var updatedLoan = await _client.GetLoanAsync(loan.Id);
+		updatedLoan.Principal.Should().Be(loanCreation.Principal);
+
+		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
+	}
+
+	[Test]
+	public async Task LoanPayments()
+	{
 		var transaction = await _client.CreateTransactionAsync(_ownerId);
 		var counterparty1 = await _client.GetMyCounterpartyAsync();
 		var counterparty2 = await _otherClient.GetMyCounterpartyAsync();
 
-		var loan = await _client.CreateLoanAsync(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
+		var payment = await _client.CreateLoanPayment(transaction.Id, counterparty1.Id, counterparty2.Id, _ownerId);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
+		await ShouldBeNotFoundForOthers(client => client.GetLoanPaymentAsync(payment.Id));
 
-		var loanCreation = loan.ToCreation() with { Amount = loan.Amount + 1 };
+		var loanCreation = payment.ToCreation() with { Amount = payment.Amount + 1 };
 
-		await _otherClient.PutLoanAsync(loan.Id, loanCreation);
-		var updatedLoan = await _client.GetLoanAsync(loan.Id);
+		await _otherClient.PutLoanPaymentAsync(payment.Id, loanCreation);
+		var updatedLoan = await _client.GetLoanPaymentAsync(payment.Id);
 		updatedLoan.Amount.Should().Be(loanCreation.Amount);
 
-		await ShouldBeNotFoundForOthers(client => client.GetLoanAsync(loan.Id));
-		await ShouldBeNotFoundForOthers(client => client.DeleteLoanAsync(loan.Id), true);
+		await ShouldBeNotFoundForOthers(client => client.GetLoanPaymentAsync(payment.Id));
+		await ShouldBeNotFoundForOthers(client => client.DeleteLoanPaymentAsync(payment.Id), true);
 	}
 
 	[Test]

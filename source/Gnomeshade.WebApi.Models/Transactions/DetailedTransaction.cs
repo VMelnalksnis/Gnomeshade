@@ -4,6 +4,8 @@
 
 using System.Collections.Generic;
 
+using Gnomeshade.WebApi.Models.Loans;
+
 using JetBrains.Annotations;
 
 using NodaTime;
@@ -32,10 +34,10 @@ public sealed record DetailedTransaction : Transaction
 	/// <summary>The sum of all the prices from <see cref="Purchases"/>.</summary>
 	public decimal PurchaseTotal { get; set; }
 
-	/// <summary>All the loans in the transaction.</summary>
-	public List<Loan> Loans { get; set; } = null!;
+	/// <summary>All the loan payments in the transaction.</summary>
+	public List<LoanPayment> LoanPayments { get; set; } = null!;
 
-	/// <summary>The sum of all the amounts from <see cref="Loans"/>.</summary>
+	/// <summary>The sum of all the amounts from <see cref="LoanPayments"/>.</summary>
 	public decimal LoanTotal { get; set; }
 
 	/// <summary>All the links attached to the transaction.</summary>

@@ -12,6 +12,7 @@ using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
+using Gnomeshade.WebApi.V1.Transactions;
 
 namespace Gnomeshade.WebApi.V1;
 
@@ -22,14 +23,11 @@ public static class MapperConfigurationExpressionExtensions
 	/// <param name="options">The options to which to add the maps.</param>
 	public static void CreateMapsForV1_0(this IMapperConfigurationExpression options)
 	{
-		options.AllowNullCollections = true;
-
 		options.CreateMap<RegistrationModel, ApplicationUser>();
 		options.CreateMap<ApplicationUser, UserModel>();
 
 		options.CreateMap<TransactionCreation, TransactionEntity>();
 		options.CreateMap<TransactionEntity, Transaction>();
-		options.CreateMap<TransactionEntity, DetailedTransaction>();
 
 		options.CreateMap<PurchaseCreation, PurchaseEntity>();
 		options.CreateMap<PurchaseEntity, Purchase>();
@@ -61,9 +59,6 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<LinkEntity, Link>();
 		options.CreateMap<LinkCreation, LinkEntity>();
 
-		options.CreateMap<LoanEntity, Loan>();
-		options.CreateMap<LoanCreation, LoanEntity>();
-
 		options.CreateMap<BalanceEntity, Balance>();
 
 		options.CreateMap<AccessEntity, Access>();
@@ -76,5 +71,12 @@ public static class MapperConfigurationExpressionExtensions
 
 		options.CreateMap<UserEntity, User>();
 		options.CreateMap<UserEntity, UserModel>();
+
+#pragma warning disable CS0612 // Type or member is obsolete
+		options.CreateMap<TransactionEntity, Transactions.DetailedTransaction>();
+
+		options.CreateMap<LoanEntity, Loan>();
+		options.CreateMap<LoanCreation, LoanEntity>();
+#pragma warning restore CS0612 // Type or member is obsolete
 	}
 }

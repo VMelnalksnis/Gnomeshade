@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using Gnomeshade.WebApi.Models;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.WebApi.Tests.Integration;
@@ -26,9 +27,9 @@ internal static class FluentAssertionsExtensions
 		.Excluding(purchase => purchase.ModifiedAt)
 		.Excluding(purchase => purchase.TransactionId);
 
-	internal static EquivalencyAssertionOptions<Loan> WithoutTransaction(
-		this EquivalencyAssertionOptions<Loan> options) => options
-		.ComparingByMembers<Loan>()
+	internal static EquivalencyAssertionOptions<LoanPayment> WithoutTransaction(
+		this EquivalencyAssertionOptions<LoanPayment> options) => options
+		.ComparingByMembers<LoanPayment>()
 		.Excluding(loan => loan.ModifiedAt)
 		.Excluding(loan => loan.TransactionId);
 

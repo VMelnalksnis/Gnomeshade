@@ -2,11 +2,13 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>A transaction with all related information.</summary>
+[Obsolete]
 public sealed record DetailedTransactionEntity : TransactionEntity
 {
 	/// <summary>Initializes a new instance of the <see cref="DetailedTransactionEntity"/> class.</summary>

@@ -18,6 +18,7 @@ using static Gnomeshade.Data.Repositories.AccessLevel;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="LoanEntity"/>.</summary>
+[Obsolete]
 public sealed class LoanRepository : TransactionItemRepository<LoanEntity>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoanRepository"/> class.</summary>

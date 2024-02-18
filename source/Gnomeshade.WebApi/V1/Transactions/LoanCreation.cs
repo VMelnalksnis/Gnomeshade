@@ -5,13 +5,18 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+using Gnomeshade.WebApi.Models.Transactions;
+
 using JetBrains.Annotations;
 
-namespace Gnomeshade.WebApi.Models.Transactions;
+#pragma warning disable SA1623
+
+namespace Gnomeshade.WebApi.V1.Transactions;
 
 /// <summary>Information needed to create a loan.</summary>
 /// <seealso cref="Loan"/>
 [PublicAPI]
+[Obsolete]
 public sealed record LoanCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Loan.TransactionId"/>
