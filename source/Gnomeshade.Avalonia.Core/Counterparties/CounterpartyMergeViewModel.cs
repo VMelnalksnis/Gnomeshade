@@ -77,7 +77,7 @@ public sealed partial class CounterpartyMergeViewModel : ViewModelBase
 	protected override async Task Refresh()
 	{
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
+		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty)).ToList();
 
 		// Preserve the current sorting and selected target, but clear the selected source.
 		var sourceSort = SourceDataGridView.SortDescriptions;

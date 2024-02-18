@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Counterparties;
@@ -26,18 +25,10 @@ public sealed class CounterpartyViewModelTests
 	}
 
 	[Test]
-	public async Task LoanBalance_UserBalanceShouldBeZero()
+	public async Task ShouldContainUserCounterparty()
 	{
 		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
-		_viewModel.Rows.Single(row => row.Id == userCounterparty.Id).LoanBalance.Should().Be(0);
-	}
-
-	[Test]
-	public async Task LoanBalance_ShouldBeExpected()
-	{
-		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
-
-		_viewModel.Rows.Single(row => row.Id != userCounterparty.Id).LoanBalance.Should().Be(-95);
+		_viewModel.Rows.Should().ContainSingle(row => row.Id == userCounterparty.Id);
 	}
 }

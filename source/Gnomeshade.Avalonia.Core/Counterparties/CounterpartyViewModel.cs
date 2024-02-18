@@ -68,36 +68,17 @@ public sealed class CounterpartyViewModel : OverviewViewModel<CounterpartyRow, C
 	protected override async Task Refresh()
 	{
 		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
-		var userCounterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
 
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
 
-		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty, 0)).ToList();
+		var counterpartyRows = counterparties.Select(counterparty => new CounterpartyRow(counterparty)).ToList();
 		Rows = new(counterpartyRows);
 
 		DataGridView.SortDescriptions.AddRange(sort);
 		DataGridView.Filter = Filter.Filter;
 
 		Selected = Rows.SingleOrDefault(row => row.Id == selected?.Id);
-
-		foreach (var row in Rows.ToList())
-		{
-			var loans = await _gnomeshadeClient.GetCounterpartyLoansAsync(row.Id);
-			var issued = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == row.Id &&
-					loan.ReceivingCounterpartyId == userCounterparty.Id)
-				.Sum(loan => loan.Amount);
-
-			var received = loans
-				.Where(loan =>
-					loan.IssuingCounterpartyId == userCounterparty.Id &&
-					loan.ReceivingCounterpartyId == row.Id)
-				.Sum(loan => loan.Amount);
-
-			row.LoanBalance = issued - received;
-		}
 	}
 
 	/// <inheritdoc />
