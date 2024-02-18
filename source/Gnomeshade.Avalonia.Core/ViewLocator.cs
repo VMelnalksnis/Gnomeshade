@@ -37,13 +37,18 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 			return CreateControl(viewType);
 		}
 
-		viewType = _assembly.GetTypes().Single(type =>
+		viewType = _assembly.GetTypes().SingleOrDefault(type =>
 			type.GetInterfaces().Any(i =>
 				i.IsGenericType &&
 				i.GetGenericTypeDefinition() == typeof(IView<,>) &&
 				i.GetGenericArguments().Length >= 2 &&
 				i.GetGenericArguments()[1] == dataType) &&
 			type.IsAssignableTo(typeof(Control)));
+
+		if (viewType is null)
+		{
+			throw new InvalidOperationException($"Could not find view type for {dataType.FullName}");
+		}
 
 		_viewDictionary.Add(dataType, viewType);
 		return CreateControl(viewType);
