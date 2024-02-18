@@ -77,7 +77,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <param name="creation">Information for creating the entity.</param>
 	/// <returns>The id of the created entity.</returns>
 	[HttpPost]
-	[ProducesResponseType(Status201Created)]
+	[ProducesResponseType<Guid>(Status201Created)]
 	[ProducesStatus409Conflict]
 	public virtual Task<ActionResult> Post([FromBody] TCreation creation)
 	{
