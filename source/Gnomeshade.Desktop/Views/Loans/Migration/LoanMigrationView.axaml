@@ -4,12 +4,11 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:migration="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:system="clr-namespace:System;assembly=System.Runtime"
+	xmlns:migration="clr-namespace:Gnomeshade.Avalonia.Core.Loans.Migration;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 	d:DataContext="{x:Static dd:DesignTimeData.LoanMigrationViewModel}"
-	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.Migration.LoanMigrationView"
+	x:Class="Gnomeshade.Desktop.Views.Loans.Migration.LoanMigrationView"
 	x:DataType="migration:LoanMigrationViewModel">
 
 	<Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,*">
@@ -23,19 +22,19 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="migration:LegacyLoanRow"
 					Header="Issuer" IsReadOnly="True"
-					Binding="{Binding IssuingCounterparty, Mode=OneWay}" />
+					Binding="{Binding Issuer, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="migration:LegacyLoanRow"
 					Header="Receiver" IsReadOnly="True"
-					Binding="{Binding ReceivingCounterparty, Mode=OneWay}" />
+					Binding="{Binding Receiver, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="migration:LegacyLoanRow"
 					Header="Amount" IsReadOnly="True"
 					Binding="{Binding Amount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="migration:LegacyLoanRow"
 					Header="Currency" IsReadOnly="True"
 					Binding="{Binding Currency, Mode=OneWay}" />
 			</DataGrid.Columns>
@@ -77,6 +76,13 @@
 							Text="{Binding Currency, Mode=OneWay}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Total" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTemplateColumn Header="Payments" IsReadOnly="True">
 					<DataTemplate x:DataType="migration:LoanMigrationRow">
 						<ItemsControl ItemsSource="{Binding Amounts}">
@@ -88,13 +94,24 @@
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
-
 					</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 
-		<!-- <UserControl Grid.Column="2" Content="{Binding Details}" /> -->
+		<StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical">
+			<Button
+				MinWidth="150" HorizontalContentAlignment="Center"
+				Command="{Binding MigrateLoans}">
+				Migrate loans
+			</Button>
+
+			<Button
+				MinWidth="150" HorizontalContentAlignment="Center"
+				Command="{Binding DeleteLegacyLoans}">
+				Delete legacy loans
+			</Button>
+		</StackPanel>
 	</Grid>
 
 </UserControl>

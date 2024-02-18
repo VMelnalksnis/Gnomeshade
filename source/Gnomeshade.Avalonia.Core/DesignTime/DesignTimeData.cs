@@ -15,13 +15,14 @@ using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
 using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
+using Gnomeshade.Avalonia.Core.Loans;
+using Gnomeshade.Avalonia.Core.Loans.Migration;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
-using Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
 using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.WebApi.Client;
@@ -150,12 +151,20 @@ public static class DesignTimeData
 		InitializeViewModel<LinkViewModel, LinkOverview, LinkUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LoanUpsertionViewModel"/> for use during design time.</summary>
-	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
-		InitializeViewModel(new LoanUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
+	public static LoanPaymentUpsertionViewModel LoanPaymentUpsertionViewModel { get; } =
+		InitializeViewModel(new LoanPaymentUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
 
-	/// <summary>Gets an instance of <see cref="LoanViewModel"/> for use during design time.</summary>
+	/// <summary>Gets an instance of <see cref="LoanPaymentViewModel"/> for use during design time.</summary>
+	public static LoanPaymentViewModel LoanPaymentViewModel { get; } =
+		InitializeViewModel<LoanPaymentViewModel, LoanPaymentRow, LoanPaymentUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
+
+	/// <summary>Gets an instance of <see cref="Loans.LoanUpsertionViewModel"/> for use during design time.</summary>
+	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
+		InitializeViewModel(new LoanUpsertionViewModel(ActivityService, GnomeshadeClient, null));
+
+	/// <summary>Gets an instance of <see cref="Loans.LoanViewModel"/> for use during design time.</summary>
 	public static LoanViewModel LoanViewModel { get; } =
-		InitializeViewModel<LoanViewModel, LoanOverview, LoanUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
+		InitializeViewModel<LoanViewModel, LoanRow, LoanUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
 
 	/// <summary>Gets an instance of <see cref="CategoryReportViewModel"/> for use during design time.</summary>
 	public static CategoryReportViewModel CategoryReportViewModel { get; } =

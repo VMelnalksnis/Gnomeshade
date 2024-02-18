@@ -44,7 +44,7 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets view model of all loans of this transaction.</summary>
 	[Notify(Setter.Private)]
-	private LoanViewModel? _loans;
+	private LoanPaymentViewModel? _loans;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>

@@ -69,6 +69,9 @@
 						x:Name="Transactions" Header="_Overview"
 						Command="{Binding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
+						x:Name="Loans" Header="Loans"
+						Command="{Binding SwitchToLoanOverviewAsync}" />
+					<MenuItem
 						x:Name="LoanMigration" Header="Loan Migration"
 						Command="{Binding SwitchToLoanMigrationAsync}" />
 					<MenuItem

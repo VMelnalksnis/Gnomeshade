@@ -5,9 +5,9 @@
 using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core;
-using Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
+using Gnomeshade.Avalonia.Core.Loans.Migration;
 
-namespace Gnomeshade.Desktop.Views.Transactions.Loans.Migration;
+namespace Gnomeshade.Desktop.Views.Loans.Migration;
 
 /// <inheritdoc cref="LoanMigrationViewModel" />
 public sealed partial class LoanMigrationView : UserControl, IView<LoanMigrationView, LoanMigrationViewModel>

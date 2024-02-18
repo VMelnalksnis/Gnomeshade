@@ -5,38 +5,24 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
-	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.LoanUpsertionViewModel}"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.LoanPaymentUpsertionViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.LoanUpsertionView"
-	x:DataType="loans:LoanUpsertionViewModel">
+	x:DataType="loans:LoanPaymentUpsertionViewModel">
 
 	<WrapPanel>
 		<WrapPanel>
 			<AutoCompleteBox
-				Watermark="Issuer"
+				Watermark="Loan"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
-				ItemsSource="{Binding Counterparties}"
-				ItemSelector="{Binding CounterpartySelector}"
-				SelectedItem="{Binding IssuingCounterparty, Mode=TwoWay}" />
-
-			<AutoCompleteBox
-				Watermark="Receiver"
-				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-				IsTextCompletionEnabled="True"
-				ItemsSource="{Binding Counterparties}"
-				ItemSelector="{Binding CounterpartySelector}"
-				SelectedItem="{Binding ReceivingCounterparty, Mode=TwoWay}" />
+				ItemsSource="{Binding Loans}"
+				ItemSelector="{Binding LoanSelector}"
+				SelectedItem="{Binding Loan, Mode=TwoWay}" />
 		</WrapPanel>
 
 		<WrapPanel>
 			<TextBox Watermark="Amount" Text="{Binding Amount}" />
-			<AutoCompleteBox
-				Watermark="Currency"
-				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-				IsTextCompletionEnabled="True"
-				ItemsSource="{Binding Currencies}"
-				ItemSelector="{Binding CurrencySelector}"
-				SelectedItem="{Binding Currency, Mode=TwoWay}" />
+			<TextBox Watermark="Interest" Text="{Binding Interest}" />
 		</WrapPanel>
 	</WrapPanel>
 </UserControl>

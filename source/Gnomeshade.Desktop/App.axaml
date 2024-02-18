@@ -6,6 +6,7 @@
 	xmlns:accounts="clr-namespace:Gnomeshade.WebApi.Models.Accounts;assembly=Gnomeshade.WebApi.Models"
 	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
+	xmlns:loans="clr-namespace:Gnomeshade.WebApi.Models.Loans;assembly=Gnomeshade.WebApi.Models"
 	x:Class="Gnomeshade.Desktop.App"
 	RequestedThemeVariant="Dark">
 
@@ -29,6 +30,10 @@
 		</DataTemplate>
 
 		<DataTemplate x:DataType="accounts:Currency">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="loans:Loan">
 			<TextBlock Text="{Binding Name}" />
 		</DataTemplate>
 

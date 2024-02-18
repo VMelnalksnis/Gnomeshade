@@ -4,12 +4,13 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
-	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
 	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Loans;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:transactionLoans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
 	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-	d:DataContext="{x:Static design:DesignTimeData.LoanViewModel}"
+	d:DataContext="{x:Static design:DesignTimeData.LoanPaymentViewModel}"
 	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.LoanView"
-	x:DataType="loans:LoanViewModel">
+	x:DataType="transactionLoans:LoanPaymentViewModel">
 
 	<StackPanel Orientation="Vertical">
 		<StackPanel
@@ -29,19 +30,19 @@
 			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
 			<DataGrid.Columns>
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
-					Header="Issuer" IsReadOnly="True"
-					Binding="{Binding IssuingCounterparty, Mode=OneWay}" />
+					x:DataType="loans:LoanPaymentRow"
+					Header="Loan" IsReadOnly="True"
+					Binding="{Binding Loan, Mode=OneWay}" />
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
-					Header="Receiver" IsReadOnly="True"
-					Binding="{Binding ReceivingCounterparty, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="loans:LoanPaymentRow"
 					Header="Amount" IsReadOnly="True"
 					Binding="{Binding Amount, Mode=OneWay, StringFormat=\{0:N2\}}" />
 				<DataGridTextColumn
-					x:DataType="loans:LoanOverview"
+					x:DataType="loans:LoanPaymentRow"
+					Header="Interest" IsReadOnly="True"
+					Binding="{Binding Interest, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanPaymentRow"
 					Header="Currency" IsReadOnly="True"
 					Binding="{Binding Currency, Mode=OneWay}" />
 			</DataGrid.Columns>

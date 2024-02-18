@@ -7,12 +7,13 @@ using System.Collections.Generic;
 
 using Gnomeshade.WebApi.Models.Transactions;
 
-namespace Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
+namespace Gnomeshade.Avalonia.Core.Loans.Migration;
 
 /// <inheritdoc />
-internal sealed class LoanCounterpartyComparer : IEqualityComparer<Loan?>
+[Obsolete]
+internal sealed class LoanCounterpartyComparer : IEqualityComparer<LegacyLoan?>
 {
-	public bool Equals(Loan? x, Loan? y)
+	public bool Equals(LegacyLoan? x, LegacyLoan? y)
 	{
 		if (ReferenceEquals(x, y))
 		{
@@ -29,7 +30,7 @@ internal sealed class LoanCounterpartyComparer : IEqualityComparer<Loan?>
 			(x.IssuingCounterpartyId == y.ReceivingCounterpartyId && x.ReceivingCounterpartyId == y.IssuingCounterpartyId);
 	}
 
-	public int GetHashCode(Loan obj)
+	public int GetHashCode(LegacyLoan obj)
 	{
 		return HashCode.Combine(obj.IssuingCounterpartyId, obj.ReceivingCounterpartyId);
 	}

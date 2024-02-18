@@ -9,12 +9,15 @@ using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
 using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
+using Gnomeshade.Avalonia.Core.Loans;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
-using Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
+using Gnomeshade.Avalonia.Core.Transactions.Loans;
 
 using Microsoft.Extensions.DependencyInjection;
+
+using LoanMigrationViewModel = Gnomeshade.Avalonia.Core.Loans.Migration.LoanMigrationViewModel;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -48,5 +51,7 @@ public static class ServiceCollectionExtensions
 		.AddSingleton<OwnerUpsertionViewModel>()
 		.AddSingleton<AboutViewModel>()
 		.AddSingleton<LicensesViewModel>()
+		.AddSingleton<LoanViewModel>()
+		.AddSingleton<LoanPaymentViewModel>()
 		.AddSingleton<LoanMigrationViewModel>();
 }

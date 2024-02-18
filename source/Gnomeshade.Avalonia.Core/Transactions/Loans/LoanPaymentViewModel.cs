@@ -7,28 +7,29 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Loans;
 using Gnomeshade.WebApi.Client;
 
 using PropertyChanged.SourceGenerator;
 
 namespace Gnomeshade.Avalonia.Core.Transactions.Loans;
 
-/// <summary>Overview of all loans for a single transaction.</summary>
-public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, LoanUpsertionViewModel>
+/// <summary>Overview of all loan payments for a single transaction.</summary>
+public sealed partial class LoanPaymentViewModel : OverviewViewModel<LoanPaymentRow, LoanPaymentUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly Guid _transactionId;
-	private LoanUpsertionViewModel _details;
+	private LoanPaymentUpsertionViewModel _details;
 
 	/// <summary>Gets the total loaned amount.</summary>
 	[Notify(Setter.Private)]
 	private decimal _total;
 
-	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="LoanPaymentViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
 	/// <param name="transactionId">The transaction for which to create a loan overview.</param>
-	public LoanViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
+	public LoanPaymentViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid transactionId)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
@@ -40,7 +41,7 @@ public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, Loan
 	}
 
 	/// <inheritdoc />
-	public override LoanUpsertionViewModel Details
+	public override LoanPaymentUpsertionViewModel Details
 	{
 		get => _details;
 		set
@@ -62,15 +63,12 @@ public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, Loan
 	protected override async Task Refresh()
 	{
 		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
-		var counterparties = await _gnomeshadeClient.GetCounterpartiesAsync();
+		var payments = await _gnomeshadeClient.GetLoanPaymentsForTransactionAsync(_transactionId);
+		var loans = await _gnomeshadeClient.GetLoansAsync();
 		var currencies = await _gnomeshadeClient.GetCurrenciesAsync();
-		var overviews = transaction.Loans
-			.Select(loan => new LoanOverview(
-				loan.Id,
-				counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId).Name,
-				counterparties.Single(counterparty => counterparty.Id == loan.ReceivingCounterpartyId).Name,
-				loan.Amount,
-				currencies.Single(currency => currency.Id == loan.CurrencyId).AlphabeticCode))
+
+		var overviews = payments
+			.Select(payment => new LoanPaymentRow(payment, loans, currencies))
 			.ToList();
 
 		var selected = Selected;
@@ -86,9 +84,10 @@ public sealed partial class LoanViewModel : OverviewViewModel<LoanOverview, Loan
 	}
 
 	/// <inheritdoc />
-	protected override async Task DeleteAsync(LoanOverview row)
+	protected override async Task DeleteAsync(LoanPaymentRow row)
 	{
-		await _gnomeshadeClient.DeleteLoanAsync(row.Id);
+		await _gnomeshadeClient.DeleteLoanPaymentAsync(row.Id);
+		await RefreshAsync();
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

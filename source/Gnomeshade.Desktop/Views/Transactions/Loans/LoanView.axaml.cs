@@ -10,8 +10,8 @@ using Gnomeshade.Avalonia.Core.Transactions.Loans;
 
 namespace Gnomeshade.Desktop.Views.Transactions.Loans;
 
-/// <inheritdoc cref="LoanViewModel" />
-public sealed partial class LoanView : UserControl, IView<LoanView, LoanViewModel>
+/// <inheritdoc cref="LoanPaymentViewModel" />
+public sealed partial class LoanView : UserControl, IView<LoanView, LoanPaymentViewModel>
 {
 	/// <summary>Initializes a new instance of the <see cref="LoanView"/> class.</summary>
 	public LoanView()

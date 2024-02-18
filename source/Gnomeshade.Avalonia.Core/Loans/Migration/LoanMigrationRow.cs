@@ -3,8 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 
-namespace Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
+namespace Gnomeshade.Avalonia.Core.Loans.Migration;
 
 /// <summary>Row for displaying how a loan will look after migrating.</summary>
 public sealed class LoanMigrationRow : PropertyChangedBase
@@ -20,6 +21,7 @@ public sealed class LoanMigrationRow : PropertyChangedBase
 		Name = name;
 		Issuer = issuer;
 		Receiver = receiver;
+		Total = amounts.Sum();
 		Amounts = amounts;
 		Currency = currency;
 	}
@@ -32,6 +34,9 @@ public sealed class LoanMigrationRow : PropertyChangedBase
 
 	/// <summary>Gets the receiver of the loan.</summary>
 	public string Receiver { get; }
+
+	/// <summary>Gets the current loaned total.</summary>
+	public decimal Total { get; }
 
 	/// <summary>Gets the loan payment amounts.</summary>
 	public List<decimal> Amounts { get; }

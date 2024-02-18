@@ -21,12 +21,13 @@ using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
-using Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using PropertyChanged.SourceGenerator;
+
+using LoanMigrationViewModel = Gnomeshade.Avalonia.Core.Loans.Migration.LoanMigrationViewModel;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -169,6 +170,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="TransactionViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToTransactionOverviewAsync() => SwitchTo<TransactionViewModel>();
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="Loans.LoanViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToLoanOverviewAsync() => SwitchTo<Loans.LoanViewModel>();
 
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="LoanMigrationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
