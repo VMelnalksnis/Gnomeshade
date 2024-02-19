@@ -15,6 +15,11 @@ dotnet publish \
 	--no-restore \
 	-p:AssemblyVersion="$version.$3" \
 	-p:InformationalVersion="$version$4$2" \
+	-p:DebuggerSupport=false \
+	-p:DebugSymbols=false \
+	-p:DebugType=None \
+	-p:TrimmerRemoveSymbols=true \
+	-p:StripSymbols=true \
 	/warnAsError \
 	/nologo
 

@@ -1,6 +1,3 @@
-ignore:
-  - "**/*.axaml"
-
 comment:
   layout: "header, diff, components"
 

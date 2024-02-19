@@ -19,11 +19,6 @@
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<PublishSingleFile>true</PublishSingleFile>
-		<DebuggerSupport>false</DebuggerSupport>
-		<DebugSymbols>false</DebugSymbols>
-		<DebugType>None</DebugType>
-		<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-		<StripSymbols>true</StripSymbols>
 		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
 		<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
