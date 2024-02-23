@@ -58,7 +58,7 @@
 		<PackageVersion Include="NodaTime.Bogus" Version="3.0.2"/>
 		<PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.1.2"/>
 		<PackageVersion Include="Npgsql.DependencyInjection" Version="8.0.2"/>
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0"/>
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
 		<PackageVersion Include="Npgsql.NodaTime" Version="8.0.2"/>
 		<PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.2"/>
 		<PackageVersion Include="NUnit" Version="4.0.1"/>
