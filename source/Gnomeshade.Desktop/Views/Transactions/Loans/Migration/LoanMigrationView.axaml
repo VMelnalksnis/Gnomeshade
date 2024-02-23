@@ -1,0 +1,100 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:migration="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:system="clr-namespace:System;assembly=System.Runtime"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.LoanMigrationViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.Migration.LoanMigrationView"
+	x:DataType="migration:LoanMigrationViewModel">
+
+	<Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,*">
+
+		<TextBlock Grid.Column="0" Grid.Row="0" Text="Legacy loans" HorizontalAlignment="Center"/>
+		<DataGrid
+			Grid.Column="0" Grid.Row="1"
+			VerticalAlignment="Stretch"
+			ItemsSource="{Binding Loans, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="loans:LoanOverview"
+					Header="Issuer" IsReadOnly="True"
+					Binding="{Binding IssuingCounterparty, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanOverview"
+					Header="Receiver" IsReadOnly="True"
+					Binding="{Binding ReceivingCounterparty, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanOverview"
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanOverview"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding Currency, Mode=OneWay}" />
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<TextBlock Grid.Column="1" Grid.Row="0" Text="Loans with payments" HorizontalAlignment="Center"/>
+		<DataGrid
+			Grid.Column="1" Grid.Row="1"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			ItemsSource="{Binding MigratedLoans, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Name" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Name, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Issuer" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Issuer, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Receiver" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Receiver, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Currency" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Currency, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Payments" IsReadOnly="True">
+					<DataTemplate x:DataType="migration:LoanMigrationRow">
+						<ItemsControl ItemsSource="{Binding Amounts}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="system:Decimal">
+									<TextBlock
+										HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+										Text="{Binding ., Mode=OneWay, StringFormat=\{0:N2\}}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<!-- <UserControl Grid.Column="2" Content="{Binding Details}" /> -->
+	</Grid>
+
+</UserControl>

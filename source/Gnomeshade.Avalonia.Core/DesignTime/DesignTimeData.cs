@@ -21,6 +21,7 @@ using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Links;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
+using Gnomeshade.Avalonia.Core.Transactions.Loans.Migration;
 using Gnomeshade.Avalonia.Core.Transactions.Purchases;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.WebApi.Client;
@@ -216,6 +217,9 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="LicensesViewModel"/> for use during design time.</summary>
 	public static LicensesViewModel LicensesViewModel { get; } = CreateViewModel<LicensesViewModel>();
+
+	/// <summary>Gets an instance of <see cref="LoanMigrationViewModel"/> for use during design time.</summary>
+	public static LoanMigrationViewModel LoanMigrationViewModel { get; } = CreateViewModel<LoanMigrationViewModel>();
 
 	[UnconditionalSuppressMessage(
 		"Trimming",
