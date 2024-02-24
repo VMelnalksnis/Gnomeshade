@@ -122,10 +122,14 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 	private string GetCredentialName()
 	{
 		const string credentialName = "Gnomeshade";
-		var serverHost = _optionsMonitor.CurrentValue.BaseAddress?.Host;
+		var baseUri = _optionsMonitor.CurrentValue.BaseAddress;
+		if (baseUri is null)
+		{
+			return credentialName;
+		}
 
-		return string.IsNullOrWhiteSpace(serverHost)
-			? credentialName
-			: $"{credentialName}:{serverHost}";
+		return baseUri.IsDefaultPort
+			? $"{credentialName}:{baseUri.Host}"
+			: $"{credentialName}:{baseUri.Host}:{baseUri.Port}";
 	}
 }
