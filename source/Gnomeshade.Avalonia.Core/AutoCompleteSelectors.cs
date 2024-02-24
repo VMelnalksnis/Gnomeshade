@@ -17,6 +17,7 @@ internal static class AutoCompleteSelectors
 {
 	internal static AutoCompleteSelector<object> Access { get; } = (_, item) => ((Access)item).Name;
 
+	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Account { get; } = (_, item) => ((Account)item).Name;
 
 	/// <summary>Gets a delegate for formatting a counterparty in an <see cref="AutoCompleteBox"/>.</summary>

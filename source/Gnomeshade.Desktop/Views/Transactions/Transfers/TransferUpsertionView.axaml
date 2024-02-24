@@ -26,7 +26,7 @@
 					Watermark="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
-					ItemsSource="{Binding Currencies}"
+					ItemsSource="{Binding SourceCurrencies}"
 					ItemSelector="{Binding CurrencySelector}"
 					SelectedItem="{Binding SourceCurrency, Mode=TwoWay}" />
 			</StackPanel>
@@ -48,7 +48,7 @@
 					Watermark="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
-					ItemsSource="{Binding Currencies}"
+					ItemsSource="{Binding TargetCurrencies}"
 					ItemSelector="{Binding CurrencySelector}"
 					SelectedItem="{Binding TargetCurrency, Mode=TwoWay}" />
 			</StackPanel>

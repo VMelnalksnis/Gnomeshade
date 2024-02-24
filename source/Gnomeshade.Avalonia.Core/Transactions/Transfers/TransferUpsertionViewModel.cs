@@ -75,11 +75,19 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets a collection of all active accounts.</summary>
 	[Notify(Setter.Private)]
-	private List<Account> _accounts;
+	private List<Account> _accounts = [];
 
 	/// <summary>Gets a collection of all currencies.</summary>
 	[Notify(Setter.Private)]
-	private List<Currency> _currencies;
+	private List<Currency> _currencies = [];
+
+	/// <summary>Gets a collection of currencies available for <see cref="SourceAccount"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<Currency> _sourceCurrencies = [];
+
+	/// <summary>Gets a collection of currencies available for <see cref="TargetAccount"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<Currency> _targetCurrencies = [];
 
 	/// <summary>Gets or sets the order of the item within a transaction.</summary>
 	[Notify]
@@ -108,17 +116,14 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		_transactionId = transactionId;
 		Id = id;
 
-		_accounts = new();
-		_currencies = new();
-
 		CreateAccount = commandFactory.Create<Window>(window => ShowAccountDialog(window, null), _ => CanCreate, "Waiting for account creation");
 		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Account"/>
 	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
 
-	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Currency"/>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
 	/// <inheritdoc cref="Transfer.BookedAt"/>
@@ -226,6 +231,32 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		if (e.PropertyName is nameof(CanCreate))
 		{
 			CreateAccount.InvokeExecuteChanged();
+		}
+
+		if (e.PropertyName is nameof(SourceAccount))
+		{
+			if (SourceAccount is null)
+			{
+				SourceCurrencies = Currencies.ToList();
+			}
+			else
+			{
+				var ids = SourceAccount.Currencies.Select(currency => currency.CurrencyId).ToArray();
+				SourceCurrencies = Currencies.Where(currency => ids.Contains(currency.Id)).ToList();
+			}
+		}
+
+		if (e.PropertyName is nameof(TargetAccount))
+		{
+			if (TargetAccount is null)
+			{
+				TargetCurrencies = Currencies.ToList();
+			}
+			else
+			{
+				var ids = TargetAccount.Currencies.Select(currency => currency.CurrencyId).ToArray();
+				TargetCurrencies = Currencies.Where(currency => ids.Contains(currency.Id)).ToList();
+			}
 		}
 
 		if (!IsTargetAmountReadOnly)
