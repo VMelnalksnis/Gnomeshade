@@ -41,15 +41,6 @@
           "Avalonia.X11": "11.0.9"
         }
       },
-      "Avalonia.Themes.Fluent": {
-        "type": "Direct",
-        "requested": "[11.0.9, )",
-        "resolved": "11.0.9",
-        "contentHash": "cRycTh9SZPHIi64c90xu0QI9d3jXMFY3VDWeIMHot+1Qek7Q9qYRXWmeJvStfYSYXDKOI7113IBJ7MIQiUshgg==",
-        "dependencies": {
-          "Avalonia": "11.0.9"
-        }
-      },
       "Avalonia.Xaml.Behaviors": {
         "type": "Direct",
         "requested": "[11.0.6, )",
