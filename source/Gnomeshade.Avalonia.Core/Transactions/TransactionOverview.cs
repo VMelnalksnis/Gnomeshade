@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.Avalonia.Core.Transactions;
@@ -19,13 +20,15 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <param name="reconciledAt">The point in time when this transaction was reconciled.</param>
 	/// <param name="transfers">All transfers of the transaction.</param>
 	/// <param name="purchases">All purchases of the transaction.</param>
+	/// <param name="loanPayments">All loan payments of the transaction.</param>
 	public TransactionOverview(
 		Guid id,
 		DateTimeOffset? bookedAt,
 		DateTimeOffset? valuedAt,
 		DateTimeOffset? reconciledAt,
 		List<TransferSummary> transfers,
-		List<Purchase> purchases)
+		List<Purchase> purchases,
+		List<LoanPayment> loanPayments)
 	{
 		Id = id;
 		BookedAt = bookedAt;
@@ -33,6 +36,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		ReconciledAt = reconciledAt;
 		Transfers = transfers;
 		Purchases = purchases;
+		LoanPayments = loanPayments;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -56,6 +60,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <summary>Gets all transfers of the transaction.</summary>
 	public List<TransferSummary> Transfers { get; }
 
-	/// <summary>Gets all purchases of the transaction.</summary>
-	public List<Purchase> Purchases { get; }
+	internal List<Purchase> Purchases { get; }
+
+	internal List<LoanPayment> LoanPayments { get; }
 }

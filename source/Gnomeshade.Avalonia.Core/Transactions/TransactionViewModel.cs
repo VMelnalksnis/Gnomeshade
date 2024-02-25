@@ -158,25 +158,25 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(Filter.Interval);
-		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
-		var productsTask = _gnomeshadeClient.GetProductsAsync();
-		var categoriesTask = _gnomeshadeClient.GetCategoriesAsync();
-		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var counterpartyTask = _gnomeshadeClient.GetMyCounterpartyAsync();
+		var (transactions, accounts, counterparties, products, categories, counterparty, loans) = await (
+			_gnomeshadeClient.GetDetailedTransactionsAsync(Filter.Interval),
+			_gnomeshadeClient.GetAccountsAsync(),
+			_gnomeshadeClient.GetCounterpartiesAsync(),
+			_gnomeshadeClient.GetProductsAsync(),
+			_gnomeshadeClient.GetCategoriesAsync(),
+			_gnomeshadeClient.GetMyCounterpartyAsync(),
+			_gnomeshadeClient.GetLoansAsync())
+			.WhenAll();
 
-		await Task.WhenAll(transactionsTask, accountsTask, counterpartiesTask, productsTask, categoriesTask, currenciesTask, counterpartyTask);
-		var transactions = transactionsTask.Result;
-		var accounts = accountsTask.Result;
-		var accountsInCurrency = accounts.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account))).ToArray();
-		var counterparties = counterpartiesTask.Result;
+		var accountsInCurrency = accounts
+			.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account)))
+			.ToArray();
 
 		var overviews = transactions.Select(transaction =>
 		{
 			var transfers = transaction.Transfers
 				.OrderBy(transfer => transfer.Order)
-				.Select(transfer => transfer.ToSummary(counterparties, counterpartyTask.Result, accountsInCurrency))
+				.Select(transfer => transfer.ToSummary(counterparties, counterparty, accountsInCurrency))
 				.ToList();
 
 			return new TransactionOverview(
@@ -185,7 +185,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 				transfers,
-				transaction.Purchases);
+				transaction.Purchases,
+				transaction.LoanPayments);
 		}).ToList();
 
 		var selected = Selected;
@@ -196,8 +197,9 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 		Filter.Accounts = accounts;
 		Filter.Counterparties = counterparties;
-		Filter.Products = productsTask.Result;
-		Filter.Categories = categoriesTask.Result;
+		Filter.Products = products;
+		Filter.Categories = categories;
+		Filter.Loans = loans;
 		Summary.UpdateTotal(Rows);
 	}
 
@@ -271,6 +273,8 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			nameof(TransactionFilter.InvertProduct) or
 			nameof(TransactionFilter.SelectedCategory) or
 			nameof(TransactionFilter.InvertCategory) or
+			nameof(TransactionFilter.SelectedLoan) or
+			nameof(TransactionFilter.InvertLoan) or
 			nameof(TransactionFilter.Reconciled) or
 			nameof(TransactionFilter.Uncategorized))
 		{
@@ -281,36 +285,35 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)
 	{
-		var updatedOverview = Rows.SingleOrDefault(overview => overview.Id == e.Id);
+		var (transaction, accounts, counterparties, counterparty) = await
+			(_gnomeshadeClient.GetDetailedTransactionAsync(e.Id),
+			_gnomeshadeClient.GetAccountsAsync(),
+			_gnomeshadeClient.GetCounterpartiesAsync(),
+			_gnomeshadeClient.GetMyCounterpartyAsync())
+			.WhenAll();
 
-		var transactionTask = _gnomeshadeClient.GetDetailedTransactionAsync(e.Id);
-		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		var counterpartiesTask = _gnomeshadeClient.GetCounterpartiesAsync();
-		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
-		var counterpartyTask = _gnomeshadeClient.GetMyCounterpartyAsync();
-
-		await Task.WhenAll(transactionTask, accountsTask, counterpartiesTask, currenciesTask, counterpartyTask);
-		var transaction = transactionTask.Result;
-		var accounts = accountsTask.Result;
-		var accountsInCurrency = accounts.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account))).ToArray();
-		var counterparties = counterpartiesTask.Result;
+		var accountsInCurrency = accounts
+			.SelectMany(account => account.Currencies.Select(currency => (AccountInCurrency: currency, Account: account)))
+			.ToArray();
 
 		var transfers = transaction.Transfers
 			.OrderBy(transfer => transfer.Order)
-			.Select(transfer => transfer.ToSummary(counterparties, counterpartyTask.Result, accountsInCurrency))
+			.Select(transfer => transfer.ToSummary(counterparties, counterparty, accountsInCurrency))
 			.ToList();
 
-		var overview = new TransactionOverview(
+		var oldOverview = Rows.SingleOrDefault(overview => overview.Id == e.Id);
+		var newOverview = new TransactionOverview(
 			transaction.Id,
 			transaction.BookedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ValuedAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transaction.ReconciledAt?.InZone(_dateTimeZoneProvider.GetSystemDefault()).ToDateTimeOffset(),
 			transfers,
-			transaction.Purchases);
+			transaction.Purchases,
+			transaction.LoanPayments);
 
 		var sort = DataGridView.SortDescriptions;
-		Rows = new(Rows.Where(row => row.Id != updatedOverview?.Id).Append(overview).ToList());
+		Rows = new(Rows.Where(overview => overview.Id != oldOverview?.Id).Append(newOverview).ToList());
 		DataGridView.SortDescriptions.AddRange(sort);
-		Selected = overview;
+		Selected = newOverview;
 	}
 }

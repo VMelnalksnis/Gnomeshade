@@ -23,6 +23,7 @@ internal static class AutoCompleteSelectors
 	/// <summary>Gets a delegate for formatting a counterparty in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Counterparty { get; } = (_, item) => ((Counterparty)item).Name;
 
+	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Category { get; } = (_, item) => ((Category)item).Name;
 
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
@@ -31,6 +32,7 @@ internal static class AutoCompleteSelectors
 	/// <summary>Gets a delegate for formatting a owner in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Owner { get; } = (_, item) => ((Owner)item).Name;
 
+	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;
 
 	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;

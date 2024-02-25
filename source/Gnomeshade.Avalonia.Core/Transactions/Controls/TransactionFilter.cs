@@ -10,6 +10,7 @@ using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Products;
 
 using NodaTime;
@@ -39,11 +40,11 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 
 	/// <summary>Gets or sets a collection of all active accounts.</summary>
 	[Notify(Setter.Internal)]
-	private List<Account> _accounts = new();
+	private List<Account> _accounts = [];
 
 	/// <summary>Gets or sets a collection of all counterparties.</summary>
 	[Notify(Setter.Internal)]
-	private List<Counterparty> _counterparties = new();
+	private List<Counterparty> _counterparties = [];
 
 	/// <summary>Gets or sets the selected counterparty from <see cref="Counterparties"/>.</summary>
 	[Notify]
@@ -51,7 +52,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 
 	/// <summary>Gets or sets a collection of all products.</summary>
 	[Notify(Setter.Internal)]
-	private List<Product> _products = new();
+	private List<Product> _products = [];
 
 	/// <summary>Gets or sets the selected product from <see cref="Products"/>.</summary>
 	[Notify]
@@ -59,11 +60,19 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 
 	/// <summary>Gets or sets a collection of all categories.</summary>
 	[Notify(Setter.Internal)]
-	private List<Category> _categories = new();
+	private List<Category> _categories = [];
 
 	/// <summary>Gets or sets the selected category from <see cref="Categories"/>.</summary>
 	[Notify]
 	private Category? _selectedCategory;
+
+	/// <summary>Gets or sets a collection of all loans.</summary>
+	[Notify(Setter.Internal)]
+	private List<Loan> _loans = [];
+
+	/// <summary>Gets or sets the selected loan from <see cref="Loans"/>.</summary>
+	[Notify]
+	private Loan? _selectedLoan;
 
 	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedAccount"/>.</summary>
 	[Notify]
@@ -80,6 +89,10 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedCategory"/>.</summary>
 	[Notify]
 	private bool _invertCategory;
+
+	/// <summary>Gets or sets a value indicating whether to filter transactions with or without <see cref="SelectedLoan"/>.</summary>
+	[Notify]
+	private bool _invertLoan;
 
 	/// <summary>Gets or sets a value indicating whether to filter reconciled/unreconciled transactions.</summary>
 	[Notify]
@@ -104,17 +117,20 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <summary>Gets a value indicating whether the current values are valid search parameters.</summary>
 	public bool IsValid => ToDate is null || FromDate is null || ToDate >= FromDate;
 
-	/// <summary>Gets a delegate for formatting an account in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Account"/>
 	public AutoCompleteSelector<object> AccountSelector => AutoCompleteSelectors.Account;
 
-	/// <summary>Gets a delegate for formatting an counterparty in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Counterparty"/>
 	public AutoCompleteSelector<object> CounterpartySelector => AutoCompleteSelectors.Counterparty;
 
-	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Product"/>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
 
-	/// <summary>Gets a delegate for formatting a category in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Category"/>
 	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
+
+	/// <inheritdoc cref="AutoCompleteSelectors.Loan"/>
+	public AutoCompleteSelector<object> LoanSelector => AutoCompleteSelectors.Loan;
 
 	internal Interval Interval
 	{
@@ -176,7 +192,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && SelectedCategory is null && Reconciled is null && Uncategorized is null)
+		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && SelectedCategory is null && SelectedLoan is null && Reconciled is null && Uncategorized is null)
 		{
 			return true;
 		}
@@ -186,6 +202,7 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 			IsCounterpartySelected(overview) &&
 			IsProductSelected(overview) &&
 			IsCategorySelected(overview) &&
+			IsLoanSelected(overview) &&
 			IsReconciled(overview) &&
 			IsUncategorized(overview);
 	}
@@ -245,6 +262,18 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 		return InvertCategory
 			? categoryNodes.All(node => !node.Contains(SelectedCategory.Id))
 			: categoryNodes.Any(node => node.Contains(SelectedCategory.Id));
+	}
+
+	private bool IsLoanSelected(TransactionOverview overview)
+	{
+		if (SelectedLoan is null)
+		{
+			return true;
+		}
+
+		return InvertLoan
+			? overview.LoanPayments.All(payment => payment.LoanId != SelectedLoan.Id)
+			: overview.LoanPayments.Any(payment => payment.LoanId == SelectedLoan.Id);
 	}
 
 	private bool IsReconciled(TransactionOverview overview)
