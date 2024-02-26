@@ -7,8 +7,10 @@
 	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	xmlns:loans="clr-namespace:Gnomeshade.WebApi.Models.Loans;assembly=Gnomeshade.WebApi.Models"
+	xmlns:actipro="http://schemas.actiprosoftware.com/avaloniaui"
+	xmlns:generation="clr-namespace:ActiproSoftware.UI.Avalonia.Themes.Generation;assembly=ActiproSoftware.Avalonia.Shared"
 	x:Class="Gnomeshade.Desktop.App"
-	RequestedThemeVariant="Dark">
+	RequestedThemeVariant="Default">
 
 	<Application.DataTemplates>
 		<core:ViewLocator x:TypeArguments="desktop:App" />
@@ -49,39 +51,15 @@
 			<TextBlock Text="{Binding Name}" />
 		</DataTemplate>
 	</Application.DataTemplates>
-
-	<Application.Resources>
-		<SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" />
-		<SolidColorBrush x:Key="DataGridGridLinesBrush" />
-		<x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
-
-		<!-- Override default values for expander -->
-		<Thickness x:Key="ExpanderChevronMargin">0</Thickness>
-		<x:Double x:Key="FlyoutThemeMinWidth">0</x:Double>
-		<SolidColorBrush x:Key="ExpanderHeaderBackground" />
-		<SolidColorBrush x:Key="ExpanderHeaderBackgroundPointerOver" />
-		<SolidColorBrush x:Key="ExpanderChevronBackground" />
-	</Application.Resources>
-
 	<Application.Styles>
-		<FluentTheme />
-		<StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+		<actipro:ModernTheme Includes="NativeDataGrid">
+			<actipro:ModernTheme.Definition>
+				<generation:ThemeDefinition BaseFontSize="13" UserInterfaceDensity="Compact" />
+			</actipro:ModernTheme.Definition>
+		</actipro:ModernTheme>
 
 		<Style Selector="DataGridColumnHeader">
 			<Setter Property="Padding" Value="5 0" />
-		</Style>
-
-		<Style Selector="DataGridCell">
-			<Setter Property="MinHeight" Value="20" />
-			<Setter Property="FontSize" Value="14" />
-		</Style>
-
-		<Style Selector="DataGridCell:focus Grid#FocusVisual">
-			<Setter Property="IsVisible" Value="False" />
-		</Style>
-
-		<Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
-			<Setter Property="Fill" Value="#05769d" />
 		</Style>
 
 		<Style Selector="AutoCompleteBox TextBox#PART_TextBox">
@@ -113,10 +91,6 @@
 		<Style Selector="WrapPanel > StackPanel > TextBox">
 			<Setter Property="MinWidth" Value="150" />
 			<Setter Property="UseFloatingWatermark" Value="True" />
-		</Style>
-
-		<Style Selector="Expander ToggleButton">
-			<Setter Property="Padding" Value="0" />
 		</Style>
 	</Application.Styles>
 </Application>

@@ -21,9 +21,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="ActiproSoftware.Controls.Avalonia" />
+		<PackageReference Include="ActiproSoftware.Controls.Avalonia.Themes.DataGrid" />
 		<PackageReference Include="AdysTech.CredentialManager" />
 		<PackageReference Include="Avalonia.Desktop" />
-		<PackageReference Include="Avalonia.Themes.Fluent" />
 		<PackageReference Include="Avalonia.Xaml.Behaviors" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
 		<PackageReference Include="Serilog" />
