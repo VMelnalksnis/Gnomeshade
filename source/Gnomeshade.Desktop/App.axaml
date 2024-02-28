@@ -30,7 +30,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:DataType="accounts:Currency">
-			<TextBlock Text="{Binding Name}" />
+			<TextBlock Text="{Binding AlphabeticCode}" />
 		</DataTemplate>
 
 		<DataTemplate x:DataType="loans:Loan">
