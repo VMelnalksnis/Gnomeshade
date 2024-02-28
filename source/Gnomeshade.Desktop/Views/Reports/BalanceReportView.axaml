@@ -12,7 +12,44 @@
 	x:DataType="reports:BalanceReportViewModel">
 
 	<Grid RowDefinitions="*">
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="150" MaxWidth="300" />
+			<ColumnDefinition Width="4*" />
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+
+			<TextBlock HorizontalAlignment="Center" Text="Accounts"/>
+			<ListBox
+				ItemsSource="{Binding UserAccounts}"
+				SelectedItems="{Binding SelectedAccounts}"
+				SelectionMode="Multiple"/>
+
+			<TextBlock HorizontalAlignment="Center" Text="Currency"/>
+			<ListBox
+				ItemsSource="{Binding Currencies}"
+				SelectedItem="{Binding SelectedCurrency}"
+				SelectionMode="Single"/>
+
+			<Border Background="White" HorizontalAlignment="Stretch" Height="1" />
+
+			<WrapPanel HorizontalAlignment="Center">
+				<Button
+					Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+					Command="{Binding RefreshAsync}">
+					Refresh
+				</Button>
+				<Button
+					Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+					Command="{Binding ResetZoom}">
+					Reset zoom
+				</Button>
+			</WrapPanel>
+		</StackPanel>
+
 		<liveChartsCore:CartesianChart
+			Grid.Column="1"
 			Series="{Binding Series}" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}"
 			ZoomMode="X" LegendPosition="Hidden" />
 	</Grid>

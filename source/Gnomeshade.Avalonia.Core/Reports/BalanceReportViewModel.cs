@@ -3,10 +3,14 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Accounts;
 
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
@@ -27,7 +31,23 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 
 	/// <summary>Gets the data series of balance of the users account over time.</summary>
 	[Notify(Setter.Private)]
-	private List<CandlesticksSeries<FinancialPoint>> _series;
+	private List<CandlesticksSeries<FinancialPoint>> _series = [];
+
+	/// <summary>Gets a collection of all accounts of the current user.</summary>
+	[Notify(Setter.Private)]
+	private List<Account> _userAccounts = [];
+
+	/// <summary>Gets or sets a collection of accounts selected from <see cref="UserAccounts"/>.</summary>
+	[Notify]
+	private ObservableCollection<Account> _selectedAccounts = [];
+
+	/// <summary>Gets a collection of all currencies used in <see cref="UserAccounts"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<Currency> _currencies = [];
+
+	/// <summary>Gets or sets the selected currency from <see cref="Currencies"/>.</summary>
+	[Notify]
+	private Currency? _selectedCurrency;
 
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -44,11 +64,14 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		_gnomeshadeClient = gnomeshadeClient;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_series = new();
 
 		// If this is not initialized, the chart will throw due to index out of bounds
-		YAxes = new() { new Axis() };
-		XAxes = new() { DateAxis.GetXAxis() };
+		YAxes = [new Axis()];
+		XAxes = [DateAxis.GetXAxis()];
+
+		PropertyChanging += OnPropertyChanging;
+		PropertyChanged += OnPropertyChanged;
+		_selectedAccounts.CollectionChanged += SelectedAccountsOnCollectionChanged;
 	}
 
 	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
@@ -57,31 +80,58 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
 	public List<ICartesianAxis> YAxes { get; }
 
+	/// <summary>Resets the zoom for all <see cref="XAxes"/> and <see cref="YAxes"/>.</summary>
+	public void ResetZoom()
+	{
+		foreach (var axis in XAxes.Concat(YAxes))
+		{
+			axis.MinLimit = null;
+			axis.MaxLimit = null;
+		}
+	}
+
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var counterparty = await _gnomeshadeClient.GetMyCounterpartyAsync();
-		var allAccounts = await _gnomeshadeClient.GetAccountsAsync();
-		var accounts = allAccounts.Where(account => account.CounterpartyId == counterparty.Id);
-		var inCurrencyIds = accounts.SelectMany(account => account.Currencies.Select(aic => aic.Id)).ToList();
+		var allTransactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
+		var (counterparty, allAccounts, currencies) = await
+			(_gnomeshadeClient.GetMyCounterpartyAsync(),
+			_gnomeshadeClient.GetAccountsAsync(),
+			_gnomeshadeClient.GetCurrenciesAsync())
+			.WhenAll();
 
-		var allTransactions =
-			await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
-		var transactions = allTransactions
+		var selected = SelectedAccounts.Select(account => account.Id).ToArray();
+		var selectedCurrency = SelectedCurrency?.Id;
+
+		UserAccounts = allAccounts.Where(account => account.CounterpartyId == counterparty.Id).ToList();
+		Currencies = currencies
+			.Where(currency => UserAccounts.SelectMany(account => account.Currencies).Any(aic => aic.CurrencyId == currency.Id))
+			.ToList();
+
+		SelectedAccounts = new(UserAccounts.Where(account => selected.Contains(account.Id)));
+		SelectedCurrency = selectedCurrency is { } id ? Currencies.Single(currency => currency.Id == id) : null;
+
+		IEnumerable<Account> accounts = SelectedAccounts.Count is not 0 ? SelectedAccounts : UserAccounts;
+
+		var inCurrencyIds = accounts
+			.SelectMany(account => account.Currencies.Where(aic => aic.CurrencyId == (SelectedCurrency?.Id ?? account.PreferredCurrencyId)).Select(aic => aic.Id))
+			.ToArray();
+
+		var transactions = (await allTransactionsTask)
 			.Where(transaction => transaction.Transfers.Any(transfer =>
 				inCurrencyIds.Contains(transfer.SourceAccountId) ||
 				inCurrencyIds.Contains(transfer.TargetAccountId)))
 			.OrderBy(transaction => transaction.ValuedAt ?? transaction.BookedAt)
 			.ThenBy(transaction => transaction.CreatedAt)
 			.ThenBy(transaction => transaction.ModifiedAt)
-			.ToList();
+			.ToArray();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
 		var dates = transactions
 			.Select(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value)
 			.DefaultIfEmpty(currentTime)
-			.ToList();
+			.ToArray();
 
 		var minDate = new ZonedDateTime(dates.Min(), timeZone);
 		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
@@ -100,23 +150,52 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 				.Where(transaction =>
 					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Year == splitZonedDate.Year &&
 					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Month == splitZonedDate.Month)
-				.ToList();
+				.ToArray();
 
-			var sumBefore = transactionsBefore.Sum(transaction => transaction.TransferBalance);
-			var sumAfter = sumBefore + transactionsIn.Sum(transaction => transaction.TransferBalance);
+			var sumBefore = transactionsBefore.SumForAccounts(inCurrencyIds);
+
+			var sumAfter = sumBefore + transactionsIn.SumForAccounts(inCurrencyIds);
 			var sums = transactionsIn
-				.Select((_, index) =>
-					sumBefore + transactionsIn.Where((_, i) => i <= index).Sum(t => t.TransferBalance))
-				.ToList();
+				.Select((_, index) => sumBefore + transactionsIn.Where((_, i) => i <= index).SumForAccounts(inCurrencyIds))
+				.ToArray();
 
 			return new FinancialPoint(
 				split.ToDateTimeUnspecified(),
-				(double?)sums.Max(),
+				(double?)sums.Concat(new[] { sumBefore, sumAfter }).Max(),
 				(double?)sumBefore,
 				(double?)sumAfter,
-				(double?)sums.Min());
+				(double?)sums.Append(sumBefore).Min());
 		});
 
-		Series = new() { new() { Values = values.ToList(), Name = counterparty.Name } };
+		Series = [new() { Values = values.ToArray(), Name = counterparty.Name }];
+	}
+
+	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
+	{
+		if (e.PropertyName is nameof(SelectedAccounts))
+		{
+			SelectedAccounts.CollectionChanged -= SelectedAccountsOnCollectionChanged;
+		}
+	}
+
+	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(SelectedAccounts))
+		{
+			SelectedAccounts.CollectionChanged += SelectedAccountsOnCollectionChanged;
+		}
+
+		if (!IsBusy && e.PropertyName is nameof(SelectedCurrency))
+		{
+			await RefreshAsync();
+		}
+	}
+
+	private async void SelectedAccountsOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		if (!IsBusy)
+		{
+			await RefreshAsync();
+		}
 	}
 }
