@@ -11,6 +11,7 @@
 		<ProductId>Gnomeshade.ApiClient</ProductId>
 		<Description>Gnomeshade API client</Description>
 		<PackageTags>gnomeshade client</PackageTags>
+		<PackageIcon>packageIcon.png</PackageIcon>
 		<IsPackable>true</IsPackable>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -30,6 +31,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="packageIcon.png" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 
 </Project>

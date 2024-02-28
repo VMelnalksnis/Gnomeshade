@@ -4,7 +4,7 @@
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 		<AssemblyTitle>Gnomeshade</AssemblyTitle>
-		<ApplicationIcon>Assets/avalonia-logo.ico</ApplicationIcon>
+		<ApplicationIcon>Assets/gnomeshade.ico</ApplicationIcon>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<PublishReadyToRun>true</PublishReadyToRun>
@@ -50,7 +50,7 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 
-		<None Include="Assets\avalonia-logo.ico">
+		<None Include="Assets\gnomeshade.ico">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

@@ -19,7 +19,7 @@
 		<SummaryInformation Description="$(var.Name)" Manufacturer="$(var.Manufacturer)"/>
 
 		<!--Application logo-->
-		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Desktop.TargetDir)Assets\avalonia-logo.ico"/>
+		<Icon Id="Logo.ico" SourceFile="$(var.Gnomeshade.Desktop.TargetDir)Assets\gnomeshade.ico"/>
 
 		<!--Application logo for Control Panel-->
 		<Property Id="ARPPRODUCTICON" Value="Logo.ico"/>
