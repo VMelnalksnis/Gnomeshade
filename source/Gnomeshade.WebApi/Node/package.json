@@ -1,7 +1,7 @@
 {
 	"name": "gnomeshade",
 	"dependencies": {
-		"bootstrap": "5.3.2",
+		"bootstrap": "5.3.3",
 		"jquery": "3.7.1",
 		"jquery-validation": "1.20.0",
 		"jquery-validation-unobtrusive": "4.0.0"
