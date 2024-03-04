@@ -109,7 +109,7 @@ jobs:
           - ubuntu2204
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: actions/download-artifact@v4.1.2
+      - uses: actions/download-artifact@v4.1.4
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
