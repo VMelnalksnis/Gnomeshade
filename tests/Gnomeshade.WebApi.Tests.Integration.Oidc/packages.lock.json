@@ -1844,7 +1844,7 @@
           "Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer": "[5.1.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.4, )",
           "NodaTime": "[3.1.11, )",
-          "NodaTime.Serialization.SystemTextJson": "[1.1.2, )",
+          "NodaTime.Serialization.SystemTextJson": "[1.2.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.8.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.8.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.8.1, )",
@@ -1868,7 +1868,7 @@
           "Microsoft.Extensions.Options": "[8.0.2, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[8.0.0, )",
-          "NodaTime.Serialization.SystemTextJson": "[1.1.2, )"
+          "NodaTime.Serialization.SystemTextJson": "[1.2.0, )"
         }
       },
       "gnomeshade.webapi.models": {
@@ -2168,12 +2168,11 @@
       },
       "NodaTime.Serialization.SystemTextJson": {
         "type": "CentralTransitive",
-        "requested": "[1.1.2, )",
-        "resolved": "1.1.2",
-        "contentHash": "/PGLhEW+wd01IkJnVMwRTzMW7OGXkFva9vjtC9f+ohM0SIwQIMDkLVECmTD+8s/8ctpBk+ImSURmXuR2muwKBg==",
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "HNMQdHw6xCrNaHEEvJlBek+uUNI4uySEQhU3t8FibZT9ASMz40y5qkLIwhrHsnXhxUzOPP4tmAGy8PfBwc3zMg==",
         "dependencies": {
-          "NodaTime": "[3.0.0, 4.0.0)",
-          "System.Text.Json": "5.0.2"
+          "NodaTime": "[3.0.0, 4.0.0)"
         }
       },
       "Npgsql.DependencyInjection": {
