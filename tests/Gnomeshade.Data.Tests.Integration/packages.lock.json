@@ -995,7 +995,7 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.4, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.4, )",
           "NodaTime": "[3.1.11, )",
-          "dbup-core": "[5.0.76, )"
+          "dbup-core": "[5.0.87, )"
         }
       },
       "gnomeshade.data.postgresql": {
@@ -1017,9 +1017,9 @@
       },
       "dbup-core": {
         "type": "CentralTransitive",
-        "requested": "[5.0.76, )",
-        "resolved": "5.0.76",
-        "contentHash": "vHj7nMbyVoCkt8uuQFRav5Rth4Y5TsiT0VZ8vCt71QmA4acZDRXx17G9juKpdDiIiA1xwEcmOUVVqo+BEKRUOg==",
+        "requested": "[5.0.87, )",
+        "resolved": "5.0.87",
+        "contentHash": "KhcbHJfaxNA4yRwFGGewD4znkOweyPLIbSQnUU2tMjLDkEWiBNFKlojhk46J7qsyKssk/RSzC0s/Rohjp4Y9xA==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "System.Diagnostics.TraceSource": "4.3.0",
