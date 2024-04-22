@@ -86,11 +86,11 @@
       },
       "Avalonia": {
         "type": "Transitive",
-        "resolved": "11.0.9",
-        "contentHash": "G8cFJvcMo1pZiJVCpp6bLyumLDUskoFxfLp7n1WsTXE8WYjaBC+EyfLttWgth2+lVjiOaGHxhQ/NckltxM/Bdw==",
+        "resolved": "11.0.10",
+        "contentHash": "EH1FyD1SA7G/TfLmb7JKQlZiOBqr6VzttJMtA5Hnc/c1623zJej0PRuQlqn8Ad6qWKorrKEypBGA9Gye3uWDrA==",
         "dependencies": {
           "Avalonia.BuildServices": "0.0.29",
-          "Avalonia.Remote.Protocol": "11.0.9",
+          "Avalonia.Remote.Protocol": "11.0.10",
           "MicroCom.Runtime": "0.11.0",
           "System.ComponentModel.Annotations": "4.5.0"
         }
@@ -102,8 +102,8 @@
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "11.0.9",
-        "contentHash": "n7GXzwiVk8qIxwXcugovZnmZSi6IoCVEbL2CDu2znNH+m1m6f7JH91TbHtx1HQzG6EFAj6HEy8f/8k/8U8vQZQ=="
+        "resolved": "11.0.10",
+        "contentHash": "4/zXSx7P2+4g7nIkSd8aIfEfRnvHjpeSEBjJznzE5iJBYO98B78wDPWEkyN8sQBJnLghaNKKsGCApx3g5R0Gsg=="
       },
       "Avalonia.Skia": {
         "type": "Transitive",
@@ -408,8 +408,8 @@
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia.Controls.DataGrid": "[11.0.9, )",
-          "Avalonia.Xaml.Interactivity": "[11.0.6, )",
+          "Avalonia.Controls.DataGrid": "[11.0.10, )",
+          "Avalonia.Xaml.Interactivity": "[11.0.10.6, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[5.2.1, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-rc2, )",
@@ -458,19 +458,19 @@
       },
       "Avalonia.Controls.DataGrid": {
         "type": "CentralTransitive",
-        "requested": "[11.0.9, )",
-        "resolved": "11.0.9",
-        "contentHash": "tueNBwc3lyhxKJMQAi4oXX3H4eZkK+GnFliUDkRYbgpAUacwO8/O6ALjvB5bpdBTqogKFhgxiviEVcfpQcbUdw==",
+        "requested": "[11.0.10, )",
+        "resolved": "11.0.10",
+        "contentHash": "a8es+nGJvXK+rh76iFRkp7UHPvaN+WeMyH7S746r25FnrBYLkvtpEjGGKRWTFX+eO2cFcDh1qHJa63aaElivww==",
         "dependencies": {
-          "Avalonia": "11.0.9",
-          "Avalonia.Remote.Protocol": "11.0.9"
+          "Avalonia": "11.0.10",
+          "Avalonia.Remote.Protocol": "11.0.10"
         }
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "CentralTransitive",
-        "requested": "[11.0.6, )",
-        "resolved": "11.0.6",
-        "contentHash": "VoDOCs7mJxrP61p7TuX+JV/DWJ4hdlV+ezTLEsxRV2/4szvRw5f2wtXyYQzjDfDw3Cut5sBM1Y4bhu2xg7A7aQ==",
+        "requested": "[11.0.10.6, )",
+        "resolved": "11.0.10.6",
+        "contentHash": "PAw7c57d3RBFC1Goftu/x2xkXPUx/1nKwBkxAeGFOziea6R7UmyT8Jy0M9bUEGdEsPbYByhIwcJAehWHFPerOQ==",
         "dependencies": {
           "Avalonia": "11.0.0"
         }

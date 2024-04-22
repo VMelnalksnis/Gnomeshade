@@ -12,6 +12,8 @@ namespace Gnomeshade.Avalonia.Core.Interactivity;
 /// <summary>Triggers actions on <see cref="WindowBase.Activated"/> event.</summary>
 public sealed class WindowActivatedTrigger : Trigger<WindowBase>
 {
+// Base implementation uses reflection
+#pragma warning disable IL2046
 	/// <inheritdoc />
 	protected override void OnAttached()
 	{
@@ -20,6 +22,7 @@ public sealed class WindowActivatedTrigger : Trigger<WindowBase>
 			window.Activated += WindowOnActivated;
 		}
 	}
+#pragma warning restore IL2046
 
 	/// <inheritdoc />
 	protected override void OnDetaching()
