@@ -59,15 +59,15 @@
       },
       "NUnit": {
         "type": "Direct",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "jNTHZ01hJsDNPDSBycoHpavFZUBf9vRVQLCyuo78LRrrFj6Ol/CeqK+NIeTk5d8Eycjk59KseWb7X5Ge6z7CgQ=="
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "MT/DpAhjtiytzhTgTqIhBuWx4y26PKfDepYUHUM+5uv4TsryHC2jwFo5e6NhWkApCm/G6kZ80dRjdJFuAxq3rg=="
       },
       "NUnit.Analyzers": {
         "type": "Direct",
-        "requested": "[4.0.1, )",
-        "resolved": "4.0.1",
-        "contentHash": "zhTn0POj5eEA4bi+zbaeIPT6F5HlgM0XH7sAWkNcUihzsl7Pn1J6eLGj/E/tPQiR6spFuh12u1tpWB6+xA0giQ=="
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "Odd1RusSMnfswIiCPbokAqmlcCCXjQ20poaXWrw+CWDnBY1vQ/x6ZGqgyJXpebPq5Uf8uEBe5iOAySsCdSrWdQ=="
       },
       "NUnit3TestAdapter": {
         "type": "Direct",
@@ -431,7 +431,7 @@
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
           "Microsoft.NET.Test.Sdk": "[17.9.0, )",
-          "NUnit": "[4.0.1, )",
+          "NUnit": "[4.1.0, )",
           "NUnit3TestAdapter": "[4.5.0, )",
           "NodaTime.Bogus": "[3.0.2, )"
         }
