@@ -312,8 +312,8 @@
       },
       "IdentityModel": {
         "type": "Transitive",
-        "resolved": "5.2.0",
-        "contentHash": "nuhkbaDH9l5QzNJp2MtP3qio57MPtiRneUN8Ocr7od0JvSYaIe3gBj/vxllr11S/Qvu1AG4GZXoyv5469ewYDA=="
+        "resolved": "7.0.0",
+        "contentHash": "to99aLL5Gev1GOb2gUao/UZXT/uXMyjEmHPNrf/vJI2HBD1LMCTeC4SBCe/cqMIB12V9v+eSieq7ff0lju9pOQ=="
       },
       "LiveChartsCore": {
         "type": "Transitive",
@@ -630,7 +630,7 @@
           "Avalonia.Controls.DataGrid": "[11.0.10, )",
           "Avalonia.Xaml.Interactivity": "[11.0.10.6, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
-          "IdentityModel.OidcClient": "[5.2.1, )",
+          "IdentityModel.OidcClient": "[6.0.0, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-rc2, )",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
@@ -645,7 +645,7 @@
         "type": "Project",
         "dependencies": {
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
-          "IdentityModel.OidcClient": "[5.2.1, )",
+          "IdentityModel.OidcClient": "[6.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Options": "[8.0.2, )",
@@ -682,12 +682,12 @@
       },
       "IdentityModel.OidcClient": {
         "type": "CentralTransitive",
-        "requested": "[5.2.1, )",
-        "resolved": "5.2.1",
-        "contentHash": "OuPhDNAw/EoJVEmYO6/ChZUBcug4OGoGKTKLUyBCsGhlKegxJk25LYQ0EL7GCBMgkEL+BYNJukNZyaJ+JNaWog==",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "m2PZbjeG3nXIQ72NLZvFz3FLFk7GmqLnxO/ifUvaTEE3BDZXp7DXAdjDP6TQKaL20+wDnej2ffA1Yh3vVcJOkA==",
         "dependencies": {
-          "IdentityModel": "5.2.0",
-          "Microsoft.Extensions.Logging": "6.0.0"
+          "IdentityModel": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
       },
       "LiveChartsCore.SkiaSharpView.Avalonia": {
