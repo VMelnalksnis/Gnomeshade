@@ -492,6 +492,15 @@
           "Serilog": "3.1.1"
         }
       },
+      "SkiaSharp": {
+        "type": "Transitive",
+        "resolved": "2.88.7",
+        "contentHash": "LJHAMrbWO00J7jXWLWehyjqFo29T4VzABimfJb4nICqpEe3c/KvQGWL4ItON8ymzhxYOeFgyxeRzuNzO4GHSug==",
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "2.88.7",
+          "SkiaSharp.NativeAssets.macOS": "2.88.7"
+        }
+      },
       "SkiaSharp.HarfBuzz": {
         "type": "Transitive",
         "resolved": "2.88.6",
@@ -612,7 +621,6 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[8.0.0, )",
           "PropertyChanged.SourceGenerator": "[1.0.8, )",
-          "SkiaSharp": "[2.88.7, )",
           "System.Drawing.Common": "[8.0.4, )"
         }
       },
@@ -892,16 +900,6 @@
         "contentHash": "uQQvylDfY74FbSlD0uxJqFkNZey3oE1tO4yDzUhj5ziY0QbEnhhSAOuBJiHqk6irhSN2+sAuxyIiG7nLsTE9ag==",
         "dependencies": {
           "Serilog": "2.10.0"
-        }
-      },
-      "SkiaSharp": {
-        "type": "CentralTransitive",
-        "requested": "[2.88.7, )",
-        "resolved": "2.88.7",
-        "contentHash": "LJHAMrbWO00J7jXWLWehyjqFo29T4VzABimfJb4nICqpEe3c/KvQGWL4ItON8ymzhxYOeFgyxeRzuNzO4GHSug==",
-        "dependencies": {
-          "SkiaSharp.NativeAssets.Win32": "2.88.7",
-          "SkiaSharp.NativeAssets.macOS": "2.88.7"
         }
       },
       "System.Drawing.Common": {

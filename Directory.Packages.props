@@ -96,9 +96,4 @@
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="0.3.2"/>
 		<PackageVersion Include="VMelnalksnis.Testcontainers.Keycloak" Version="0.2.1"/>
 	</ItemGroup>
-
-	<!--Vulnerable transient dependencies-->
-	<ItemGroup>
-		<PackageVersion Include="SkiaSharp" Version="2.88.7"/>
-	</ItemGroup>
 </Project>

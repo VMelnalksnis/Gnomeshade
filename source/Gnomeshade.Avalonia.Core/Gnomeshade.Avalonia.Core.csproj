@@ -23,11 +23,6 @@
 		<PackageReference Include="System.Drawing.Common" />
 	</ItemGroup>
 
-	<!--Vulnerable transitive dependencies-->
-	<ItemGroup>
-		<PackageReference Include="SkiaSharp" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="Help\licenses.json" />
 	</ItemGroup>
