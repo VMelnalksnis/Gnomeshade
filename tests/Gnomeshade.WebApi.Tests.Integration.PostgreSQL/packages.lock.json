@@ -1819,7 +1819,7 @@
           "Microsoft.Extensions.Options.DataAnnotations": "[8.0.0, )",
           "PropertyChanged.SourceGenerator": "[1.0.8, )",
           "SkiaSharp": "[2.88.7, )",
-          "System.Drawing.Common": "[8.0.3, )"
+          "System.Drawing.Common": "[8.0.4, )"
         }
       },
       "gnomeshade.data": {
@@ -2362,9 +2362,9 @@
       },
       "System.Drawing.Common": {
         "type": "CentralTransitive",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "oDE9duAtHhxYJM2bsOlZCLBKdorU9DTV1tw7Mlc+VIT7HgwO5ddfOHk/An8C+fAS9oKdmn2PaIA5t1b484uz8g==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "3G4xpa8mUYGzEF0HlswlBArAFywHJIzsZoB5hU4yMlnYHaabj/lg019BwbyyYBxj0aoM7Cz+jdlgUemeno9LOQ==",
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "8.0.0"
         }
