@@ -160,11 +160,11 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="Loans.LoanUpsertionViewModel"/> for use during design time.</summary>
 	public static LoanUpsertionViewModel LoanUpsertionViewModel { get; } =
-		InitializeViewModel(new LoanUpsertionViewModel(ActivityService, GnomeshadeClient, null));
+		InitializeViewModel(new LoanUpsertionViewModel(ActivityService, GnomeshadeClient, DateTimeZoneProvider, null));
 
 	/// <summary>Gets an instance of <see cref="Loans.LoanViewModel"/> for use during design time.</summary>
 	public static LoanViewModel LoanViewModel { get; } =
-		InitializeViewModel<LoanViewModel, LoanRow, LoanUpsertionViewModel>(new(ActivityService, GnomeshadeClient));
+		InitializeViewModel<LoanViewModel, LoanRow, LoanUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="CategoryReportViewModel"/> for use during design time.</summary>
 	public static CategoryReportViewModel CategoryReportViewModel { get; } =

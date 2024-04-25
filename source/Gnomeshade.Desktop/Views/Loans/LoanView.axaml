@@ -15,7 +15,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
 			<ColumnDefinition Width="4*" />
-			<ColumnDefinition Width="2*" MinWidth="300" MaxWidth="600" />
+			<ColumnDefinition Width="300" />
 		</Grid.ColumnDefinitions>
 
 
@@ -94,6 +94,13 @@
 						<TextBlock
 							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
 							Text="{Binding PaidInterest, Mode=OneWay, StringFormat=\{0:N2\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Remaining Principal" IsReadOnly="True">
+					<DataTemplate x:DataType="loans:LoanRow">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding RemainingPrincipal, Mode=OneWay, StringFormat=\{0:N2\}}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>

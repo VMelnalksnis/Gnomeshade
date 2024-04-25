@@ -7,24 +7,32 @@ using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
 
+using NodaTime;
+
 namespace Gnomeshade.Avalonia.Core.Loans;
 
 /// <summary>An overview of all loans.</summary>
 public sealed class LoanViewModel : OverviewViewModel<LoanRow, LoanUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
 	private LoanUpsertionViewModel _details;
 
 	/// <summary>Initializes a new instance of the <see cref="LoanViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	public LoanViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient)
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
+	public LoanViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 
-		_details = new(activityService, _gnomeshadeClient, null);
+		_details = new(activityService, _gnomeshadeClient, dateTimeZoneProvider, null);
 	}
 
 	/// <inheritdoc />
@@ -37,7 +45,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanRow, LoanUpsertionView
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 
@@ -64,7 +72,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanRow, LoanUpsertionView
 
 		Rows = new(loanOverviews);
 
-		Details = new(ActivityService, _gnomeshadeClient, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 }

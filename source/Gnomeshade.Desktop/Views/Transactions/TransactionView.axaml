@@ -222,7 +222,7 @@
 				</Interaction.Behaviors>
 			</DataGrid>
 
-			<UserControl Grid.Row="1" Content="{Binding Summary}" />
+			<UserControl Grid.Row="1" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" Content="{Binding Summary}" />
 		</Grid>
 
 		<GridSplitter Grid.Column="3">

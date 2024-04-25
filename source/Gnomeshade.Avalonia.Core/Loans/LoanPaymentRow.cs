@@ -31,7 +31,7 @@ public sealed class LoanPaymentRow : PropertyChangedBase
 	/// <summary>Gets the name of the loan that this payment is a part of.</summary>
 	public string Loan { get; }
 
-	/// <summary>Gets the amount that was loaned or payed back.</summary>
+	/// <summary>Gets the amount that was loaned or paid back.</summary>
 	public decimal Amount { get; }
 
 	/// <summary>Gets the interest amount of this loan payment.</summary>
@@ -39,6 +39,9 @@ public sealed class LoanPaymentRow : PropertyChangedBase
 
 	/// <summary>Gets the alphabetic code of the currency of <see cref="Amount"/> and <see cref="Interest"/>.</summary>
 	public string Currency { get; }
+
+	/// <summary>Gets the point in time when the loan payment was made.</summary>
+	public DateTimeOffset? Date { get; init; }
 
 	internal Guid Id { get; }
 }

@@ -62,5 +62,8 @@ public sealed class LoanRow : PropertyChangedBase
 	/// <summary>Gets the amount of interest paid.</summary>
 	public decimal PaidInterest { get; }
 
+	/// <summary>Gets the difference between <see cref="Principal"/> and <see cref="PaidPrincipal"/>.</summary>
+	public decimal RemainingPrincipal => Principal - PaidPrincipal;
+
 	internal Guid Id { get; }
 }

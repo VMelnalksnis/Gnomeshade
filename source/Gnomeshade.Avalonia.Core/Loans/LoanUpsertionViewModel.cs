@@ -14,6 +14,8 @@ using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 
+using NodaTime;
+
 using PropertyChanged.SourceGenerator;
 
 namespace Gnomeshade.Avalonia.Core.Loans;
@@ -21,6 +23,8 @@ namespace Gnomeshade.Avalonia.Core.Loans;
 /// <summary>Creates or updates a single loan.</summary>
 public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 {
+	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
+
 	/// <summary>Gets a collection of all owners.</summary>
 	[Notify(Setter.Private)]
 	private List<Owner> _owners = [];
@@ -57,13 +61,23 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private Currency? _currency;
 
+	/// <summary>Gets a collection of all payments of this loan.</summary>
+	[Notify]
+	private List<LoanPaymentRow> _payments = [];
+
 	/// <summary>Initializes a new instance of the <see cref="LoanUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
+	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="id">The id of the loan to edit.</param>
-	public LoanUpsertionViewModel(IActivityService activityService, IGnomeshadeClient gnomeshadeClient, Guid? id)
+	public LoanUpsertionViewModel(
+		IActivityService activityService,
+		IGnomeshadeClient gnomeshadeClient,
+		IDateTimeZoneProvider dateTimeZoneProvider,
+		Guid? id)
 		: base(activityService, gnomeshadeClient)
 	{
+		_dateTimeZoneProvider = dateTimeZoneProvider;
 		Id = id;
 	}
 
@@ -115,12 +129,31 @@ public sealed partial class LoanUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var loan = await GnomeshadeClient.GetLoanAsync(id);
+		// todo Not the best approach to load all transactions each time
+		var (loan, payments, transactions) = await (
+			GnomeshadeClient.GetLoanAsync(id),
+			GnomeshadeClient.GetLoanPaymentsAsync(id),
+			GnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)))
+			.WhenAll();
+
 		Owner = Owners.Single(owner => owner.Id == loan.OwnerId);
 		Name = loan.Name;
 		Issuer = Counterparties.Single(counterparty => counterparty.Id == loan.IssuingCounterpartyId);
 		Receiver = Counterparties.Single(counterparty => counterparty.Id == loan.ReceivingCounterpartyId);
 		Principal = loan.Principal;
 		Currency = Currencies.Single(currency => currency.Id == loan.CurrencyId);
+		var zone = _dateTimeZoneProvider.GetSystemDefault();
+
+		Payments = payments
+			.Select(payment =>
+			{
+				var transaction = transactions.Single(transaction => transaction.Id == payment.TransactionId);
+				return new LoanPaymentRow(payment, [loan], Currencies)
+				{
+					Date = (transaction.ValuedAt ?? transaction.BookedAt)!.Value.InZone(zone).ToDateTimeOffset(),
+				};
+			})
+			.OrderByDescending(row => row.Date)
+			.ToList();
 	}
 }

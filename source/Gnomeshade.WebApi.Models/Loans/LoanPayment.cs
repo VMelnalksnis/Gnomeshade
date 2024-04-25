@@ -29,7 +29,7 @@ public sealed record LoanPayment
 	/// <summary>The id of the owner of the loan payment.</summary>
 	public Guid OwnerId { get; set; }
 
-	/// <summary>The point in the when the loan payment was last modified.</summary>
+	/// <summary>The point in time when the loan payment was last modified.</summary>
 	public Instant ModifiedAt { get; set; }
 
 	/// <summary>The id of the user that last modified this loan payment.</summary>
@@ -43,7 +43,7 @@ public sealed record LoanPayment
 	/// <seealso cref="Transaction"/>
 	public Guid TransactionId { get; set; }
 
-	/// <summary>The amount that was loaned or payed back.</summary>
+	/// <summary>The amount that was loaned or paid back.</summary>
 	public decimal Amount { get; set; }
 
 	/// <summary>The interest amount of this loan payment.</summary>
