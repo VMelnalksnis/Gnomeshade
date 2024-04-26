@@ -68,8 +68,14 @@ public sealed class TransferSummary : PropertyChangedBase
 	/// <summary>Gets the currency of <see cref="OtherAmount"/>.</summary>
 	public string OtherCurrency { get; }
 
+	/// <summary>Gets the value of <see cref="OtherCurrency"/> formatted for display in a table.</summary>
+	public string OtherCurrencyFormatted => DisplayTarget ? OtherCurrency : " ";
+
 	/// <summary>Gets the amount withdrawn from or deposited to the account not owned by the user.</summary>
 	public decimal OtherAmount { get; }
+
+	/// <summary>Gets the value of <see cref="OtherAmount"/> formmatted for display in a table.</summary>
+	public string OtherAmountFormatted => DisplayTarget ? OtherAmount.ToString("N2") : " ";
 
 	/// <summary>Gets a value indicating whether <see cref="OtherAmount"/> and <see cref="OtherCurrency"/> need to be displayed.</summary>
 	public bool DisplayTarget => UserAmount != OtherAmount;

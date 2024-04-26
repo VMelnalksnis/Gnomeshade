@@ -186,9 +186,8 @@
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="transactions:TransferSummary">
 										<TextBlock
-											Text="{Binding OtherCurrency, Mode=OneWay}"
-											IsVisible="{Binding DisplayTarget}"
-											Padding="0 0 5 0" />
+											Padding="0 0 5 0"
+											Text="{Binding OtherCurrencyFormatted, Mode=OneWay}"/>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
@@ -205,9 +204,8 @@
 								<ItemsControl.ItemTemplate>
 									<DataTemplate DataType="transactions:TransferSummary">
 										<TextBlock
-											HorizontalAlignment="Right" VerticalAlignment="Top"
-											Margin="5 0" IsVisible="{Binding DisplayTarget}"
-											Text="{Binding OtherAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+											HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+											Text="{Binding OtherAmountFormatted, Mode=OneWay}" />
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>
 							</ItemsControl>
