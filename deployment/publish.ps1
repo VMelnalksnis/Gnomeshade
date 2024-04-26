@@ -13,8 +13,6 @@
     $Tag
 )
 
-Set-PSDebug -Trace 1
-
 $version = Get-Content version
 
 $dotnetArgs = @()

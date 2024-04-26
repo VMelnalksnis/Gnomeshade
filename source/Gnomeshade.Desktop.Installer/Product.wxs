@@ -55,9 +55,7 @@
 	<Fragment>
 		<!--ComponentGroup refering to install component in INSTALLFOLDER Directory-->
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<Component Id="av_libglesv2.dll">
-				<File Id="av_libglesv2.dll" Name="av_libglesv2.dll" Source="$(var.BuildDir)av_libglesv2.dll"/>
-			</Component>
+			<Files Include="$(var.BuildDir)**.dll"/>
 
 			<Component Id="Gnomeshade.exe">
 				<File Id="Gnomeshade.exe" Name="Gnomeshade.exe"
@@ -67,15 +65,6 @@
 				<RemoveFile Id="ExeRemove" Name="*.exe" On="both"/>
 				<RemoveFile Id="DefaultSettingsRemove" Name="appsettings.json" On="both"/>
 				<RemoveFolder Id="INSTALLFOLDER" On="both"/>
-			</Component>
-
-			<Component Id="libHarfBuzzSharp.dll">
-				<File Id="libHarfBuzzSharp.dll" Name="libHarfBuzzSharp.dll"
-					  Source="$(var.BuildDir)libHarfBuzzSharp.dll"/>
-			</Component>
-
-			<Component Id="libSkiaSharp.dll">
-				<File Id="libSkiaSharp.dll" Name="libSkiaSharp.dll" Source="$(var.BuildDir)libSkiaSharp.dll"/>
 			</Component>
 
 			<Component Permanent="yes" Id="appsettings.json" Guid="db183c7a-94fb-443d-8ac4-99931fedd0c7">

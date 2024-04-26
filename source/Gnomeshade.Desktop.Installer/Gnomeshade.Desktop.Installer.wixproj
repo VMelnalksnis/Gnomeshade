@@ -1,6 +1,6 @@
 <Project Sdk="WixToolset.Sdk/5.0.0">
 	<PropertyGroup>
-		<SuppressIces>ICE38</SuppressIces>
+		<SuppressIces>ICE38; ICE91</SuppressIces>
 		<SuppressSpecificWarnings>0204</SuppressSpecificWarnings>
 	</PropertyGroup>
 
