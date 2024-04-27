@@ -3,8 +3,11 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Web;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -22,8 +25,6 @@ using Gnomeshade.WebApi.Client;
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
 
-using JetBrains.Annotations;
-
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 
@@ -39,18 +40,36 @@ using Serilog;
 namespace Gnomeshade.Desktop;
 
 /// <inheritdoc />
-[UsedImplicitly(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature)]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
 public sealed class App : Application
 {
 	private readonly IServiceProvider _serviceProvider;
 
 	/// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
 	public App()
+		: this([])
 	{
-		var configuration = new ConfigurationBuilder()
+	}
+
+	/// <summary>Initializes a new instance of the <see cref="App"/> class.</summary>
+	/// <param name="args">The command line arguments with which the app was launched.</param>
+	public App(string[] args)
+	{
+		var configurationBuilder = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json", true)
-			.AddJsonFile(UserConfigurationWriter.Filepath, true, true)
-			.Build();
+			.AddJsonFile(UserConfigurationWriter.Filepath, true, true);
+
+		if (args is [var arg, ..] &&
+			Uri.TryCreate(arg, UriKind.Absolute, out var uri) &&
+			HttpUtility.ParseQueryString(uri.Query).Get("baseAddress") is { } baseAddress)
+		{
+			configurationBuilder.AddInMemoryCollection(new KeyValuePair<string, string?>[]
+			{
+				new($"Gnomeshade:{nameof(GnomeshadeOptions.BaseAddress)}", baseAddress),
+			});
+		}
+
+		var configuration = configurationBuilder.Build();
 
 		var serviceCollection = new ServiceCollection();
 		serviceCollection.AddLogging(builder => builder

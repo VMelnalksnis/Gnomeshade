@@ -49,7 +49,7 @@ internal static class Program
 			TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
 
-			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+			BuildAvaloniaApp(args).StartWithClassicDesktopLifetime(args);
 		}
 		catch (Exception exception)
 		{
@@ -65,7 +65,7 @@ internal static class Program
 	}
 
 	[UsedImplicitly]
-	public static AppBuilder BuildAvaloniaApp()
+	public static AppBuilder BuildAvaloniaApp(string[] args)
 	{
 		if (Debugger.IsAttached)
 		{
@@ -76,7 +76,7 @@ internal static class Program
 
 		return
 			AppBuilder
-				.Configure<App>()
+				.Configure<App>(() => new(args))
 				.UsePlatformDetect()
 				.LogToTrace(LogEventLevel.Debug);
 	}
