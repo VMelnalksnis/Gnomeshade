@@ -45,6 +45,7 @@ internal static class TransferExtensions
 
 		return sourceAccount.CounterpartyId == userCounterparty.Id
 			? new(
+				transfer,
 				sourceCurrency.CurrencyAlphabeticCode,
 				sourceAccount.PreferredCurrencyId != sourceCurrency.CurrencyId,
 				transfer.SourceAmount,
@@ -56,6 +57,7 @@ internal static class TransferExtensions
 				targetCurrency.CurrencyAlphabeticCode,
 				transfer.TargetAmount)
 			: new(
+				transfer,
 				targetCurrency.CurrencyAlphabeticCode,
 				targetAccount.PreferredCurrencyId != targetCurrency.CurrencyId,
 				transfer.TargetAmount,

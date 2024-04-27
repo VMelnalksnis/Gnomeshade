@@ -2,12 +2,15 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using Gnomeshade.WebApi.Models.Transactions;
+
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>A summary of a single transfer for displaying in an overview.</summary>
 public sealed class TransferSummary : PropertyChangedBase
 {
 	/// <summary>Initializes a new instance of the <see cref="TransferSummary"/> class.</summary>
+	/// <param name="transfer">The transfer which this <see cref="TransferSummary"/> summarizes.</param>
 	/// <param name="userCurrency">The currency of <paramref name="userAmount"/>.</param>
 	/// <param name="displayUserCurrency">Whether <see cref="UserCurrency"/> needs to be displayed.</param>
 	/// <param name="userAmount">The amount withdrawn from or deposited to the account owned by the user.</param>
@@ -19,6 +22,7 @@ public sealed class TransferSummary : PropertyChangedBase
 	/// <param name="otherCurrency">The currency of <paramref name="otherAmount"/>.</param>
 	/// <param name="otherAmount">The amount withdrawn from or deposited to the account not owned by the user.</param>
 	public TransferSummary(
+		Transfer transfer,
 		string userCurrency,
 		bool displayUserCurrency,
 		decimal userAmount,
@@ -31,6 +35,7 @@ public sealed class TransferSummary : PropertyChangedBase
 		decimal otherAmount)
 	{
 		UserCurrency = displayUserCurrency ? userCurrency : " "; // string.Empty is not displayed
+		Transfer = transfer;
 		UserAmount = userAmount;
 		UserAccount = userAccount;
 		Direction = direction;
@@ -40,6 +45,9 @@ public sealed class TransferSummary : PropertyChangedBase
 		OtherCurrency = otherCurrency;
 		OtherAmount = otherAmount;
 	}
+
+	/// <summary>Gets the transfer which this <see cref="TransferSummary"/> summarizes.</summary>
+	public Transfer Transfer { get; }
 
 	/// <summary>Gets the currency of <see cref="UserAmount"/>.</summary>
 	public string UserCurrency { get; }

@@ -67,7 +67,7 @@
 			</Button>
 		</Grid>
 
-		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto">
+		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />
 			<AutoCompleteBox
 				Grid.Row="0" Grid.Column="1"
@@ -118,11 +118,16 @@
 				ItemSelector="{Binding LoanSelector}"
 				SelectedItem="{Binding SelectedLoan, Mode=TwoWay}"/>
 
-			<CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding Reconciled}" IsThreeState="True" />
-			<TextBlock Grid.Row="10" Grid.Column="1" Text="Reconciled" VerticalAlignment="Center" />
+			<TextBox
+				Grid.Row="10" Grid.Column="1"
+				Watermark="Transfer reference" AcceptsReturn="False"
+				Text="{Binding TransferReferenceFilter, Mode=TwoWay}"/>
 
-			<CheckBox Grid.Row="12" Grid.Column="0" IsChecked="{Binding Uncategorized}" IsThreeState="True" />
-			<TextBlock Grid.Row="12" Grid.Column="1" Text="Uncategorized" VerticalAlignment="Center" />
+			<CheckBox Grid.Row="12" Grid.Column="0" IsChecked="{Binding Reconciled}" IsThreeState="True" />
+			<TextBlock Grid.Row="12" Grid.Column="1" Text="Reconciled" VerticalAlignment="Center" />
+
+			<CheckBox Grid.Row="14" Grid.Column="0" IsChecked="{Binding Uncategorized}" IsThreeState="True" />
+			<TextBlock Grid.Row="14" Grid.Column="1" Text="Uncategorized" VerticalAlignment="Center" />
 		</Grid>
 
 	</StackPanel>

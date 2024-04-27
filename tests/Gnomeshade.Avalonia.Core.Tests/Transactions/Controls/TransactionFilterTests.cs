@@ -14,12 +14,7 @@ namespace Gnomeshade.Avalonia.Core.Tests.Transactions.Controls;
 [TestOf(typeof(TransactionFilter))]
 public sealed class TransactionFilterTests
 {
-	private readonly TransactionFilter _filter;
-
-	public TransactionFilterTests()
-	{
-		_filter = new(new StubbedActivityService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
-	}
+	private readonly TransactionFilter _filter = new(new StubbedActivityService(), SystemClock.Instance, DateTimeZoneProviders.Tzdb);
 
 	[Test]
 	public void Filter_ShouldBeFalseIfTransferSumIsZero()
@@ -30,8 +25,8 @@ public sealed class TransactionFilterTests
 			null,
 			null,
 			[
-				new("EUR", false, 100, "Foo", "→", false, "Bar", "Bar", "EUR", 100),
-				new("EUR", false, 100, "Foo", "←", false, "Bar", "Bar", "EUR", 100)
+				new(new(), "EUR", false, 100, "Foo", "→", false, "Bar", "Bar", "EUR", 100),
+				new(new(), "EUR", false, 100, "Foo", "←", false, "Bar", "Bar", "EUR", 100)
 			],
 			[],
 			[]);

@@ -18,6 +18,8 @@ using NodaTime.Extensions;
 
 using PropertyChanged.SourceGenerator;
 
+using static System.StringComparison;
+
 namespace Gnomeshade.Avalonia.Core.Transactions.Controls;
 
 /// <summary>Values for filtering transactions.</summary>
@@ -101,6 +103,10 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <summary>Gets or sets a value indicating whether to filter categorized/uncategorized transactions.</summary>
 	[Notify]
 	private bool? _uncategorized;
+
+	/// <summary>Gets or sets a value by which to filter transfer references.</summary>
+	[Notify]
+	private string? _transferReferenceFilter;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -192,7 +198,14 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	/// <inheritdoc />
 	protected override bool FilterRow(TransactionOverview overview)
 	{
-		if (SelectedAccount is null && SelectedCounterparty is null && SelectedProduct is null && SelectedCategory is null && SelectedLoan is null && Reconciled is null && Uncategorized is null)
+		if (SelectedAccount is null &&
+			SelectedCounterparty is null &&
+			SelectedProduct is null &&
+			SelectedCategory is null &&
+			SelectedLoan is null &&
+			Reconciled is null &&
+			Uncategorized is null &&
+			TransferReferenceFilter is null)
 		{
 			return true;
 		}
@@ -204,7 +217,8 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 			IsCategorySelected(overview) &&
 			IsLoanSelected(overview) &&
 			IsReconciled(overview) &&
-			IsUncategorized(overview);
+			IsUncategorized(overview) &&
+			TransferFilterMatched(overview);
 	}
 
 	private bool IsAccountSelected(TransactionOverview overview)
@@ -312,5 +326,18 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 			transferSums.Zip(purchaseSums).All(tuple => Math.Abs(tuple.First.Item2) == Math.Abs(tuple.Second.Item2)));
 
 		return uncategorized ? !categorized : categorized;
+	}
+
+	private bool TransferFilterMatched(TransactionOverview overview)
+	{
+		if (TransferReferenceFilter is not { } filter || string.IsNullOrWhiteSpace(filter))
+		{
+			return true;
+		}
+
+		return overview.Transfers.Any(transfer =>
+			(transfer.Transfer.BankReference?.Contains(filter, OrdinalIgnoreCase) ?? false) ||
+			(transfer.Transfer.ExternalReference?.Contains(filter, OrdinalIgnoreCase) ?? false) ||
+			(transfer.Transfer.InternalReference?.Contains(filter, OrdinalIgnoreCase) ?? false));
 	}
 }

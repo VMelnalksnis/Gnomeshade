@@ -16,21 +16,18 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 
+using static System.ComponentModel.ListSortDirection;
+
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
 public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
 {
 	private static readonly DataGridSortDescription[] _sortDescriptions =
-	{
-		DataGridSortDescription.FromComparer(
-			new TransactionOverviewComparer(overview => overview?.Date),
-			ListSortDirection.Descending),
-
-		DataGridSortDescription.FromComparer(
-			new TransactionOverviewComparer(overview => overview?.ReconciledAt),
-			ListSortDirection.Descending),
-	};
+	[
+		DataGridSortDescription.FromComparer(new TransactionOverviewComparer(overview => overview?.Date), Descending),
+		DataGridSortDescription.FromComparer(new TransactionOverviewComparer(overview => overview?.ReconciledAt), Descending)
+	];
 
 	private readonly IGnomeshadeClient _gnomeshadeClient;
 	private readonly ICommandFactory _commandFactory;
@@ -275,6 +272,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 			nameof(TransactionFilter.InvertCategory) or
 			nameof(TransactionFilter.SelectedLoan) or
 			nameof(TransactionFilter.InvertLoan) or
+			nameof(TransactionFilter.TransferReferenceFilter) or
 			nameof(TransactionFilter.Reconciled) or
 			nameof(TransactionFilter.Uncategorized))
 		{
