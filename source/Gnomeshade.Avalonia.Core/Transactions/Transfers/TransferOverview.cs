@@ -19,9 +19,6 @@ public sealed class TransferOverview : PropertyChangedBase
 	/// <param name="targetAmount">The amount deposited into the target account for this transfer.</param>
 	/// <param name="targetAccount">The name of the target account.</param>
 	/// <param name="targetCurrency">The alphabetic code of the target currency.</param>
-	/// <param name="bankReference">The bank reference code of this transfer.</param>
-	/// <param name="externalReference">The external reference code of this transfer.</param>
-	/// <param name="internalReference">The internal reference code of this transfer.</param>
 	/// <param name="order">The order of the transfer within a transaction.</param>
 	/// <param name="bookedAt">The point in time when this transaction was posted to an account on the account servicer accounting books.</param>
 	/// <param name="valuedAt">The point in time when assets become available in case of deposit, or when assets cease to be available in case of withdrawal.</param>
@@ -33,9 +30,6 @@ public sealed class TransferOverview : PropertyChangedBase
 		decimal targetAmount,
 		string targetAccount,
 		string targetCurrency,
-		string? bankReference,
-		string? externalReference,
-		string? internalReference,
 		uint? order,
 		DateTimeOffset? bookedAt,
 		DateTimeOffset? valuedAt)
@@ -47,9 +41,6 @@ public sealed class TransferOverview : PropertyChangedBase
 		TargetAmount = targetAmount;
 		TargetAccount = targetAccount;
 		TargetCurrency = targetCurrency;
-		BankReference = bankReference;
-		ExternalReference = externalReference;
-		InternalReference = internalReference;
 		Order = order;
 		BookedAt = bookedAt;
 		ValuedAt = valuedAt;
@@ -75,15 +66,6 @@ public sealed class TransferOverview : PropertyChangedBase
 
 	/// <summary>Gets the alphabetic code of the target currency.</summary>
 	public string TargetCurrency { get; }
-
-	/// <summary>Gets the bank reference code of this transfer.</summary>
-	public string? BankReference { get; }
-
-	/// <summary>Gets the external reference code of this transfer.</summary>
-	public string? ExternalReference { get; }
-
-	/// <summary>Gets the internal reference code of this transfer.</summary>
-	public string? InternalReference { get; }
 
 	/// <summary>Gets the order of the transfer within a transaction.</summary>
 	public uint? Order { get; }

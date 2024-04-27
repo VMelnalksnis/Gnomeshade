@@ -29,9 +29,6 @@ internal static class TransferExtensions
 			transfer.TargetAmount,
 			targetAccount.Name,
 			targetCurrency.CurrencyAlphabeticCode,
-			transfer.BankReference,
-			transfer.ExternalReference,
-			transfer.InternalReference,
 			transfer.Order,
 			transfer.BookedAt?.InZone(timeZone).ToDateTimeOffset(),
 			transfer.ValuedAt?.InZone(timeZone).ToDateTimeOffset());

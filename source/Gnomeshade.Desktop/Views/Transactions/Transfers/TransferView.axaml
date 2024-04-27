@@ -27,32 +27,8 @@
 			SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
 			AutoGenerateColumns="False" IsReadOnly="False"
 			HorizontalScrollBarVisibility="Auto"
-			CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserSortColumns="True">
+			CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserSortColumns="False">
 			<DataGrid.Columns>
-				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
-					<DataTemplate x:DataType="transfers:TransferOverview">
-						<StackPanel
-							Orientation="Horizontal" Spacing="5" Margin="5 0"
-							VerticalAlignment="Center" HorizontalAlignment="Right">
-							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
-							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-							<TextBlock Text="from" />
-							<TextBlock Text="{Binding SourceAccount, Mode=OneWay}" />
-						</StackPanel>
-					</DataTemplate>
-				</DataGridTemplateColumn>
-				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
-					<DataTemplate x:DataType="transfers:TransferOverview">
-						<StackPanel
-							Orientation="Horizontal" Spacing="5" Margin="5 0"
-							VerticalAlignment="Center" HorizontalAlignment="Right">
-							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
-							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
-							<TextBlock Text="to" />
-							<TextBlock Text="{Binding TargetAccount, Mode=OneWay}" />
-						</StackPanel>
-					</DataTemplate>
-				</DataGridTemplateColumn>
 				<DataGridTemplateColumn
 					Header="Date" IsReadOnly="True"
 					SortMemberPath="Date" CanUserSort="True">
@@ -63,18 +39,47 @@
 							Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
 					</DataTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTextColumn
-					x:DataType="transfers:TransferOverview"
-					Header="Bank" IsReadOnly="True"
-					Binding="{Binding BankReference, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="transfers:TransferOverview"
-					Header="External" IsReadOnly="True"
-					Binding="{Binding ExternalReference, Mode=OneWay}" />
-				<DataGridTextColumn
-					x:DataType="transfers:TransferOverview"
-					Header="Internal" IsReadOnly="True"
-					Binding="{Binding InternalReference, Mode=OneWay}" />
+				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Left">
+							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							Text="{Binding SourceAccount, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="→" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Left">
+							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							Text="{Binding TargetAccount, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 
 			<Interaction.Behaviors>
