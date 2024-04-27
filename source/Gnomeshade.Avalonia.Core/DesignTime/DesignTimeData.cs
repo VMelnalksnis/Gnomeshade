@@ -86,7 +86,7 @@ public static class DesignTimeData
 	public static ImportViewModel ImportViewModel { get; } = new(ActivityService, GnomeshadeClient, new DesignTimeOptionsMonitor<PreferencesOptions>());
 
 	/// <summary>Gets an instance of <see cref="LoginViewModel"/> for use during design time.</summary>
-	public static LoginViewModel LoginViewModel { get; } = new(ActivityService, AuthenticationService);
+	public static LoginViewModel LoginViewModel { get; } = new(ActivityService, AuthenticationService, new DesignTimeOptionsMonitor<UserConfiguration>());
 
 	/// <summary>Gets an instance of <see cref="ProductUpsertionViewModel"/> for use during design time.</summary>
 	public static ProductUpsertionViewModel ProductUpsertionViewModel { get; } =

@@ -5,9 +5,12 @@
 using System;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Client.Results;
 using Gnomeshade.WebApi.Models.Authentication;
+
+using Microsoft.Extensions.Options;
 
 using PropertyChanged.SourceGenerator;
 
@@ -17,6 +20,7 @@ namespace Gnomeshade.Avalonia.Core.Authentication;
 public sealed partial class LoginViewModel : ViewModelBase
 {
 	private readonly IAuthenticationService _authenticationService;
+	private readonly IDisposable? _configurationChangeScope;
 
 	/// <summary>Gets or sets the username entered by the user.</summary>
 	[Notify]
@@ -26,13 +30,22 @@ public sealed partial class LoginViewModel : ViewModelBase
 	[Notify]
 	private string? _password;
 
+	/// <summary>Gets or sets a value indicating whether external authentication is configured.</summary>
+	[Notify]
+	private bool _externalAuthenticationConfigured;
+
 	/// <summary>Initializes a new instance of the <see cref="LoginViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="authenticationService">Service for handling authentication.</param>
-	public LoginViewModel(IActivityService activityService, IAuthenticationService authenticationService)
+	/// <param name="userConfiguration">Options monitor of user preferences.</param>
+	public LoginViewModel(
+		IActivityService activityService,
+		IAuthenticationService authenticationService,
+		IOptionsMonitor<UserConfiguration> userConfiguration)
 		: base(activityService)
 	{
 		_authenticationService = authenticationService;
+		_configurationChangeScope = userConfiguration.OnChange(configuration => ExternalAuthenticationConfigured = configuration.Oidc is not null);
 	}
 
 	/// <summary>Raised when a user has successfully logged in.</summary>
@@ -94,6 +107,15 @@ public sealed partial class LoginViewModel : ViewModelBase
 			default:
 				ActivityService.ShowErrorNotification($"Unexpected login result: {loginResult}");
 				break;
+		}
+	}
+
+	/// <inheritdoc />
+	protected override void Dispose(bool disposing)
+	{
+		if (disposing)
+		{
+			_configurationChangeScope?.Dispose();
 		}
 	}
 
