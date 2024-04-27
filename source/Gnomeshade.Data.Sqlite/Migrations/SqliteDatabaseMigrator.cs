@@ -4,6 +4,7 @@
 
 using DbUp;
 using DbUp.Builder;
+using DbUp.Engine;
 using DbUp.SQLite.Helpers;
 
 using Gnomeshade.Data.Migrations;
@@ -15,8 +16,11 @@ namespace Gnomeshade.Data.Sqlite.Migrations;
 
 internal sealed class SqliteDatabaseMigrator : DatabaseMigrator<SqliteConnection>
 {
-	public SqliteDatabaseMigrator(ILogger<SqliteDatabaseMigrator> logger, SqliteConnection connection)
-		: base(logger, connection)
+	public SqliteDatabaseMigrator(
+		ILogger<SqliteDatabaseMigrator> logger,
+		SqliteConnection connection,
+		IScriptPreprocessor? scriptPreprocessor = null)
+		: base(logger, connection, scriptPreprocessor)
 	{
 	}
 

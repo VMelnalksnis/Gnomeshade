@@ -7,6 +7,7 @@ using System.Reflection;
 
 using DbUp;
 using DbUp.Builder;
+using DbUp.Engine;
 
 using Gnomeshade.Data.Migrations;
 
@@ -23,8 +24,9 @@ internal sealed class PostgreSQLDatabaseMigrator : DatabaseMigrator<NpgsqlConnec
 	public PostgreSQLDatabaseMigrator(
 		ILogger<PostgreSQLDatabaseMigrator> logger,
 		NpgsqlConnection connection,
-		NpgsqlDataSource dataSource)
-		: base(logger, connection)
+		NpgsqlDataSource dataSource,
+		IScriptPreprocessor? scriptPreprocessor = null)
+		: base(logger, connection, scriptPreprocessor)
 	{
 		_dataSource = dataSource;
 	}

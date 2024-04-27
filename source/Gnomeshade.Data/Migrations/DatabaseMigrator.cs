@@ -8,6 +8,7 @@ using System.Linq;
 
 using DbUp;
 using DbUp.Builder;
+using DbUp.Engine;
 using DbUp.Engine.Output;
 
 using Microsoft.Extensions.Logging;
@@ -21,13 +22,19 @@ public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 	where TConnection : DbConnection
 {
 	private readonly ILogger<DatabaseMigrator<TConnection>> _logger;
+	private readonly IScriptPreprocessor? _scriptPreprocessor;
 
 	/// <summary>Initializes a new instance of the <see cref="DatabaseMigrator{TConnection}"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="connection">A connection to the database to which to apply migrations to.</param>
-	protected DatabaseMigrator(ILogger<DatabaseMigrator<TConnection>> logger, TConnection connection)
+	/// <param name="scriptPreprocessor">An optional script preprocessor.</param>
+	protected DatabaseMigrator(
+		ILogger<DatabaseMigrator<TConnection>> logger,
+		TConnection connection,
+		IScriptPreprocessor? scriptPreprocessor = null)
 	{
 		Connection = connection;
+		_scriptPreprocessor = scriptPreprocessor;
 		_logger = logger;
 
 		UpgradeLog = new DatabaseUpgradeLogger<DatabaseMigrator<TConnection>>(logger);
@@ -46,14 +53,19 @@ public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 
 		var migrationScriptAssemblies = new[] { typeof(DatabaseMigrator<>).Assembly, GetType().Assembly };
 
-		var upgradeEngine = GetBuilder(DeployChanges.To)
+		var builder = GetBuilder(DeployChanges.To)
 			.WithScriptsEmbeddedInAssemblies(migrationScriptAssemblies, ScriptFilter)
 			.WithScriptNameComparer(new MigrationScriptNameComparer())
 			.WithTransaction()
 			.LogScriptOutput()
-			.LogTo(UpgradeLog)
-			.Build();
+			.LogTo(UpgradeLog);
 
+		if (_scriptPreprocessor is { } preprocessor)
+		{
+			builder = builder.WithPreprocessor(preprocessor);
+		}
+
+		var upgradeEngine = builder.Build();
 		if (!upgradeEngine.IsUpgradeRequired())
 		{
 			MigrationNotRequired();

@@ -4,9 +4,12 @@
 
 using System.Collections.Generic;
 
+using DbUp.Engine;
+
 using DotNet.Testcontainers.Containers;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using Testcontainers.PostgreSql;
 
@@ -23,17 +26,23 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 
 		_databaseContainer = new PostgreSqlBuilder()
 			.WithImage($"postgres:{version}")
+			.WithTmpfsMount("/var/lib/postgresql/data")
+			.WithEnvironment("PGDATA", "/var/lib/postgresql/data")
 			.WithCommand("-c", "fsync=off")
+			.WithCommand("-c", "synchronous_commit=off")
 			.WithCommand("-c", "full_page_writes=off")
 			.Build();
 
-		_containers = new IContainer[] { _databaseContainer };
+		_containers = [_databaseContainer];
 	}
 
+	/// <inheritdoc />
 	internal override string Name { get; }
 
+	/// <inheritdoc />
 	protected override IEnumerable<IContainer> Containers => _containers;
 
+	/// <inheritdoc />
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>
 		{
@@ -41,4 +50,10 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 			{ "Database:Provider", "PostgreSQL" },
 		})
 		.Build();
+
+	/// <inheritdoc />
+	protected override void ConfigureServices(IServiceCollection services)
+	{
+		services.AddTransient<IScriptPreprocessor, UnloggedTableScriptPreprocessor>();
+	}
 }

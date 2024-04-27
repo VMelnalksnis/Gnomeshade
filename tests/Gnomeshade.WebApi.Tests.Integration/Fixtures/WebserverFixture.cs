@@ -60,7 +60,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 			File.Delete("MvcTestingAppManifest.json");
 		}
 
-		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration);
+		_webApplicationFactory = new GnomeshadeWebApplicationFactory(configuration, ConfigureServices);
 		_webApplicationFactory.CreateClient();
 	}
 
@@ -96,6 +96,10 @@ public abstract class WebserverFixture : IAsyncDisposable
 		scope.ServiceProvider.GetRequiredService<EntityRepository>();
 
 	protected abstract IConfiguration GetAdditionalConfiguration();
+
+	protected virtual void ConfigureServices(IServiceCollection services)
+	{
+	}
 
 	private async Task<Login> RegisterUser(RegistrationModel registration)
 	{
