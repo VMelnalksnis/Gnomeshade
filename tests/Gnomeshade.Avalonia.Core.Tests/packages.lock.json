@@ -434,7 +434,7 @@
       "gnomeshade.testinghelpers": {
         "type": "Project",
         "dependencies": {
-          "Bogus": "[35.5.0, )",
+          "Bogus": "[35.5.1, )",
           "FluentAssertions": "[6.12.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "Gnomeshade.WebApi.Models": "[1.0.0, )",
@@ -485,9 +485,9 @@
       },
       "Bogus": {
         "type": "CentralTransitive",
-        "requested": "[35.5.0, )",
-        "resolved": "35.5.0",
-        "contentHash": "iCXszbIvvxgfb01bPe/s3R6pQSKX6rpcQWqM7wqDt+lsMogR6fkSWBwqOxLpdXmMB7mgZNNk2hm2M1shoIiekA=="
+        "requested": "[35.5.1, )",
+        "resolved": "35.5.1",
+        "contentHash": "GBp2peww04szEJ0GlBlzCYilFDaSkL7Ja4m37YeTRjC/mgoiZnUuifmgUxVD/oLU2MC1uoXfQYK91doGp7Zkpg=="
       },
       "IdentityModel.OidcClient": {
         "type": "CentralTransitive",
