@@ -1808,7 +1808,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia.Controls.DataGrid": "[11.0.10, )",
-          "Avalonia.Xaml.Interactivity": "[11.0.10.6, )",
+          "Avalonia.Xaml.Interactivity": "[11.0.10.9, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[6.0.0, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-rc2, )",
@@ -1950,9 +1950,9 @@
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "CentralTransitive",
-        "requested": "[11.0.10.6, )",
-        "resolved": "11.0.10.6",
-        "contentHash": "PAw7c57d3RBFC1Goftu/x2xkXPUx/1nKwBkxAeGFOziea6R7UmyT8Jy0M9bUEGdEsPbYByhIwcJAehWHFPerOQ==",
+        "requested": "[11.0.10.9, )",
+        "resolved": "11.0.10.9",
+        "contentHash": "B9M5ylpslHvgi8MLFjE1yIzNBQEl4Z7MdePT7y3Z9wFts2Mzc+EPZqPXr5lyDDD2nBiKwfeiNnukd0LyYvN/ug==",
         "dependencies": {
           "Avalonia": "11.0.0"
         }
