@@ -3,6 +3,8 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Text.Json.Serialization.Metadata;
 
 using AutoMapper;
@@ -122,8 +124,10 @@ public class Startup
 		services.AddV1ImportingServices();
 		services
 			.AddNordigenDotNet(_configuration)
-			.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(3, retry =>
-				TimeSpan.FromSeconds(Math.Pow(2, retry)) + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1000))))
+			.AddPolicyHandler(Policy<HttpResponseMessage>
+				.HandleResult(message => message.StatusCode is HttpStatusCode.TooManyRequests)
+				.WaitAndRetryAsync(5, GetExponentialDelayWithJitter))
+			.AddTransientHttpErrorPolicy(builder => builder.WaitAndRetryAsync(3, GetExponentialDelayWithJitter))
 			.AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(10, TimeSpan.FromMinutes(5)));
 
 		services.AddPaperlessDotNet(_configuration);
@@ -153,5 +157,10 @@ public class Startup
 		});
 
 		application.UseGnomeshadeApiExplorer();
+	}
+
+	private static TimeSpan GetExponentialDelayWithJitter(int retry)
+	{
+		return TimeSpan.FromSeconds(Math.Pow(2, retry)) + TimeSpan.FromMilliseconds(Random.Shared.Next(0, 1000));
 	}
 }
