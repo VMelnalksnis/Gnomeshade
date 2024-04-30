@@ -5,15 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
-
-using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -32,26 +30,22 @@ public sealed class Register : PageModel
 	private readonly ILogger<Register> _logger;
 	private readonly SignInManager<ApplicationUser> _signInManager;
 	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly IEmailSender _emailSender;
 	private readonly UserUnitOfWork _userUnitOfWork;
 
 	/// <summary>Initializes a new instance of the <see cref="Register"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="signInManager">Application user sign in manager.</param>
 	/// <param name="userManager">Application user manager.</param>
-	/// <param name="emailSender">Registration confirmation email sender.</param>
 	/// <param name="userUnitOfWork">Application user persistence store.</param>
 	public Register(
 		ILogger<Register> logger,
 		SignInManager<ApplicationUser> signInManager,
 		UserManager<ApplicationUser> userManager,
-		IEmailSender emailSender,
 		UserUnitOfWork userUnitOfWork)
 	{
 		_logger = logger;
 		_signInManager = signInManager;
 		_userManager = userManager;
-		_emailSender = emailSender;
 		_userUnitOfWork = userUnitOfWork;
 	}
 
@@ -84,7 +78,6 @@ public sealed class Register : PageModel
 		{
 			var user = new ApplicationUser(Input.UserName)
 			{
-				Email = Input.Email,
 				FullName = Input.FullName,
 			};
 
@@ -124,14 +117,9 @@ public sealed class Register : PageModel
 					throw new InvalidOperationException("Expected callback url to have a value");
 				}
 
-				await _emailSender.SendEmailAsync(
-					Input.Email,
-					"Confirm your email",
-					$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
 				if (_userManager.Options.SignIn.RequireConfirmedAccount)
 				{
-					return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+					throw new NotSupportedException("Email confirmation is not supported");
 				}
 
 				await _signInManager.SignInAsync(user, false);
@@ -149,15 +137,9 @@ public sealed class Register : PageModel
 	}
 
 	/// <summary>Data needed to register a user.</summary>
-	[UsedImplicitly(ImplicitUseKindFlags.Assign, ImplicitUseTargetFlags.Members)]
+	[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 	public sealed class InputModel
 	{
-		/// <summary>Gets or sets the email of the user.</summary>
-		[Required]
-		[EmailAddress]
-		[Display(Name = "Email")]
-		public string Email { get; set; } = null!;
-
 		/// <summary>Gets or sets the full name of the user.</summary>
 		[Required]
 		[Display(Name = "Full Name")]

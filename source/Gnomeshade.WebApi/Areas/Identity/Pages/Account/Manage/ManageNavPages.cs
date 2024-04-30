@@ -13,8 +13,6 @@ internal static class ManageNavPages
 {
 	internal static string Index => "Index";
 
-	internal static string Email => "Email";
-
 	internal static string ChangePassword => "ChangePassword";
 
 	internal static string ExternalLogins => "ExternalLogins";
@@ -24,8 +22,6 @@ internal static class ManageNavPages
 	internal static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
 	internal static string? IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
-
-	internal static string? EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
 	internal static string? ChangePasswordNavClass(ViewContext viewContext) =>
 		PageNavClass(viewContext, ChangePassword);

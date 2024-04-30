@@ -109,7 +109,6 @@ public sealed class EndpointTests : WebserverTests
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
 		yield return new Uri("/swagger/v1/swagger.json", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
-		yield return new Uri("/Identity/Account/ResendEmailConfirmation", UriKind.Relative);
 	}
 
 	private static IEnumerable AdminEndpoints()
@@ -122,13 +121,11 @@ public sealed class EndpointTests : WebserverTests
 		yield return new Uri("/Identity/Account/Manage", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/ChangePassword", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/DeletePersonalData", UriKind.Relative);
-		yield return new Uri("/Identity/Account/Manage/Email", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/EnableAuthenticator", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/ExternalLogins", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/PersonalData", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/ResetAuthenticator", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Manage/TwoFactorAuthentication", UriKind.Relative);
-		yield return new Uri("/Identity/Account/ForgotPasswordConfirmation", UriKind.Relative);
 		yield return new Uri("/Identity/Account/AccessDenied", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Lockout", UriKind.Relative);
 		yield return new Uri("/Identity/Account/Logout", UriKind.Relative);
