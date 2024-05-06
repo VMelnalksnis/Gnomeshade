@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4.1.4
+      - uses: actions/checkout@v4.1.5
       - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v4.0.2
         with:
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4.1.4
+      - uses: actions/checkout@v4.1.5
       - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v4.0.2
         with:
@@ -108,7 +108,7 @@ jobs:
           - ubuntu2004
           - ubuntu2204
     steps:
-      - uses: actions/checkout@v4.1.4
+      - uses: actions/checkout@v4.1.5
       - uses: actions/download-artifact@v4.1.7
         id: download
         with:
@@ -127,14 +127,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4.1.4
+      - uses: actions/checkout@v4.1.5
       - run: ./deployment/test-docker.sh ${{ github.run_number }} ${{ secrets.DEMO_ADMIN_PASSWORD }}
 
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.4
+      - uses: actions/checkout@v4.1.5
       - uses: actions/setup-dotnet@v4.0.0
       - uses: actions/setup-node@v4.0.2
         with:
