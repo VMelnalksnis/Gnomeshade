@@ -152,7 +152,7 @@ jobs:
 
       - name: ReSharper annotations
         timeout-minutes: 10
-        uses: VMelnalksnis/resharper-inspect-action@v0.3.0
+        uses: VMelnalksnis/resharper-inspect-action@v0.3.1
         with:
           solution: Gnomeshade.sln
           resharper-version: 2023.3.0
