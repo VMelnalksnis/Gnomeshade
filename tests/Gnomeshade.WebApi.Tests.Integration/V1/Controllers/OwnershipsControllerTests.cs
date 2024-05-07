@@ -13,13 +13,8 @@ using Gnomeshade.WebApi.V1.Controllers;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(OwnershipsController))]
-public sealed class OwnershipsControllerTests : WebserverTests
+public sealed class OwnershipsControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
-	public OwnershipsControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
-
 	[Test]
 	public async Task Get_ShouldContainUserOwnership()
 	{
@@ -54,7 +49,7 @@ public sealed class OwnershipsControllerTests : WebserverTests
 		await client.PutOwnershipAsync(ownershipId, ownership);
 
 		var ownerships = await client.GetOwnershipsAsync();
-		ownerships.Should().HaveCount(2);
+		ownerships.Should().ContainSingle(o => o.Id == ownershipId);
 
 		await client.DeleteOwnershipAsync(ownershipId);
 		(await client.GetOwnershipsAsync()).Should().NotContain(o => o.Id == ownershipId);
