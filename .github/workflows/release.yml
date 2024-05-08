@@ -194,52 +194,19 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: '.'
 
-      - uses: azure/appservice-settings@v1
+      - uses: azure/cli@v2.0.0
+        name: Update appservice settings
         with:
-          app-name: ${{ env.AZURE_APP_NAME }}
-          app-settings-json: |
-            [
-                {
-                    "name": "Admin__Password",
-                    "value": "${{ secrets.DEMO_ADMIN_PASSWORD }}",
-                    "slotSetting": false
-                },
-                {
-                    "name": "ConnectionStrings__Gnomeshade",
-                    "value": "Data Source=/tmp/gnomeshade.db",
-                    "slotSetting": false
-                },
-                {
-                    "name": "Database__Provider",
-                    "value": "Sqlite",
-                    "slotSetting": false
-                },
-                {
-                    "name": "Jwt__Secret",
-                    "value": "${{ secrets.DEMO_JWT_SECRET }}",
-                    "slotSetting": false
-                },
-                {
-                    "name": "Jwt__ValidAudience",
-                    "value": "${{ env.AZURE_APP_DOMAIN }}",
-                    "slotSetting": false
-                },
-                {
-                    "name": "Jwt__ValidIssuer",
-                    "value": "${{ env.AZURE_APP_DOMAIN }}",
-                    "slotSetting": false
-                },
-                {
-                    "name": "OAuth__GitHub__ClientId",
-                    "value": "${{ secrets.DEMO_GITHUB_ID }}",
-                    "slotSetting": false
-                },
-                {
-                    "name": "OAuth__GitHub__ClientSecret",
-                    "value": "${{ secrets.DEMO_GITHUB_SECRET }}",
-                    "slotSetting": false
-                }
-            ]
+          inlineScript: |
+            az configure --defaults web=${{ env.AZURE_APP_NAME }}
+            az webapp config appsettings set --settings Admin__Password="${{ secrets.DEMO_ADMIN_PASSWORD }}"
+            az webapp config appsettings set --settings ConnectionStrings__Gnomeshade="Data Source=/tmp/gnomeshade.db"
+            az webapp config appsettings set --settings Database__Provider="Sqlite"
+            az webapp config appsettings set --settings Jwt__Secret="${{ secrets.DEMO_JWT_SECRET }}"
+            az webapp config appsettings set --settings Jwt__ValidAudience="${{ env.AZURE_APP_DOMAIN }}"
+            az webapp config appsettings set --settings Jwt__ValidIssuer="${{ env.AZURE_APP_DOMAIN }}"
+            az webapp config appsettings set --settings OAuth__GitHub__ClientId="${{ secrets.DEMO_GITHUB_ID }}"
+            az webapp config appsettings set --settings OAuth__GitHub__ClientSecret="${{ secrets.DEMO_GITHUB_SECRET }}"
 
       - run: wget --retry-connrefused --retry-on-http-error=502 --waitretry=5 --read-timeout=120 --timeout=120 -t 5 ${{ env.AZURE_APP_DOMAIN }}
 
