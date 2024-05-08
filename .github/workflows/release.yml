@@ -199,7 +199,7 @@ jobs:
         with:
           inlineScript: |
             az configure --defaults web=${{ env.AZURE_APP_NAME }}
-            az configure --defaults group=${{ env.AZURE_RESOURCE_GROUP }}
+            az configure --defaults group=${{ secrets.AZURE_RESOURCE_GROUP }}
             az webapp config appsettings set --settings Admin__Password="${{ secrets.DEMO_ADMIN_PASSWORD }}"
             az webapp config appsettings set --settings ConnectionStrings__Gnomeshade="Data Source=/tmp/gnomeshade.db"
             az webapp config appsettings set --settings Database__Provider="Sqlite"
