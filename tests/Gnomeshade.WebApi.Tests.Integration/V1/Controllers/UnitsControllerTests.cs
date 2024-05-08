@@ -73,6 +73,33 @@ public sealed class UnitsControllerTests(WebserverFixture fixture) : WebserverTe
 		_ = await PutAndGet(productId, anotherCreationModel);
 	}
 
+	[Test]
+	public async Task GetDefaultUnits()
+	{
+		var owners = await _client.GetOwnersAsync();
+		var system = owners.Should().ContainSingle(owner => owner.Name == "SYSTEM").Subject;
+
+		var units = await _client.GetUnitsAsync();
+		var defaultUnitNames = units
+			.Where(unit => unit.OwnerId == system.Id)
+			.Select(unit => unit.Name);
+
+		defaultUnitNames.Should().BeEquivalentTo([
+			"Kilogram",
+			"Gram",
+			"Liter",
+			"Milliliter",
+			"Second",
+			"Minute",
+			"Hour",
+			"Day",
+			"Week",
+			"Month",
+			"Year",
+			"Piece",
+		]);
+	}
+
 	private static UnitCreation CreateUniqueUnit()
 	{
 		return new() { Name = Guid.NewGuid().ToString("N") };

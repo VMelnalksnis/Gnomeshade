@@ -43,9 +43,12 @@ public sealed class UnitRepositoryTests
 			ModifiedAt = getUnit.ModifiedAt,
 		};
 
-		getUnit.Should().BeEquivalentTo(expectedUnit);
-		findUnit.Should().BeEquivalentTo(expectedUnit);
-		allUnits.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedUnit);
+		using (new AssertionScope())
+		{
+			getUnit.Should().BeEquivalentTo(expectedUnit);
+			findUnit.Should().BeEquivalentTo(expectedUnit);
+			allUnits.Should().ContainSingle(unit => unit.Id == id).Which.Should().BeEquivalentTo(expectedUnit);
+		}
 
 		await _repository.DeleteAsync(id, TestUser.Id);
 
