@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Gnomeshade.Data;
@@ -18,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
@@ -101,20 +99,6 @@ public sealed class Register : PageModel
 				{
 					await _userManager.DeleteAsync(identityUser);
 					throw;
-				}
-
-				var userId = await _userManager.GetUserIdAsync(user);
-				var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-				code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-				var callbackUrl = Url.Page(
-					"/Account/ConfirmEmail",
-					null,
-					new { area = "Identity", userId, code, returnUrl },
-					Request.Scheme);
-
-				if (callbackUrl is null)
-				{
-					throw new InvalidOperationException("Expected callback url to have a value");
 				}
 
 				if (_userManager.Options.SignIn.RequireConfirmedAccount)
