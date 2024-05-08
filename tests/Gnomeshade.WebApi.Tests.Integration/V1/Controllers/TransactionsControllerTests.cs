@@ -394,6 +394,44 @@ public sealed class TransactionsControllerTests(WebserverFixture fixture) : Webs
 		detailedTransactions.Should().ContainEquivalentOf(detailedTransaction);
 	}
 
+	[Test]
+	public async Task DateFilter_ShouldReturnAllTransfersIfSingleMatches()
+	{
+		var counterparties = await _client.GetCounterpartiesAsync();
+		var receiver = await _client.GetMyCounterpartyAsync();
+		var issuer = counterparties.First(counterparty => counterparty.Id != receiver.Id);
+
+		var transaction = await _client.CreateDetailedTransactionAsync(
+			_account1.Id,
+			_account2.Id,
+			_productId,
+			issuer.Id,
+			receiver.Id);
+
+		var initialTransfer = transaction.Transfers.Should().ContainSingle().Subject;
+
+		var transferId = Guid.NewGuid();
+		await _client.PutTransferAsync(transferId, new()
+		{
+			TransactionId = transaction.Id,
+			SourceAmount = 10.5m,
+			SourceAccountId = _account1.Currencies.First().Id,
+			TargetAmount = 10.5m,
+			TargetAccountId = _account2.Currencies.First().Id,
+			BookedAt = transaction.Transfers.First().BookedAt!.Value + Duration.FromDays(7),
+		});
+
+		transaction = await _client.GetDetailedTransactionAsync(transaction.Id);
+
+		transaction.Transfers.Should().HaveCount(2);
+
+		var transactions = await _client.GetDetailedTransactionsAsync(new(
+			initialTransfer.BookedAt!.Value - Duration.FromHours(1),
+			initialTransfer.BookedAt.Value + Duration.FromHours(1)));
+
+		transactions.Should().ContainSingle(t => t.Id == transaction.Id).Which.Transfers.Should().HaveCount(2);
+	}
+
 	private async Task<Account> CreateAccountAsync(Currency currency, Counterparty counterparty)
 	{
 		var creationModel = new AccountCreation

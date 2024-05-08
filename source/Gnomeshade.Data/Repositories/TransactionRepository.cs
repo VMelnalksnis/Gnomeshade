@@ -81,9 +81,11 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Logger.GetAll();
 		return GetDetailedTransactions(new(
 			@$"{Queries.Transaction.SelectDetailed}
- AND (((transfers.valued_at >= @from OR transfers.booked_at >= @from)
-  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to))
-   OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
+  AND (transactions.id IN (SELECT t.transaction_id
+						   FROM transfers t
+						   WHERE (t.valued_at >= @from OR t.booked_at >= @from)
+							 AND (t.valued_at <= @to OR t.booked_at <= @to))
+	OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
 			new { from, to, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
@@ -111,9 +113,11 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		Logger.GetAll();
 		return GetDetailedTransactions2(new(
 			@$"{Queries.Transaction.SelectDetailed2}
- AND (((transfers.valued_at >= @from OR transfers.booked_at >= @from)
-  AND (transfers.valued_at <= @to OR transfers.booked_at <= @to))
-   OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
+  AND (transactions.id IN (SELECT t.transaction_id
+						   FROM transfers t
+						   WHERE (t.valued_at >= @from OR t.booked_at >= @from)
+							 AND (t.valued_at <= @to OR t.booked_at <= @to))
+	OR (transfers.valued_at IS NULL AND transfers.booked_at IS NULL))",
 			new { from, to, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
 	}
