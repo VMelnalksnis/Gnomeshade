@@ -77,6 +77,7 @@ public sealed partial class UnitUpsertionViewModel : UpsertionViewModel
 		ParentUnit = existingUnit.ParentUnitId is null
 			? null
 			: Units.Single(unit => unit.Id == existingUnit.ParentUnitId.Value);
+		InverseMultiplier = existingUnit.InverseMultiplier;
 	}
 
 	/// <inheritdoc />
