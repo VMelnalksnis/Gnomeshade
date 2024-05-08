@@ -7,6 +7,7 @@
 	xmlns:products="clr-namespace:Gnomeshade.WebApi.Models.Products;assembly=Gnomeshade.WebApi.Models"
 	xmlns:owners="clr-namespace:Gnomeshade.WebApi.Models.Owners;assembly=Gnomeshade.WebApi.Models"
 	xmlns:loans="clr-namespace:Gnomeshade.WebApi.Models.Loans;assembly=Gnomeshade.WebApi.Models"
+	xmlns:splits="clr-namespace:Gnomeshade.Avalonia.Core.Reports.Splits;assembly=Gnomeshade.Avalonia.Core"
 	x:Class="Gnomeshade.Desktop.App"
 	RequestedThemeVariant="Dark">
 
@@ -46,6 +47,10 @@
 		</DataTemplate>
 
 		<DataTemplate x:DataType="products:Unit">
+			<TextBlock Text="{Binding Name}" />
+		</DataTemplate>
+
+		<DataTemplate x:DataType="splits:IReportSplit">
 			<TextBlock Text="{Binding Name}" />
 		</DataTemplate>
 	</Application.DataTemplates>

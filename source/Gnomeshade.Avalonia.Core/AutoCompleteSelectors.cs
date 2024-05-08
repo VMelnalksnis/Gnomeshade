@@ -38,8 +38,10 @@ internal static class AutoCompleteSelectors
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;
 
+	/// <summary>Gets a delegate for formatting an aggregate function in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Aggregate { get; } = (_, item) => ((IAggregateFunction)item).Name;
 
+	/// <summary>Gets a delegate for formatting a calculation function in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Calculation { get; } = (_, item) => ((ICalculationFunction)item).Name;
 
 	/// <summary>Gets a delegate for formatting a loan in an <see cref="AutoCompleteBox"/>.</summary>

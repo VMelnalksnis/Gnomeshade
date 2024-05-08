@@ -16,18 +16,26 @@ internal static class TransactionExtensions
 		this IEnumerable<DetailedTransaction> transactions,
 		Guid[] inCurrencyIds)
 	{
-		return transactions.SelectMany(transaction => transaction.Transfers.Select(transfer =>
-		{
-			var sourceSelected = inCurrencyIds.Contains(transfer.SourceAccountId);
-			var targetTargetSelected = inCurrencyIds.Contains(transfer.TargetAccountId);
+		decimal sum = 0;
 
-			return (sourceSelected, targetTargetSelected) switch
+		foreach (var transaction in transactions)
+		{
+			for (var index = transaction.Transfers.Count - 1; index >= 0; index--)
 			{
-				(true, true) => 0,
-				(true, false) => -transfer.SourceAmount,
-				(false, true) => transfer.TargetAmount,
-				_ => 0,
-			};
-		})).Sum();
+				var transfer = transaction.Transfers[index];
+				var sourceSelected = inCurrencyIds.Contains(transfer.SourceAccountId);
+				var targetTargetSelected = inCurrencyIds.Contains(transfer.TargetAccountId);
+
+				sum += (sourceSelected, targetTargetSelected) switch
+				{
+					(true, true) => 0,
+					(true, false) => -transfer.SourceAmount,
+					(false, true) => transfer.TargetAmount,
+					_ => 0,
+				};
+			}
+		}
+
+		return sum;
 	}
 }

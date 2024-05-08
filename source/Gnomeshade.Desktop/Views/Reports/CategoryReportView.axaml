@@ -11,26 +11,44 @@
 	x:Class="Gnomeshade.Desktop.Views.Reports.CategoryReportView"
 	x:DataType="reports:CategoryReportViewModel">
 
-	<Grid RowDefinitions="Auto,*">
-		<AutoCompleteBox
-			x:Name="Aggregate" Grid.Row="0"
-			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
-			IsTextCompletionEnabled="True"
-			Watermark="Category"
-			ItemsSource="{Binding Categories}"
-			ItemSelector="{Binding CategorySelector}"
-			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-			IsEnabled="{Binding !IsBusy}">
+	<Grid RowDefinitions="*">
 
-			<Interaction.Behaviors>
-				<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Aggregate">
-					<InvokeCommandAction Command="{Binding RefreshAsync}" />
-				</RoutedEventTriggerBehavior>
-			</Interaction.Behaviors>
-		</AutoCompleteBox>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="150" MaxWidth="300" />
+			<ColumnDefinition Width="4*" />
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+
+
+			<TextBlock HorizontalAlignment="Center" Text="Splits"/>
+			<ComboBox
+				HorizontalAlignment="Stretch"
+				IsTextSearchEnabled="True"
+				ItemsSource="{Binding Splits}"
+				SelectedItem="{Binding SelectedSplit, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}"/>
+
+			<AutoCompleteBox
+				x:Name="Aggregate"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				Watermark="Category"
+				ItemsSource="{Binding Categories}"
+				ItemSelector="{Binding CategorySelector}"
+				SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}">
+
+				<Interaction.Behaviors>
+					<RoutedEventTriggerBehavior RoutedEvent="{x:Static AutoCompleteBox.SelectionChangedEvent}" SourceInteractive="Aggregate">
+						<InvokeCommandAction Command="{Binding RefreshAsync}" />
+					</RoutedEventTriggerBehavior>
+				</Interaction.Behaviors>
+			</AutoCompleteBox>
+		</StackPanel>
 
 		<liveChartsCore:CartesianChart
-			Grid.Row="1"
+			Grid.Column="1"
 			Series="{Binding Series}" XAxes="{Binding XAxes}"
 			ZoomMode="X" LegendPosition="Bottom" TooltipPosition="Top" />
 	</Grid>

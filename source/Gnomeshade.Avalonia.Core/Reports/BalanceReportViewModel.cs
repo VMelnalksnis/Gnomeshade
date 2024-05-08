@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Gnomeshade.Avalonia.Core.Reports.Splits;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 
@@ -31,7 +32,7 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 
 	/// <summary>Gets the data series of balance of the users account over time.</summary>
 	[Notify(Setter.Private)]
-	private List<CandlesticksSeries<FinancialPoint>> _series = [];
+	private List<CandlesticksSeries<FinancialPointI>> _series = [];
 
 	/// <summary>Gets a collection of all accounts of the current user.</summary>
 	[Notify(Setter.Private)]
@@ -48,6 +49,18 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	/// <summary>Gets or sets the selected currency from <see cref="Currencies"/>.</summary>
 	[Notify]
 	private Currency? _selectedCurrency;
+
+	/// <summary>Gets or sets the selected split from <see cref="Splits"/>.</summary>
+	[Notify]
+	private IReportSplit? _selectedSplit = SplitProvider.MonthlySplit;
+
+	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<ICartesianAxis> _yAxes;
+
+	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<ICartesianAxis> _xAxes;
 
 	/// <summary>Initializes a new instance of the <see cref="BalanceReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -66,19 +79,16 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 
 		// If this is not initialized, the chart will throw due to index out of bounds
-		YAxes = [new Axis()];
-		XAxes = [DateAxis.GetXAxis()];
+		_yAxes = [new Axis()];
+		_xAxes = [new Axis()];
 
 		PropertyChanging += OnPropertyChanging;
 		PropertyChanged += OnPropertyChanged;
 		_selectedAccounts.CollectionChanged += SelectedAccountsOnCollectionChanged;
 	}
 
-	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> XAxes { get; }
-
-	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> YAxes { get; }
+	/// <summary>Gets a collection of all available periods.</summary>
+	public IEnumerable<IReportSplit> Splits => SplitProvider.Splits;
 
 	/// <summary>Resets the zoom for all <see cref="XAxes"/> and <see cref="YAxes"/>.</summary>
 	public void ResetZoom()
@@ -111,6 +121,11 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		SelectedAccounts = new(UserAccounts.Where(account => selected.Contains(account.Id)));
 		SelectedCurrency = selectedCurrency is { } id ? Currencies.Single(currency => currency.Id == id) : null;
 
+		if (SelectedSplit is not { } reportSplit)
+		{
+			return;
+		}
+
 		IEnumerable<Account> accounts = SelectedAccounts.Count is not 0 ? SelectedAccounts : UserAccounts;
 
 		var inCurrencyIds = accounts
@@ -133,41 +148,44 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 			.DefaultIfEmpty(currentTime)
 			.ToArray();
 
-		var minDate = new ZonedDateTime(dates.Min(), timeZone);
-		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
-		var splits = minDate.SplitByMonthUntil(maxDate);
+		var startTime = new ZonedDateTime(dates.Min(), timeZone);
+		var endTime = new ZonedDateTime(dates.Max(), timeZone);
 
-		var values = splits.Select(split =>
-		{
-			var splitZonedDate = split.AtStartOfDayInZone(timeZone);
-			var splitInstant = splitZonedDate.ToInstant();
+		var values = reportSplit
+			.GetSplits(startTime, endTime)
+			.Select(date =>
+			{
+				var splitZonedDate = date.AtStartOfDayInZone(timeZone);
+				var splitInstant = splitZonedDate.ToInstant();
 
-			var transactionsBefore = transactions
-				.Where(transaction =>
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).ToInstant() < splitInstant);
+				var transactionsBefore = transactions
+					.Where(transaction =>
+						new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).ToInstant() <
+						splitInstant);
 
-			var transactionsIn = transactions
-				.Where(transaction =>
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Year == splitZonedDate.Year &&
-					new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).Month == splitZonedDate.Month)
-				.ToArray();
+				var transactionsIn = transactions
+					.Where(transaction => reportSplit.Equals(
+						splitZonedDate,
+						new(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone)))
+					.ToArray();
 
-			var sumBefore = transactionsBefore.SumForAccounts(inCurrencyIds);
+				var sumBefore = transactionsBefore.SumForAccounts(inCurrencyIds);
 
-			var sumAfter = sumBefore + transactionsIn.SumForAccounts(inCurrencyIds);
-			var sums = transactionsIn
-				.Select((_, index) => sumBefore + transactionsIn.Where((_, i) => i <= index).SumForAccounts(inCurrencyIds))
-				.ToArray();
+				var sumAfter = sumBefore + transactionsIn.SumForAccounts(inCurrencyIds);
+				var sums = transactionsIn
+					.Select((_, index) =>
+						sumBefore + transactionsIn.Where((_, i) => i <= index).SumForAccounts(inCurrencyIds))
+					.ToArray();
 
-			return new FinancialPoint(
-				split.ToDateTimeUnspecified(),
-				(double?)sums.Concat(new[] { sumBefore, sumAfter }).Max(),
-				(double?)sumBefore,
-				(double?)sumAfter,
-				(double?)sums.Append(sumBefore).Min());
-		});
+				return new FinancialPointI(
+					(double)sums.Concat(new[] { sumBefore, sumAfter }).Max(),
+					(double)sumBefore,
+					(double)sumAfter,
+					(double)sums.Append(sumBefore).Min());
+			});
 
 		Series = [new() { Values = values.ToArray(), Name = counterparty.Name }];
+		XAxes = [reportSplit.GetXAxis(startTime, endTime)];
 	}
 
 	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
@@ -183,6 +201,11 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		if (e.PropertyName is nameof(SelectedAccounts))
 		{
 			SelectedAccounts.CollectionChanged += SelectedAccountsOnCollectionChanged;
+		}
+
+		if (e.PropertyName is nameof(SelectedSplit) && SelectedSplit is not null)
+		{
+			await RefreshAsync();
 		}
 
 		if (!IsBusy && e.PropertyName is nameof(SelectedCurrency))

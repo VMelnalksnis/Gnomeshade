@@ -4,17 +4,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core.Products;
+using Gnomeshade.Avalonia.Core.Reports.Splits;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Transactions;
 
-using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 
@@ -33,15 +34,23 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 
 	/// <summary>Gets all the available categories.</summary>
 	[Notify(Setter.Private)]
-	private List<Category> _categories;
+	private List<Category> _categories = [];
 
 	/// <summary>Gets or sets the category fort which to display the category breakdown for.</summary>
 	[Notify]
 	private Category? _selectedCategory;
 
+	/// <summary>Gets or sets the selected split from <see cref="Splits"/>.</summary>
+	[Notify]
+	private IReportSplit? _selectedSplit = SplitProvider.MonthlySplit;
+
 	/// <summary>Gets the data series of amount spent per month per category.</summary>
 	[Notify(Setter.Private)]
-	private List<StackedColumnSeries<DateTimePoint>> _series;
+	private List<StackedColumnSeries<IndexedPoint>> _series = [];
+
+	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
+	[Notify(Setter.Private)]
+	private List<ICartesianAxis> _xAxes = [new Axis()];
 
 	/// <summary>Initializes a new instance of the <see cref="CategoryReportViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -59,21 +68,24 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_clock = clock;
 
-		_categories = new();
-		_series = new();
-		XAxes = new() { DateAxis.GetXAxis() };
+		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>Gets a delegate for formatting an category in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Category"/>
 	public AutoCompleteSelector<object> CategorySelector => AutoCompleteSelectors.Category;
 
-	/// <summary>Gets the x axes for <see cref="Series"/>.</summary>
-	public List<ICartesianAxis> XAxes { get; }
+	/// <summary>Gets a collection of all available periods.</summary>
+	public IEnumerable<IReportSplit> Splits => SplitProvider.Splits;
 
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
 		Categories = await _gnomeshadeClient.GetCategoriesAsync();
+		if (SelectedSplit is not { } reportSplit)
+		{
+			return;
+		}
+
 		var accounts = await _gnomeshadeClient.GetAccountsAsync();
 		var accountsInCurrency = accounts.SelectMany(account => account.Currencies).ToArray();
 		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
@@ -117,9 +129,9 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			.DefaultIfEmpty(currentTime)
 			.ToList();
 
-		var minDate = new ZonedDateTime(dates.Min(), timeZone);
-		var maxDate = new ZonedDateTime(dates.Max(), timeZone);
-		var splits = minDate.SplitByMonthUntil(maxDate);
+		var startTime = new ZonedDateTime(dates.Min(), timeZone);
+		var endTime = new ZonedDateTime(dates.Max(), timeZone);
+		var splits = reportSplit.GetSplits(startTime, endTime).ToArray();
 
 		var products = await _gnomeshadeClient.GetProductsAsync();
 		var categories = await _gnomeshadeClient.GetCategoriesAsync();
@@ -154,18 +166,19 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			.GroupBy(data => data.Node)
 			.ToArray();
 
-		var series = new List<StackedColumnSeries<DateTimePoint>>(groupings.Length);
+		var series = new List<StackedColumnSeries<IndexedPoint>>(groupings.Length);
 		for (var seriesIndex = 0; seriesIndex < groupings.Length; seriesIndex++)
 		{
-			var values = new DateTimePoint[splits.Count];
+			var values = new IndexedPoint[splits.Length];
 			var categoryGrouping = groupings[seriesIndex];
 
-			for (var valueIndex = 0; valueIndex < splits.Count; valueIndex++)
+			for (var valueIndex = 0; valueIndex < splits.Length; valueIndex++)
 			{
 				var split = splits[valueIndex];
-				var date = split.ToDateTimeUnspecified();
+				var zonedSplit = split.AtStartOfDayInZone(timeZone);
+
 				var purchasesToSum = categoryGrouping
-					.Where(purchase => purchase.Date.Year == split.Year && purchase.Date.Month == split.Month)
+					.Where(purchase => reportSplit.Equals(zonedSplit, purchase.Date))
 					.ToArray();
 
 				var sum = 0m;
@@ -196,60 +209,47 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 					sum += Math.Round(purchase.Purchase.Price * ratio, 2);
 				}
 
-				values[valueIndex] = new(date, (double)sum);
+				values[valueIndex] = new((double)sum);
 			}
 
 			series.Add(new() { Values = values, Name = categoryGrouping.Key?.Name ?? "Uncategorized" });
 		}
 
 		Series = series;
+		XAxes = [reportSplit.GetXAxis(startTime, endTime)];
 	}
 
-	private readonly struct PurchaseData
+	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		public PurchaseData(Purchase purchase, CategoryNode? node, TransactionData transaction)
+		if (e.PropertyName is nameof(SelectedSplit) && SelectedSplit is not null)
 		{
-			Purchase = purchase;
-			Node = node;
-			Date = transaction.Date;
-			Transfers = transaction.Transaction.Transfers;
-			SourceCurrencyIds = transaction.SourceCurrencyIds;
-			TargetCurrencyIds = transaction.TargetCurrencyIds;
+			await RefreshAsync();
 		}
-
-		public Purchase Purchase { get; }
-
-		public ZonedDateTime Date { get; }
-
-		public List<Transfer> Transfers { get; }
-
-		public CategoryNode? Node { get; }
-
-		public Guid[] SourceCurrencyIds { get; }
-
-		public Guid[] TargetCurrencyIds { get; }
 	}
 
-	private readonly struct TransactionData
+	private readonly struct PurchaseData(Purchase purchase, CategoryNode? node, TransactionData transaction)
 	{
-		public TransactionData(
-			DetailedTransaction transaction,
-			ZonedDateTime date,
-			Guid[] sourceCurrencyIds,
-			Guid[] targetCurrencyIds)
-		{
-			Transaction = transaction;
-			Date = date;
-			SourceCurrencyIds = sourceCurrencyIds;
-			TargetCurrencyIds = targetCurrencyIds;
-		}
+		public Purchase Purchase { get; } = purchase;
 
-		public DetailedTransaction Transaction { get; }
+		public ZonedDateTime Date { get; } = transaction.Date;
 
-		public ZonedDateTime Date { get; }
+		public List<Transfer> Transfers { get; } = transaction.Transaction.Transfers;
 
-		public Guid[] SourceCurrencyIds { get; }
+		public CategoryNode? Node { get; } = node;
 
-		public Guid[] TargetCurrencyIds { get; }
+		public Guid[] SourceCurrencyIds { get; } = transaction.SourceCurrencyIds;
+
+		public Guid[] TargetCurrencyIds { get; } = transaction.TargetCurrencyIds;
+	}
+
+	private readonly struct TransactionData(DetailedTransaction transaction, ZonedDateTime date, Guid[] sourceCurrencyIds, Guid[] targetCurrencyIds)
+	{
+		public DetailedTransaction Transaction { get; } = transaction;
+
+		public ZonedDateTime Date { get; } = date;
+
+		public Guid[] SourceCurrencyIds { get; } = sourceCurrencyIds;
+
+		public Guid[] TargetCurrencyIds { get; } = targetCurrencyIds;
 	}
 }

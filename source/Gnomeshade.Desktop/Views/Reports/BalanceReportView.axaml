@@ -20,6 +20,14 @@
 
 		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
 
+			<TextBlock HorizontalAlignment="Center" Text="Splits"/>
+			<ComboBox
+				HorizontalAlignment="Stretch"
+				IsTextSearchEnabled="True"
+				ItemsSource="{Binding Splits}"
+				SelectedItem="{Binding SelectedSplit, Mode=TwoWay}"
+				IsEnabled="{Binding !IsBusy}" />
+
 			<TextBlock HorizontalAlignment="Center" Text="Accounts"/>
 			<ListBox
 				ItemsSource="{Binding UserAccounts}"
