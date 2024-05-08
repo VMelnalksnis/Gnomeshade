@@ -36,4 +36,7 @@ public sealed record UnitEntity : Entity, IOwnableEntity, IModifiableEntity, INa
 
 	/// <summary>Gets or sets the multiplier to convert a value in this unit to the parent unit.</summary>
 	public decimal? Multiplier { get; set; }
+
+	/// <summary>Gets or sets a value indicating whether <see cref="Multiplier"/> needs to be inversed.</summary>
+	public bool InverseMultiplier { get; set; }
 }

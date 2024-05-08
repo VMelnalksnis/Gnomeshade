@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -13,15 +14,10 @@ using Gnomeshade.WebApi.V1.Controllers;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(UnitsController))]
-public sealed class UnitsControllerTests : WebserverTests
+public sealed class UnitsControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private IGnomeshadeClient _client = null!;
 	private Unit _parentUnit = null!;
-
-	public UnitsControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -44,24 +40,34 @@ public sealed class UnitsControllerTests : WebserverTests
 	[Test]
 	public async Task Put()
 	{
-		var creationModel = CreateUniqueUnit() with { ParentUnitId = _parentUnit.Id, Multiplier = 10, Symbol = "kg" };
+		var creationModel = CreateUniqueUnit() with { ParentUnitId = _parentUnit.Id, Multiplier = 10, Symbol = "kg", InverseMultiplier = true };
 		var productId = Guid.NewGuid();
 		var product = await PutAndGet(productId, creationModel);
 
-		product.Name.Should().Be(creationModel.Name);
-		product.Multiplier.Should().Be(creationModel.Multiplier);
-		product.Symbol.Should().Be(creationModel.Symbol);
+		using (new AssertionScope())
+		{
+			product.Name.Should().Be(creationModel.Name);
+			product.Multiplier.Should().Be(creationModel.Multiplier);
+			product.Symbol.Should().Be(creationModel.Symbol);
+			product.InverseMultiplier.Should().BeTrue();
+		}
 
 		var productWithoutChanges = await PutAndGet(productId, creationModel);
 
 		productWithoutChanges.Should().BeEquivalentTo(product, WithoutModifiedAt);
 		productWithoutChanges.ModifiedAt.Should().BeGreaterThanOrEqualTo(product.ModifiedAt);
 
-		var changedCreationModel = creationModel with { ParentUnitId = null, Multiplier = null, Symbol = null };
+		var changedCreationModel = creationModel with { ParentUnitId = null, Multiplier = null, Symbol = null, InverseMultiplier = false };
 		var productWithChanges = await PutAndGet(productId, changedCreationModel);
 
-		productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndParent);
-		productWithChanges.Multiplier.Should().BeNull();
+		using (new AssertionScope())
+		{
+			productWithChanges.Should().BeEquivalentTo(product, WithoutModifiedAtAndParent);
+			productWithChanges.ParentUnitId.Should().BeNull();
+			productWithChanges.Multiplier.Should().BeNull();
+			productWithChanges.Symbol.Should().BeNull();
+			productWithChanges.InverseMultiplier.Should().BeFalse();
+		}
 
 		var anotherCreationModel = CreateUniqueUnit();
 		_ = await PutAndGet(productId, anotherCreationModel);
@@ -84,7 +90,8 @@ public sealed class UnitsControllerTests : WebserverTests
 		return WithoutModifiedAt(options)
 			.Excluding(model => model.Multiplier)
 			.Excluding(model => model.ParentUnitId)
-			.Excluding(model => model.Symbol);
+			.Excluding(model => model.Symbol)
+			.Excluding(model => model.InverseMultiplier);
 	}
 
 	private async Task<Unit> PutAndGet(Guid id, UnitCreation creation)

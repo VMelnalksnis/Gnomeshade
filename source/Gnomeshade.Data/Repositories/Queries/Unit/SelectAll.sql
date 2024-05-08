@@ -10,5 +10,6 @@
 	   u.deleted_at         AS DeletedAt,
 	   u.deleted_by_user_id AS DeletedByUserId,
 	   u.parent_unit_id        ParentUnitId,
-	   u.multiplier
+	   u.multiplier,
+	   u.inverse_multiplier AS InverseMultiplier
 FROM units u

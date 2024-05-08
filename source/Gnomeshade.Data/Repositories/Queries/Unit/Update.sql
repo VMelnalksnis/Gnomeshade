@@ -43,6 +43,7 @@ SET modified_at         = CURRENT_TIMESTAMP,
 	normalized_name     = UPPER(@Name),
 	symbol              = @Symbol,
 	parent_unit_id      = @ParentUnitId,
-	multiplier          = @Multiplier
+	multiplier          = @Multiplier,
+	inverse_multiplier  = @InverseMultiplier
 FROM accessable
 WHERE units.id IN (SELECT id FROM accessable);

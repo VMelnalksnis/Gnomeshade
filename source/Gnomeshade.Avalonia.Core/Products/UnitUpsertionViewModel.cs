@@ -35,9 +35,13 @@ public sealed partial class UnitUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private string? _symbol;
 
+	/// <summary>Gets or sets a value indicating whether <see cref="Multiplier"/> needs to be inversed.</summary>
+	[Notify]
+	private bool _inverseMultiplier;
+
 	/// <summary>Gets a collection of all available units.</summary>
 	[Notify(Setter.Private)]
-	private List<Unit> _units;
+	private List<Unit> _units = [];
 
 	/// <summary>Initializes a new instance of the <see cref="UnitUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -47,11 +51,9 @@ public sealed partial class UnitUpsertionViewModel : UpsertionViewModel
 		: base(activityService, gnomeshadeClient)
 	{
 		Id = id;
-
-		_units = new();
 	}
 
-	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Unit"/>
 	public AutoCompleteSelector<object> UnitSelector => AutoCompleteSelectors.Unit;
 
 	/// <inheritdoc />
@@ -86,6 +88,7 @@ public sealed partial class UnitUpsertionViewModel : UpsertionViewModel
 			ParentUnitId = ParentUnit?.Id,
 			Multiplier = Multiplier,
 			Symbol = _symbol,
+			InverseMultiplier = InverseMultiplier,
 		};
 
 		var id = Id ?? Guid.NewGuid();

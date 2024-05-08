@@ -24,7 +24,7 @@ public sealed class UnitRow : PropertyChangedBase
 		ParentUnitName = unit.ParentUnitId is null
 			? null
 			: units.Single(u => u.Id == unit.ParentUnitId.Value).Name;
-		Multiplier = unit.Multiplier;
+		Multiplier = unit.InverseMultiplier ? 1 / unit.Multiplier : unit.Multiplier;
 	}
 
 	/// <summary>Gets the id of the unit.</summary>

@@ -10,7 +10,8 @@
 	   u.deleted_at         AS DeletedAt,
 	   u.deleted_by_user_id AS DeletedByUserId,
 	   u.parent_unit_id        ParentUnitId,
-	   u.multiplier
+	   u.multiplier,
+	   u.inverse_multiplier AS InverseMultiplier
 FROM units u
 		 INNER JOIN owners units_owners ON units_owners.id = u.owner_id
 		 INNER JOIN ownerships unit_own ON units_owners.id = unit_own.owner_id

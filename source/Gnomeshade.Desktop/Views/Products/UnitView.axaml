@@ -41,7 +41,7 @@
 				<DataGridTextColumn
 					x:DataType="p:UnitRow"
 					Header="Multiplier" IsReadOnly="True"
-					Binding="{Binding Multiplier, Mode=OneWay}" />
+					Binding="{Binding Multiplier, Mode=OneWay, StringFormat=\{0:G3\}}" />
 			</DataGrid.Columns>
 		</DataGrid>
 

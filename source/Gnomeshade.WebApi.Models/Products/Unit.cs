@@ -43,4 +43,7 @@ public sealed record Unit
 
 	/// <summary>The multiplier to convert a value in this unit to the parent unit.</summary>
 	public decimal? Multiplier { get; set; }
+
+	/// <summary>Whether <see cref="Multiplier"/> needs to be inversed.</summary>
+	public bool InverseMultiplier { get; set; }
 }

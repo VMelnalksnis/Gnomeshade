@@ -27,4 +27,7 @@ public sealed record UnitCreation : Creation
 	/// <inheritdoc cref="Unit.Multiplier"/>
 	[RequiredIfNotNull(nameof(ParentUnitId))]
 	public decimal? Multiplier { get; set; }
+
+	/// <inheritdoc cref="Unit.InverseMultiplier"/>
+	public bool InverseMultiplier { get; set; }
 }

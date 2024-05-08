@@ -65,7 +65,9 @@ internal static class Program
 	}
 
 	[UsedImplicitly]
-	public static AppBuilder BuildAvaloniaApp(string[] args)
+	public static AppBuilder BuildAvaloniaApp() => BuildAvaloniaApp([]);
+
+	private static AppBuilder BuildAvaloniaApp(string[] args)
 	{
 		if (Debugger.IsAttached)
 		{

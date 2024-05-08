@@ -35,6 +35,7 @@ internal static class AutoCompleteSelectors
 	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;
 
+	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;
 
 	internal static AutoCompleteSelector<object> Aggregate { get; } = (_, item) => ((IAggregateFunction)item).Name;

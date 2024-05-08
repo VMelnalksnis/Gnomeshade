@@ -62,7 +62,13 @@ public sealed class UnitRepositoryTests
 		var parentUnit = unitFaker.Generate();
 		var parentUnitId = await _repository.AddAsync(parentUnit, dbTransaction);
 
-		var childUnit = unitFaker.GenerateUnique(parentUnit) with { ParentUnitId = parentUnitId, Multiplier = 1 };
+		var childUnit = unitFaker.GenerateUnique(parentUnit) with
+		{
+			ParentUnitId = parentUnitId,
+			Multiplier = 1,
+			InverseMultiplier = false,
+		};
+
 		var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
 
 		await dbTransaction.CommitAsync();
