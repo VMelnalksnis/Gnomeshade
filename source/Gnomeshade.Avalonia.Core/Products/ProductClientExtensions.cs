@@ -31,9 +31,24 @@ internal static class ProductClientExtensions
 			categories.SingleOrDefault(category => category.Id == product.CategoryId)));
 	}
 
-	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IProductClient productClient)
+	internal static async Task<IEnumerable<UnitRow>> GetUnitRowsAsync(this IGnomeshadeClient client)
 	{
-		var units = await productClient.GetUnitsAsync();
-		return units.Select(unit => new UnitRow(unit, units));
+		var counterparty = await client.GetMyCounterpartyAsync();
+		var owners = await client.GetOwnersAsync();
+		var defaultOwner = owners.Single(owner => owner.Id == counterparty.Id);
+
+		var units = await client.GetUnitsAsync();
+		var rows = units.Select(unit => new UnitRow(unit, units)).ToArray();
+
+		foreach (var row in rows
+					 .GroupBy(row => row.Name)
+					 .Where(grouping => grouping.Count() > 1)
+					 .SelectMany(grouping => grouping)
+					 .Where(row => units.Single(unit => unit.Id == row.Id).OwnerId != defaultOwner.Id))
+		{
+			row.Name = $"{row.Name} ({owners.Single(owner => owner.Id == units.Single(unit => unit.Id == row.Id).OwnerId).Name})";
+		}
+
+		return rows;
 	}
 }

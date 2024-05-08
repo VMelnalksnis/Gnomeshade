@@ -8,18 +8,24 @@ using System.Linq;
 
 using Gnomeshade.WebApi.Models.Products;
 
+using PropertyChanged.SourceGenerator;
+
 namespace Gnomeshade.Avalonia.Core.Products;
 
 /// <summary>Overview of a single <see cref="Unit"/>.</summary>
-public sealed class UnitRow : PropertyChangedBase
+public sealed partial class UnitRow : PropertyChangedBase
 {
+	/// <summary>Gets the name of the unit.</summary>
+	[Notify(Setter.Internal)]
+	private string _name;
+
 	/// <summary>Initializes a new instance of the <see cref="UnitRow"/> class.</summary>
 	/// <param name="unit">The unit this row represents.</param>
 	/// <param name="units">A collection of units from which to select the parent unit.</param>
 	public UnitRow(Unit unit, IEnumerable<Unit> units)
 	{
 		Id = unit.Id;
-		Name = unit.Name;
+		_name = unit.Name;
 		Symbol = unit.Symbol;
 		ParentUnitName = unit.ParentUnitId is null
 			? null
@@ -29,9 +35,6 @@ public sealed class UnitRow : PropertyChangedBase
 
 	/// <summary>Gets the id of the unit.</summary>
 	public Guid Id { get; }
-
-	/// <summary>Gets the name of the unit.</summary>
-	public string Name { get; }
 
 	/// <summary>Gets the symbol of the unit.</summary>
 	public string? Symbol { get; }
