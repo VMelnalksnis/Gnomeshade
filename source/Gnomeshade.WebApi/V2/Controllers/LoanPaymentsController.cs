@@ -68,14 +68,17 @@ public sealed class LoanPaymentsController : CreatableBase<LoanPaymentRepository
 	/// <inheritdoc />
 	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, LoanPaymentCreation creation, UserEntity user)
 	{
-		var loan = Mapper.Map<LoanPaymentEntity>(creation) with
+		var payment = Mapper.Map<LoanPaymentEntity>(creation) with
 		{
 			Id = id,
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.UpdateAsync(loan);
-		return NoContent();
+		return await Repository.UpdateAsync(payment) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

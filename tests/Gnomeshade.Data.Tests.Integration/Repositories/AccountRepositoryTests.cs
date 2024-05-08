@@ -92,7 +92,7 @@ public sealed class AccountRepositoryTests
 		getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 		findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 
-		await _inCurrencyRepository.DeleteAsync(firstAccountInCurrency.Id, TestUser.Id);
+		(await _inCurrencyRepository.DeleteAsync(firstAccountInCurrency.Id, TestUser.Id)).Should().Be(1);
 		var deleted = await _inCurrencyRepository.FindByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
 		deleted.Should().BeNull();
 
@@ -124,7 +124,7 @@ public sealed class AccountRepositoryTests
 
 		var firstAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
 		var firstAccountName = firstAccount.Name;
-		await _repository.DeleteAsync(accountId, TestUser.Id);
+		(await _repository.DeleteAsync(accountId, TestUser.Id)).Should().Be(1);
 		firstAccount = await _repository.FindByIdAsync(accountId, TestUser.Id);
 		firstAccount.Should().BeNull();
 

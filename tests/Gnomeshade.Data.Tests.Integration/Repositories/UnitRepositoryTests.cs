@@ -50,7 +50,7 @@ public sealed class UnitRepositoryTests
 			allUnits.Should().ContainSingle(unit => unit.Id == id).Which.Should().BeEquivalentTo(expectedUnit);
 		}
 
-		await _repository.DeleteAsync(id, TestUser.Id);
+		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
 
 		var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 		afterDelete.Should().BeNull();
@@ -87,7 +87,7 @@ public sealed class UnitRepositoryTests
 
 		getUnit.Should().BeEquivalentTo(expectedUnit);
 
-		await _repository.DeleteAsync(childUnitId, TestUser.Id);
-		await _repository.DeleteAsync(parentUnitId, TestUser.Id);
+		(await _repository.DeleteAsync(childUnitId, TestUser.Id)).Should().Be(1);
+		(await _repository.DeleteAsync(parentUnitId, TestUser.Id)).Should().Be(1);
 	}
 }

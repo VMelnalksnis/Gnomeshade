@@ -65,7 +65,10 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 		Logger.MergeCounterparties(sourceId, targetId);
 		var mergeCommand = new CommandDefinition(Queries.Counterparty.Merge, new { targetId, sourceId, userId }, dbTransaction);
 		await DbConnection.ExecuteAsync(mergeCommand);
-		await DeleteAsync(sourceId, userId, dbTransaction);
+		if (await DeleteAsync(sourceId, userId, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to delete merged source counterparty");
+		}
 	}
 
 	/// <summary>Gets all counterparties ignoring access control.</summary>

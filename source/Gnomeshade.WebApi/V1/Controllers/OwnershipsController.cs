@@ -61,8 +61,11 @@ public sealed class OwnershipsController : CreatableBase<OwnershipRepository, Ow
 		UserEntity user)
 	{
 		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
-		await _repository.UpdateAsync(ownership);
-		return NoContent();
+		return await Repository.UpdateAsync(ownership) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

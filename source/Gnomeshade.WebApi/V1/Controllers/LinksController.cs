@@ -75,8 +75,11 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 			Uri = creation.Uri!.ToString(),
 		};
 
-		await Repository.UpdateAsync(linkToCreate);
-		return NoContent();
+		return await Repository.UpdateAsync(linkToCreate) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

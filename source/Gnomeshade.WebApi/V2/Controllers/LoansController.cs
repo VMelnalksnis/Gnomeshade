@@ -89,8 +89,11 @@ public sealed class LoansController : CreatableBase<Loan2Repository, Loan2Entity
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.UpdateAsync(loan);
-		return NoContent();
+		return await Repository.UpdateAsync(loan) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

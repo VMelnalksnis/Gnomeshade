@@ -159,7 +159,11 @@ public sealed class PaperlessService : IPaperlessService
 		product.DeletedAt = null;
 		product.DeletedByUserId = null;
 		product.ModifiedByUserId = ownerId;
-		await _productRepository.UpdateAsync(product, dbTransaction);
+		if (await _productRepository.UpdateAsync(product, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to restore deleted product");
+		}
+
 		return product;
 	}
 

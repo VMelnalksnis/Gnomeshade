@@ -235,7 +235,10 @@ public abstract partial class TransactionImportService<TTransaction>
 					if (existingTransfer.BankReference is null && !string.IsNullOrWhiteSpace(bankReference))
 					{
 						existingTransfer.BankReference = bankReference;
-						await _transferRepository.UpdateAsync(existingTransfer, dbTransaction);
+						if (await _transferRepository.UpdateAsync(existingTransfer, dbTransaction) is not 1)
+						{
+							throw new InvalidOperationException("Failed to update bank reference for existing transfer");
+						}
 					}
 
 					return await ExistingTransfer(existingTransfer, user, dbTransaction, resultBuilder);

@@ -48,7 +48,7 @@ public sealed class ProductRepositoryTests
 		allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
 		var productToUpdate = getProduct with { Sku = "123", Description = "Foo" };
-		await _repository.UpdateAsync(productToUpdate);
+		(await _repository.UpdateAsync(productToUpdate)).Should().Be(1);
 		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
 
 		using (new AssertionScope())
@@ -61,7 +61,7 @@ public sealed class ProductRepositoryTests
 			updatedProduct.Description.Should().Be("Foo");
 		}
 
-		await _repository.DeleteAsync(id, TestUser.Id);
+		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
 
 		var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 		afterDelete.Should().BeNull();
@@ -85,6 +85,6 @@ public sealed class ProductRepositoryTests
 		};
 
 		getProduct.Should().BeEquivalentTo(expectedProduct);
-		await _repository.DeleteAsync(id, TestUser.Id);
+		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
 	}
 }

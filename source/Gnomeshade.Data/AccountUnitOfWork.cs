@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
+using JetBrains.Annotations;
+
 namespace Gnomeshade.Data;
 
 /// <summary>Performs bulk actions on account entities.</summary>
@@ -118,7 +120,11 @@ public sealed class AccountUnitOfWork
 	public async Task UpdateAsync(AccountEntity account, UserEntity modifiedBy)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		await UpdateAsync(account, modifiedBy, dbTransaction);
+		if (await UpdateAsync(account, modifiedBy, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to update account");
+		}
+
 		await dbTransaction.CommitAsync();
 	}
 
@@ -126,13 +132,20 @@ public sealed class AccountUnitOfWork
 	{
 		foreach (var currency in account.Currencies)
 		{
-			await _inCurrencyRepository.DeleteAsync(currency.Id, userId, dbTransaction).ConfigureAwait(false);
+			if (await _inCurrencyRepository.DeleteAsync(currency.Id, userId, dbTransaction) is not 1)
+			{
+				throw new InvalidOperationException("Failed to delete account in currency");
+			}
 		}
 
-		await _repository.DeleteAsync(account.Id, userId, dbTransaction).ConfigureAwait(false);
+		if (await _repository.DeleteAsync(account.Id, userId, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to delete account");
+		}
 	}
 
-	private Task UpdateAsync(AccountEntity account, UserEntity modifiedBy, DbTransaction dbTransaction)
+	[MustUseReturnValue]
+	private Task<int> UpdateAsync(AccountEntity account, UserEntity modifiedBy, DbTransaction dbTransaction)
 	{
 		account.ModifiedByUserId = modifiedBy.Id;
 		return _repository.UpdateAsync(account, dbTransaction);

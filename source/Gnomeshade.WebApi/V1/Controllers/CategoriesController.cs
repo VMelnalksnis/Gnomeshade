@@ -87,8 +87,15 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 			LinkedProductId = linkedProductId,
 		};
 
-		await Repository.UpdateAsync(category);
-		await LinkProductToCategory(linkedProductId, id, creation.Name, user, dbTransaction);
+		if (await Repository.UpdateAsync(category) is not 1)
+		{
+			return StatusCode(Status403Forbidden);
+		}
+
+		if (await LinkProductToCategory(linkedProductId, id, creation.Name, user, dbTransaction) is not (null or 1))
+		{
+			return StatusCode(Status403Forbidden);
+		}
 
 		await dbTransaction.CommitAsync();
 
@@ -119,7 +126,10 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		};
 
 		_ = await Repository.AddAsync(category, dbTransaction);
-		await LinkProductToCategory(linkedProductId, id, creation.Name, user, dbTransaction);
+		if (await LinkProductToCategory(linkedProductId, id, creation.Name, user, dbTransaction) is not (null or 1))
+		{
+			return StatusCode(Status403Forbidden);
+		}
 
 		await dbTransaction.CommitAsync();
 
@@ -163,7 +173,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		return id;
 	}
 
-	private async Task LinkProductToCategory(
+	private async Task<int?> LinkProductToCategory(
 		Guid? linkedProductId,
 		Guid id,
 		string name,
@@ -172,12 +182,12 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	{
 		if (linkedProductId is null)
 		{
-			return;
+			return null;
 		}
 
 		var linkedProduct = await _productRepository.GetByIdAsync(linkedProductId.Value, user.Id, dbTransaction);
 		linkedProduct.CategoryId = id;
 		linkedProduct.Name = name;
-		await _productRepository.UpdateAsync(linkedProduct, dbTransaction);
+		return await _productRepository.UpdateAsync(linkedProduct, dbTransaction);
 	}
 }

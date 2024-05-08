@@ -63,8 +63,11 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.UpdateAsync(unit);
-		return NoContent();
+		return await Repository.UpdateAsync(unit) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

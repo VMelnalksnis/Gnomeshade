@@ -14,8 +14,9 @@ using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Models.Transactions;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
+using static Microsoft.AspNetCore.Http.StatusCodes;
 
 namespace Gnomeshade.WebApi.V1.Controllers;
 
@@ -65,7 +66,11 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 			ModifiedByUserId = ApplicationUser.Id,
 		};
 
-		await Repository.UpdateAsync(entity, dbTransaction);
+		if (await Repository.UpdateAsync(entity, dbTransaction) is not 1)
+		{
+			return StatusCode(Status403Forbidden);
+		}
+
 		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
@@ -105,6 +110,6 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 
 		return await _transactionRepository.FindByIdAsync(transactionId, dbTransaction) is null
 			? NotFound()
-			: StatusCode(StatusCodes.Status403Forbidden);
+			: StatusCode(Status403Forbidden);
 	}
 }

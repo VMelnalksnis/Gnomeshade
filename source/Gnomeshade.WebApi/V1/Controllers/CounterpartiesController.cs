@@ -99,8 +99,11 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.UpdateAsync(counterparty);
-		return NoContent();
+		return await Repository.UpdateAsync(counterparty) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

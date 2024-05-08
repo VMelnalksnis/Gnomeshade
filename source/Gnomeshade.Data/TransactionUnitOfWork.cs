@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 
+using JetBrains.Annotations;
+
 namespace Gnomeshade.Data;
 
 /// <summary>Transaction related actions spanning multiple entities.</summary>
@@ -60,18 +62,12 @@ public sealed class TransactionUnitOfWork
 	public async Task DeleteAsync(TransactionEntity transaction, Guid userId)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		await DeleteAsync(transaction, userId, dbTransaction);
-		await dbTransaction.CommitAsync();
-	}
+		if (await DeleteAsync(transaction, userId, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to delete transaction");
+		}
 
-	/// <summary>Deletes the specified transaction and all its items.</summary>
-	/// <param name="transaction">The transaction to delete.</param>
-	/// <param name="userId">The id of the owner of the entity.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteAsync(TransactionEntity transaction, Guid userId, DbTransaction dbTransaction)
-	{
-		await _repository.DeleteAsync(transaction.Id, userId, dbTransaction).ConfigureAwait(false);
+		await dbTransaction.CommitAsync();
 	}
 
 	/// <summary>
@@ -83,16 +79,22 @@ public sealed class TransactionUnitOfWork
 	public async Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy)
 	{
 		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
-		await UpdateAsync(transaction, modifiedBy, dbTransaction);
+		if (await UpdateAsync(transaction, modifiedBy, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to update transaction");
+		}
+
 		await dbTransaction.CommitAsync();
 	}
 
-	/// <summary>Updates the specified transaction and all its items.</summary>
-	/// <param name="transaction">The transaction to update.</param>
-	/// <param name="modifiedBy">The user which modified the <paramref name="transaction"/>.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public Task UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, DbTransaction dbTransaction)
+	[MustUseReturnValue]
+	private Task<int> DeleteAsync(TransactionEntity transaction, Guid userId, DbTransaction dbTransaction)
+	{
+		return _repository.DeleteAsync(transaction.Id, userId, dbTransaction);
+	}
+
+	[MustUseReturnValue]
+	private Task<int> UpdateAsync(TransactionEntity transaction, UserEntity modifiedBy, DbTransaction dbTransaction)
 	{
 		transaction.ModifiedByUserId = modifiedBy.Id;
 		return _repository.UpdateAsync(transaction, dbTransaction);

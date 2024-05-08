@@ -95,8 +95,11 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.UpdateAsync(product);
-		return NoContent();
+		return await Repository.UpdateAsync(product) switch
+		{
+			1 => NoContent(),
+			_ => StatusCode(Status403Forbidden),
+		};
 	}
 
 	/// <inheritdoc />

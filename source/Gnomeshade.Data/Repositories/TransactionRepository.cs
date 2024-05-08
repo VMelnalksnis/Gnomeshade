@@ -165,7 +165,10 @@ WHERE transaction_links.transaction_id = @id
 		Logger.MergeTransactions(sourceId, targetId);
 		var moveDetailsCommand = new CommandDefinition(Queries.Transaction.Merge, new { targetId, sourceId, userId }, dbTransaction);
 		await DbConnection.ExecuteAsync(moveDetailsCommand);
-		await DeleteAsync(sourceId, userId, dbTransaction);
+		if (await DeleteAsync(sourceId, userId, dbTransaction) is not 1)
+		{
+			throw new InvalidOperationException("Failed to delete merged source transaction");
+		}
 	}
 
 	public Task<IEnumerable<TransactionEntity>> GetRelatedAsync(

@@ -14,6 +14,8 @@ using Dapper;
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Logging;
 
+using JetBrains.Annotations;
+
 using Microsoft.Extensions.Logging;
 
 using static Gnomeshade.Data.Repositories.AccessLevel;
@@ -87,6 +89,7 @@ public abstract class Repository<TEntity>
 	/// <param name="id">The id of the entity to delete.</param>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <returns>The number of affected rows.</returns>
+	[MustUseReturnValue]
 	public async Task<int> DeleteAsync(Guid id, Guid userId)
 	{
 		Logger.DeletingEntity(id);
@@ -100,6 +103,7 @@ public abstract class Repository<TEntity>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
+	[MustUseReturnValue]
 	public async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
@@ -227,22 +231,26 @@ public abstract class Repository<TEntity>
 	/// <summary>Updates an existing entity with the specified id.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>
-	public async Task UpdateAsync(TEntity entity)
+	[MustUseReturnValue]
+	public async Task<int> UpdateAsync(TEntity entity)
 	{
 		Logger.UpdatingEntity();
 		var count = await DbConnection.ExecuteAsync(UpdateSql, entity);
 		Logger.UpdatedRows(count);
+		return count;
 	}
 
 	/// <summary>Updates an existing entity with the specified id using the specified database transaction.</summary>
 	/// <param name="entity">The entity to update.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
-	public async Task UpdateAsync(TEntity entity, DbTransaction dbTransaction)
+	[MustUseReturnValue]
+	public async Task<int> UpdateAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.UpdatingEntityWithTransaction();
 		var count = await DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
 		Logger.UpdatedRows(count);
+		return count;
 	}
 
 	/// <summary>Executes the specified command and maps the resulting rows to <typeparamref name="TEntity"/>.</summary>
