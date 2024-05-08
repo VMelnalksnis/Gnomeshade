@@ -83,17 +83,16 @@ internal static class Program
 				.LogToTrace(LogEventLevel.Debug);
 	}
 
-	[SupportedOSPlatform("windows")]
 	private static bool AnotherInstanceIsRunning()
 	{
 		Log.Debug("Checking if another instance is running");
-		return EventWaitHandle.TryOpenExisting(WindowsProtocolHandler.Name, out _);
+		return Mutex.TryOpenExisting(GnomeshadeProtocolHandler.Name, out _);
 	}
 
 	private static void SendArgumentsToRunningInstance(IEnumerable<string> args)
 	{
 		Log.Debug("Sending arguments to an already running instance");
-		using var pipeClient = new NamedPipeClientStream(".", WindowsProtocolHandler.Name);
+		using var pipeClient = new NamedPipeClientStream(".", GnomeshadeProtocolHandler.Name);
 		pipeClient.Connect((int)TimeSpan.FromSeconds(5).TotalMilliseconds);
 
 		using var streamWriter = new StreamWriter(pipeClient);
@@ -101,11 +100,10 @@ internal static class Program
 		streamWriter.Flush();
 	}
 
-	[SupportedOSPlatform("windows")]
-	private static EventWaitHandle GetApplicationHandle()
+	private static Mutex GetApplicationHandle()
 	{
 		Log.Debug("Getting an application handle");
-		return new(false, EventResetMode.AutoReset, WindowsProtocolHandler.Name);
+		return new(false, GnomeshadeProtocolHandler.Name, out _);
 	}
 
 	private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)

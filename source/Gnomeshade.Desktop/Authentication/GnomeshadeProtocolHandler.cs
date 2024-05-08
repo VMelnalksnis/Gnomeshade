@@ -5,7 +5,6 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,16 +15,15 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.Desktop.Authentication;
 
 /// <inheritdoc />
-[SupportedOSPlatform("windows")]
-public sealed class WindowsProtocolHandler : IGnomeshadeProtocolHandler
+public sealed class GnomeshadeProtocolHandler : IGnomeshadeProtocolHandler
 {
 	internal const string Name = "gnomeshade";
 
-	private readonly ILogger<WindowsProtocolHandler> _logger;
+	private readonly ILogger<GnomeshadeProtocolHandler> _logger;
 
-	/// <summary>Initializes a new instance of the <see cref="WindowsProtocolHandler"/> class.</summary>
+	/// <summary>Initializes a new instance of the <see cref="GnomeshadeProtocolHandler"/> class.</summary>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public WindowsProtocolHandler(ILogger<WindowsProtocolHandler> logger)
+	public GnomeshadeProtocolHandler(ILogger<GnomeshadeProtocolHandler> logger)
 	{
 		_logger = logger;
 	}

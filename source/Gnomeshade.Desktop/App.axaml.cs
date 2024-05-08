@@ -96,17 +96,16 @@ public sealed class App : Application
 				var protocolHandler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var options = provider.GetRequiredService<IOptionsMonitor<UserConfiguration>>().CurrentValue.Oidc ?? new();
 				return new(protocolHandler, options.SigninTimeout);
-			});
+			})
+			.AddSingleton<IGnomeshadeProtocolHandler, GnomeshadeProtocolHandler>();
 
 		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 		{
-			serviceCollection
-				.AddSingleton<IGnomeshadeProtocolHandler, WindowsProtocolHandler>()
-				.AddSingleton<ICredentialStorageService, WindowsCredentialStorageService>();
+			serviceCollection.AddSingleton<ICredentialStorageService, WindowsCredentialStorageService>();
 		}
 		else
 		{
-			throw new PlatformNotSupportedException($"{RuntimeInformation.OSDescription} is not supported");
+			serviceCollection.AddSingleton<ICredentialStorageService, StubbedCredentialStorageService>();
 		}
 
 		serviceCollection.AddTransient<OidcClient>(provider =>
