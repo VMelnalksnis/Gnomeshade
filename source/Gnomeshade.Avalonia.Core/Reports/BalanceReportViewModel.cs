@@ -103,7 +103,7 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var allTransactionsTask = _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
+		var transfersTask = _gnomeshadeClient.GetTransfersAsync();
 		var (counterparty, allAccounts, currencies) = await
 			(_gnomeshadeClient.GetMyCounterpartyAsync(),
 			_gnomeshadeClient.GetAccountsAsync(),
@@ -132,19 +132,19 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 			.SelectMany(account => account.Currencies.Where(aic => aic.CurrencyId == (SelectedCurrency?.Id ?? account.PreferredCurrencyId)).Select(aic => aic.Id))
 			.ToArray();
 
-		var transactions = (await allTransactionsTask)
-			.Where(transaction => transaction.Transfers.Any(transfer =>
+		var transfers = (await transfersTask)
+			.Where(transfer =>
 				inCurrencyIds.Contains(transfer.SourceAccountId) ||
-				inCurrencyIds.Contains(transfer.TargetAccountId)))
-			.OrderBy(transaction => transaction.ValuedAt ?? transaction.BookedAt)
-			.ThenBy(transaction => transaction.CreatedAt)
-			.ThenBy(transaction => transaction.ModifiedAt)
+				inCurrencyIds.Contains(transfer.TargetAccountId))
+			.OrderBy(transfer => transfer.ValuedAt ?? transfer.BookedAt)
+			.ThenBy(transfer => transfer.CreatedAt)
+			.ThenBy(transfer => transfer.ModifiedAt)
 			.ToArray();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
-		var dates = transactions
-			.Select(transaction => transaction.ValuedAt ?? transaction.BookedAt!.Value)
+		var dates = transfers
+			.Select(transfer => transfer.ValuedAt ?? transfer.BookedAt!.Value)
 			.DefaultIfEmpty(currentTime)
 			.ToArray();
 
@@ -158,23 +158,20 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 				var splitZonedDate = date.AtStartOfDayInZone(timeZone);
 				var splitInstant = splitZonedDate.ToInstant();
 
-				var transactionsBefore = transactions
-					.Where(transaction =>
-						new ZonedDateTime(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone).ToInstant() <
-						splitInstant);
+				var transfersBefore = transfers
+					.Where(transfer => new ZonedDateTime(transfer.ValuedAt ?? transfer.BookedAt!.Value, timeZone).ToInstant() < splitInstant);
 
-				var transactionsIn = transactions
-					.Where(transaction => reportSplit.Equals(
+				var transfersIn = transfers
+					.Where(transfer => reportSplit.Equals(
 						splitZonedDate,
-						new(transaction.ValuedAt ?? transaction.BookedAt!.Value, timeZone)))
+						new(transfer.ValuedAt ?? transfer.BookedAt!.Value, timeZone)))
 					.ToArray();
 
-				var sumBefore = transactionsBefore.SumForAccounts(inCurrencyIds);
+				var sumBefore = transfersBefore.SumForAccounts(inCurrencyIds);
 
-				var sumAfter = sumBefore + transactionsIn.SumForAccounts(inCurrencyIds);
-				var sums = transactionsIn
-					.Select((_, index) =>
-						sumBefore + transactionsIn.Where((_, i) => i <= index).SumForAccounts(inCurrencyIds))
+				var sumAfter = sumBefore + transfersIn.SumForAccounts(inCurrencyIds);
+				var sums = transfersIn
+					.Select((_, index) => sumBefore + transfersIn.Where((_, i) => i <= index).SumForAccounts(inCurrencyIds))
 					.ToArray();
 
 				return new FinancialPointI(
