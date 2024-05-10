@@ -15,7 +15,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="CsvHelper" Version="32.0.1"/>
+		<PackageVersion Include="CsvHelper" Version="32.0.2"/>
 		<PackageVersion Include="Dapper" Version="2.1.35"/>
 		<PackageVersion Include="dbup-core" Version="5.0.87"/>
 		<PackageVersion Include="dbup-postgresql" Version="5.0.40"/>
