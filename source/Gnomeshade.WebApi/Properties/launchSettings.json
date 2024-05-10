@@ -1,13 +1,14 @@
 {
-  "profiles": {
-    "Gnomeshade.WebApi": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:5000",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": "true"
-    }
-  }
+	"profiles": {
+		"Gnomeshade.WebApi": {
+			"commandName": "Project",
+			"launchBrowser": true,
+			"launchUrl": "http://localhost:5000",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"GNOMESHADE_DEMO": "true"
+			},
+			"dotnetRunMessages": "true"
+		}
+	}
 }

@@ -1845,7 +1845,6 @@
           "Gnomeshade.Data.PostgreSQL": "[1.0.0, )",
           "Gnomeshade.Data.Sqlite": "[1.0.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
-          "Gnomeshade.WebApi.Models": "[1.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[8.0.4, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[8.0.4, )",
           "Microsoft.AspNetCore.Mvc.Versioning": "[5.1.0, )",

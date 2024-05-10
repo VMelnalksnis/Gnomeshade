@@ -208,6 +208,7 @@ jobs:
             az webapp config appsettings set --settings Jwt__ValidIssuer="${{ env.AZURE_APP_DOMAIN }}"
             az webapp config appsettings set --settings OAuth__GitHub__ClientId="${{ secrets.DEMO_GITHUB_ID }}"
             az webapp config appsettings set --settings OAuth__GitHub__ClientSecret="${{ secrets.DEMO_GITHUB_SECRET }}"
+            az webapp config appsettings set --settings GNOMESHADE_DEMO="true"
 
       - run: wget --retry-connrefused --retry-on-http-error=502 --waitretry=5 --read-timeout=120 --timeout=120 -t 5 ${{ env.AZURE_APP_DOMAIN }}
 

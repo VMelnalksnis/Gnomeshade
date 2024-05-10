@@ -54,7 +54,6 @@
 		<ProjectReference Include="..\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
 		<ProjectReference Include="..\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj" />
 		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
-		<ProjectReference Include="..\Gnomeshade.WebApi.Models\Gnomeshade.WebApi.Models.csproj" />
 	</ItemGroup>
 
 	<Target Name="JavascriptLibraries" BeforeTargets="Build;Publish">

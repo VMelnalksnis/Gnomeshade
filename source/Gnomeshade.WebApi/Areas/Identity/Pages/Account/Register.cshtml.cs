@@ -2,22 +2,20 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Data;
 using Gnomeshade.Data.Identity;
+using Gnomeshade.WebApi.Services;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 
@@ -25,26 +23,16 @@ namespace Gnomeshade.WebApi.Areas.Identity.Pages.Account;
 [AllowAnonymous]
 public sealed class Register : PageModel
 {
-	private readonly ILogger<Register> _logger;
 	private readonly SignInManager<ApplicationUser> _signInManager;
-	private readonly UserManager<ApplicationUser> _userManager;
-	private readonly UserUnitOfWork _userUnitOfWork;
+	private readonly UserRegistrationService _registrationService;
 
 	/// <summary>Initializes a new instance of the <see cref="Register"/> class.</summary>
-	/// <param name="logger">Logger for logging in the specified category.</param>
 	/// <param name="signInManager">Application user sign in manager.</param>
-	/// <param name="userManager">Application user manager.</param>
-	/// <param name="userUnitOfWork">Application user persistence store.</param>
-	public Register(
-		ILogger<Register> logger,
-		SignInManager<ApplicationUser> signInManager,
-		UserManager<ApplicationUser> userManager,
-		UserUnitOfWork userUnitOfWork)
+	/// <param name="registrationService">Application user registration service.</param>
+	public Register(SignInManager<ApplicationUser> signInManager, UserRegistrationService registrationService)
 	{
-		_logger = logger;
 		_signInManager = signInManager;
-		_userManager = userManager;
-		_userUnitOfWork = userUnitOfWork;
+		_registrationService = registrationService;
 	}
 
 	/// <summary>Gets or sets the data needed to register a user.</summary>
@@ -74,39 +62,10 @@ public sealed class Register : PageModel
 		ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 		if (ModelState.IsValid)
 		{
-			var user = new ApplicationUser(Input.UserName)
-			{
-				FullName = Input.FullName,
-			};
-
-			var result = await _userManager.CreateAsync(user, Input.Password);
-
+			var result = await _registrationService.RegisterUser(Input.UserName, Input.FullName, Input.Password);
 			if (result.Succeeded)
 			{
-				_logger.UserCreated();
-
-				var identityUser = await _userManager.FindByNameAsync(Input.UserName);
-				if (identityUser is null)
-				{
-					throw new InvalidOperationException("Could not find user by name after creating it");
-				}
-
-				try
-				{
-					await _userUnitOfWork.CreateUserAsync(identityUser);
-				}
-				catch (Exception)
-				{
-					await _userManager.DeleteAsync(identityUser);
-					throw;
-				}
-
-				if (_userManager.Options.SignIn.RequireConfirmedAccount)
-				{
-					throw new NotSupportedException("Email confirmation is not supported");
-				}
-
-				await _signInManager.SignInAsync(user, false);
+				await _signInManager.SignInAsync(new(Input.UserName), false);
 				return LocalRedirect(returnUrl);
 			}
 
@@ -129,7 +88,7 @@ public sealed class Register : PageModel
 		[Display(Name = "Full Name")]
 		public string FullName { get; set; } = null!;
 
-		/// <summary>Gets or sets the user name of the user.</summary>
+		/// <summary>Gets or sets the username of the user.</summary>
 		[Required]
 		[Display(Name = "User Name")]
 		public string UserName { get; set; } = null!;

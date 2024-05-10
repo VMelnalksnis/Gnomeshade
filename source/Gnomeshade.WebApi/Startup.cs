@@ -76,13 +76,16 @@ public class Startup
 			options.Conventions.AuthorizeAreaFolder("Admin", "/", Policies.Administrator);
 		});
 
-		services.AddSingleton<ApplicationVersionService>();
+		services
+			.AddSingleton<ApplicationVersionService>()
+			.AddScoped<UserRegistrationService>();
 
 		services
 			.AddRepositories()
 			.AddTransient<IStartupFilter, DatabaseMigrationStartupFilter>()
 			.AddValidatedOptions<AdminOptions>(_configuration)
-			.AddTransient<IStartupFilter, AdminUserStartupFilter>();
+			.AddTransient<IStartupFilter, AdminUserStartupFilter>()
+			.AddHostedService<DemoUserBackgroundService>();
 
 		var databaseProvider = DatabaseProvider.FromName(_configuration.GetValid<DatabaseOptions>().Provider, true);
 		_ = databaseProvider switch

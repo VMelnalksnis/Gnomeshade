@@ -10,13 +10,12 @@
 
 A free, open source and self-hosted personal finance manager.
 
-![Overview of all transactions over the past two months](docs/assets/transactions.jpg)
+![Overview of all transactions over the past two months](docs/assets/transactions.png)
 
 ## Getting Started
 
 Before installing the server yourself, you can try out the client using the
-[demo server](https://gnomeshade-demo.azurewebsites.net/).
-For instructions on how to install the client see
+[demo server](https://www.gnomeshade.org/getting-started#demo). For instructions on how to install the client see
 [gnomeshade.org/getting-started#install-client](https://www.gnomeshade.org/getting-started#install-client).
 Note that the demo server is publicly accessible by anyone, so be careful entering person information.
 The demo server is also periodically wiped.

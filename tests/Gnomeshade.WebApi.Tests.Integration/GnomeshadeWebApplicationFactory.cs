@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -27,12 +28,17 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 
 	protected override IHost CreateHost(IHostBuilder builder)
 	{
-		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddConfiguration(_configuration));
+		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder
+			.AddConfiguration(_configuration)
+			.AddInMemoryCollection(new KeyValuePair<string, string?>[] { new("GNOMESHADE_DEMO", "true") }));
+
 		builder.ConfigureServices(collection =>
 		{
 			collection.AddTransient<EntityRepository>();
+			collection.AddSingleton<Lazy<HttpMessageHandler>>(_ => new(() => Server.CreateHandler()));
 			_configureServices?.Invoke(collection);
 		});
+
 		builder.UseContentRoot("../../../../../source/Gnomeshade.WebApi");
 		return base.CreateHost(builder);
 	}
