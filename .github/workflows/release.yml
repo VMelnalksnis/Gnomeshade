@@ -181,6 +181,7 @@ jobs:
         run: pip3 install ansible-core
 
       - name: Trigger a new import on Galaxy
+        working-directory: ./deployment/ansible/gnomeshade
         run: ansible-galaxy role import --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY }} ${{ github.repository_owner }} Gnomeshade
 
   deploy-demo:
