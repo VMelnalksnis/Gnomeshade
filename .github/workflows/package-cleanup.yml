@@ -1,4 +1,4 @@
-name: Docker version cleanup
+name: Package version cleanup
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -27,3 +27,16 @@ jobs:
           package-type: 'container'
           min-versions-to-keep: 10
           delete-only-untagged-versions: 'true'
+
+  nuget-cleanup:
+    name: NuGet version cleanup
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/delete-package-versions@v5.0.0
+        with:
+          package-name: 'Gnomeshade.WebApi.Client'
+          package-type: 'nuget'
+          min-versions-to-keep: 10
+          delete-only-pre-release-versions: 'true'
