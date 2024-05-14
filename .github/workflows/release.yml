@@ -166,6 +166,23 @@ jobs:
       - run: ./deployment/docker_push.sh "${{ github.run_number }}"
         if: ${{ (startsWith(github.ref, 'refs/tags/')) }}
 
+  ansible-role:
+    name: Publish Ansible role
+    runs-on: ubuntu-latest
+    concurrency: release-ansible
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4.1.5
+      - uses: actions/setup-python@v5.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install Ansible
+        run: pip3 install ansible-core
+
+      - name: Trigger a new import on Galaxy
+        run: ansible-galaxy role import --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY }} ${{ github.repository_owner }} Gnomeshade
+
   deploy-demo:
     name: Deploy demo app
     needs: build-linux
