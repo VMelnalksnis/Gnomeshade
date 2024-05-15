@@ -1,6 +1,6 @@
 services:
   gnomeshade:
-    image: ghcr.io/vmelnalksnis/gnomeshade:0.8.1
+    image: ghcr.io/vmelnalksnis/gnomeshade:0.8.2
     restart: unless-stopped
     ports:
       - "8080:8080"
