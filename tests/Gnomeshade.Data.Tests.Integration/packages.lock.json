@@ -16,9 +16,9 @@
       },
       "CsvHelper": {
         "type": "Direct",
-        "requested": "[32.0.2, )",
-        "resolved": "32.0.2",
-        "contentHash": "h+Ilvdqr2kE2+SMJiRB6Cerf4CCXR5pFgcNsCLj2t3TgzIDuGlchqJaVLHqL8ZIyBdDyMq125LL6shC0ZtFnUw=="
+        "requested": "[32.0.3, )",
+        "resolved": "32.0.3",
+        "contentHash": "JNDkd4Wc2Tim5IuyL8Ai13RhzRvaHItseEvlJ2YRkx2SMBFrIsW8a5+/o4/O1jsb6mlviihR6Hfyn+nqY6CurA=="
       },
       "DotNet.ReproducibleBuilds": {
         "type": "Direct",
