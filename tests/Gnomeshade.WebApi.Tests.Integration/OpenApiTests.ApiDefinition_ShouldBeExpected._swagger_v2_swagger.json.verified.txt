@@ -30,7 +30,7 @@
         ],
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -396,7 +396,7 @@
         summary: Gets all loan payments.,
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -521,7 +521,7 @@
         ],
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -887,7 +887,7 @@
         summary: Gets all loans.,
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -1021,7 +1021,7 @@
         ],
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -1121,7 +1121,7 @@
         ],
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
@@ -1338,7 +1338,7 @@
         ],
         responses: {
           200: {
-            description: Success,
+            description: OK,
             content: {
               text/plain: {
                 schema: {
