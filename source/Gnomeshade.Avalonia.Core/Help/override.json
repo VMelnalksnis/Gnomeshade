@@ -20,11 +20,6 @@
 		"License": "MIT"
 	},
 	{
-		"Id": "BouncyCastle.Cryptography",
-		"Version": "2.2.1",
-		"License": "MIT"
-	},
-	{
 		"Id": "Docker.DotNet",
 		"Version": "3.125.15",
 		"License": "MIT"

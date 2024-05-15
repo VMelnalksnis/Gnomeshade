@@ -96,4 +96,9 @@
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="0.3.2"/>
 		<PackageVersion Include="VMelnalksnis.Testcontainers.Keycloak" Version="0.2.1"/>
 	</ItemGroup>
+
+	<!-- Vulnerable transitive dependencies -->
+	<ItemGroup>
+		<PackageVersion Include="BouncyCastle.Cryptography" Version="2.3.1"/>
+	</ItemGroup>
 </Project>
