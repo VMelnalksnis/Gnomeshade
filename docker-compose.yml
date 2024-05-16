@@ -15,7 +15,7 @@ services:
         condition: service_started
 
   database:
-    image: postgres:15.6-bookworm
+    image: postgres:15.7-bookworm
     restart: unless-stopped
     volumes:
       - postgresql_data:/var/lib/postgresql/data
