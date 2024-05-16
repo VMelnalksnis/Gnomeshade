@@ -11,6 +11,8 @@ using System.Linq;
 using Avalonia.Collections;
 using Avalonia.Data;
 
+using JetBrains.Annotations;
+
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>
@@ -58,9 +60,11 @@ public sealed class DataGridItemCollectionView<T> : IEnumerable<T>, INotifyColle
 	}
 
 	/// <inheritdoc />
+	[MustDisposeResource]
 	public IEnumerator<T> GetEnumerator() => _dataGridCollectionView.Cast<T>().GetEnumerator();
 
 	/// <inheritdoc />
+	[MustDisposeResource]
 	IEnumerator IEnumerable.GetEnumerator() => _dataGridCollectionView.GetEnumerator();
 
 	private void DataGridCollectionViewOnCollectionChanged(
