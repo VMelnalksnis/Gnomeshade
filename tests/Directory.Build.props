@@ -18,6 +18,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="NUnit3TestAdapter"/>
+		<PackageReference Include="Verify.NUnit"/>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -25,5 +26,6 @@
 		<Using Include="FluentAssertions.Execution"/>
 		<Using Include="FluentAssertions.Equivalency"/>
 		<Using Include="NUnit.Framework"/>
+		<Using Include="VerifyNUnit"/>
 	</ItemGroup>
 </Project>

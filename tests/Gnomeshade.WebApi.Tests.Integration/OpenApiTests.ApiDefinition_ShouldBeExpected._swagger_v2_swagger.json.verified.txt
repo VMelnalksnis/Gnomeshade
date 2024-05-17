@@ -1,0 +1,2001 @@
+﻿{
+  openapi: 3.0.1,
+  info: {
+    title: Gnomeshade API,
+    description: Personal finance tracking API,
+    license: {
+      name: AGPL-3.0-or-later,
+      url: https://www.gnu.org/licenses/agpl-3.0.txt
+    },
+    version: 2.0
+  },
+  paths: {
+    /api/v2/LoanPayments/{id}: {
+      get: {
+        tags: [
+          LoanPayments
+        ],
+        summary: Gets the specified loan payment.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan payment to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          LoanPayments
+        ],
+        summary: Creates a new loan payment or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan payment.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          description: The loan payment to create or replace.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          LoanPayments
+        ],
+        summary: Deletes the loan payment.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan payment. to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/LoanPayments: {
+      get: {
+        tags: [
+          LoanPayments
+        ],
+        summary: Gets all loan payments.,
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/LoanPayment
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          LoanPayments
+        ],
+        summary: Creates a new loan payment.,
+        requestBody: {
+          description: The loan payment to create.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/LoanPaymentCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Loans/{id}: {
+      get: {
+        tags: [
+          Loans
+        ],
+        summary: Gets the specified loan.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/Loan
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/Loan
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/Loan
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          Loans
+        ],
+        summary: Creates a new loan or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          description: The loan to create or replace.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          Loans
+        ],
+        summary: Deletes the loan.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Loans: {
+      get: {
+        tags: [
+          Loans
+        ],
+        summary: Gets all loans.,
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Loan
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Loan
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Loan
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          Loans
+        ],
+        summary: Creates a new loan.,
+        requestBody: {
+          description: The loan to create.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/LoanCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Loans/{id}/LoanPayments: {
+      get: {
+        tags: [
+          Loans
+        ],
+        summary: Gets all loan payments for the specified loan.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the loan for which to get all the payments.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Transactions/{id}/Details: {
+      get: {
+        tags: [
+          Transactions
+        ],
+        summary: Gets the specified transaction with all details.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the transaction to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/DetailedTransaction
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/DetailedTransaction
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/DetailedTransaction
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Transactions/Details: {
+      get: {
+        tags: [
+          Transactions
+        ],
+        summary: Gets all transactions.,
+        parameters: [
+          {
+            name: From,
+            in: query,
+            description: The start of the date range.,
+            schema: {
+              $ref: #/components/schemas/Instant
+            }
+          },
+          {
+            name: To,
+            in: query,
+            description: The end of the date range.,
+            schema: {
+              $ref: #/components/schemas/Instant
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Successfully got all transactions.,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/DetailedTransaction
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/DetailedTransaction
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/DetailedTransaction
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v2/Transactions/{id}/LoanPayments: {
+      get: {
+        tags: [
+          Transactions
+        ],
+        summary: Gets all loan payments for the specified transaction.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the transaction for which to get all the payments.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: Success,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/LoanPayment
+                  }
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    }
+  },
+  components: {
+    schemas: {
+      DetailedTransaction: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the transaction.,
+            format: uuid
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the transaction.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this transaction.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this transaction.,
+            format: uuid
+          },
+          description: {
+            type: string,
+            description: The description of the transaction.,
+            nullable: true
+          },
+          importedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          imported: {
+            type: boolean,
+            description: Whether or not this transaction was imported.,
+            readOnly: true
+          },
+          reconciledAt: {
+            $ref: #/components/schemas/Instant
+          },
+          reconciled: {
+            type: boolean,
+            description: Whether or not this transaction was reconciled.,
+            readOnly: true
+          },
+          refundedBy: {
+            type: string,
+            description: The id of the transaction that refunds this one.,
+            format: uuid,
+            nullable: true
+          },
+          refunded: {
+            type: boolean,
+            description: Whether or not this transaction was refunded.,
+            readOnly: true
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          valuedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          transfers: {
+            type: array,
+            items: {
+              $ref: #/components/schemas/Transfer
+            },
+            description: All transfers in the transaction.
+          },
+          transferBalance: {
+            type: number,
+            description: The total balance of the transfers for the user.,
+            format: double
+          },
+          purchases: {
+            type: array,
+            items: {
+              $ref: #/components/schemas/Purchase
+            },
+            description: All the purchases in the transaction.
+          },
+          purchaseTotal: {
+            type: number,
+            description: The sum of all the prices from Gnomeshade.WebApi.Models.Transactions.DetailedTransaction.Purchases.,
+            format: double
+          },
+          loanPayments: {
+            type: array,
+            items: {
+              $ref: #/components/schemas/LoanPayment
+            },
+            description: All the loan payments in the transaction.
+          },
+          loanTotal: {
+            type: number,
+            description: The sum of all the amounts from Gnomeshade.WebApi.Models.Transactions.DetailedTransaction.LoanPayments.,
+            format: double
+          },
+          links: {
+            type: array,
+            items: {
+              $ref: #/components/schemas/Link
+            },
+            description: All the links attached to the transaction.
+          }
+        },
+        additionalProperties: false,
+        description: A Gnomeshade.WebApi.Models.Transactions.Transaction with all sub-resources and additional details.
+      },
+      Instant: {
+        type: string,
+        additionalProperties: false,
+        format: date-time
+      },
+      Link: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the link.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the link.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this link.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this link.,
+            format: uuid
+          },
+          uri: {
+            type: string,
+            description: The unescaped canonical representation of the uniform resource identifier of the linked data.
+          }
+        },
+        additionalProperties: false,
+        description: A link to an external resource.
+      },
+      Loan: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the loan.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this loan.,
+            format: uuid
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the loan.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this loan.,
+            format: uuid
+          },
+          name: {
+            type: string,
+            description: The name of the loan.
+          },
+          issuingCounterpartyId: {
+            type: string,
+            description: The id of the counterparty that issued this loan.,
+            format: uuid
+          },
+          receivingCounterpartyId: {
+            type: string,
+            description: The id of the counterparty that received this loan.,
+            format: uuid
+          },
+          principal: {
+            type: number,
+            description: The amount of capital originally borrowed or invested.,
+            format: double
+          },
+          currencyId: {
+            type: string,
+            description: The id of the currency of the Gnomeshade.WebApi.Models.Loans.Loan.Principal.,
+            format: uuid
+          }
+        },
+        additionalProperties: false,
+        description: A transfer of money between two counterparties with an agreement to pay it back.
+      },
+      LoanCreation: {
+        required: [
+          currencyId,
+          issuingCounterpartyId,
+          name,
+          principal,
+          receivingCounterpartyId
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          name: {
+            minLength: 1,
+            type: string,
+            description: The name of the loan.
+          },
+          issuingCounterpartyId: {
+            type: string,
+            description: The id of the counterparty that issued this loan.,
+            format: uuid
+          },
+          receivingCounterpartyId: {
+            type: string,
+            description: The id of the counterparty that received this loan.,
+            format: uuid
+          },
+          principal: {
+            type: number,
+            description: The amount of capital originally borrowed or invested.,
+            format: double
+          },
+          currencyId: {
+            type: string,
+            description: The id of the currency of the Gnomeshade.WebApi.Models.Loans.Loan.Principal.,
+            format: uuid
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a loan.
+      },
+      LoanPayment: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the loan payment.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this loan payment.,
+            format: uuid
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the loan payment.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this loan payment.,
+            format: uuid
+          },
+          loanId: {
+            type: string,
+            description: The id of the loan that this payment is a part of.,
+            format: uuid
+          },
+          transactionId: {
+            type: string,
+            description: The id of the transaction that this payment is a part of.,
+            format: uuid
+          },
+          amount: {
+            type: number,
+            description: The amount that was loaned or paid back.,
+            format: double
+          },
+          interest: {
+            type: number,
+            description: The interest amount of this loan payment.,
+            format: double
+          }
+        },
+        additionalProperties: false,
+        description: A payment that was to either issue or pay back a loan.
+      },
+      LoanPaymentCreation: {
+        required: [
+          amount,
+          interest,
+          loanId,
+          transactionId
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          loanId: {
+            type: string,
+            description: The id of the loan that this payment is a part of.,
+            format: uuid
+          },
+          transactionId: {
+            type: string,
+            description: The id of the transaction that this payment is a part of.,
+            format: uuid
+          },
+          amount: {
+            type: number,
+            description: The amount that was loaned or paid back.,
+            format: double
+          },
+          interest: {
+            type: number,
+            description: The interest amount of this loan payment.,
+            format: double
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a loan payment.
+      },
+      ProblemDetails: {
+        type: object,
+        properties: {
+          type: {
+            type: string,
+            nullable: true
+          },
+          title: {
+            type: string,
+            nullable: true
+          },
+          status: {
+            type: integer,
+            format: int32,
+            nullable: true
+          },
+          detail: {
+            type: string,
+            nullable: true
+          },
+          instance: {
+            type: string,
+            nullable: true
+          }
+        }
+      },
+      Purchase: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the purchase.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the purchase.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this purchase.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this purchase.,
+            format: uuid
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this purchase is a part of.,
+            format: uuid
+          },
+          price: {
+            type: number,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.Purchase.Amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId.,
+            format: double
+          },
+          currencyId: {
+            type: string,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.Purchase.Price.,
+            format: uuid
+          },
+          productId: {
+            type: string,
+            description: The id of the purchased product.,
+            format: uuid
+          },
+          amount: {
+            type: number,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId that was purchased.,
+            format: double
+          },
+          deliveryDate: {
+            $ref: #/components/schemas/Instant
+          },
+          order: {
+            type: integer,
+            description: The order of the purchase within a transaction.,
+            format: int32,
+            nullable: true
+          }
+        },
+        additionalProperties: false,
+        description: The act or an instance of buying of a Gnomeshade.WebApi.Models.Products.Product as a part of a Gnomeshade.WebApi.Models.Transactions.Transaction.
+      },
+      Transfer: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the transfer.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the transfer.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this transfer.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this transfer.,
+            format: uuid
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this transfer is a part of.,
+            format: uuid
+          },
+          sourceAmount: {
+            type: number,
+            description: The amount withdrawn from the source account.,
+            format: double
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid
+          },
+          targetAmount: {
+            type: number,
+            description: The amount deposited in the target account.,
+            format: double
+          },
+          targetAccountId: {
+            type: string,
+            description: The id of the account to which currency is deposited to.,
+            format: uuid
+          },
+          bankReference: {
+            type: string,
+            description: The reference id issued by the bank.,
+            nullable: true
+          },
+          externalReference: {
+            type: string,
+            description: The reference id issued by an external source.,
+            nullable: true
+          },
+          internalReference: {
+            type: string,
+            description: The reference id issued by the user.,
+            nullable: true
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          valuedAt: {
+            $ref: #/components/schemas/Instant
+          }
+        },
+        additionalProperties: false,
+        description: A transfer between two accounts.
+      },
+      ValidationProblemDetails: {
+        type: object,
+        properties: {
+          type: {
+            type: string,
+            nullable: true
+          },
+          title: {
+            type: string,
+            nullable: true
+          },
+          status: {
+            type: integer,
+            format: int32,
+            default: 400,
+            nullable: true
+          },
+          detail: {
+            type: string,
+            nullable: true
+          },
+          instance: {
+            type: string,
+            nullable: true
+          },
+          errors: {
+            type: object,
+            additionalProperties: {
+              type: array,
+              items: {
+                type: string
+              }
+            }
+          }
+        }
+      }
+    },
+    securitySchemes: {
+      JWT: {
+        type: http,
+        description: JWT Authorization header using the Bearer scheme.,
+        scheme: Bearer,
+        bearerFormat: JWT
+      }
+    }
+  },
+  security: [
+    {}
+  ]
+}

@@ -21,14 +21,9 @@ using Microsoft.Extensions.Options;
 
 namespace Gnomeshade.WebApi.Tests.Integration;
 
-public sealed class EndpointTests : WebserverTests
+public sealed class EndpointTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private static readonly Uri _loginUri = new("/Identity/Account/Login", UriKind.Relative);
-
-	public EndpointTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[TestCaseSource(nameof(Endpoints))]
 	public async Task ShouldReturnOk(Uri requestUri)

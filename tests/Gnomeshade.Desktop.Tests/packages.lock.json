@@ -84,6 +84,21 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.556"
         }
       },
+      "Verify.NUnit": {
+        "type": "Direct",
+        "requested": "[24.2.0, )",
+        "resolved": "24.2.0",
+        "contentHash": "Dgi2i0Dzzv0t+KoaLZNx995koRlw9XVRwZiM5agtcn2cJoBJRsEKd5kMj9y4hml+qWcFshfHqSiwtS735z4jlQ==",
+        "dependencies": {
+          "NUnit": "4.1.0",
+          "Verify": "24.2.0"
+        }
+      },
+      "Argon": {
+        "type": "Transitive",
+        "resolved": "0.17.0",
+        "contentHash": "TC/5P8sb2AKeC6dLAEx7ex1sr2IiQOI0tZ8yV6J3QT8qp7bUfP/blmwrgZ/zIab84XQ+XScT1zUeok96iZ7ReQ=="
+      },
       "Avalonia": {
         "type": "Transitive",
         "resolved": "11.0.10",
@@ -215,6 +230,20 @@
           "Avalonia": "11.0.0",
           "Avalonia.Xaml.Interactivity": "11.0.10.9"
         }
+      },
+      "DiffEngine": {
+        "type": "Transitive",
+        "resolved": "15.4.0",
+        "contentHash": "2UTLer/h9u6zKTEXuHmgG7lQPjUiOP7YuIWKY5XP25v7uCDQmJXQnyaNbW6g4JzG5gyMhgbulVYPyqaglwP1zw==",
+        "dependencies": {
+          "EmptyFiles": "8.2.0",
+          "System.Management": "8.0.0"
+        }
+      },
+      "EmptyFiles": {
+        "type": "Transitive",
+        "resolved": "8.2.0",
+        "contentHash": "LnZLh5IPCc0zDjVWnta9pwLR9UxH0Ki08iru+2BRZ2tMigZDSlQQ9u3GnEjaDemaSCJwKLQyf3lsnVnbVldQ/g=="
       },
       "HarfBuzzSharp": {
         "type": "Transitive",
@@ -492,6 +521,11 @@
           "Serilog": "3.1.1"
         }
       },
+      "SimpleInfoName": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "jZwJajqdF56n0HcwvM8wqrwhr8tBqp7E3dWVoa5XWMC4tqSXP4+rIfYipeVIavRUI5MSj5vYPCdwtF3h4RJvxA=="
+      },
       "SkiaSharp": {
         "type": "Transitive",
         "resolved": "2.88.7",
@@ -538,6 +572,11 @@
         "resolved": "1.2.0.556",
         "contentHash": "zvn9Mqs/ox/83cpYPignI8hJEM2A93s2HkHs8HYMOAQW0PkampyoErAiIyKxgTLqbbad29HX/shv/6LGSjPJNQ=="
       },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
+      },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
         "resolved": "4.5.0",
@@ -556,10 +595,23 @@
         "resolved": "8.0.0",
         "contentHash": "c9xLpVz6PL9lp/djOWtk5KPDZq3cSYpmXoJQY524EOtuFl5z9ZtsotpsyrDW40U1DRnQSYvcPKEUV0X//u6gkQ=="
       },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA=="
+      },
       "System.IO.Pipelines": {
         "type": "Transitive",
         "resolved": "6.0.0",
         "contentHash": "mXX66shZ4xLlI3vNLaJ0lt8OIZdmXTvIqXRdQX5HLVGSkLhINLsVhyZuX2UdRFnOGkqnwmMUs40pIIQ7mna4+A=="
+      },
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
+        "dependencies": {
+          "System.CodeDom": "8.0.0"
+        }
       },
       "System.Numerics.Vectors": {
         "type": "Transitive",
@@ -605,6 +657,17 @@
         "contentHash": "QVo/Y39nTYcCKBqrZuwHjXdwaky0yTQPIT3qUTEEK2MZfDtZWrJ2XyZ59zH8LBgB2fL5cWaTuP2pBTpGz/GeDQ==",
         "dependencies": {
           "System.IO.Pipelines": "6.0.0"
+        }
+      },
+      "Verify": {
+        "type": "Transitive",
+        "resolved": "24.2.0",
+        "contentHash": "PlWBOlByTPNp9cEc22TZ6I04yfbqICKDMJOw1k+6eWomVl1qSOhbc8QITBkoNspOsSb4oyrkYusjd3DspFerPg==",
+        "dependencies": {
+          "Argon": "0.17.0",
+          "DiffEngine": "15.4.0",
+          "SimpleInfoName": "2.2.0",
+          "System.IO.Hashing": "8.0.0"
         }
       },
       "gnomeshade.avalonia.core": {

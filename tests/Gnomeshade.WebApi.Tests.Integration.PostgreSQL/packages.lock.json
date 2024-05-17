@@ -138,6 +138,16 @@
           "Testcontainers": "3.5.0"
         }
       },
+      "Verify.NUnit": {
+        "type": "Direct",
+        "requested": "[24.2.0, )",
+        "resolved": "24.2.0",
+        "contentHash": "Dgi2i0Dzzv0t+KoaLZNx995koRlw9XVRwZiM5agtcn2cJoBJRsEKd5kMj9y4hml+qWcFshfHqSiwtS735z4jlQ==",
+        "dependencies": {
+          "NUnit": "4.1.0",
+          "Verify": "24.2.0"
+        }
+      },
       "VMelnalksnis.Testcontainers.Keycloak": {
         "type": "Direct",
         "requested": "[0.2.1, )",
@@ -157,6 +167,11 @@
           "Ardalis.SmartEnum": "2.1.0",
           "System.Text.Json": "6.0.2"
         }
+      },
+      "Argon": {
+        "type": "Transitive",
+        "resolved": "0.17.0",
+        "contentHash": "TC/5P8sb2AKeC6dLAEx7ex1sr2IiQOI0tZ8yV6J3QT8qp7bUfP/blmwrgZ/zIab84XQ+XScT1zUeok96iZ7ReQ=="
       },
       "Avalonia": {
         "type": "Transitive",
@@ -193,6 +208,15 @@
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.3"
         }
       },
+      "DiffEngine": {
+        "type": "Transitive",
+        "resolved": "15.4.0",
+        "contentHash": "2UTLer/h9u6zKTEXuHmgG7lQPjUiOP7YuIWKY5XP25v7uCDQmJXQnyaNbW6g4JzG5gyMhgbulVYPyqaglwP1zw==",
+        "dependencies": {
+          "EmptyFiles": "8.2.0",
+          "System.Management": "8.0.0"
+        }
+      },
       "Docker.DotNet": {
         "type": "Transitive",
         "resolved": "3.125.15",
@@ -210,6 +234,11 @@
         "dependencies": {
           "Docker.DotNet": "3.125.15"
         }
+      },
+      "EmptyFiles": {
+        "type": "Transitive",
+        "resolved": "8.2.0",
+        "contentHash": "LnZLh5IPCc0zDjVWnta9pwLR9UxH0Ki08iru+2BRZ2tMigZDSlQQ9u3GnEjaDemaSCJwKLQyf3lsnVnbVldQ/g=="
       },
       "Google.Protobuf": {
         "type": "Transitive",
@@ -1001,6 +1030,11 @@
         "resolved": "1.4.2",
         "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
       },
+      "SimpleInfoName": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "jZwJajqdF56n0HcwvM8wqrwhr8tBqp7E3dWVoa5XWMC4tqSXP4+rIfYipeVIavRUI5MSj5vYPCdwtF3h4RJvxA=="
+      },
       "SkiaSharp": {
         "type": "Transitive",
         "resolved": "2.88.6",
@@ -1110,6 +1144,11 @@
         "type": "Transitive",
         "resolved": "4.5.1",
         "contentHash": "Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg=="
+      },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
       },
       "System.Collections": {
         "type": "Transitive",
@@ -1302,6 +1341,11 @@
           "System.Text.Encoding": "4.3.0"
         }
       },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "ne1843evDugl0md7Fjzy6QjJrzsjh46ZKbhf8GwBXb5f/gw97J4bxMs0NQKifDuThh/f0bZ0e62NPl1jzTuRqA=="
+      },
       "System.IO.Pipelines": {
         "type": "Transitive",
         "resolved": "8.0.0",
@@ -1341,6 +1385,14 @@
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0",
           "System.Threading": "4.3.0"
+        }
+      },
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
+        "dependencies": {
+          "System.CodeDom": "8.0.0"
         }
       },
       "System.Memory": {
@@ -1787,6 +1839,17 @@
           "System.Text.Json": "6.0.8"
         }
       },
+      "Verify": {
+        "type": "Transitive",
+        "resolved": "24.2.0",
+        "contentHash": "PlWBOlByTPNp9cEc22TZ6I04yfbqICKDMJOw1k+6eWomVl1qSOhbc8QITBkoNspOsSb4oyrkYusjd3DspFerPg==",
+        "dependencies": {
+          "Argon": "0.17.0",
+          "DiffEngine": "15.4.0",
+          "SimpleInfoName": "2.2.0",
+          "System.IO.Hashing": "8.0.0"
+        }
+      },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
         "resolved": "1.4.0",
@@ -1866,7 +1929,8 @@
           "Microsoft.NET.Test.Sdk": "[17.9.0, )",
           "NUnit": "[4.1.0, )",
           "NUnit3TestAdapter": "[4.5.0, )",
-          "NodaTime.Bogus": "[3.0.2, )"
+          "NodaTime.Bogus": "[3.0.2, )",
+          "Verify.NUnit": "[24.2.0, )"
         }
       },
       "gnomeshade.webapi": {
