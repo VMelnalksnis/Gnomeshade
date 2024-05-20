@@ -124,6 +124,16 @@
 				<ProgressBar IsIndeterminate="{Binding IsBusy}" />
 			</StackPanel>
 		</Grid>
+
+		<Interaction.Behaviors>
+			<interactivity:PointerReleasedTrigger MouseButton="XButton1" SourceInteractive="{Binding $parent[Window]}">
+				<InvokeCommandAction Command="{Binding NavigateBack}" />
+			</interactivity:PointerReleasedTrigger>
+			<interactivity:HotKeyBehaviour
+				TopLevel="{Binding $parent[TopLevel]}"
+				HotKey="Alt+Left"
+				Command="{Binding NavigateBack}" />
+		</Interaction.Behaviors>
 	</Panel>
 
 	<Interaction.Behaviors>

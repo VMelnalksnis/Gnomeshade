@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -37,6 +38,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private readonly IServiceProvider _serviceProvider;
 	private readonly IDialogService _dialogService;
 	private readonly IOptionsMonitor<UserConfiguration> _userConfigurationMonitor;
+	private readonly Stack<ViewModelBase> _navigationHistory = [];
 
 	private bool _initialized;
 
@@ -75,6 +77,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		Initialize = commandFactory.Create(InitializeActiveViewAsync, () => !_initialized, "Initializing");
 		About = commandFactory.Create<Window>(ShowAboutWindow, "Waiting for About window to be closed");
 		License = commandFactory.Create<Window>(ShowLicenseWindow, "Waiting for License window to be closed");
+		NavigateBack = commandFactory.Create(NavigateBackAsync, () => _navigationHistory.Count is not 0, "Navigating back");
 
 		PropertyChanging += OnPropertyChanging;
 	}
@@ -87,6 +90,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Gets a command for showing <see cref="LicensesViewModel"/>.</summary>
 	public CommandBase License { get; }
+
+	/// <summary>Gets a command for switching to the previous <see cref="ActiveView"/>.</summary>
+	public CommandBase NavigateBack { get; }
 
 	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
 	public bool CanLogOut => ActiveView is not null and not LoginViewModel and not ConfigurationWizardViewModel;
@@ -284,6 +290,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 			return Task.CompletedTask;
 		}
 
+		if (ActiveView is { } activeView and not (LoginViewModel or ConfigurationWizardViewModel))
+		{
+			_navigationHistory.Push(activeView);
+		}
+
 		var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
 		ActiveView = viewModel;
 		return viewModel.RefreshAsync();
@@ -303,6 +314,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		await viewModel.RefreshAsync();
 
 		await _dialogService.ShowDialog(window, viewModel, dialog => dialog.Title = "Licenses");
+	}
+
+	private async Task NavigateBackAsync()
+	{
+		var viewModel = _navigationHistory.Pop();
+		if (ActiveView == viewModel)
+		{
+			return;
+		}
+
+		ActiveView = viewModel;
+		await viewModel.RefreshAsync();
+		NavigateBack.InvokeExecuteChanged();
 	}
 
 	private async void OnUserLoggedIn(object? sender, EventArgs e)
