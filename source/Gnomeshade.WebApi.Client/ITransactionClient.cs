@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Models;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -155,6 +156,20 @@ public interface ITransactionClient
 	/// <param name="relatedId">The id of the related transaction.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId);
+
+	Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default);
+
+	Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default);
+
+	Task<List<PlannedTransfer>> GetPlannedTransfers(Guid transactionId, CancellationToken cancellationToken = default);
+
+	Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default);
+
+	Task<List<PlannedPurchase>> GetPlannedPurchases(Guid transactionId, CancellationToken cancellationToken = default);
+
+	Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default);
+
+	Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(Guid transactionId, CancellationToken cancellationToken = default);
 
 	/// <summary>Gets all loans.</summary>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>

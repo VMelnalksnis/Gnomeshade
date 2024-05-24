@@ -28,7 +28,8 @@ public sealed class TransactionOverview : PropertyChangedBase
 		DateTimeOffset? reconciledAt,
 		List<TransferSummary> transfers,
 		List<Purchase> purchases,
-		List<LoanPayment> loanPayments)
+		List<LoanPayment> loanPayments,
+		bool projection = false)
 	{
 		Id = id;
 		BookedAt = bookedAt;
@@ -37,6 +38,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		Transfers = transfers;
 		Purchases = purchases;
 		LoanPayments = loanPayments;
+		Projection = projection;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -59,6 +61,8 @@ public sealed class TransactionOverview : PropertyChangedBase
 
 	/// <summary>Gets all transfers of the transaction.</summary>
 	public List<TransferSummary> Transfers { get; }
+
+	public bool Projection { get; }
 
 	internal List<Purchase> Purchases { get; }
 

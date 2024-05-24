@@ -232,6 +232,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private async Task InitializeActiveViewAsync()
 	{
 		// The first notification does not show up, and subsequent calls work after some delay
+		// todo if the app starts too fast the first notification still does not show up
 		ActivityService.ShowNotification(new(null, null, expiration: TimeSpan.FromMilliseconds(1)));
 
 		if (ActiveView is not null)

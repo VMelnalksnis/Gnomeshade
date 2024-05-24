@@ -236,6 +236,37 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Transactions.RelatedUri(id, relatedId));
 
 	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	[Obsolete]
 	public Task<List<LegacyLoan>> GetLegacyLoans(CancellationToken cancellationToken = default) =>
 		GetAsync("v1.0/Loans", _context.ListLegacyLoan, cancellationToken);
