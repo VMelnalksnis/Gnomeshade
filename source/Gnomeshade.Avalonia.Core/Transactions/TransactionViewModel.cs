@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -186,6 +188,80 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.LoanPayments);
 		}).ToList();
 
+		if (Filter.IncludeProjections)
+		{
+			var (plannedTransactions, plannedTransfers, plannedPurchases, plannedLoanPayments) = await (
+				_gnomeshadeClient.GetPlannedTransactions(),
+				_gnomeshadeClient.GetPlannedTransfers(),
+				_gnomeshadeClient.GetPlannedPurchases(),
+				_gnomeshadeClient.GetPlannedLoanPayments())
+				.WhenAll();
+
+			var timeZone = _dateTimeZoneProvider.GetSystemDefault();
+			var plannedOverviews = plannedTransactions.SelectMany(transaction => Selector(transaction, timeZone));
+
+			overviews = overviews.Concat(plannedOverviews).ToList();
+
+			IEnumerable<TransactionOverview> Selector(PlannedTransaction transaction, DateTimeZone timeZone)
+			{
+				for (var index = 0; index < 12; index++)
+				{
+					var startDate = transaction.StartTime.InZone(timeZone);
+					var startTime = plannedTransfers.Select(transfer => transfer.BookedAt).Max();
+					var instant = new LocalDateTime(startDate.Year, startDate.Month, startDate.Day, startTime.Hour, startTime.Minute)
+						.Plus(Period.FromMonths(index))
+						.InZoneStrictly(timeZone)
+						.ToInstant();
+
+					var transfers = plannedTransfers
+						.Select(plannedTransfer => plannedTransfer.ToSummary(instant, counterparties, counterparty, accountsInCurrency))
+						.ToList();
+
+					var purchases = plannedPurchases.Select(plannedPurchase => new Purchase
+					{
+						Id = plannedPurchase.Id,
+						CreatedAt = plannedPurchase.CreatedAt,
+						OwnerId = plannedPurchase.OwnerId,
+						CreatedByUserId = plannedPurchase.CreatedByUserId,
+						ModifiedAt = plannedPurchase.ModifiedAt,
+						ModifiedByUserId = plannedPurchase.ModifiedByUserId,
+						TransactionId = plannedPurchase.PlannedTransactionId,
+						Price = plannedPurchase.Price,
+						CurrencyId = plannedPurchase.CurrencyId,
+						ProductId = plannedPurchase.ProductId,
+						Amount = plannedPurchase.Amount,
+						DeliveryDate = null,
+						Order = plannedPurchase.Order,
+					}).ToList();
+
+					var loanPayments = plannedLoanPayments.Select(payment => new LoanPayment
+						{
+							Id = payment.Id,
+							CreatedAt = default,
+							CreatedByUserId = default,
+							OwnerId = default,
+							ModifiedAt = default,
+							ModifiedByUserId = default,
+							LoanId = payment.LoanId,
+							TransactionId = payment.PlannedTransactionId,
+							Amount = payment.Amount,
+							Interest = payment.Interest,
+						})
+						.ToList();
+
+					yield return new(
+						transaction.Id,
+						instant.InZone(timeZone).ToDateTimeOffset(),
+						null,
+						null,
+						transfers,
+						purchases,
+						loanPayments,
+						true);
+				}
+			}
+		}
+
 		var selected = Selected;
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(overviews);
@@ -254,11 +330,16 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		}
 	}
 
-	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(TransactionFilter.IsValid))
 		{
 			OnPropertyChanged(nameof(CanRefresh));
+		}
+
+		if (e.PropertyName is nameof(TransactionFilter.IncludeProjections))
+		{
+			await RefreshAsync();
 		}
 
 		if (e.PropertyName is

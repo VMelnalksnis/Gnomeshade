@@ -154,13 +154,10 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var accountsTask = GnomeshadeClient.GetAccountsAsync();
-		var currenciesTask = GnomeshadeClient.GetCurrenciesAsync();
-
-		await Task.WhenAll(accountsTask, currenciesTask);
-
-		Accounts = accountsTask.Result;
-		Currencies = currenciesTask.Result;
+		(Accounts, Currencies) = await
+			(GnomeshadeClient.GetAccountsAsync(),
+			GnomeshadeClient.GetCurrenciesAsync())
+			.WhenAll();
 
 		if (Id is not { } transferId)
 		{

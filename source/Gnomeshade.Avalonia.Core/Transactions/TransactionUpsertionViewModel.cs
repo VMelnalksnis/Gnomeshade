@@ -128,10 +128,12 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		if (Id is not { } transactionId)
 		{
+			IsReadOnly = false;
 			return;
 		}
 
 		var transaction = await GnomeshadeClient.GetTransactionAsync(transactionId);
+		IsReadOnly = transaction.Reconciled;
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 

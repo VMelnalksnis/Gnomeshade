@@ -108,6 +108,9 @@ public sealed partial class TransactionFilter : FilterBase<TransactionOverview>
 	[Notify]
 	private string? _transferReferenceFilter;
 
+	[Notify]
+	private bool _includeProjections = true;
+
 	/// <summary>Initializes a new instance of the <see cref="TransactionFilter"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>

@@ -44,6 +44,9 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 	[Notify]
 	private IReportSplit? _selectedSplit = SplitProvider.MonthlySplit;
 
+	[Notify]
+	private bool _includeProjections = true;
+
 	/// <summary>Gets the data series of amount spent per month per category.</summary>
 	[Notify(Setter.Private)]
 	private List<StackedColumnSeries<IndexedPoint>> _series = [];
@@ -86,15 +89,29 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			return;
 		}
 
-		var accounts = await _gnomeshadeClient.GetAccountsAsync();
+		var (accounts, allTransactions, plannedTransactions, plannedTransfers, plannedPurchases, products) = await
+			(_gnomeshadeClient.GetAccountsAsync(),
+			_gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)),
+			_gnomeshadeClient.GetPlannedTransactions(),
+			_gnomeshadeClient.GetPlannedTransfers(),
+			_gnomeshadeClient.GetPlannedPurchases(),
+			_gnomeshadeClient.GetProductsAsync())
+			.WhenAll();
+
 		var accountsInCurrency = accounts.SelectMany(account => account.Currencies).ToArray();
-		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var displayableTransactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
 			.Where(transaction => transaction.TransferBalance > 0)
 			.ToArray();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
+
+		if (IncludeProjections)
+		{
+			displayableTransactions = displayableTransactions
+				.Concat(plannedTransactions.SelectMany(transaction => Selector(transaction, timeZone, plannedTransfers, plannedPurchases)))
+				.ToArray();
+		}
 
 		var transactions = new TransactionData[displayableTransactions.Length];
 		for (var i = 0; i < displayableTransactions.Length; i++)
@@ -133,11 +150,9 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		var endTime = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = reportSplit.GetSplits(startTime, endTime).ToArray();
 
-		var products = await _gnomeshadeClient.GetProductsAsync();
-		var categories = await _gnomeshadeClient.GetCategoriesAsync();
-		var nodes = categories
+		var nodes = Categories
 			.Where(category => category.CategoryId == SelectedCategory?.Id || category.Id == SelectedCategory?.Id)
-			.Select(category => CategoryNode.FromCategory(category, categories))
+			.Select(category => CategoryNode.FromCategory(category, Categories))
 			.ToList();
 
 		var uncategorizedTransfers = transactions
@@ -185,18 +200,14 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 				for (var purchaseIndex = 0; purchaseIndex < purchasesToSum.Length; purchaseIndex++)
 				{
 					var purchase = purchasesToSum[purchaseIndex];
-					var sourceCurrencyIds = purchase.SourceCurrencyIds;
-					var targetCurrencyIds = purchase.TargetCurrencyIds;
 
-					if (sourceCurrencyIds.Length is not 1 || targetCurrencyIds.Length is not 1)
+					if (purchase.SourceCurrencyIds is not [var sourceCurrency] ||
+						purchase.TargetCurrencyIds is not [var targetCurrency])
 					{
 						// todo cannot handle multiple currencies (#686)
 						sum += purchase.Purchase.Price;
 						continue;
 					}
-
-					var sourceCurrency = sourceCurrencyIds.Single();
-					var targetCurrency = targetCurrencyIds.Single();
 
 					if (sourceCurrency == targetCurrency)
 					{
@@ -219,9 +230,95 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		XAxes = [reportSplit.GetXAxis(startTime, endTime)];
 	}
 
+	private static IEnumerable<DetailedTransaction> Selector(
+		PlannedTransaction transaction,
+		DateTimeZone timeZone,
+		List<PlannedTransfer> allTransfers,
+		List<PlannedPurchase> allPurchases)
+	{
+		var plannedTransfers = allTransfers.Where(transfer => transfer.PlannedTransactionId == transaction.Id).ToArray();
+		var plannedPurchases = allPurchases.Where(purchase => purchase.PlannedTransactionId == transaction.Id).ToArray();
+
+		for (var index = 0; index < 12; index++)
+		{
+			var startDate = transaction.StartTime.InZone(timeZone);
+			var startTime = plannedTransfers.Select(transfer => transfer.BookedAt).Max();
+			var instant = new LocalDateTime(startDate.Year, startDate.Month, startDate.Day, startTime.Hour, startTime.Minute)
+				.Plus(Period.FromMonths(index))
+				.InZoneStrictly(timeZone)
+				.ToInstant();
+
+			var transfers = plannedTransfers.Select(plannedTransfer => new Transfer
+			{
+				Id = plannedTransfer.Id,
+				CreatedAt = plannedTransfer.CreatedAt,
+				OwnerId = plannedTransfer.OwnerId,
+				CreatedByUserId = plannedTransfer.CreatedByUserId,
+				ModifiedAt = plannedTransfer.ModifiedAt,
+				ModifiedByUserId = plannedTransfer.ModifiedByUserId,
+				TransactionId = plannedTransfer.PlannedTransactionId,
+				SourceAmount = plannedTransfer.SourceAmount,
+				SourceAccountId = plannedTransfer.SourceAccountId ?? default,
+				TargetAmount = plannedTransfer.TargetAmount,
+				TargetAccountId = plannedTransfer.TargetAccountId ?? default,
+				BankReference = null,
+				ExternalReference = null,
+				InternalReference = null,
+				Order = plannedTransfer.Order,
+				BookedAt = instant,
+				ValuedAt = null,
+			}).ToList();
+
+			var purchases = plannedPurchases.Select(plannedPurchase => new Purchase
+			{
+				Id = plannedPurchase.Id,
+				CreatedAt = plannedPurchase.CreatedAt,
+				OwnerId = plannedPurchase.OwnerId,
+				CreatedByUserId = plannedPurchase.CreatedByUserId,
+				ModifiedAt = plannedPurchase.ModifiedAt,
+				ModifiedByUserId = plannedPurchase.ModifiedByUserId,
+				TransactionId = plannedPurchase.PlannedTransactionId,
+				Price = plannedPurchase.Price,
+				CurrencyId = plannedPurchase.CurrencyId,
+				ProductId = plannedPurchase.ProductId,
+				Amount = plannedPurchase.Amount,
+				DeliveryDate = null,
+				Order = plannedPurchase.Order,
+			}).ToList();
+
+			yield return new()
+			{
+				Id = transaction.Id,
+				OwnerId = transaction.OwnerId,
+				CreatedAt = transaction.CreatedAt,
+				CreatedByUserId = transaction.CreatedByUserId,
+				ModifiedAt = transaction.ModifiedAt,
+				ModifiedByUserId = transaction.ModifiedByUserId,
+				Description = null,
+				ImportedAt = null,
+				ReconciledAt = null,
+				RefundedBy = null,
+				BookedAt = instant,
+				ValuedAt = null,
+				Transfers = transfers,
+				TransferBalance = transfers.Select(transfer => transfer.SourceAmount).Sum(), // todo
+				Purchases = purchases,
+				PurchaseTotal = purchases.Select(purchase => purchase.Price).Sum(),
+				LoanPayments = [],
+				LoanTotal = 0,
+				Links = [],
+			};
+		}
+	}
+
 	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(SelectedSplit) && SelectedSplit is not null)
+		{
+			await RefreshAsync();
+		}
+
+		if (e.PropertyName is nameof(IncludeProjections))
 		{
 			await RefreshAsync();
 		}

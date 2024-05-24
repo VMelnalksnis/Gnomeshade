@@ -45,6 +45,11 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Loan> _loans;
 	private static readonly List<LoanPayment> _loanPayments;
 
+	private static readonly List<PlannedTransaction> _plannedTransactions;
+	private static readonly List<PlannedTransfer> _plannedTransfers;
+	private static readonly List<PlannedPurchase> _plannedPurchases;
+	private static readonly List<PlannedLoanPayment> _plannedLoanPayments;
+
 	static DesignTimeGnomeshadeClient()
 	{
 		var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
@@ -53,7 +58,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 		var counterparty = new Counterparty { Id = Guid.Empty, Name = "John Doe" };
 		var otherCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Jane Doe" };
-		_counterparties = [counterparty, otherCounterparty];
+		var bankCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Bank" };
+		_counterparties = [counterparty, otherCounterparty, bankCounterparty];
 
 		var cash = new Account
 		{
@@ -67,27 +73,39 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode }
 			],
 		};
+
 		var spending = new Account
 		{
 			Id = Guid.NewGuid(),
 			Name = "Spending",
 			CounterpartyId = counterparty.Id,
 			PreferredCurrencyId = euro.Id,
-			Currencies =
-				[new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
+			Currencies = [new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
 		};
-		_accounts = [cash, spending];
+
+		var bankAccount = new Account
+		{
+			Id = Guid.NewGuid(),
+			Name = "Bank",
+			CounterpartyId = bankCounterparty.Id,
+			PreferredCurrencyId = euro.Id,
+			Currencies = [new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
+		};
+
+		_accounts = [cash, spending, bankAccount];
 
 		var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
 		var gram = new Unit { Id = Guid.NewGuid(), Name = "Gram", ParentUnitId = kilogram.Id, Multiplier = 1000m };
 		_units = [kilogram, gram];
 
 		var food = new Category { Id = Guid.Empty, Name = "Food" };
-		_categories = [food];
+		var liabilities = new Category { Id = Guid.NewGuid(), Name = "Liabilities" };
+		_categories = [food, liabilities];
 
 		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id, UnitId = kilogram.Id };
 		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk", CategoryId = food.Id };
-		_products = [bread, milk];
+		var loan = new Product { Id = Guid.NewGuid(), Name = "Loan", CategoryId = liabilities.Id };
+		_products = [bread, milk, loan];
 
 		var transaction = new Transaction
 		{
@@ -206,10 +224,67 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Interest = 150m,
 			}
 		];
+
+		var plannedTransaction = new PlannedTransaction
+		{
+			Id = Guid.Empty,
+			StartTime = SystemClock.Instance.GetCurrentInstant() + Duration.FromDays(15),
+			Period = Period.FromYears(1),
+		};
+
+		var plannedPrincipalTransfer = new PlannedTransfer
+		{
+			Id = Guid.Empty,
+			PlannedTransactionId = plannedTransaction.Id,
+			SourceAmount = 500,
+			SourceAccountId = spending.Currencies.Single(account => account.CurrencyId == euro.Id).Id,
+			TargetAmount = 500,
+			TargetCounterpartyId = bankCounterparty.Id,
+			TargetCurrencyId = euro.Id,
+			BookedAt = new(09, 00),
+			Order = 1,
+		};
+
+		var plannedInterestTransfer = new PlannedTransfer
+		{
+			Id = Guid.Empty,
+			PlannedTransactionId = plannedTransaction.Id,
+			SourceAmount = 150,
+			SourceAccountId = spending.Currencies.Single(account => account.CurrencyId == euro.Id).Id,
+			TargetAmount = 150,
+			TargetCounterpartyId = bankCounterparty.Id,
+			TargetCurrencyId = euro.Id,
+			BookedAt = new(09, 00),
+			Order = 2,
+		};
+
+		var plannedPurchase = new PlannedPurchase
+		{
+			Id = Guid.Empty,
+			PlannedTransactionId = plannedTransaction.Id,
+			Price = plannedPrincipalTransfer.SourceAmount + plannedInterestTransfer.SourceAmount,
+			CurrencyId = euro.Id,
+			ProductId = loan.Id,
+			Amount = 1,
+		};
+
+		var plannedLoanPayment = new PlannedLoanPayment
+		{
+			Id = Guid.Empty,
+			LoanId = _loans.Single().Id,
+			PlannedTransactionId = plannedTransaction.Id,
+			Amount = plannedPrincipalTransfer.SourceAmount,
+			Interest = plannedInterestTransfer.SourceAmount,
+		};
+
+		_plannedTransactions = [plannedTransaction];
+		_plannedTransfers = [plannedPrincipalTransfer, plannedInterestTransfer];
+		_plannedPurchases = [plannedPurchase];
+		_plannedLoanPayments = [plannedLoanPayment];
 	}
 
 	/// <inheritdoc />
-	public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
+	public Task<LoginResult> LogInAsync(Login login) => Task.FromResult<LoginResult>(new SuccessfulLogin());
 
 	/// <inheritdoc />
 	public Task<ExternalLoginResult> SocialRegister() => throw new NotImplementedException();
@@ -459,6 +534,34 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId) =>
 		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransactions.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransfers.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransfers.Where(transfer => transfer.PlannedTransactionId == transactionId).ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedPurchases.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedPurchases.Where(transfer => transfer.PlannedTransactionId == transactionId).ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedLoanPayments.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedLoanPayments.Where(transfer => transfer.PlannedTransactionId == transactionId).ToList());
 
 	/// <inheritdoc />
 	[Obsolete]
