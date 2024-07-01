@@ -30,21 +30,6 @@
 		"License": "MIT"
 	},
 	{
-		"Id": "DotNet.ReproducibleBuilds.Isolated",
-		"Version": "1.1.1",
-		"License": "MIT"
-	},
-	{
-		"Id": "NUnit",
-		"Version": "4.0.1",
-		"License": "MIT"
-	},
-	{
-		"Id": "NUnit.Analyzers",
-		"Version": "4.0.1",
-		"License": "MIT"
-	},
-	{
 		"Id": "Testcontainers",
 		"Version": "3.2.0",
 		"License": "MIT"

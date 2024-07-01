@@ -28,9 +28,9 @@
       },
       "DotNet.ReproducibleBuilds.Isolated": {
         "type": "Direct",
-        "requested": "[1.1.1, )",
-        "resolved": "1.1.1",
-        "contentHash": "mdk9ue5KRj+2uaWpyrqUtnMw2c0RMVK1MhdOyvEB3xeBO80G28zAGRnHw/Eu/fnOfIYyUl79Ld2BTWwjmpanQA=="
+        "requested": "[1.2.4, )",
+        "resolved": "1.2.4",
+        "contentHash": "C6Bmzse8mTfDXHUFpJ/tHftLPDkkQEavQIHWcE321xx1TdEJ/rdX7DOivKS1OqS86FQy5zAgRMjwYMRNYwFT5g=="
       },
       "FluentAssertions": {
         "type": "Direct",
