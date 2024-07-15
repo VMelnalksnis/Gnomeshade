@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/setup-dotnet@v4.0.1
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version: 18
           cache: 'npm'
@@ -68,7 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/setup-dotnet@v4.0.1
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version: 18
           cache: 'npm'
@@ -137,7 +137,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/setup-dotnet@v4.0.1
-      - uses: actions/setup-node@v4.0.2
+      - uses: actions/setup-node@v4.0.3
         with:
           node-version: 18
           cache: 'npm'
