@@ -4,9 +4,9 @@
     "net8.0": {
       "Bogus": {
         "type": "Direct",
-        "requested": "[35.5.1, )",
-        "resolved": "35.5.1",
-        "contentHash": "GBp2peww04szEJ0GlBlzCYilFDaSkL7Ja4m37YeTRjC/mgoiZnUuifmgUxVD/oLU2MC1uoXfQYK91doGp7Zkpg=="
+        "requested": "[35.6.0, )",
+        "resolved": "35.6.0",
+        "contentHash": "WiK99a8LedzzG7QbnJ1OZT02WZHjr8V6L+cmGJbuga7TtI+Whd+KFWNmVPtXKACFNjz2c/FIR6QDNJsHD6Eazg=="
       },
       "coverlet.collector": {
         "type": "Direct",
