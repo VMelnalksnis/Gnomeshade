@@ -35,36 +35,6 @@
 		"License": "MIT"
 	},
 	{
-		"Id": "Microsoft.CodeCoverage",
-		"Version": "17.9.0",
-		"License": "MS-EULA"
-	},
-	{
-		"Id": "Microsoft.NET.Test.Sdk",
-		"Version": "17.9.0",
-		"License": "MS-EULA"
-	},
-	{
-		"Id": "Microsoft.TestPlatform.ObjectModel",
-		"Version": "17.9.0",
-		"License": "MS-EULA"
-	},
-	{
-		"Id": "Microsoft.TestPlatform.TestHost",
-		"Version": "17.9.0",
-		"License": "MS-EULA"
-	},
-	{
-		"Id": "NUnit",
-		"Version": "4.0.1",
-		"License": "MIT"
-	},
-	{
-		"Id": "NUnit.Analyzers",
-		"Version": "4.0.1",
-		"License": "MIT"
-	},
-	{
 		"Id": "Testcontainers",
 		"Version": "3.2.0",
 		"License": "MIT"
