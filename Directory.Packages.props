@@ -25,7 +25,7 @@
 		<PackageVersion Include="FluentAssertions" Version="6.12.0"/>
 		<PackageVersion Include="FluentAssertions.NodaTime" Version="2.0.1"/>
 		<PackageVersion Include="FuzzySharp" Version="2.0.2"/>
-		<PackageVersion Include="HtmlAgilityPack" Version="1.11.61"/>
+		<PackageVersion Include="HtmlAgilityPack" Version="1.11.62"/>
 		<PackageVersion Include="IdentityModel.OidcClient" Version="6.0.0"/>
 		<PackageVersion Include="JetBrains.Annotations" Version="2023.3.0"/>
 		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2"/>
