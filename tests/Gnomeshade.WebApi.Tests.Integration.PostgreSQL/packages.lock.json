@@ -1125,8 +1125,8 @@
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "6.6.1",
-        "contentHash": "99WcGbaHfLu26sPfWVqJvxXTmQaLE2qdCfceGwT0397X2kcuyD/nuegN2cLw6pQverijXks5LbV8vcA0xi0sSg==",
+        "resolved": "6.7.0",
+        "contentHash": "qI1ntGtNnt1Nksi/oDNkmCULVrImHyLWodJhQzghGj9W6uKYMqVl8Y7M2oU8VbHTQZFImD2kYR9ay8LZkJwaqA==",
         "dependencies": {
           "Microsoft.OpenApi": "1.6.14"
         }
@@ -1942,7 +1942,7 @@
           "OpenTelemetry.Instrumentation.Http": "[1.8.1, )",
           "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.5, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.8.0, )",
-          "Swashbuckle.AspNetCore.SwaggerGen": "[6.6.1, )",
+          "Swashbuckle.AspNetCore.SwaggerGen": "[6.7.0, )",
           "System.Linq.Async": "[6.0.1, )",
           "VMelnalksnis.ISO20022DotNet": "[0.3.4, )",
           "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.4.0, )",
@@ -2390,11 +2390,11 @@
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "CentralTransitive",
-        "requested": "[6.6.1, )",
-        "resolved": "6.6.1",
-        "contentHash": "Bw+cAg6EGSsbnT7aV13QXgd5pabDYH/GLNhlzB4Dq64IPEHaX2T51mVZ6yf8/aNHlS7vi31PH6qlWbfhaWqiqw==",
+        "requested": "[6.7.0, )",
+        "resolved": "6.7.0",
+        "contentHash": "e2eRUBYnMBWzyl0esJfcB4YHuG/boD6nmuDcKdRa+nYPU/57+kbZ3Ot4TGpRDTJcZ0BrWoQiYe5mWRy6whvTkQ==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "6.6.1"
+          "Swashbuckle.AspNetCore.Swagger": "6.7.0"
         }
       },
       "System.Diagnostics.Tracing": {
