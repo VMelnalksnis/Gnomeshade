@@ -229,7 +229,7 @@ jobs:
 
       - name: Upload artifact to nightly release
         if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
-        uses: pyTooling/Actions/releaser/composite@main
+        uses: pyTooling/Actions/releaser/composite@v1.0.5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
