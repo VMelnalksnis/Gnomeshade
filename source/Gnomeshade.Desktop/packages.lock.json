@@ -130,11 +130,11 @@
       },
       "Serilog.Sinks.Trace": {
         "type": "Direct",
-        "requested": "[3.0.0, )",
-        "resolved": "3.0.0",
-        "contentHash": "uQQvylDfY74FbSlD0uxJqFkNZey3oE1tO4yDzUhj5ziY0QbEnhhSAOuBJiHqk6irhSN2+sAuxyIiG7nLsTE9ag==",
+        "requested": "[4.0.0, )",
+        "resolved": "4.0.0",
+        "contentHash": "9wILC29WU2t7D4t/KGzKxUEFza+4B2MCfBjn9ouIHbZJDOmL9S1P33pxR9pLhH8fAY80U+8rweNtyjOoDDt9cA==",
         "dependencies": {
-          "Serilog": "2.10.0"
+          "Serilog": "4.0.0"
         }
       },
       "StyleCop.Analyzers": {
