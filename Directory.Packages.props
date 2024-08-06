@@ -101,5 +101,6 @@
 	<!-- Vulnerable transitive dependencies -->
 	<ItemGroup>
 		<PackageVersion Include="BouncyCastle.Cryptography" Version="2.4.0"/>
+		<PackageVersion Include="System.Text.Json" Version="8.0.4"/>
 	</ItemGroup>
 </Project>

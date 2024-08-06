@@ -9,22 +9,27 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bogus" />
-		<PackageReference Include="CsvHelper" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
-		<PackageReference Include="NodaTime.Bogus" />
-		<PackageReference Include="Npgsql.NodaTime" />
-		<PackageReference Include="Testcontainers.PostgreSql" />
+		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
+		<PackageReference Include="Bogus"/>
+		<PackageReference Include="CsvHelper"/>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+		<PackageReference Include="NodaTime.Bogus"/>
+		<PackageReference Include="Npgsql.NodaTime"/>
+		<PackageReference Include="Testcontainers.PostgreSql"/>
+	</ItemGroup>
+
+	<!-- Vulnerable transitive dependencies -->
+	<ItemGroup>
+		<PackageReference Include="System.Text.Json"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="currencies.csv" />
+		<EmbeddedResource Include="currencies.csv"/>
 	</ItemGroup>
 
 </Project>
