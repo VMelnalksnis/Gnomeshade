@@ -1,4 +1,4 @@
-FROM ghcr.io/vmelnalksnis/gnomeshade-build:8.0.300 AS build
+FROM ghcr.io/vmelnalksnis/gnomeshade-build:8.0.303 AS build
 
 WORKDIR /gnomeshade
 COPY ./ ./
@@ -6,7 +6,7 @@ ARG BUILD_NUMBER=123
 RUN --mount=type=cache,target=/root/.nuget/packages \
     ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.5-alpine3.18 as gnomeshade
+FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.7-alpine3.20 as gnomeshade
 
 WORKDIR /gnomeshade
 COPY --chmod=-w --from=build [ \
