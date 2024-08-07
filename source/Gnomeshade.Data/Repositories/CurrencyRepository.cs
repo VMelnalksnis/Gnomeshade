@@ -21,8 +21,9 @@ namespace Gnomeshade.Data.Repositories;
 /// <summary>Database backed <see cref="CurrencyRepository"/> repository.</summary>
 public sealed class CurrencyRepository
 {
-	private static readonly string _selectAlphabetic = $"{Queries.Currency.SelectAll} WHERE alphabetic_code = @code;";
-	private static readonly string _selectId = $"{Queries.Currency.SelectAll} WHERE id = @id;";
+	private static readonly string _selectAll = $"{Queries.Currency.SelectAll} WHERE deleted_at IS NULL";
+	private static readonly string _selectAlphabetic = $"{_selectAll} AND alphabetic_code = @code;";
+	private static readonly string _selectId = $"{_selectAll} AND id = @id;";
 
 	private readonly ILogger<CurrencyRepository> _logger;
 	private readonly DbConnection _dbConnection;
@@ -66,7 +67,7 @@ public sealed class CurrencyRepository
 	public async Task<List<CurrencyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
 		_logger.GetAll();
-		var command = new CommandDefinition(Queries.Currency.SelectAll, cancellationToken: cancellationToken);
+		var command = new CommandDefinition(_selectAll, cancellationToken: cancellationToken);
 		var currencies = await _dbConnection.QueryAsync<CurrencyEntity>(command).ConfigureAwait(false);
 		return currencies.ToList();
 	}

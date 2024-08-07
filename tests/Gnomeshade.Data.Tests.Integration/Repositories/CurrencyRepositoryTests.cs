@@ -37,7 +37,7 @@ public sealed class CurrencyRepositoryTests
 			.Select(currency => currency.AlphabeticCode)
 			.Should()
 			.StartWith(expectedCurrencies)
-			.And.HaveCount(223);
+			.And.HaveCount(181);
 
 		var firstCurrency = currencies.First();
 		var currencyById = await _repository.GetByIdAsync(firstCurrency.Id);
