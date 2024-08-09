@@ -20,11 +20,11 @@ public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
 	protected abstract TTime TemplateValue { get; }
 
 	/// <inheritdoc />
-	public override object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+	public override object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		if (value is null)
 		{
-			return BindingNotification.Null;
+			return null;
 		}
 
 		if (!targetType.IsAssignableTo(typeof(string)) || value is not TTime time)
@@ -36,12 +36,12 @@ public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
 	}
 
 	/// <inheritdoc />
-	public override object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+	public override object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 	{
 		var isNullableT = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
-		if (value is null && isNullableT)
+		if (value is UnsetValueType || (value is null && isNullableT))
 		{
-			return AvaloniaProperty.UnsetValue;
+			return null;
 		}
 
 		if (value is not string text)
@@ -51,7 +51,7 @@ public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
 
 		if (string.IsNullOrWhiteSpace(text) && isNullableT)
 		{
-			return AvaloniaProperty.UnsetValue;
+			return null;
 		}
 
 		if (!targetType.IsAssignableTo(typeof(TTime)) && !targetType.IsAssignableTo(typeof(TTime?)))

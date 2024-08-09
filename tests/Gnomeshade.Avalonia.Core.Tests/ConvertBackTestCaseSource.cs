@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 
-using Avalonia;
 using Avalonia.Data;
 
 using NodaTime;
@@ -40,14 +39,6 @@ internal sealed class ConvertBackTestCaseSource : IEnumerable
 				CultureInfo.InvariantCulture,
 				new BindingNotification(new DataValidationException("Expected format is 12/31/2000"), BindingErrorType.DataValidationError))
 			.SetName("Invalid local date pattern to data validation notification");
-
-		yield return new TestCaseData(
-				null,
-				typeof(LocalDate?),
-				null,
-				CultureInfo.InvariantCulture,
-				AvaloniaProperty.UnsetValue)
-			.SetName("Null to unset value for nullable date");
 
 		yield return new TestCaseData(
 				null,

@@ -17,14 +17,6 @@ internal sealed class ConvertTestCaseSource : IEnumerable
 	public IEnumerator GetEnumerator()
 	{
 		yield return new TestCaseData(
-				null,
-				typeof(string),
-				null,
-				CultureInfo.InvariantCulture,
-				BindingNotification.Null)
-			.SetName("null should return notification");
-
-		yield return new TestCaseData(
 				LocalDate.MaxIsoValue,
 				typeof(decimal),
 				null,

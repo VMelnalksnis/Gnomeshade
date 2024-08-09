@@ -13,7 +13,7 @@ namespace Gnomeshade.Avalonia.Core;
 /// <inheritdoc />
 public abstract class NodaTimeValueConverterBase : IValueConverter
 {
-	/// <summary>Notification when the the input could not be converted.</summary>
+	/// <summary>Notification when the input could not be converted.</summary>
 	protected static readonly BindingNotification InvalidCastNotification =
 		new(new InvalidCastException(), BindingErrorType.Error);
 
