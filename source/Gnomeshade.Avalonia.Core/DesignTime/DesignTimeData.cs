@@ -10,7 +10,6 @@ using Avalonia.Controls.Notifications;
 using Gnomeshade.Avalonia.Core.Accesses;
 using Gnomeshade.Avalonia.Core.Accounts;
 using Gnomeshade.Avalonia.Core.Authentication;
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Avalonia.Core.Counterparties;
 using Gnomeshade.Avalonia.Core.Help;
@@ -46,7 +45,8 @@ public static class DesignTimeData
 
 	private static IActivityService ActivityService => new ActivityService(
 		new(() => new WindowNotificationManager(null)),
-		NullLogger<ActivityService>.Instance);
+		NullLogger<ActivityService>.Instance,
+		NullLoggerFactory.Instance);
 
 	private static DesignTimeGnomeshadeClient GnomeshadeClient => new();
 
@@ -54,9 +54,6 @@ public static class DesignTimeData
 
 	private static IAuthenticationService AuthenticationService { get; } =
 		new AuthenticationService(GnomeshadeClient, new(Clock), new DesignTimeCredentialStorage(), new NullOidcClient());
-
-	private static ICommandFactory CommandFactory { get; } =
-		GetServiceProvider().GetRequiredService<ICommandFactory>();
 
 	/// <summary>Gets an instance of <see cref="MainWindowViewModel"/> for use during design time.</summary>
 	public static MainWindowViewModel MainWindowViewModel { get; } =
@@ -117,30 +114,30 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransferUpsertionViewModel"/> for use during design time.</summary>
 	public static TransferUpsertionViewModel TransferUpsertionViewModel { get; } =
-		InitializeViewModel(new TransferUpsertionViewModel(ActivityService, GnomeshadeClient, CommandFactory, DialogService, DateTimeZoneProvider, Guid.Empty, null));
+		InitializeViewModel(new TransferUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="TransferViewModel"/> for use during design time.</summary>
 	public static TransferViewModel TransferViewModel { get; } =
-		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, CommandFactory, DialogService, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel<TransferViewModel, TransferOverview, TransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="PurchaseUpsertionViewModel"/> for use during design time.</summary>
 	public static PurchaseUpsertionViewModel PurchaseUpsertionViewModel { get; } =
-		InitializeViewModel(new PurchaseUpsertionViewModel(ActivityService, GnomeshadeClient, CommandFactory, DialogService, DateTimeZoneProvider, Guid.Empty, null));
+		InitializeViewModel(new PurchaseUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
 
 	/// <summary>Gets an instance of <see cref="PurchaseViewModel"/> for use during design time.</summary>
 	public static PurchaseViewModel PurchaseViewModel { get; } =
-		InitializeViewModel<PurchaseViewModel, PurchaseOverview, PurchaseUpsertionViewModel>(new(ActivityService, GnomeshadeClient, CommandFactory, DialogService, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel<PurchaseViewModel, PurchaseOverview, PurchaseUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(ActivityService, GnomeshadeClient, CommandFactory, DialogService, Clock, DateTimeZoneProvider));
+		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } = new(ActivityService, Clock, DateTimeZoneProvider);
 
 	/// <summary>Gets an instance of <see cref="TransactionUpsertionViewModel"/> for use during design time.</summary>
 	public static TransactionUpsertionViewModel TransactionUpsertionViewModel { get; } =
-		InitializeViewModel(new TransactionUpsertionViewModel(ActivityService, GnomeshadeClient, CommandFactory, DialogService, Clock, DateTimeZoneProvider, Guid.Empty));
+		InitializeViewModel(new TransactionUpsertionViewModel(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider, Guid.Empty));
 
 	/// <summary>Gets an instance of <see cref="LinkUpsertionViewModel"/> for use during design time.</summary>
 	public static LinkUpsertionViewModel LinkUpsertionViewModel { get; } =
@@ -253,7 +250,6 @@ public static class DesignTimeData
 			.AddSingleton<IDialogService, DesignTimeDialogService>()
 			.AddSingleton<Lazy<IManagedNotificationManager>>(_ => new(() => new WindowNotificationManager(null)))
 			.AddSingleton<IActivityService, ActivityService>()
-			.AddTransient<ICommandFactory, CommandFactory>()
 			.AddTransient<ILoggerFactory>(_ => NullLoggerFactory.Instance)
 			.AddTransient<ILogger<PreferencesViewModel>>(_ => NullLogger<PreferencesViewModel>.Instance)
 			.AddTransient<IGnomeshadeClient>(_ => GnomeshadeClient)

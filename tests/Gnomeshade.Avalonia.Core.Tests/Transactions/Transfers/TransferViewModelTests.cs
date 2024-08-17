@@ -6,11 +6,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
-
-using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -29,7 +26,6 @@ public sealed class TransferViewModelTests
 		_viewModel = new(
 			activityService,
 			new DesignTimeGnomeshadeClient(),
-			new CommandFactory(NullLoggerFactory.Instance, activityService),
 			new DesignTimeDialogService(),
 			DateTimeZoneProviders.Tzdb,
 			Guid.Empty);

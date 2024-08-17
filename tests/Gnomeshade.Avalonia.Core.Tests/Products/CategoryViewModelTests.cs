@@ -29,7 +29,7 @@ public sealed class CategoryViewModelTests
 
 		viewModel.Details.CanSave.Should().BeTrue();
 
-		await viewModel.DeleteSelectedAsync();
+		viewModel.DeleteSelected.Execute(null);
 		viewModel.Rows.Should().NotContain(row => row.Id == rowToSelect.Id);
 	}
 }

@@ -70,5 +70,6 @@ public sealed class OwnerViewModel : OverviewViewModel<OwnerRow, OwnerUpsertionV
 	protected override async Task DeleteAsync(OwnerRow row)
 	{
 		await _gnomeshadeClient.DeleteOwnerAsync(row.Id);
+		Details = new(ActivityService, _gnomeshadeClient, null);
 	}
 }

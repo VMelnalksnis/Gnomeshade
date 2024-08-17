@@ -35,8 +35,7 @@ public sealed partial class LicensesViewModel : ViewModelBase
 
 	/// <summary>Initializes a new instance of the <see cref="LicensesViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
-	/// <param name="commandFactory">Service for creating commands.</param>
-	public LicensesViewModel(IActivityService activityService, ICommandFactory commandFactory)
+	public LicensesViewModel(IActivityService activityService)
 		: base(activityService)
 	{
 		_packages = new(Array.Empty<PackageInfo>());
@@ -47,8 +46,8 @@ Below is a list of all packages and their licenses, grouped by projects, which G
 (Note: your copy of this product may not contain code covered by one or more of the licenses list here, depending on the exact product and version you choose.)
 """;
 
-		OpenProject = commandFactory.Create(OpenSelected, () => TryGetUrl(out _), "Opening project information");
-		OpenLicense = commandFactory.Create(OpenSelectedLicense, () => TryGetLicenseUrl(out _), "Opening license");
+		OpenProject = activityService.Create(OpenSelected, () => TryGetUrl(out _), "Opening project information");
+		OpenLicense = activityService.Create(OpenSelectedLicense, () => TryGetLicenseUrl(out _), "Opening license");
 
 		PropertyChanged += OnPropertyChanged;
 	}

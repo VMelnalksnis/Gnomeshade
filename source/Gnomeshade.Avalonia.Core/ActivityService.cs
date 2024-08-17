@@ -7,8 +7,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Avalonia.Controls.Notifications;
+
+using Gnomeshade.Avalonia.Core.Commands;
 
 using Microsoft.Extensions.Logging;
 
@@ -17,24 +20,30 @@ namespace Gnomeshade.Avalonia.Core;
 /// <inheritdoc cref="IActivityService"/>
 public sealed class ActivityService : PropertyChangedBase, IActivityService, IDisposable
 {
-	private static readonly ObservableCollection<ActivityScope> _activityScopes = new();
+	private readonly ObservableCollection<ActivityScope> _activityScopes = [];
 
 	// This needs to be lazy, because this needs to be created before MainWindow to create its DataContext
 	private readonly Lazy<IManagedNotificationManager> _lazyNotificationManager;
 	private readonly ILogger<ActivityService> _logger;
+	private readonly ILoggerFactory _loggerFactory;
 
 	/// <summary>Initializes a new instance of the <see cref="ActivityService"/> class.</summary>
 	/// <param name="notificationManager">Used for displaying notifications.</param>
 	/// <param name="logger">Logger for logging in the specified category.</param>
-	public ActivityService(Lazy<IManagedNotificationManager> notificationManager, ILogger<ActivityService> logger)
+	/// <param name="loggerFactory">Logger factory for creating loggers for each command.</param>
+	public ActivityService(
+		Lazy<IManagedNotificationManager> notificationManager,
+		ILogger<ActivityService> logger,
+		ILoggerFactory loggerFactory)
 	{
 		_lazyNotificationManager = notificationManager;
 		_logger = logger;
+		_loggerFactory = loggerFactory;
 		_activityScopes.CollectionChanged += ValueOnCollectionChanged;
 	}
 
 	/// <inheritdoc />
-	public bool IsBusy => _activityScopes.Any();
+	public bool IsBusy => _activityScopes.Count is not 0;
 
 	/// <inheritdoc />
 	public IEnumerable<string> Activities => _activityScopes
@@ -60,6 +69,33 @@ public sealed class ActivityService : PropertyChangedBase, IActivityService, IDi
 	{
 		_logger.LogWarning(exception, "Unexpected error");
 		ShowErrorNotification(exception.Message);
+	}
+
+	/// <inheritdoc />
+	public CommandBase Create(Action execute, Func<bool> canExecute, string activity)
+	{
+		var logger = _loggerFactory.CreateLogger<Command>();
+		return new Command(logger, this, execute, canExecute, activity);
+	}
+
+	/// <inheritdoc />
+	public CommandBase Create(Func<Task> execute, string activity) => Create(execute, static () => true, activity);
+
+	/// <inheritdoc />
+	public CommandBase Create(Func<Task> execute, Func<bool> canExecute, string activity)
+	{
+		var logger = _loggerFactory.CreateLogger<AsyncCommand>();
+		return new AsyncCommand(logger, this, execute, canExecute, activity);
+	}
+
+	/// <inheritdoc />
+	public CommandBase Create<T>(Func<T, Task> execute, string activity) => Create(execute, static _ => true, activity);
+
+	/// <inheritdoc />
+	public CommandBase Create<T>(Func<T, Task> execute, Func<T, bool> canExecute, string activity)
+	{
+		var logger = _loggerFactory.CreateLogger<AsyncCommand<T>>();
+		return new AsyncCommand<T>(logger, this, execute, canExecute, activity);
 	}
 
 	/// <inheritdoc />

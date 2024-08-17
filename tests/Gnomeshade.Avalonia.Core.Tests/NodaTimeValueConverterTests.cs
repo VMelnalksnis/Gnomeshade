@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Data;
 
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions.Purchases;
-
-using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -32,7 +29,6 @@ public sealed class NodaTimeValueConverterTests
 		_viewModel = new(
 			activityService,
 			new DesignTimeGnomeshadeClient(),
-			new CommandFactory(NullLoggerFactory.Instance, activityService),
 			new DesignTimeDialogService(),
 			DateTimeZoneProviders.Tzdb,
 			Guid.Empty,

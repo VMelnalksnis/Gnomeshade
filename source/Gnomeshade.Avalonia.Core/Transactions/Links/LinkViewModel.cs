@@ -83,7 +83,7 @@ public sealed class LinkViewModel : OverviewViewModel<LinkOverview, LinkUpsertio
 	protected override async Task DeleteAsync(LinkOverview row)
 	{
 		await _gnomeshadeClient.RemoveLinkFromTransactionAsync(_transactionId, row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _transactionId, null);
 	}
 
 	private async void DetailsOnUpserted(object? sender, UpsertedEventArgs e)

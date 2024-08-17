@@ -98,7 +98,7 @@ public sealed class CategoryViewModel : OverviewViewModel<CategoryRow, CategoryU
 	protected override async Task DeleteAsync(CategoryRow row)
 	{
 		await _gnomeshadeClient.DeleteCategoryAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, null);
 	}
 
 	private async void OnCategoryUpserted(object? sender, UpsertedEventArgs e)

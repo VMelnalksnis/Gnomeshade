@@ -103,7 +103,7 @@
 				Create account
 			</Button>
 
-			<Button IsVisible="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
+			<Button IsVisible="{Binding CanDelete}" Command="{Binding DeleteSelected}">
 				Delete Selected
 			</Button>
 		</WrapPanel>

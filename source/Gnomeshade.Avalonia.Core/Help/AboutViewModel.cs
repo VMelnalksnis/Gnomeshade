@@ -22,8 +22,7 @@ public sealed class AboutViewModel : ViewModelBase
 
 	/// <summary>Initializes a new instance of the <see cref="AboutViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
-	/// <param name="commandFactory">Service for creating commands.</param>
-	public AboutViewModel(IActivityService activityService, ICommandFactory commandFactory)
+	public AboutViewModel(IActivityService activityService)
 		: base(activityService)
 	{
 		Version = _assembly.GetName().Version?.ToString() ?? throw new NullReferenceException();
@@ -40,7 +39,7 @@ public sealed class AboutViewModel : ViewModelBase
 			GCSettings.IsServerGC ? "Server" : "Workstation",
 			memoryInfo.Concurrent ? "Concurrent" : "Non-Concurrent");
 
-		Copy = commandFactory.Create<IClipboard?>(GetFullText, "Copying application information");
+		Copy = activityService.Create<IClipboard?>(GetFullText, "Copying application information");
 	}
 
 	/// <summary>Gets the version of the application.</summary>

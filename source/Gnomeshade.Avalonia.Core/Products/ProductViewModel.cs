@@ -92,7 +92,7 @@ public sealed class ProductViewModel : OverviewViewModel<ProductRow, ProductUpse
 	protected override async Task DeleteAsync(ProductRow row)
 	{
 		await _gnomeshadeClient.DeleteProductAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _dateTimeZoneProvider, null);
 	}
 
 	private async void OnProductUpserted(object? sender, UpsertedEventArgs e)

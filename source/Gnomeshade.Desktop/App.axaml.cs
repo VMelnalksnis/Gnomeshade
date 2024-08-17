@@ -16,7 +16,6 @@ using Avalonia.Markup.Xaml;
 
 using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.Authentication;
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Configuration;
 using Gnomeshade.Desktop.Authentication;
 using Gnomeshade.Desktop.Views;
@@ -127,7 +126,6 @@ public sealed class App : Application
 
 		serviceCollection
 			.AddViewModels()
-			.AddTransient<ICommandFactory, CommandFactory>()
 			.AddTransient<IAuthenticationService, AuthenticationService>()
 			.AddSingleton<ViewLocator<App>>()
 			.AddSingleton<IDialogService, DialogService>();

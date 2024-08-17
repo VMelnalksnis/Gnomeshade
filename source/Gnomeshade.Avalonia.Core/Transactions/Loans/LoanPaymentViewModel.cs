@@ -87,7 +87,7 @@ public sealed partial class LoanPaymentViewModel : OverviewViewModel<LoanPayment
 	protected override async Task DeleteAsync(LoanPaymentRow row)
 	{
 		await _gnomeshadeClient.DeleteLoanPaymentAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _transactionId, null);
 	}
 
 	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

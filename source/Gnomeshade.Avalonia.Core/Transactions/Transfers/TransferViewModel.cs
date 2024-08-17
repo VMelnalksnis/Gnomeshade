@@ -8,7 +8,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Transactions;
 
@@ -22,7 +21,6 @@ namespace Gnomeshade.Avalonia.Core.Transactions.Transfers;
 public sealed partial class TransferViewModel : OverviewViewModel<TransferOverview, TransferUpsertionViewModel>
 {
 	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly ICommandFactory _commandFactory;
 	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
@@ -36,25 +34,22 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	/// <summary>Initializes a new instance of the <see cref="TransferViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The transaction for which to create a transfer overview.</param>
 	public TransferViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
-		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_commandFactory = commandFactory;
 		_dialogService = dialogService;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_transactionId = transactionId;
-		_details = new(activityService, gnomeshadeClient, _commandFactory, _dialogService, _dateTimeZoneProvider, transactionId, null);
+		_details = new(activityService, gnomeshadeClient, _dialogService, _dateTimeZoneProvider, transactionId, null);
 
 		PropertyChanged += OnPropertyChanged;
 		_details.Upserted += DetailsOnUpserted;
@@ -75,7 +70,7 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _commandFactory, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, Selected?.Id);
 		await Details.RefreshAsync();
 		SetDefaultCurrency(this);
 	}
@@ -116,7 +111,7 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	protected override async Task DeleteAsync(TransferOverview row)
 	{
 		await _gnomeshadeClient.DeleteTransferAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, _transactionId, null);
 	}
 
 	private static void SetDefaultCurrency(TransferViewModel viewModel)

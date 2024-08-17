@@ -5,8 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 using Avalonia.Controls.Notifications;
+
+using Gnomeshade.Avalonia.Core.Commands;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -35,4 +39,39 @@ public interface IActivityService : INotifyPropertyChanged
 	/// <summary>Shows a notification of an error.</summary>
 	/// <param name="exception">Details about the error.</param>
 	void ShowErrorNotification(Exception exception);
+
+	/// <summary>Creates a command.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="canExecute">The function that will be invoked on <see cref="ICommand.CanExecute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <returns>The command.</returns>
+	CommandBase Create(Action execute, Func<bool> canExecute, string activity);
+
+	/// <summary>Creates an async command that can always execute.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <returns>The command.</returns>
+	CommandBase Create(Func<Task> execute, string activity);
+
+	/// <summary>Creates an async command.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="canExecute">The function that will be invoked on <see cref="ICommand.CanExecute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <returns>The command.</returns>
+	CommandBase Create(Func<Task> execute, Func<bool> canExecute, string activity);
+
+	/// <summary>Creates an async command that can always execute.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <typeparam name="T">The expected type of the command parameter.</typeparam>
+	/// <returns>The command.</returns>
+	CommandBase Create<T>(Func<T, Task> execute, string activity);
+
+	/// <summary>Creates an async command that can always execute.</summary>
+	/// <param name="execute">The function that will be invoked on <see cref="ICommand.Execute"/>.</param>
+	/// <param name="canExecute">The function that will be invoked on <see cref="ICommand.CanExecute"/>.</param>
+	/// <param name="activity">The name of the activity for the command.</param>
+	/// <typeparam name="T">The expected type of the command parameter.</typeparam>
+	/// <returns>The command.</returns>
+	CommandBase Create<T>(Func<T, Task> execute, Func<T, bool> canExecute, string activity);
 }

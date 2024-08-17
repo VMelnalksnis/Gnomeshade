@@ -3,9 +3,12 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
+
+using Gnomeshade.Avalonia.Core.Commands;
 
 using PropertyChanged.SourceGenerator;
 
@@ -35,38 +38,22 @@ public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBas
 	protected OverviewViewModel(IActivityService activityService)
 		: base(activityService)
 	{
+		DeleteSelected = activityService.Create(DeleteSelectedAsync, "Deleting");
+
+		PropertyChanged += OnPropertyChanged;
 	}
 
 	/// <summary>Gets the grid view of all <see cref="Rows"/>.</summary>
 	public DataGridCollectionView DataGridView => Rows;
+
+	/// <summary>Gets a command that will delete <see cref="Selected"/>.</summary>
+	public CommandBase DeleteSelected { get; }
 
 	/// <summary>Gets or sets the view model for the currently <see cref="Selected"/> row.</summary>
 	public abstract TUpsertion Details { get; set; }
 
 	/// <summary>Gets a value indicating whether <see cref="DeleteSelectedAsync"/> can be called.</summary>
 	public bool CanDelete => Selected is not null;
-
-	/// <summary>Deletes <see cref="Selected"/>.</summary>
-	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-	public async Task DeleteSelectedAsync()
-	{
-		if (!CanDelete || Selected is null)
-		{
-			ActivityService.ShowErrorNotification("Cannot delete, please check your selection");
-			return;
-		}
-
-		using var activity = BeginActivity("Deleting");
-
-		try
-		{
-			await DeleteAsync(Selected);
-		}
-		catch (Exception exception)
-		{
-			ActivityService.ShowErrorNotification(exception);
-		}
-	}
 
 	/// <summary>Called when <see cref="Selected"/> has been updated.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -76,4 +63,18 @@ public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBas
 	/// <param name="row">The row to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	protected abstract Task DeleteAsync(TRow row);
+
+	private async Task DeleteSelectedAsync()
+	{
+		await DeleteAsync(Selected!);
+		await RefreshAsync();
+	}
+
+	private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName is nameof(CanDelete))
+		{
+			OnPropertyChanged(nameof(DeleteSelected));
+		}
+	}
 }

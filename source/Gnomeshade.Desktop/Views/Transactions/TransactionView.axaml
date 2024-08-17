@@ -25,7 +25,7 @@
 					</Button>
 					<Button
 						Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
+						IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelected}">
 						Delete Selected
 					</Button>
 					<Button

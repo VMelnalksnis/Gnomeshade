@@ -5,12 +5,9 @@
 using System;
 using System.Threading.Tasks;
 
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.TestingHelpers.Models;
-
-using Microsoft.Extensions.Logging.Abstractions;
 
 using NodaTime;
 
@@ -30,7 +27,6 @@ public sealed class TransactionDetailViewModelTests
 		var viewModel = new TransactionUpsertionViewModel(
 			activityService,
 			client,
-			new CommandFactory(NullLoggerFactory.Instance, activityService),
 			new DesignTimeDialogService(),
 			_clock,
 			_dateTimeZoneProvider,

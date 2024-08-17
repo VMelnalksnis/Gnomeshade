@@ -53,7 +53,7 @@ public sealed class LoanViewModel : OverviewViewModel<LoanRow, LoanUpsertionView
 	protected override async Task DeleteAsync(LoanRow row)
 	{
 		await _gnomeshadeClient.DeleteLoanAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _dateTimeZoneProvider, null);
 	}
 
 	/// <inheritdoc />

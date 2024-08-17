@@ -46,15 +46,15 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 
 	/// <summary>Gets a collection of all available units.</summary>
 	[Notify(Setter.Private)]
-	private List<Unit> _units;
+	private List<Unit> _units = [];
 
 	/// <summary>Gets a collection of all available categories.</summary>
 	[Notify(Setter.Private)]
-	private List<Category> _categories;
+	private List<Category> _categories = [];
 
 	/// <summary>Gets all purchases of this product.</summary>
 	[Notify(Setter.Private)]
-	private List<PurchaseOverview> _purchases;
+	private List<PurchaseOverview> _purchases = [];
 
 	/// <summary>Initializes a new instance of the <see cref="ProductUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -70,10 +70,6 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 	{
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		Id = id;
-
-		_units = new();
-		_categories = new();
-		_purchases = new();
 	}
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
@@ -95,7 +91,7 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 		Categories = categories;
 		if (Id is not { } productId)
 		{
-			Purchases = new();
+			Purchases = [];
 			return;
 		}
 

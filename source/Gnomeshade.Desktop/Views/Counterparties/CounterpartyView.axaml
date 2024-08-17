@@ -24,7 +24,7 @@
 
 			<Button
 				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
-				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelectedAsync}">
+				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelected}">
 				Delete Selected
 			</Button>
 		</StackPanel>

@@ -96,7 +96,6 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <summary>Initializes a new instance of the <see cref="TransferUpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">Gnomeshade API client.</param>
-	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	/// <param name="transactionId">The id of the transaction to which to add the transfer to.</param>
@@ -104,7 +103,6 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	public TransferUpsertionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
-		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid transactionId,
@@ -116,7 +114,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 		_transactionId = transactionId;
 		Id = id;
 
-		CreateAccount = commandFactory.Create<Window>(window => ShowAccountDialog(window, null), _ => CanCreate, "Waiting for account creation");
+		CreateAccount = activityService.Create<Window>(window => ShowAccountDialog(window, null), _ => CanCreate, "Waiting for account creation");
 		PropertyChanged += OnPropertyChanged;
 	}
 

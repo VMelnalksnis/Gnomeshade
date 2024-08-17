@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
-using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.WebApi.Client;
@@ -30,7 +29,6 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	];
 
 	private readonly IGnomeshadeClient _gnomeshadeClient;
-	private readonly ICommandFactory _commandFactory;
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
@@ -41,25 +39,22 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">A strongly typed API client.</param>
-	/// <param name="commandFactory">Service for creating commands.</param>
 	/// <param name="dialogService">Service for creating dialog windows.</param>
 	/// <param name="clock">Clock which can provide the current instant.</param>
 	/// <param name="dateTimeZoneProvider">Time zone provider for localizing instants to local time.</param>
 	public TransactionViewModel(
 		IActivityService activityService,
 		IGnomeshadeClient gnomeshadeClient,
-		ICommandFactory commandFactory,
 		IDialogService dialogService,
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_commandFactory = commandFactory;
 		_dialogService = dialogService;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		_details = new(activityService, _gnomeshadeClient, _commandFactory, _dialogService, _clock, _dateTimeZoneProvider, null);
+		_details = new(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanging += OnPropertyChanging;
@@ -124,7 +119,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _commandFactory, _dialogService, _clock, _dateTimeZoneProvider, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, Selected?.Id);
 		await Details.RefreshAsync();
 	}
 
@@ -204,7 +199,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	protected override async Task DeleteAsync(TransactionOverview row)
 	{
 		await _gnomeshadeClient.DeleteTransactionAsync(row.Id);
-		await RefreshAsync();
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 	}
 
 	/// <inheritdoc />
