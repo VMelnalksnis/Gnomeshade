@@ -2286,6 +2286,7 @@
         ],
         summary: Imports transactions from an ISO 20022 Bank-To-Customer Account Report v02.,
         requestBody: {
+          description: The ISO20022 report content.,
           content: {
             multipart/form-data: {
               schema: {
