@@ -162,12 +162,12 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[26.1.6, )",
-        "resolved": "26.1.6",
-        "contentHash": "Ldi8YcYdBSdL1AFLUuSjADCfx98oz9NvFMZk7jM+1VI2LtdbcGSi2xQPb6yojZ2Y1LeP0OUq2cARjrzuGoDjIw==",
+        "requested": "[26.2.0, )",
+        "resolved": "26.2.0",
+        "contentHash": "zLyHSE+j2OCqeM9cy/GproAIVTVCHKvJOulQi4YgpXRlJX7M8H8Blejr3dshezNpQ5BR5jEVord1zm5p5zpHbw==",
         "dependencies": {
           "NUnit": "4.1.0",
-          "Verify": "26.1.6"
+          "Verify": "26.2.0"
         }
       },
       "Argon": {
@@ -986,8 +986,8 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "26.1.6",
-        "contentHash": "fBz21ObQMWOd08ITfY2OpCx0quYrBYEjqCT++UxbB3rrZ44olpa+omLjE9GXmdmQ/5xG81+pzvQ0ro6qyeMGIA==",
+        "resolved": "26.2.0",
+        "contentHash": "CMFZ2/DzMxGhpiuYiI/lAZ8QetkX/4M7s4OWw4uIk5gJuO3CSmDhKYIgkecDDSSvP9v+HZvkpaUfPsyHjHNZgw==",
         "dependencies": {
           "Argon": "0.21.0",
           "DiffEngine": "15.5.0",
