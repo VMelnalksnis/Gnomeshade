@@ -17,6 +17,8 @@
 		<PackageReference Include="dbup-sqlite" />
 		<PackageReference Include="Microsoft.Data.Sqlite" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="System.Net.Http" />
 		<PackageReference Include="System.Text.RegularExpressions" />
 	</ItemGroup>

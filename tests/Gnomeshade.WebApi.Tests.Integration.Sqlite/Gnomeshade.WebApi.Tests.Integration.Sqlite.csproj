@@ -12,6 +12,7 @@
 		<PackageReference Include="HtmlAgilityPack" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
 	</ItemGroup>
 

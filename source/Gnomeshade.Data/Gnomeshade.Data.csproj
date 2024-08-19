@@ -13,6 +13,7 @@
 		<PackageReference Include="Dapper" />
 		<PackageReference Include="dbup-core" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Stores" />
 		<PackageReference Include="NodaTime" />
 	</ItemGroup>
