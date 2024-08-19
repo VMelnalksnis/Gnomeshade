@@ -32,6 +32,7 @@ public sealed class NordigenControllerTests : WebserverTests
 	}
 
 	[Test]
+	[Ignore("Limited to 10 calls per day, will be limited to 4. Needs to be tested manually")]
 	[Parallelizable(ParallelScope.None)] // Hitting some account endpoint limits
 	public async Task Import_ShouldReturnExpected()
 	{
