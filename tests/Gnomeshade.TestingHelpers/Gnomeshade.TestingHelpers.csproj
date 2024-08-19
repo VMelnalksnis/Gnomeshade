@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Bogus" />
+		<PackageReference Include="NodaTime" />
 		<PackageReference Include="NodaTime.Bogus" />
 	</ItemGroup>
 

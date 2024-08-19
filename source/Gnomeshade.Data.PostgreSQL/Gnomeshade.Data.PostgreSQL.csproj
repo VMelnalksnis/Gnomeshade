@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="dbup-postgresql" />
+		<PackageReference Include="NodaTime" />
 		<PackageReference Include="Npgsql.DependencyInjection" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 		<PackageReference Include="Npgsql.NodaTime" />

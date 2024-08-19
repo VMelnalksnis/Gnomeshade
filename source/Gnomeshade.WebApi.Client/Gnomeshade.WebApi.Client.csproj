@@ -26,6 +26,7 @@
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
 		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
+		<PackageReference Include="NodaTime" />
 		<PackageReference Include="NodaTime.Serialization.SystemTextJson" />
 	</ItemGroup>
 
@@ -34,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="packageIcon.png" Pack="true" PackagePath="\"/>
+		<None Include="packageIcon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>
