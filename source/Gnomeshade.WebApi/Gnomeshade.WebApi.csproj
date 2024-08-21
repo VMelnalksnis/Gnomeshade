@@ -22,13 +22,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="Ardalis.SmartEnum" />
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
 		<PackageReference Include="AspNet.Security.OAuth.GitHub" />
 		<PackageReference Include="AutoMapper" />
 		<PackageReference Include="FuzzySharp" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -5,6 +5,8 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+using Asp.Versioning;
+
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Identity;
 using Gnomeshade.Data.Repositories;
