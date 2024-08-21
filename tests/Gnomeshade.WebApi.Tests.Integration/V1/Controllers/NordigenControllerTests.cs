@@ -12,14 +12,9 @@ using Gnomeshade.WebApi.V1.Controllers;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(NordigenController))]
-public sealed class NordigenControllerTests : WebserverTests
+public sealed class NordigenControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private const string _integrationInstitutionId = "SANDBOXFINANCE_SFIN0000";
-
-	public NordigenControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[Test]
 	public async Task GetInstitutions_ShouldReturnExpected()
@@ -32,7 +27,6 @@ public sealed class NordigenControllerTests : WebserverTests
 	}
 
 	[Test]
-	[Ignore("Limited to 10 calls per day, will be limited to 4. Needs to be tested manually")]
 	[Parallelizable(ParallelScope.None)] // Hitting some account endpoint limits
 	public async Task Import_ShouldReturnExpected()
 	{

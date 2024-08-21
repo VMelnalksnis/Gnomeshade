@@ -6,10 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 
+using Gnomeshade.WebApi.Tests.Integration.Fixtures;
+
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using VMelnalksnis.NordigenDotNet;
 
 namespace Gnomeshade.WebApi.Tests.Integration;
 
@@ -36,6 +40,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 		{
 			collection.AddTransient<EntityRepository>();
 			collection.AddSingleton<Lazy<HttpMessageHandler>>(_ => new(() => Server.CreateHandler()));
+			collection.AddSingleton<INordigenClient, MockNordigenClient>();
 			_configureServices?.Invoke(collection);
 		});
 
