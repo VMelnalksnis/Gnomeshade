@@ -36,7 +36,7 @@ internal static class TransferExtensions
 
 	internal static TransferSummary ToSummary(
 		this Transfer transfer,
-		IEnumerable<Counterparty> counterparties,
+		List<Counterparty> counterparties,
 		Counterparty userCounterparty,
 		(AccountInCurrency AccountInCurrency, Account Account)[] accounts)
 	{
@@ -61,7 +61,9 @@ internal static class TransferExtensions
 				targetCurrency.CurrencyAlphabeticCode,
 				targetAccount.PreferredCurrencyId != targetCurrency.CurrencyId,
 				transfer.TargetAmount,
-				targetAccount.Name,
+				targetAccount.CounterpartyId == userCounterparty.Id
+					? targetAccount.Name
+					: counterparties.Single(counterparty => targetAccount.CounterpartyId == counterparty.Id).Name,
 				"←",
 				false,
 				counterparties.Single(counterparty => sourceAccount.CounterpartyId == counterparty.Id).Name,
