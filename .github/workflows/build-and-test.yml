@@ -46,7 +46,8 @@ jobs:
         with:
           key: docker-${{ runner.os }}-${{ hashFiles('**/WebserverSetup.cs') }}
 
-      - run: ./deployment/test.sh
+      - name: Run tests
+        run: ./deployment/test.sh
         env:
           Admin:Password: ${{ secrets.DEMO_ADMIN_PASSWORD }}
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
@@ -56,6 +57,13 @@ jobs:
 
       - name: Gather Code Coverage
         uses: codecov/codecov-action@v4.5.0
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+      - name: Gather Test Results
+        uses: codecov/test-results-action@v1.0.0
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
