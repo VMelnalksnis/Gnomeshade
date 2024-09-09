@@ -53,7 +53,7 @@
 		<PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.0"/>
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
 		<PackageVersion Include="NodaTime" Version="3.1.11"/>
 		<PackageVersion Include="NodaTime.Bogus" Version="3.0.2"/>
 		<PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.2.0"/>
