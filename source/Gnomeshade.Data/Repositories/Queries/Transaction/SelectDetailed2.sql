@@ -26,6 +26,7 @@
 	   purchases.amount              AS   Amount,
 	   purchases.delivery_date       AS   DeliveryDate,
 	   purchases."order"             AS   "Order",
+	   project_purchases.project_id  AS   "Id",
 	   transfers.id                  AS   Id,
 	   transfers.created_at          AS   CreatedAt,
 	   transfers.owner_id            AS   OwnerId,
@@ -68,6 +69,7 @@
 	   links.deleted_by_user_id      AS   DeletedByUserId
 FROM transactions
 		 LEFT JOIN purchases ON purchases.transaction_id = transactions.id
+		 LEFT JOIN project_purchases ON purchases.id = project_purchases.purchase_id
 		 LEFT JOIN transfers ON transfers.transaction_id = transactions.id
 		 LEFT JOIN loan_payments ON loan_payments.transaction_id = transactions.id
 		 LEFT JOIN transaction_links ON transaction_links.transaction_id = transactions.id

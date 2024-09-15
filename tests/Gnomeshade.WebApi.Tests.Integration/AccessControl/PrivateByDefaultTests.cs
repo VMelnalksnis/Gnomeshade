@@ -11,21 +11,17 @@ using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 using NodaTime;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
 
-public sealed class PrivateByDefaultTests : WebserverTests
+public sealed class PrivateByDefaultTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private IGnomeshadeClient _client = null!;
 	private IGnomeshadeClient _otherClient = null!;
-
-	public PrivateByDefaultTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUp()
@@ -209,6 +205,20 @@ public sealed class PrivateByDefaultTests : WebserverTests
 		await ShouldBeForbiddenForOthers(client => client.PutLinkAsync(link.Id, updatedLink));
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
 		await ShouldBeNotFoundForOthers(client => client.DeleteLinkAsync(link.Id), true);
+	}
+
+	[Test]
+	public async Task Projects()
+	{
+		var projectId = await _client.CreateProjectAsync(new() { Name = Guid.NewGuid().ToString() });
+
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+
+		var updatedProject = new ProjectCreation { Name = Guid.NewGuid().ToString() };
+
+		await ShouldBeForbiddenForOthers(client => client.PutProjectAsync(projectId, updatedProject));
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+		await ShouldBeNotFoundForOthers(client => client.DeleteProjectAsync(projectId), true);
 	}
 
 	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)

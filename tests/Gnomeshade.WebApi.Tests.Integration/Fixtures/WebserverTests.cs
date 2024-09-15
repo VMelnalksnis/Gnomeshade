@@ -27,10 +27,13 @@ public abstract class WebserverTests
 
 	private static async Task ShouldThrowHttpRequestException(Func<Task> func, HttpStatusCode expected)
 	{
-		(await FluentActions
-				.Awaiting(func)
-				.Should()
-				.ThrowExactlyAsync<HttpRequestException>())
-			.Which.StatusCode.Should().Be(expected);
+		var exceptionAssertions = await FluentActions.Awaiting(func).Should().ThrowExactlyAsync<HttpRequestException>();
+		var exception = exceptionAssertions.Which;
+		if (exception.StatusCode != expected)
+		{
+			await TestContext.Out.WriteLineAsync(exception.Message);
+		}
+
+		exception.StatusCode.Should().Be(expected);
 	}
 }

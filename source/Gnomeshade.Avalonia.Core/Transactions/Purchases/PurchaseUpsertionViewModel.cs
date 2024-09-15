@@ -15,6 +15,7 @@ using Gnomeshade.Avalonia.Core.Products;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -29,6 +30,8 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	private readonly IDialogService _dialogService;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 	private readonly Guid _transactionId;
+
+	private Purchase? _purchase;
 
 	/// <summary>Gets or sets the amount paid to purchase an <see cref="Amount"/> of <see cref="Product"/>.</summary>
 	[Notify]
@@ -50,6 +53,10 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	[Notify]
 	private LocalDateTime? _deliveryDate;
 
+	/// <summary>Gets or sets the project that this purchase is a part of.</summary>
+	[Notify]
+	private Project? _project;
+
 	/// <summary>Gets a collection of all currencies.</summary>
 	[Notify(Setter.Private)]
 	private List<Currency> _currencies = [];
@@ -57,6 +64,10 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <summary>Gets a collection of all products.</summary>
 	[Notify(Setter.Private)]
 	private List<Product> _products = [];
+
+	/// <summary>Gets a collection of all projects.</summary>
+	[Notify(Setter.Private)]
+	private List<Project> _projects = [];
 
 	/// <summary>Gets the name of the unit of the <see cref="Product"/>.</summary>
 	[Notify(Setter.Private)]
@@ -91,11 +102,14 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 		PropertyChanged += OnPropertyChanged;
 	}
 
-	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Currency"/>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
-	/// <summary>Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <inheritdoc cref="AutoCompleteSelectors.Product"/>
 	public AutoCompleteSelector<object> ProductSelector => AutoCompleteSelectors.Product;
+
+	/// <inheritdoc cref="AutoCompleteSelectors.Project"/>
+	public AutoCompleteSelector<object> ProjectSelector => AutoCompleteSelectors.Project;
 
 	/// <inheritdoc />
 	public override bool CanSave =>
@@ -110,30 +124,40 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
+		var (currencies, products, projects) = await (
+			GnomeshadeClient.GetCurrenciesAsync(),
+			GnomeshadeClient.GetProductsAsync(),
+			GnomeshadeClient.GetProjectsAsync())
+			.WhenAll();
+
+		Currencies = currencies;
+		Products = products;
+		Projects = projects;
+
 		if (Id is not { } purchaseId)
 		{
-			Currencies = await GnomeshadeClient.GetCurrenciesAsync();
-			Products = await GnomeshadeClient.GetProductsAsync();
+			return;
 		}
-		else
+
+		_purchase = await GnomeshadeClient.GetPurchaseAsync(purchaseId);
+
+		Price = _purchase.Price;
+		Currency = Currencies.Single(currency => currency.Id == _purchase.CurrencyId);
+		Amount = _purchase.Amount;
+		Product = Products.Single(product => product.Id == _purchase.ProductId);
+		DeliveryDate = _purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).LocalDateTime;
+		Order = _purchase.Order;
+		Project = _purchase.ProjectIds switch
 		{
-			Currencies = await GnomeshadeClient.GetCurrenciesAsync();
-			Products = await GnomeshadeClient.GetProductsAsync();
-			var purchase = await GnomeshadeClient.GetPurchaseAsync(purchaseId);
-			Price = purchase.Price;
-			Currency = Currencies.Single(currency => currency.Id == purchase.CurrencyId);
-			Amount = purchase.Amount;
-			Product = Products.Single(product => product.Id == purchase.ProductId);
-			DeliveryDate = purchase.DeliveryDate?.InZone(_dateTimeZoneProvider.GetSystemDefault()).LocalDateTime;
-			Order = purchase.Order;
-		}
+			[] => null,
+			[var projectId] => Projects.Single(project => project.Id == projectId),
+			_ => throw new NotSupportedException("Purchases that are a part of multiple projects are not supported"),
+		};
 	}
 
 	/// <inheritdoc />
 	protected override async Task<Guid> SaveValidatedAsync()
 	{
-		var deliveryDate = DeliveryDate?.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault());
-
 		var purchaseCreation = new PurchaseCreation
 		{
 			TransactionId = _transactionId,
@@ -141,13 +165,37 @@ public sealed partial class PurchaseUpsertionViewModel : UpsertionViewModel
 			CurrencyId = Currency!.Id,
 			Amount = Amount,
 			ProductId = Product!.Id,
-			DeliveryDate = deliveryDate?.ToInstant(),
+			DeliveryDate = (DeliveryDate?.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault()))?.ToInstant(),
 			Order = Order,
 		};
 
-		var id = Id ?? Guid.NewGuid(); // todo should this be saved?
-		await GnomeshadeClient.PutPurchaseAsync(id, purchaseCreation);
-		return id;
+		if (Id is { } existingId)
+		{
+			await GnomeshadeClient.PutPurchaseAsync(existingId, purchaseCreation);
+		}
+		else
+		{
+			Id = await GnomeshadeClient.CreatePurchaseAsync(purchaseCreation);
+		}
+
+		if (_purchase?.ProjectIds is [var projectId])
+		{
+			if (Project is null || Project.Id != projectId)
+			{
+				await GnomeshadeClient.RemovePurchaseFromProjectAsync(projectId, Id.Value);
+			}
+
+			if (Project is not null && Project.Id != projectId)
+			{
+				await GnomeshadeClient.AddPurchaseToProjectAsync(Project.Id, Id.Value);
+			}
+		}
+		else if (Project is not null)
+		{
+			await GnomeshadeClient.AddPurchaseToProjectAsync(Project.Id, Id.Value);
+		}
+
+		return Id.Value;
 	}
 
 	private async Task ShowNewProductDialog(Window window)

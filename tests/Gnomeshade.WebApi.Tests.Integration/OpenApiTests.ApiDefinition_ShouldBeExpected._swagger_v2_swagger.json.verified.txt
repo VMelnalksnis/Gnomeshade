@@ -1859,6 +1859,14 @@
             description: The order of the purchase within a transaction.,
             format: int32,
             nullable: true
+          },
+          projectIds: {
+            type: array,
+            items: {
+              type: string,
+              format: uuid
+            },
+            description: The ids of the projects that this purchase is a part of.
           }
         },
         additionalProperties: false,

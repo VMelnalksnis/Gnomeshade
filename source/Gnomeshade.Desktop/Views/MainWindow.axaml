@@ -88,6 +88,9 @@
 					<MenuItem
 						x:Name="Units" Header="_Units"
 						Command="{Binding SwitchToUnitAsync}" />
+					<MenuItem
+						x:Name="Projects" Header="Projects"
+						Command="{Binding SwitchToProjectOverviewAsync}" />
 				</MenuItem>
 				<MenuItem Header="_Reports" IsVisible="{Binding CanLogOut}">
 					<MenuItem

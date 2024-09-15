@@ -133,6 +133,11 @@ public interface ITransactionClient
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task PutPurchaseAsync(Guid id, PurchaseCreation purchase);
 
+	/// <summary>Creates a new purchase.</summary>
+	/// <param name="purchase">The purchase to create.</param>
+	/// <returns>The id of the created purchase.</returns>
+	Task<Guid> CreatePurchaseAsync(PurchaseCreation purchase);
+
 	/// <summary>Deletes the specified purchase.</summary>
 	/// <param name="id">The id of the purchase to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

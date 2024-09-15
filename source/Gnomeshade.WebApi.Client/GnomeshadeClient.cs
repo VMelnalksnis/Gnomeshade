@@ -22,6 +22,7 @@ using Gnomeshade.WebApi.Models.Importing;
 using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -220,6 +221,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		PutAsync(Purchases.IdUri(id), purchase, _context.PurchaseCreation);
 
 	/// <inheritdoc />
+	public Task<Guid> CreatePurchaseAsync(PurchaseCreation purchase) =>
+		PostAsync(Purchases.Uri, purchase, _context.PurchaseCreation);
+
+	/// <inheritdoc />
 	public Task DeletePurchaseAsync(Guid id) =>
 		DeleteAsync(Purchases.IdUri(id));
 
@@ -284,6 +289,10 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default) =>
 		GetAsync(Products.IdUri(id), _context.Product, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateProductAsync(ProductCreation product) =>
+		PostAsync(Products.Uri, product, _context.ProductCreation);
 
 	/// <inheritdoc />
 	public Task DeleteProductAsync(Guid id) =>
@@ -451,6 +460,38 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task DeleteLoanPaymentAsync(Guid id) =>
 		DeleteAsync(LoanPayments.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<Project>> GetProjectsAsync(CancellationToken cancellationToken = default) =>
+		GetAsync(Projects.Uri, _context.ListProject, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Project> GetProjectAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(Projects.IdUri(id), _context.Project, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateProjectAsync(ProjectCreation project) =>
+		PostAsync(Projects.Uri, project, _context.ProjectCreation);
+
+	/// <inheritdoc />
+	public Task PutProjectAsync(Guid id, ProjectCreation project) =>
+		PutAsync(Projects.IdUri(id), project, _context.ProjectCreation);
+
+	/// <inheritdoc />
+	public Task DeleteProjectAsync(Guid id) =>
+		DeleteAsync(Projects.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<Purchase>> GetProjectPurchasesAsync(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(Purchases.ForProject(id), _context.ListPurchase, cancellationToken);
+
+	/// <inheritdoc />
+	public Task AddPurchaseToProjectAsync(Guid id, Guid purchaseId) =>
+		PutAsync(Purchases.ForProject(id, purchaseId));
+
+	/// <inheritdoc />
+	public Task RemovePurchaseFromProjectAsync(Guid id, Guid purchaseId) =>
+		DeleteAsync(Purchases.ForProject(id, purchaseId));
 
 	private static async Task ThrowIfNotSuccessCode(HttpResponseMessage responseMessage)
 	{

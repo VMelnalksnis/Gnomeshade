@@ -13,6 +13,7 @@ using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
@@ -252,7 +253,7 @@ public sealed class WriteAccessTests : WebserverTests
 
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
 
-		var linkCreation = new LinkCreation { Uri = new("https://localhost/test") };
+		var linkCreation = new LinkCreation { Uri = new("https://localhost/test"), OwnerId = _ownerId };
 
 		await _otherClient.PutLinkAsync(link.Id, linkCreation);
 		var updatedLink = await _client.GetLinkAsync(link.Id);
@@ -260,6 +261,31 @@ public sealed class WriteAccessTests : WebserverTests
 
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
 		await ShouldBeNotFoundForOthers(client => client.DeleteLinkAsync(link.Id), true);
+	}
+
+	[Test]
+	public async Task Projects()
+	{
+		var projectId = await _client.CreateProjectAsync(new()
+		{
+			Name = Guid.NewGuid().ToString(),
+			OwnerId = _ownerId,
+		});
+
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+
+		var projectCreation = new ProjectCreation
+		{
+			Name = Guid.NewGuid().ToString(),
+			OwnerId = _ownerId,
+		};
+
+		await _otherClient.PutProjectAsync(projectId, projectCreation);
+		var updatedProject = await _client.GetProjectAsync(projectId);
+		updatedProject.Name.Should().Be(projectCreation.Name);
+
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+		await ShouldBeNotFoundForOthers(client => client.DeleteProjectAsync(projectId), true);
 	}
 
 	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)

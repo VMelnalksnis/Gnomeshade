@@ -176,6 +176,19 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Product)}.Update.sql");
 	}
 
+	internal static class Project
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(Project)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(Project)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(Project)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(Project)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(Project)}.Update.sql");
+	}
+
 	internal static class Purchase
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Purchase)}.Delete.sql");

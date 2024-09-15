@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
@@ -29,7 +30,7 @@ public sealed record Purchase
 	/// <summary>The id of the user that created this purchase.</summary>
 	public Guid CreatedByUserId { get; set; }
 
-	/// <summary>The point in the when the purchase was last modified.</summary>
+	/// <summary>The point in time when the purchase was last modified.</summary>
 	public Instant ModifiedAt { get; set; }
 
 	/// <summary>The id of the user that last modified this purchase.</summary>
@@ -58,4 +59,7 @@ public sealed record Purchase
 
 	/// <summary>The order of the purchase within a transaction.</summary>
 	public uint? Order { get; set; }
+
+	/// <summary>The ids of the projects that this purchase is a part of.</summary>
+	public List<Guid> ProjectIds { get; set; } = null!;
 }

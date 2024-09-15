@@ -13,6 +13,7 @@ using Dapper;
 
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Logging;
+using Gnomeshade.Data.Repositories.Extensions;
 
 using Microsoft.Extensions.Logging;
 
@@ -228,16 +229,20 @@ AND t.id IN (SELECT "second" FROM r)
 	{
 #pragma warning disable CS0612 // Type or member is obsolete
 		var transactions = await DbConnection
-			.QueryAsync<TransactionEntity, PurchaseEntity, TransferEntity, LoanEntity, LinkEntity,
+			.QueryAsync<TransactionEntity, PurchaseEntity, IdContainer?, TransferEntity, LoanEntity, LinkEntity,
 				DetailedTransactionEntity>(
 				command,
-				(transaction, purchase, transfer, loan, link) =>
+				(transaction, purchase, container, transfer, loan, link) =>
 				{
 					var detailed = new DetailedTransactionEntity(transaction);
 
 					if (purchase is { DeletedAt: null })
 					{
 						detailed.Purchases.Add(purchase);
+						if (container is not null)
+						{
+							purchase.ProjectIds = [container.Id];
+						}
 					}
 
 					if (transfer is { DeletedAt: null })
@@ -269,7 +274,15 @@ AND t.id IN (SELECT "second" FROM r)
 				ValuedAt = grouping.Select(transaction => transaction.ValuedAt).Max(),
 			})
 			{
-				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id)
+				Purchases = grouping
+					.SelectMany(detailed => detailed.Purchases)
+					.GroupBy(purchase => purchase.Id)
+					.Select(purchases =>
+					{
+						var purchase = purchases.First();
+						purchase.ProjectIds = purchases.SelectMany(entity => entity.ProjectIds).Distinct().ToList();
+						return purchase;
+					})
 					.ToList(),
 				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id)
 					.ToList(),
@@ -282,15 +295,19 @@ AND t.id IN (SELECT "second" FROM r)
 	private async Task<IEnumerable<DetailedTransaction2Entity>> GetDetailedTransactions2(CommandDefinition command)
 	{
 		var transactions = await DbConnection
-			.QueryAsync<TransactionEntity, PurchaseEntity, TransferEntity, LoanPaymentEntity, LinkEntity, DetailedTransaction2Entity>(
+			.QueryAsync<TransactionEntity, PurchaseEntity, IdContainer?, TransferEntity, LoanPaymentEntity, LinkEntity, DetailedTransaction2Entity>(
 				command,
-				(transaction, purchase, transfer, payment, link) =>
+				(transaction, purchase, container, transfer, payment, link) =>
 				{
 					var detailed = new DetailedTransaction2Entity(transaction);
 
 					if (purchase is { DeletedAt: null })
 					{
 						detailed.Purchases.Add(purchase);
+						if (container is not null)
+						{
+							purchase.ProjectIds = [container.Id];
+						}
 					}
 
 					if (transfer is { DeletedAt: null })
@@ -322,7 +339,16 @@ AND t.id IN (SELECT "second" FROM r)
 				ValuedAt = grouping.Select(transaction => transaction.ValuedAt).Max(),
 			})
 			{
-				Purchases = grouping.SelectMany(detailed => detailed.Purchases).DistinctBy(purchase => purchase.Id).ToList(),
+				Purchases = grouping
+					.SelectMany(detailed => detailed.Purchases)
+					.GroupBy(purchase => purchase.Id)
+					.Select(purchases =>
+					{
+						var purchase = purchases.First();
+						purchase.ProjectIds = purchases.SelectMany(entity => entity.ProjectIds).Distinct().ToList();
+						return purchase;
+					})
+					.ToList(),
 				Transfers = grouping.SelectMany(detailed => detailed.Transfers).DistinctBy(transfer => transfer.Id).ToList(),
 				LoanPayments = grouping.SelectMany(detailed => detailed.LoanPayments).DistinctBy(paymentEntity => paymentEntity.Id).ToList(),
 				Links = grouping.SelectMany(detailed => detailed.Links).DistinctBy(link => link.Id).ToList(),

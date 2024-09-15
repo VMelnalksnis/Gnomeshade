@@ -79,21 +79,19 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 	protected override async Task Refresh()
 	{
 		var transaction = await _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
-
-		var currenciesTask = _gnomeshadeClient.GetCurrenciesAsync();
 		var productIds = transaction.Purchases.Select(purchase => purchase.ProductId).Distinct();
-		var productsTask = Task.WhenAll(productIds.Select(async id => await _gnomeshadeClient.GetProductAsync(id)));
-		var unitsTask = _gnomeshadeClient.GetUnitsAsync();
 
-		await Task.WhenAll(productsTask, currenciesTask, unitsTask);
-		var currencies = currenciesTask.Result;
-		var products = productsTask.Result;
-		var units = unitsTask.Result;
+		var (products, currencies, units, projects) = await (
+			Task.WhenAll(productIds.Select(id => _gnomeshadeClient.GetProductAsync(id))),
+			_gnomeshadeClient.GetCurrenciesAsync(),
+			_gnomeshadeClient.GetUnitsAsync(),
+			_gnomeshadeClient.GetProjectsAsync())
+			.WhenAll();
 
 		var overviews = transaction.Purchases
 			.OrderBy(purchase => purchase.Order)
 			.ThenBy(purchase => purchase.ModifiedAt)
-			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider));
+			.Select(purchase => purchase.ToOverview(currencies, products, units, projects, _dateTimeZoneProvider));
 
 		var sort = DataGridView.SortDescriptions;
 		var selected = Selected;
@@ -142,7 +140,7 @@ public sealed partial class PurchaseViewModel : OverviewViewModel<PurchaseOvervi
 				.Distinct()
 				.ToList();
 
-			if (c.Count == 1)
+			if (c.Count is 1)
 			{
 				currencyName = c.Single();
 			}

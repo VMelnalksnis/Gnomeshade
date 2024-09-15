@@ -5,11 +5,15 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Dapper;
+
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Logging;
+using Gnomeshade.Data.Repositories.Extensions;
 
 using Microsoft.Extensions.Logging;
 
@@ -43,7 +47,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	/// <inheritdoc />
 	protected override string FindSql => "purchases.id = @id";
 
-	protected override string GroupBy => "GROUP BY purchases.id";
+	protected override string GroupBy => "GROUP BY purchases.id, project_purchases.project_id";
 
 	protected override string NotDeleted => "purchases.deleted_at IS NULL";
 
@@ -91,5 +95,49 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 			$"{SelectActiveSql} AND purchases.product_id = @productId {GroupBy};",
 			new { productId, userId, access = Read.ToParam() },
 			cancellationToken: cancellationToken));
+	}
+
+	/// <summary>Gets all purchases of the specified product.</summary>
+	/// <param name="projectId">The id of the project for which to get all purchases.</param>
+	/// <param name="userId">The id of the user requesting access to the entity.</param>
+	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+	/// <returns>A collection of all purchases of the specified product.</returns>
+	public Task<IEnumerable<PurchaseEntity>> GetAllForProject(
+		Guid projectId,
+		Guid userId,
+		CancellationToken cancellationToken)
+	{
+		Logger.GetAll();
+		return GetEntitiesAsync(new(
+			$"{SelectActiveSql} AND project_purchases.project_id = @projectId {GroupBy};",
+			new { projectId, userId, access = Read.ToParam() },
+			cancellationToken: cancellationToken));
+	}
+
+	/// <inheritdoc />
+	protected override async Task<IEnumerable<PurchaseEntity>> GetEntitiesAsync(CommandDefinition command)
+	{
+		var purchases = await DbConnection
+			.QueryAsync<PurchaseEntity, IdContainer?, PurchaseEntity>(
+				command,
+				(purchase, container) =>
+				{
+					if (container is not null)
+					{
+						purchase.ProjectIds = [container.Id];
+					}
+
+					return purchase;
+				},
+				"Id,Id");
+
+		return purchases
+			.GroupBy(purchase => purchase.Id)
+			.Select(grouping =>
+			{
+				var purchase = grouping.First();
+				purchase.ProjectIds = grouping.SelectMany(entity => entity.ProjectIds).ToList();
+				return purchase;
+			});
 	}
 }

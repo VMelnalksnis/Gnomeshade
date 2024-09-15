@@ -12,7 +12,8 @@
 	   purchases.product_id          AS ProductId,
 	   purchases.amount              AS Amount,
 	   purchases.delivery_date       AS DeliveryDate,
-	   purchases."order"             AS "Order"
+	   purchases."order"             AS "Order",
+	   project_purchases.project_id  AS "Id"
 FROM purchases
 		 INNER JOIN transactions ON transactions.id = purchases.transaction_id
 		 LEFT JOIN owners tran_o ON tran_o.id = transactions.owner_id
@@ -26,6 +27,8 @@ FROM purchases
 		 LEFT JOIN owners accounts_owners ON accounts_owners.id = accounts.owner_id
 		 LEFT JOIN ownerships acc_own ON accounts_owners.id = acc_own.owner_id
 		 LEFT JOIN access acc_acc ON acc_acc.id = acc_own.access_id
+
+		 LEFT JOIN project_purchases ON purchases.id = project_purchases.purchase_id
 WHERE ((acc_own.user_id = @userId AND (acc_acc.normalized_name = @access OR acc_acc.normalized_name = 'OWNER')
 	AND transfers.deleted_at IS NULL
 	AND accounts_in_currency.deleted_at IS NULL

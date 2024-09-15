@@ -10,6 +10,7 @@ using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 
 namespace Gnomeshade.Avalonia.Core;
 
@@ -29,11 +30,14 @@ internal static class AutoCompleteSelectors
 	/// <summary>Gets a delegate for formatting a currency in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Currency { get; } = (_, item) => ((Currency)item).AlphabeticCode;
 
-	/// <summary>Gets a delegate for formatting a owner in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <summary>Gets a delegate for formatting an owner in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Owner { get; } = (_, item) => ((Owner)item).Name;
 
-	/// <summary>Gets a delegate for formatting an product in an <see cref="AutoCompleteBox"/>.</summary>
+	/// <summary>Gets a delegate for formatting a product in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Product { get; } = (_, item) => ((Product)item).Name;
+
+	/// <summary>Gets a delegate for formatting a project in an <see cref="AutoCompleteBox"/>.</summary>
+	internal static AutoCompleteSelector<object> Project { get; } = (_, item) => ((Project)item).Name;
 
 	/// <summary>Gets a delegate for formatting a unit in an <see cref="AutoCompleteBox"/>.</summary>
 	internal static AutoCompleteSelector<object> Unit { get; } = (_, item) => ((Unit)item).Name;

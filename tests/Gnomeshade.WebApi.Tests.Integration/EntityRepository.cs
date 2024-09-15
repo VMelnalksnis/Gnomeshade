@@ -30,6 +30,7 @@ internal sealed class EntityRepository
 		{ typeof(OwnerEntity), "owners" },
 		{ typeof(OwnershipEntity), "ownerships" },
 		{ typeof(ProductEntity), "products" },
+		{ typeof(ProjectEntity), "projects" },
 		{ typeof(PurchaseEntity), "purchases" },
 		{ typeof(TransactionEntity), "transactions" },
 		{ typeof(TransferEntity), "transfers" },

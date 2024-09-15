@@ -11,6 +11,7 @@ using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Loans;
 using Gnomeshade.Avalonia.Core.Products;
+using Gnomeshade.Avalonia.Core.Projects;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.Avalonia.Core.Transactions.Loans;
@@ -53,5 +54,6 @@ public static class ServiceCollectionExtensions
 		.AddSingleton<LicensesViewModel>()
 		.AddSingleton<LoanViewModel>()
 		.AddSingleton<LoanPaymentViewModel>()
-		.AddSingleton<LoanMigrationViewModel>();
+		.AddSingleton<LoanMigrationViewModel>()
+		.AddSingleton<ProjectViewModel>();
 }

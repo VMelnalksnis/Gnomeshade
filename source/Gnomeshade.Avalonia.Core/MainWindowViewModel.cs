@@ -20,6 +20,7 @@ using Gnomeshade.Avalonia.Core.Counterparties;
 using Gnomeshade.Avalonia.Core.Help;
 using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Products;
+using Gnomeshade.Avalonia.Core.Projects;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 
@@ -184,6 +185,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <summary>Switches <see cref="ActiveView"/> to <see cref="LoanMigrationViewModel"/>.</summary>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToLoanMigrationAsync() => SwitchTo<LoanMigrationViewModel>();
+
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="ProjectViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToProjectOverviewAsync() => SwitchTo<ProjectViewModel>();
 
 	/// <summary>Event handler for <see cref="IClassicDesktopStyleApplicationLifetime.ShutdownRequested"/>.</summary>
 	/// <param name="sender">The object that sent the event.</param>

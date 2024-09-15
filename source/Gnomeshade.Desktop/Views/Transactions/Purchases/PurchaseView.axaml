@@ -52,6 +52,10 @@
 					x:DataType="purchases:PurchaseOverview"
 					Header="Delivery" IsReadOnly="True"
 					Binding="{Binding DeliveryDate, Mode=OneWay, StringFormat=\{0:g\}}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Project" IsReadOnly="True"
+					Binding="{Binding Project, Mode=OneWay, StringFormat=\{0:g\}}" />
 			</DataGrid.Columns>
 
 			<Interaction.Behaviors>

@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 
 using Gnomeshade.Data.Entities.Abstractions;
 
@@ -45,4 +46,7 @@ public sealed record PurchaseEntity : Entity, IOwnableEntity, IModifiableEntity,
 
 	/// <inheritdoc />
 	public uint? Order { get; set; }
+
+	/// <summary>Gets or sets the ids of all the projects this purchase is a part of.</summary>
+	public List<Guid> ProjectIds { get; set; } = [];
 }

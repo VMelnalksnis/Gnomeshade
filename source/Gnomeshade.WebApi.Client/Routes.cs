@@ -172,6 +172,10 @@ public static class Routes
 		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
 		internal static string TransactionUri(Guid transactionId) => $"{Transactions.IdUri(transactionId)}/Purchases";
+
+		internal static string ForProject(Guid projectId) => $"{Projects.IdUri(projectId)}/Purchases";
+
+		internal static string ForProject(Guid projectId, Guid id) => $"{Projects.IdUri(projectId)}/Purchases/{Format(id)}";
 	}
 
 	internal static class Nordigen
@@ -214,5 +218,12 @@ public static class Routes
 
 		internal static string ForTransaction(Guid transactionId) =>
 			$"{V2}/{nameof(Transactions)}/{Format(transactionId)}/{nameof(LoanPayments)}";
+	}
+
+	internal static class Projects
+	{
+		internal const string Uri = $"{V1}/Projects";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 	}
 }

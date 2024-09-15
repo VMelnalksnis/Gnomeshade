@@ -32,6 +32,11 @@ public interface IProductClient
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task PutProductAsync(Guid id, ProductCreation product);
 
+	/// <summary>Creates a new product.</summary>
+	/// <param name="product">The category to product.</param>
+	/// <returns>The id of the created product.</returns>
+	Task<Guid> CreateProductAsync(ProductCreation product);
+
 	/// <summary>Deletes the specified transaction.</summary>
 	/// <param name="id">The id of the transaction to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

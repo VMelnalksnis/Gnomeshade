@@ -31,7 +31,7 @@ public static class GnomeshadeClientExtensions
 			Name = $"{accountId:N}",
 			CounterpartyId = counterpartyId,
 			PreferredCurrencyId = currency.Id,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
+			Currencies = [new() { CurrencyId = currency.Id }],
 		};
 
 		await gnomeshadeClient.PutAccountAsync(accountId, account);

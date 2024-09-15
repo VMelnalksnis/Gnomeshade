@@ -18,6 +18,7 @@ using Gnomeshade.WebApi.Models.Importing;
 using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -44,6 +45,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<Access> _accesses;
 	private static readonly List<Loan> _loans;
 	private static readonly List<LoanPayment> _loanPayments;
+	private static readonly List<Project> _projects;
 
 	static DesignTimeGnomeshadeClient()
 	{
@@ -205,6 +207,15 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Amount = 500m,
 				Interest = 150m,
 			}
+		];
+
+		_projects =
+		[
+			new()
+			{
+				Id = Guid.Empty,
+				Name = "Home improvement",
+			},
 		];
 	}
 
@@ -445,6 +456,14 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	}
 
 	/// <inheritdoc />
+	public async Task<Guid> CreatePurchaseAsync(PurchaseCreation purchase)
+	{
+		var id = Guid.NewGuid();
+		await PutPurchaseAsync(id, purchase);
+		return id;
+	}
+
+	/// <inheritdoc />
 	public Task DeletePurchaseAsync(Guid id) =>
 		throw new NotImplementedException();
 
@@ -530,6 +549,14 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task<Product> GetProductAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		return Task.FromResult(_products.Single(product => product.Id == id));
+	}
+
+	/// <inheritdoc />
+	public async Task<Guid> CreateProductAsync(ProductCreation product)
+	{
+		var id = Guid.NewGuid();
+		await PutProductAsync(id, product);
+		return id;
 	}
 
 	/// <inheritdoc />
@@ -767,4 +794,43 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task DeleteLoanPaymentAsync(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<Project>> GetProjectsAsync(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_projects.ToList());
+
+	/// <inheritdoc />
+	public Task<Project> GetProjectAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_projects.Single(project => project.Id == id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreateProjectAsync(ProjectCreation project)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task PutProjectAsync(Guid id, ProjectCreation project)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc />
+	public Task DeleteProjectAsync(Guid id)
+	{
+		_projects.Remove(_projects.Single(project => project.Id == id));
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public Task<List<Purchase>> GetProjectPurchasesAsync(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(id == Guid.Empty ? _purchases : []);
+
+	/// <inheritdoc />
+	public Task AddPurchaseToProjectAsync(Guid id, Guid purchaseId) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task RemovePurchaseFromProjectAsync(Guid id, Guid purchaseId) =>
+		throw new NotImplementedException();
 }

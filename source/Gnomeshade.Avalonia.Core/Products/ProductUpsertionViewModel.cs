@@ -84,8 +84,10 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var units = await GnomeshadeClient.GetUnitsAsync();
-		var categories = await GnomeshadeClient.GetCategoriesAsync();
+		var (units, categories) = await (
+			GnomeshadeClient.GetUnitsAsync(),
+			GnomeshadeClient.GetCategoriesAsync())
+			.WhenAll();
 
 		Units = units;
 		Categories = categories;
@@ -95,7 +97,12 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 			return;
 		}
 
-		var product = await GnomeshadeClient.GetProductAsync(productId);
+		var (product, projects, purchases, currencies) = await (
+			GnomeshadeClient.GetProductAsync(productId),
+			GnomeshadeClient.GetProjectsAsync(),
+			GnomeshadeClient.GetProductPurchasesAsync(productId),
+			GnomeshadeClient.GetCurrenciesAsync())
+			.WhenAll();
 
 		Name = product.Name;
 		Sku = product.Sku;
@@ -107,11 +114,9 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 			? null
 			: Categories.SingleOrDefault(category => category.Id == product.CategoryId.Value);
 
-		var purchases = await GnomeshadeClient.GetProductPurchasesAsync(productId);
-		var currencies = await GnomeshadeClient.GetCurrenciesAsync();
 		var products = new[] { product };
 		var overviews = purchases
-			.Select(purchase => purchase.ToOverview(currencies, products, units, _dateTimeZoneProvider))
+			.Select(purchase => purchase.ToOverview(currencies, products, units, projects, _dateTimeZoneProvider))
 			.ToList();
 
 		Purchases = overviews;
@@ -129,8 +134,15 @@ public sealed partial class ProductUpsertionViewModel : UpsertionViewModel
 			CategoryId = SelectedCategory?.Id,
 		};
 
-		var id = Id ?? Guid.NewGuid();
-		await GnomeshadeClient.PutProductAsync(id, creationModel);
-		return id;
+		if (Id is { } existingId)
+		{
+			await GnomeshadeClient.PutProductAsync(existingId, creationModel);
+		}
+		else
+		{
+			Id = await GnomeshadeClient.CreateProductAsync(creationModel);
+		}
+
+		return Id.Value;
 	}
 }

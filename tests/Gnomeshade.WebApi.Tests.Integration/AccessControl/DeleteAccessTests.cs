@@ -14,6 +14,7 @@ using Gnomeshade.TestingHelpers.Models;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models;
 using Gnomeshade.WebApi.Models.Owners;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 namespace Gnomeshade.WebApi.Tests.Integration.AccessControl;
@@ -248,7 +249,7 @@ public sealed class DeleteAccessTests : WebserverTests
 
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
 
-		var updatedLink = new LinkCreation { Uri = new("https://localhost/test") };
+		var updatedLink = new LinkCreation { Uri = new("https://localhost/test"), OwnerId = _ownerId };
 
 		await ShouldBeForbiddenForOthers(client => client.PutLinkAsync(link.Id, updatedLink));
 		await ShouldBeNotFoundForOthers(client => client.GetLinkAsync(link.Id));
@@ -266,6 +267,33 @@ public sealed class DeleteAccessTests : WebserverTests
 			.Be(HttpStatusCode.NotFound);
 
 		await ShouldBeDeletedWithClient<LinkEntity>(link.Id, _otherClient);
+	}
+
+	[Test]
+	public async Task Projects()
+	{
+		var projectId = await _client.CreateProjectAsync(new() { Name = Guid.NewGuid().ToString(), OwnerId = _ownerId });
+
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+
+		var updatedProject = new ProjectCreation { Name = Guid.NewGuid().ToString(), OwnerId = _ownerId };
+
+		await ShouldBeForbiddenForOthers(client => client.PutProjectAsync(projectId, updatedProject));
+		await ShouldBeNotFoundForOthers(client => client.GetProjectAsync(projectId));
+
+		await FluentActions
+			.Awaiting(() => _otherClient.DeleteProjectAsync(projectId))
+			.Should()
+			.NotThrowAsync();
+
+		(await FluentActions
+				.Awaiting(() => _client.GetProjectAsync(projectId))
+				.Should()
+				.ThrowAsync<HttpRequestException>())
+			.Which.StatusCode.Should()
+			.Be(HttpStatusCode.NotFound);
+
+		await ShouldBeDeletedWithClient<ProjectEntity>(projectId, _otherClient);
 	}
 
 	private async Task ShouldBeDeletedWithClient<TEntity>(Guid id, IGnomeshadeClient client)

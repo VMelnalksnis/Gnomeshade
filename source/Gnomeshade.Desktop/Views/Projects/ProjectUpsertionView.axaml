@@ -1,0 +1,51 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:projects="clr-namespace:Gnomeshade.Avalonia.Core.Projects;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.ProjectUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Projects.ProjectUpsertionView"
+	x:DataType="projects:ProjectUpsertionViewModel">
+
+	<StackPanel Orientation="Vertical" Spacing="5">
+		<TextBox MinWidth="300" Text="{Binding Name}" Watermark="Name" UseFloatingWatermark="True" />
+		<Button
+			Width="140" Margin="5 0"
+			IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
+			Save
+		</Button>
+
+		<DataGrid
+			ItemsSource="{Binding Purchases, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			VerticalScrollBarVisibility="Auto"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Product" IsReadOnly="True"
+					Binding="{Binding ProductName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Unit" IsReadOnly="True"
+					Binding="{Binding UnitName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding CurrencyName, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="purchases:PurchaseOverview"
+					Header="Price" IsReadOnly="True"
+					Binding="{Binding Price, Mode=OneWay, StringFormat=\{0:N2\}}" />
+			</DataGrid.Columns>
+		</DataGrid>
+	</StackPanel>
+</UserControl>

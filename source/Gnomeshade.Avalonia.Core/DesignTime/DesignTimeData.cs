@@ -17,6 +17,7 @@ using Gnomeshade.Avalonia.Core.Imports;
 using Gnomeshade.Avalonia.Core.Loans;
 using Gnomeshade.Avalonia.Core.Loans.Migration;
 using Gnomeshade.Avalonia.Core.Products;
+using Gnomeshade.Avalonia.Core.Projects;
 using Gnomeshade.Avalonia.Core.Reports;
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
@@ -226,6 +227,14 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="LoanMigrationViewModel"/> for use during design time.</summary>
 	public static LoanMigrationViewModel LoanMigrationViewModel { get; } = CreateViewModel<LoanMigrationViewModel>();
+
+	/// <summary>Gets an instance of <see cref="ProjectUpsertionViewModel"/> for use during design time.</summary>
+	public static ProjectUpsertionViewModel ProjectUpsertionViewModel { get; } =
+		InitializeViewModel<ProjectUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DateTimeZoneProvider, Guid.Empty));
+
+	/// <summary>Gets an instance of <see cref="ProjectViewModel"/> for use during design time.</summary>
+	public static ProjectViewModel ProjectViewModel { get; } =
+		InitializeViewModel<ProjectViewModel>(new(ActivityService, GnomeshadeClient, DateTimeZoneProvider));
 
 	[UnconditionalSuppressMessage(
 		"Trimming",

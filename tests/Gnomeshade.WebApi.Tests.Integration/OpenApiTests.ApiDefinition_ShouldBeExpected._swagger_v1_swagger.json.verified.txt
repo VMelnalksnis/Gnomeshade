@@ -5242,6 +5242,825 @@
         }
       }
     },
+    /api/v1/Projects/{id}: {
+      get: {
+        tags: [
+          Projects
+        ],
+        summary: Gets the project with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id by which to search for the project.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          Projects
+        ],
+        summary: Creates a new project, or replaces and existing one if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the project.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          Projects
+        ],
+        summary: Deletes the specified project.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the project to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Projects: {
+      get: {
+        tags: [
+          Projects
+        ],
+        summary: Gets all projects.,
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Project
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Project
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Project
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          Projects
+        ],
+        summary: Creates a new project.,
+        requestBody: {
+          description: The project to create.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/ProjectCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Projects/{id}/Purchases: {
+      get: {
+        tags: [
+          Projects
+        ],
+        summary: Gets all purchases that are a part of the specified project.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the project for which to get all the purchases.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Purchase
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Purchase
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/Purchase
+                  }
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Projects/{id}/Purchases/{purchaseId}: {
+      put: {
+        tags: [
+          Projects
+        ],
+        summary: Adds the specified purchase to the specified project.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the project to which to add the purchase.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          },
+          {
+            name: purchaseId,
+            in: path,
+            description: The id of the purchase which to add to the project.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          Projects
+        ],
+        summary: Removes the specified purchase to the specified project.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the project from which to remove the purchase.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          },
+          {
+            name: purchaseId,
+            in: path,
+            description: The id of the purchase which to remove from the project.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
     /api/v1/Purchases/{id}: {
       get: {
         tags: [
@@ -9562,6 +10381,76 @@
         additionalProperties: false,
         description: The information needed to create or update a product.
       },
+      Project: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the project.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the project.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this project.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this project.,
+            format: uuid
+          },
+          name: {
+            type: string,
+            description: The name of the project.
+          },
+          parentProjectId: {
+            type: string,
+            description: The id of the parent project.,
+            format: uuid,
+            nullable: true
+          }
+        },
+        additionalProperties: false,
+        description: A grouping of purchases.
+      },
+      ProjectCreation: {
+        required: [
+          name
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          name: {
+            minLength: 1,
+            type: string,
+            description: The name of the project.
+          },
+          parentProjectId: {
+            type: string,
+            description: The id of the parent project.,
+            format: uuid,
+            nullable: true
+          }
+        },
+        additionalProperties: false,
+        description: The information needed to create or update a project.
+      },
       Purchase: {
         type: object,
         properties: {
@@ -9624,6 +10513,14 @@
             description: The order of the purchase within a transaction.,
             format: int32,
             nullable: true
+          },
+          projectIds: {
+            type: array,
+            items: {
+              type: string,
+              format: uuid
+            },
+            description: The ids of the projects that this purchase is a part of.
           }
         },
         additionalProperties: false,

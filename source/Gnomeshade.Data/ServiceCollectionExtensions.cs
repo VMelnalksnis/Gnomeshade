@@ -42,6 +42,7 @@ public static class ServiceCollectionExtensions
 			.AddScoped<AccessRepository>()
 			.AddScoped<AccountUnitOfWork>()
 			.AddScoped<CategoryRepository>()
+			.AddScoped<ProjectRepository>()
 			.AddScoped<TransactionUnitOfWork>()
 			.AddScoped<UserUnitOfWork>();
 	}

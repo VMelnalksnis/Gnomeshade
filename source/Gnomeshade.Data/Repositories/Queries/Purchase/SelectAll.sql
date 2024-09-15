@@ -12,5 +12,7 @@
 	   purchases.product_id          AS ProductId,
 	   purchases.amount              AS Amount,
 	   purchases.delivery_date       AS DeliveryDate,
-	   purchases."order"             AS "Order"
+	   purchases."order"             AS "Order",
+	   project_purchases.project_id  AS "Id"
 FROM purchases
+		 LEFT JOIN project_purchases ON purchases.id = project_purchases.purchase_id

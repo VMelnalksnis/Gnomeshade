@@ -10,6 +10,7 @@ using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Importing;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 
 namespace Gnomeshade.WebApi.Models;
@@ -57,4 +58,6 @@ namespace Gnomeshade.WebApi.Models;
 #pragma warning disable CS0612 // Type or member is obsolete
 [JsonSerializable(typeof(List<LegacyLoan>))]
 #pragma warning restore CS0612 // Type or member is obsolete
+[JsonSerializable(typeof(List<Project>))]
+[JsonSerializable(typeof(ProjectCreation))]
 public sealed partial class GnomeshadeSerializerContext : JsonSerializerContext;

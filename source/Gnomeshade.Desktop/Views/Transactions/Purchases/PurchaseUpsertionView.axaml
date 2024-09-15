@@ -36,14 +36,20 @@
 					ItemsSource="{Binding Currencies}"
 					ItemSelector="{Binding CurrencySelector}"
 					SelectedItem="{Binding Currency, Mode=TwoWay}" />
-
-
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
 				<TextBox
 					Text="{Binding DeliveryDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
 					Watermark="Delivered at" />
+
+				<AutoCompleteBox
+					Watermark="Project"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding Projects}"
+					ItemSelector="{Binding ProjectSelector}"
+					SelectedItem="{Binding Project, Mode=TwoWay}" />
 
 				<TextBox Text="{Binding Order}" Watermark="Order" HorizontalAlignment="Left" />
 			</StackPanel>

@@ -7,6 +7,7 @@ using System.Linq;
 
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
@@ -20,10 +21,14 @@ internal static class PurchaseExtensions
 		IEnumerable<Currency> currencies,
 		IEnumerable<Product> products,
 		IEnumerable<Unit> units,
+		IEnumerable<Project> projects,
 		IDateTimeZoneProvider dateTimeZoneProvider)
 	{
 		var product = products.Single(product => product.Id == purchase.ProductId);
 		var unit = units.SingleOrDefault(unit => unit.Id == product.UnitId);
+		var project = purchase.ProjectIds is [var projectId, ..]
+			? projects.Single(project => project.Id == projectId).Name
+			: null;
 
 		return new(
 			purchase.Id,
@@ -33,6 +38,7 @@ internal static class PurchaseExtensions
 			purchase.Amount,
 			unit?.Name,
 			purchase.DeliveryDate?.InZone(dateTimeZoneProvider.GetSystemDefault()).LocalDateTime,
-			purchase.Order);
+			purchase.Order,
+			project);
 	}
 }

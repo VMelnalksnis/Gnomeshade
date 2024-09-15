@@ -11,6 +11,7 @@ using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
+using Gnomeshade.WebApi.Models.Projects;
 using Gnomeshade.WebApi.Models.Transactions;
 using Gnomeshade.WebApi.V1.Transactions;
 
@@ -78,5 +79,8 @@ public static class MapperConfigurationExpressionExtensions
 		options.CreateMap<LoanEntity, Loan>();
 		options.CreateMap<LoanCreation, LoanEntity>();
 #pragma warning restore CS0612 // Type or member is obsolete
+
+		options.CreateMap<ProjectEntity, Project>();
+		options.CreateMap<ProjectCreation, ProjectEntity>();
 	}
 }
