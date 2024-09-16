@@ -3160,7 +3160,7 @@
             }
           },
           409: {
-            description: Conflict,
+            description: Loan cannot be deleted because some other entity is still referencing it.,
             content: {
               text/plain: {
                 schema: {

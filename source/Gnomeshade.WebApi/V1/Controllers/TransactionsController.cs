@@ -146,10 +146,12 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	public override Task<ActionResult> Put(Guid id, [FromBody] TransactionCreation transaction) =>
 		base.Put(id, transaction);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="ITransactionClient.DeleteTransactionAsync"/>
 	/// <response code="204">Transaction was successfully deleted.</response>
 	/// <response code="404">Transaction with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Transaction cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 

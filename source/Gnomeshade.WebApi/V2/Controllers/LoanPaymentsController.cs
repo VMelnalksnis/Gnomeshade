@@ -23,17 +23,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V2.Controllers;
 
 /// <summary>CRUD operations on loan payment entity.</summary>
-public sealed class LoanPaymentsController : CreatableBase<LoanPaymentRepository, LoanPaymentEntity, LoanPayment, LoanPaymentCreation>
+public sealed class LoanPaymentsController(Mapper mapper, LoanPaymentRepository repository, DbConnection dbConnection)
+	: CreatableBase<LoanPaymentRepository, LoanPaymentEntity, LoanPayment, LoanPaymentCreation>(mapper, repository, dbConnection)
 {
-	/// <summary>Initializes a new instance of the <see cref="LoanPaymentsController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="LoanPaymentEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public LoanPaymentsController(Mapper mapper, LoanPaymentRepository repository, DbConnection dbConnection)
-		: base(mapper, repository, dbConnection)
-	{
-	}
-
 	/// <inheritdoc cref="ILoanClient.GetLoanPaymentAsync"/>
 	/// <response code="200">Successfully got the loan payment.</response>
 	/// <response code="404">Loan payment with the specified id does not exist.</response>
@@ -58,10 +50,12 @@ public sealed class LoanPaymentsController : CreatableBase<LoanPaymentRepository
 	public override Task<ActionResult> Put(Guid id, LoanPaymentCreation loanPayment) =>
 		base.Put(id, loanPayment);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="ILoanClient.DeleteLoanPaymentAsync"/>
 	/// <response code="204">Loan payment was successfully deleted.</response>
 	/// <response code="404">Loan payment with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Loan payment cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 

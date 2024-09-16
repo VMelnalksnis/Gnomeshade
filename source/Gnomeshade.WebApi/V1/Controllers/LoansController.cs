@@ -22,22 +22,9 @@ namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on loan entity.</summary>
 [Obsolete]
-public sealed class LoansController : TransactionItemController<LoanRepository, LoanEntity, Loan, LoanCreation>
+public sealed class LoansController(Mapper mapper, LoanRepository repository, DbConnection dbConnection, TransactionRepository transactionRepository)
+	: TransactionItemController<LoanRepository, LoanEntity, Loan, LoanCreation>(mapper, repository, dbConnection, transactionRepository)
 {
-	/// <summary>Initializes a new instance of the <see cref="LoansController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="LoanEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	/// <param name="transactionRepository">Transaction repository for validation of transactions.</param>
-	public LoansController(
-		Mapper mapper,
-		LoanRepository repository,
-		DbConnection dbConnection,
-		TransactionRepository transactionRepository)
-		: base(mapper, repository, dbConnection, transactionRepository)
-	{
-	}
-
 	/// <summary>Gets the specified loan.</summary>
 	/// <param name="id">The id of the loan to get.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -66,12 +53,14 @@ public sealed class LoansController : TransactionItemController<LoanRepository, 
 	public override Task<ActionResult> Put(Guid id, [FromBody] LoanCreation loan) =>
 		base.Put(id, loan);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <summary>Deletes the specified loan.</summary>
 	/// <param name="id">The id of the loan to delete.</param>
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	/// <response code="204">Loan was successfully deleted.</response>
 	/// <response code="404">Loan with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Loan cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 }

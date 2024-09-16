@@ -63,10 +63,12 @@ public sealed class LoansController : CreatableBase<Loan2Repository, Loan2Entity
 	public override Task<ActionResult> Put(Guid id, LoanCreation loan) =>
 		base.Put(id, loan);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="ILoanClient.DeleteLoanAsync"/>
 	/// <response code="204">Loan was successfully deleted.</response>
 	/// <response code="404">Loan with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Loan cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 

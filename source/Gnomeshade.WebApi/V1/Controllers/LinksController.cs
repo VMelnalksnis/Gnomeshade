@@ -23,17 +23,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on link entity.</summary>
-public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, Link, LinkCreation>
+public sealed class LinksController(Mapper mapper, LinkRepository repository, DbConnection dbConnection)
+	: CreatableBase<LinkRepository, LinkEntity, Link, LinkCreation>(mapper, repository, dbConnection)
 {
-	/// <summary>Initializes a new instance of the <see cref="LinksController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="LinkEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public LinksController(Mapper mapper, LinkRepository repository, DbConnection dbConnection)
-		: base(mapper, repository, dbConnection)
-	{
-	}
-
 	/// <inheritdoc cref="IGnomeshadeClient.GetLinksAsync"/>
 	/// <response code="200">Successfully got all links.</response>
 	[ProducesResponseType<List<Link>>(Status200OK)]
@@ -51,10 +43,12 @@ public sealed class LinksController : CreatableBase<LinkRepository, LinkEntity, 
 	public override Task<ActionResult> Put(Guid id, LinkCreation link) =>
 		base.Put(id, link);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="IGnomeshadeClient.DeleteLinkAsync"/>
 	/// <response code="204">Link was successfully deleted.</response>
 	/// <response code="404">Link with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Link cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 

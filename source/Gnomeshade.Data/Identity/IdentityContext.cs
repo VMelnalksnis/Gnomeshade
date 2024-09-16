@@ -29,12 +29,6 @@ public abstract class IdentityContext : IdentityDbContext<ApplicationUser, Appli
 	}
 
 	/// <inheritdoc />
-	protected sealed override void OnModelCreating(ModelBuilder builder)
-	{
-		base.OnModelCreating(builder);
-	}
-
-	/// <inheritdoc />
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
 		optionsBuilder.UseLoggerFactory(_loggerFactory);

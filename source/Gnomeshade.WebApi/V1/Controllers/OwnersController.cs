@@ -22,20 +22,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on <see cref="Owner"/>.</summary>
-public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntity, Owner, OwnerCreation>
+public sealed class OwnersController(Mapper mapper, OwnerRepository repository, DbConnection dbConnection)
+	: CreatableBase<OwnerRepository, OwnerEntity, Owner, OwnerCreation>(mapper, repository, dbConnection)
 {
-	private readonly OwnerRepository _repository;
-
-	/// <summary>Initializes a new instance of the <see cref="OwnersController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnerEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public OwnersController(Mapper mapper, OwnerRepository repository, DbConnection dbConnection)
-		: base(mapper, repository, dbConnection)
-	{
-		_repository = repository;
-	}
-
 	/// <inheritdoc cref="IOwnerClient.GetOwnersAsync"/>
 	/// <response code="200">Successfully got the owners.</response>
 	[ProducesResponseType<List<Owner>>(Status200OK)]
@@ -49,9 +38,12 @@ public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntit
 	public override Task<ActionResult> Put(Guid id, OwnerCreation owner) =>
 		base.Put(id, owner);
 
-	/// <inheritdoc cref="IOwnerClient.DeleteOwnerAsync"/>
-	/// <response code="204">The owner was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
+
+	/// <inheritdoc cref="IOwnerClient.DeleteOwnerAsync"/>
+	/// <response code="204">Owner was deleted successfully.</response>
+	/// <response code="404">Owner with the specified id does not exist.</response>
+	/// <response code="409">Owner cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
@@ -71,7 +63,7 @@ public sealed class OwnersController : CreatableBase<OwnerRepository, OwnerEntit
 			CreatedByUserId = ApplicationUser.Id,
 		};
 
-		await _repository.AddAsync(owner);
+		await Repository.AddAsync(owner);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

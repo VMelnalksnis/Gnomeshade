@@ -22,22 +22,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on purchase entity.</summary>
-public sealed class PurchasesController : TransactionItemController<PurchaseRepository, PurchaseEntity, Purchase, PurchaseCreation>
+public sealed class PurchasesController(Mapper mapper, PurchaseRepository repository, DbConnection dbConnection, TransactionRepository transactionRepository)
+	: TransactionItemController<PurchaseRepository, PurchaseEntity, Purchase, PurchaseCreation>(mapper, repository, dbConnection, transactionRepository)
 {
-	/// <summary>Initializes a new instance of the <see cref="PurchasesController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="PurchaseEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	/// <param name="transactionRepository">Transaction repository for validation of transactions.</param>
-	public PurchasesController(
-		Mapper mapper,
-		PurchaseRepository repository,
-		DbConnection dbConnection,
-		TransactionRepository transactionRepository)
-		: base(mapper, repository, dbConnection, transactionRepository)
-	{
-	}
-
 	/// <inheritdoc cref="ITransactionClient.GetPurchaseAsync"/>
 	/// <response code="200">Successfully got the purchase.</response>
 	/// <response code="404">Purchase with the specified id does not exist.</response>
@@ -58,10 +45,12 @@ public sealed class PurchasesController : TransactionItemController<PurchaseRepo
 	public override Task<ActionResult> Put(Guid id, [FromBody] PurchaseCreation product) =>
 		base.Put(id, product);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="ITransactionClient.DeletePurchaseAsync"/>
 	/// <response code="204">Purchase was successfully deleted.</response>
 	/// <response code="404">Purchase with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Purchase cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 }

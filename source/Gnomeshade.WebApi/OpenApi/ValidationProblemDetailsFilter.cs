@@ -32,11 +32,11 @@ internal sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperation
 				.MethodInfo
 				.DeclaringType?
 				.GetCustomAttributes(true)
-				.OfType<ApiControllerAttribute>();
+				.OfType<ApiControllerAttribute>()
+				.ToArray();
 
-		if (apiControllerAttributes is null ||
-			!apiControllerAttributes.Any() ||
-			(!operation.Parameters.Any() && !(operation.RequestBody?.Required ?? false)))
+		if (apiControllerAttributes is null or [] ||
+			(operation.Parameters is [] && operation.RequestBody?.Required is not true))
 		{
 			return;
 		}
@@ -48,7 +48,7 @@ internal sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperation
 				Content = new Dictionary<string, OpenApiMediaType>
 				{
 					{
-						"application/problem+json", new OpenApiMediaType
+						"application/problem+json", new()
 						{
 							Schema = context.SchemaRepository.Schemas[nameof(ValidationProblemDetails)],
 						}

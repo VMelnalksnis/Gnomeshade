@@ -9,10 +9,5 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.OpenApi;
 
 /// <summary>A filter that specifies that the action returns <see cref="Status404NotFound"/> with <see cref="ProblemDetails"/>.</summary>
-internal sealed class ProducesStatus404NotFoundAttribute : ProducesResponseTypeAttribute<ProblemDetails>
-{
-	public ProducesStatus404NotFoundAttribute()
-		: base(Status404NotFound)
-	{
-	}
-}
+internal sealed class ProducesStatus404NotFoundAttribute()
+	: ProducesResponseTypeAttribute<ProblemDetails>(Status404NotFound);

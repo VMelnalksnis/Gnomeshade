@@ -388,6 +388,9 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	public Task RemoveLinkFromTransactionAsync(Guid transactionId, Guid linkId)
 	{
 		var relation = _transactionLinks.Single(kvp => kvp.Key == transactionId && kvp.Value == linkId);
+
+		// Performance is not an issue here
+		// ReSharper disable once UsageOfDefaultStructEquality
 		_transactionLinks.Remove(relation);
 		return Task.CompletedTask;
 	}

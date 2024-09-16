@@ -68,9 +68,12 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 	public override Task<ActionResult> Put(Guid id, [FromBody] CategoryCreation category) =>
 		base.Put(id, category);
 
-	/// <inheritdoc cref="IProductClient.DeleteCategoryAsync"/>
-	/// <response code="204">The category was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
+
+	/// <inheritdoc cref="IProductClient.DeleteCategoryAsync"/>
+	/// <response code="204">Category was deleted successfully.</response>
+	/// <response code="404">Category with the specified id does not exist.</response>
+	/// <response code="409">Category cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 

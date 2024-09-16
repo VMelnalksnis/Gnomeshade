@@ -22,20 +22,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>Resource access management.</summary>
-public sealed class OwnershipsController : CreatableBase<OwnershipRepository, OwnershipEntity, Ownership, OwnershipCreation>
+public sealed class OwnershipsController(Mapper mapper, OwnershipRepository repository, DbConnection dbConnection)
+	: CreatableBase<OwnershipRepository, OwnershipEntity, Ownership, OwnershipCreation>(mapper, repository, dbConnection)
 {
-	private readonly OwnershipRepository _repository;
-
-	/// <summary>Initializes a new instance of the <see cref="OwnershipsController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="OwnershipEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	public OwnershipsController(Mapper mapper, OwnershipRepository repository, DbConnection dbConnection)
-		: base(mapper, repository, dbConnection)
-	{
-		_repository = repository;
-	}
-
 	/// <inheritdoc cref="IOwnerClient.GetOwnershipsAsync"/>
 	/// <response code="200">Successfully got all ownerships.</response>
 	[ProducesResponseType<List<Ownership>>(Status200OK)]
@@ -48,9 +37,12 @@ public sealed class OwnershipsController : CreatableBase<OwnershipRepository, Ow
 	public override Task<ActionResult> Put(Guid id, OwnershipCreation ownership) =>
 		base.Put(id, ownership);
 
-	/// <inheritdoc cref="IOwnerClient.DeleteOwnershipAsync"/>
-	/// <response code="204">The ownership was deleted successfully.</response>
 	// ReSharper disable once RedundantOverriddenMember
+
+	/// <inheritdoc cref="IOwnerClient.DeleteOwnershipAsync"/>
+	/// <response code="204">Ownership was deleted successfully.</response>
+	/// <response code="404">Ownership with the specified id does not exist.</response>
+	/// <response code="409">Ownership cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 
@@ -72,7 +64,7 @@ public sealed class OwnershipsController : CreatableBase<OwnershipRepository, Ow
 	protected override async Task<ActionResult> CreateNewAsync(Guid id, OwnershipCreation creation, UserEntity user)
 	{
 		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
-		await _repository.AddAsync(ownership);
+		await Repository.AddAsync(ownership);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

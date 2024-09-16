@@ -16,6 +16,9 @@ using CsvHelper.Configuration;
 
 using JetBrains.Annotations;
 
+using static JetBrains.Annotations.ImplicitUseKindFlags;
+using static JetBrains.Annotations.ImplicitUseTargetFlags;
+
 namespace Gnomeshade.Data.Tests.Integration;
 
 public sealed class Currencies
@@ -40,7 +43,7 @@ public sealed class Currencies
 
 		var data = csv
 			.GetRecords<Row>()
-			.Where(row => row.NumericCode is not (203 or 978 or 826 or 191 or 428 or 985 or 643 or 840 or 752 or 191))
+			.Where(row => row.NumericCode is not (203 or 978 or 826 or 191 or 428 or 985 or 643 or 840 or 752))
 			.Select(row =>
 			{
 				row.Name = row.Name?.Replace("'", "''");
@@ -55,9 +58,7 @@ public sealed class Currencies
 		values.Should().NotBeNullOrWhiteSpace();
 	}
 
-	[UsedImplicitly(
-		ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature | ImplicitUseKindFlags.Assign,
-		ImplicitUseTargetFlags.Members)]
+	[UsedImplicitly(InstantiatedNoFixedConstructorSignature | Assign, Members)]
 	private sealed class Row
 	{
 		public string? Name { get; set; }

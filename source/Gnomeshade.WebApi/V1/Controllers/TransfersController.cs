@@ -22,22 +22,9 @@ using static Microsoft.AspNetCore.Http.StatusCodes;
 namespace Gnomeshade.WebApi.V1.Controllers;
 
 /// <summary>CRUD operations on transfer entity.</summary>
-public sealed class TransfersController : TransactionItemController<TransferRepository, TransferEntity, Transfer, TransferCreation>
+public sealed class TransfersController(Mapper mapper, TransferRepository repository, DbConnection dbConnection, TransactionRepository transactionRepository)
+	: TransactionItemController<TransferRepository, TransferEntity, Transfer, TransferCreation>(mapper, repository, dbConnection, transactionRepository)
 {
-	/// <summary>Initializes a new instance of the <see cref="TransfersController"/> class.</summary>
-	/// <param name="mapper">Repository entity and API model mapper.</param>
-	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransferEntity"/>.</param>
-	/// <param name="dbConnection">Database connection for transaction management.</param>
-	/// <param name="transactionRepository">Transaction repository for validation of transactions.</param>
-	public TransfersController(
-		Mapper mapper,
-		TransferRepository repository,
-		DbConnection dbConnection,
-		TransactionRepository transactionRepository)
-		: base(mapper, repository, dbConnection, transactionRepository)
-	{
-	}
-
 	/// <inheritdoc cref="ITransactionClient.GetTransferAsync"/>
 	/// <response code="200">Successfully got the transfer.</response>
 	/// <response code="404">Transfer with the specified id does not exist.</response>
@@ -58,10 +45,12 @@ public sealed class TransfersController : TransactionItemController<TransferRepo
 	public override Task<ActionResult> Put(Guid id, [FromBody] TransferCreation product) =>
 		base.Put(id, product);
 
+	// ReSharper disable once RedundantOverriddenMember
+
 	/// <inheritdoc cref="ITransactionClient.DeleteTransferAsync"/>
 	/// <response code="204">Transfer was successfully deleted.</response>
 	/// <response code="404">Transfer with the specified id does not exist.</response>
-	// ReSharper disable once RedundantOverriddenMember
+	/// <response code="409">Transfer cannot be deleted because some other entity is still referencing it.</response>
 	public override Task<ActionResult> Delete(Guid id) =>
 		base.Delete(id);
 }
