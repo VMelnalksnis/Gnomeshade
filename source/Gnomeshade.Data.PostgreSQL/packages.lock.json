@@ -14,15 +14,15 @@
       },
       "DotNet.ReproducibleBuilds": {
         "type": "Direct",
-        "requested": "[1.2.4, )",
-        "resolved": "1.2.4",
-        "contentHash": "Ch9U74tQA2fQH+U0hcYH7WyIFUfAq7jrjgSHVu2FAcYiMBtbrCMyq2nGA/ZZnB2jSaUeOOYiCjxeaDVB7Ssbdw=="
+        "requested": "[1.2.25, )",
+        "resolved": "1.2.25",
+        "contentHash": "xCXiw7BCxHJ8pF6wPepRUddlh2dlQlbr81gXA72hdk4FLHkKXas7EH/n+fk5UCA/YfMqG1Z6XaPiUjDbUNBUzg=="
       },
       "DotNet.ReproducibleBuilds.Isolated": {
         "type": "Direct",
-        "requested": "[1.2.4, )",
-        "resolved": "1.2.4",
-        "contentHash": "C6Bmzse8mTfDXHUFpJ/tHftLPDkkQEavQIHWcE321xx1TdEJ/rdX7DOivKS1OqS86FQy5zAgRMjwYMRNYwFT5g=="
+        "requested": "[1.2.25, )",
+        "resolved": "1.2.25",
+        "contentHash": "jaAno7qr9Cgx+/DitnJXYJ3JGkqhwtH0tgKqeBtAg9kmKayvUH63EELAtxbBZr56ntyuHBfy536FlXu+UpbDlw=="
       },
       "JetBrains.Annotations": {
         "type": "Direct",
@@ -38,12 +38,12 @@
       },
       "Npgsql.DependencyInjection": {
         "type": "Direct",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "+5YsjIr2j8vV2IllGWbIrRkMYyHEUBUoH3nCrADg9nI4V/QhQATXjRtnq95z37/U6JQKb5m4eL388QWcKFmqUQ==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "cumzwxU+UFrsC7LPnvJ0jHVqsMv8qhq/sUn9NcHRJ6m/hUq9408fFkBDsoesL4c8dSseRhyDDq7Gc1RHFX3bjg==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Npgsql": "8.0.3"
+          "Npgsql": "8.0.4"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
@@ -60,21 +60,21 @@
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "C0TzQcc4+/6jpRGb/YxphmCwRwSuWde9Yz9GWap1xfX2m6/QkYBhluv/EjsPCTWq3/UZaP9UgiUZKscTLNZt4g==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "nH4yqdl8zC6kCv0kelWhbx0MGBbo7y4rRsAJLEmc2I7NhbvVgBkflYbaC/F1b64UI1TEqJMzcA36MktDSP0Xbw==",
         "dependencies": {
           "NodaTime": "3.1.9",
-          "Npgsql": "8.0.3"
+          "Npgsql": "8.0.4"
         }
       },
       "Npgsql.OpenTelemetry": {
         "type": "Direct",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "6ONIE4Aj+8roAglYrRfhCogPqyqOnbAULfzNEyl1uGkHrlsuE/ylyCcQK/gQqAopYm0Im1J8Rjw2s1pbbIlsJw==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "QdEPevyJH0tn2f7mkB6ME+QVmRegmHxMwSuB61tExY87iGD1S1mjg6T6XO9THxVWg+7MFiPJccHKwc7LcPdi4w==",
         "dependencies": {
-          "Npgsql": "8.0.3",
+          "Npgsql": "8.0.4",
           "OpenTelemetry.API": "1.6.0"
         }
       },
@@ -216,8 +216,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.3",
-        "contentHash": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
+        "resolved": "8.0.4",
+        "contentHash": "vaYEUlF/pB9m8bs21wQv3Da0kMHT4A9USe47VfY/L2BO97xz5KfIxhEu22QS9d68ZrLxvtL3wQDfDLPr2OjbjA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
@@ -772,7 +772,7 @@
           "Dapper": "[2.1.35, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.8, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.8, )",
-          "NodaTime": "[3.1.11, )",
+          "NodaTime": "[3.1.12, )",
           "dbup-core": "[5.0.87, )"
         }
       },
@@ -833,9 +833,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.1.11, )",
-        "resolved": "3.1.11",
-        "contentHash": "AYSiCHp1PLzWKVf7hEL3MJ0q9kzOWMNIaTVysXk4XKrDBzK5PF2wpd4LsAl+EIQ2Hbvu+vw4oFaexcXzCuY1lQ==",
+        "requested": "[3.1.12, )",
+        "resolved": "3.1.12",
+        "contentHash": "nDcUbG0jiEXmV8cOz7V8GnUKlmPJjqZm/R+E2JNnUSdlMoaQ19xSU8GXFLReGs/Nt8xdBfA8XfO77xVboWO1Vg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "4.7.1"
         }
