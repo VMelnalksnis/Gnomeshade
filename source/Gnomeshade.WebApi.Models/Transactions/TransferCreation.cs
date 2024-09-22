@@ -14,27 +14,15 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 /// <summary>Information needed to create a transfer.</summary>
 /// <seealso cref="Transfer"/>
 [PublicAPI]
-public sealed record TransferCreation : TransactionItemCreation
+public sealed record TransferCreation : TransferCreationBase
 {
-	/// <inheritdoc cref="Transfer.TransactionId"/>
-	[Required]
-	public override Guid? TransactionId { get; set; }
-
-	/// <inheritdoc cref="Transfer.SourceAmount"/>
-	[Required]
-	public decimal? SourceAmount { get; set; }
-
 	/// <inheritdoc cref="Transfer.SourceAccountId"/>
 	[Required]
-	public Guid? SourceAccountId { get; set; }
-
-	/// <inheritdoc cref="Transfer.TargetAmount"/>
-	[Required]
-	public decimal? TargetAmount { get; set; }
+	public override Guid? SourceAccountId { get; set; }
 
 	/// <inheritdoc cref="Transfer.TargetAccountId"/>
 	[Required]
-	public Guid? TargetAccountId { get; set; }
+	public override Guid? TargetAccountId { get; set; }
 
 	/// <inheritdoc cref="Transfer.BankReference"/>
 	public string? BankReference { get; set; }
@@ -45,12 +33,9 @@ public sealed record TransferCreation : TransactionItemCreation
 	/// <inheritdoc cref="Transfer.InternalReference"/>
 	public string? InternalReference { get; set; }
 
-	/// <inheritdoc cref="Transfer.Order"/>
-	public uint? Order { get; set; }
-
-	/// <inheritdoc cref="Transfer.BookedAt"/>
+	/// <inheritdoc cref="TransferBase.BookedAt"/>
 	[RequiredIfNull(nameof(ValuedAt))]
-	public Instant? BookedAt { get; set; }
+	public override Instant? BookedAt { get; set; }
 
 	/// <inheritdoc cref="Transfer.ValuedAt"/>
 	[RequiredIfNull(nameof(BookedAt))]

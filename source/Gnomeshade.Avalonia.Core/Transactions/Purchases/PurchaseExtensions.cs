@@ -41,4 +41,29 @@ internal static class PurchaseExtensions
 			purchase.Order,
 			project);
 	}
+
+	internal static PurchaseOverview ToOverview(
+		this PlannedPurchase purchase,
+		IEnumerable<Currency> currencies,
+		IEnumerable<Product> products,
+		IEnumerable<Unit> units,
+		IEnumerable<Project> projects)
+	{
+		var product = products.Single(product => product.Id == purchase.ProductId);
+		var unit = units.SingleOrDefault(unit => unit.Id == product.UnitId);
+		var project = purchase.ProjectIds is [var projectId, ..]
+			? projects.Single(project => project.Id == projectId).Name
+			: null;
+
+		return new(
+			purchase.Id,
+			purchase.Price,
+			currencies.Single(currency => currency.Id == purchase.CurrencyId).AlphabeticCode,
+			product.Name,
+			purchase.Amount,
+			unit?.Name,
+			null,
+			purchase.Order,
+			project);
+	}
 }

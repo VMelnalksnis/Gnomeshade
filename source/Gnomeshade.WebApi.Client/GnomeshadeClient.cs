@@ -245,6 +245,129 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Transactions.RelatedUri(id, relatedId));
 
 	/// <inheritdoc />
+	public Task<List<TransactionSchedule>> GetTransactionSchedules(CancellationToken cancellationToken = default) =>
+		GetAsync(TransactionSchedules.Uri, _context.ListTransactionSchedule, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<TransactionSchedule> GetTransactionSchedule(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(TransactionSchedules.IdUri(id), _context.TransactionSchedule, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateTransactionSchedule(TransactionScheduleCreation schedule) =>
+		PostAsync(TransactionSchedules.Uri, schedule, _context.TransactionScheduleCreation);
+
+	/// <inheritdoc />
+	public Task PutTransactionSchedule(Guid id, TransactionScheduleCreation schedule) =>
+		PutAsync(TransactionSchedules.IdUri(id), schedule, _context.TransactionScheduleCreation);
+
+	/// <inheritdoc />
+	public Task DeleteTransactionSchedule(Guid id) =>
+		DeleteAsync(TransactionSchedules.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(Interval interval, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(Guid scheduleId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PlannedTransaction> GetPlannedTransaction(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransaction(PlannedTransactionCreation transaction) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedTransaction(Guid id, PlannedTransactionCreation transaction) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransaction(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PlannedTransfer> GetPlannedTransfer(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransfer(PlannedTransferCreation transfer) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedTransfer(Guid id, PlannedTransferCreation transfer) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransfer(Guid id) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PlannedPurchase> GetPlannedPurchase(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedPurchase(PlannedPurchaseCreation purchase) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedPurchase(Guid id, PlannedPurchaseCreation purchase) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedPurchase(Guid id) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(
+		Guid transactionId,
+		CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PlannedLoanPayment> GetPlannedLoanPayment(Guid id, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedLoanPayment(LoanPaymentCreation loanPayment) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedLoanPayment(Guid id, LoanPaymentCreation transfer) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedLoanPayment(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
 	[Obsolete]
 	public Task<List<LegacyLoan>> GetLegacyLoans(CancellationToken cancellationToken = default) =>
 		GetAsync("v1.0/Loans", _context.ListLegacyLoan, cancellationToken);
