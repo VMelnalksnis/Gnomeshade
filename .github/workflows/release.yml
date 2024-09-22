@@ -184,7 +184,7 @@ jobs:
       - run: unzip Gnomeshade.WebApi_linux-x64.zip
       - run: rm Gnomeshade.WebApi_linux-x64.zip
 
-      - uses: azure/login@v2.1.1
+      - uses: azure/login@v2.2.0
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
