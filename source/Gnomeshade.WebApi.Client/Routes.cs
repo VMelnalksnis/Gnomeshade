@@ -123,6 +123,13 @@ public static class Routes
 		}
 	}
 
+	internal static class TransactionSchedules
+	{
+		internal const string Uri = $"{V1}/TransactionSchedules";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+	}
+
 	internal static class Products
 	{
 		internal const string Uri = $"{V1}/Products";

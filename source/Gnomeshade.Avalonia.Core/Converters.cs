@@ -18,6 +18,9 @@ public static class Converters
 	/// <summary>Gets a <see cref="string"/>/<see cref="NodaTime.LocalDateTime"/> converter.</summary>
 	public static LocalDateTimeConverter LocalDateTime { get; } = new();
 
+	/// <summary>Gets a <see cref="string"/>/<see cref="NodaTime.Period"/> converter.</summary>
+	public static PeriodConverter Period { get; } = new();
+
 	/// <summary>Gets a <see cref="ICollection"/> converter that checks whether the collection is not empty.</summary>
 	public static IValueConverter NotEmpty { get; } =
 		new FuncValueConverter<ICollection?, bool>(collection => collection?.Count > 0);

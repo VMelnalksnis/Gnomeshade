@@ -68,7 +68,7 @@ public abstract class Repository<TEntity>
 	/// <summary>Adds a new entity.</summary>
 	/// <param name="entity">The entity to add.</param>
 	/// <returns>The id of the created entity.</returns>
-	public Task<Guid> AddAsync(TEntity entity)
+	public virtual Task<Guid> AddAsync(TEntity entity)
 	{
 		Logger.AddingEntity();
 		return DbConnection.QuerySingleAsync<Guid>(InsertSql, entity);
@@ -78,7 +78,7 @@ public abstract class Repository<TEntity>
 	/// <param name="entity">The entity to add.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created entity.</returns>
-	public Task<Guid> AddAsync(TEntity entity, DbTransaction dbTransaction)
+	public virtual Task<Guid> AddAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(InsertSql, entity, dbTransaction);
@@ -90,7 +90,7 @@ public abstract class Repository<TEntity>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> DeleteAsync(Guid id, Guid userId)
+	public virtual async Task<int> DeleteAsync(Guid id, Guid userId)
 	{
 		Logger.DeletingEntity(id);
 		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, userId });
@@ -104,7 +104,7 @@ public abstract class Repository<TEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
+	public virtual async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
 		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, userId }, dbTransaction);
@@ -165,7 +165,7 @@ public abstract class Repository<TEntity>
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to to search by.</param>
+	/// <param name="id">The id to search by.</param>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="accessLevel">The access level to check.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
@@ -184,7 +184,7 @@ public abstract class Repository<TEntity>
 	}
 
 	/// <summary>Searches for an entity with the specified id using the specified database transaction.</summary>
-	/// <param name="id">The id to to search by.</param>
+	/// <param name="id">The id to search by.</param>
 	/// <param name="userId">The id of the user requesting access to the entity.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <param name="accessLevel">The access level to check.</param>
@@ -203,7 +203,7 @@ public abstract class Repository<TEntity>
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to to search by.</param>
+	/// <param name="id">The id to search by.</param>
 	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -216,7 +216,7 @@ public abstract class Repository<TEntity>
 	}
 
 	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to to search by.</param>
+	/// <param name="id">The id to search by.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
 	public Task<TEntity?> FindByIdAsync(Guid id, DbTransaction dbTransaction)
@@ -232,7 +232,7 @@ public abstract class Repository<TEntity>
 	/// <param name="entity">The entity to update.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> UpdateAsync(TEntity entity)
+	public virtual async Task<int> UpdateAsync(TEntity entity)
 	{
 		Logger.UpdatingEntity();
 		var count = await DbConnection.ExecuteAsync(UpdateSql, entity);
@@ -245,7 +245,7 @@ public abstract class Repository<TEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> UpdateAsync(TEntity entity, DbTransaction dbTransaction)
+	public virtual async Task<int> UpdateAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.UpdatingEntityWithTransaction();
 		var count = await DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
@@ -277,11 +277,7 @@ public abstract class Repository<TEntity>
 			.SingleOrDefault();
 	}
 
-	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>
-	/// <param name="command">The command to execute.</param>
-	/// <returns>The single entity returned by the query.</returns>
-	/// <exception cref="InvalidOperationException">The query returned multiple or no results.</exception>
-	protected async Task<TEntity> GetAsync(CommandDefinition command)
+	private async Task<TEntity> GetAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return entities.Single();

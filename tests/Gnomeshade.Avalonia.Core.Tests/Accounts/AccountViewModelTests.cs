@@ -17,6 +17,6 @@ public class AccountViewModelTests
 		var viewModel = new AccountViewModel(new StubbedActivityService(), new DesignTimeGnomeshadeClient());
 		await viewModel.RefreshAsync();
 
-		viewModel.DataGridView.Groups.Should().ContainSingle();
+		viewModel.DataGridView.Groups.Should().HaveCount(2);
 	}
 }

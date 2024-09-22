@@ -4,24 +4,13 @@
 
 using System;
 
-using Gnomeshade.Data.Entities.Abstractions;
-
 using NodaTime;
 
 namespace Gnomeshade.Data.Entities;
 
 /// <summary>A single financial transaction.</summary>
-public record TransactionEntity : Entity, IOwnableEntity, IModifiableEntity
+public record TransactionEntity : TransactionBase
 {
-	/// <inheritdoc/>
-	public Guid OwnerId { get; set; }
-
-	/// <inheritdoc/>
-	public Instant ModifiedAt { get; set; }
-
-	/// <inheritdoc/>
-	public Guid ModifiedByUserId { get; set; }
-
 	/// <summary>Gets or sets the point in time when this transaction was posted to an account on the account servicer accounting books.</summary>
 	public Instant? BookedAt { get; set; }
 

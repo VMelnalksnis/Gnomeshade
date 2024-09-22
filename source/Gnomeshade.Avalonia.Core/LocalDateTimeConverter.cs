@@ -10,7 +10,7 @@ using NodaTime.Text;
 namespace Gnomeshade.Avalonia.Core;
 
 /// <summary>Converts a binding value of type <see cref="LocalDateTime"/>.</summary>
-public sealed class LocalDateTimeConverter : NodaTimeValueConverter<LocalDateTime>
+public sealed class LocalDateTimeConverter : NodaTimeValueStructConverter<LocalDateTime>
 {
 	/// <inheritdoc />
 	protected override LocalDateTime TemplateValue { get; } = new(2000, 12, 31, 13, 20);

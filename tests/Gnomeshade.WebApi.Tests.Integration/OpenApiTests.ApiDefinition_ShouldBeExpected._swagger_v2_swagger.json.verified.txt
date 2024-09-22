@@ -1450,6 +1450,9 @@
             description: The id of the user that last modified this transaction.,
             format: uuid
           },
+          planned: {
+            type: boolean
+          },
           description: {
             type: string,
             description: The description of the transaction.,
@@ -1460,7 +1463,7 @@
           },
           imported: {
             type: boolean,
-            description: Whether or not this transaction was imported.,
+            description: Whether this transaction was imported.,
             readOnly: true
           },
           reconciledAt: {
@@ -1468,7 +1471,7 @@
           },
           reconciled: {
             type: boolean,
-            description: Whether or not this transaction was reconciled.,
+            description: Whether this transaction was reconciled.,
             readOnly: true
           },
           refundedBy: {
@@ -1479,7 +1482,7 @@
           },
           refunded: {
             type: boolean,
-            description: Whether or not this transaction was refunded.,
+            description: Whether this transaction was refunded.,
             readOnly: true
           },
           bookedAt: {
@@ -1826,6 +1829,12 @@
             description: The id of the user that last modified this purchase.,
             format: uuid
           },
+          order: {
+            type: integer,
+            description: The order of the purchase within a transaction.,
+            format: int32,
+            nullable: true
+          },
           transactionId: {
             type: string,
             description: The id of transaction this purchase is a part of.,
@@ -1833,12 +1842,12 @@
           },
           price: {
             type: number,
-            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.Purchase.Amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId.,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId.,
             format: double
           },
           currencyId: {
             type: string,
-            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.Purchase.Price.,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Price.,
             format: uuid
           },
           productId: {
@@ -1848,17 +1857,8 @@
           },
           amount: {
             type: number,
-            description: The amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId that was purchased.,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId that was purchased.,
             format: double
-          },
-          deliveryDate: {
-            $ref: #/components/schemas/Instant
-          },
-          order: {
-            type: integer,
-            description: The order of the purchase within a transaction.,
-            format: int32,
-            nullable: true
           },
           projectIds: {
             type: array,
@@ -1867,6 +1867,9 @@
               format: uuid
             },
             description: The ids of the projects that this purchase is a part of.
+          },
+          deliveryDate: {
+            $ref: #/components/schemas/Instant
           }
         },
         additionalProperties: false,
@@ -1911,15 +1914,24 @@
             description: The amount withdrawn from the source account.,
             format: double
           },
-          sourceAccountId: {
-            type: string,
-            description: The id of the account from which currency is withdrawn from.,
-            format: uuid
-          },
           targetAmount: {
             type: number,
             description: The amount deposited in the target account.,
             format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid
           },
           targetAccountId: {
             type: string,
@@ -1940,15 +1952,6 @@
             type: string,
             description: The reference id issued by the user.,
             nullable: true
-          },
-          order: {
-            type: integer,
-            description: The order of the transfer within a transaction.,
-            format: int32,
-            nullable: true
-          },
-          bookedAt: {
-            $ref: #/components/schemas/Instant
           },
           valuedAt: {
             $ref: #/components/schemas/Instant
