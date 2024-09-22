@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ public class TransactionViewModelTests
 	}
 
 	[Test]
-	public async Task Details_ShouldBeUpdatedBySelected()
+	public void Details_ShouldBeUpdatedBySelected()
 	{
 		using (new AssertionScope())
 		{
@@ -39,14 +40,13 @@ public class TransactionViewModelTests
 			_viewModel.Details.Properties.Description.Should().BeNull();
 		}
 
-		_viewModel.Selected = _viewModel.Rows.First();
-		await _viewModel.UpdateSelection();
+		_viewModel.UpdateSelectedItems.Execute(new ArrayList { _viewModel.Rows.First() });
 
 		_viewModel.Details.Should().NotBeNull();
 		_viewModel.Details.Properties.Description.Should().NotBeNull();
 
 		_viewModel.Selected = null;
-		await _viewModel.UpdateSelection();
+		_viewModel.UpdateSelectedItems.Execute(new ArrayList());
 
 		_viewModel.Details.Properties.Description.Should().BeNull();
 	}

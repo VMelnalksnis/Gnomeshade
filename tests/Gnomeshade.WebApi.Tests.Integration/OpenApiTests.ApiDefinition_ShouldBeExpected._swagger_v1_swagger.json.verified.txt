@@ -7984,7 +7984,7 @@
         deprecated: true
       }
     },
-    /api/v1/Transactions/{targetId}/Merge/{sourceId}: {
+    /api/v1/Transactions/{targetId}/Merge: {
       post: {
         tags: [
           Transactions
@@ -8002,13 +8002,16 @@
             }
           },
           {
-            name: sourceId,
-            in: path,
-            description: The id of the transaction which to merge into the other one.,
-            required: true,
+            name: sourceIds,
+            in: query,
+            description: The ids of the transactions which to merge into the target transactions.,
             schema: {
-              type: string,
-              format: uuid
+              minItems: 1,
+              type: array,
+              items: {
+                type: string,
+                format: uuid
+              }
             }
           }
         ],

@@ -2,12 +2,15 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Avalonia.Collections;
 
+using Gnomeshade.Avalonia.Core.Commands;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
 using Gnomeshade.Avalonia.Core.Transactions.Transfers;
 using Gnomeshade.WebApi.Client;
@@ -15,12 +18,14 @@ using Gnomeshade.WebApi.Models.Transactions;
 
 using NodaTime;
 
+using PropertyChanged.SourceGenerator;
+
 using static System.ComponentModel.ListSortDirection;
 
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
-public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
+public sealed partial class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
 {
 	private static readonly DataGridSortDescription[] _sortDescriptions =
 	[
@@ -33,8 +38,14 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	private readonly IClock _clock;
 	private readonly IDateTimeZoneProvider _dateTimeZoneProvider;
 
+	private readonly TransactionMerge _merge;
+
 	private bool _disposed;
 	private TransactionUpsertionViewModel _details;
+
+	/// <summary>Gets all selected transactions.</summary>
+	[Notify(Setter.Private)]
+	private List<TransactionOverview> _selectedItems = [];
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
@@ -54,6 +65,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		_dialogService = dialogService;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
+		_merge = new(ActivityService, _gnomeshadeClient);
 		_details = new(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
@@ -66,18 +78,23 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		DataGridView.SortDescriptions.AddRange(_sortDescriptions);
 
 		Summary = new(ActivityService);
-		Merge = new(ActivityService, _gnomeshadeClient);
 		Refund = new(ActivityService, _gnomeshadeClient);
+
+		Merge = ActivityService.Create(MergeAsync, () => _merge.CanMerge, "Merging transactions");
+		UpdateSelectedItems = ActivityService.Create<IList>(UpdateSelectedItemsAsync, "Updating selected items");
 	}
+
+	/// <summary>Gets a command for merging selected transactions.</summary>
+	public CommandBase Merge { get; }
+
+	/// <summary>Gets a command that updates view model state based on selected rows.</summary>
+	public CommandBase UpdateSelectedItems { get; }
 
 	/// <summary>Gets the transaction filter.</summary>
 	public TransactionFilter Filter { get; }
 
 	/// <summary>Gets the summary of displayed transactions.</summary>
 	public TransactionSummary Summary { get; }
-
-	/// <summary>Gets the model for merging transactions.</summary>
-	public TransactionMerge Merge { get; }
 
 	/// <summary>Gets the model for refunding transactions.</summary>
 	public TransactionRefund Refund { get; }
@@ -111,37 +128,42 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 	}
 
 	/// <summary>Gets a value indicating whether the source transaction for merging can be selected.</summary>
-	public bool CanSelectSource => Selected is not null;
+	public bool CanSelectSource => SelectedItems is not [];
 
 	/// <summary>Gets a value indicating whether the target transaction for merging can be selected.</summary>
-	public bool CanSelectTarget => Selected is not null;
+	public bool CanSelectTarget => SelectedItem is not null;
+
+	private TransactionOverview? SelectedItem => SelectedItems is [var overview] ? overview : null;
 
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, Selected?.Id);
+		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, SelectedItem?.Id);
 		await Details.RefreshAsync();
 	}
 
 	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the source for merging.</summary>
 	public void SelectSource()
 	{
-		Merge.Source = Selected;
-		Refund.Source = Selected;
+		_merge.Sources = SelectedItems;
+		Merge.InvokeExecuteChanged();
+		Refund.Source = SelectedItem;
 	}
 
 	/// <summary>Sets the currently <see cref="OverviewViewModel{TRow,TUpsertion}.Selected"/> transaction as the target for merging.</summary>
 	public void SelectTarget()
 	{
-		Merge.Target = Selected;
-		Refund.Target = Selected;
+		_merge.Target = SelectedItem;
+		Merge.InvokeExecuteChanged();
+		Refund.Target = SelectedItem;
 	}
 
 	/// <summary>Clears mergeable transactions.</summary>
 	public void ClearMerge()
 	{
-		Merge.Source = null;
-		Merge.Target = null;
+		_merge.Sources = [];
+		_merge.Target = null;
+		Merge.InvokeExecuteChanged();
 
 		Refund.Source = null;
 		Refund.Target = null;
@@ -181,11 +203,11 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				transaction.LoanPayments);
 		}).ToList();
 
-		var selected = Selected;
+		var selected = SelectedItem;
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(overviews);
 		DataGridView.SortDescriptions.AddRange(sort);
-		Selected = selected;
+		Selected = Rows.SingleOrDefault(overview => overview.Id == selected?.Id);
 
 		Filter.Accounts = accounts;
 		Filter.Counterparties = counterparties;
@@ -220,6 +242,19 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 		base.Dispose(disposing);
 	}
 
+	private async Task UpdateSelectedItemsAsync(IList list)
+	{
+		SelectedItems = list.Cast<TransactionOverview>().ToList();
+
+		await UpdateSelection();
+	}
+
+	private async Task MergeAsync()
+	{
+		await _merge.MergeAsync();
+		await RefreshAsync();
+	}
+
 	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
 	{
 		if (e.PropertyName is nameof(Rows))
@@ -238,6 +273,7 @@ public sealed class TransactionViewModel : OverviewViewModel<TransactionOverview
 				break;
 
 			case nameof(Selected):
+			case nameof(SelectedItems):
 				OnPropertyChanged(nameof(CanSelectSource));
 				OnPropertyChanged(nameof(CanSelectTarget));
 				break;

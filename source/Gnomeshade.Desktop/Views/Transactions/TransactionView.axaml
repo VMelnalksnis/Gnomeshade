@@ -47,7 +47,7 @@
 					</Button>
 					<Button
 						Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-						IsEnabled="{Binding Merge.CanMerge}" Command="{Binding Merge.MergeAsync}">
+						Command="{Binding Merge}">
 						Merge
 					</Button>
 					<Button
@@ -66,7 +66,7 @@
 				VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
 				VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
 				ItemsSource="{Binding DataGridView, Mode=TwoWay}"
-				SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
+				SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Extended"
 				AutoGenerateColumns="False" IsReadOnly="False"
 				CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserSortColumns="True">
 				<DataGrid.Columns>
@@ -215,7 +215,9 @@
 
 				<Interaction.Behaviors>
 					<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
-						<InvokeCommandAction Command="{Binding UpdateSelection}" />
+						<InvokeCommandAction
+							Command="{Binding UpdateSelectedItems}"
+							CommandParameter="{Binding ElementName=DataGrid, Path=SelectedItems}" />
 					</EventTriggerBehavior>
 				</Interaction.Behaviors>
 			</DataGrid>

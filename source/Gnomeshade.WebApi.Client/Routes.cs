@@ -89,7 +89,11 @@ public static class Routes
 
 		internal static string LinkIdUri(Guid id, Guid linkId) => $"{LinkUri(id)}/{Format(linkId)}";
 
-		internal static string MergeUri(Guid targetId, Guid sourceId) => $"{IdUri(targetId)}/Merge/{Format(sourceId)}";
+		internal static string MergeUri(Guid targetId, IEnumerable<Guid> sourceIds)
+		{
+			var query = string.Join('&', sourceIds.Select(id => $"sourceIds={Format(id)}"));
+			return $"{IdUri(targetId)}/Merge?{query}";
+		}
 
 		internal static string RelatedUri(Guid id) => $"{IdUri(id)}/Related";
 

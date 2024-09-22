@@ -363,6 +363,10 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task MergeTransactionsAsync(Guid targetId, Guid sourceId) =>
+		MergeTransactionsAsync(targetId, [sourceId]);
+
+	/// <inheritdoc />
+	public Task MergeTransactionsAsync(Guid targetId, IEnumerable<Guid> sourceIds) =>
 		throw new NotImplementedException();
 
 	/// <inheritdoc />

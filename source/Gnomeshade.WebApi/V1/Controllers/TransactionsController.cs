@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -251,14 +252,26 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		return loans.Select(loan => Mapper.Map<Loan>(loan)).ToList();
 	}
 
-	/// <inheritdoc cref="ITransactionClient.MergeTransactionsAsync"/>
+	/// <inheritdoc cref="ITransactionClient.MergeTransactionsAsync(Guid, IEnumerable{Guid})"/>
 	/// <response code="204">Transactions were successfully merged.</response>
-	[HttpPost("{targetId:guid}/Merge/{sourceId:guid}")]
+	[HttpPost("{targetId:guid}/Merge")]
 	[ProducesResponseType(Status204NoContent)]
-	public async Task<ActionResult> Merge(Guid targetId, Guid sourceId)
+	public async Task<ActionResult> Merge(Guid targetId, [FromQuery, MinLength(1)] Guid[] sourceIds)
 	{
+		if (sourceIds.Contains(targetId))
+		{
+			ModelState.AddModelError(nameof(sourceIds), "Cannot merge transaction into itself");
+			return BadRequest();
+		}
+
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		await Repository.MergeAsync(targetId, sourceId, ApplicationUser.Id, dbTransaction);
+
+		var userId = ApplicationUser.Id;
+		foreach (var sourceId in sourceIds)
+		{
+			await Repository.MergeAsync(targetId, sourceId, userId, dbTransaction);
+		}
+
 		await dbTransaction.CommitAsync();
 		return NoContent();
 	}

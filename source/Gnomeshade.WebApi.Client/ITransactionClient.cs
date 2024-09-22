@@ -64,6 +64,12 @@ public interface ITransactionClient
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	Task MergeTransactionsAsync(Guid targetId, Guid sourceId);
 
+	/// <summary>Merges one transaction into another.</summary>
+	/// <param name="targetId">The id of the transaction in to which to merge.</param>
+	/// <param name="sourceIds">The ids of the transactions which to merge into the target transactions.</param>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	Task MergeTransactionsAsync(Guid targetId, IEnumerable<Guid> sourceIds);
+
 	/// <summary>Gets all links for the specified transaction.</summary>
 	/// <param name="transactionId">The id of the transaction for which to get the links.</param>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>

@@ -170,7 +170,11 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 
 	/// <inheritdoc />
 	public Task MergeTransactionsAsync(Guid targetId, Guid sourceId) =>
-		PostAsync(Transactions.MergeUri(targetId, sourceId));
+		PostAsync(Transactions.MergeUri(targetId, [sourceId]));
+
+	/// <inheritdoc />
+	public Task MergeTransactionsAsync(Guid targetId, IEnumerable<Guid> sourceIds) =>
+		PostAsync(Transactions.MergeUri(targetId, sourceIds));
 
 	/// <inheritdoc />
 	public Task<List<Link>> GetTransactionLinksAsync(Guid transactionId, CancellationToken cancellationToken = default) =>
