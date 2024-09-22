@@ -23,11 +23,6 @@
 		<PackageReference Include="Testcontainers.PostgreSql"/>
 	</ItemGroup>
 
-	<!-- Vulnerable transitive dependencies -->
-	<ItemGroup>
-		<PackageReference Include="System.Text.Json"/>
-	</ItemGroup>
-
 	<ItemGroup>
 		<EmbeddedResource Include="currencies.csv"/>
 	</ItemGroup>
