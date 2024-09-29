@@ -14,19 +14,19 @@ namespace Gnomeshade.WebApi.Models.Loans;
 [PublicAPI]
 public sealed record LoanPaymentCreation : Creation
 {
-	/// <inheritdoc cref="LoanPayment.LoanId"/>
+	/// <inheritdoc cref="LoanPaymentBase.LoanId"/>
 	[Required]
 	public Guid? LoanId { get; set; }
 
-	/// <inheritdoc cref="LoanPayment.TransactionId"/>
+	/// <inheritdoc cref="LoanPaymentBase.TransactionId"/>
 	[Required]
 	public Guid? TransactionId { get; set; }
 
-	/// <inheritdoc cref="LoanPayment.Amount"/>
+	/// <inheritdoc cref="LoanPaymentBase.Amount"/>
 	[Required]
 	public decimal? Amount { get; set; }
 
-	/// <inheritdoc cref="LoanPayment.Interest"/>
+	/// <inheritdoc cref="LoanPaymentBase.Interest"/>
 	[Required]
 	public decimal? Interest { get; set; }
 }

@@ -1,0 +1,70 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Loans;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:transactionLoans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.PlannedLoanPaymentViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.PlannedLoanView"
+	x:DataType="transactionLoans:PlannedLoanPaymentViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<StackPanel
+			Orientation="Horizontal" Spacing="5"
+			IsVisible="{Binding Rows, Converter={x:Static core:Converters.Any}}">
+
+			<TextBlock Text="Total loaned:" />
+			<TextBlock Text="{Binding Total, Mode=OneWay, StringFormat=\{0:N2\}}" />
+		</StackPanel>
+
+		<DataGrid
+			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="loans:LoanPaymentRow"
+					Header="Loan" IsReadOnly="True"
+					Binding="{Binding Loan, Mode=OneWay}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanPaymentRow"
+					Header="Amount" IsReadOnly="True"
+					Binding="{Binding Amount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanPaymentRow"
+					Header="Interest" IsReadOnly="True"
+					Binding="{Binding Interest, Mode=OneWay, StringFormat=\{0:N2\}}" />
+				<DataGridTextColumn
+					x:DataType="loans:LoanPaymentRow"
+					Header="Currency" IsReadOnly="True"
+					Binding="{Binding Currency, Mode=OneWay}" />
+			</DataGrid.Columns>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<UserControl Content="{Binding Details}" />
+
+		<WrapPanel>
+			<Button IsEnabled="{Binding Details.CanSave}" Command="{Binding Details.SaveAsync}">
+				Save
+			</Button>
+			<Button IsVisible="{Binding CanDelete}" Command="{Binding DeleteSelected}">
+				Delete Selected
+			</Button>
+		</WrapPanel>
+
+	</StackPanel>
+
+</UserControl>

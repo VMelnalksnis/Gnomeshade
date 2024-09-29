@@ -22,7 +22,7 @@ using PropertyChanged.SourceGenerator;
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Create or update a transaction.</summary>
-public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
+public sealed partial class TransactionUpsertionViewModel : TransactionUpsertionBase
 {
 	private readonly IDialogService _dialogService;
 	private readonly IClock _clock;
@@ -58,12 +58,11 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 		IClock clock,
 		IDateTimeZoneProvider dateTimeZoneProvider,
 		Guid? id)
-		: base(activityService, gnomeshadeClient)
+		: base(activityService, gnomeshadeClient, id)
 	{
 		_dialogService = dialogService;
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
-		Id = id;
 		Properties = new(activityService);
 
 		Properties.PropertyChanged += PropertiesOnPropertyChanged;
@@ -123,10 +122,12 @@ public sealed partial class TransactionUpsertionViewModel : UpsertionViewModel
 	{
 		if (Id is not { } transactionId)
 		{
+			IsReadOnly = false;
 			return;
 		}
 
 		var transaction = await GnomeshadeClient.GetTransactionAsync(transactionId);
+		IsReadOnly = transaction.Reconciled;
 
 		var defaultZone = _dateTimeZoneProvider.GetSystemDefault();
 

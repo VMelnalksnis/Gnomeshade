@@ -14,7 +14,7 @@ using NodaTime;
 namespace Gnomeshade.Avalonia.Core.Tests.Transactions;
 
 [TestOf(typeof(TransactionViewModel))]
-public class TransactionViewModelTests
+public sealed class TransactionViewModelTests
 {
 	private TransactionViewModel _viewModel = null!;
 
@@ -37,18 +37,22 @@ public class TransactionViewModelTests
 		using (new AssertionScope())
 		{
 			_viewModel.Selected.Should().BeNull();
-			_viewModel.Details.Properties.Description.Should().BeNull();
+			_viewModel.Details.Should().BeOfType<TransactionUpsertionViewModel>().Which.Properties.Description.Should().BeNull();
 		}
 
-		_viewModel.UpdateSelectedItems.Execute(new ArrayList { _viewModel.Rows.First() });
+		_viewModel.UpdateSelectedItems.Execute(new ArrayList { _viewModel.Rows.First(transaction => !transaction.Projection) });
 
-		_viewModel.Details.Should().NotBeNull();
-		_viewModel.Details.Properties.Description.Should().NotBeNull();
+		_viewModel.Details.Should().BeOfType<TransactionUpsertionViewModel>().Which.Properties.Description.Should().NotBeNull();
+
+		_viewModel.Selected = _viewModel.Rows.First(transaction => transaction.Projection);
+		_viewModel.UpdateSelectedItems.Execute(new ArrayList { _viewModel.Rows.First(transaction => transaction.Projection) });
+
+		_viewModel.Details.Should().BeOfType<PlannedTransactionUpsertionViewModel>();
 
 		_viewModel.Selected = null;
 		_viewModel.UpdateSelectedItems.Execute(new ArrayList());
 
-		_viewModel.Details.Properties.Description.Should().BeNull();
+		_viewModel.Details.Should().BeOfType<TransactionUpsertionViewModel>().Which.Properties.Description.Should().BeNull();
 	}
 
 	[Test]

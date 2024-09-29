@@ -78,12 +78,11 @@ public sealed partial class TransferViewModel : OverviewViewModel<TransferOvervi
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transactionsTask = _gnomeshadeClient.GetDetailedTransactionAsync(_transactionId);
-		var accountsTask = _gnomeshadeClient.GetAccountsAsync();
-		await Task.WhenAll(transactionsTask, accountsTask);
+		var (transaction, accounts) = await
+			(_gnomeshadeClient.GetDetailedTransactionAsync(_transactionId),
+			_gnomeshadeClient.GetAccountsAsync())
+			.WhenAll();
 
-		var accounts = accountsTask.Result;
-		var transaction = transactionsTask.Result;
 		Total = transaction.TransferBalance;
 		IsReadOnly = transaction.Reconciled;
 

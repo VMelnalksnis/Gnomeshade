@@ -34,7 +34,7 @@ public sealed class TransactionRepository(ILogger<TransactionRepository> logger,
 	protected override string InsertSql => Queries.Transaction.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Transaction.SelectAll;
+	protected override string TableName => "transactions t";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Transaction.Update;

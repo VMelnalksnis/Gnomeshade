@@ -25,7 +25,7 @@ using static System.ComponentModel.ListSortDirection;
 namespace Gnomeshade.Avalonia.Core.Transactions;
 
 /// <summary>Overview of all <see cref="Transaction"/>s.</summary>
-public sealed partial class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionViewModel>
+public sealed partial class TransactionViewModel : OverviewViewModel<TransactionOverview, TransactionUpsertionBase>
 {
 	private static readonly DataGridSortDescription[] _sortDescriptions =
 	[
@@ -41,7 +41,7 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 	private readonly TransactionMerge _merge;
 
 	private bool _disposed;
-	private TransactionUpsertionViewModel _details;
+	private TransactionUpsertionBase _details;
 
 	/// <summary>Gets all selected transactions.</summary>
 	[Notify(Setter.Private)]
@@ -66,7 +66,7 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 		_merge = new(ActivityService, _gnomeshadeClient);
-		_details = new(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
+		_details = new TransactionUpsertionViewModel(activityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 
 		_details.Upserted += DetailsOnUpserted;
 		PropertyChanging += OnPropertyChanging;
@@ -116,7 +116,7 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 		.Any(transfer => transfer.DisplayTarget);
 
 	/// <inheritdoc />
-	public override TransactionUpsertionViewModel Details
+	public override TransactionUpsertionBase Details
 	{
 		get => _details;
 		set
@@ -138,7 +138,15 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 	/// <inheritdoc />
 	public override async Task UpdateSelection()
 	{
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, SelectedItem?.Id);
+		if (Selected is { Projection: true })
+		{
+			Details = new PlannedTransactionUpsertionViewModel(ActivityService, _gnomeshadeClient, _dialogService, _dateTimeZoneProvider, Selected?.Id);
+		}
+		else
+		{
+			Details = new TransactionUpsertionViewModel(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, SelectedItem?.Id);
+		}
+
 		await Details.RefreshAsync();
 	}
 
@@ -172,8 +180,9 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var (transactions, accounts, counterparties, products, categories, counterparty, loans) = await (
+		var (transactions, plannedTransactions, accounts, counterparties, products, categories, counterparty, loans) = await (
 			_gnomeshadeClient.GetDetailedTransactionsAsync(Filter.Interval),
+			_gnomeshadeClient.GetPlannedTransactions(Filter.Interval),
 			_gnomeshadeClient.GetAccountsAsync(),
 			_gnomeshadeClient.GetCounterpartiesAsync(),
 			_gnomeshadeClient.GetProductsAsync(),
@@ -203,6 +212,37 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 				transaction.LoanPayments);
 		}).ToList();
 
+		if (Filter.IncludeProjections)
+		{
+			var currentTimeZone = _dateTimeZoneProvider.GetSystemDefault();
+			var plannedOverviews = await Task.WhenAll(plannedTransactions
+				.Select(async transaction =>
+				{
+					var plannedTransfers = await _gnomeshadeClient.GetPlannedTransfers(transaction.Id);
+					var transfers = plannedTransfers
+						.Select(plannedTransfer => plannedTransfer.ToSummary(plannedTransfer.BookedAt!.Value, counterparties, counterparty, accountsInCurrency))
+						.ToList();
+
+					var date = plannedTransfers
+						.Select(transfer => transfer.BookedAt)
+						.Max();
+
+					var purchases = await _gnomeshadeClient.GetPlannedPurchases(transaction.Id);
+					var loanPayments = await _gnomeshadeClient.GetPlannedLoanPayments(transaction.Id);
+
+					return new TransactionOverview(
+						transaction.Id,
+						date!.Value.InZone(currentTimeZone).ToDateTimeOffset(),
+						null,
+						null,
+						transfers,
+						purchases,
+						loanPayments,
+						true);
+				}));
+			overviews = overviews.Concat(plannedOverviews).ToList();
+		}
+
 		var selected = SelectedItem;
 		var sort = DataGridView.SortDescriptions;
 		Rows = new(overviews);
@@ -221,7 +261,7 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 	protected override async Task DeleteAsync(TransactionOverview row)
 	{
 		await _gnomeshadeClient.DeleteTransactionAsync(row.Id);
-		Details = new(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
+		Details = new TransactionUpsertionViewModel(ActivityService, _gnomeshadeClient, _dialogService, _clock, _dateTimeZoneProvider, null);
 	}
 
 	/// <inheritdoc />
@@ -285,11 +325,16 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 		}
 	}
 
-	private void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private async void FilterOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(TransactionFilter.IsValid))
 		{
 			OnPropertyChanged(nameof(CanRefresh));
+		}
+
+		if (e.PropertyName is nameof(TransactionFilter.IncludeProjections))
+		{
+			await RefreshAsync();
 		}
 
 		if (e.PropertyName is

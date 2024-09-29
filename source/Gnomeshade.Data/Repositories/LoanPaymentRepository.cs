@@ -35,7 +35,7 @@ public sealed class LoanPaymentRepository : TransactionItemRepository<LoanPaymen
 	protected override string InsertSql => Queries.LoanPayment.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.LoanPayment.SelectAll;
+	protected override string TableName => "loan_payments";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.LoanPayment.Update;

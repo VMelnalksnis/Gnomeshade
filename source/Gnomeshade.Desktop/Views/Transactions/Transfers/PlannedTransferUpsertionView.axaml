@@ -1,0 +1,96 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:transfers="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Transfers;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.PlannedTransferUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Transfers.PlannedTransferUpsertionView"
+	x:DataType="transfers:PlannedTransferUpsertionViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<WrapPanel>
+			<CheckBox IsChecked="{Binding IsSourceAccount}" IsThreeState="False">
+				Specific source account
+			</CheckBox>
+			<CheckBox IsChecked="{Binding IsTargetAccount}" IsThreeState="False">
+				Specific target account
+			</CheckBox>
+		</WrapPanel>
+
+		<WrapPanel>
+			<AutoCompleteBox
+				Watermark="Source account" MinWidth="300"
+				x:Name="SourceAccount" IsVisible="{Binding IsSourceAccount}"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				ItemsSource="{Binding Accounts}"
+				ItemSelector="{Binding AccountSelector}"
+				SelectedItem="{Binding SourceAccount, Mode=TwoWay}" />
+
+			<AutoCompleteBox
+				Watermark="Source counterparty" MinWidth="300"
+				x:Name="SourceCounterparty" IsVisible="{Binding !IsSourceAccount}"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				ItemsSource="{Binding Counterparties}"
+				ItemSelector="{Binding CounterpartySelector}"
+				SelectedItem="{Binding SourceCounterparty, Mode=TwoWay}" />
+
+			<StackPanel Orientation="Horizontal">
+				<TextBox Watermark="Amount" Text="{Binding SourceAmount}" />
+				<AutoCompleteBox
+					Watermark="Currency"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding SourceCurrencies}"
+					ItemSelector="{Binding CurrencySelector}"
+					SelectedItem="{Binding SourceCurrency, Mode=TwoWay}" />
+			</StackPanel>
+		</WrapPanel>
+
+		<WrapPanel>
+			<AutoCompleteBox
+				Watermark="Target account" MinWidth="300"
+				IsVisible="{Binding IsTargetAccount}"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				ItemsSource="{Binding Accounts}"
+				ItemSelector="{Binding AccountSelector}"
+				SelectedItem="{Binding TargetAccount, Mode=TwoWay}" />
+
+			<AutoCompleteBox
+				Watermark="Target counterparty" MinWidth="300"
+				IsVisible="{Binding !IsTargetAccount}"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				ItemsSource="{Binding Counterparties}"
+				ItemSelector="{Binding CounterpartySelector}"
+				SelectedItem="{Binding TargetCounterparty, Mode=TwoWay}" />
+
+			<StackPanel Orientation="Horizontal">
+				<TextBox
+					Watermark="Amount" Text="{Binding TargetAmount}"
+					IsReadOnly="{Binding IsTargetAmountReadOnly}" />
+				<AutoCompleteBox
+					Watermark="Currency"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding TargetCurrencies}"
+					ItemSelector="{Binding CurrencySelector}"
+					SelectedItem="{Binding TargetCurrency, Mode=TwoWay}" />
+			</StackPanel>
+		</WrapPanel>
+
+		<WrapPanel>
+			<StackPanel Orientation="Horizontal">
+				<TextBox
+					Text="{Binding BookingDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
+					Watermark="Booked at" />
+				<TextBox HorizontalAlignment="Left" Text="{Binding Order}" Watermark="Order" />
+			</StackPanel>
+		</WrapPanel>
+	</StackPanel>
+</UserControl>
