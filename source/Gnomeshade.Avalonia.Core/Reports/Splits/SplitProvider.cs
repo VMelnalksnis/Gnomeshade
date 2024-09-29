@@ -7,12 +7,13 @@ namespace Gnomeshade.Avalonia.Core.Reports.Splits;
 internal static class SplitProvider
 {
 	internal static readonly MonthlySplit MonthlySplit = new();
+	internal static readonly DailySplit DailySplit = new();
 
 	internal static readonly IReportSplit[] Splits =
 	[
 		new YearlySplit(),
 		MonthlySplit,
 		new WeeklySplit(),
-		new DailySplit(),
+		DailySplit,
 	];
 }

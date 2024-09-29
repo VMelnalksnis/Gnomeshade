@@ -236,6 +236,10 @@ public static class DesignTimeData
 	public static ProjectViewModel ProjectViewModel { get; } =
 		InitializeViewModel<ProjectViewModel>(new(ActivityService, GnomeshadeClient, DateTimeZoneProvider));
 
+	/// <summary>Gets an instance of <see cref="DashboardViewModel"/> for use during design time.</summary>
+	public static DashboardViewModel DashboardViewModel { get; } =
+		InitializeViewModel<DashboardViewModel>(new(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider));
+
 	[UnconditionalSuppressMessage(
 		"Trimming",
 		"IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",

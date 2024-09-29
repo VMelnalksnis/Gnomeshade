@@ -37,15 +37,18 @@
 			<Menu DockPanel.Dock="Top" FontSize="18">
 				<MenuItem Header="_File">
 					<MenuItem
-						x:Name="Logout" Header="_Logout"
-						IsEnabled="{Binding CanLogOut}"
-						Command="{Binding LogOut}" />
+						x:Name="Dashboard" Header="Dashboard"
+						Command="{Binding SwitchToDashboardAsync}"/>
 					<MenuItem
 						x:Name="Settings" Header="_Settings"
 						Command="{Binding SwitchToSetup}" />
 					<MenuItem
 						x:Name="Preferences" Header="_Preferences"
 						Command="{Binding SwitchToPreferences}" />
+					<MenuItem
+						x:Name="Logout" Header="_Logout"
+						IsEnabled="{Binding CanLogOut}"
+						Command="{Binding LogOut}" />
 					<MenuItem
 						x:Name="Exit" Header="E_xit"
 						Command="{Binding Exit}" />

@@ -190,6 +190,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
 	public Task SwitchToProjectOverviewAsync() => SwitchTo<ProjectViewModel>();
 
+	/// <summary>Switches <see cref="ActiveView"/> to <see cref="DashboardViewModel"/>.</summary>
+	/// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+	public Task SwitchToDashboardAsync() => SwitchTo<DashboardViewModel>();
+
 	/// <summary>Event handler for <see cref="IClassicDesktopStyleApplicationLifetime.ShutdownRequested"/>.</summary>
 	/// <param name="sender">The object that sent the event.</param>
 	/// <param name="eventArgs">Event arguments.</param>
@@ -336,7 +340,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
 	private async void OnUserLoggedIn(object? sender, EventArgs e)
 	{
-		await SwitchToTransactionOverviewAsync();
+		await SwitchToDashboardAsync();
 	}
 
 	private async void ConfigurationWizardViewModelOnUpdated(object? sender, EventArgs e)

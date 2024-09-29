@@ -227,7 +227,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		}
 	}
 
-	private readonly struct PurchaseData(Purchase purchase, CategoryNode? node, TransactionData transaction)
+	internal readonly struct PurchaseData(Purchase purchase, CategoryNode? node, TransactionData transaction)
 	{
 		public Purchase Purchase { get; } = purchase;
 
@@ -242,7 +242,7 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		public Guid[] TargetCurrencyIds { get; } = transaction.TargetCurrencyIds;
 	}
 
-	private readonly struct TransactionData(DetailedTransaction transaction, ZonedDateTime date, Guid[] sourceCurrencyIds, Guid[] targetCurrencyIds)
+	internal readonly struct TransactionData(DetailedTransaction transaction, ZonedDateTime date, Guid[] sourceCurrencyIds, Guid[] targetCurrencyIds)
 	{
 		public DetailedTransaction Transaction { get; } = transaction;
 

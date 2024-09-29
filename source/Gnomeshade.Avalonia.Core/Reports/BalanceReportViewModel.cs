@@ -175,7 +175,7 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 					.ToArray();
 
 				return new FinancialPointI(
-					(double)sums.Concat(new[] { sumBefore, sumAfter }).Max(),
+					(double)sums.Concat([sumBefore, sumAfter]).Max(),
 					(double)sumBefore,
 					(double)sumAfter,
 					(double)sums.Append(sumBefore).Min());
