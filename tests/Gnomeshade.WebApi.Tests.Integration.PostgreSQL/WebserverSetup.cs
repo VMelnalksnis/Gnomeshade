@@ -17,6 +17,7 @@ public static class WebserverSetup
 {
 	internal static List<WebserverFixture> WebserverFixtures { get; } = new List<PostgreSQLFixture>
 	{
+		new("17.0-bookworm"),
 		new("16.4-bookworm"),
 		new("15.8-bookworm"),
 		new("14.13-bookworm"),
