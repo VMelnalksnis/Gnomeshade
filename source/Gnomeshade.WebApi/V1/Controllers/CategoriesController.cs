@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
@@ -78,10 +77,12 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		base.Delete(id);
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, CategoryCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		CategoryCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-
 		var linkedProductId = await GetLinkedProductId(id, creation, user, dbTransaction);
 		var category = Mapper.Map<CategoryEntity>(creation) with
 		{
@@ -90,7 +91,7 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 			LinkedProductId = linkedProductId,
 		};
 
-		if (await Repository.UpdateAsync(category) is not 1)
+		if (await Repository.UpdateAsync(category, dbTransaction) is not 1)
 		{
 			return StatusCode(Status403Forbidden);
 		}
@@ -100,16 +101,16 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 			return StatusCode(Status403Forbidden);
 		}
 
-		await dbTransaction.CommitAsync();
-
 		return NoContent();
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, CategoryCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		CategoryCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-
 		var conflictingCategory = await Repository.FindByNameAsync(creation.Name, user.Id, dbTransaction);
 		if (conflictingCategory is not null)
 		{
@@ -133,8 +134,6 @@ public sealed class CategoriesController : CreatableBase<CategoryRepository, Cat
 		{
 			return StatusCode(Status403Forbidden);
 		}
-
-		await dbTransaction.CommitAsync();
 
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}

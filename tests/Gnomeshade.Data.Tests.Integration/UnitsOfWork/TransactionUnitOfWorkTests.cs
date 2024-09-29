@@ -26,26 +26,28 @@ public sealed class TransactionUnitOfWorkTests
 	{
 		_dbConnection = await CreateConnectionAsync();
 		_repository = new(NullLogger<TransactionRepository>.Instance, _dbConnection);
-		_unitOfWork = new(_dbConnection, _repository);
+		_unitOfWork = new(_repository);
 	}
 
 	[Test]
 	public async Task AddGetDelete_WithoutTransaction()
 	{
 		var transactionToAdd = new TransactionFaker(TestUser).Generate();
-
-		var transactionId = await _unitOfWork.AddAsync(transactionToAdd);
-
-		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id);
-		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id);
 		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
-		await dbTransaction.CommitAsync();
-		var allTransactions = await _repository.GetAsync(TestUser.Id);
+
+		var transactionId = await _unitOfWork.AddAsync(transactionToAdd, dbTransaction);
+
+		var getTransaction = await _repository.GetByIdAsync(transactionId, TestUser.Id, dbTransaction);
+		var findTransaction = await _repository.FindByIdAsync(getTransaction.Id, TestUser.Id, dbTransaction);
+		var allTransactions = await _repository.GetAsync(TestUser.Id, dbTransaction);
 
 		findTransaction.Should().BeEquivalentTo(getTransaction, Options);
 		allTransactions.Should().ContainSingle().Which.Should().BeEquivalentTo(getTransaction, Options);
 
-		await _unitOfWork.DeleteAsync(getTransaction, TestUser.Id);
+		var count = await _repository.DeleteAsync(transactionId, TestUser.Id, dbTransaction);
+		count.Should().Be(1);
+
+		await dbTransaction.CommitAsync();
 	}
 
 	private static EquivalencyAssertionOptions<TransactionEntity> Options(

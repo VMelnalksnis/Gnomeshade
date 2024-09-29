@@ -85,9 +85,13 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, CounterpartyCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		CounterpartyCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictResult = await GetConflictResult(creation, user, id);
+		var conflictResult = await GetConflictResult(creation, user, dbTransaction, id);
 		if (conflictResult is not null)
 		{
 			return conflictResult;
@@ -99,7 +103,7 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 			ModifiedByUserId = user.Id,
 		};
 
-		return await Repository.UpdateAsync(counterparty) switch
+		return await Repository.UpdateAsync(counterparty, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -107,9 +111,13 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, CounterpartyCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		CounterpartyCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictResult = await GetConflictResult(creation, user);
+		var conflictResult = await GetConflictResult(creation, user, dbTransaction);
 		if (conflictResult is not null)
 		{
 			return conflictResult;
@@ -122,13 +130,17 @@ public sealed class CounterpartiesController : CreatableBase<CounterpartyReposit
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.AddAsync(counterparty);
+		_ = await Repository.AddAsync(counterparty, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
-	private async Task<ActionResult?> GetConflictResult(CounterpartyCreation model, UserEntity user, Guid? existingId = null)
+	private async Task<ActionResult?> GetConflictResult(
+		CounterpartyCreation model,
+		UserEntity user,
+		DbTransaction dbTransaction,
+		Guid? existingId = null)
 	{
-		var conflictingCounterparty = await Repository.FindByNameAsync(model.Name!, user.Id);
+		var conflictingCounterparty = await Repository.FindByNameAsync(model.Name!, user.Id, dbTransaction);
 		if (conflictingCounterparty is null || conflictingCounterparty.Id == existingId)
 		{
 			return null;

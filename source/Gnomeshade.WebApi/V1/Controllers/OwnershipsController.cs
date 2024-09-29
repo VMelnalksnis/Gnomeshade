@@ -50,10 +50,11 @@ public sealed class OwnershipsController(Mapper mapper, OwnershipRepository repo
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,
 		OwnershipCreation creation,
-		UserEntity user)
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
-		return await Repository.UpdateAsync(ownership) switch
+		return await Repository.UpdateAsync(ownership, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -61,10 +62,14 @@ public sealed class OwnershipsController(Mapper mapper, OwnershipRepository repo
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, OwnershipCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		OwnershipCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var ownership = Mapper.Map<OwnershipEntity>(creation) with { Id = id };
-		await Repository.AddAsync(ownership);
+		await Repository.AddAsync(ownership, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

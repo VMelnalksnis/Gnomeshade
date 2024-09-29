@@ -98,7 +98,10 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[ProducesStatus409Conflict]
 	public async Task<ActionResult<Guid>> AddCurrency(Guid id, [FromBody] AccountInCurrencyCreation currency)
 	{
-		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id);
+		var userId = ApplicationUser.Id;
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+
+		var account = await _repository.FindByIdAsync(id, userId, dbTransaction);
 		if (account is null)
 		{
 			return NotFound();
@@ -116,12 +119,14 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 		var accountInCurrency = Mapper.Map<AccountInCurrencyEntity>(currency) with
 		{
 			OwnerId = account.OwnerId,
-			CreatedByUserId = ApplicationUser.Id,
-			ModifiedByUserId = ApplicationUser.Id,
+			CreatedByUserId = userId,
+			ModifiedByUserId = userId,
 			AccountId = account.Id,
 		};
 
-		id = await _inCurrencyRepository.AddAsync(accountInCurrency);
+		id = await _inCurrencyRepository.AddAsync(accountInCurrency, dbTransaction);
+
+		await dbTransaction.CommitAsync();
 
 		// todo should this point to account or account in currency?
 		return CreatedAtAction(nameof(Get), new { id }, id);
@@ -135,20 +140,22 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> RemoveCurrency(Guid id, Guid currencyId)
 	{
+		var userId = ApplicationUser.Id;
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
-		var account = await _repository.FindByIdAsync(id, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
+
+		var account = await _repository.FindByIdAsync(id, userId, dbTransaction, AccessLevel.Delete);
 		if (account is null)
 		{
 			return NotFound();
 		}
 
-		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, ApplicationUser.Id, dbTransaction, AccessLevel.Delete);
+		var currency = await _inCurrencyRepository.FindByIdAsync(currencyId, userId, dbTransaction, AccessLevel.Delete);
 		if (currency is null)
 		{
 			return NotFound();
 		}
 
-		var count = await _inCurrencyRepository.DeleteAsync(currencyId, ApplicationUser.Id, dbTransaction);
+		var count = await _inCurrencyRepository.DeleteAsync(currencyId, userId, dbTransaction);
 		await dbTransaction.CommitAsync();
 		return count > 0
 			? NoContent()
@@ -174,9 +181,13 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, AccountCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		AccountCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictingResult = await GetConflictResult(creation, user, id);
+		var conflictingResult = await GetConflictResult(creation, user, dbTransaction, id);
 		if (conflictingResult is not null)
 		{
 			return conflictingResult;
@@ -184,14 +195,20 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 
 		var account = Mapper.Map<AccountEntity>(creation) with { Id = id };
 
-		await _accountUnitOfWork.UpdateAsync(account, user);
-		return NoContent();
+		var updatedCount = await _accountUnitOfWork.UpdateAsync(account, user, dbTransaction);
+		return updatedCount is 1
+			? NoContent()
+			: throw new InvalidOperationException("Failed to update account");
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, AccountCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		AccountCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictingResult = await GetConflictResult(creation, user);
+		var conflictingResult = await GetConflictResult(creation, user, dbTransaction);
 		if (conflictingResult is not null)
 		{
 			return conflictingResult;
@@ -204,17 +221,18 @@ public sealed class AccountsController : CreatableBase<AccountRepository, Accoun
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await _accountUnitOfWork.AddAsync(account);
+		_ = await _accountUnitOfWork.AddAsync(account, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
 	private async Task<ActionResult?> GetConflictResult(
 		AccountCreation model,
 		UserEntity user,
+		DbTransaction dbTransaction,
 		Guid? existingAccountId = null)
 	{
 		var normalizedName = model.Name!.ToUpperInvariant();
-		var conflictingAccount = await _repository.FindByNameAsync(normalizedName, user.Id);
+		var conflictingAccount = await _repository.FindByNameAsync(normalizedName, user.Id, dbTransaction);
 		if (conflictingAccount is null ||
 			conflictingAccount.Id == existingAccountId ||
 			conflictingAccount.CounterpartyId != model.CounterpartyId)

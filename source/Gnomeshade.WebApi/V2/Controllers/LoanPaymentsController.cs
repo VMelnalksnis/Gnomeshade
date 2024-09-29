@@ -60,7 +60,11 @@ public sealed class LoanPaymentsController(Mapper mapper, LoanPaymentRepository 
 		base.Delete(id);
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, LoanPaymentCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		LoanPaymentCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var payment = Mapper.Map<LoanPaymentEntity>(creation) with
 		{
@@ -68,7 +72,7 @@ public sealed class LoanPaymentsController(Mapper mapper, LoanPaymentRepository 
 			ModifiedByUserId = user.Id,
 		};
 
-		return await Repository.UpdateAsync(payment) switch
+		return await Repository.UpdateAsync(payment, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -76,7 +80,11 @@ public sealed class LoanPaymentsController(Mapper mapper, LoanPaymentRepository 
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, LoanPaymentCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		LoanPaymentCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var loan = Mapper.Map<LoanPaymentEntity>(creation) with
 		{
@@ -85,7 +93,7 @@ public sealed class LoanPaymentsController(Mapper mapper, LoanPaymentRepository 
 			ModifiedByUserId = user.Id,
 		};
 
-		await Repository.AddAsync(loan);
+		await Repository.AddAsync(loan, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

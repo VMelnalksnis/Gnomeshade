@@ -15,16 +15,9 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="AccountInCurrencyRepository"/> repository.</summary>
-public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEntity>
+public sealed class AccountInCurrencyRepository(ILogger<AccountInCurrencyRepository> logger, DbConnection dbConnection)
+	: Repository<AccountInCurrencyEntity>(logger, dbConnection)
 {
-	/// <summary>Initializes a new instance of the <see cref="AccountInCurrencyRepository"/> class with a database connection.</summary>
-	/// <param name="logger">Logger for logging in the specified category.</param>
-	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public AccountInCurrencyRepository(ILogger<AccountInCurrencyRepository> logger, DbConnection dbConnection)
-		: base(logger, dbConnection)
-	{
-	}
-
 	/// <inheritdoc />
 	protected override string DeleteSql => Queries.AccountInCurrency.Delete;
 
@@ -48,16 +41,11 @@ public sealed class AccountInCurrencyRepository : Repository<AccountInCurrencyEn
 	/// <inheritdoc />
 	protected override string NotDeleted => "a.deleted_at IS NULL";
 
-	public Task RestoreDeletedAsync(Guid id, Guid userId)
-	{
-		return DbConnection.ExecuteAsync(Queries.AccountInCurrency.RestoreDeleted, new { id, userId });
-	}
-
 	public Task RestoreDeletedAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		return DbConnection.ExecuteAsync(
 			Queries.AccountInCurrency.RestoreDeleted,
 			new { id, userId },
-			transaction: dbTransaction);
+			dbTransaction);
 	}
 }

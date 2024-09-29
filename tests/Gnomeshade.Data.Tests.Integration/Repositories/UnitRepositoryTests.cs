@@ -31,10 +31,12 @@ public sealed class UnitRepositoryTests
 	{
 		var unitToAdd = new UnitFaker(TestUser).Generate();
 
-		var id = await _repository.AddAsync(unitToAdd);
-		var getUnit = await _repository.GetByIdAsync(id, TestUser.Id);
-		var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id);
-		var allUnits = await _repository.GetAsync(TestUser.Id);
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
+		var id = await _repository.AddAsync(unitToAdd, dbTransaction);
+
+		var getUnit = await _repository.GetByIdAsync(id, TestUser.Id, dbTransaction);
+		var findUnit = await _repository.FindByIdAsync(getUnit.Id, TestUser.Id, dbTransaction);
+		var allUnits = await _repository.GetAsync(TestUser.Id, dbTransaction);
 
 		var expectedUnit = unitToAdd with
 		{
@@ -50,7 +52,8 @@ public sealed class UnitRepositoryTests
 			allUnits.Should().ContainSingle(unit => unit.Id == id).Which.Should().BeEquivalentTo(expectedUnit);
 		}
 
-		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
+		(await _repository.DeleteAsync(id, TestUser.Id, dbTransaction)).Should().Be(1);
+		await dbTransaction.CommitAsync();
 
 		var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 		afterDelete.Should().BeNull();
@@ -74,9 +77,7 @@ public sealed class UnitRepositoryTests
 
 		var childUnitId = await _repository.AddAsync(childUnit, dbTransaction);
 
-		await dbTransaction.CommitAsync();
-
-		var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id);
+		var getUnit = await _repository.GetByIdAsync(childUnitId, TestUser.Id, dbTransaction);
 		var expectedUnit = childUnit with
 		{
 			Id = childUnitId,
@@ -87,7 +88,9 @@ public sealed class UnitRepositoryTests
 
 		getUnit.Should().BeEquivalentTo(expectedUnit);
 
-		(await _repository.DeleteAsync(childUnitId, TestUser.Id)).Should().Be(1);
-		(await _repository.DeleteAsync(parentUnitId, TestUser.Id)).Should().Be(1);
+		(await _repository.DeleteAsync(childUnitId, TestUser.Id, dbTransaction)).Should().Be(1);
+		(await _repository.DeleteAsync(parentUnitId, TestUser.Id, dbTransaction)).Should().Be(1);
+
+		await dbTransaction.CommitAsync();
 	}
 }

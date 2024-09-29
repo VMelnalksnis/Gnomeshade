@@ -16,16 +16,9 @@ using Microsoft.Extensions.Logging;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Persistence store of <see cref="OwnershipEntity"/>.</summary>
-public sealed class OwnershipRepository : Repository<OwnershipEntity>
+public sealed class OwnershipRepository(ILogger<OwnershipRepository> logger, DbConnection dbConnection)
+	: Repository<OwnershipEntity>(logger, dbConnection)
 {
-	/// <summary>Initializes a new instance of the <see cref="OwnershipRepository"/> class.</summary>
-	/// <param name="logger">Logger for logging in the specified category.</param>
-	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public OwnershipRepository(ILogger<OwnershipRepository> logger, DbConnection dbConnection)
-		: base(logger, dbConnection)
-	{
-	}
-
 	/// <inheritdoc />
 	protected override string DeleteSql => Queries.Ownership.Delete;
 
@@ -56,6 +49,6 @@ public sealed class OwnershipRepository : Repository<OwnershipEntity>
 		var accessCommand = new CommandDefinition(text, null, dbTransaction);
 		var accessId = await DbConnection.QuerySingleAsync<Guid>(accessCommand);
 
-		await AddAsync(new() { Id = id, OwnerId = id, UserId = id, AccessId = accessId });
+		await AddAsync(new() { Id = id, OwnerId = id, UserId = id, AccessId = accessId }, dbTransaction);
 	}
 }

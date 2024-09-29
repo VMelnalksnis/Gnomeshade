@@ -24,16 +24,9 @@ using static Gnomeshade.Data.Repositories.AccessLevel;
 namespace Gnomeshade.Data.Repositories;
 
 /// <summary>Database backed <see cref="TransactionEntity"/> repository.</summary>
-public sealed class TransactionRepository : Repository<TransactionEntity>
+public sealed class TransactionRepository(ILogger<TransactionRepository> logger, DbConnection dbConnection)
+	: Repository<TransactionEntity>(logger, dbConnection)
 {
-	/// <summary>Initializes a new instance of the <see cref="TransactionRepository"/> class with a database connection.</summary>
-	/// <param name="logger">Logger for logging in the specified category.</param>
-	/// <param name="dbConnection">The database connection for executing queries.</param>
-	public TransactionRepository(ILogger<TransactionRepository> logger, DbConnection dbConnection)
-		: base(logger, dbConnection)
-	{
-	}
-
 	/// <inheritdoc />
 	protected override string DeleteSql => Queries.Transaction.Delete;
 
@@ -136,7 +129,7 @@ public sealed class TransactionRepository : Repository<TransactionEntity>
 		return entities.DistinctBy(entity => entity.Id);
 	}
 
-	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid userId)
+	public Task<int> AddLinkAsync(Guid id, Guid linkId, Guid userId, DbTransaction dbTransaction)
 	{
 		const string sql = @"
 INSERT INTO transaction_links 
@@ -148,7 +141,7 @@ VALUES
 		return DbConnection.ExecuteAsync(command);
 	}
 
-	public Task<int> RemoveLinkAsync(Guid id, Guid linkId, Guid userId)
+	public Task<int> RemoveLinkAsync(Guid id, Guid linkId, Guid userId, DbTransaction dbTransaction)
 	{
 		const string sql = @"
 DELETE FROM transaction_links

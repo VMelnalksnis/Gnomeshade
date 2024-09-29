@@ -38,13 +38,11 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 #pragma warning disable CS0612 // Type or member is obsolete
 	private readonly LoanRepository _loanRepository;
 #pragma warning restore CS0612 // Type or member is obsolete
-	private readonly TransactionUnitOfWork _unitOfWork;
 	private readonly CounterpartyRepository _counterpartyRepository;
 	private readonly AccountRepository _accountRepository;
 
 	/// <summary>Initializes a new instance of the <see cref="TransactionsController"/> class.</summary>
 	/// <param name="repository">The repository for performing CRUD operations on <see cref="TransactionEntity"/>.</param>
-	/// <param name="unitOfWork">Unit of work for managing transactions and all related entities.</param>
 	/// <param name="mapper">Repository entity and API model mapper.</param>
 	/// <param name="transferRepository">Persistence store for <see cref="TransferEntity"/>.</param>
 	/// <param name="purchaseRepository">Persistence store for <see cref="PurchaseEntity"/>.</param>
@@ -54,7 +52,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	/// <param name="dbConnection">Database connection for transaction management.</param>
 	public TransactionsController(
 		TransactionRepository repository,
-		TransactionUnitOfWork unitOfWork,
 		Mapper mapper,
 		TransferRepository transferRepository,
 		PurchaseRepository purchaseRepository,
@@ -66,7 +63,6 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		DbConnection dbConnection)
 		: base(mapper, repository, dbConnection)
 	{
-		_unitOfWork = unitOfWork;
 		_transferRepository = transferRepository;
 		_purchaseRepository = purchaseRepository;
 		_loanRepository = loanRepository;
@@ -173,13 +169,17 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> AddLink(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var userId = ApplicationUser.Id;
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+
+		var transaction = await Repository.FindByIdAsync(transactionId, userId, dbTransaction);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
-		await Repository.AddLinkAsync(transactionId, id, ApplicationUser.Id);
+		await Repository.AddLinkAsync(transactionId, id, userId, dbTransaction);
+		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 
@@ -190,13 +190,17 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	[ProducesStatus404NotFound]
 	public async Task<ActionResult> RemoveLink(Guid transactionId, Guid id)
 	{
-		var transaction = await Repository.FindByIdAsync(transactionId, ApplicationUser.Id);
+		var userId = ApplicationUser.Id;
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+
+		var transaction = await Repository.FindByIdAsync(transactionId, userId);
 		if (transaction is null)
 		{
 			return NotFound();
 		}
 
-		await Repository.RemoveLinkAsync(transactionId, id, ApplicationUser.Id);
+		await Repository.RemoveLinkAsync(transactionId, id, userId, dbTransaction);
+		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 
@@ -310,7 +314,8 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,
 		TransactionCreation creation,
-		UserEntity user)
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
@@ -318,12 +323,18 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			ModifiedByUserId = user.Id,
 		};
 
-		await _unitOfWork.UpdateAsync(transaction, user);
-		return NoContent();
+		var updatedCount = await Repository.UpdateAsync(transaction, dbTransaction);
+		return updatedCount is 1
+			? NoContent()
+			: throw new InvalidOperationException("Failed to update transaction");
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, TransactionCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		TransactionCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var transaction = Mapper.Map<TransactionEntity>(creation) with
 		{
@@ -335,7 +346,7 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 			ReconciledByUserId = creation.ReconciledAt is null ? null : user.Id,
 		};
 
-		var transactionId = await _unitOfWork.AddAsync(transaction);
+		var transactionId = await Repository.AddAsync(transaction, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id = transactionId }, id);
 	}
 

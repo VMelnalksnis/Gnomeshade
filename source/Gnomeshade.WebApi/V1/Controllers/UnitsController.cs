@@ -55,7 +55,11 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 		base.Put(id, unit);
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, UnitCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		UnitCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var unit = Mapper.Map<UnitEntity>(creation) with
 		{
@@ -63,7 +67,7 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 			ModifiedByUserId = user.Id,
 		};
 
-		return await Repository.UpdateAsync(unit) switch
+		return await Repository.UpdateAsync(unit, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -71,9 +75,13 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, UnitCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		UnitCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictingUnit = await Repository.FindByNameAsync(creation.Name!, user.Id);
+		var conflictingUnit = await Repository.FindByNameAsync(creation.Name!, user.Id, dbTransaction);
 		if (conflictingUnit is not null)
 		{
 			return Problem(
@@ -89,7 +97,7 @@ public sealed class UnitsController : CreatableBase<UnitRepository, UnitEntity, 
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.AddAsync(unit);
+		_ = await Repository.AddAsync(unit, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

@@ -33,14 +33,17 @@ public sealed class CategoryRepositoryTests
 		var tag = tagFaker.Generate();
 		var childTag = tagFaker.GenerateUnique(tag);
 
-		var tagId = await _repository.AddAsync(tag);
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
+		var tagId = await _repository.AddAsync(tag, dbTransaction);
 
-		(await _repository.GetAsync(TestUser.Id))
+		(await _repository.GetAsync(TestUser.Id, dbTransaction))
 			.Should()
 			.ContainSingle()
 			.Which.Id.Should()
 			.Be(tagId);
 
-		_ = await _repository.AddAsync(childTag);
+		_ = await _repository.AddAsync(childTag, dbTransaction);
+
+		await dbTransaction.CommitAsync();
 	}
 }

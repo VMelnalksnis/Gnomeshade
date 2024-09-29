@@ -34,7 +34,7 @@ public sealed class AccountRepositoryTests
 		_counterpartyRepository = new(NullLogger<CounterpartyRepository>.Instance, _dbConnection);
 		_repository = new(NullLogger<AccountRepository>.Instance, _dbConnection);
 		_inCurrencyRepository = new(NullLogger<AccountInCurrencyRepository>.Instance, _dbConnection);
-		_unitOfWork = new(_dbConnection, _repository, _inCurrencyRepository, new(NullLogger<CounterpartyRepository>.Instance, _dbConnection));
+		_unitOfWork = new(_repository, _inCurrencyRepository, new(NullLogger<CounterpartyRepository>.Instance, _dbConnection));
 	}
 
 	[Test]
@@ -43,9 +43,11 @@ public sealed class AccountRepositoryTests
 		var currencies = await EntityFactory.GetCurrenciesAsync();
 		var preferredCurrency = currencies.First();
 
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
+
 		var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
-		var counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
-		counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
+		var counterPartyId = await _counterpartyRepository.AddAsync(counterParty, dbTransaction);
+		counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id, dbTransaction);
 
 		var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
 		var account = accountFaker.Generate();
@@ -54,12 +56,12 @@ public sealed class AccountRepositoryTests
 			account.Currencies.Add(new() { CurrencyId = currency.Id });
 		}
 
-		var accountId = await _unitOfWork.AddAsync(account);
+		var accountId = await _unitOfWork.AddAsync(account, dbTransaction);
 
-		var getAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
-		var findAccount = await _repository.FindByIdAsync(getAccount.Id, TestUser.Id);
-		var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName, TestUser.Id);
-		var accounts = await _repository.GetAsync(TestUser.Id);
+		var getAccount = await _repository.GetByIdAsync(accountId, TestUser.Id, dbTransaction);
+		var findAccount = await _repository.FindByIdAsync(getAccount.Id, TestUser.Id, dbTransaction);
+		var findByNameAccount = await _repository.FindByNameAsync(getAccount.NormalizedName, TestUser.Id, dbTransaction);
+		var accounts = await _repository.GetAsync(TestUser.Id, dbTransaction);
 
 		var expectedAccount = account with
 		{
@@ -78,8 +80,8 @@ public sealed class AccountRepositoryTests
 		accounts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedAccount, Options);
 
 		var firstAccountInCurrency = getAccount.Currencies.First();
-		var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
-		var findAccountInCurrency = await _inCurrencyRepository.FindByIdAsync(getAccountInCurrency.Id, TestUser.Id);
+		var getAccountInCurrency = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id, dbTransaction);
+		var findAccountInCurrency = await _inCurrencyRepository.FindByIdAsync(getAccountInCurrency.Id, TestUser.Id, dbTransaction);
 
 		var expectedAccountInCurrency = firstAccountInCurrency with
 		{
@@ -92,20 +94,24 @@ public sealed class AccountRepositoryTests
 		getAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 		findAccountInCurrency.Should().BeEquivalentTo(expectedAccountInCurrency);
 
-		(await _inCurrencyRepository.DeleteAsync(firstAccountInCurrency.Id, TestUser.Id)).Should().Be(1);
-		var deleted = await _inCurrencyRepository.FindByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
+		(await _inCurrencyRepository.DeleteAsync(firstAccountInCurrency.Id, TestUser.Id, dbTransaction)).Should().Be(1);
+		var deleted = await _inCurrencyRepository.FindByIdAsync(firstAccountInCurrency.Id, TestUser.Id, dbTransaction);
 		deleted.Should().BeNull();
 
-		await _inCurrencyRepository.RestoreDeletedAsync(getAccountInCurrency.Id, TestUser.Id);
+		await _inCurrencyRepository.RestoreDeletedAsync(getAccountInCurrency.Id, TestUser.Id, dbTransaction);
+		await dbTransaction.CommitAsync();
+
 		var restored = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
 		restored.Should().BeEquivalentTo(getAccountInCurrency, options => options.Excluding(a => a.ModifiedAt));
 
-		(await FluentActions.Awaiting(() => _inCurrencyRepository.AddAsync(firstAccountInCurrency))
+		// ReSharper disable once AccessToDisposedClosure
+		(await FluentActions.Awaiting(() => _inCurrencyRepository.AddAsync(firstAccountInCurrency, dbTransaction))
 			.Should()
 			.ThrowAsync<NpgsqlException>())
 			.Which.Message.Should().Contain("duplicate key value violates unique constraint");
 
-		await _unitOfWork.DeleteAsync(getAccount, TestUser.Id);
+		await using var transaction = await _dbConnection.OpenAndBeginTransaction();
+		await _unitOfWork.DeleteAsync(getAccount, TestUser.Id, transaction);
 	}
 
 	[Test]
@@ -114,28 +120,32 @@ public sealed class AccountRepositoryTests
 		var currencies = await EntityFactory.GetCurrenciesAsync();
 		var preferredCurrency = currencies.First();
 
+		await using var dbTransaction = await _dbConnection.OpenAndBeginTransaction();
+
 		var counterParty = new CounterpartyFaker(TestUser.Id).Generate();
-		var counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
-		counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id);
+		var counterPartyId = await _counterpartyRepository.AddAsync(counterParty, dbTransaction);
+		counterParty = await _counterpartyRepository.GetByIdAsync(counterPartyId, TestUser.Id, dbTransaction);
 
 		var accountFaker = new AccountFaker(TestUser, counterParty, preferredCurrency);
 		var account = accountFaker.Generate();
-		var accountId = await _unitOfWork.AddAsync(account);
+		var accountId = await _unitOfWork.AddAsync(account, dbTransaction);
 
-		var firstAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
+		var firstAccount = await _repository.GetByIdAsync(accountId, TestUser.Id, dbTransaction);
 		var firstAccountName = firstAccount.Name;
-		(await _repository.DeleteAsync(accountId, TestUser.Id)).Should().Be(1);
-		firstAccount = await _repository.FindByIdAsync(accountId, TestUser.Id);
+		(await _repository.DeleteAsync(accountId, TestUser.Id, dbTransaction)).Should().Be(1);
+		firstAccount = await _repository.FindByIdAsync(accountId, TestUser.Id, dbTransaction);
 		firstAccount.Should().BeNull();
 
 		counterParty = new CounterpartyFaker(TestUser.Id).Generate();
-		counterPartyId = await _counterpartyRepository.AddAsync(counterParty);
+		counterPartyId = await _counterpartyRepository.AddAsync(counterParty, dbTransaction);
 		account = account with { Id = Guid.NewGuid(), CounterpartyId = counterPartyId };
-		accountId = await _unitOfWork.AddAsync(account);
-		var secondAccount = await _repository.GetByIdAsync(accountId, TestUser.Id);
+		accountId = await _unitOfWork.AddAsync(account, dbTransaction);
+		var secondAccount = await _repository.GetByIdAsync(accountId, TestUser.Id, dbTransaction);
 		secondAccount.Name.Should().Be(firstAccountName);
-		var secondAccountByName = await _repository.FindByNameAsync(secondAccount.Name, TestUser.Id);
+		var secondAccountByName = await _repository.FindByNameAsync(secondAccount.Name, TestUser.Id, dbTransaction);
 		secondAccountByName.Should().BeEquivalentTo(secondAccount, Options);
+
+		await dbTransaction.CommitAsync();
 	}
 
 	private static EquivalencyAssertionOptions<AccountEntity> Options(

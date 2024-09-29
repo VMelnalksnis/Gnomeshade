@@ -87,7 +87,8 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,
 		ProductCreation creation,
-		UserEntity user)
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var product = Mapper.Map<ProductEntity>(creation) with
 		{
@@ -95,7 +96,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 			ModifiedByUserId = user.Id,
 		};
 
-		return await Repository.UpdateAsync(product) switch
+		return await Repository.UpdateAsync(product, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -103,7 +104,11 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, ProductCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		ProductCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var conflictingProduct = await Repository.FindByNameAsync(creation.Name!, user.Id);
 		if (conflictingProduct is not null)
@@ -121,7 +126,7 @@ public sealed class ProductsController : CreatableBase<ProductRepository, Produc
 			ModifiedByUserId = user.Id,
 		};
 
-		_ = await Repository.AddAsync(product);
+		_ = await Repository.AddAsync(product, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

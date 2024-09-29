@@ -79,10 +79,15 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[HttpPost]
 	[ProducesResponseType<Guid>(Status201Created)]
 	[ProducesStatus409Conflict]
-	public virtual Task<ActionResult> Post([FromBody] TCreation creation)
+	public virtual async Task<ActionResult> Post([FromBody] TCreation creation)
 	{
-		creation = creation with { OwnerId = creation.OwnerId ?? ApplicationUser.Id };
-		return CreateNewAsync(Guid.NewGuid(), creation, ApplicationUser);
+		var user = ApplicationUser;
+		creation = creation with { OwnerId = creation.OwnerId ?? user.Id };
+
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var result = await CreateNewAsync(Guid.NewGuid(), creation, user, dbTransaction);
+		await dbTransaction.CommitAsync();
+		return result;
 	}
 
 	/// <summary>Creates a new entity or replaces an existing one, if one exists with the specified id.</summary>
@@ -96,20 +101,27 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	[ProducesStatus409Conflict]
 	public virtual async Task<ActionResult> Put(Guid id, [FromBody] TCreation creation)
 	{
-		creation = creation with { OwnerId = creation.OwnerId ?? ApplicationUser.Id };
+		var user = ApplicationUser;
+		creation = creation with { OwnerId = creation.OwnerId ?? user.Id };
 
-		var existingEntity = await Repository.FindByIdAsync(id, ApplicationUser.Id, AccessLevel.Write);
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
+		var existingEntity = await Repository.FindByIdAsync(id, user.Id, dbTransaction, AccessLevel.Write);
 		if (existingEntity is not null)
 		{
-			return await UpdateExistingAsync(id, creation, ApplicationUser);
+			var result = await UpdateExistingAsync(id, creation, user, dbTransaction);
+			await dbTransaction.CommitAsync();
+			return result;
 		}
 
-		var conflictingEntity = await Repository.FindByIdAsync(id);
+		var conflictingEntity = await Repository.FindByIdAsync(id, dbTransaction);
 		if (conflictingEntity is null)
 		{
-			return await CreateNewAsync(id, creation, ApplicationUser);
+			var result = await CreateNewAsync(id, creation, user, dbTransaction);
+			await dbTransaction.CommitAsync();
+			return result;
 		}
 
+		await dbTransaction.RollbackAsync();
 		return StatusCode(Status403Forbidden);
 	}
 
@@ -144,13 +156,23 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 	/// <param name="id">The id of the entity to update.</param>
 	/// <param name="creation">The details to update.</param>
 	/// <param name="user">The current user.</param>
+	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>An action result.</returns>
-	protected abstract Task<ActionResult> UpdateExistingAsync(Guid id, TCreation creation, UserEntity user);
+	protected abstract Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		TCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction);
 
 	/// <summary>Creates a new <typeparamref name="TEntity"/> with details from <paramref name="creation"/>.</summary>
 	/// <param name="id">The id of the entity to create.</param>
 	/// <param name="creation">The details from which to create the entity.</param>
 	/// <param name="user">The current user.</param>
+	/// <param name="dbTransaction">The database transaction to use for queries.</param>
 	/// <returns>An action result.</returns>
-	protected abstract Task<ActionResult> CreateNewAsync(Guid id, TCreation creation, UserEntity user);
+	protected abstract Task<ActionResult> CreateNewAsync(
+		Guid id,
+		TCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction);
 }

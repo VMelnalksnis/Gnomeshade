@@ -44,7 +44,7 @@ public sealed class ProjectRepository(ILogger<ProjectRepository> logger, DbConne
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.Project.Select;
 
-	public Task<int> AddPurchaseAsync(Guid id, Guid purchaseId, Guid userId)
+	public Task<int> AddPurchaseAsync(Guid id, Guid purchaseId, Guid userId, DbTransaction dbTransaction)
 	{
 		const string sql =
 			"""
@@ -54,11 +54,11 @@ public sealed class ProjectRepository(ILogger<ProjectRepository> logger, DbConne
 				(CURRENT_TIMESTAMP, @userId, @id, @purchaseId);
 			""";
 
-		var command = new CommandDefinition(sql, new { id, purchaseId, userId });
+		var command = new CommandDefinition(sql, new { id, purchaseId, userId }, dbTransaction);
 		return DbConnection.ExecuteAsync(command);
 	}
 
-	public Task<int> RemovePurchaseAsync(Guid id, Guid purchaseId, Guid userId)
+	public Task<int> RemovePurchaseAsync(Guid id, Guid purchaseId, Guid userId, DbTransaction dbTransaction)
 	{
 		const string sql =
 			"""
@@ -67,7 +67,7 @@ public sealed class ProjectRepository(ILogger<ProjectRepository> logger, DbConne
 			  AND project_purchases.purchase_id = @purchaseId;
 			""";
 
-		var command = new CommandDefinition(sql, new { id, purchaseId, userId });
+		var command = new CommandDefinition(sql, new { id, purchaseId, userId }, dbTransaction);
 		return DbConnection.ExecuteAsync(command);
 	}
 }

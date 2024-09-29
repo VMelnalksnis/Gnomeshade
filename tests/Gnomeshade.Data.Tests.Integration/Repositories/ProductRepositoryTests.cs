@@ -31,10 +31,13 @@ public sealed class ProductRepositoryTests
 	{
 		var productToAdd = new ProductFaker(TestUser).Generate();
 
-		var id = await _repository.AddAsync(productToAdd);
-		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
-		var findProduct = await _repository.FindByIdAsync(getProduct.Id, TestUser.Id);
-		var allProducts = await _repository.GetAsync(TestUser.Id);
+		await using var firstTransaction = await _dbConnection.BeginTransactionAsync();
+		var id = await _repository.AddAsync(productToAdd, firstTransaction);
+
+		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id, firstTransaction);
+		var findProduct = await _repository.FindByIdAsync(getProduct.Id, TestUser.Id, firstTransaction);
+		var allProducts = await _repository.GetAsync(TestUser.Id, firstTransaction);
+		await firstTransaction.CommitAsync();
 
 		var expectedProduct = productToAdd with
 		{
@@ -47,9 +50,10 @@ public sealed class ProductRepositoryTests
 		findProduct.Should().BeEquivalentTo(expectedProduct);
 		allProducts.Should().ContainSingle().Which.Should().BeEquivalentTo(expectedProduct);
 
+		await using var secondTransaction = await _dbConnection.BeginTransactionAsync();
 		var productToUpdate = getProduct with { Sku = "123", Description = "Foo" };
-		(await _repository.UpdateAsync(productToUpdate)).Should().Be(1);
-		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id);
+		(await _repository.UpdateAsync(productToUpdate, secondTransaction)).Should().Be(1);
+		var updatedProduct = await _repository.GetByIdAsync(productToUpdate.Id, TestUser.Id, secondTransaction);
 
 		using (new AssertionScope())
 		{
@@ -61,7 +65,8 @@ public sealed class ProductRepositoryTests
 			updatedProduct.Description.Should().Be("Foo");
 		}
 
-		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
+		(await _repository.DeleteAsync(id, TestUser.Id, secondTransaction)).Should().Be(1);
+		await secondTransaction.CommitAsync();
 
 		var afterDelete = await _repository.FindByIdAsync(id, TestUser.Id);
 		afterDelete.Should().BeNull();
@@ -74,9 +79,8 @@ public sealed class ProductRepositoryTests
 
 		await using var dbTransaction = await _dbConnection.BeginTransactionAsync();
 		var id = await _repository.AddAsync(productToAdd, dbTransaction);
-		await dbTransaction.CommitAsync();
 
-		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id);
+		var getProduct = await _repository.GetByIdAsync(id, TestUser.Id, dbTransaction);
 		var expectedProduct = productToAdd with
 		{
 			Id = id,
@@ -85,6 +89,9 @@ public sealed class ProductRepositoryTests
 		};
 
 		getProduct.Should().BeEquivalentTo(expectedProduct);
-		(await _repository.DeleteAsync(id, TestUser.Id)).Should().Be(1);
+
+		(await _repository.DeleteAsync(id, TestUser.Id, dbTransaction)).Should().Be(1);
+
+		await dbTransaction.CommitAsync();
 	}
 }

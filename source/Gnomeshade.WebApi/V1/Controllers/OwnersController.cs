@@ -48,14 +48,22 @@ public sealed class OwnersController(Mapper mapper, OwnerRepository repository, 
 		base.Delete(id);
 
 	/// <inheritdoc />
-	protected override Task<ActionResult> UpdateExistingAsync(Guid id, OwnerCreation creation, UserEntity user)
+	protected override Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		OwnerCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		// todo
 		return Task.FromResult<ActionResult>(NoContent());
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, OwnerCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		OwnerCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var owner = Mapper.Map<OwnerEntity>(creation) with
 		{
@@ -63,7 +71,7 @@ public sealed class OwnersController(Mapper mapper, OwnerRepository repository, 
 			CreatedByUserId = ApplicationUser.Id,
 		};
 
-		await Repository.AddAsync(owner);
+		await Repository.AddAsync(owner, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }

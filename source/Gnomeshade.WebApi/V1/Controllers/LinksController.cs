@@ -53,9 +53,13 @@ public sealed class LinksController(Mapper mapper, LinkRepository repository, Db
 		base.Delete(id);
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> UpdateExistingAsync(Guid id, LinkCreation creation, UserEntity user)
+	protected override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		LinkCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictResult = await GetConflictResult(creation, user);
+		var conflictResult = await GetConflictResult(creation, user, dbTransaction, id);
 		if (conflictResult is not null)
 		{
 			return conflictResult;
@@ -69,7 +73,7 @@ public sealed class LinksController(Mapper mapper, LinkRepository repository, Db
 			Uri = creation.Uri!.ToString(),
 		};
 
-		return await Repository.UpdateAsync(linkToCreate) switch
+		return await Repository.UpdateAsync(linkToCreate, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -77,9 +81,13 @@ public sealed class LinksController(Mapper mapper, LinkRepository repository, Db
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, LinkCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		LinkCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		var conflictResult = await GetConflictResult(creation, user);
+		var conflictResult = await GetConflictResult(creation, user, dbTransaction);
 		if (conflictResult is not null)
 		{
 			return conflictResult;
@@ -94,13 +102,17 @@ public sealed class LinksController(Mapper mapper, LinkRepository repository, Db
 			Uri = creation.Uri!.ToString(),
 		};
 
-		_ = await Repository.AddAsync(link);
+		_ = await Repository.AddAsync(link, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
-	private async Task<ActionResult?> GetConflictResult(LinkCreation creation, UserEntity user, Guid? existingId = null)
+	private async Task<ActionResult?> GetConflictResult(
+		LinkCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction,
+		Guid? existingId = null)
 	{
-		var links = await Repository.GetAsync(user.Id);
+		var links = await Repository.GetAsync(user.Id, dbTransaction);
 		var conflictingLink = links.FirstOrDefault(link => link.Uri == creation.Uri?.ToString());
 		if (conflictingLink is null || conflictingLink.Id == existingId)
 		{

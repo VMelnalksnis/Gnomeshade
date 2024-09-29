@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
-using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Entities.Abstractions;
 using Gnomeshade.Data.Repositories;
@@ -50,9 +49,12 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 	}
 
 	/// <inheritdoc />
-	protected sealed override async Task<ActionResult> UpdateExistingAsync(Guid id, TItemCreation creation, UserEntity user)
+	protected sealed override async Task<ActionResult> UpdateExistingAsync(
+		Guid id,
+		TItemCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 		var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
 		if (conflictingResult is not null)
 		{
@@ -71,14 +73,16 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 			return StatusCode(Status403Forbidden);
 		}
 
-		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 
 	/// <inheritdoc />
-	protected sealed override async Task<ActionResult> CreateNewAsync(Guid id, TItemCreation creation, UserEntity user)
+	protected sealed override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		TItemCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
-		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 		var conflictingResult = await FindConflictingTransaction(creation.TransactionId!.Value, user.Id, dbTransaction);
 		if (conflictingResult is not null)
 		{
@@ -93,7 +97,6 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 		};
 
 		await Repository.AddAsync(entity, dbTransaction);
-		await dbTransaction.CommitAsync();
 		return CreatedAtAction("Get", new { id }, null);
 	}
 

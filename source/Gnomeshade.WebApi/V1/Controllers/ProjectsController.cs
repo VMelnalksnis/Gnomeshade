@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using AutoMapper;
 
+using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
@@ -108,14 +109,16 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 	public async Task<ActionResult> AddPurchase(Guid id, Guid purchaseId)
 	{
 		var userId = ApplicationUser.Id;
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 
-		var project = await Repository.FindByIdAsync(id, userId, AccessLevel.Write);
+		var project = await Repository.FindByIdAsync(id, userId, dbTransaction, AccessLevel.Write);
 		if (project is null)
 		{
 			return NotFound();
 		}
 
-		await Repository.AddPurchaseAsync(id, purchaseId, userId);
+		await Repository.AddPurchaseAsync(id, purchaseId, userId, dbTransaction);
+		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 
@@ -127,14 +130,16 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 	public async Task<ActionResult> RemovePurchase(Guid id, Guid purchaseId)
 	{
 		var userId = ApplicationUser.Id;
+		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 
-		var project = await Repository.FindByIdAsync(id, userId, AccessLevel.Write);
+		var project = await Repository.FindByIdAsync(id, userId, dbTransaction, AccessLevel.Write);
 		if (project is null)
 		{
 			return NotFound();
 		}
 
-		await Repository.RemovePurchaseAsync(id, purchaseId, userId);
+		await Repository.RemovePurchaseAsync(id, purchaseId, userId, dbTransaction);
+		await dbTransaction.CommitAsync();
 		return NoContent();
 	}
 
@@ -142,7 +147,8 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 	protected override async Task<ActionResult> UpdateExistingAsync(
 		Guid id,
 		ProjectCreation creation,
-		UserEntity user)
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var project = new ProjectEntity
 		{
@@ -153,7 +159,7 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 			ParentProjectId = creation.ParentProjectId,
 		};
 
-		return await Repository.UpdateAsync(project) switch
+		return await Repository.UpdateAsync(project, dbTransaction) switch
 		{
 			1 => NoContent(),
 			_ => StatusCode(Status403Forbidden),
@@ -161,7 +167,11 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 	}
 
 	/// <inheritdoc />
-	protected override async Task<ActionResult> CreateNewAsync(Guid id, ProjectCreation creation, UserEntity user)
+	protected override async Task<ActionResult> CreateNewAsync(
+		Guid id,
+		ProjectCreation creation,
+		UserEntity user,
+		DbTransaction dbTransaction)
 	{
 		var conflictingProject = await Repository.FindByNameAsync(creation.Name, user.Id);
 		if (conflictingProject is not null)
@@ -182,7 +192,7 @@ public sealed class ProjectsController : CreatableBase<ProjectRepository, Projec
 			ParentProjectId = creation.ParentProjectId,
 		};
 
-		_ = await Repository.AddAsync(project);
+		_ = await Repository.AddAsync(project, dbTransaction);
 		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 }
