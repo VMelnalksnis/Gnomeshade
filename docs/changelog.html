@@ -27,7 +27,7 @@
 
 		<label>Changelog:</label>
 		<ul>
-			<li style="display: none"><a href="#unreleased">Unreleased</a></li>
+			<li><a href="#unreleased">Unreleased</a></li>
 			<li><a href="#v0.8.4">v0.8.4</a></li>
 			<li><a href="#v0.8.3">v0.8.3</a></li>
 			<li><a href="#v0.8.2">v0.8.2</a></li>
@@ -52,11 +52,10 @@
 <main id="top" class="content">
 	<h1>Changelog</h1>
 
-	<section id="unreleased" hidden="hidden">
+	<section id="unreleased">
 		<div>
 			<a style="display: inline" href="#unreleased"><img src="link.png" alt="link"/></a>
 			<h2 style="display: inline">Unreleased</h2>
-			<h3 style="display: inline" hidden="hidden">2024-09-29</h3>
 		</div>
 
 		<section id="unreleased_added" hidden="hidden">
@@ -79,9 +78,14 @@
 			<ul></ul>
 		</section>
 
-		<section id="unreleased_fixed" hidden="hidden">
+		<section id="unreleased_fixed">
 			<h3>Fixed</h3>
-			<ul></ul>
+			<ul>
+				<li>
+					Return id in responses to POST requests for transfers and purchases in
+					<a href="https://github.com/VMelnalksnis/Gnomeshade/pull/1401">#1401</a>
+				</li>
+			</ul>
 		</section>
 
 		<section id="unreleased_security" hidden="hidden">

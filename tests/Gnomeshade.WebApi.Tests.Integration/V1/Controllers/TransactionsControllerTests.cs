@@ -183,7 +183,6 @@ public sealed class TransactionsControllerTests(WebserverFixture fixture) : Webs
 	{
 		var transactionId = await _client.CreateTransactionAsync(new());
 
-		var purchaseId = Guid.NewGuid();
 		var purchaseCreation = new PurchaseCreation
 		{
 			TransactionId = transactionId,
@@ -194,7 +193,7 @@ public sealed class TransactionsControllerTests(WebserverFixture fixture) : Webs
 			Order = 2,
 		};
 
-		await _client.PutPurchaseAsync(purchaseId, purchaseCreation);
+		var purchaseId = await _client.CreatePurchaseAsync(purchaseCreation);
 		var purchase = await _client.GetPurchaseAsync(purchaseId);
 		var purchases = await _client.GetPurchasesAsync(transactionId);
 		var productPurchases = await _client.GetProductPurchasesAsync(_productId);

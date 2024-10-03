@@ -97,7 +97,7 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 		};
 
 		await Repository.AddAsync(entity, dbTransaction);
-		return CreatedAtAction("Get", new { id }, null);
+		return CreatedAtAction(nameof(Get), new { id }, id);
 	}
 
 	private async Task<ActionResult?> FindConflictingTransaction(
