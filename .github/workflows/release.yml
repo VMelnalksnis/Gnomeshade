@@ -197,18 +197,22 @@ jobs:
       - uses: azure/cli@v2.1.0
         name: Update appservice settings
         with:
-          inlineScript: |
-            az configure --defaults web=${{ env.AZURE_APP_NAME }}
-            az configure --defaults group=${{ secrets.AZURE_RESOURCE_GROUP }}
-            az webapp config appsettings set --settings Admin__Password="${{ secrets.DEMO_ADMIN_PASSWORD }}"
-            az webapp config appsettings set --settings ConnectionStrings__Gnomeshade="Data Source=/tmp/gnomeshade.db"
-            az webapp config appsettings set --settings Database__Provider="Sqlite"
-            az webapp config appsettings set --settings Jwt__Secret="${{ secrets.DEMO_JWT_SECRET }}"
-            az webapp config appsettings set --settings Jwt__ValidAudience="${{ env.AZURE_APP_DOMAIN }}"
-            az webapp config appsettings set --settings Jwt__ValidIssuer="${{ env.AZURE_APP_DOMAIN }}"
-            az webapp config appsettings set --settings OAuth__GitHub__ClientId="${{ secrets.DEMO_GITHUB_ID }}"
-            az webapp config appsettings set --settings OAuth__GitHub__ClientSecret="${{ secrets.DEMO_GITHUB_SECRET }}"
-            az webapp config appsettings set --settings GNOMESHADE_DEMO="true"
+          inlineScript: >
+            az webapp config appsettings set
+            --resource-group
+            ${{ secrets.AZURE_RESOURCE_GROUP }}
+            --name
+            ${{ env.AZURE_APP_NAME }}
+            --settings
+            Admin__Password="${{ secrets.DEMO_ADMIN_PASSWORD }}"
+            ConnectionStrings__Gnomeshade="Data Source=/tmp/gnomeshade.db"
+            Database__Provider="Sqlite"
+            Jwt__Secret="${{ secrets.DEMO_JWT_SECRET }}"
+            Jwt__ValidAudience="${{ env.AZURE_APP_DOMAIN }}"
+            Jwt__ValidIssuer="${{ env.AZURE_APP_DOMAIN }}"
+            OAuth__GitHub__ClientId="${{ secrets.DEMO_GITHUB_ID }}"
+            OAuth__GitHub__ClientSecret="${{ secrets.DEMO_GITHUB_SECRET }}"
+            GNOMESHADE_DEMO="true"
 
       - run: wget --retry-connrefused --retry-on-http-error=502 --waitretry=5 --read-timeout=120 --timeout=120 -t 5 ${{ env.AZURE_APP_DOMAIN }}
 
