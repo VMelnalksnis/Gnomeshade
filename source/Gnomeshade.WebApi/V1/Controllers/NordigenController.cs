@@ -207,6 +207,7 @@ public sealed class NordigenController : ControllerBase
 		"INWARD INSTANT PAYMENT" => CreditDebitCode.CRDT,
 		"RETURN OF PURCHASE" => CreditDebitCode.CRDT,
 		"CARD FEE" => CreditDebitCode.DBIT,
+		"BALANCE ENQUIRY FEE" => CreditDebitCode.DBIT,
 		"OUTWARD TRANSFER" => CreditDebitCode.DBIT,
 		"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
 		"INTEREST PAYMENT" => CreditDebitCode.DBIT,
