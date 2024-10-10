@@ -31,25 +31,25 @@
 		<PackageVersion Include="JetBrains.Annotations" Version="2024.2.0"/>
 		<PackageVersion Include="JunitXml.TestLogger" Version="4.0.254"/>
 		<PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.0-rc2"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.10"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.Data.Sqlite" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-		<PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.8"/>
-		<PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="8.0.8"/>
+		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1"/>
+		<PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.10"/>
+		<PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="8.0.10"/>
 		<PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
@@ -91,6 +91,6 @@
 	<!-- Vulnerable transitive dependencies -->
 	<ItemGroup>
 		<PackageVersion Include="BouncyCastle.Cryptography" Version="2.4.0"/>
-		<PackageVersion Include="System.Text.Json" Version="8.0.4"/>
+		<PackageVersion Include="System.Text.Json" Version="8.0.5"/>
 	</ItemGroup>
 </Project>
