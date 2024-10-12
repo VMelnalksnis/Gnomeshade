@@ -3,7 +3,7 @@ set -e
 
 if [[ $(systemctl) =~ -\.mount ]]
 then
-	deb-systemd-invoke stop gnomeshade.service
-else
 	exit
+else
+	update-rc.d gnomeshade remove
 fi

@@ -23,6 +23,7 @@ strip gnomeshade/opt/gnomeshade/libe_sqlite3.so
 mkdir -p gnomeshade/DEBIAN
 cp deployment/debian/postinst gnomeshade/DEBIAN/postinst
 cp deployment/debian/prerm gnomeshade/DEBIAN/prerm
+cp deployment/debian/postrm gnomeshade/DEBIAN/postrm
 
 export FULL_VERSION=$full_version
 export MAINTAINER=$maintainer
@@ -45,6 +46,10 @@ mv changelog.gz $changelog_path
 
 mkdir -p gnomeshade/lib/systemd/system
 cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service
+
+mkdir -p gnomeshade/etc/init.d
+cp deployment/debian/gnomeshade gnomeshade/etc/init.d/gnomeshade
+echo "/etc/init.d/gnomeshade" >>gnomeshade/DEBIAN/conffiles
 
 dpkg-deb --root-owner-group --build gnomeshade
 
