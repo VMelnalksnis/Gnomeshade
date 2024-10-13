@@ -18,12 +18,13 @@ docker run --detach --name $name --publish 5000:5000 \
 	devuan:test /bin/bash -c \
 	"while true; do sleep 2; done"
 
+url="http://[::]:5000"
 cat > ./appsettings.Production.json<< EOF
 {
 	"Kestrel": {
 		"Endpoints": {
 			"Http": {
-				"Url": "http://[::]:5000"
+				"Url": "$url"
 			}
 		}
 	},
@@ -35,7 +36,13 @@ cat > ./appsettings.Production.json<< EOF
 	},
 	"Database": {
 		"Provider": "Sqlite"
-	}
+	},
+    "Jwt": {
+    	"ValidAudience": "$url",
+    	"ValidIssuer": "$url",
+    	"Secret": "00000000000000000000000000000000"
+    },
+	"GNOMESHADE_DEMO": true
 }
 EOF
 
@@ -48,7 +55,16 @@ if [[ $(cat health) != "Healthy" ]]; then
 	exit 1
 fi
 
-curl --header "Content-Type: application/json" \
-	--request POST \
-	--data '{"username":"john.doe", "password": "Password123!", "email": "john.doe@example.com", "fullName": "John Doe" }' \
-	http://localhost:5000/Authorization/Register
+http_response=$(curl --header "Content-Type: application/json" \
+                	--request POST \
+                	--data '{"username":"demo", "password": "Demo1!" }' \
+                	--output response \
+                	--write-out "%{response_code}" \
+                	--verbose \
+                	http://localhost:5000/api/v1.0/Authentication/Login)
+cat response
+
+if [[ $http_response != "200" ]]
+then
+    exit 1
+fi
