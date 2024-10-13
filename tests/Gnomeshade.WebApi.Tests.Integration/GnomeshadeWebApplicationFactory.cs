@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 
 using Gnomeshade.WebApi.Tests.Integration.Fixtures;
@@ -34,7 +33,7 @@ public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Star
 	{
 		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder
 			.AddConfiguration(_configuration)
-			.AddInMemoryCollection(new KeyValuePair<string, string?>[] { new("GNOMESHADE_DEMO", "true") }));
+			.AddInMemoryCollection([new("GNOMESHADE_DEMO", "true")]));
 
 		builder.ConfigureServices(collection =>
 		{

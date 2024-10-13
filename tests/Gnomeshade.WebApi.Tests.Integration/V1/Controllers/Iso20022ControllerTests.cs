@@ -19,16 +19,11 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(Iso20022Controller))]
-public sealed class Iso20022ControllerTests : WebserverTests
+public sealed class Iso20022ControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private const string _fileName = "report.xml";
 
 	private IGnomeshadeClient _client = null!;
-
-	public Iso20022ControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[OneTimeSetUp]
 	public async Task OneTimeSetUpAsync()
@@ -95,7 +90,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 				CounterpartyId = counterpartyId,
 				PreferredCurrencyId = euro.Id,
 				Bic = "TESTLV01",
-				Currencies = new() { new() { CurrencyId = euro.Id } },
+				Currencies = [new() { CurrencyId = euro.Id }],
 			};
 			var bankAccountId = await _client.CreateAccountAsync(bankAccountCreation);
 			bankAccount = await _client.GetAccountAsync(bankAccountId);
@@ -108,7 +103,7 @@ public sealed class Iso20022ControllerTests : WebserverTests
 			PreferredCurrencyId = euro.Id,
 			Iban = firstTestCase.AccountIban,
 			AccountNumber = firstTestCase.AccountIban,
-			Currencies = new() { new() { CurrencyId = euro.Id }, new() { CurrencyId = dollar.Id } },
+			Currencies = [new() { CurrencyId = euro.Id }, new() { CurrencyId = dollar.Id }],
 		};
 
 		var accountId = await _client.CreateAccountAsync(accountCreation);

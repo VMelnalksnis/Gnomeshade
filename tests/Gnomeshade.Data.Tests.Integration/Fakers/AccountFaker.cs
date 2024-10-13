@@ -34,8 +34,8 @@ public sealed class AccountFaker : NamedEntityFaker<AccountEntity>
 		RuleFor(account => account.Bic, faker => faker.Finance.Bic());
 		RuleFor(account => account.Iban, faker => faker.Finance.Iban());
 		RuleFor(account => account.AccountNumber, faker => faker.Finance.Account());
-		RuleFor(account => account.Currencies, () => new()
-		{
+		RuleFor(account => account.Currencies, () =>
+		[
 			new()
 			{
 				OwnerId = userId,
@@ -43,6 +43,6 @@ public sealed class AccountFaker : NamedEntityFaker<AccountEntity>
 				ModifiedByUserId = userId,
 				CurrencyId = currencyId,
 			},
-		});
+		]);
 	}
 }

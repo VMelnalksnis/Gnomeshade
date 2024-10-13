@@ -18,17 +18,12 @@ using NodaTime;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(AccountsController))]
-public sealed class AccountsControllerTests : WebserverTests
+public sealed class AccountsControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private IGnomeshadeClient _client = null!;
 	private Currency _firstCurrency = null!;
 	private Currency _secondCurrency = null!;
 	private Counterparty _counterparty = null!;
-
-	public AccountsControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[SetUp]
 	public async Task SetUpAsync()
@@ -220,7 +215,7 @@ public sealed class AccountsControllerTests : WebserverTests
 			Name = Guid.NewGuid().ToString("N"),
 			CounterpartyId = _counterparty.Id,
 			PreferredCurrencyId = currency.Id,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
+			Currencies = [new() { CurrencyId = currency.Id }],
 		};
 	}
 }

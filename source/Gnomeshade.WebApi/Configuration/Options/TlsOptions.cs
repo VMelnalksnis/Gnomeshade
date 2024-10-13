@@ -28,7 +28,7 @@ public sealed record TlsOptions : IValidatableObject
 
 		if (OperatingSystem.IsWindows())
 		{
-			validationResults.Add(new("Configuring cipher suites is not supported on windows", new[] { nameof(CipherSuites) }));
+			validationResults.Add(new("Configuring cipher suites is not supported on windows", [nameof(CipherSuites)]));
 		}
 
 		return validationResults;

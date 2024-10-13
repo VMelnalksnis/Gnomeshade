@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
 		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
@@ -10,6 +10,7 @@
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
+		<MvcEnhancedModelMetadataSupport>true</MvcEnhancedModelMetadataSupport>
 
 		<NoWarn>$(NoWarn); CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>
@@ -21,37 +22,42 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ardalis.SmartEnum" />
-		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-		<PackageReference Include="AspNet.Security.OAuth.GitHub" />
-		<PackageReference Include="AutoMapper" />
-		<PackageReference Include="FuzzySharp" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+		<PackageReference Include="Ardalis.SmartEnum"/>
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer"/>
+		<PackageReference Include="AspNet.Security.OAuth.GitHub"/>
+		<PackageReference Include="AutoMapper"/>
+		<PackageReference Include="FuzzySharp"/>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect"/>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.Http.Polly" />
-		<PackageReference Include="NodaTime" />
-		<PackageReference Include="NodaTime.Serialization.SystemTextJson" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Process" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
-		<PackageReference Include="System.Linq.Async" />
-		<PackageReference Include="VMelnalksnis.ISO20022DotNet" />
-		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" />
-		<PackageReference Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Http.Polly"/>
+		<PackageReference Include="NodaTime"/>
+		<PackageReference Include="NodaTime.Serialization.SystemTextJson"/>
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"/>
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http"/>
+		<PackageReference Include="OpenTelemetry.Instrumentation.Process"/>
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime"/>
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen"/>
+		<PackageReference Include="System.Linq.Async"/>
+		<PackageReference Include="VMelnalksnis.ISO20022DotNet"/>
+		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection"/>
+		<PackageReference Include="VMelnalksnis.PaperlessDotNet.DependencyInjection"/>
+	</ItemGroup>
+
+	<!-- Vulnerable transitive dependencies -->
+	<ItemGroup>
+		<PackageReference Include="System.Private.Uri"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
-		<ProjectReference Include="..\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj" />
-		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
+		<ProjectReference Include="..\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.Data.Sqlite\Gnomeshade.Data.Sqlite.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj"/>
 	</ItemGroup>
 
 	<Target Name="JavascriptLibraries" BeforeTargets="Build;Publish">

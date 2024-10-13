@@ -3,7 +3,6 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using System.Runtime.InteropServices;
@@ -62,10 +61,10 @@ public sealed class App : Application
 			Uri.TryCreate(arg, UriKind.Absolute, out var uri) &&
 			HttpUtility.ParseQueryString(uri.Query).Get("baseAddress") is { } baseAddress)
 		{
-			configurationBuilder.AddInMemoryCollection(new KeyValuePair<string, string?>[]
-			{
+			configurationBuilder.AddInMemoryCollection(
+			[
 				new($"Gnomeshade:{nameof(GnomeshadeOptions.BaseAddress)}", baseAddress),
-			});
+			]);
 		}
 
 		var configuration = configurationBuilder.Build();

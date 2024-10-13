@@ -85,17 +85,17 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 		_clock = clock;
 		_dateTimeZoneProvider = dateTimeZoneProvider;
 
-		Aggregates = new() { new Average(), new Maximum(), new Minimum(), new Median(), new Sum() };
-		Calculators = new() { new RelativePricePerUnit(), new PricePerUnit(), new TotalPrice(), new RelativeTotalPrice() };
+		Aggregates = [new Average(), new Maximum(), new Minimum(), new Median(), new Sum()];
+		Calculators = [new RelativePricePerUnit(), new PricePerUnit(), new TotalPrice(), new RelativeTotalPrice()];
 
 		_selectedAggregate = Aggregates.First();
 		_selectedCalculator = Calculators.First();
 
-		_products = new();
-		_displayedProducts = new();
-		XAxes = new() { DateAxis.GetXAxis() };
-		_yAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
-		_series = new();
+		_products = [];
+		_displayedProducts = [];
+		XAxes = [DateAxis.GetXAxis()];
+		_yAxes = [new Axis { MinLimit = 0, Labeler = Labeler }];
+		_series = [];
 
 		PropertyChanged += OnPropertyChanged;
 		DisplayedProducts.CollectionChanged += DisplayedProductsOnCollectionChanged;
@@ -159,7 +159,7 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 
 		var detailedTransactions = transactionsTask.Result;
 		var units = unitsTask.Result;
-		YAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
+		YAxes = [new Axis { MinLimit = 0, Labeler = Labeler }];
 		AddSeriesForProduct(SelectedProduct, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
 		DisplayedProducts.Add(SelectedProduct);
 		SelectedProduct = null;
@@ -183,8 +183,8 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 		var detailedTransactions = transactionsTask.Result;
 		var units = unitsTask.Result;
 
-		Series = new();
-		YAxes = new() { new Axis { MinLimit = 0, Labeler = Labeler } };
+		Series = [];
+		YAxes = [new Axis { MinLimit = 0, Labeler = Labeler }];
 		foreach (var product in DisplayedProducts)
 		{
 			AddSeriesForProduct(product, SelectedAggregate, SelectedCalculator, detailedTransactions, units);
@@ -204,7 +204,7 @@ public sealed partial class ProductReportViewModel : ViewModelBase
 
 		Products = productsTask.Result
 			.Except(DisplayedProducts)
-			.OrderByDescending(product => productCounts.TryGetValue(product.Id, out var count) ? count : 0)
+			.OrderByDescending(product => productCounts.GetValueOrDefault(product.Id, 0))
 			.ToList();
 	}
 

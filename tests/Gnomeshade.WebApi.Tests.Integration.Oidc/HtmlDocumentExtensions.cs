@@ -23,7 +23,7 @@ internal static class HtmlDocumentExtensions
 				?.Where(node => node.Attributes.Contains("name")) ??
 			Array.Empty<HtmlNode>();
 
-		var inputNodes = formNode.SelectNodes($"{xpath}//input")?.ToArray() ?? Array.Empty<HtmlNode>();
+		var inputNodes = formNode.SelectNodes($"{xpath}//input")?.ToArray() ?? [];
 
 		var inputs = inputNodes
 			.Concat(buttonNodes)

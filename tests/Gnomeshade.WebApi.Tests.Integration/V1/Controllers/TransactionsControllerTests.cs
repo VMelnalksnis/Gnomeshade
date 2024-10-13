@@ -439,7 +439,7 @@ public sealed class TransactionsControllerTests(WebserverFixture fixture) : Webs
 			Name = Guid.NewGuid().ToString("N"),
 			CounterpartyId = counterparty.Id,
 			PreferredCurrencyId = currency.Id,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
+			Currencies = [new() { CurrencyId = currency.Id }],
 		};
 		var accountId = await _client.CreateAccountAsync(creationModel);
 		return await _client.GetAccountAsync(accountId);
