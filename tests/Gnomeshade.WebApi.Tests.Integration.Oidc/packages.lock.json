@@ -31,9 +31,9 @@
       },
       "HtmlAgilityPack": {
         "type": "Direct",
-        "requested": "[1.11.65, )",
-        "resolved": "1.11.65",
-        "contentHash": "Skse4MVlRcHHyP88x+v/uQrMxTPaBIwQodiQ/y59jxs8vHlqTR5M3jt5Wk+csYFnR4rX6I4ndqDji2M8p9kAzw=="
+        "requested": "[1.11.67, )",
+        "resolved": "1.11.67",
+        "contentHash": "xnt6f8E56oK9nLqgkF42bsVSAkUuIuJnSfvzimK7GwvbhdXWRmGsx4A8AKmLOlCUq1rVSUADKalxnSMizHt4Mg=="
       },
       "IdentityModel.OidcClient": {
         "type": "Direct",
