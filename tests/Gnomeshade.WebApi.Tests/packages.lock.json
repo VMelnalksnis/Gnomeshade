@@ -41,12 +41,6 @@
         "resolved": "4.0.254",
         "contentHash": "vsLyzXbjfZf+bGsL7FYhdWy+F0VgKT7vchkgR8bcTSdGwNhJs8sImF10niy78xZDZ43i22WPgmxSS2+FQ/V6PA=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.11.1, )",
@@ -77,12 +71,12 @@
       },
       "Serilog.Settings.Configuration": {
         "type": "Direct",
-        "requested": "[8.0.2, )",
-        "resolved": "8.0.2",
-        "contentHash": "hn8HCAmupon7N0to20EwGeNJ+L3iRzjGzAHIl8+8CCFlEkVedHvS6NMYMb0VPNMsDgDwOj4cPBPV6Fc2hb0/7w==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "pkxvq0umBKK8IKFJc1aV5S/HGRG/NIxJ6FV42KaTPLfDmBOAbBUB1m5gqqlGxzEa1MgDDWtQlWJdHTSxVWNx+Q==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "8.0.0",
-          "Microsoft.Extensions.DependencyModel": "8.0.1",
+          "Microsoft.Extensions.DependencyModel": "8.0.2",
           "Serilog": "3.1.1"
         }
       },
