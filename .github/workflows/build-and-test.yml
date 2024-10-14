@@ -63,7 +63,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Gather Test Results
-        uses: codecov/test-results-action@v1.0.0
+        uses: codecov/test-results-action@v1.0.1
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
