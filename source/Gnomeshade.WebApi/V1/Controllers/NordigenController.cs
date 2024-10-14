@@ -18,6 +18,7 @@ using Gnomeshade.Data;
 using Gnomeshade.Data.Entities;
 using Gnomeshade.Data.Repositories;
 using Gnomeshade.WebApi.Client;
+using Gnomeshade.WebApi.Logging;
 using Gnomeshade.WebApi.Models.Importing;
 using Gnomeshade.WebApi.V1.Authentication;
 using Gnomeshade.WebApi.V1.Importing;
@@ -109,7 +110,7 @@ public sealed class NordigenController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		_logger.LogDebug("Getting requisition for {InstitutionId}", id);
+		_logger.GettingRequisition(id);
 		var existing = await _nordigenClient
 			.Requisitions
 			.Get()
@@ -120,7 +121,7 @@ public sealed class NordigenController : ControllerBase
 
 		if (existing is null)
 		{
-			_logger.LogDebug("Creating new requisition for {InstitutionId}", id);
+			_logger.CreatingRequisition(id);
 			var requisition = await _nordigenClient.Requisitions.Post(new(new("https://gnomeshade.org/"), id));
 			return Redirect(requisition.Link.AbsoluteUri);
 		}
@@ -143,7 +144,7 @@ public sealed class NordigenController : ControllerBase
 			var (reportAccount, currency, createdAccount) = await _importService
 				.FindUserAccountAsync(new(account.Iban, details.Currency), user, dbTransaction);
 
-			_logger.LogDebug("Matched report account to {AccountName}", reportAccount.Name);
+			_logger.MatchedReportAccount(reportAccount.Name);
 
 			var resultBuilder = new AccountReportResultBuilder(_mapper, reportAccount, createdAccount);
 
@@ -254,7 +255,7 @@ public sealed class NordigenController : ControllerBase
 		UserEntity user,
 		DateTimeZone dateTimeZone)
 	{
-		_logger.LogTrace("Parsing transaction {ServicerReference}", bookedTransaction.TransactionId);
+		_logger.ParsingTransaction(bookedTransaction);
 
 		var amount = Math.Abs(bookedTransaction.TransactionAmount.Amount);
 		var (domainCode, familyCode, subFamilyCode) = GetCode(bookedTransaction.BankTransactionCode);
