@@ -85,12 +85,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "8.0.0"
         }
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.11.1, )",
@@ -159,25 +153,29 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[26.6.0, )",
-        "resolved": "26.6.0",
-        "contentHash": "sZtAweZ3zvWBvWlQDhHeyc7nUGd5GX6YlvFkETJB9G7fmMWUcVANc8PODnCi3mmY6p+y70Ey0TXRnw3cApJgcg==",
+        "requested": "[27.0.1, )",
+        "resolved": "27.0.1",
+        "contentHash": "vjm13xv1Ol7I8DVXIGqy4GSSdyRf42m8fHZzQkA375pBV1LrPPhfkyutMUIZpIX++t7HQS7jPn7GHUsm1Z7mug==",
         "dependencies": {
+          "Argon": "0.22.0",
+          "DiffEngine": "15.5.3",
           "NUnit": "4.2.2",
-          "Verify": "26.6.0"
+          "SimpleInfoName": "3.0.1",
+          "System.IO.Hashing": "8.0.0",
+          "Verify": "27.0.1"
         }
       },
       "Argon": {
         "type": "Transitive",
-        "resolved": "0.21.0",
-        "contentHash": "c515pzYDOmF3o8TywrIsTjxbc5KJwSdZW3I7JkhhduLz15wAlxo53nLg2UnD+dqTAT838LcuawRNgneK83A30Q=="
+        "resolved": "0.22.0",
+        "contentHash": "yNFZ8yBUXbfomWoDfpttYkTHZbr8dQg8SMuCpuTfoi+DO7YfWpvYD4AKKmyJ88gNGNY9VRZ5J7EmL7JL4liI7Q=="
       },
       "DiffEngine": {
         "type": "Transitive",
-        "resolved": "15.5.1",
-        "contentHash": "8j7Ke8odgqsflzwhdNYek6XHCGAL8sACuxJbzm7luvKrPubLPbTwppidvHe++rbJoVBh9Jj2BiF8b00U+TT35Q==",
+        "resolved": "15.5.3",
+        "contentHash": "5TaF7O1deN05sR3f0Tkr7XwyPTtPza1UAlRN0KlBUZNoRsB3wOSqd62oSvLYvhrV/vSyYa+AZ9WmCu4I+vQe6Q==",
         "dependencies": {
-          "EmptyFiles": "8.4.0",
+          "EmptyFiles": "8.5.0",
           "System.Management": "8.0.0"
         }
       },
@@ -201,8 +199,8 @@
       },
       "EmptyFiles": {
         "type": "Transitive",
-        "resolved": "8.4.0",
-        "contentHash": "M+GhsRIbqmfoGqB4XYya1ikuVb5GLT+F2bjitGAOs1Mg14Ojt9+MkEKWU3Kf3tse/2TuM5ozhxi3TBmPaSQ6GA=="
+        "resolved": "8.5.0",
+        "contentHash": "qTePu7un5yoto0VHO4hEjU/uEq+EuY0NGpo4JHs10dXbEiXPmUeKS1IVow0vWnPIIBW8OLhQu8TV9o5bR3nlCQ=="
       },
       "Microsoft.AspNetCore.Cryptography.Internal": {
         "type": "Transitive",
@@ -536,8 +534,8 @@
       },
       "SimpleInfoName": {
         "type": "Transitive",
-        "resolved": "2.3.0",
-        "contentHash": "oasLpQjcW+x3/EEgAmFI1NkrSmjIuXGgxm9dbzTY8XHgv05324QJZb4dh07PzHjKOUK28ImObtXGF7h4pEbpaA=="
+        "resolved": "3.0.1",
+        "contentHash": "tMAM400r41N7gzRZ/MsGpPfSU3lqkYLFA7hlVEPpyLOMtp4bglC4spCmiH3j1Dro3WH/6hTXZ20G/c4bs5P8WQ=="
       },
       "SSH.NET": {
         "type": "Transitive",
@@ -1086,12 +1084,12 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "26.6.0",
-        "contentHash": "n1lR8znqqFqvx6EA8M602B7TYm7RDk9QlFb77l2moCqIZ9/sKm2wKijmJlgYR2KueQjt3eUvm7nWKJjjdPQX9Q==",
+        "resolved": "27.0.1",
+        "contentHash": "1N4iEEdyvWhSLLjVO9J8AC0GcvexnGOpOyP13+NwCB+Mm0llEZnZ3KSMyBjQYjJwoJVAHYQ/8q1OI2AD6euypw==",
         "dependencies": {
-          "Argon": "0.21.0",
-          "DiffEngine": "15.5.1",
-          "SimpleInfoName": "2.3.0",
+          "Argon": "0.22.0",
+          "DiffEngine": "15.5.3",
+          "SimpleInfoName": "3.0.1",
           "System.IO.Hashing": "8.0.0"
         }
       },
