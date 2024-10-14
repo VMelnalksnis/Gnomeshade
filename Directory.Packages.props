@@ -74,7 +74,7 @@
 		<PackageVersion Include="PropertyChanged.SourceGenerator" Version="1.0.8"/>
 		<PackageVersion Include="Serilog" Version="4.0.1"/>
 		<PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0"/>
-		<PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.2"/>
+		<PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4"/>
 		<PackageVersion Include="Serilog.Sinks.File" Version="6.0.0"/>
 		<PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0"/>
 		<PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.8.0"/>
