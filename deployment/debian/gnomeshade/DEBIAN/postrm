@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+if [[ $(systemctl) =~ -\.mount ]]
+then
+	exit
+else
+	update-rc.d gnomeshade remove
+fi

@@ -1,50 +1,33 @@
 #!/bin/bash
 set -e
 
-sudo apt update
-sudo apt install lintian -y
+sudo apt-get update
+sudo apt-get install lintian moreutils -y
 
 archive_path="$1"
 version=$(cat version)
 full_version="$version.$2"
-changelog_path="gnomeshade/usr/share/doc/gnomeshade/changelog.gz"
 maintainer_email="valters.melnalksnis@gnomeshade.org"
 maintainer="Valters Melnalksnis <$maintainer_email>"
-time="Fri, 24 Jun 2022 19:28:01 +0200"
 
-mkdir -p gnomeshade/opt/gnomeshade
-unzip "$archive_path" -d gnomeshade/opt/gnomeshade
+mkdir -p ./deployment/debian/gnomeshade/opt/gnomeshade
+unzip "$archive_path" -d ./deployment/debian/gnomeshade/opt/gnomeshade
+
+cd ./deployment/debian/
+mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
 
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
-
 chmod 0755 gnomeshade/opt/gnomeshade/libe_sqlite3.so
 strip gnomeshade/opt/gnomeshade/libe_sqlite3.so
 
-mkdir -p gnomeshade/DEBIAN
-cp deployment/debian/postinst gnomeshade/DEBIAN/postinst
-cp deployment/debian/prerm gnomeshade/DEBIAN/prerm
-
 export FULL_VERSION=$full_version
 export MAINTAINER=$maintainer
-envsubst <deployment/debian/control >gnomeshade/DEBIAN/control
-
-mkdir -p gnomeshade/etc/opt/gnomeshade
-mv gnomeshade/opt/gnomeshade/appsettings.json gnomeshade/etc/opt/gnomeshade/appsettings.json
-echo "/etc/opt/gnomeshade/appsettings.json" >>gnomeshade/DEBIAN/conffiles
-
-mkdir -p gnomeshade/usr/share/doc/gnomeshade
 export MAINTAINER_EMAIL=$maintainer_email
-envsubst <deployment/debian/copyright >gnomeshade/usr/share/doc/gnomeshade/copyright
 
-export CHANGELOG_TIME=$time
-envsubst <deployment/debian/changelog >changelog
-cat changelog
-
-gzip -n --best changelog
-mv changelog.gz $changelog_path
-
-mkdir -p gnomeshade/lib/systemd/system
-cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service
+envsubst < gnomeshade/DEBIAN/control | sponge gnomeshade/DEBIAN/control
+envsubst < gnomeshade/usr/share/doc/gnomeshade/copyright | sponge gnomeshade/usr/share/doc/gnomeshade/copyright
+envsubst < gnomeshade/usr/share/doc/gnomeshade/changelog | gzip --no-name --best > "gnomeshade/usr/share/doc/gnomeshade/changelog.gz"
+rm gnomeshade/usr/share/doc/gnomeshade/changelog
 
 dpkg-deb --root-owner-group --build gnomeshade
 
@@ -54,3 +37,6 @@ lintian \
 	--suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt \
 	--suppress-tags unstripped-binary-or-object \
 	gnomeshade.deb
+
+cd ../../
+mv ./deployment/debian/gnomeshade.deb ./gnomeshade.deb

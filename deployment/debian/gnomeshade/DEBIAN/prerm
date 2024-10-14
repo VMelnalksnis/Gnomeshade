@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+if [[ $(systemctl) =~ -\.mount ]]
+then
+	deb-systemd-invoke stop gnomeshade.service
+else
+	exit
+fi

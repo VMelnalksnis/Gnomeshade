@@ -30,7 +30,7 @@ fi
 
 (
 	cd "$publish_dir" || exit
-	zip -r -9 "$archive_name" .
+	zip -r -9 "$archive_name" . -x ./Node/\*
 )
 
 echo "artifact-name=$archive_name" >>"$GITHUB_OUTPUT"
