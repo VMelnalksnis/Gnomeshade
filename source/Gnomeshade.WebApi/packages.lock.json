@@ -96,9 +96,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
+        "requested": "[8.0.8, )",
+        "resolved": "8.0.8",
+        "contentHash": "P8wR6MUWwYXIjPJuBaZgo5zlI/GWI6QEAo6NyVIbPefa9CCkohYu7dP2rD/mrqnjEqfRHyl+h9VZrDoGpELqYg=="
       },
       "NodaTime": {
         "type": "Direct",
@@ -216,20 +216,20 @@
       },
       "VMelnalksnis.NordigenDotNet.DependencyInjection": {
         "type": "Direct",
-        "requested": "[1.4.0, )",
-        "resolved": "1.4.0",
-        "contentHash": "4hQNMx5Jcp9CQZTAptBt1KobkDegO26qHrlpw8vutJonIE1AG8gElgaw5pnJ2fdBJkefdjj53r5LAWobcYn6Mg==",
+        "requested": "[1.4.1, )",
+        "resolved": "1.4.1",
+        "contentHash": "hJAvmVzG1brLIbkyGZ1R5KgKdzdyrDgk25DhpRhu4w2m0XF6igWD6bXjnjkan+XroP7fD4nlfC51kS+6dECDpA==",
         "dependencies": {
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Http": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection": "8.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Http": "8.0.1",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "8.0.0",
-          "NodaTime": "3.1.11",
-          "NodaTime.Serialization.SystemTextJson": "1.1.2",
-          "VMelnalksnis.NordigenDotNet": "1.4.0"
+          "NodaTime": "3.1.12",
+          "NodaTime.Serialization.SystemTextJson": "1.2.0",
+          "VMelnalksnis.NordigenDotNet": "1.4.1"
         }
       },
       "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
@@ -1767,11 +1767,11 @@
       },
       "VMelnalksnis.NordigenDotNet": {
         "type": "Transitive",
-        "resolved": "1.4.0",
-        "contentHash": "h5bUiL6WNEyKJxqEnWrzu6rWqnvjE33Nd9CipeNa1bKoHp4AOHdvKhj78nLfqI12Zyczm2KjQNosmT8p8Q5iZw==",
+        "resolved": "1.4.1",
+        "contentHash": "fx3+Q8/aZ9BIOlD81Cx4SuYNuwmLWOzdXN+o1uRRxCXImsOHuUHAEApMFcV78IDtmoAA6dqbPeQlRi+BfioEXw==",
         "dependencies": {
-          "NodaTime": "3.1.11",
-          "NodaTime.Serialization.SystemTextJson": "1.1.2"
+          "NodaTime": "3.1.12",
+          "NodaTime.Serialization.SystemTextJson": "1.2.0"
         }
       },
       "VMelnalksnis.PaperlessDotNet": {
