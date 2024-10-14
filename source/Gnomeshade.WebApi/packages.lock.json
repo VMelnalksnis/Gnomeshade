@@ -731,8 +731,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.4",
-        "contentHash": "vaYEUlF/pB9m8bs21wQv3Da0kMHT4A9USe47VfY/L2BO97xz5KfIxhEu22QS9d68ZrLxvtL3wQDfDLPr2OjbjA==",
+        "resolved": "8.0.5",
+        "contentHash": "zRG5V8cyeZLpzJlKzFKjEwkRMYIYnHWJvEor2lWXeccS2E1G2nIWYYhnukB51iz5XsWSVEtqg3AxTWM0QJ6vfg==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
@@ -1797,10 +1797,10 @@
         "type": "Project",
         "dependencies": {
           "Gnomeshade.Data": "[1.0.0, )",
-          "Npgsql.DependencyInjection": "[8.0.4, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.4, )",
-          "Npgsql.NodaTime": "[8.0.4, )",
-          "Npgsql.OpenTelemetry": "[8.0.4, )",
+          "Npgsql.DependencyInjection": "[8.0.5, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.8, )",
+          "Npgsql.NodaTime": "[8.0.5, )",
+          "Npgsql.OpenTelemetry": "[8.0.5, )",
           "dbup-postgresql": "[5.0.40, )"
         }
       },
@@ -1988,43 +1988,43 @@
       },
       "Npgsql.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "cumzwxU+UFrsC7LPnvJ0jHVqsMv8qhq/sUn9NcHRJ6m/hUq9408fFkBDsoesL4c8dSseRhyDDq7Gc1RHFX3bjg==",
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "drzpTeQOkMCkccEXnaWtrEl86dNyYhtb+woKEX4v4xOXJ5B6SfvXZOMKKRX2/P0QHYF9AFHKUjwOrgICB9rAFg==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Npgsql": "8.0.4"
+          "Npgsql": "8.0.5"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "CentralTransitive",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "/hHd9MqTRVDgIpsToCcxMDxZqla0HAQACiITkq1+L9J2hmHKV6lBAPlauF+dlNSfHpus7rrljWx4nAanKD6qAw==",
+        "requested": "[8.0.8, )",
+        "resolved": "8.0.8",
+        "contentHash": "D5WWJZJTgZYUmGv66BARXbTlinp2a5f5RueJqGYoHuWJw02J0i2va/RA+8N4A5hLORK5YKMRqXhFWtKsZdrksw==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.4",
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.4",
-          "Npgsql": "8.0.3"
+          "Microsoft.EntityFrameworkCore": "8.0.8",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
+          "Npgsql": "8.0.4"
         }
       },
       "Npgsql.NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "nH4yqdl8zC6kCv0kelWhbx0MGBbo7y4rRsAJLEmc2I7NhbvVgBkflYbaC/F1b64UI1TEqJMzcA36MktDSP0Xbw==",
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "oC7Ml5TDuQlcGECB5ML0XsPxFrYu3OdpG7c9cuqhB+xunLvqbZ0zXQoPJjvXK9KDNPDB/II61HNdsNas9f2J3A==",
         "dependencies": {
           "NodaTime": "3.1.9",
-          "Npgsql": "8.0.4"
+          "Npgsql": "8.0.5"
         }
       },
       "Npgsql.OpenTelemetry": {
         "type": "CentralTransitive",
-        "requested": "[8.0.4, )",
-        "resolved": "8.0.4",
-        "contentHash": "QdEPevyJH0tn2f7mkB6ME+QVmRegmHxMwSuB61tExY87iGD1S1mjg6T6XO9THxVWg+7MFiPJccHKwc7LcPdi4w==",
+        "requested": "[8.0.5, )",
+        "resolved": "8.0.5",
+        "contentHash": "7QEee1faf9I6mRCdEbG9EHEXX9DhnqLPxz1FhhAfPnMITGfjs1hXkm+L7sHXZnnk03fqtvKyiexoMqmLfMQCVQ==",
         "dependencies": {
-          "Npgsql": "8.0.4",
+          "Npgsql": "8.0.5",
           "OpenTelemetry.API": "1.6.0"
         }
       },
