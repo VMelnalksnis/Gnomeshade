@@ -1920,14 +1920,14 @@
       },
       "VMelnalksnis.PaperlessDotNet": {
         "type": "Transitive",
-        "resolved": "0.3.2",
-        "contentHash": "Wl1DuUOZ8G/pAF1Pp35IgJp5XXDSbQp2/T09AeojF5DBHP+fCaKFpyIGlxrk1Ctsv3iFLC7X8tVdxoBnK5zZ2w==",
+        "resolved": "0.3.3",
+        "contentHash": "I9Qep1lt3/GMMTlpjHXtQ1vAdfUu6HaxSG+gEiZy1IZxZnJnCIlpJZaF0p/sGTFTf2Sm5ONBxUojrhv6M51FLw==",
         "dependencies": {
           "Ardalis.SmartEnum": "2.1.0",
           "Ardalis.SmartEnum.SystemTextJson": "2.1.0",
-          "NodaTime": "3.1.11",
+          "NodaTime": "3.1.12",
           "NodaTime.Serialization.SystemTextJson": "1.2.0",
-          "System.Text.Json": "8.0.3"
+          "System.Text.Json": "8.0.5"
         }
       },
       "gnomeshade.avalonia.core": {
@@ -2016,7 +2016,7 @@
           "System.Linq.Async": "[6.0.1, )",
           "VMelnalksnis.ISO20022DotNet": "[0.3.4, )",
           "VMelnalksnis.NordigenDotNet.DependencyInjection": "[1.4.1, )",
-          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.3.2, )"
+          "VMelnalksnis.PaperlessDotNet.DependencyInjection": "[0.3.3, )"
         }
       },
       "gnomeshade.webapi.client": {
@@ -2501,21 +2501,21 @@
       },
       "VMelnalksnis.PaperlessDotNet.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[0.3.2, )",
-        "resolved": "0.3.2",
-        "contentHash": "bF4B4yGyqE6lz4N/F6u3/Q5nwAq5jubdwWHHkVOWPAnQ2Lzrd5Coku/EdF/n9G30bOLh9cRZW39CzE+s25/ngw==",
+        "requested": "[0.3.3, )",
+        "resolved": "0.3.3",
+        "contentHash": "l9eDr830iBBhGYjH0oA6vI/MNTY52r4kCnbRsujpoY3diQPxN0JR/HM9gxHIzCzaw6mlgqTyVHpeoJm37Bfhpg==",
         "dependencies": {
           "Ardalis.SmartEnum": "2.1.0",
           "Ardalis.SmartEnum.SystemTextJson": "2.1.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1",
-          "Microsoft.Extensions.Http": "8.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Http": "8.0.1",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
           "Microsoft.Extensions.Options.DataAnnotations": "8.0.0",
-          "NodaTime": "3.1.11",
+          "NodaTime": "3.1.12",
           "NodaTime.Serialization.SystemTextJson": "1.2.0",
-          "System.Text.Json": "8.0.3",
-          "VMelnalksnis.PaperlessDotNet": "0.3.2"
+          "System.Text.Json": "8.0.5",
+          "VMelnalksnis.PaperlessDotNet": "0.3.3"
         }
       }
     }
