@@ -1627,7 +1627,7 @@
           "OpenTelemetry.Extensions.Hosting": "[1.9.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.9.0, )",
           "OpenTelemetry.Instrumentation.Http": "[1.9.0, )",
-          "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.6, )",
+          "OpenTelemetry.Instrumentation.Process": "[0.5.0-beta.7, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.9.0, )",
           "Swashbuckle.AspNetCore.SwaggerGen": "[6.8.0, )",
           "System.Linq.Async": "[6.0.1, )",
@@ -1975,9 +1975,9 @@
       },
       "OpenTelemetry.Instrumentation.Process": {
         "type": "CentralTransitive",
-        "requested": "[0.5.0-beta.6, )",
-        "resolved": "0.5.0-beta.6",
-        "contentHash": "mRYkk5H3/cM4fSwhF02PCAo8XtE0Ezn2NWn0KorJlREWvBJXe1lGt7jL1foC9lnfoUULieU7iCudSZTVA9kHqQ==",
+        "requested": "[0.5.0-beta.7, )",
+        "resolved": "0.5.0-beta.7",
+        "contentHash": "v+g5CPU/sJhyc1FTOgTaQTwvrQXquSxdndF+E3fS8SXYPLVAa2INHa8jqCFKvYp1rO+yaVizRw1gCOaDJJzauA==",
         "dependencies": {
           "OpenTelemetry.Api": "[1.9.0, 2.0.0)"
         }
