@@ -3,6 +3,7 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,8 @@ namespace Gnomeshade.WebApi.Tests.Integration.Fixtures;
 
 public abstract class WebserverFixture : IAsyncDisposable
 {
+	private static readonly ConcurrentBag<RegistrationModel> _registrations = [];
+
 	private WebApplicationFactory<Startup> _webApplicationFactory = null!;
 
 	internal abstract string Name { get; }
@@ -81,7 +84,14 @@ public abstract class WebserverFixture : IAsyncDisposable
 			.RuleFor(registration => registration.Username, faker => faker.Internet.UserName())
 			.RuleFor(registration => registration.FullName, faker => faker.Person.FullName);
 
-		return await RegisterUser(registrationFaker.Generate());
+		var registration = registrationFaker.Generate();
+		while (_registrations.Any(model => model.Username == registration.Username))
+		{
+			registration = registrationFaker.Generate();
+		}
+
+		_registrations.Add(registration);
+		return await RegisterUser(registration);
 	}
 
 	internal async Task<IGnomeshadeClient> CreateAuthorizedClientAsync()
