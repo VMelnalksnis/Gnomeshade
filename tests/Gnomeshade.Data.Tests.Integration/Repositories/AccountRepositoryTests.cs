@@ -99,9 +99,8 @@ public sealed class AccountRepositoryTests
 		deleted.Should().BeNull();
 
 		await _inCurrencyRepository.RestoreDeletedAsync(getAccountInCurrency.Id, TestUser.Id, dbTransaction);
-		await dbTransaction.CommitAsync();
 
-		var restored = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id);
+		var restored = await _inCurrencyRepository.GetByIdAsync(firstAccountInCurrency.Id, TestUser.Id, dbTransaction);
 		restored.Should().BeEquivalentTo(getAccountInCurrency, options => options.Excluding(a => a.ModifiedAt));
 
 		// ReSharper disable once AccessToDisposedClosure
@@ -109,9 +108,6 @@ public sealed class AccountRepositoryTests
 			.Should()
 			.ThrowAsync<NpgsqlException>())
 			.Which.Message.Should().Contain("duplicate key value violates unique constraint");
-
-		await using var transaction = await _dbConnection.OpenAndBeginTransaction();
-		await _unitOfWork.DeleteAsync(getAccount, TestUser.Id, transaction);
 	}
 
 	[Test]
@@ -144,8 +140,6 @@ public sealed class AccountRepositoryTests
 		secondAccount.Name.Should().Be(firstAccountName);
 		var secondAccountByName = await _repository.FindByNameAsync(secondAccount.Name, TestUser.Id, dbTransaction);
 		secondAccountByName.Should().BeEquivalentTo(secondAccount, Options);
-
-		await dbTransaction.CommitAsync();
 	}
 
 	private static EquivalencyAssertionOptions<AccountEntity> Options(
