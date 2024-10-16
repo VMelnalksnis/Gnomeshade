@@ -73,23 +73,24 @@ public sealed class TransactionsControllerTests(WebserverFixture fixture) : Webs
 		var detailedTransactions = await _client.GetDetailedTransactionsAsync(new(null, null));
 		detailedTransactions.Should().Contain(detailed => detailed.Id == transactionId);
 
-		var transferCreation = new TransferCreation
-		{
-			TransactionId = transactionId,
-			SourceAmount = 1,
-			SourceAccountId = _account1.Currencies.First().Id,
-			TargetAmount = 1,
-			TargetAccountId = _account2.Currencies.First().Id,
-			Order = 2,
-			ValuedAt = SystemClock.Instance.GetCurrentInstant(),
-		};
+		var firstTransfer = await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
 
-		await _client.CreateTransferAsync(transactionId, _account1.Id, _account2.Id);
-		var currentTime = SystemClock.Instance.GetCurrentInstant();
-		var expectedDate = currentTime + Duration.FromDays(2);
-		await _client.PutTransferAsync(Guid.NewGuid(), transferCreation with { ValuedAt = expectedDate, Order = 3 });
+		var bookedAt = firstTransfer.BookedAt!.Value;
+		var expectedDate = bookedAt + Duration.FromDays(2);
+		await _client.PutTransferAsync(
+			Guid.NewGuid(),
+			new()
+			{
+				TransactionId = transactionId,
+				SourceAmount = 1,
+				SourceAccountId = _account1.Currencies.First().Id,
+				TargetAmount = 1,
+				TargetAccountId = _account2.Currencies.First().Id,
+				Order = 2,
+				ValuedAt = expectedDate,
+			});
 
-		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, currentTime)))
+		(await _client.GetDetailedTransactionsAsync(new(Instant.MinValue, bookedAt)))
 			.Should()
 			.NotContain(detailedTransaction => detailedTransaction.Id == transactionId);
 
