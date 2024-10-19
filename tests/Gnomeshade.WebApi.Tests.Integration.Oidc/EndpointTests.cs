@@ -3,44 +3,48 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
+
+using Gnomeshade.WebApi.Tests.Integration.Oidc.Fixtures;
 
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
-[TestFixtureSource(typeof(OidcFixtureSource))]
-public sealed class EndpointTests
+[FixtureDataSource]
+public sealed class EndpointTests(KeycloakFixture fixture) : WebApplicationTests(fixture)
 {
-	private readonly KeycloakFixture _fixture;
-
-	private HttpClient _client = null!;
-
-	public EndpointTests(KeycloakFixture fixture)
+	public static IEnumerable<Uri> Endpoints()
 	{
-		_fixture = fixture;
+		yield return new("/", UriKind.Relative);
+		yield return new("/Identity/Account/Register", UriKind.Relative);
+		yield return new("/Identity/Account/Login", UriKind.Relative);
 	}
 
-	[OneTimeSetUp]
-	public void SetUp() => _client = _fixture.CreateHttpClient();
+	public static IEnumerable<(Uri RequestUri, Uri RedirectUri)> Redirects()
+	{
+		yield return (
+			new("/Identity/Account/ExternalLogin", UriKind.Relative),
+			new("/Identity/Account/Login", UriKind.Relative));
+	}
 
-	[OneTimeTearDown]
-	public void TearDown() => _client.Dispose();
-
-	[TestCaseSource(nameof(Endpoints))]
+	[Test]
+	[MethodDataSource(nameof(Endpoints))]
 	public async Task ShouldReturnOk(Uri requestUri)
 	{
-		using var response = await _client.GetAsync(requestUri);
+		using var client = Fixture.CreateHttpClient();
+		using var response = await client.GetAsync(requestUri);
 		response.StatusCode.Should().Be(HttpStatusCode.OK);
 	}
 
-	[TestCaseSource(nameof(Redirects))]
+	[Test]
+	[MethodDataSource(nameof(Redirects))]
 	public async Task ShouldRedirect(Uri requestUri, Uri redirectUri)
 	{
-		using var response = await _client.GetAsync(requestUri);
+		using var client = Fixture.CreateHttpClient();
+		using var response = await client.GetAsync(requestUri);
 		response.StatusCode.Should().Be(HttpStatusCode.Found);
 
 		var location = response.Headers.Location;
@@ -50,24 +54,11 @@ public sealed class EndpointTests
 	[Test]
 	public async Task Health_ShouldReturnHealthy()
 	{
-		using var response = await _client.GetAsync("/api/v1.0/Health");
+		using var client = Fixture.CreateHttpClient();
+		using var response = await client.GetAsync("/api/v1.0/Health");
 		response.StatusCode.Should().Be(HttpStatusCode.OK);
 
 		var content = await response.Content.ReadAsStringAsync();
 		content.Should().Be(nameof(HealthStatus.Healthy));
-	}
-
-	private static IEnumerable Endpoints()
-	{
-		yield return new Uri("/", UriKind.Relative);
-		yield return new Uri("/Identity/Account/Register", UriKind.Relative);
-		yield return new Uri("/Identity/Account/Login", UriKind.Relative);
-	}
-
-	private static IEnumerable Redirects()
-	{
-		yield return new TestCaseData(
-			new Uri("/Identity/Account/ExternalLogin", UriKind.Relative),
-			new Uri("/Identity/Account/Login", UriKind.Relative));
 	}
 }

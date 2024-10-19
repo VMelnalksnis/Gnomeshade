@@ -53,6 +53,7 @@ jobs:
           Nordigen:SecretId: ${{ secrets.NORDIGEN_SECRET_ID }}
           Nordigen:SecretKey: ${{ secrets.NORDIGEN_SECRET_KEY }}
           Serilog:MinimumLevel: Warning
+          Logging:LogLevel:Default: Warning
           OpenTelemetry__Enabled: false
 
       - name: Gather Code Coverage
