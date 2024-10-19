@@ -10,7 +10,7 @@ using Gnomeshade.Avalonia.Core.Authentication;
 
 using static System.Net.HttpStatusCode;
 
-namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
+namespace Gnomeshade.WebApi.Tests.Integration.Oidc.Helpers;
 
 internal sealed class MockProtocolHandler : IGnomeshadeProtocolHandler
 {

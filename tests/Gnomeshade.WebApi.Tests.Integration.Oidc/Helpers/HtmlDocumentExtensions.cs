@@ -9,7 +9,7 @@ using System.Net.Http;
 
 using HtmlAgilityPack;
 
-namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
+namespace Gnomeshade.WebApi.Tests.Integration.Oidc.Helpers;
 
 internal static class HtmlDocumentExtensions
 {

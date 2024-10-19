@@ -2,18 +2,35 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
+
+		<IsAotCompatible>true</IsAotCompatible>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-		<PackageReference Include="IdentityModel.OidcClient" />
-		<PackageReference Include="HtmlAgilityPack" />
-		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
+		<PackageReference Include="IdentityModel.OidcClient"/>
+		<PackageReference Include="HtmlAgilityPack"/>
+		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak"/>
+		<PackageReference Include="TUnit"/>
+
+		<PackageReference Remove="Microsoft.NET.Test.Sdk"/>
+		<PackageReference Remove="NUnit"/>
+		<PackageReference Remove="NUnit.Analyzers"/>
+		<PackageReference Remove="NUnit3TestAdapter"/>
+		<PackageReference Remove="Verify.NUnit"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
-		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj" />
+		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="FluentAssertions"/>
+		<Using Include="FluentAssertions.Execution"/>
+		<Using Include="FluentAssertions.Equivalency"/>
+		<Using Remove="NUnit.Framework"/>
+		<Using Remove="VerifyNUnit"/>
 	</ItemGroup>
 
 </Project>

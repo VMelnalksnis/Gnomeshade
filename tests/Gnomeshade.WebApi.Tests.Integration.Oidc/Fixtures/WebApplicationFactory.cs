@@ -8,25 +8,29 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
+namespace Gnomeshade.WebApi.Tests.Integration.Oidc.Fixtures;
 
-public sealed class GnomeshadeWebApplicationFactory : WebApplicationFactory<Startup>
+public sealed class WebApplicationFactory : WebApplicationFactory<Startup>
 {
 	private readonly IConfiguration _configuration;
+	private readonly int _port;
 
-	public GnomeshadeWebApplicationFactory(IConfiguration configuration)
+	public WebApplicationFactory(IConfiguration configuration, int port)
 	{
 		_configuration = configuration;
+		_port = port;
 	}
 
+	/// <inheritdoc />
 	protected override IHost CreateHost(IHostBuilder builder)
 	{
 		builder.ConfigureAppConfiguration((_, configurationBuilder) => configurationBuilder.AddConfiguration(_configuration));
 		return base.CreateHost(builder);
 	}
 
+	/// <inheritdoc />
 	protected override void ConfigureClient(HttpClient client)
 	{
-		client.BaseAddress = new("https://localhost:5001/api/");
+		client.BaseAddress = new($"https://localhost:{_port}/api/");
 	}
 }
