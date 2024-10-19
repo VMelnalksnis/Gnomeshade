@@ -1,4 +1,0 @@
-#!/bin/bash
-set -e
-
-deb-systemd-invoke stop gnomeshade.service

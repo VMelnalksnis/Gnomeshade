@@ -109,13 +109,13 @@ jobs:
     needs: build-deb
     strategy:
       matrix:
-        distro:
-          - debian10
-          - debian11
-          - debian12
-          - ubuntu2004
-          - ubuntu2204
-          - ubuntu2404
+        image:
+          - geerlingguy/docker-debian10-ansible:latest
+          - geerlingguy/docker-debian11-ansible:latest
+          - geerlingguy/docker-debian12-ansible:latest
+          - geerlingguy/docker-ubuntu2004-ansible:latest
+          - geerlingguy/docker-ubuntu2204-ansible:latest
+          - geerlingguy/docker-ubuntu2404-ansible:latest
     steps:
       - uses: actions/checkout@v4.1.7
       - uses: actions/download-artifact@v4.1.8
@@ -129,7 +129,28 @@ jobs:
         with:
           molecule_working_dir: './deployment/ansible/gnomeshade'
         env:
-          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_IMAGE: ${{ matrix.image }}
+
+  test-deb:
+    name: Test debian package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build-deb
+    strategy:
+      matrix:
+        dir:
+          - deployment/docker/devuan/chimaera
+          - deployment/docker/devuan/daedalus
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: actions/download-artifact@v4.1.8
+        id: download
+        with:
+          name: Gnomeshade.WebApi_linux-x64.deb
+
+      - name: Test debian package
+        working-directory: ${{ matrix.dir }}
+        run: ../../../test-deb.sh ${{ steps.download.outputs.download-path }}/gnomeshade.deb ${{ secrets.DEMO_ADMIN_PASSWORD }}
 
   docker:
     name: Test docker container
