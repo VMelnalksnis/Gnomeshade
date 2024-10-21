@@ -1961,7 +1961,7 @@
         "dependencies": {
           "Gnomeshade.Data": "[1.0.0, )",
           "Npgsql.DependencyInjection": "[8.0.5, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.8, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.10, )",
           "Npgsql.NodaTime": "[8.0.5, )",
           "Npgsql.OpenTelemetry": "[8.0.5, )",
           "dbup-postgresql": "[5.0.40, )"
@@ -2352,14 +2352,14 @@
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "CentralTransitive",
-        "requested": "[8.0.8, )",
-        "resolved": "8.0.8",
-        "contentHash": "D5WWJZJTgZYUmGv66BARXbTlinp2a5f5RueJqGYoHuWJw02J0i2va/RA+8N4A5hLORK5YKMRqXhFWtKsZdrksw==",
+        "requested": "[8.0.10, )",
+        "resolved": "8.0.10",
+        "contentHash": "gFPl9Dmxih7Yi4tZ3bITzZFzbxFMBx04gqTqcjoL2r5VEW+O2TA5UVw/wm/XW26NAJ7sg59Je0+9QrwiZt6MPQ==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.8",
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.8",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.8",
-          "Npgsql": "8.0.4"
+          "Microsoft.EntityFrameworkCore": "8.0.10",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.10",
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.10",
+          "Npgsql": "8.0.5"
         }
       },
       "Npgsql.NodaTime": {
