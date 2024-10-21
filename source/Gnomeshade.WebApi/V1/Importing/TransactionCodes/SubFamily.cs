@@ -3,10 +3,9 @@
 // See LICENSE.txt file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Ardalis.SmartEnum;
-
-using JetBrains.Annotations;
 
 #pragma warning disable CS1591
 
@@ -15,7 +14,7 @@ using JetBrains.Annotations;
 namespace Gnomeshade.WebApi.V1.Importing.TransactionCodes;
 
 /// <summary>Lowest definition level: e.g. type of cheques: drafts, etc.</summary>
-[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public sealed class SubFamily : SmartEnum<SubFamily>
 {
 	public static readonly SubFamily NotAvailable = new("NTAV", 1);
@@ -48,8 +47,5 @@ public sealed class SubFamily : SmartEnum<SubFamily>
 	{
 	}
 
-	internal static IEnumerable<SubFamily> BankSubFamilies { get; } = new[]
-	{
-		Charges, Fees, CashWithdrawl, CashDeposit,
-	};
+	internal static IEnumerable<SubFamily> BankSubFamilies { get; } = [Charges, Fees];
 }

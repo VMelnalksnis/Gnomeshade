@@ -2,18 +2,16 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Ardalis.SmartEnum;
+using System.Diagnostics.CodeAnalysis;
 
-using JetBrains.Annotations;
+using Ardalis.SmartEnum;
 
 // ReSharper disable StringLiteralTypo
 
 namespace Gnomeshade.WebApi.V1.Importing.TransactionCodes;
 
-/// <summary>
-/// Medium definition level: e.g. type of payments: credit transfer, direct debit.
-/// </summary>
-[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
+/// <summary>Medium definition level: e.g. type of payments: credit transfer, direct debit.</summary>
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public class Family : SmartEnum<Family>
 {
 	/// <summary>

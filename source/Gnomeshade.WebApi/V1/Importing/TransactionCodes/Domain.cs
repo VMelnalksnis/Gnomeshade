@@ -2,9 +2,9 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Ardalis.SmartEnum;
+using System.Diagnostics.CodeAnalysis;
 
-using JetBrains.Annotations;
+using Ardalis.SmartEnum;
 
 namespace Gnomeshade.WebApi.V1.Importing.TransactionCodes;
 
@@ -12,7 +12,7 @@ namespace Gnomeshade.WebApi.V1.Importing.TransactionCodes;
 /// Highest definition level to identify the sub-ledger.
 /// The domain defines the business area of the underlying transaction (e.g., payments, securities...).
 /// </summary>
-[UsedImplicitly(ImplicitUseKindFlags.Access, ImplicitUseTargetFlags.Members)]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 public sealed class Domain : SmartEnum<Domain>
 {
 	/// <summary>
@@ -66,7 +66,7 @@ public sealed class Domain : SmartEnum<Domain>
 
 	/// <summary>
 	/// The Trade Services domain provides the bank transaction codes related to
-	/// all of the Trade Services operations that need to be reported in the statements.
+	/// all the Trade Services operations that need to be reported in the statements.
 	/// </summary>
 	public static readonly Domain TradeServices = new("TRAD", 8);
 

@@ -30,7 +30,6 @@ using Microsoft.Extensions.Logging;
 
 using NodaTime;
 
-using VMelnalksnis.ISO20022DotNet.MessageSets.BankToCustomerCashManagement.V2.AccountReport;
 using VMelnalksnis.NordigenDotNet;
 using VMelnalksnis.NordigenDotNet.Accounts;
 using VMelnalksnis.NordigenDotNet.Requisitions;
@@ -200,52 +199,6 @@ public sealed class NordigenController : ControllerBase
 		return Ok(results);
 	}
 
-	private static CreditDebitCode GetCreditDebitCode(BookedTransaction bookedTransaction) => bookedTransaction.AdditionalInformation switch
-	{
-		"PURCHASE" => CreditDebitCode.DBIT,
-		"INWARD TRANSFER" => CreditDebitCode.CRDT,
-		"INWARD CLEARING PAYMENT" => CreditDebitCode.CRDT,
-		"INWARD INSTANT PAYMENT" => CreditDebitCode.CRDT,
-		"RETURN OF PURCHASE" => CreditDebitCode.CRDT,
-		"CARD FEE" => CreditDebitCode.DBIT,
-		"BALANCE ENQUIRY FEE" => CreditDebitCode.DBIT,
-		"OUTWARD TRANSFER" => CreditDebitCode.DBIT,
-		"OUTWARD INSTANT PAYMENT" => CreditDebitCode.DBIT,
-		"INTEREST PAYMENT" => CreditDebitCode.DBIT,
-		"REIMBURSEMENT OF COMMISSION" => CreditDebitCode.DBIT,
-		"PRINCIPAL REPAYMENT" => CreditDebitCode.DBIT,
-		"CASH DEPOSIT" => CreditDebitCode.DBIT,
-		"CASH WITHDRAWAL" => CreditDebitCode.CRDT,
-		"LOAN DRAWDOWN" => CreditDebitCode.CRDT,
-		var information when information?.StartsWith("INWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.CRDT,
-		var information when information?.StartsWith("OUTWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.DBIT,
-		_ => bookedTransaction.BankTransactionCode switch
-		{
-			"PMNT" => CreditDebitCode.DBIT,
-
-			// This will leak all data about the transaction into logs, but that should not be an issue while self-hosting
-			// While only some fields are needed when this fails, those fields contain private information anyway
-			_ => throw new ArgumentOutOfRangeException(nameof(bookedTransaction.AdditionalInformation), bookedTransaction, "Failed to determine transaction type"),
-		},
-	};
-
-	private static (string? Domain, string? Family, string? SubFamily) GetCode(string? bankTransactionCode)
-	{
-		if (string.IsNullOrWhiteSpace(bankTransactionCode))
-		{
-			return (null, null, null);
-		}
-
-		var codes = bankTransactionCode.Split('-');
-		return codes switch
-		{
-			[var domain] => (domain, null, null),
-			[var domain, var family] => (domain, family, null),
-			[var domain, var family, var subFamily] => (domain, family, subFamily),
-			_ => throw new ArgumentOutOfRangeException(nameof(bankTransactionCode), bankTransactionCode, "Unexpected bank transaction code structure"),
-		};
-	}
-
 	private async Task<(TransactionEntity Transaction, TransferEntity Transfer)> Translate(
 		DbTransaction dbTransaction,
 		AccountReportResultBuilder resultBuilder,
@@ -258,14 +211,14 @@ public sealed class NordigenController : ControllerBase
 		_logger.ParsingTransaction(bookedTransaction);
 
 		var amount = Math.Abs(bookedTransaction.TransactionAmount.Amount);
-		var (domainCode, familyCode, subFamilyCode) = GetCode(bookedTransaction.BankTransactionCode);
+		var (domainCode, familyCode, subFamilyCode) = bookedTransaction.GetCode();
 
 		var importableTransaction = new ImportableTransaction(
 			bookedTransaction.TransactionId,
 			bookedTransaction.EntryReference,
 			amount,
 			bookedTransaction.TransactionAmount.Currency,
-			GetCreditDebitCode(bookedTransaction),
+			bookedTransaction.GetCreditDebitCode(),
 			bookedTransaction.BookingDate!.Value.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.ValueDate?.AtStartOfDayInZone(dateTimeZone).ToInstant(),
 			bookedTransaction.UnstructuredInformation,

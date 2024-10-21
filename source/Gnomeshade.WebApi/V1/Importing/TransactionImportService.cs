@@ -113,7 +113,7 @@ public abstract partial class TransactionImportService<TTransaction>
 			PreferredCurrencyId = currency.Id,
 			Name = bankBic,
 			Bic = bankBic,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
+			Currencies = [new() { CurrencyId = currency.Id }],
 		};
 
 		var accountId = await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
@@ -163,7 +163,7 @@ public abstract partial class TransactionImportService<TTransaction>
 			PreferredCurrencyId = currency.Id,
 			Iban = iban,
 			AccountNumber = iban,
-			Currencies = new() { new() { CurrencyId = currency.Id } },
+			Currencies = [new() { CurrencyId = currency.Id }],
 		};
 
 		var accountId = await _accountUnitOfWork.AddAsync(account, dbTransaction);
@@ -294,7 +294,7 @@ public abstract partial class TransactionImportService<TTransaction>
 				Name = otherAccountName,
 				Iban = otherAccountIban,
 				AccountNumber = otherAccountIban,
-				Currencies = new() { new() { CurrencyId = otherCurrency.Id } },
+				Currencies = [new() { CurrencyId = otherCurrency.Id }],
 			};
 
 			var accountId = await _accountUnitOfWork.AddWithCounterpartyAsync(accountToCreate, dbTransaction);
@@ -318,7 +318,7 @@ public abstract partial class TransactionImportService<TTransaction>
 					OwnerId = user.Id,
 					Name = ReservedNames.Unidentified,
 					PreferredCurrencyId = currency.Id,
-					Currencies = new() { new() { CurrencyId = currency.Id } },
+					Currencies = [new() { CurrencyId = currency.Id }],
 				};
 
 				var accountId = await _accountUnitOfWork.AddWithCounterpartyAsync(account, dbTransaction);
