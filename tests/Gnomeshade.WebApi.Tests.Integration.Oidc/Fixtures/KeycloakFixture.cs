@@ -14,24 +14,30 @@ using Microsoft.Extensions.Configuration;
 
 using NodaTime;
 
+using TUnit.Core.Interfaces;
+
 using VMelnalksnis.Testcontainers.Keycloak;
 using VMelnalksnis.Testcontainers.Keycloak.Configuration;
 
 using KeycloakClient = VMelnalksnis.Testcontainers.Keycloak.Configuration.Client;
 
-namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
+namespace Gnomeshade.WebApi.Tests.Integration.Oidc.Fixtures;
 
-public sealed class KeycloakFixture : IAsyncDisposable
+public sealed class KeycloakFixture : IAsyncInitializer, IAsyncDisposable
 {
-	internal const string ApiBaseUri = "https://localhost:5001/";
-	internal const string DesktopBaseUri = "http://localhost:8297/";
-	private const string _databasePath = "gnomeshade.db";
+	private readonly int _port1;
 
+	private readonly string _databasePath;
 	private readonly KeycloakContainer _keycloak;
-	private GnomeshadeWebApplicationFactory _application = null!;
+	private WebApplicationFactory _application = null!;
 
-	public KeycloakFixture()
+	public KeycloakFixture(int port1, int port2)
 	{
+		_port1 = port1;
+		DesktopBaseUri = $"http://localhost:{port2}/";
+		_databasePath = $"gnomeshade_{Guid.NewGuid()}.db";
+		var apiBaseUri = $"https://localhost:{port1}/";
+
 		File.Delete(_databasePath);
 
 		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper")
@@ -41,16 +47,16 @@ public sealed class KeycloakFixture : IAsyncDisposable
 
 		Client = new("gnomeshade")
 		{
-			Mappers = new[] { mapper },
+			Mappers = [mapper],
 			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = new[] { $"{ApiBaseUri}*" },
+			RedirectUris = [$"{apiBaseUri}*"],
 		};
 
 		DesktopClient = new("gnomeshade_desktop")
 		{
-			Mappers = new[] { mapper },
+			Mappers = [mapper],
 			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = new[] { DesktopBaseUri },
+			RedirectUris = [DesktopBaseUri],
 		};
 
 		var realmConfiguration = new RealmConfiguration(
@@ -60,6 +66,10 @@ public sealed class KeycloakFixture : IAsyncDisposable
 
 		_keycloak = new KeycloakBuilder().WithRealm(realmConfiguration).Build();
 	}
+
+	public string DesktopBaseUri { get; }
+
+	public string Name => $"{_port1}";
 
 	internal Realm Realm { get; private set; } = null!;
 
@@ -75,11 +85,16 @@ public sealed class KeycloakFixture : IAsyncDisposable
 		LastName = "Doe",
 	};
 
-	public async Task Initialize()
+	/// <inheritdoc />
+	public async Task InitializeAsync()
 	{
 		await _keycloak.StartAsync();
 
 		Realm = _keycloak.Realm;
+	}
+
+	public void PreFirstTest()
+	{
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
@@ -94,12 +109,14 @@ public sealed class KeycloakFixture : IAsyncDisposable
 			.AddEnvironmentVariables()
 			.Build();
 
-		_application = new(configuration);
+		_application = new(configuration, _port1);
 		_application.CreateClient();
 	}
 
+	/// <inheritdoc />
 	public ValueTask DisposeAsync()
 	{
+		File.Delete(_databasePath);
 		return ValueTask.CompletedTask;
 	}
 

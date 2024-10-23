@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Client.Results;
+using Gnomeshade.WebApi.Tests.Integration.Oidc.Fixtures;
+using Gnomeshade.WebApi.Tests.Integration.Oidc.Helpers;
 
 using IdentityModel.OidcClient;
 using IdentityModel.OidcClient.Browser;
@@ -18,24 +20,22 @@ using Microsoft.Extensions.Logging;
 
 using NodaTime;
 
+using TUnit.Core.Executors;
+
+[assembly: ArgumentDisplayFormatter<KeycloakFixtureFormatter>]
+[assembly: TestExecutor<KeycloakGroupedTestExecutor>]
+
 namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
-[TestFixtureSource(typeof(OidcFixtureSource))]
-public sealed class AuthorizationTests
+[FixtureDataSource]
+public sealed class AuthorizationTests(KeycloakFixture fixture) : WebApplicationTests(fixture)
 {
-	private readonly KeycloakFixture _fixture;
-
-	public AuthorizationTests(KeycloakFixture fixture)
-	{
-		_fixture = fixture;
-	}
-
 	[Test]
 	public async Task Get_ShouldReturnUnauthorized()
 	{
-		var client = _fixture.CreateHttpClient();
+		using var client = Fixture.CreateHttpClient();
 
-		var response = await client.GetAsync("/api/v1.0/transactions");
+		using var response = await client.GetAsync("/api/v1.0/transactions");
 
 		response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 	}
@@ -56,18 +56,18 @@ public sealed class AuthorizationTests
 			{
 				var handler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("Keycloak");
-				var internalClient = _fixture.CreateHttpClient();
-				return new(handler, httpClient, internalClient, _fixture.User.Username, _fixture.User.Password);
+				var internalClient = Fixture.CreateHttpClient();
+				return new(handler, httpClient, internalClient, Fixture.User.Username, Fixture.User.Password);
 			})
 			.AddSingleton<IBrowser, MockBrowser>(provider => provider.GetRequiredService<MockBrowser>())
-			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(KeycloakFixture.DesktopBaseUri))
+			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(Fixture.DesktopBaseUri))
 			.AddTransient<OidcClient>(provider => new(new()
 			{
-				Authority = _fixture.Realm.ServerRealm.ToString(),
-				ClientId = _fixture.DesktopClient.Name,
-				ClientSecret = _fixture.DesktopClient.Secret,
+				Authority = Fixture.Realm.ServerRealm.ToString(),
+				ClientId = Fixture.DesktopClient.Name,
+				ClientSecret = Fixture.DesktopClient.Secret,
 				Scope = "openid profile",
-				RedirectUri = KeycloakFixture.DesktopBaseUri,
+				RedirectUri = Fixture.DesktopBaseUri,
 				Browser = provider.GetRequiredService<IBrowser>(),
 				LoggerFactory = provider.GetRequiredService<ILoggerFactory>(),
 				HttpClientFactory = _ => provider.GetRequiredService<HttpClient>(),
@@ -78,10 +78,10 @@ public sealed class AuthorizationTests
 			.AddSingleton<GnomeshadeJsonSerializerOptions>()
 			.AddTransient<TokenDelegatingHandler>();
 
-		var provider = services.BuildServiceProvider();
+		await using var provider = services.BuildServiceProvider();
 
 		var handler = provider.GetRequiredService<TokenDelegatingHandler>();
-		var gnomeshadeClient = _fixture.CreateUnauthorizedClient(handler);
+		var gnomeshadeClient = Fixture.CreateUnauthorizedClient(handler);
 
 		await FluentActions
 			.Awaiting(() => gnomeshadeClient.GetMyCounterpartyAsync())
