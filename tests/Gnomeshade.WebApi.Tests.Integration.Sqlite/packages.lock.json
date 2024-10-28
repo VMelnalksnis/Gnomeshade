@@ -86,12 +86,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "8.0.0"
         }
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.11.1, )",
@@ -131,16 +125,16 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[27.0.1, )",
-        "resolved": "27.0.1",
-        "contentHash": "vjm13xv1Ol7I8DVXIGqy4GSSdyRf42m8fHZzQkA375pBV1LrPPhfkyutMUIZpIX++t7HQS7jPn7GHUsm1Z7mug==",
+        "requested": "[27.1.0, )",
+        "resolved": "27.1.0",
+        "contentHash": "L9dmOEGFEElDauxyDRLZoB4UfDTcjWFKW/2sKDr75k55y8nG2s0tVFEKGn5tr7RlB8a8zXErQbVqx1ZcrwN6Pg==",
         "dependencies": {
           "Argon": "0.22.0",
           "DiffEngine": "15.5.3",
           "NUnit": "4.2.2",
           "SimpleInfoName": "3.0.1",
           "System.IO.Hashing": "8.0.0",
-          "Verify": "27.0.1"
+          "Verify": "27.1.0"
         }
       },
       "VMelnalksnis.Testcontainers.Keycloak": {
@@ -1896,8 +1890,8 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "27.0.1",
-        "contentHash": "1N4iEEdyvWhSLLjVO9J8AC0GcvexnGOpOyP13+NwCB+Mm0llEZnZ3KSMyBjQYjJwoJVAHYQ/8q1OI2AD6euypw==",
+        "resolved": "27.1.0",
+        "contentHash": "FZN9S2SlTACZZI0piK9FFeU95oHeYRIu1kGDim7I7H3LSB2H+mKZ3NswMWIWfb2DBgsavL/oYXX2OOZXR9cADQ==",
         "dependencies": {
           "Argon": "0.22.0",
           "DiffEngine": "15.5.3",
@@ -1983,7 +1977,7 @@
           "NUnit": "[4.2.2, )",
           "NUnit3TestAdapter": "[4.6.0, )",
           "NodaTime.Bogus": "[3.0.2, )",
-          "Verify.NUnit": "[27.0.1, )"
+          "Verify.NUnit": "[27.1.0, )"
         }
       },
       "gnomeshade.webapi": {
