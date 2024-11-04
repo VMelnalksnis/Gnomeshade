@@ -41,12 +41,6 @@
         "resolved": "4.1.0",
         "contentHash": "DsED7jD2lJK8K3Chpex38yNH2UmuKck1ML4QtSeBVk+eH7uVJL95peTmg6sxEje93IOu9bn1dMfXPqtsfAWcBg=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.11.1, )",
@@ -86,16 +80,16 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[27.0.1, )",
-        "resolved": "27.0.1",
-        "contentHash": "vjm13xv1Ol7I8DVXIGqy4GSSdyRf42m8fHZzQkA375pBV1LrPPhfkyutMUIZpIX++t7HQS7jPn7GHUsm1Z7mug==",
+        "requested": "[28.1.3, )",
+        "resolved": "28.1.3",
+        "contentHash": "UPzb+nlZY5EDsEcs1zzNZ8Xhg6QHazpoZ5cCEgaIBMIy2JVrU8tmUomiig7mxF+Dl3wBg+pGSB3Qb4RZSynWmw==",
         "dependencies": {
           "Argon": "0.22.0",
           "DiffEngine": "15.5.3",
           "NUnit": "4.2.2",
           "SimpleInfoName": "3.0.1",
           "System.IO.Hashing": "8.0.0",
-          "Verify": "27.0.1"
+          "Verify": "28.1.3"
         }
       },
       "Argon": {
@@ -404,8 +398,8 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "27.0.1",
-        "contentHash": "1N4iEEdyvWhSLLjVO9J8AC0GcvexnGOpOyP13+NwCB+Mm0llEZnZ3KSMyBjQYjJwoJVAHYQ/8q1OI2AD6euypw==",
+        "resolved": "28.1.3",
+        "contentHash": "9ZnollnKsf+klH8Gg2npDFzu1ucZE3vWwsdfuBbeqdUvjwnh7lOR4uKQJEV7gkYzz9nnVdIXN9W8v6Abd6Al9Q==",
         "dependencies": {
           "Argon": "0.22.0",
           "DiffEngine": "15.5.3",
@@ -440,7 +434,7 @@
           "NUnit": "[4.2.2, )",
           "NUnit3TestAdapter": "[4.6.0, )",
           "NodaTime.Bogus": "[3.0.2, )",
-          "Verify.NUnit": "[27.0.1, )"
+          "Verify.NUnit": "[28.1.3, )"
         }
       },
       "gnomeshade.webapi.client": {
