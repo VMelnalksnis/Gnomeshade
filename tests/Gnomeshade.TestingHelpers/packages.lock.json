@@ -47,12 +47,6 @@
         "resolved": "4.1.0",
         "contentHash": "DsED7jD2lJK8K3Chpex38yNH2UmuKck1ML4QtSeBVk+eH7uVJL95peTmg6sxEje93IOu9bn1dMfXPqtsfAWcBg=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.11.1, )",
@@ -102,22 +96,22 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[27.0.1, )",
-        "resolved": "27.0.1",
-        "contentHash": "vjm13xv1Ol7I8DVXIGqy4GSSdyRf42m8fHZzQkA375pBV1LrPPhfkyutMUIZpIX++t7HQS7jPn7GHUsm1Z7mug==",
+        "requested": "[28.2.0, )",
+        "resolved": "28.2.0",
+        "contentHash": "xMtebMDYmpKsMjeSY/zMSZAfBZyUfEgl6WJ4fM4WfqgyB2fn6eYA209NeU3f64wZbzJzgzm11pV/DcAXdh0rKA==",
         "dependencies": {
-          "Argon": "0.22.0",
+          "Argon": "0.24.2",
           "DiffEngine": "15.5.3",
           "NUnit": "4.2.2",
           "SimpleInfoName": "3.0.1",
           "System.IO.Hashing": "8.0.0",
-          "Verify": "27.0.1"
+          "Verify": "28.2.0"
         }
       },
       "Argon": {
         "type": "Transitive",
-        "resolved": "0.22.0",
-        "contentHash": "yNFZ8yBUXbfomWoDfpttYkTHZbr8dQg8SMuCpuTfoi+DO7YfWpvYD4AKKmyJ88gNGNY9VRZ5J7EmL7JL4liI7Q=="
+        "resolved": "0.24.2",
+        "contentHash": "O7JY7brhNcYvRNzByqx0cp0w4RlmyyxPyaVlkKOoA6FmWst6fIIkM5uwzQUErLYPx13diUKyhlwpB4KuC9UT2w=="
       },
       "DiffEngine": {
         "type": "Transitive",
@@ -293,10 +287,10 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "27.0.1",
-        "contentHash": "1N4iEEdyvWhSLLjVO9J8AC0GcvexnGOpOyP13+NwCB+Mm0llEZnZ3KSMyBjQYjJwoJVAHYQ/8q1OI2AD6euypw==",
+        "resolved": "28.2.0",
+        "contentHash": "D09dlamyhJ2kxYgIlwRhajefIonmAaaZfCIjAJrB+QR3zoRMBSvHtHa8ah3hQrowzpEeKsnD0mBMyqkJyfh3jg==",
         "dependencies": {
-          "Argon": "0.22.0",
+          "Argon": "0.24.2",
           "DiffEngine": "15.5.3",
           "SimpleInfoName": "3.0.1",
           "System.IO.Hashing": "8.0.0"
