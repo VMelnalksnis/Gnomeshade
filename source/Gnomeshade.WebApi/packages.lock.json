@@ -19,9 +19,9 @@
       },
       "AspNet.Security.OAuth.GitHub": {
         "type": "Direct",
-        "requested": "[8.2.0, )",
-        "resolved": "8.2.0",
-        "contentHash": "5fX4rmBSxn+yU/uYGWK213kYoL/1ZxW+0YpZw7boIvIpErRBNZ+bK9wjItQOxM0JI0SnPMOPuHkAiP84b/qBEA=="
+        "requested": "[8.3.0, )",
+        "resolved": "8.3.0",
+        "contentHash": "RdUDFVW61zP/POGLc8cYqrNKohAioIjfAt7m/2QgOPw+Urcq+3GFUcIlGFWx2HgrNLnO4F7IC4K7VCu019BUiA=="
       },
       "AutoMapper": {
         "type": "Direct",
@@ -96,9 +96,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
+        "requested": "[8.0.8, )",
+        "resolved": "8.0.8",
+        "contentHash": "P8wR6MUWwYXIjPJuBaZgo5zlI/GWI6QEAo6NyVIbPefa9CCkohYu7dP2rD/mrqnjEqfRHyl+h9VZrDoGpELqYg=="
       },
       "NodaTime": {
         "type": "Direct",
