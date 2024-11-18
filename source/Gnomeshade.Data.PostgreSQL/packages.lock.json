@@ -30,12 +30,6 @@
         "resolved": "2024.2.0",
         "contentHash": "GNnqCFW/163p1fOehKx0CnAqjmpPrUSqrgfHM6qca+P+RN39C9rhlfZHQpJhxmQG/dkOYe/b3Z0P8b6Kv5m1qw=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Npgsql.DependencyInjection": {
         "type": "Direct",
         "requested": "[8.0.5, )",
@@ -201,8 +195,8 @@
       },
       "Microsoft.Extensions.Primitives": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "bXJEZrW9ny8vjMF1JV253WeLhpEVzFo1lyaZu1vQ4ZxWUlVvknZ/+ftFgVheLubb4eZPSwwxBeqS1JkCOjxd8g=="
+        "resolved": "9.0.0",
+        "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
       },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
@@ -834,9 +828,9 @@
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[8.0.2, )",
-        "resolved": "8.0.2",
-        "contentHash": "3iE7UF7MQkCv1cxzCahz+Y/guQbTqieyxyaWKhrRO91itI9cOKO76OHeQDahqG4MmW5umr3CcCvGmK92lWNlbg=="
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "+6f2qv2a3dLwd5w6JanPIPs47CxRbnk+ZocMJUhv9NxP88VlOcJYZs9jY+MYSjxvady08bUZn6qgiNh7DadGgg=="
       },
       "Microsoft.Extensions.Identity.Stores": {
         "type": "CentralTransitive",
@@ -851,12 +845,12 @@
       },
       "Microsoft.Extensions.Options": {
         "type": "CentralTransitive",
-        "requested": "[8.0.2, )",
-        "resolved": "8.0.2",
-        "contentHash": "dWGKvhFybsaZpGmzkGCbNNwBD1rVlWzrZKANLW/CcbFJpCEceMCGzT7zZwHOGBCbwM0SzBuceMj5HN1LKV1QqA==",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "y2146b3jrPI3Q0lokKXdKLpmXqakYbDIPDV6r3M8SqvSf45WwOTzkyfDpxnZXJsJQEpAsAqjUq5Pu8RCJMjubg==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0",
-          "Microsoft.Extensions.Primitives": "8.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.0"
         }
       },
       "NodaTime": {
