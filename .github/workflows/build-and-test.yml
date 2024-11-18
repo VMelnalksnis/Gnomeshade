@@ -125,7 +125,7 @@ jobs:
 
       - run: mv ${{ steps.download.outputs.download-path }}/gnomeshade.deb ./deployment/ansible/gnomeshade/molecule/default/gnomeshade.deb
 
-      - uses: gofrolist/molecule-action@v2.7.39
+      - uses: gofrolist/molecule-action@v2.7.42
         with:
           molecule_working_dir: './deployment/ansible/gnomeshade'
         env:
