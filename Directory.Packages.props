@@ -46,21 +46,21 @@
 		<PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.1"/>
-		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.1"/>
 		<PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="8.0.10"/>
 		<PackageVersion Include="Microsoft.Extensions.Identity.Stores" Version="8.0.10"/>
-		<PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2"/>
+		<PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0"/>
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
 		<PackageVersion Include="NodaTime" Version="3.2.0"/>
 		<PackageVersion Include="NodaTime.Bogus" Version="3.0.2"/>
 		<PackageVersion Include="NodaTime.Serialization.SystemTextJson" Version="1.2.0"/>
-		<PackageVersion Include="Npgsql.DependencyInjection" Version="8.0.5"/>
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10"/>
-		<PackageVersion Include="Npgsql.NodaTime" Version="8.0.5"/>
-		<PackageVersion Include="Npgsql.OpenTelemetry" Version="8.0.5"/>
+		<PackageVersion Include="Npgsql.DependencyInjection" Version="9.0.1"/>
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1"/>
+		<PackageVersion Include="Npgsql.NodaTime" Version="9.0.1"/>
+		<PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.1"/>
 		<PackageVersion Include="NUnit" Version="4.2.2"/>
 		<PackageVersion Include="NUnit.Analyzers" Version="4.3.0"/>
 		<PackageVersion Include="NUnit3TestAdapter" Version="4.6.0"/>
