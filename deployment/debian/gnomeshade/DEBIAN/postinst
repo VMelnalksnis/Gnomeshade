@@ -3,11 +3,13 @@ set -e
 
 GNOMESHADE_USER=gnomeshade
 
-if [[ -z "$(getent group ${GNOMESHADE_USER})" ]]; then
+if [[ -z "$(getent group ${GNOMESHADE_USER})" ]]
+then
 	addgroup --system ${GNOMESHADE_USER}
 fi
 
-if [[ -z "$(getent passwd ${GNOMESHADE_USER})" ]]; then
+if [[ -z "$(getent passwd ${GNOMESHADE_USER})" ]]
+then
 	adduser \
 		--system --ingroup ${GNOMESHADE_USER} ${GNOMESHADE_USER} \
 		--no-create-home --home /nonexistent \
@@ -17,4 +19,9 @@ fi
 chown gnomeshade /etc/opt/gnomeshade --recursive
 chown gnomeshade /opt/gnomeshade --recursive
 
-deb-systemd-invoke enable gnomeshade.service
+if [[ $(systemctl) =~ -\.mount ]]
+then
+	deb-systemd-invoke enable gnomeshade.service
+else
+	update-rc.d gnomeshade defaults
+fi
