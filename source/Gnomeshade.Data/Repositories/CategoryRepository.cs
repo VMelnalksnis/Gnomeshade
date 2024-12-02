@@ -28,7 +28,7 @@ public sealed class CategoryRepository : NamedRepository<CategoryEntity>
 	protected override string InsertSql => Queries.Category.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Category.SelectAll;
+	protected override string TableName => "categories c";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Category.Update;

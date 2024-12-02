@@ -28,6 +28,10 @@
 				SelectedItem="{Binding SelectedSplit, Mode=TwoWay}"
 				IsEnabled="{Binding !IsBusy}" />
 
+			<CheckBox IsChecked="{Binding IncludeProjections}" IsThreeState="False">
+				Include projections
+			</CheckBox>
+
 			<TextBlock HorizontalAlignment="Center" Text="Accounts"/>
 			<ListBox
 				ItemsSource="{Binding UserAccounts}"

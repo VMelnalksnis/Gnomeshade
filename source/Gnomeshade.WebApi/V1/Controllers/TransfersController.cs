@@ -41,7 +41,7 @@ public sealed class TransfersController(Mapper mapper, TransferRepository reposi
 	/// <inheritdoc cref="ITransactionClient.PutTransferAsync"/>
 	/// <response code="201">A new transfer was created.</response>
 	/// <response code="204">An existing transfer was replaced.</response>
-	/// <response code="404">The specified transaction does not exist.</response>
+	/// <response code="404">The specified transfer does not exist.</response>
 	public override Task<ActionResult> Put(Guid id, [FromBody] TransferCreation product) =>
 		base.Put(id, product);
 

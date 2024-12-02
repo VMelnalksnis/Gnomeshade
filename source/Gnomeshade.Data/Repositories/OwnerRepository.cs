@@ -30,7 +30,7 @@ public sealed class OwnerRepository : NamedRepository<OwnerEntity>
 	protected override string InsertSql => Queries.Owner.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Owner.SelectAll;
+	protected override string TableName => "owners o";
 
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.Owner.Select;

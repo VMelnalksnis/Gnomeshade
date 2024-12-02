@@ -35,7 +35,7 @@ public sealed class TransferRepository : TransactionItemRepository<TransferEntit
 	protected override string InsertSql => Queries.Transfer.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Transfer.SelectAll;
+	protected override string TableName => "transfers";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Transfer.Update;

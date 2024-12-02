@@ -28,7 +28,7 @@ public sealed class UnitRepository : NamedRepository<UnitEntity>
 	protected override string InsertSql => Queries.Unit.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Unit.SelectAll;
+	protected override string TableName => "units u";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Unit.Update;

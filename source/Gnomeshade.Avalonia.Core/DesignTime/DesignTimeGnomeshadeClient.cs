@@ -47,6 +47,12 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	private static readonly List<LoanPayment> _loanPayments;
 	private static readonly List<Project> _projects;
 
+	private static readonly List<TransactionSchedule> _transactionSchedules;
+	private static readonly List<PlannedTransaction> _plannedTransactions;
+	private static readonly List<PlannedTransfer> _plannedTransfers;
+	private static readonly List<PlannedPurchase> _plannedPurchases;
+	private static readonly List<PlannedLoanPayment> _plannedLoanPayments;
+
 	static DesignTimeGnomeshadeClient()
 	{
 		var euro = new Currency { Id = Guid.NewGuid(), Name = "Euro", AlphabeticCode = "EUR" };
@@ -55,7 +61,8 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 
 		var counterparty = new Counterparty { Id = Guid.Empty, Name = "John Doe" };
 		var otherCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Jane Doe" };
-		_counterparties = [counterparty, otherCounterparty];
+		var bankCounterparty = new Counterparty { Id = Guid.NewGuid(), Name = "Bank" };
+		_counterparties = [counterparty, otherCounterparty, bankCounterparty];
 
 		var cash = new Account
 		{
@@ -69,27 +76,39 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode }
 			],
 		};
+
 		var spending = new Account
 		{
 			Id = Guid.NewGuid(),
 			Name = "Spending",
 			CounterpartyId = counterparty.Id,
 			PreferredCurrencyId = euro.Id,
-			Currencies =
-				[new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
+			Currencies = [new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
 		};
-		_accounts = [cash, spending];
+
+		var bankAccount = new Account
+		{
+			Id = Guid.NewGuid(),
+			Name = "Bank",
+			CounterpartyId = bankCounterparty.Id,
+			PreferredCurrencyId = euro.Id,
+			Currencies = [new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode }],
+		};
+
+		_accounts = [cash, spending, bankAccount];
 
 		var kilogram = new Unit { Id = Guid.NewGuid(), Name = "Kilogram" };
 		var gram = new Unit { Id = Guid.NewGuid(), Name = "Gram", ParentUnitId = kilogram.Id, Multiplier = 1000m };
 		_units = [kilogram, gram];
 
 		var food = new Category { Id = Guid.Empty, Name = "Food" };
-		_categories = [food];
+		var liabilities = new Category { Id = Guid.NewGuid(), Name = "Liabilities" };
+		_categories = [food, liabilities];
 
 		var bread = new Product { Id = Guid.NewGuid(), Name = "Bread", CategoryId = food.Id, UnitId = kilogram.Id };
 		var milk = new Product { Id = Guid.NewGuid(), Name = "Milk", CategoryId = food.Id };
-		_products = [bread, milk];
+		var loan = new Product { Id = Guid.NewGuid(), Name = "Loan", CategoryId = liabilities.Id };
+		_products = [bread, milk, loan];
 
 		var transaction = new Transaction
 		{
@@ -217,10 +236,94 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Name = "Home improvement",
 			},
 		];
+
+		var transactionSchedule = new TransactionSchedule
+		{
+			Id = Guid.Empty,
+			Name = "Monthly",
+			StartingAt = SystemClock.Instance.GetCurrentInstant() + Duration.FromDays(15),
+			Period = Period.FromMonths(1),
+			Count = 12,
+		};
+
+		_transactionSchedules = [transactionSchedule];
+		_plannedTransactions = [];
+		_plannedTransfers = [];
+		_plannedPurchases = [];
+		_plannedLoanPayments = [];
+
+		var timeZone = DateTimeZoneProviders.Tzdb.GetSystemDefault();
+		for (var i = 0; i < transactionSchedule.Count; i++)
+		{
+			var startingAt = transactionSchedule.StartingAt.InZone(timeZone).LocalDateTime;
+			for (var j = 0; j < i; j++)
+			{
+				startingAt += transactionSchedule.Period;
+			}
+
+			var bookedAt = startingAt.InZoneStrictly(timeZone).ToInstant();
+
+			var plannedTransaction = new PlannedTransaction
+			{
+				Id = i is 0 ? Guid.Empty : Guid.NewGuid(),
+				ScheduleId = transactionSchedule.Id,
+			};
+
+			var plannedPrincipalTransfer = new PlannedTransfer
+			{
+				Id = i is 0 ? Guid.Empty : Guid.NewGuid(),
+				TransactionId = plannedTransaction.Id,
+				SourceAmount = 500,
+				SourceAccountId = spending.Currencies.Single(account => account.CurrencyId == euro.Id).Id,
+				TargetAmount = 500,
+				TargetCounterpartyId = bankCounterparty.Id,
+				TargetCurrencyId = euro.Id,
+				BookedAt = bookedAt,
+				Order = 1,
+			};
+
+			var plannedInterestTransfer = new PlannedTransfer
+			{
+				Id = Guid.NewGuid(),
+				TransactionId = plannedTransaction.Id,
+				SourceAmount = 150,
+				SourceAccountId = spending.Currencies.Single(account => account.CurrencyId == euro.Id).Id,
+				TargetAmount = 150,
+				TargetCounterpartyId = bankCounterparty.Id,
+				TargetCurrencyId = euro.Id,
+				BookedAt = bookedAt,
+				Order = 2,
+			};
+
+			var plannedPurchase = new PlannedPurchase
+			{
+				Id = i is 0 ? Guid.Empty : Guid.NewGuid(),
+				TransactionId = plannedTransaction.Id,
+				Price = plannedPrincipalTransfer.SourceAmount + plannedInterestTransfer.SourceAmount,
+				CurrencyId = euro.Id,
+				ProductId = loan.Id,
+				Amount = 1,
+				ProjectIds = [],
+			};
+
+			var plannedLoanPayment = new PlannedLoanPayment
+			{
+				Id = i is 0 ? Guid.Empty : Guid.NewGuid(),
+				LoanId = _loans.Single().Id,
+				TransactionId = plannedTransaction.Id,
+				Amount = plannedPrincipalTransfer.SourceAmount,
+				Interest = plannedInterestTransfer.SourceAmount,
+			};
+
+			_plannedTransactions.Add(plannedTransaction);
+			_plannedTransfers.AddRange([plannedPrincipalTransfer, plannedInterestTransfer]);
+			_plannedPurchases.Add(plannedPurchase);
+			_plannedLoanPayments.Add(plannedLoanPayment);
+		}
 	}
 
 	/// <inheritdoc />
-	public Task<LoginResult> LogInAsync(Login login) => throw new NotImplementedException();
+	public Task<LoginResult> LogInAsync(Login login) => Task.FromResult<LoginResult>(new SuccessfulLogin());
 
 	/// <inheritdoc />
 	public Task<ExternalLoginResult> SocialRegister() => throw new NotImplementedException();
@@ -485,6 +588,147 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 	/// <inheritdoc />
 	public Task RemoveRelatedTransactionAsync(Guid id, Guid relatedId) =>
 		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<TransactionSchedule>> GetTransactionSchedules(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_transactionSchedules.ToList());
+
+	/// <inheritdoc />
+	public Task<TransactionSchedule> GetTransactionSchedule(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_transactionSchedules.Single(schedule => schedule.Id == id));
+
+	/// <inheritdoc />
+	public async Task<Guid> CreateTransactionSchedule(TransactionScheduleCreation schedule)
+	{
+		var id = Guid.NewGuid();
+		await PutTransactionSchedule(id, schedule);
+		return id;
+	}
+
+	/// <inheritdoc />
+	public Task PutTransactionSchedule(Guid id, TransactionScheduleCreation schedule)
+	{
+		var existing = _transactionSchedules.SingleOrDefault(transactionSchedule => transactionSchedule.Id == id);
+		existing ??= new();
+
+		existing.Name = schedule.Name;
+		existing.StartingAt = schedule.StartingAt;
+		existing.Period = schedule.Period;
+		existing.Count = schedule.Count;
+
+		return Task.CompletedTask;
+	}
+
+	/// <inheritdoc />
+	public async Task DeleteTransactionSchedule(Guid id)
+	{
+		var schedule = await GetTransactionSchedule(id);
+		_transactionSchedules.Remove(schedule);
+	}
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(Interval interval, CancellationToken cancellationToken = default)
+	{
+		var transactions = _plannedTransactions
+			.Where(transaction =>
+			{
+				var date = _plannedTransfers
+					.Where(transfer => transfer.TransactionId == transaction.Id)
+					.Select(transfer => transfer.BookedAt)
+					.Max();
+
+				return date is { } instant && interval.Contains(instant);
+			})
+			.ToList();
+
+		return Task.FromResult(transactions);
+	}
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransactions.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(
+		Guid scheduleId,
+		CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransactions.Where(transaction => transaction.ScheduleId == scheduleId).ToList());
+
+	/// <inheritdoc />
+	public Task<PlannedTransaction> GetPlannedTransaction(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransactions.Single(transaction => transaction.Id == id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransaction(PlannedTransactionCreation transaction) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedTransaction(Guid id, PlannedTransactionCreation transaction) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransaction(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransfers.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransfers.Where(transfer => transfer.TransactionId == transactionId).ToList());
+
+	/// <inheritdoc />
+	public Task<PlannedTransfer> GetPlannedTransfer(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedTransfers.Single(transfer => transfer.Id == id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransfer(PlannedTransferCreation transfer) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedTransfer(Guid id, PlannedTransferCreation transfer) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransfer(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedPurchases.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedPurchases.Where(transfer => transfer.TransactionId == transactionId).ToList());
+
+	/// <inheritdoc />
+	public Task<PlannedPurchase> GetPlannedPurchase(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedPurchases.Single(purchase => purchase.Id == id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedPurchase(PlannedPurchaseCreation purchase) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedPurchase(Guid id, PlannedPurchaseCreation purchase) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedPurchase(Guid id) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedLoanPayments.ToList());
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(Guid transactionId, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedLoanPayments.Where(transfer => transfer.TransactionId == transactionId).ToList());
+
+	/// <inheritdoc />
+	public Task<PlannedLoanPayment> GetPlannedLoanPayment(Guid id, CancellationToken cancellationToken = default) =>
+		Task.FromResult(_plannedLoanPayments.Single(payment => payment.Id == id));
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedLoanPayment(LoanPaymentCreation loanPayment) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task PutPlannedLoanPayment(Guid id, LoanPaymentCreation transfer) => throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task DeletePlannedLoanPayment(Guid id) => throw new NotImplementedException();
 
 	/// <inheritdoc />
 	[Obsolete]
