@@ -14,15 +14,10 @@ using Gnomeshade.WebApi.V1.Controllers;
 namespace Gnomeshade.WebApi.Tests.Integration.V1.Controllers;
 
 [TestOf(typeof(CounterpartiesController))]
-public class CounterpartiesControllerTests : WebserverTests
+public sealed class CounterpartiesControllerTests(WebserverFixture fixture) : WebserverTests(fixture)
 {
 	private IGnomeshadeClient _gnomeshadeClient = null!;
 	private Currency _currency = null!;
-
-	public CounterpartiesControllerTests(WebserverFixture fixture)
-		: base(fixture)
-	{
-	}
 
 	[SetUp]
 	public async Task SetUp()
@@ -88,7 +83,7 @@ public class CounterpartiesControllerTests : WebserverTests
 		{
 			Name = $"{Guid.NewGuid()}",
 			CounterpartyId = counterpartyId,
-			Currencies = new() { new() { CurrencyId = _currency.Id } },
+			Currencies = [new() { CurrencyId = _currency.Id }],
 			PreferredCurrencyId = _currency.Id,
 		});
 

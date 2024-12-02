@@ -2,8 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
-
 using AutoMapper;
 
 using Gnomeshade.WebApi.V1;
@@ -49,6 +47,6 @@ public class MappingTests
 
 	private sealed class NonNullableTarget
 	{
-		public byte[] Bytes { get; init; } = Array.Empty<byte>();
+		public byte[] Bytes { get; init; } = [];
 	}
 }

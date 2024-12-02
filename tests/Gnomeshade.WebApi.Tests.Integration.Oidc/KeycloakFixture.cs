@@ -41,16 +41,16 @@ public sealed class KeycloakFixture : IAsyncDisposable
 
 		Client = new("gnomeshade")
 		{
-			Mappers = new[] { mapper },
+			Mappers = [mapper],
 			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = new[] { $"{ApiBaseUri}*" },
+			RedirectUris = [$"{ApiBaseUri}*"],
 		};
 
 		DesktopClient = new("gnomeshade_desktop")
 		{
-			Mappers = new[] { mapper },
+			Mappers = [mapper],
 			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = new[] { DesktopBaseUri },
+			RedirectUris = [DesktopBaseUri],
 		};
 
 		var realmConfiguration = new RealmConfiguration(

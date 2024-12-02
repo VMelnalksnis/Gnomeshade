@@ -48,9 +48,10 @@ cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade
 
 dpkg-deb --root-owner-group --build gnomeshade
 
-# unstripped-binary-or-object suppressed because gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
-# cannot be stripped without corrupting the application
+# unstripped-binary-or-object suppressed because gnomeshade/opt/gnomeshade/Gnomeshade.WebApi cannot be stripped without corrupting the application
+# embedded-library suppressed because .NET runtime includes zlib as of .NET 9; see https://learn.microsoft.com/en-us/dotnet/core/compatibility/containers/9.0/no-zlib
 lintian \
 	--suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt \
 	--suppress-tags unstripped-binary-or-object \
+	--suppress-tags embedded-library \
 	gnomeshade.deb

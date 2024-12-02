@@ -4,9 +4,14 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Gnomeshade.WebApi.Models;
 
+[UnconditionalSuppressMessage(
+	"Trimming",
+	"IL2075",
+	Justification = "Configuration can be safely trimmed if it is not referenced")]
 internal sealed class RequiredIfNotNullAttribute : RequiredAttribute
 {
 	private readonly string _propertyName;

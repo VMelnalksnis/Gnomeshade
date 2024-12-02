@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -205,13 +204,12 @@ public sealed class EndpointTests(WebserverFixture fixture) : WebserverTests(fix
 			.Attributes["value"]
 			.Value;
 
-		var formContent = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-		{
+		var formContent = new FormUrlEncodedContent([
 			new("Input.Username", username),
 			new("Input.Password", password),
 			new("__RequestVerificationToken", token),
 			new("Input.RememberMe", "false"),
-		});
+		]);
 
 		var antiForgeryCookies = GetCookieValue(getResponse);
 		var requestMessage = new HttpRequestMessage(HttpMethod.Post, _loginUri) { Content = formContent };

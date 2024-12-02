@@ -34,7 +34,7 @@ public sealed record OptionalTimeRange : IValidatableObject
 			return results;
 		}
 
-		results.Add(new(_errorMessage, new[] { nameof(From), nameof(To) }));
+		results.Add(new(_errorMessage, [nameof(From), nameof(To)]));
 		return results;
 	}
 }

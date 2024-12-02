@@ -11,9 +11,9 @@ internal static class Constants
 	internal const StringComparison Comparison = StringComparison.OrdinalIgnoreCase;
 
 	internal static readonly string[] DiscountIdentifiers =
-	{
+	[
 		"Atl. ",
 		"Atl ",
 		"ati ",
-	};
+	];
 }

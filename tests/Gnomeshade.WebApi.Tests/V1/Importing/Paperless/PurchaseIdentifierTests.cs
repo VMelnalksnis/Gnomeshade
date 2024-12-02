@@ -16,20 +16,20 @@ public sealed class PurchaseIdentifierTests
 	private static readonly Guid _gramId = Guid.NewGuid();
 
 	private readonly CurrencyEntity[] _currencies =
-	{
+	[
 		new() { AlphabeticCode = "EUR" },
-	};
+	];
 
 	private readonly UnitEntity[] _units =
-	{
+	[
 		new() { Name = "Gram", Symbol = "g", Id = _gramId },
 		new() { Name = "Kilogram", Symbol = "kg", Id = _kilogramId },
-	};
+	];
 
 	internal static ProductEntity[] Products { get; } =
-	{
+	[
 		new() { Name = "Tostermaize franču Brioche", UnitId = _gramId },
-	};
+	];
 
 	[TestCaseSource(typeof(RimiPurchaseIdentifierTestCaseSource))]
 	public void IdentifyPurchase_ShouldReturnExpected(
