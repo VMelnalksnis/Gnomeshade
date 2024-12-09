@@ -36,7 +36,7 @@ jobs:
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -85,7 +85,7 @@ jobs:
       - run: echo "BUILD_TAG=-test"
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -152,7 +152,7 @@ jobs:
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.0
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
