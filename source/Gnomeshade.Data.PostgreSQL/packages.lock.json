@@ -30,50 +30,44 @@
         "resolved": "2024.3.0",
         "contentHash": "ox5pkeLQXjvJdyAB4b2sBYAlqZGLh3PjSnP1bQNVx72ONuTJ9+34/+Rq91Fc0dG29XG9RgZur9+NcP4riihTug=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Npgsql.DependencyInjection": {
         "type": "Direct",
-        "requested": "[9.0.1, )",
-        "resolved": "9.0.1",
-        "contentHash": "M6ite6CVR4OJAth9rxFwY0FuWqbHTvA4OmAuP4X3MEZvDmA+XsuiTWtTuqMoSbZGMJ1shOqrc4UQRtyjcTgkVw==",
+        "requested": "[9.0.2, )",
+        "resolved": "9.0.2",
+        "contentHash": "kM14VF+DEDuJqHWqrSUcLwGqEG/Qc2ZikaCscpemGgNcMcUxP3UFSw99MvfnPlCdqnQTsJBZjozd+M7leS7xRA==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
-          "Npgsql": "9.0.1"
+          "Npgsql": "9.0.2"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Direct",
-        "requested": "[9.0.1, )",
-        "resolved": "9.0.1",
-        "contentHash": "nN9Tjg73Edr4oBhNkBsfHBduNUlDFty1gIX0Ztp0np82ElSCiEcwRuN11Kv4kx2H9VDQaEeMwWAIym5aVsgVyg==",
+        "requested": "[9.0.2, )",
+        "resolved": "9.0.2",
+        "contentHash": "cYdOGplIvr9KgsG8nJ8xnzBTImeircbgetlzS1OmepS5dAQW6PuGpVrLOKBNEwEvGYZPsV8037X5vZ/Dmpwz7Q==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "[9.0.0, 10.0.0)",
           "Microsoft.EntityFrameworkCore.Relational": "[9.0.0, 10.0.0)",
-          "Npgsql": "9.0.1"
+          "Npgsql": "9.0.2"
         }
       },
       "Npgsql.NodaTime": {
         "type": "Direct",
-        "requested": "[9.0.1, )",
-        "resolved": "9.0.1",
-        "contentHash": "DBSSS8xp0TYr+QGb4kri7kIV21AbuwDZ8rClbO3kPe/rK+AVDAmPmQB4jYbw57yESuxgDn4g+pqaT3UmRcZ2Fw==",
+        "requested": "[9.0.2, )",
+        "resolved": "9.0.2",
+        "contentHash": "jURb6VGmmR3pPae2N3HrUixSZ/U5ovqZgg/qo3m5Rq/q0m2fpxbZcsHZo21s5MLa/AfJAx4hcFMY98D4RtLdcg==",
         "dependencies": {
           "NodaTime": "3.2.0",
-          "Npgsql": "9.0.1"
+          "Npgsql": "9.0.2"
         }
       },
       "Npgsql.OpenTelemetry": {
         "type": "Direct",
-        "requested": "[9.0.1, )",
-        "resolved": "9.0.1",
-        "contentHash": "DrZLGcuJLKZsfKJzk6TjYMk8E5oZUAPhpPzeAKJQQtlfrVN7co84RhG87O7aesemdPV1GUonJktzGR+KPFcBWQ==",
+        "requested": "[9.0.2, )",
+        "resolved": "9.0.2",
+        "contentHash": "i62hdoWS0i+G9PXxE7G0G0bfpmwEhTKvF7qSsR+yqAspEyXYaXEAow3xCSGESvcc7CJZHsFGowiHosXmEfWYcw==",
         "dependencies": {
-          "Npgsql": "9.0.1",
+          "Npgsql": "9.0.2",
           "OpenTelemetry.API": "1.7.0"
         }
       },
@@ -218,8 +212,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "9.0.1",
-        "contentHash": "aZrXuBUUjRnvjoS4Lq0ZPYe3pnzAfK7TroGNGVpo4FCMBW1ypD/XfTTYjXpeRI8xcX5Otiv535Dy2jQWi98oeA==",
+        "resolved": "9.0.2",
+        "contentHash": "hCbO8box7i/XXiTFqCJ3GoowyLqx3JXxyrbOJ6om7dr+eAknvBNhhUHeJVGAQo44sySZTfdVffp4BrtPeLZOAA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         }
