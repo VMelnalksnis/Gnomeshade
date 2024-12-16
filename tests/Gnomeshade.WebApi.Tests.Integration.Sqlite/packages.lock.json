@@ -86,12 +86,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "9.0.0"
         }
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.12.0, )",
@@ -104,9 +98,9 @@
       },
       "NUnit": {
         "type": "Direct",
-        "requested": "[4.2.2, )",
-        "resolved": "4.2.2",
-        "contentHash": "mon0OPko28yZ/foVXrhiUvq1LReaGsBdziumyyYGxV/pOE4q92fuYeN+AF+gEU5pCjzykcdBt5l7xobTaiBjsg=="
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "dPClyF8aAmN8w/a7csFXUUbj0sivFVmSfX9CplV+dVeVUqnzoNFsLf7TjAPaxlrwbqHsr+F/pLd7ZEV4Sw9YHg=="
       },
       "NUnit.Analyzers": {
         "type": "Direct",
@@ -2038,7 +2032,7 @@
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "JunitXml.TestLogger": "[4.1.0, )",
           "Microsoft.NET.Test.Sdk": "[17.12.0, )",
-          "NUnit": "[4.2.2, )",
+          "NUnit": "[4.3.0, )",
           "NUnit3TestAdapter": "[4.6.0, )",
           "NodaTime.Bogus": "[3.0.2, )",
           "Verify.NUnit": "[28.4.0, )"
