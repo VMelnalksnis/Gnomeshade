@@ -96,9 +96,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
+        "requested": "[8.0.11, )",
+        "resolved": "8.0.11",
+        "contentHash": "zk5lnZrYJgtuJG8L4v17Ej8rZ3PUcR2iweNV08BaO5LbYHIi2wNaVNcJoLxvqgQdnjLlKnCCfVGLDr6QHeAarQ=="
       },
       "NodaTime": {
         "type": "Direct",
@@ -108,9 +108,9 @@
       },
       "NodaTime.Serialization.SystemTextJson": {
         "type": "Direct",
-        "requested": "[1.2.0, )",
-        "resolved": "1.2.0",
-        "contentHash": "HNMQdHw6xCrNaHEEvJlBek+uUNI4uySEQhU3t8FibZT9ASMz40y5qkLIwhrHsnXhxUzOPP4tmAGy8PfBwc3zMg==",
+        "requested": "[1.3.0, )",
+        "resolved": "1.3.0",
+        "contentHash": "Zf9sdKrfcId0rvZLOB7Yncy/cfCv20TdQ84IKE6CkcWW33u1wsRvmYUbfaP5MYUm+9vp9Yoi3G2vN1/9nZ/JCA==",
         "dependencies": {
           "NodaTime": "[3.0.0, 4.0.0)"
         }
@@ -1867,7 +1867,7 @@
           "Microsoft.Extensions.Options": "[9.0.0, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[9.0.0, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[9.0.0, )",
-          "NodaTime.Serialization.SystemTextJson": "[1.2.0, )"
+          "NodaTime.Serialization.SystemTextJson": "[1.3.0, )"
         }
       },
       "gnomeshade.webapi.models": {
