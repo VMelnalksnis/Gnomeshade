@@ -12,7 +12,7 @@
 		<PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.2.0.1"/>
 		<PackageVersion Include="Avalonia.Xaml.Interactivity" Version="11.2.0.1"/>
 		<PackageVersion Include="Bogus" Version="35.6.1"/>
-		<PackageVersion Include="coverlet.collector" Version="6.0.2">
+		<PackageVersion Include="coverlet.collector" Version="6.0.3">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageVersion>
