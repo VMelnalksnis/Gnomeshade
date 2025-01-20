@@ -86,12 +86,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "9.0.0"
         }
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.12.0, )",
@@ -2010,7 +2004,7 @@
           "Dapper": "[2.1.35, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.11, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.11, )",
-          "NodaTime": "[3.2.0, )",
+          "NodaTime": "[3.2.1, )",
           "dbup-core": "[5.0.87, )"
         }
       },
@@ -2062,7 +2056,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[8.0.11, )",
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": "[8.0.11, )",
           "Microsoft.Extensions.Http.Polly": "[9.0.0, )",
-          "NodaTime": "[3.2.0, )",
+          "NodaTime": "[3.2.1, )",
           "NodaTime.Serialization.SystemTextJson": "[1.2.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.10.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.10.0, )",
@@ -2094,7 +2088,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Features": "[5.0.17, )",
-          "NodaTime": "[3.2.0, )"
+          "NodaTime": "[3.2.1, )"
         }
       },
       "Ardalis.SmartEnum": {
@@ -2383,9 +2377,9 @@
       },
       "NodaTime": {
         "type": "CentralTransitive",
-        "requested": "[3.2.0, )",
-        "resolved": "3.2.0",
-        "contentHash": "yoRA3jEJn8NM0/rQm78zuDNPA3DonNSZdsorMUj+dltc1D+/Lc5h9YXGqbEEZozMGr37lAoYkcSM/KjTVqD0ow=="
+        "requested": "[3.2.1, )",
+        "resolved": "3.2.1",
+        "contentHash": "D1aHhUfPQUxU2nfDCVuSLahpp0xCYZTmj/KNH3mSK/tStJYcx9HO9aJ0qbOP3hzjGPV/DXOqY2AHe27Nt4xs4g=="
       },
       "NodaTime.Bogus": {
         "type": "CentralTransitive",
