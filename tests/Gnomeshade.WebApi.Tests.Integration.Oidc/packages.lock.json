@@ -68,12 +68,6 @@
           "Microsoft.Extensions.Hosting": "8.0.1"
         }
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.12.0, )",
@@ -1985,7 +1979,7 @@
       "gnomeshade.data": {
         "type": "Project",
         "dependencies": {
-          "Dapper": "[2.1.35, )",
+          "Dapper": "[2.1.66, )",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[8.0.11, )",
           "Microsoft.Extensions.Identity.Stores": "[8.0.11, )",
           "NodaTime": "[3.2.0, )",
@@ -2112,9 +2106,9 @@
       },
       "Dapper": {
         "type": "CentralTransitive",
-        "requested": "[2.1.35, )",
-        "resolved": "2.1.35",
-        "contentHash": "YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw=="
+        "requested": "[2.1.66, )",
+        "resolved": "2.1.66",
+        "contentHash": "/q77jUgDOS+bzkmk3Vy9SiWMaetTw+NOoPAV0xPBsGVAyljd5S6P+4RUW7R3ZUGGr9lDRyPKgAMj2UAOwvqZYw=="
       },
       "dbup-core": {
         "type": "CentralTransitive",
