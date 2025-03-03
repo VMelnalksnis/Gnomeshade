@@ -99,7 +99,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
 
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.1.9
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -176,7 +176,7 @@ jobs:
       AZURE_APP_NAME: gnomeshade-demo
       AZURE_APP_DOMAIN: 'https://gnomeshade-demo.azurewebsites.net/'
     steps:
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.1.9
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -226,7 +226,7 @@ jobs:
     concurrency: create-release
     timeout-minutes: 5
     steps:
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.1.9
         id: download
         with:
           path: artifacts
