@@ -18,8 +18,8 @@
 		</PackageVersion>
 		<PackageVersion Include="CsvHelper" Version="33.0.1"/>
 		<PackageVersion Include="Dapper" Version="2.1.35"/>
-		<PackageVersion Include="dbup-core" Version="5.0.87"/>
-		<PackageVersion Include="dbup-postgresql" Version="5.0.40"/>
+		<PackageVersion Include="dbup-core" Version="6.0.4"/>
+		<PackageVersion Include="dbup-postgresql" Version="6.0.3"/>
 		<PackageVersion Include="dbup-sqlite" Version="5.0.40"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.2.25"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds.Isolated" Version="1.2.25"/>
