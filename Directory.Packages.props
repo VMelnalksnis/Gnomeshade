@@ -23,7 +23,7 @@
 		<PackageVersion Include="dbup-sqlite" Version="5.0.40"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds" Version="1.2.25"/>
 		<PackageVersion Include="DotNet.ReproducibleBuilds.Isolated" Version="1.2.25"/>
-		<PackageVersion Include="FluentAssertions" Version="7.0.0"/>
+		<PackageVersion Include="FluentAssertions" Version="8.2.0"/>
 		<PackageVersion Include="FluentAssertions.NodaTime" Version="2.0.1"/>
 		<PackageVersion Include="FuzzySharp" Version="2.0.2"/>
 		<PackageVersion Include="HtmlAgilityPack" Version="1.11.71"/>
