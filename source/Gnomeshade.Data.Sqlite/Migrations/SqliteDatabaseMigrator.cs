@@ -5,7 +5,7 @@
 using DbUp;
 using DbUp.Builder;
 using DbUp.Engine;
-using DbUp.SQLite.Helpers;
+using DbUp.Sqlite.Helpers;
 
 using Gnomeshade.Data.Migrations;
 
@@ -32,6 +32,6 @@ internal sealed class SqliteDatabaseMigrator : DatabaseMigrator<SqliteConnection
 	/// <inheritdoc />
 	protected override UpgradeEngineBuilder GetBuilder(SupportedDatabases supportedDatabases)
 	{
-		return supportedDatabases.SQLiteDatabase(new SharedConnection(Connection));
+		return supportedDatabases.SqliteDatabase(new SharedConnection(Connection));
 	}
 }

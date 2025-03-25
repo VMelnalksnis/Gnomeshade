@@ -58,7 +58,7 @@ public abstract partial class DatabaseMigrator<TConnection> : IDatabaseMigrator
 			.WithScriptNameComparer(new MigrationScriptNameComparer())
 			.WithTransaction()
 			.LogScriptOutput()
-			.LogTo(UpgradeLog);
+			.LogTo(_logger);
 
 		if (_scriptPreprocessor is { } preprocessor)
 		{
