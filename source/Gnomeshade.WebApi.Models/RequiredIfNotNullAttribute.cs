@@ -4,9 +4,11 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Gnomeshade.WebApi.Models;
 
+[RequiresUnreferencedCode("Accesses other properties using reflection")]
 internal sealed class RequiredIfNotNullAttribute : RequiredAttribute
 {
 	private readonly string _propertyName;

@@ -20,13 +20,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
 
       - run: $env:BUILD_TAG = "-nightly"
         if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -45,7 +45,7 @@ jobs:
         id: publish
         run: deployment/build.ps1 "Gnomeshade.Desktop.Installer"
 
-      - uses: actions/upload-artifact@v4.4.3
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
@@ -61,8 +61,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
+      - uses: actions/setup-node@v4.3.0
         with:
           node-version: 18
           cache: 'npm'
@@ -72,7 +72,7 @@ jobs:
         if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -86,7 +86,7 @@ jobs:
           "${{ github.run_number }}"
           "-nightly"
 
-      - uses: actions/upload-artifact@v4.4.3
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: ${{ steps.publish.outputs.artifact-name }}
           path: ${{ steps.publish.outputs.artifact }}
@@ -99,7 +99,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
 
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.2.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -110,7 +110,7 @@ jobs:
           "${{ steps.download.outputs.download-path }}/Gnomeshade.WebApi_linux-x64.zip"
           "${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v4.4.3
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
@@ -122,10 +122,10 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -154,7 +154,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: docker/login-action@v3.3.0
+      - uses: docker/login-action@v3.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -176,7 +176,7 @@ jobs:
       AZURE_APP_NAME: gnomeshade-demo
       AZURE_APP_DOMAIN: 'https://gnomeshade-demo.azurewebsites.net/'
     steps:
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.2.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.zip
@@ -226,14 +226,14 @@ jobs:
     concurrency: create-release
     timeout-minutes: 5
     steps:
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.2.1
         id: download
         with:
           path: artifacts
 
       - name: Upload artifact to nightly release
         if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
-        uses: pyTooling/Actions/releaser/composite@v2.1.1
+        uses: pyTooling/Actions/releaser/composite@v4.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
@@ -245,7 +245,7 @@ jobs:
 
       - name: Create release
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        uses: softprops/action-gh-release@v2.1.0
+        uses: softprops/action-gh-release@v2.2.1
         with:
           draft: true
           prerelease: false

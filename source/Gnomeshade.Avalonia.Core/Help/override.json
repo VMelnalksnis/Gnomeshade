@@ -15,8 +15,8 @@
 		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.0.2023020321/License"
 	},
 	{
-		"Id": "Avalonia.BuildServices",
-		"Version": "0.0.29",
+		"Id": "Bogus",
+		"Version": "35.6.2",
 		"License": "MIT"
 	},
 	{

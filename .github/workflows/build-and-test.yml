@@ -28,15 +28,15 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
+      - uses: actions/setup-node@v4.3.0
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -56,14 +56,14 @@ jobs:
           OpenTelemetry__Enabled: false
 
       - name: Gather Code Coverage
-        uses: codecov/codecov-action@v5.0.7
+        uses: codecov/codecov-action@v5.4.0
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
       - name: Gather Test Results
-        uses: codecov/test-results-action@v1.0.1
+        uses: codecov/test-results-action@v1.1.0
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -75,8 +75,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
+      - uses: actions/setup-node@v4.3.0
         with:
           node-version: 18
           cache: 'npm'
@@ -85,7 +85,7 @@ jobs:
       - run: echo "BUILD_TAG=-test"
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -97,7 +97,7 @@ jobs:
       - name: Build debian package
         run: deployment/debian.sh "${{ steps.publish.outputs.artifact }}" "${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v4.4.3
+      - uses: actions/upload-artifact@v4.6.2
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
@@ -118,14 +118,14 @@ jobs:
           - ubuntu2404
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@v4.2.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
 
       - run: mv ${{ steps.download.outputs.download-path }}/gnomeshade.deb ./deployment/ansible/gnomeshade/molecule/default/gnomeshade.deb
 
-      - uses: gofrolist/molecule-action@v2.7.43
+      - uses: gofrolist/molecule-action@v2.7.56
         with:
           molecule_working_dir: './deployment/ansible/gnomeshade'
         env:
@@ -144,15 +144,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: actions/setup-dotnet@v4.1.0
-      - uses: actions/setup-node@v4.1.0
+      - uses: actions/setup-dotnet@v4.3.1
+      - uses: actions/setup-node@v4.3.0
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v4.1.2
+        uses: actions/cache@v4.2.3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}

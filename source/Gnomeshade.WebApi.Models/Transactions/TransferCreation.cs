@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
@@ -14,6 +15,8 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 /// <summary>Information needed to create a transfer.</summary>
 /// <seealso cref="Transfer"/>
 [PublicAPI]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+[UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code")]
 public sealed record TransferCreation : TransactionItemCreation
 {
 	/// <inheritdoc cref="Transfer.TransactionId"/>

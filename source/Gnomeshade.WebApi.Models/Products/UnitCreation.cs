@@ -4,6 +4,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 using JetBrains.Annotations;
 
@@ -11,6 +12,8 @@ namespace Gnomeshade.WebApi.Models.Products;
 
 /// <summary>The information needed to create or update a unit.</summary>
 [PublicAPI]
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+[UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code")]
 public sealed record UnitCreation : Creation
 {
 	/// <inheritdoc cref="Unit.Name"/>

@@ -306,8 +306,8 @@ public sealed class DeleteAccessTests : WebserverTests
 		using var assertionScope = new AssertionScope();
 
 		deletedEntity.Should().NotBeNull();
-		deletedEntity?.DeletedAt.Should().NotBeNull();
-		deletedEntity?.DeletedByUserId.Should().Be(userId);
+		deletedEntity.DeletedAt.Should().NotBeNull();
+		deletedEntity.DeletedByUserId.Should().Be(userId);
 	}
 
 	private Task ShouldBeNotFoundForOthers(Func<IGnomeshadeClient, Task> func, bool inverted = false)

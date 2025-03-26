@@ -2,6 +2,8 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
+
 using DbUp.Engine.Output;
 
 using Microsoft.Extensions.Logging;
@@ -22,11 +24,25 @@ internal sealed class DatabaseUpgradeLogger<TCategoryName> : IUpgradeLog
 	}
 
 	/// <inheritdoc />
-	public void WriteInformation(string format, params object[] args) => _logger.LogInformation(format, args);
+	public void LogTrace(string format, params object[] args) => Log(LogLevel.Trace, format, args);
 
 	/// <inheritdoc />
-	public void WriteError(string format, params object[] args) => _logger.LogError(format, args);
+	public void LogDebug(string format, params object[] args) => Log(LogLevel.Debug, format, args);
 
 	/// <inheritdoc />
-	public void WriteWarning(string format, params object[] args) => _logger.LogWarning(format, args);
+	public void LogInformation(string format, params object[] args) => Log(LogLevel.Information, format, args);
+
+	/// <inheritdoc />
+	public void LogWarning(string format, params object[] args) => Log(LogLevel.Warning, format, args);
+
+	/// <inheritdoc />
+	public void LogError(string format, params object[] args) => Log(LogLevel.Error, format, args);
+
+	/// <inheritdoc />
+	public void LogError(Exception ex, string format, params object[] args) => Log(LogLevel.Error, format, args, ex);
+
+	private void Log(LogLevel level, string format, object[] args, Exception? exception = null)
+	{
+		_logger.Log(level, exception, format, args);
+	}
 }
