@@ -41,12 +41,6 @@
         "resolved": "4.1.0",
         "contentHash": "DsED7jD2lJK8K3Chpex38yNH2UmuKck1ML4QtSeBVk+eH7uVJL95peTmg6sxEje93IOu9bn1dMfXPqtsfAWcBg=="
       },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.10, )",
-        "resolved": "8.0.10",
-        "contentHash": "xT8jYjlroY7SLbGtoV9vUTVW/TPgodL4Egc31a444Xe0TMytLZ3UlKQ0kxMZsy/CrWsFB6wtKnSG1SsXcWreew=="
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.12.0, )",
@@ -105,11 +99,11 @@
       },
       "Avalonia": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "gycD/+pjaNh6288vEGDOcgks3Gz/dhZaZu6VSao6wMBXAQpBMEFlU4gW1dXXH2N0zdOlv3Jo1PgmH2megCe2yw==",
+        "resolved": "11.2.8",
+        "contentHash": "zvrffaxj4Jl8yhJ74jrHRTJG2EJM2j9LyXbw2FVk3jhU35Zq7JP+NIBHNW6FCMS1L+bCsrt750wNVjqWPFAYaQ==",
         "dependencies": {
-          "Avalonia.BuildServices": "0.0.29",
-          "Avalonia.Remote.Protocol": "11.2.2",
+          "Avalonia.BuildServices": "0.0.31",
+          "Avalonia.Remote.Protocol": "11.2.8",
           "MicroCom.Runtime": "0.11.0"
         }
       },
@@ -120,37 +114,46 @@
       },
       "Avalonia.BuildServices": {
         "type": "Transitive",
-        "resolved": "0.0.29",
-        "contentHash": "U4eJLQdoDNHXtEba7MZUCwrBErBTxFp6sUewXBOdAhU0Kwzwaa/EKFcYm8kpcysjzKtfB4S0S9n0uxKZFz/ikw=="
+        "resolved": "0.0.31",
+        "contentHash": "KmCN6Hc+45q4OnF10ge450yVUvWuxU6bdQiyKqiSvrHKpahNrEdk0kG6Ip6GHk2SKOCttGQuA206JVdkldEENg=="
+      },
+      "Avalonia.Controls.ColorPicker": {
+        "type": "Transitive",
+        "resolved": "11.2.8",
+        "contentHash": "AWUoXLK9l8WnlXS+7VvjNXKK31C7Mkj/c4c7FWiyLqPEerjO6fJmAVasNN/8hkzyc1uPadqup8ya9XiEhoudxg==",
+        "dependencies": {
+          "Avalonia": "11.2.8",
+          "Avalonia.Remote.Protocol": "11.2.8"
+        }
       },
       "Avalonia.FreeDesktop": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "bx5obPjGTmAg1YtHJexyvetEXQgfu5QjQjczvCjd6f8OFoeVqUP76ttsBwEkPhP9aVGGZ7xFKF9JGmgC4zCHbg==",
+        "resolved": "11.2.8",
+        "contentHash": "KokdEXdNyQBK/YYYXuld0uPyyWcNuSoUMl71LHSJZJWdkT7DufeSHuGVYSyGXp1SXe7zs2IJveySwFJdg2Ke7Q==",
         "dependencies": {
-          "Avalonia": "11.2.2",
+          "Avalonia": "11.2.8",
           "Tmds.DBus.Protocol": "0.20.0"
         }
       },
       "Avalonia.Native": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "eJYdGvLNzqSPVzubMm78ma3so96t7xuxQS4tKz3dOw13lF+/X32A9vflkifyIMKY/AqFsj7T7qHG7g8W0T5RWg==",
+        "resolved": "11.2.8",
+        "contentHash": "MGezqfzOJhrFZkv71+2CpGQ3bymDacdaB7UWpsgZdI5afuBfVg3ZX3rao+OipLsdswY3HsM2F+QoDP1preFomQ==",
         "dependencies": {
-          "Avalonia": "11.2.2"
+          "Avalonia": "11.2.8"
         }
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "76nQ2/TkJAmthHcCPoVznnCfsqhy+pDPFBhySoRv3ZIsj5q9jIgR0bi7rznIcFIKnfoXMEpB1uxMHbfeQ99OgQ=="
+        "resolved": "11.2.8",
+        "contentHash": "fAa9bIHct0X7roDO0hIp41t6VRAeNWMkmTV8T3sqdG88IukJBKmeWPLXMlOZ86kIU5V8M3KKtMmb1HNysdDACA=="
       },
       "Avalonia.Skia": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "/kNUpB8Lnx7wvVNLybkMjp9YbG4xdiyAmYTBRQAM7hObMPQRx5HKUQJ9AmduCt9KY50lvUkCfTbk/ROnUFhQ3w==",
+        "resolved": "11.2.8",
+        "contentHash": "OJZWn8dKETeU/Z3kYUZKf9lFpe+BCUHYWAeUxA/8AuT483C/xXnJbLjb8TVfruXNZippHqI0l+U43Z0lybkXbg==",
         "dependencies": {
-          "Avalonia": "11.2.2",
+          "Avalonia": "11.2.8",
           "HarfBuzzSharp": "7.3.0.3",
           "HarfBuzzSharp.NativeAssets.Linux": "7.3.0.3",
           "HarfBuzzSharp.NativeAssets.WebAssembly": "7.3.0.3",
@@ -159,23 +162,31 @@
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.9"
         }
       },
+      "Avalonia.Themes.Simple": {
+        "type": "Transitive",
+        "resolved": "11.2.8",
+        "contentHash": "x4QslA33tCmjZEosu1leUoDvCUPFX0YsDwAiSiKmfG2Gr98wqbx25C5avgwYmu4SmGsW65t6DabEgxWFwZ48oA==",
+        "dependencies": {
+          "Avalonia": "11.2.8"
+        }
+      },
       "Avalonia.Win32": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "MQDY5f+GIbuv5klPUWf3WSh0cugEfxnHVQKkIJ02FnR3xzZpEQyfMvqfG8emMKmLAQ7ivqH68Mny0WuPKofc0Q==",
+        "resolved": "11.2.8",
+        "contentHash": "6N1f+iy+vGYjRJV2ZIBogTSk5NQBhOUN1eKbVX5wq4v4UngXu1Wt1vWnMHZnxalWwkxQAiRGzYaHH/qgHSQBaw==",
         "dependencies": {
-          "Avalonia": "11.2.2",
+          "Avalonia": "11.2.8",
           "Avalonia.Angle.Windows.Natives": "2.1.22045.20230930"
         }
       },
       "Avalonia.X11": {
         "type": "Transitive",
-        "resolved": "11.2.2",
-        "contentHash": "uptryb4T1h6mBgMxRU0B7IX01CjRwT0KvxPbq2ObhF8CgehQPIl52lcAe09CFi+ZEeu3EJi1/Fa1MH4PDsp4Sw==",
+        "resolved": "11.2.8",
+        "contentHash": "wTFj/CKWqD16LkhfwUlFeNtpH7cErMQUr03F+0NMVtEiNJRFRprvII4TsQXGAmBkpLUfMU8x9g9szYx+s7hMsw==",
         "dependencies": {
-          "Avalonia": "11.2.2",
-          "Avalonia.FreeDesktop": "11.2.2",
-          "Avalonia.Skia": "11.2.2"
+          "Avalonia": "11.2.8",
+          "Avalonia.FreeDesktop": "11.2.8",
+          "Avalonia.Skia": "11.2.8"
         }
       },
       "Avalonia.Xaml.Interactions": {
@@ -643,8 +654,8 @@
       "gnomeshade.avalonia.core": {
         "type": "Project",
         "dependencies": {
-          "Avalonia.Controls.DataGrid": "[11.2.2, )",
-          "Avalonia.Xaml.Interactivity": "[11.2.0.1, )",
+          "Avalonia.Controls.DataGrid": "[11.2.8, )",
+          "Avalonia.Xaml.Interactivity": "[11.2.7.2, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "IdentityModel.OidcClient": "[6.0.0, )",
           "LiveChartsCore.SkiaSharpView.Avalonia": "[2.0.0-rc2, )",
@@ -660,8 +671,9 @@
         "type": "Project",
         "dependencies": {
           "AdysTech.CredentialManager": "[2.6.0, )",
-          "Avalonia.Desktop": "[11.2.2, )",
-          "Avalonia.Themes.Fluent": "[11.2.2, )",
+          "Avalonia.Desktop": "[11.2.8, )",
+          "Avalonia.Diagnostics": "[11.2.8, )",
+          "Avalonia.Themes.Fluent": "[11.2.8, )",
           "Avalonia.Xaml.Behaviors": "[11.2.0.1, )",
           "Gnomeshade.Avalonia.Core": "[1.0.0, )",
           "Microsoft.Extensions.Configuration.Json": "[9.0.0, )",
@@ -700,34 +712,46 @@
       },
       "Avalonia.Controls.DataGrid": {
         "type": "CentralTransitive",
-        "requested": "[11.2.2, )",
-        "resolved": "11.2.2",
-        "contentHash": "h86QMlOvjDsihg64WYAvyxFWhwFf30WffwoY8vJGF3BgLpahW+VjNeq5GoO0VyGWWJI2vdTJEzO5fjb8MEpwAg==",
+        "requested": "[11.2.8, )",
+        "resolved": "11.2.8",
+        "contentHash": "qrHnurYxbIn5rSLrBkhGvfWTxORwPR4abyH8fG7L/IE9QRoMdqr4aLsA4WRc8KiaKr9e/krGB2WpK7goAbkd/Q==",
         "dependencies": {
-          "Avalonia": "11.2.2",
-          "Avalonia.Remote.Protocol": "11.2.2"
+          "Avalonia": "11.2.8",
+          "Avalonia.Remote.Protocol": "11.2.8"
         }
       },
       "Avalonia.Desktop": {
         "type": "CentralTransitive",
-        "requested": "[11.2.2, )",
-        "resolved": "11.2.2",
-        "contentHash": "UPq1dmCR4AxDEaR7H/L/hqYlzqAox0LbUUChfbTs8HhSRZV4uoDBVzebp8Gl5x0sb6j+nr3Nbp1lpr/4C1dG4A==",
+        "requested": "[11.2.8, )",
+        "resolved": "11.2.8",
+        "contentHash": "qQ+9tqS0Wgl8vkBRlOwD+3Cg+iaa5yH/z1gpTjuUcqlr6MrOQvmAHEjTpbfwFM98983UVVq5DIhTKMlHOnx0jA==",
         "dependencies": {
-          "Avalonia": "11.2.2",
-          "Avalonia.Native": "11.2.2",
-          "Avalonia.Skia": "11.2.2",
-          "Avalonia.Win32": "11.2.2",
-          "Avalonia.X11": "11.2.2"
+          "Avalonia": "11.2.8",
+          "Avalonia.Native": "11.2.8",
+          "Avalonia.Skia": "11.2.8",
+          "Avalonia.Win32": "11.2.8",
+          "Avalonia.X11": "11.2.8"
+        }
+      },
+      "Avalonia.Diagnostics": {
+        "type": "CentralTransitive",
+        "requested": "[11.2.8, )",
+        "resolved": "11.2.8",
+        "contentHash": "E6hLOMp9w1lmM15gM676lNczItQsWKKAkZXckVnukWl2uQPMUCKrmXmfO8Zp8xH8rdbigr1x7YT/ZUt6elwPfA==",
+        "dependencies": {
+          "Avalonia": "11.2.8",
+          "Avalonia.Controls.ColorPicker": "11.2.8",
+          "Avalonia.Controls.DataGrid": "11.2.8",
+          "Avalonia.Themes.Simple": "11.2.8"
         }
       },
       "Avalonia.Themes.Fluent": {
         "type": "CentralTransitive",
-        "requested": "[11.2.2, )",
-        "resolved": "11.2.2",
-        "contentHash": "75z5fu4R3myG4TiyPKXHpjA3Jimq6InBB+inLugNHtONuDT9pQdt/CMPhnMcRaueBLjvaJTFs4KS5U8+sGTu0A==",
+        "requested": "[11.2.8, )",
+        "resolved": "11.2.8",
+        "contentHash": "tbx3/YEskdM2YAfy4V1kvYxHlD8zuWgCUCs1ICubH1GaAVwuVBvRsWy4EhiG/Pm2msPGwsnB1BZM6itJmicwFA==",
         "dependencies": {
-          "Avalonia": "11.2.2"
+          "Avalonia": "11.2.8"
         }
       },
       "Avalonia.Xaml.Behaviors": {
@@ -748,11 +772,11 @@
       },
       "Avalonia.Xaml.Interactivity": {
         "type": "CentralTransitive",
-        "requested": "[11.2.0.1, )",
-        "resolved": "11.2.0.1",
-        "contentHash": "1Hy8HmRqFbnlRwH5CHMfReJ8uCIUEs8bsrm+VBH4/otXwjO/K3a4ogw1psATS845v1I2jy3loQhoSlccX0QEsA==",
+        "requested": "[11.2.7.2, )",
+        "resolved": "11.2.7.2",
+        "contentHash": "EaYD+pOau6IpBbgyM+JxgFuc53sad1bh88ctpgkfmLsVLwabIsckCqm8P23xzaMwiavmnEqPb1QPAzVHOgtasw==",
         "dependencies": {
-          "Avalonia": "11.2.0"
+          "Avalonia": "11.2.7"
         }
       },
       "IdentityModel.OidcClient": {
