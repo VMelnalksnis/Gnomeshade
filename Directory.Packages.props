@@ -61,7 +61,7 @@
 		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1"/>
 		<PackageVersion Include="Npgsql.NodaTime" Version="9.0.1"/>
 		<PackageVersion Include="Npgsql.OpenTelemetry" Version="9.0.1"/>
-		<PackageVersion Include="NUnit" Version="4.2.2"/>
+		<PackageVersion Include="NUnit" Version="4.3.2"/>
 		<PackageVersion Include="NUnit.Analyzers" Version="4.4.0"/>
 		<PackageVersion Include="NUnit3TestAdapter" Version="4.6.0"/>
 		<PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0"/>
@@ -81,7 +81,7 @@
 		<PackageVersion Include="System.Linq.Async" Version="6.0.1"/>
 		<PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556"/>
 		<PackageVersion Include="Testcontainers.PostgreSql" Version="3.5.0"/>
-		<PackageVersion Include="Verify.NUnit" Version="28.4.0"/>
+		<PackageVersion Include="Verify.NUnit" Version="30.0.0"/>
 		<PackageVersion Include="VMelnalksnis.ISO20022DotNet" Version="0.3.4"/>
 		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.4.1"/>
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="1.0.0"/>
