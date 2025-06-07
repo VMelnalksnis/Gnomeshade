@@ -1,6 +1,10 @@
 {
   "version": 2,
   "dependencies": {
-    "native,Version=v0.0": {}
+    "native,Version=v0.0": {},
+    "native,Version=v0.0/win": {},
+    "native,Version=v0.0/win-arm64": {},
+    "native,Version=v0.0/win-x64": {},
+    "native,Version=v0.0/win-x86": {}
   }
 }

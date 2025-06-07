@@ -21,11 +21,11 @@ public sealed partial class CounterpartyMergeViewModel : ViewModelBase
 
 	/// <summary>Gets a typed collection of counterparties in <see cref="SourceDataGridView"/>.</summary>
 	[Notify(Setter.Private)]
-	private DataGridItemCollectionView<CounterpartyRow> _sourceCounterparties;
+	private DataGridItemCollectionView<CounterpartyRow> _sourceCounterparties = [];
 
 	/// <summary>Gets a typed collection of counterparties in <see cref="TargetDataGridView"/>.</summary>
 	[Notify(Setter.Private)]
-	private DataGridItemCollectionView<CounterpartyRow> _targetCounterparties;
+	private DataGridItemCollectionView<CounterpartyRow> _targetCounterparties = [];
 
 	/// <summary>Gets or sets the counterparty to merge.</summary>
 	[Notify]
@@ -42,8 +42,6 @@ public sealed partial class CounterpartyMergeViewModel : ViewModelBase
 		: base(activityService)
 	{
 		_gnomeshadeClient = gnomeshadeClient;
-		_sourceCounterparties = new(Array.Empty<CounterpartyRow>());
-		_targetCounterparties = new(Array.Empty<CounterpartyRow>());
 	}
 
 	/// <summary>Gets a grid view of all counterparties that can be merged.</summary>

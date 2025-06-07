@@ -88,7 +88,7 @@ public class CounterpartiesControllerTests : WebserverTests
 		{
 			Name = $"{Guid.NewGuid()}",
 			CounterpartyId = counterpartyId,
-			Currencies = new() { new() { CurrencyId = _currency.Id } },
+			Currencies = [new() { CurrencyId = _currency.Id }],
 			PreferredCurrencyId = _currency.Id,
 		});
 

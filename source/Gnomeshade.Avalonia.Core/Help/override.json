@@ -20,6 +20,11 @@
 		"License": "MIT"
 	},
 	{
+		"Id": "Bogus",
+		"Version": "35.6.3",
+		"License": "MIT"
+	},
+	{
 		"Id": "Docker.DotNet",
 		"Version": "3.125.15",
 		"License": "MIT"

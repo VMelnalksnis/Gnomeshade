@@ -2,6 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -28,6 +29,12 @@ public sealed class DataGridItemCollectionView<T> : IEnumerable<T>, INotifyColle
 	where T : class, INotifyPropertyChanged
 {
 	private readonly DataGridCollectionView _dataGridCollectionView;
+
+	/// <summary>Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class.</summary>
+	public DataGridItemCollectionView()
+		: this(Array.Empty<T>())
+	{
+	}
 
 	/// <summary>Initializes a new instance of the <see cref="DataGridItemCollectionView{T}"/> class from a collection of items.</summary>
 	/// <param name="source">The source for the collection.</param>

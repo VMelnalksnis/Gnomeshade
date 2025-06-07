@@ -112,8 +112,8 @@ public class AutoMapperTests
 			Bic = "AAAA-BB-CC-123",
 			Iban = "LV97HABA0012345678910",
 			AccountNumber = "123456789",
-			Currencies = new()
-			{
+			Currencies =
+			[
 				new()
 				{
 					Id = Guid.NewGuid(),
@@ -123,7 +123,7 @@ public class AutoMapperTests
 					ModifiedAt = SystemClock.Instance.GetCurrentInstant(),
 					ModifiedByUserId = Guid.NewGuid(),
 				},
-			},
+			],
 		};
 
 		var accountModel = _mapper.Map<Account>(account);

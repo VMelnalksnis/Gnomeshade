@@ -9,11 +9,4 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 namespace Gnomeshade.WebApi.V1.Authorization;
 
 /// <summary>Requires the user to have the <see cref="Roles.Administrator"/> role.</summary>
-public sealed class AdministratorRoleRequirement : RolesAuthorizationRequirement
-{
-	/// <summary>Initializes a new instance of the <see cref="AdministratorRoleRequirement"/> class.</summary>
-	public AdministratorRoleRequirement()
-		: base(new[] { Roles.Administrator })
-	{
-	}
-}
+public sealed class AdministratorRoleRequirement() : RolesAuthorizationRequirement([Roles.Administrator]);

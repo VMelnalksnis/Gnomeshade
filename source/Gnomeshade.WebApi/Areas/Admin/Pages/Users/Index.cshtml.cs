@@ -40,7 +40,7 @@ public sealed class Index : PageModel
 	}
 
 	/// <summary>Gets a collection of all users.</summary>
-	public IEnumerable<UserData> Users { get; private set; } = Array.Empty<UserData>();
+	public IEnumerable<UserData> Users { get; private set; } = [];
 
 	/// <summary>Handles requests made by the user.</summary>
 	/// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>

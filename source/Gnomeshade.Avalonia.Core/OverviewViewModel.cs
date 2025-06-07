@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ public abstract partial class OverviewViewModel<TRow, TUpsertion> : ViewModelBas
 {
 	/// <summary>Gets or sets a typed collection of items in <see cref="DataGridView"/>.</summary>
 	[Notify(Setter.Protected)]
-	private DataGridItemCollectionView<TRow> _rows = new(Array.Empty<TRow>());
+	private DataGridItemCollectionView<TRow> _rows = [];
 
 	/// <summary>Gets or sets the select row from <see cref="Rows"/>.</summary>
 	[Notify]

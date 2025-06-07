@@ -27,7 +27,7 @@ public sealed partial class LicensesViewModel : ViewModelBase
 
 	/// <summary>Gets a collection of all dependencies.</summary>
 	[Notify(Setter.Private)]
-	private DataGridItemCollectionView<PackageInfo> _packages;
+	private DataGridItemCollectionView<PackageInfo> _packages = [];
 
 	/// <summary>Gets or sets the selected dependency.</summary>
 	[Notify]
@@ -38,8 +38,6 @@ public sealed partial class LicensesViewModel : ViewModelBase
 	public LicensesViewModel(IActivityService activityService)
 		: base(activityService)
 	{
-		_packages = new(Array.Empty<PackageInfo>());
-
 		Description = """
 Gnomeshade is licensed under the GNU Affero General Public License 3.0 (AGPL 3.0).
 Below is a list of all packages and their licenses, grouped by projects, which Gnomeshade depends on.

@@ -101,7 +101,7 @@ internal sealed class MockBrowser : Browser
 		var loginUrl = htmlDocument
 			.DocumentNode
 			.SelectSingleNode("//form")
-			.Attributes["action"]
+			?.Attributes["action"]
 			.Value
 			.Replace("&amp;", "&");
 

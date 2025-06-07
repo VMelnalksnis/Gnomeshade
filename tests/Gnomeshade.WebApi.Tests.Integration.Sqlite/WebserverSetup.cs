@@ -13,7 +13,7 @@ namespace Gnomeshade.WebApi.Tests.Integration;
 [SetUpFixture]
 public static class WebserverSetup
 {
-	internal static List<WebserverFixture> WebserverFixtures { get; } = new() { new SqliteFixture() };
+	internal static List<WebserverFixture> WebserverFixtures { get; } = [new SqliteFixture()];
 
 	[OneTimeSetUp]
 	public static Task OneTimeSetUpAsync() => Task.WhenAll(WebserverFixtures.Select(fixture => fixture.Initialize()));

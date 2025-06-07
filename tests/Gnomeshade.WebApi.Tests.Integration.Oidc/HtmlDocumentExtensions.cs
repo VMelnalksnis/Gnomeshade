@@ -13,25 +13,29 @@ namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 internal static class HtmlDocumentExtensions
 {
-	internal static (string Action, FormUrlEncodedContent Content) GetForm(this HtmlDocument htmlDocument, string xpath)
+	internal static (string? Action, FormUrlEncodedContent Content) GetForm(
+		this HtmlDocument htmlDocument,
+		string xpath)
 	{
 		var formNode = htmlDocument.DocumentNode.SelectSingleNode(xpath);
-		var action = formNode.Attributes["action"].Value.Replace("&amp;", "&");
+		var action = formNode?.Attributes["action"].Value.Replace("&amp;", "&");
 
 		var buttonNodes = formNode
-				.SelectNodes($"{xpath}//button")
+				?.SelectNodes($"{xpath}//button")
 				?.Where(node => node.Attributes.Contains("name")) ??
-			Array.Empty<HtmlNode>();
+			[];
 
-		var inputNodes = formNode.SelectNodes($"{xpath}//input")?.ToArray() ?? Array.Empty<HtmlNode>();
+		var inputNodes = formNode?.SelectNodes($"{xpath}//input")?.ToArray() ?? [];
 
 		var inputs = inputNodes
 			.Concat(buttonNodes)
 			.Select(node =>
 			{
-				var name = node.Attributes["name"]?.Value ??
-					throw new InvalidOperationException("Input element does not have a name");
+				// ReSharper disable ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+				var name = node.Attributes["name"]?.Value ?? throw new InvalidOperationException("Input element does not have a name");
 				var value = node.Attributes["value"]?.Value;
+
+				// ReSharper restore ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
 
 				return new KeyValuePair<string, string?>(name, value);
 			})

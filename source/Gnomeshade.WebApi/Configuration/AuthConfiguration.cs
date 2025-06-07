@@ -33,9 +33,9 @@ internal static class AuthConfiguration
 	internal const string OidcSuffix = "_oidc";
 
 	private static readonly string[] _supportedOAuthProviders =
-	{
+	[
 		GitHubAuthenticationDefaults.AuthenticationScheme,
-	};
+	];
 
 	internal static IServiceCollection AddAuthenticationAndAuthorization(
 		this IServiceCollection services,

@@ -2,7 +2,6 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -23,7 +22,7 @@ internal sealed class SqliteFixture : WebserverFixture
 
 	internal override string Name => "SQLite";
 
-	protected override IEnumerable<IContainer> Containers => Array.Empty<IContainer>();
+	protected override IEnumerable<IContainer> Containers => [];
 
 	protected override IConfiguration GetAdditionalConfiguration() => new ConfigurationBuilder()
 		.AddInMemoryCollection(new Dictionary<string, string?>

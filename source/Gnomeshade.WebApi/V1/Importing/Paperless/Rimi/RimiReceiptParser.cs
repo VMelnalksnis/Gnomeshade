@@ -20,7 +20,7 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 	private const string _startIdentifier = "\n\n\n\n\n";
 
 	private static readonly (string, string)[] _replace =
-	{
+	[
 		("_", " "),
 		("é", "ē"),
 		("°", string.Empty),
@@ -29,18 +29,18 @@ public sealed class RimiReceiptParser : IPaperlessDocumentParser
 		("\"", string.Empty),
 		("“", string.Empty),
 		("|", string.Empty),
-	};
+	];
 
 	// todo need a better way to catch all parsing errors
 	private static readonly string[] _endIdentifiers =
-	{
+	[
 		"ATLAIDES",
 		"ATDALDES",
 		"ATLALDES",
 		"Citas akcijas",
 		"Makeajanu karte",
 		"Makeajamu karte",
-	};
+	];
 
 	private readonly ILogger<RimiReceiptParser> _logger;
 
