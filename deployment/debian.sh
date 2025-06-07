@@ -46,7 +46,7 @@ mv changelog.gz $changelog_path
 mkdir -p gnomeshade/lib/systemd/system
 cp deployment/debian/gnomeshade.service gnomeshade/lib/systemd/system/gnomeshade.service
 
-dpkg-deb --root-owner-group --build gnomeshade
+dpkg-deb --root-owner-group -Zxz --build gnomeshade
 
 # unstripped-binary-or-object suppressed because gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
 # cannot be stripped without corrupting the application
