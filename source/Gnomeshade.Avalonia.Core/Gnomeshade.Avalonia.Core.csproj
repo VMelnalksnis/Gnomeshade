@@ -6,24 +6,24 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
+		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Avalonia.Controls.DataGrid" />
-		<PackageReference Include="Avalonia.Xaml.Interactivity" />
-		<PackageReference Include="IdentityModel.OidcClient" />
-		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="Microsoft.Extensions.Http" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
-		<PackageReference Include="PropertyChanged.SourceGenerator" />
+		<PackageReference Include="Avalonia.Controls.DataGrid"/>
+		<PackageReference Include="IdentityModel.OidcClient"/>
+		<PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+		<PackageReference Include="Microsoft.Extensions.Http"/>
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions"/>
+		<PackageReference Include="Microsoft.Extensions.Options.DataAnnotations"/>
+		<PackageReference Include="PropertyChanged.SourceGenerator"/>
+		<PackageReference Include="Xaml.Behaviors.Avalonia"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Help\licenses.json" />
+		<EmbeddedResource Include="Help\licenses.json"/>
 	</ItemGroup>
 
 </Project>

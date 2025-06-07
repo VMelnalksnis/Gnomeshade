@@ -143,9 +143,9 @@
 	</Panel>
 
 	<Interaction.Behaviors>
-		<interactivity:WindowActivatedTrigger>
+		<EventTriggerBehavior EventName="Opened">
 			<InvokeCommandAction Command="{Binding Initialize}" />
-		</interactivity:WindowActivatedTrigger>
+		</EventTriggerBehavior>
 	</Interaction.Behaviors>
 
 </Window>
