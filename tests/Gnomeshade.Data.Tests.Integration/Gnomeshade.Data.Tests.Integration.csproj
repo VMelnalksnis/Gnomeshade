@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -9,22 +9,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj"/>
+		<ProjectReference Include="..\..\source\Gnomeshade.Data.PostgreSQL\Gnomeshade.Data.PostgreSQL.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bogus"/>
-		<PackageReference Include="CsvHelper"/>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
-		<PackageReference Include="NodaTime.Bogus"/>
-		<PackageReference Include="Npgsql.NodaTime"/>
-		<PackageReference Include="Testcontainers.PostgreSql"/>
+		<PackageReference Include="Bogus" />
+		<PackageReference Include="CsvHelper" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+		<PackageReference Include="Microsoft.Extensions.Identity.Stores" />
+		<PackageReference Include="NodaTime.Bogus" />
+		<PackageReference Include="Npgsql.NodaTime" />
+		<PackageReference Include="Testcontainers.PostgreSql" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="currencies.csv"/>
+		<EmbeddedResource Include="currencies.csv" />
 	</ItemGroup>
 
 </Project>
