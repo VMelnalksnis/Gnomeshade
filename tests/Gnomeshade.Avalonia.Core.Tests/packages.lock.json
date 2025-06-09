@@ -22,9 +22,9 @@
       },
       "FluentAssertions": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "mTLbcU991EQ1SEmNbVBaGGGJy0YFzvGd1sYJGNZ07nlPKuyHSn1I22aeKzqQXgEiaKyRO6MSCto9eN9VxMwBdA==",
+        "requested": "[7.2.0, )",
+        "resolved": "7.2.0",
+        "contentHash": "k94gV49Otru4e9nKtj36KpA9UkjuAGKPmhfM0oqyI+rrtxhSrgaeEhILR0AbJ9iNaoagAeQtawPz6njQOC6WQA==",
         "dependencies": {
           "System.Configuration.ConfigurationManager": "6.0.0"
         }
@@ -40,12 +40,6 @@
         "requested": "[6.1.0, )",
         "resolved": "6.1.0",
         "contentHash": "a3ciawoHOzqcry7yS5z9DerNyF9QZi6fEZZJPILSy6Noj6+r8Ydma+cENA6wvivXDCblpXxw72wWT9QApNy/0w=="
-      },
-      "Microsoft.NET.ILLink.Tasks": {
-        "type": "Direct",
-        "requested": "[8.0.16, )",
-        "resolved": "8.0.16",
-        "contentHash": "0H1QaKpVibe++Zx6EYJQGhrpfz2bBPGiQ7Rpsmx8I3+oKv+ZRRIfVfmcj50KuZlhhRE6V02y5bUjP+V2oPM2ng=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
@@ -594,7 +588,7 @@
         "type": "Project",
         "dependencies": {
           "Bogus": "[35.6.3, )",
-          "FluentAssertions": "[7.0.0, )",
+          "FluentAssertions": "[7.2.0, )",
           "Gnomeshade.WebApi.Client": "[1.0.0, )",
           "JunitXml.TestLogger": "[6.1.0, )",
           "Microsoft.NET.Test.Sdk": "[17.14.1, )",
