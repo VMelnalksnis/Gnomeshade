@@ -202,6 +202,19 @@ internal static class Queries
 		internal static string Update { get; } = Read($"Queries.{nameof(Purchase)}.Update.sql");
 	}
 
+	internal static class PlannedPurchase
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(PlannedPurchase)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(PlannedPurchase)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(PlannedPurchase)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(PlannedPurchase)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(PlannedPurchase)}.Update.sql");
+	}
+
 	internal static class Transaction
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Transaction)}.Delete.sql");
@@ -221,6 +234,19 @@ internal static class Queries
 		internal static string Merge { get; } = Read($"Queries.{nameof(Transaction)}.Merge.sql");
 	}
 
+	internal static class TransactionSchedule
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(TransactionSchedule)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(TransactionSchedule)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(TransactionSchedule)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(TransactionSchedule)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(TransactionSchedule)}.Update.sql");
+	}
+
 	internal static class Transfer
 	{
 		internal static string Delete { get; } = Read($"Queries.{nameof(Transfer)}.Delete.sql");
@@ -232,6 +258,19 @@ internal static class Queries
 		internal static string SelectAll { get; } = Read($"Queries.{nameof(Transfer)}.SelectAll.sql");
 
 		internal static string Update { get; } = Read($"Queries.{nameof(Transfer)}.Update.sql");
+	}
+
+	internal static class PlannedTransfer
+	{
+		internal static string Delete { get; } = Read($"Queries.{nameof(PlannedTransfer)}.Delete.sql");
+
+		internal static string Insert { get; } = Read($"Queries.{nameof(PlannedTransfer)}.Insert.sql");
+
+		internal static string Select { get; } = Read($"Queries.{nameof(PlannedTransfer)}.Select.sql");
+
+		internal static string SelectAll { get; } = Read($"Queries.{nameof(PlannedTransfer)}.SelectAll.sql");
+
+		internal static string Update { get; } = Read($"Queries.{nameof(PlannedTransfer)}.Update.sql");
 	}
 
 	internal static class Unit

@@ -72,6 +72,9 @@
 						x:Name="Transactions" Header="_Overview"
 						Command="{Binding SwitchToTransactionOverviewAsync}" />
 					<MenuItem
+						x:Name="TransactionSchedules" Header="Planned Transactions"
+						Command="{Binding TransactionSchedules}" />
+					<MenuItem
 						x:Name="Loans" Header="Loans"
 						Command="{Binding SwitchToLoanOverviewAsync}" />
 					<MenuItem

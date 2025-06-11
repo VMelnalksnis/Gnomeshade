@@ -22,13 +22,16 @@ public sealed class ProductViewModelTests
 		var viewModel = new ProductViewModel(new StubbedActivityService(), new DesignTimeGnomeshadeClient(), DateTimeZoneProviders.Tzdb);
 		await viewModel.RefreshAsync();
 
-		viewModel.Rows.Should().HaveCount(2);
+		viewModel.Rows.Should().HaveCount(3);
 
 		var newProductName = Guid.NewGuid().ToString("N");
 		viewModel.Details.Name = newProductName;
 		await viewModel.Details.SaveAsync();
 
-		viewModel.Rows.Should().HaveCount(3).And.ContainSingle(product => product.Name == newProductName);
+		viewModel.Rows
+			.Should()
+			.HaveCount(4)
+			.And.ContainSingle(product => product.Name == newProductName);
 	}
 
 	[Test]

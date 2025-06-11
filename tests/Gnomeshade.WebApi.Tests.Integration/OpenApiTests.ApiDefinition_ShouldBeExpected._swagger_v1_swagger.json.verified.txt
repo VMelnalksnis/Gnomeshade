@@ -4621,6 +4621,1504 @@
         }
       }
     },
+    /api/v1/Purchases/Planned/{id}: {
+      get: {
+        tags: [
+          PlannedPurchases
+        ],
+        summary: Gets the specified planned purchase.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned purchase to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/PlannedPurchase
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedPurchase
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedPurchase
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          PlannedPurchases
+        ],
+        summary: Creates a new planned purchase or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned purchase.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          PlannedPurchases
+        ],
+        summary: Deletes the specified planned purchase.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned purchase to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Purchases/Planned: {
+      get: {
+        tags: [
+          PlannedPurchases
+        ],
+        summary: Gets all planned purchases.,
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedPurchase
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedPurchase
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedPurchase
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          PlannedPurchases
+        ],
+        summary: Creates a new entity.,
+        requestBody: {
+          description: Information for creating the entity.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedPurchaseCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Transactions/Planned/{id}: {
+      get: {
+        tags: [
+          PlannedTransactions
+        ],
+        summary: Gets the specified planned transaction.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transaction to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransaction
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransaction
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransaction
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          PlannedTransactions
+        ],
+        summary: Creates a new planned transaction or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transaction.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          description: The planned transaction to create or replace.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          PlannedTransactions
+        ],
+        summary: Deletes the specified planned transaction.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transaction to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Transactions/Planned: {
+      get: {
+        tags: [
+          PlannedTransactions
+        ],
+        summary: Gets all planned transactions.,
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransaction
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransaction
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransaction
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          PlannedTransactions
+        ],
+        summary: Creates a new planned transaction.,
+        requestBody: {
+          description: The planned transaction to create.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransactionCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Transfers/Planned/{id}: {
+      get: {
+        tags: [
+          PlannedTransfers
+        ],
+        summary: Gets the specified planned transfer.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transfer to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransfer
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransfer
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/PlannedTransfer
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          PlannedTransfers
+        ],
+        summary: Creates a new planned transfer or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transfer.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          PlannedTransfers
+        ],
+        summary: Deletes the specified planned transfer.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the planned transfer to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Transfers/Planned: {
+      get: {
+        tags: [
+          PlannedTransfers
+        ],
+        summary: Gets all planned transfers.,
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransfer
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransfer
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/PlannedTransfer
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          PlannedTransfers
+        ],
+        summary: Creates a new entity.,
+        requestBody: {
+          description: Information for creating the entity.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/PlannedTransferCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
     /api/v1/Products/{id}: {
       get: {
         tags: [
@@ -8336,6 +9834,506 @@
         }
       }
     },
+    /api/v1/Transactions/Schedules/{id}: {
+      get: {
+        tags: [
+          TransactionSchedules
+        ],
+        summary: Gets the specified transaction schedule.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the transaction schedule to get.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/Project
+                }
+              }
+            }
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      put: {
+        tags: [
+          TransactionSchedules
+        ],
+        summary: Creates a new transaction schedule or replaces an existing one, if one exists with the specified id.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the transaction schedule.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        requestBody: {
+          description: The transaction schedule to create or replace.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          204: {
+            description: No Content
+          },
+          403: {
+            description: Forbidden,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      delete: {
+        tags: [
+          TransactionSchedules
+        ],
+        summary: Deletes the specified transaction schedule.,
+        parameters: [
+          {
+            name: id,
+            in: path,
+            description: The id of the transaction schedule to delete.,
+            required: true,
+            schema: {
+              type: string,
+              format: uuid
+            }
+          }
+        ],
+        responses: {
+          204: {
+            description: No Content
+          },
+          404: {
+            description: Not Found,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          400: {
+            description: Bad request,
+            content: {
+              application/problem+json: {
+                schema: {
+                  type: object,
+                  properties: {
+                    type: {
+                      type: string,
+                      nullable: true
+                    },
+                    title: {
+                      type: string,
+                      nullable: true
+                    },
+                    status: {
+                      type: integer,
+                      format: int32,
+                      default: 400,
+                      nullable: true
+                    },
+                    detail: {
+                      type: string,
+                      nullable: true
+                    },
+                    instance: {
+                      type: string,
+                      nullable: true
+                    },
+                    errors: {
+                      type: object,
+                      additionalProperties: {
+                        type: array,
+                        items: {
+                          type: string
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
+    /api/v1/Transactions/Schedules: {
+      get: {
+        tags: [
+          TransactionSchedules
+        ],
+        summary: Gets all transaction schedules.,
+        responses: {
+          200: {
+            description: OK,
+            content: {
+              text/plain: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/TransactionSchedule
+                  }
+                }
+              },
+              application/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/TransactionSchedule
+                  }
+                }
+              },
+              text/json: {
+                schema: {
+                  type: array,
+                  items: {
+                    $ref: #/components/schemas/TransactionSchedule
+                  }
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      },
+      post: {
+        tags: [
+          TransactionSchedules
+        ],
+        summary: Creates a new transaction schedule.,
+        requestBody: {
+          description: The transaction schedule to create.,
+          content: {
+            application/json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            },
+            text/json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            },
+            application/*+json: {
+              schema: {
+                $ref: #/components/schemas/TransactionScheduleCreation
+              }
+            }
+          }
+        },
+        responses: {
+          201: {
+            description: Created,
+            content: {
+              text/plain: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              application/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              },
+              text/json: {
+                schema: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+          },
+          409: {
+            description: Conflict,
+            content: {
+              text/plain: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              application/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              },
+              text/json: {
+                schema: {
+                  $ref: #/components/schemas/ProblemDetails
+                }
+              }
+            }
+          },
+          500: {
+            description: Internal Server Error
+          },
+          401: {
+            description: Unauthorized
+          }
+        }
+      }
+    },
     /api/v1/Transfers/{id}: {
       get: {
         tags: [
@@ -9884,6 +11882,10 @@
             description: The id of the user that last modified this transaction.,
             format: uuid
           },
+          planned: {
+            type: boolean,
+            description: Whether this transaction is planned or not.
+          },
           description: {
             type: string,
             description: The description of the transaction.,
@@ -9894,7 +11896,7 @@
           },
           imported: {
             type: boolean,
-            description: Whether or not this transaction was imported.,
+            description: Whether this transaction was imported.,
             readOnly: true
           },
           reconciledAt: {
@@ -9902,7 +11904,7 @@
           },
           reconciled: {
             type: boolean,
-            description: Whether or not this transaction was reconciled.,
+            description: Whether this transaction was reconciled.,
             readOnly: true
           },
           refundedBy: {
@@ -9913,7 +11915,7 @@
           },
           refunded: {
             type: boolean,
-            description: Whether or not this transaction was refunded.,
+            description: Whether this transaction was refunded.,
             readOnly: true
           },
           bookedAt: {
@@ -10255,6 +12257,438 @@
         additionalProperties: false,
         description: Information needed to create an ownership.
       },
+      Period: {
+        type: object,
+        properties: {
+          nanoseconds: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          ticks: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          milliseconds: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          seconds: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          minutes: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          hours: {
+            type: integer,
+            format: int64,
+            readOnly: true
+          },
+          days: {
+            type: integer,
+            format: int32,
+            readOnly: true
+          },
+          weeks: {
+            type: integer,
+            format: int32,
+            readOnly: true
+          },
+          months: {
+            type: integer,
+            format: int32,
+            readOnly: true
+          },
+          years: {
+            type: integer,
+            format: int32,
+            readOnly: true
+          },
+          hasTimeComponent: {
+            type: boolean,
+            readOnly: true
+          },
+          hasDateComponent: {
+            type: boolean,
+            readOnly: true
+          }
+        },
+        additionalProperties: false
+      },
+      PlannedPurchase: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the purchase.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the purchase.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this purchase.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this purchase.,
+            format: uuid
+          },
+          order: {
+            type: integer,
+            description: The order of the purchase within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this purchase is a part of.,
+            format: uuid
+          },
+          price: {
+            type: number,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId.,
+            format: double
+          },
+          currencyId: {
+            type: string,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Price.,
+            format: uuid
+          },
+          productId: {
+            type: string,
+            description: The id of the purchased product.,
+            format: uuid
+          },
+          amount: {
+            type: number,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId that was purchased.,
+            format: double
+          },
+          projectIds: {
+            type: array,
+            items: {
+              type: string,
+              format: uuid
+            },
+            description: The ids of the projects that this purchase is a part of.
+          }
+        },
+        additionalProperties: false,
+        description: The act or an instance of buying of a Gnomeshade.WebApi.Models.Products.Product as a part of a Gnomeshade.WebApi.Models.Transactions.Transaction.
+      },
+      PlannedPurchaseCreation: {
+        required: [
+          amount,
+          currencyId,
+          price,
+          productId,
+          transactionId
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this purchase is a part of.,
+            format: uuid
+          },
+          price: {
+            type: number,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId.,
+            format: double
+          },
+          currencyId: {
+            type: string,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Price.,
+            format: uuid
+          },
+          productId: {
+            type: string,
+            description: The id of the purchased product.,
+            format: uuid
+          },
+          amount: {
+            type: number,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId that was purchased.,
+            format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the purchase within a transaction.,
+            format: int32,
+            nullable: true
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a planned purchase.
+      },
+      PlannedTransaction: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the transaction.,
+            format: uuid
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the transaction.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this transaction.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this transaction.,
+            format: uuid
+          },
+          planned: {
+            type: boolean,
+            description: Whether this transaction is planned or not.
+          },
+          scheduleId: {
+            type: string,
+            description: The id of the schedule of this planned transaction.,
+            format: uuid
+          }
+        },
+        additionalProperties: false,
+        description: A financial transaction during which funds can be transferred between multiple accounts.
+      },
+      PlannedTransactionCreation: {
+        required: [
+          scheduleId
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          scheduleId: {
+            type: string,
+            description: The id of the schedule of this planned transaction.,
+            format: uuid
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a planned transaction.
+      },
+      PlannedTransfer: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the transfer.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the transfer.,
+            format: uuid
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this transfer.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this transfer.,
+            format: uuid
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this transfer is a part of.,
+            format: uuid
+          },
+          sourceAmount: {
+            type: number,
+            description: The amount withdrawn from the source account.,
+            format: double
+          },
+          targetAmount: {
+            type: number,
+            description: The amount deposited in the target account.,
+            format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid,
+            nullable: true
+          },
+          isSourceAccount: {
+            type: boolean,
+            description: Whether Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.SourceAccountId or Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.SourceCounterpartyId is specified.,
+            readOnly: true
+          },
+          sourceCounterpartyId: {
+            type: string,
+            description: The id of the counterparty from which currency will be withdrawn from.,
+            format: uuid,
+            nullable: true
+          },
+          sourceCurrencyId: {
+            type: string,
+            description: The id of the currency in which funds will be withdrawn from Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.SourceCounterpartyId.,
+            format: uuid,
+            nullable: true
+          },
+          targetAccountId: {
+            type: string,
+            description: The id of the account to which currency is deposited to.,
+            format: uuid,
+            nullable: true
+          },
+          isTargetAccount: {
+            type: boolean,
+            description: Whether Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.TargetAccountId or Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.TargetCounterpartyId is specified.,
+            readOnly: true
+          },
+          targetCounterpartyId: {
+            type: string,
+            description: The id of the counterparty to which currency will be deposited to.,
+            format: uuid,
+            nullable: true
+          },
+          targetCurrencyId: {
+            type: string,
+            description: The id of the currency in which funds will be deposited to Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.TargetCounterpartyId.,
+            format: uuid,
+            nullable: true
+          }
+        },
+        additionalProperties: false,
+        description: A planned transfer between two accounts.
+      },
+      PlannedTransferCreation: {
+        required: [
+          bookedAt,
+          sourceAccountId,
+          sourceAmount,
+          sourceCounterpartyId,
+          sourceCurrencyId,
+          targetAccountId,
+          targetAmount,
+          targetCounterpartyId,
+          targetCurrencyId,
+          transactionId
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          sourceAmount: {
+            type: number,
+            description: The amount withdrawn from the source account.,
+            format: double
+          },
+          targetAmount: {
+            type: number,
+            description: The amount deposited in the target account.,
+            format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          transactionId: {
+            type: string,
+            description: The id of transaction this transfer is a part of.,
+            format: uuid
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid
+          },
+          sourceCounterpartyId: {
+            type: string,
+            description: The id of the counterparty from which currency will be withdrawn from.,
+            format: uuid
+          },
+          sourceCurrencyId: {
+            type: string,
+            description: The id of the currency in which funds will be withdrawn from Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.SourceCounterpartyId.,
+            format: uuid
+          },
+          targetAccountId: {
+            type: string,
+            description: The id of the account to which currency is deposited to.,
+            format: uuid
+          },
+          targetCounterpartyId: {
+            type: string,
+            description: The id of the counterparty to which currency will be deposited to.,
+            format: uuid
+          },
+          targetCurrencyId: {
+            type: string,
+            description: The id of the currency in which funds will be deposited to Gnomeshade.WebApi.Models.Transactions.PlannedTransfer.TargetCounterpartyId.,
+            format: uuid
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a planned transfer.
+      },
       ProblemDetails: {
         type: object,
         properties: {
@@ -10482,6 +12916,12 @@
             description: The id of the user that last modified this purchase.,
             format: uuid
           },
+          order: {
+            type: integer,
+            description: The order of the purchase within a transaction.,
+            format: int32,
+            nullable: true
+          },
           transactionId: {
             type: string,
             description: The id of transaction this purchase is a part of.,
@@ -10489,12 +12929,12 @@
           },
           price: {
             type: number,
-            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.Purchase.Amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId.,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId.,
             format: double
           },
           currencyId: {
             type: string,
-            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.Purchase.Price.,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Price.,
             format: uuid
           },
           productId: {
@@ -10504,17 +12944,8 @@
           },
           amount: {
             type: number,
-            description: The amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId that was purchased.,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId that was purchased.,
             format: double
-          },
-          deliveryDate: {
-            $ref: #/components/schemas/Instant
-          },
-          order: {
-            type: integer,
-            description: The order of the purchase within a transaction.,
-            format: int32,
-            nullable: true
           },
           projectIds: {
             type: array,
@@ -10523,6 +12954,9 @@
               format: uuid
             },
             description: The ids of the projects that this purchase is a part of.
+          },
+          deliveryDate: {
+            $ref: #/components/schemas/Instant
           }
         },
         additionalProperties: false,
@@ -10551,12 +12985,12 @@
           },
           price: {
             type: number,
-            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.Purchase.Amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId.,
+            description: The amount paid to purchase an Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId.,
             format: double
           },
           currencyId: {
             type: string,
-            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.Purchase.Price.,
+            description: The id of the currency of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.Price.,
             format: uuid
           },
           productId: {
@@ -10566,17 +13000,17 @@
           },
           amount: {
             type: number,
-            description: The amount of Gnomeshade.WebApi.Models.Transactions.Purchase.ProductId that was purchased.,
+            description: The amount of Gnomeshade.WebApi.Models.Transactions.PurchaseBase.ProductId that was purchased.,
             format: double
-          },
-          deliveryDate: {
-            $ref: #/components/schemas/Instant
           },
           order: {
             type: integer,
             description: The order of the purchase within a transaction.,
             format: int32,
             nullable: true
+          },
+          deliveryDate: {
+            $ref: #/components/schemas/Instant
           }
         },
         additionalProperties: false,
@@ -10611,6 +13045,10 @@
             description: The id of the user that last modified this transaction.,
             format: uuid
           },
+          planned: {
+            type: boolean,
+            description: Whether this transaction is planned or not.
+          },
           description: {
             type: string,
             description: The description of the transaction.,
@@ -10621,7 +13059,7 @@
           },
           imported: {
             type: boolean,
-            description: Whether or not this transaction was imported.,
+            description: Whether this transaction was imported.,
             readOnly: true
           },
           reconciledAt: {
@@ -10629,7 +13067,7 @@
           },
           reconciled: {
             type: boolean,
-            description: Whether or not this transaction was reconciled.,
+            description: Whether this transaction was reconciled.,
             readOnly: true
           },
           refundedBy: {
@@ -10640,7 +13078,7 @@
           },
           refunded: {
             type: boolean,
-            description: Whether or not this transaction was refunded.,
+            description: Whether this transaction was refunded.,
             readOnly: true
           }
         },
@@ -10699,6 +13137,89 @@
         additionalProperties: false,
         description: A reference to an transaction that was used during import.
       },
+      TransactionSchedule: {
+        type: object,
+        properties: {
+          id: {
+            type: string,
+            description: The id of the transaction.,
+            format: uuid
+          },
+          ownerId: {
+            type: string,
+            description: The id of the owner of the transaction.,
+            format: uuid
+          },
+          createdAt: {
+            $ref: #/components/schemas/Instant
+          },
+          createdByUserId: {
+            type: string,
+            description: The id of the user that created this transaction.,
+            format: uuid
+          },
+          modifiedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          modifiedByUserId: {
+            type: string,
+            description: The id of the user that last modified this transaction.,
+            format: uuid
+          },
+          name: {
+            type: string,
+            description: The name of the planned transaction schedule.
+          },
+          startingAt: {
+            $ref: #/components/schemas/Instant
+          },
+          period: {
+            $ref: #/components/schemas/Period
+          },
+          count: {
+            type: integer,
+            description: The number of planned transactions to repeat.,
+            format: int32
+          }
+        },
+        additionalProperties: false,
+        description: A schedule for planned transactions.
+      },
+      TransactionScheduleCreation: {
+        required: [
+          count,
+          name,
+          period,
+          startingAt
+        ],
+        type: object,
+        properties: {
+          ownerId: {
+            type: string,
+            description: The id of the owner of the resource.,
+            format: uuid,
+            nullable: true
+          },
+          name: {
+            minLength: 1,
+            type: string,
+            description: The name of the planned transaction schedule.
+          },
+          startingAt: {
+            $ref: #/components/schemas/Instant
+          },
+          period: {
+            $ref: #/components/schemas/Period
+          },
+          count: {
+            type: integer,
+            description: The number of planned transactions to repeat.,
+            format: int32
+          }
+        },
+        additionalProperties: false,
+        description: Information needed to create a transaction schedule.
+      },
       Transfer: {
         type: object,
         properties: {
@@ -10738,15 +13259,24 @@
             description: The amount withdrawn from the source account.,
             format: double
           },
-          sourceAccountId: {
-            type: string,
-            description: The id of the account from which currency is withdrawn from.,
-            format: uuid
-          },
           targetAmount: {
             type: number,
             description: The amount deposited in the target account.,
             format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          bookedAt: {
+            $ref: #/components/schemas/Instant
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid
           },
           targetAccountId: {
             type: string,
@@ -10767,15 +13297,6 @@
             type: string,
             description: The reference id issued by the user.,
             nullable: true
-          },
-          order: {
-            type: integer,
-            description: The order of the transfer within a transaction.,
-            format: int32,
-            nullable: true
-          },
-          bookedAt: {
-            $ref: #/components/schemas/Instant
           },
           valuedAt: {
             $ref: #/components/schemas/Instant
@@ -10812,15 +13333,21 @@
             description: The amount withdrawn from the source account.,
             format: double
           },
-          sourceAccountId: {
-            type: string,
-            description: The id of the account from which currency is withdrawn from.,
-            format: uuid
-          },
           targetAmount: {
             type: number,
             description: The amount deposited in the target account.,
             format: double
+          },
+          order: {
+            type: integer,
+            description: The order of the transfer within a transaction.,
+            format: int32,
+            nullable: true
+          },
+          sourceAccountId: {
+            type: string,
+            description: The id of the account from which currency is withdrawn from.,
+            format: uuid
           },
           targetAccountId: {
             type: string,
@@ -10840,12 +13367,6 @@
           internalReference: {
             type: string,
             description: The reference id issued by the user.,
-            nullable: true
-          },
-          order: {
-            type: integer,
-            description: The order of the transfer within a transaction.,
-            format: int32,
             nullable: true
           },
           bookedAt: {

@@ -26,10 +26,7 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 	/// <inheritdoc />
 	public Control Build(object? data)
 	{
-		if (data is null)
-		{
-			throw new ArgumentNullException(nameof(data));
-		}
+		ArgumentNullException.ThrowIfNull(data);
 
 		var dataType = data.GetType();
 		if (_viewDictionary.TryGetValue(dataType, out var viewType))
@@ -44,6 +41,10 @@ public sealed class ViewLocator<TAssembly> : IDataTemplate
 				i.GetGenericArguments().Length >= 2 &&
 				i.GetGenericArguments()[1] == dataType) &&
 			type.IsAssignableTo(typeof(Control)));
+
+#if DEBUG
+		viewType ??= _assembly.GetTypes().SingleOrDefault(type => type.Name is "PlaceholderView");
+#endif
 
 		if (viewType is null)
 		{

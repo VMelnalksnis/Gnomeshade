@@ -245,6 +245,126 @@ public sealed class GnomeshadeClient : IGnomeshadeClient
 		DeleteAsync(Transactions.RelatedUri(id, relatedId));
 
 	/// <inheritdoc />
+	public Task<List<TransactionSchedule>> GetTransactionSchedules(CancellationToken cancellationToken = default) =>
+		GetAsync(TransactionSchedules.Uri, _context.ListTransactionSchedule, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<TransactionSchedule> GetTransactionSchedule(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(TransactionSchedules.IdUri(id), _context.TransactionSchedule, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreateTransactionSchedule(TransactionScheduleCreation schedule) =>
+		PostAsync(TransactionSchedules.Uri, schedule, _context.TransactionScheduleCreation);
+
+	/// <inheritdoc />
+	public Task PutTransactionSchedule(Guid id, TransactionScheduleCreation schedule) =>
+		PutAsync(TransactionSchedules.IdUri(id), schedule, _context.TransactionScheduleCreation);
+
+	/// <inheritdoc />
+	public Task DeleteTransactionSchedule(Guid id) =>
+		DeleteAsync(TransactionSchedules.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(Interval interval, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransactions.DateRangeUri(interval), _context.ListPlannedTransaction, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransactions.Uri, _context.ListPlannedTransaction, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransaction>> GetPlannedTransactions(Guid scheduleId, CancellationToken cancellationToken = default) =>
+		throw new NotImplementedException();
+
+	/// <inheritdoc />
+	public Task<PlannedTransaction> GetPlannedTransaction(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransactions.IdUri(id), _context.PlannedTransaction, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransaction(PlannedTransactionCreation transaction) =>
+		PostAsync(PlannedTransactions.Uri, transaction, _context.PlannedTransactionCreation);
+
+	/// <inheritdoc />
+	public Task PutPlannedTransaction(Guid id, PlannedTransactionCreation transaction) =>
+		PutAsync(PlannedTransactions.IdUri(id), transaction, _context.PlannedTransactionCreation);
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransaction(Guid id) =>
+		DeleteAsync(PlannedTransactions.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransfers.Uri, _context.ListPlannedTransfer, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<PlannedTransfer>> GetPlannedTransfers(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransfers.TransactionUri(transactionId), _context.ListPlannedTransfer, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<PlannedTransfer> GetPlannedTransfer(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedTransfers.IdUri(id), _context.PlannedTransfer, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedTransfer(PlannedTransferCreation transfer) =>
+		PostAsync(PlannedTransfers.Uri, transfer, _context.PlannedTransferCreation);
+
+	/// <inheritdoc />
+	public Task PutPlannedTransfer(Guid id, PlannedTransferCreation transfer) =>
+		PutAsync(PlannedTransfers.IdUri(id), transfer, _context.PlannedTransferCreation);
+
+	/// <inheritdoc />
+	public Task DeletePlannedTransfer(Guid id) =>
+		DeleteAsync(PlannedTransfers.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedPurchases.Uri, _context.ListPlannedPurchase, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<PlannedPurchase>> GetPlannedPurchases(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedPurchases.TransactionUri(transactionId), _context.ListPlannedPurchase, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<PlannedPurchase> GetPlannedPurchase(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedPurchases.IdUri(id), _context.PlannedPurchase, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedPurchase(PlannedPurchaseCreation purchase) =>
+		PostAsync(PlannedPurchases.Uri, purchase, _context.PlannedPurchaseCreation);
+
+	/// <inheritdoc />
+	public Task PutPlannedPurchase(Guid id, PlannedPurchaseCreation purchase) =>
+		PostAsync(PlannedPurchases.IdUri(id), purchase, _context.PlannedPurchaseCreation);
+
+	/// <inheritdoc />
+	public Task DeletePlannedPurchase(Guid id) =>
+		DeleteAsync(PlannedPurchases.IdUri(id));
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedLoanPayments.Uri, _context.ListPlannedLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<List<PlannedLoanPayment>> GetPlannedLoanPayments(Guid transactionId, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedLoanPayments.ForTransaction(transactionId), _context.ListPlannedLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<PlannedLoanPayment> GetPlannedLoanPayment(Guid id, CancellationToken cancellationToken = default) =>
+		GetAsync(PlannedLoanPayments.IdUri(id), _context.PlannedLoanPayment, cancellationToken);
+
+	/// <inheritdoc />
+	public Task<Guid> CreatePlannedLoanPayment(LoanPaymentCreation loanPayment) =>
+		PostAsync(PlannedLoanPayments.Uri, loanPayment, _context.LoanPaymentCreation);
+
+	/// <inheritdoc />
+	public Task PutPlannedLoanPayment(Guid id, LoanPaymentCreation loanPayment) =>
+		PutAsync(PlannedLoanPayments.IdUri(id), loanPayment, _context.LoanPaymentCreation);
+
+	/// <inheritdoc />
+	public Task DeletePlannedLoanPayment(Guid id) =>
+		DeleteAsync(PlannedLoanPayments.IdUri(id));
+
+	/// <inheritdoc />
 	[Obsolete]
 	public Task<List<LegacyLoan>> GetLegacyLoans(CancellationToken cancellationToken = default) =>
 		GetAsync("v1.0/Loans", _context.ListLegacyLoan, cancellationToken);

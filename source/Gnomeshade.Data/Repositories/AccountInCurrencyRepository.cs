@@ -25,7 +25,7 @@ public sealed class AccountInCurrencyRepository(ILogger<AccountInCurrencyReposit
 	protected override string InsertSql => Queries.AccountInCurrency.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.AccountInCurrency.SelectAll;
+	protected override string TableName => "accounts_in_currency a";
 
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.AccountInCurrency.Select;

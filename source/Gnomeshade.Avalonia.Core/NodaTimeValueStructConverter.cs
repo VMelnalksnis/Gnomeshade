@@ -13,7 +13,7 @@ using NodaTime.Text;
 namespace Gnomeshade.Avalonia.Core;
 
 /// <inheritdoc />
-public abstract class NodaTimeValueConverter<TTime> : NodaTimeValueConverterBase
+public abstract class NodaTimeValueStructConverter<TTime> : NodaTimeValueConverterBase
 	where TTime : struct
 {
 	/// <summary>Gets a value to use for displaying example value on validation error.</summary>

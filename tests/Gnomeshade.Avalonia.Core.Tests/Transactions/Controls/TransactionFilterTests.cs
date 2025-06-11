@@ -6,6 +6,7 @@ using System;
 
 using Gnomeshade.Avalonia.Core.Transactions;
 using Gnomeshade.Avalonia.Core.Transactions.Controls;
+using Gnomeshade.WebApi.Models.Loans;
 
 using NodaTime;
 
@@ -41,7 +42,7 @@ public sealed class TransactionFilterTests
 	public void Filter_Loan()
 	{
 		var loanId = Guid.NewGuid();
-		var overview = new TransactionOverview(Guid.Empty, null, null, null, [], [], [new() { LoanId = loanId }]);
+		var overview = new TransactionOverview(Guid.Empty, null, null, null, [], [], [new LoanPayment { LoanId = loanId }]);
 
 		_filter.Filter(overview).Should().BeTrue("should display all rows without any filters");
 

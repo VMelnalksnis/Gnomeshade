@@ -35,7 +35,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	protected override string InsertSql => Queries.Counterparty.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Counterparty.SelectAll;
+	protected override string TableName => "counterparties c";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Counterparty.Update;
@@ -77,7 +77,7 @@ public sealed class CounterpartyRepository : NamedRepository<CounterpartyEntity>
 	public Task<IEnumerable<CounterpartyEntity>> GetAllAsync(CancellationToken cancellationToken = default)
 	{
 		Logger.GetAll(true);
-		var command = new CommandDefinition($"{SelectAllSql} {GroupBy};", cancellationToken: cancellationToken);
+		var command = new CommandDefinition($"{Queries.Counterparty.SelectAll} {GroupBy};", cancellationToken: cancellationToken);
 		return GetEntitiesAsync(command);
 	}
 }
