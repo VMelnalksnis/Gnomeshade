@@ -6,7 +6,7 @@ ARG BUILD_NUMBER=123
 RUN --mount=type=cache,target=/root/.nuget/packages \
     ./deployment/publish.sh "Gnomeshade.WebApi" "linux-musl-x64" $BUILD_NUMBER
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0.16-alpine3.21 as gnomeshade
+FROM mcr.microsoft.com/dotnet/runtime-deps:9.0.6-alpine3.21 as gnomeshade
 
 WORKDIR /gnomeshade
 COPY --chmod=-w --from=build [ \
