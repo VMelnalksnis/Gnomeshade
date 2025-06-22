@@ -1,0 +1,28 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:loans="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Loans;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.PlannedLoanPaymentUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Loans.PlannedLoanUpsertionView"
+	x:DataType="loans:PlannedLoanPaymentUpsertionViewModel">
+
+	<WrapPanel>
+		<WrapPanel>
+			<AutoCompleteBox
+				Watermark="Loan"
+				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+				IsTextCompletionEnabled="True"
+				ItemsSource="{Binding Loans}"
+				ItemSelector="{Binding LoanSelector}"
+				SelectedItem="{Binding Loan, Mode=TwoWay}" />
+		</WrapPanel>
+
+		<WrapPanel>
+			<TextBox Watermark="Amount" Text="{Binding Amount}" />
+			<TextBox Watermark="Interest" Text="{Binding Interest}" />
+		</WrapPanel>
+	</WrapPanel>
+</UserControl>

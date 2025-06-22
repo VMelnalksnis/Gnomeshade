@@ -131,7 +131,7 @@ public static class DesignTimeData
 
 	/// <summary>Gets an instance of <see cref="TransactionViewModel"/> for use during design time.</summary>
 	public static TransactionViewModel TransactionViewModel { get; } =
-		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
+		InitializeViewModel<TransactionViewModel, TransactionOverview, TransactionUpsertionBase>(new(ActivityService, GnomeshadeClient, DialogService, Clock, DateTimeZoneProvider));
 
 	/// <summary>Gets an instance of <see cref="TransactionFilter"/> for use during design time.</summary>
 	public static TransactionFilter TransactionFilter { get; } = new(ActivityService, Clock, DateTimeZoneProvider);
@@ -148,7 +148,7 @@ public static class DesignTimeData
 	public static LinkViewModel LinkViewModel { get; } =
 		InitializeViewModel<LinkViewModel, LinkOverview, LinkUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
-	/// <summary>Gets an instance of <see cref="LoanUpsertionViewModel"/> for use during design time.</summary>
+	/// <summary>Gets an instance of <see cref="LoanPaymentUpsertionViewModel"/> for use during design time.</summary>
 	public static LoanPaymentUpsertionViewModel LoanPaymentUpsertionViewModel { get; } =
 		InitializeViewModel(new LoanPaymentUpsertionViewModel(ActivityService, GnomeshadeClient, Guid.Empty, null));
 
@@ -239,6 +239,42 @@ public static class DesignTimeData
 	/// <summary>Gets an instance of <see cref="DashboardViewModel"/> for use during design time.</summary>
 	public static DashboardViewModel DashboardViewModel { get; } =
 		InitializeViewModel<DashboardViewModel>(new(ActivityService, GnomeshadeClient, Clock, DateTimeZoneProvider));
+
+	/// <summary>Gets an instance of <see cref="PlannedTransactionUpsertionViewModel"/> for use during design time.</summary>
+	public static PlannedTransactionUpsertionViewModel PlannedTransactionUpsertionViewModel { get; } =
+		InitializeViewModel<PlannedTransactionUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, null));
+
+	/// <summary>Gets an instance of <see cref="TransactionScheduleUpsertionViewModel"/> for use during design time.</summary>
+	public static TransactionScheduleUpsertionViewModel TransactionScheduleUpsertionViewModel { get; } =
+		InitializeViewModel<TransactionScheduleUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, null));
+
+	/// <summary>Gets an instance of <see cref="TransactionScheduleViewModel"/> for use during design time.</summary>
+	public static TransactionScheduleViewModel TransactionScheduleViewModel { get; } =
+		InitializeViewModel<TransactionScheduleViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider));
+
+	/// <summary>Gets an instance of <see cref="PlannedTransferViewModel"/> for use during design time.</summary>
+	public static PlannedTransferViewModel PlannedTransferViewModel { get; } =
+		InitializeViewModel<PlannedTransferViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
+
+	/// <summary>Gets an instance of <see cref="PlannedTransferUpsertionViewModel"/> for use during design time.</summary>
+	public static PlannedTransferUpsertionViewModel PlannedTransferUpsertionViewModel { get; } =
+		InitializeViewModel<PlannedTransferUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
+
+	/// <summary>Gets an instance of <see cref="PlannedPurchaseViewModel"/> for use during design time.</summary>
+	public static PlannedPurchaseViewModel PlannedPurchaseViewModel { get; } =
+		InitializeViewModel<PlannedPurchaseViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty));
+
+	/// <summary>Gets an instance of <see cref="PlannedPurchaseUpsertionViewModel"/> for use during design time.</summary>
+	public static PlannedPurchaseUpsertionViewModel PlannedPurchaseUpsertionViewModel { get; } =
+		InitializeViewModel<PlannedPurchaseUpsertionViewModel>(new(ActivityService, GnomeshadeClient, DialogService, DateTimeZoneProvider, Guid.Empty, null));
+
+	/// <summary>Gets an instance of <see cref="PlannedLoanPaymentUpsertionViewModel"/> for use during design time.</summary>
+	public static PlannedLoanPaymentUpsertionViewModel PlannedLoanPaymentUpsertionViewModel { get; } =
+		InitializeViewModel<PlannedLoanPaymentUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty, null));
+
+	/// <summary>Gets an instance of <see cref="PlannedLoanPaymentViewModel"/> for use during design time.</summary>
+	public static PlannedLoanPaymentViewModel PlannedLoanPaymentViewModel { get; } =
+		InitializeViewModel<PlannedLoanPaymentViewModel, LoanPaymentRow, PlannedLoanPaymentUpsertionViewModel>(new(ActivityService, GnomeshadeClient, Guid.Empty));
 
 	[UnconditionalSuppressMessage(
 		"Trimming",

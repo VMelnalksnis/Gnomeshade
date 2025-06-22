@@ -12,44 +12,26 @@ namespace Gnomeshade.WebApi.Models.Transactions;
 
 /// <summary>A financial transaction during which funds can be transferred between multiple accounts.</summary>
 [PublicAPI]
-public record Transaction
+public record Transaction : TransactionBase
 {
-	/// <summary>The id of the transaction.</summary>
-	public Guid Id { get; set; }
-
-	/// <summary>The id of the owner of the transaction.</summary>
-	public Guid OwnerId { get; set; }
-
-	/// <summary>The point in time when the transaction was created.</summary>
-	public Instant CreatedAt { get; set; }
-
-	/// <summary>The id of the user that created this transaction.</summary>
-	public Guid CreatedByUserId { get; set; }
-
-	/// <summary>The point in the when the transaction was last modified.</summary>
-	public Instant ModifiedAt { get; set; }
-
-	/// <summary>The id of the user that last modified this transaction.</summary>
-	public Guid ModifiedByUserId { get; set; }
-
 	/// <summary>The description of the transaction.</summary>
 	public string? Description { get; set; }
 
 	/// <summary>The point in time when this transaction was imported.</summary>
 	public Instant? ImportedAt { get; set; }
 
-	/// <summary>Whether or not this transaction was imported.</summary>
+	/// <summary>Whether this transaction was imported.</summary>
 	public bool Imported => ImportedAt.HasValue;
 
 	/// <summary>The point in time when this transaction was reconciled.</summary>
 	public Instant? ReconciledAt { get; set; }
 
-	/// <summary>Whether or not this transaction was reconciled.</summary>
+	/// <summary>Whether this transaction was reconciled.</summary>
 	public bool Reconciled => ReconciledAt.HasValue;
 
 	/// <summary>The id of the transaction that refunds this one.</summary>
 	public Guid? RefundedBy { get; set; }
 
-	/// <summary>Whether or not this transaction was refunded.</summary>
+	/// <summary>Whether this transaction was refunded.</summary>
 	public bool Refunded => RefundedBy.HasValue;
 }

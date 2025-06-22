@@ -20,6 +20,10 @@ public abstract partial class UpsertionViewModel : ViewModelBase
 	[Notify(Setter.Protected)]
 	private Guid? _id;
 
+	/// <summary>Gets or sets a value indicating whether this model can be modified.</summary>
+	[Notify]
+	private bool _isReadOnly = true;
+
 	/// <summary>Initializes a new instance of the <see cref="UpsertionViewModel"/> class.</summary>
 	/// <param name="activityService">Service for indicating the activity of the application to the user.</param>
 	/// <param name="gnomeshadeClient">The strongly typed API client.</param>

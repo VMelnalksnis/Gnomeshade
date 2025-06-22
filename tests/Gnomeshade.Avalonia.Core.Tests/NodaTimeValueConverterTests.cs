@@ -16,7 +16,7 @@ using NodaTime;
 
 namespace Gnomeshade.Avalonia.Core.Tests;
 
-[TestOf(typeof(NodaTimeValueConverter<>))]
+[TestOf(typeof(NodaTimeValueStructConverter<>))]
 public sealed class NodaTimeValueConverterTests
 {
 	private PurchaseUpsertionViewModel _viewModel = null!;

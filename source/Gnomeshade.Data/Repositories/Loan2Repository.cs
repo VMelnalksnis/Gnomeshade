@@ -28,7 +28,7 @@ public sealed class Loan2Repository : NamedRepository<Loan2Entity>
 	protected override string InsertSql => Queries.Loan2.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Loan2.SelectAll;
+	protected override string TableName => "loans2";
 
 	/// <inheritdoc />
 	protected override string FindSql => "loans2.id = @id";

@@ -56,5 +56,6 @@ public static class ServiceCollectionExtensions
 		.AddSingleton<LoanPaymentViewModel>()
 		.AddSingleton<LoanMigrationViewModel>()
 		.AddSingleton<ProjectViewModel>()
-		.AddSingleton<DashboardViewModel>();
+		.AddSingleton<DashboardViewModel>()
+		.AddSingleton<TransactionScheduleViewModel>();
 }

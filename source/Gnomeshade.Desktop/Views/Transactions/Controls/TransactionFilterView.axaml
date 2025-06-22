@@ -67,7 +67,7 @@
 			</Button>
 		</Grid>
 
-		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto">
+		<Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto,5,Auto">
 			<CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding InvertAccount}" />
 			<AutoCompleteBox
 				Grid.Row="0" Grid.Column="1"
@@ -128,6 +128,9 @@
 
 			<CheckBox Grid.Row="14" Grid.Column="0" IsChecked="{Binding Uncategorized}" IsThreeState="True" />
 			<TextBlock Grid.Row="14" Grid.Column="1" Text="Uncategorized" VerticalAlignment="Center" />
+
+			<CheckBox Grid.Row="16" Grid.Column="0" IsChecked="{Binding IncludeProjections}" IsThreeState="True" />
+			<TextBlock Grid.Row="16" Grid.Column="1" Text="Include Projections" VerticalAlignment="Center" />
 		</Grid>
 
 	</StackPanel>

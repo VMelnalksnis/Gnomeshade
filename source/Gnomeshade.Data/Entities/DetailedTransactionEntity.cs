@@ -33,14 +33,14 @@ public sealed record DetailedTransactionEntity : TransactionEntity
 	}
 
 	/// <summary>Gets the transfers of the transaction.</summary>
-	public List<TransferEntity> Transfers { get; init; } = new();
+	public List<TransferEntity> Transfers { get; init; } = [];
 
 	/// <summary>Gets the purchases of the transaction.</summary>
-	public List<PurchaseEntity> Purchases { get; init; } = new();
+	public List<PurchaseEntity> Purchases { get; init; } = [];
 
 	/// <summary>Gets the loan payments associated with the transaction.</summary>
-	public List<LoanEntity> Loans { get; init; } = new();
+	public List<LoanEntity> Loans { get; init; } = [];
 
 	/// <summary>Gets the links associated with the transaction.</summary>
-	public List<LinkEntity> Links { get; init; } = new();
+	public List<LinkEntity> Links { get; init; } = [];
 }

@@ -18,7 +18,7 @@ public sealed class LoanPaymentRow : PropertyChangedBase
 	/// <param name="payment">The payment which this row will represent.</param>
 	/// <param name="loans">All available loans.</param>
 	/// <param name="currencies">All available currencies.</param>
-	public LoanPaymentRow(LoanPayment payment, IEnumerable<Loan> loans, IEnumerable<Currency> currencies)
+	public LoanPaymentRow(LoanPaymentBase payment, IEnumerable<Loan> loans, IEnumerable<Currency> currencies)
 	{
 		var loan = loans.Single(loan => loan.Id == payment.LoanId);
 		Loan = loan.Name;

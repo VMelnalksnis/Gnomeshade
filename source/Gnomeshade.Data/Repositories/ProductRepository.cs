@@ -28,7 +28,7 @@ public sealed class ProductRepository : NamedRepository<ProductEntity>
 	protected override string InsertSql => Queries.Product.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Product.SelectAll;
+	protected override string TableName => "products p";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Product.Update;

@@ -20,7 +20,6 @@
 
 		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
 
-
 			<TextBlock HorizontalAlignment="Center" Text="Splits"/>
 			<ComboBox
 				HorizontalAlignment="Stretch"
@@ -28,6 +27,10 @@
 				ItemsSource="{Binding Splits}"
 				SelectedItem="{Binding SelectedSplit, Mode=TwoWay}"
 				IsEnabled="{Binding !IsBusy}"/>
+
+			<CheckBox IsChecked="{Binding IncludeProjections}" IsThreeState="False">
+				Include projections
+			</CheckBox>
 
 			<AutoCompleteBox
 				x:Name="Aggregate"

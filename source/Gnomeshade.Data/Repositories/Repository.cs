@@ -51,8 +51,9 @@ public abstract class Repository<TEntity>
 
 	protected string SelectActiveSql => $"{SelectSql} AND {NotDeleted}";
 
-	/// <summary>Gets the SQL query for getting entities.</summary>
-	protected abstract string SelectAllSql { get; }
+	protected abstract string TableName { get; }
+
+	protected virtual string ExistsSql => $"SELECT 1 FROM {TableName} WHERE {FindSql} AND {NotDeleted} LIMIT 1;";
 
 	/// <summary>Gets SQL where clause that filters for specific entity by id.</summary>
 	protected abstract string FindSql { get; }
@@ -69,7 +70,7 @@ public abstract class Repository<TEntity>
 	/// <param name="entity">The entity to add.</param>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The id of the created entity.</returns>
-	public Task<Guid> AddAsync(TEntity entity, DbTransaction dbTransaction)
+	public virtual Task<Guid> AddAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.AddingEntityWithTransaction();
 		var command = new CommandDefinition(InsertSql, entity, dbTransaction);
@@ -82,7 +83,7 @@ public abstract class Repository<TEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
+	public virtual async Task<int> DeleteAsync(Guid id, Guid userId, DbTransaction dbTransaction)
 	{
 		Logger.DeletingEntityWithTransaction(id);
 		var count = await DbConnection.ExecuteAsync(DeleteSql, new { id, userId }, dbTransaction);
@@ -189,30 +190,28 @@ public abstract class Repository<TEntity>
 			dbTransaction));
 	}
 
-	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to search by.</param>
-	/// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
-	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken = default)
+	[MustUseReturnValue]
+	public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
 	{
 		Logger.FindId(id);
-		return FindAsync(new(
-			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted} {GroupBy};",
+		var count = await DbConnection.QuerySingleOrDefaultAsync<int?>(new(
+			ExistsSql,
 			new { id },
 			cancellationToken: cancellationToken));
+
+		return count is not null;
 	}
 
-	/// <summary>Searches for an entity with the specified id.</summary>
-	/// <param name="id">The id to search by.</param>
-	/// <param name="dbTransaction">The database transaction to use for the query.</param>
-	/// <returns>The entity if one exists, otherwise <see langword="null"/>.</returns>
-	public Task<TEntity?> FindByIdAsync(Guid id, DbTransaction dbTransaction)
+	[MustUseReturnValue]
+	public async Task<bool> ExistsAsync(Guid id, DbTransaction dbTransaction)
 	{
 		Logger.FindIdWithTransaction(id);
-		return FindAsync(new(
-			$"{SelectAllSql} WHERE {FindSql} AND {NotDeleted} {GroupBy};",
+		var count = await DbConnection.QuerySingleOrDefaultAsync<int?>(new(
+			ExistsSql,
 			new { id },
 			dbTransaction));
+
+		return count is not null;
 	}
 
 	/// <summary>Updates an existing entity with the specified id using the specified database transaction.</summary>
@@ -220,7 +219,7 @@ public abstract class Repository<TEntity>
 	/// <param name="dbTransaction">The database transaction to use for the query.</param>
 	/// <returns>The number of affected rows.</returns>
 	[MustUseReturnValue]
-	public async Task<int> UpdateAsync(TEntity entity, DbTransaction dbTransaction)
+	public virtual async Task<int> UpdateAsync(TEntity entity, DbTransaction dbTransaction)
 	{
 		Logger.UpdatingEntityWithTransaction();
 		var count = await DbConnection.ExecuteAsync(UpdateSql, entity, dbTransaction);
@@ -252,11 +251,7 @@ public abstract class Repository<TEntity>
 			.SingleOrDefault();
 	}
 
-	/// <summary>Executes the specified command and maps the resulting row to <typeparamref name="TEntity"/>.</summary>
-	/// <param name="command">The command to execute.</param>
-	/// <returns>The single entity returned by the query.</returns>
-	/// <exception cref="InvalidOperationException">The query returned multiple or no results.</exception>
-	protected async Task<TEntity> GetAsync(CommandDefinition command)
+	private async Task<TEntity> GetAsync(CommandDefinition command)
 	{
 		var entities = await GetEntitiesAsync(command).ConfigureAwait(false);
 		return entities.Single();
