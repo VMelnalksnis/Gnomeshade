@@ -22,29 +22,29 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AdysTech.CredentialManager"/>
-		<PackageReference Include="Avalonia.Controls.DataGrid"/>
-		<PackageReference Include="Avalonia.Desktop"/>
-		<PackageReference Include="Avalonia.Themes.Fluent"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
-		<PackageReference Include="Serilog"/>
-		<PackageReference Include="Serilog.Extensions.Hosting"/>
-		<PackageReference Include="Serilog.Settings.Configuration"/>
-		<PackageReference Include="Serilog.Sinks.File"/>
-		<PackageReference Include="Serilog.Sinks.Trace"/>
-		<PackageReference Include="Xaml.Behaviors.Avalonia"/>
+		<PackageReference Include="AdysTech.CredentialManager" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" />
+		<PackageReference Include="Avalonia.Desktop" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.Extensions.Hosting" />
+		<PackageReference Include="Serilog.Settings.Configuration" />
+		<PackageReference Include="Serilog.Sinks.File" />
+		<PackageReference Include="Serilog.Sinks.Trace" />
+		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
-		<PackageReference Include="Avalonia.Diagnostics"/>
+		<PackageReference Include="Avalonia.Diagnostics" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj"/>
+		<ProjectReference Include="..\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<AvaloniaResource Include="Assets\**"/>
+		<AvaloniaResource Include="Assets\**" />
 
 		<Content Include="appsettings.json">
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -58,6 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<TrimmerRootAssembly Include="mscorlib"/>
+		<TrimmerRootAssembly Include="mscorlib" />
 	</ItemGroup>
 </Project>
