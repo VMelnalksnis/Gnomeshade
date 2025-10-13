@@ -4,11 +4,11 @@
     "net8.0": {
       "Avalonia.Controls.DataGrid": {
         "type": "Direct",
-        "requested": "[11.3.1, )",
-        "resolved": "11.3.1",
-        "contentHash": "CWPot/hfe7vmkJBU/vsvhCMO3cxrvh/+WRX0jX65NBxARBUUdm/WOz9hlBlkm3GN796vdd1KJnBlXW/vsBgBLA==",
+        "requested": "[11.3.7, )",
+        "resolved": "11.3.7",
+        "contentHash": "KznEru2MkKkQJYvHU358/nwA2dWqbIhLpKv5XE7yI13pvxHZsNm2N53KMkjUBrvd6NgfJvA6UNJBtyNpjMiwyg==",
         "dependencies": {
-          "Avalonia": "11.3.1"
+          "Avalonia": "11.3.7"
         }
       },
       "DotNet.ReproducibleBuilds": {
@@ -142,23 +142,23 @@
       },
       "Avalonia": {
         "type": "Transitive",
-        "resolved": "11.3.1",
-        "contentHash": "XHZAj64Ywp3su68NBckeccY1N4Cig8J/iTzMEszWDnAWQbH8xgHftcr+DhS7PrANM/uXyFGP9n4+4v3vhJDeWA==",
+        "resolved": "11.3.7",
+        "contentHash": "QlVvaYTSTqzoUflmAEMuPzi3vYdybEIXmFQgLZxdTbzTeyhlwKZ1WqtLwHVe1Fbt8oGSCqYYKsU8SViZsdXR2Q==",
         "dependencies": {
-          "Avalonia.BuildServices": "0.0.31",
-          "Avalonia.Remote.Protocol": "11.3.1",
+          "Avalonia.BuildServices": "11.3.1",
+          "Avalonia.Remote.Protocol": "11.3.7",
           "MicroCom.Runtime": "0.11.0"
         }
       },
       "Avalonia.BuildServices": {
         "type": "Transitive",
-        "resolved": "0.0.31",
-        "contentHash": "KmCN6Hc+45q4OnF10ge450yVUvWuxU6bdQiyKqiSvrHKpahNrEdk0kG6Ip6GHk2SKOCttGQuA206JVdkldEENg=="
+        "resolved": "11.3.1",
+        "contentHash": "k/WwXbqwaCtmE0a90YXB9plT50ok6OgLBIr+DUYK16akJN82iK69kgkL1vGDd8XBvf77JM3O27znBuy7AEoFgg=="
       },
       "Avalonia.Remote.Protocol": {
         "type": "Transitive",
-        "resolved": "11.3.1",
-        "contentHash": "IujOppxgsmjNP2oCas++LWNUTqwzSko7ey60+0tHfy7Q6vnTmtL+0vQidtmoKYea/NYvWqIw+YxLUY3XRwYhSQ=="
+        "resolved": "11.3.7",
+        "contentHash": "xI/QoELcb/U4qSm1KDXRRaA1qy+QgyHlgTS6EN7crV/6Ldzdv990rk6ClFa2RajHhvEm2i6S8kVx2paWZIOHHw=="
       },
       "Avalonia.Skia": {
         "type": "Transitive",
