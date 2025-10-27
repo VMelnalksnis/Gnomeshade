@@ -30,6 +30,17 @@
           "Avalonia.X11": "11.3.1"
         }
       },
+      "Avalonia.Diagnostics": {
+        "type": "Direct",
+        "requested": "[11.3.1, )",
+        "resolved": "11.3.1",
+        "contentHash": "/Jw6JgaJJRc3Y3f+je/WnyXgYixDLq/u74qW2isDC7s1/1nmRJR14oklF6Gc6cIVhLFw0JbFJEn6ZHSOwKAsLg==",
+        "dependencies": {
+          "Avalonia": "11.3.1",
+          "Avalonia.Controls.ColorPicker": "11.3.1",
+          "Avalonia.Themes.Simple": "11.3.1"
+        }
+      },
       "Avalonia.Themes.Fluent": {
         "type": "Direct",
         "requested": "[11.3.1, )",
@@ -53,9 +64,9 @@
       },
       "JetBrains.Annotations": {
         "type": "Direct",
-        "requested": "[2024.3.0, )",
-        "resolved": "2024.3.0",
-        "contentHash": "ox5pkeLQXjvJdyAB4b2sBYAlqZGLh3PjSnP1bQNVx72ONuTJ9+34/+Rq91Fc0dG29XG9RgZur9+NcP4riihTug=="
+        "requested": "[2025.2.2, )",
+        "resolved": "2025.2.2",
+        "contentHash": "0X56ZRizuHdrnPpgXjWV7f2tQO1FlQg5O1967OGKnI/4ZRNOK642J8L7brM1nYvrxTTU5TP1yRyXLRLaXLPQ8A=="
       },
       "Microsoft.Extensions.Configuration.Json": {
         "type": "Direct",
@@ -169,6 +180,15 @@
         "resolved": "0.0.31",
         "contentHash": "KmCN6Hc+45q4OnF10ge450yVUvWuxU6bdQiyKqiSvrHKpahNrEdk0kG6Ip6GHk2SKOCttGQuA206JVdkldEENg=="
       },
+      "Avalonia.Controls.ColorPicker": {
+        "type": "Transitive",
+        "resolved": "11.3.1",
+        "contentHash": "+JXaqgsYtEhvi8KFYtdVriHX0P1f1PAdzNckYGbUc7s3COTLdtVRxAfbQ77SKIMx9nJu5H73X4A7y2EPB5pXdQ==",
+        "dependencies": {
+          "Avalonia": "11.3.1",
+          "Avalonia.Remote.Protocol": "11.3.1"
+        }
+      },
       "Avalonia.FreeDesktop": {
         "type": "Transitive",
         "resolved": "11.3.1",
@@ -203,6 +223,14 @@
           "SkiaSharp": "2.88.9",
           "SkiaSharp.NativeAssets.Linux": "2.88.9",
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.9"
+        }
+      },
+      "Avalonia.Themes.Simple": {
+        "type": "Transitive",
+        "resolved": "11.3.1",
+        "contentHash": "bUr8cN1Wu9NUro/RHZZkBJdv08+KVtqSUGBMNQZLjyYhxQtgrAo5tTsqWPOjPCCKcIcH+db3VOktWlPfGvz8Fw==",
+        "dependencies": {
+          "Avalonia": "11.3.1"
         }
       },
       "Avalonia.Win32": {
