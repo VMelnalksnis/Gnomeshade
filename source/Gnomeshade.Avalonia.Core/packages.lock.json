@@ -111,9 +111,9 @@
       },
       "PropertyChanged.SourceGenerator": {
         "type": "Direct",
-        "requested": "[1.0.8, )",
-        "resolved": "1.0.8",
-        "contentHash": "XufLv9ReskTWjx3assV8aRAfcHfAATAkR/MugYSHkyYm7d2voQJHtQKSncVMNZiVGwXaEg5aGtWgKMweR11TAg=="
+        "requested": "[1.1.2, )",
+        "resolved": "1.1.2",
+        "contentHash": "aMQHpG3QmIDbdvy7DbkTOAM4LORD6v4SyJpZeRM45sOjEO0XRFJ+DSgmjp9Bb7qpLKYFapF/cAX3EzLOFBSOpg=="
       },
       "StyleCop.Analyzers": {
         "type": "Direct",
