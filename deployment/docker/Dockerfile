@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.411
+FROM mcr.microsoft.com/dotnet/sdk:10.0.101
 ENV CI=true
 RUN apt-get update && apt-get install -y \
     npm \
