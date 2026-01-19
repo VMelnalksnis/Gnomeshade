@@ -84,7 +84,7 @@
 		<PackageVersion Include="VMelnalksnis.NordigenDotNet.DependencyInjection" Version="1.5.0"/>
 		<PackageVersion Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" Version="1.1.0"/>
 		<PackageVersion Include="VMelnalksnis.Testcontainers.Keycloak" Version="0.2.1"/>
-		<PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.0.10"/>
+		<PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.9.3"/>
 	</ItemGroup>
 
 	<!-- Vulnerable transitive dependencies -->
