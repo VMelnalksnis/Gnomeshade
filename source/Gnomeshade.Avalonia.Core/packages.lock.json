@@ -19,9 +19,9 @@
       },
       "DotNet.ReproducibleBuilds.Isolated": {
         "type": "Direct",
-        "requested": "[1.2.25, )",
-        "resolved": "1.2.25",
-        "contentHash": "jaAno7qr9Cgx+/DitnJXYJ3JGkqhwtH0tgKqeBtAg9kmKayvUH63EELAtxbBZr56ntyuHBfy536FlXu+UpbDlw=="
+        "requested": "[2.0.1, )",
+        "resolved": "2.0.1",
+        "contentHash": "DuZxiSz41K31NUv4SQga2SkyFoHJpSRnTMnoTbd4BVGbs0gJpB9sb/hxDSDgDM9loHs0jav4i2DZMhCiY2ewQg=="
       },
       "IdentityModel.OidcClient": {
         "type": "Direct",
