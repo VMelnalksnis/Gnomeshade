@@ -33,6 +33,7 @@ public static class BookedTransactionExtensions
 		"CASH DEPOSIT" => CreditDebitCode.CRDT,
 		"CASH WITHDRAWAL" => CreditDebitCode.DBIT,
 		"LOAN DRAWDOWN" => CreditDebitCode.DBIT,
+		"WITHHOLDING TAX" => CreditDebitCode.DBIT,
 		var information when information?.StartsWith("INWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.CRDT,
 		var information when information?.StartsWith("OUTWARD", StringComparison.OrdinalIgnoreCase) ?? false => CreditDebitCode.DBIT,
 		_ => transaction.GetCode() switch
