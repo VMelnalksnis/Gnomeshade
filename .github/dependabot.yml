@@ -1,31 +1,5 @@
 version: 2
 updates:
-  - package-ecosystem: "nuget"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 100
-    assignees:
-      - "VMelnalksnis"
-    reviewers:
-      - "VMelnalksnis"
-    groups:
-      Avalonia:
-        patterns:
-          - "Avalonia*"
-      Microsoft:
-        patterns:
-          - "Microsoft*"
-      Npgsql:
-        patterns:
-          - "Npgsql*"
-      NUnit:
-        patterns:
-          - "NUnit*"
-      OTEL:
-        patterns:
-          - "OpenTelemetry*"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
