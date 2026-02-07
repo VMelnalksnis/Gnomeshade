@@ -39,7 +39,7 @@ public static class BookedTransactionExtensions
 		_ => transaction.GetCode() switch
 		{
 			("PMNT", _, _) => CreditDebitCode.DBIT,
-			("ACMR", "MCOP", "INTR") => CreditDebitCode.CRDT,
+			("ACMT", "MCOP", "INTR") => CreditDebitCode.CRDT,
 
 			// This will leak all data about the transaction into logs, but that should not be an issue while self-hosting
 			// While only some fields are needed when this fails, those fields contain private information anyway
