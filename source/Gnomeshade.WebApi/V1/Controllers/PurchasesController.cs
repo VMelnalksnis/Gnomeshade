@@ -41,7 +41,7 @@ public sealed class PurchasesController(Mapper mapper, PurchaseRepository reposi
 	/// <inheritdoc cref="ITransactionClient.PutPurchaseAsync"/>
 	/// <response code="201">A new purchase was created.</response>
 	/// <response code="204">An existing purchase was replaced.</response>
-	/// <response code="404">The specified transaction does not exist.</response>
+	/// <response code="404">The specified purchase does not exist.</response>
 	public override Task<ActionResult> Put(Guid id, [FromBody] PurchaseCreation product) =>
 		base.Put(id, product);
 

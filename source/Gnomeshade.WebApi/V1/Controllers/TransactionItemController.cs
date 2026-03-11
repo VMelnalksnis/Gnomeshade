@@ -111,8 +111,8 @@ public abstract class TransactionItemController<TRepository, TEntity, TModel, TI
 			return null;
 		}
 
-		return await _transactionRepository.FindByIdAsync(transactionId, dbTransaction) is null
-			? NotFound()
-			: StatusCode(Status403Forbidden);
+		return await _transactionRepository.ExistsAsync(transactionId, dbTransaction)
+			? StatusCode(Status403Forbidden)
+			: NotFound();
 	}
 }

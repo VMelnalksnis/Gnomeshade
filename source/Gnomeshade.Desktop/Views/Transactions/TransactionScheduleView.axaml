@@ -1,0 +1,233 @@
+<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:dd="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:transactions="clr-namespace:Gnomeshade.Avalonia.Core.Transactions;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static dd:DesignTimeData.TransactionScheduleViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.TransactionScheduleView"
+	x:DataType="transactions:TransactionScheduleViewModel">
+
+	<Grid RowDefinitions="*">
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="200" MaxWidth="300" />
+			<ColumnDefinition Width="2*" />
+			<ColumnDefinition Width="2*" MinWidth="300" MaxWidth="600" />
+			<ColumnDefinition Width="Auto" MaxWidth="600" />
+		</Grid.ColumnDefinitions>
+
+
+		<StackPanel Grid.Column="0" Orientation="Vertical" Spacing="10">
+			<!-- <UserControl Content="{Binding Filter, Mode=OneWay}" /> -->
+
+			<Border Background="White" HorizontalAlignment="Stretch" Height="1" />
+
+			<Button
+				Width="140" Margin="5 0" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+				IsEnabled="{Binding CanDelete}" Command="{Binding DeleteSelected}">
+				Delete Selected
+			</Button>
+		</StackPanel>
+
+		<DataGrid
+			Grid.Column="1" Grid.Row="0"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			x:Name="DataGrid"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected, Mode=TwoWay}"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			CanUserReorderColumns="True" CanUserResizeColumns="True" CanUserSortColumns="True">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="Name" IsReadOnly="True">
+					<DataTemplate x:DataType="transactions:TransactionScheduleOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Name, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Starting at" IsReadOnly="True">
+					<DataTemplate x:DataType="transactions:TransactionScheduleOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding StartingAt, Mode=OneWay, Converter={x:Static core:Converters.LocalDateTime}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Period" IsReadOnly="True">
+					<DataTemplate x:DataType="transactions:TransactionScheduleOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Period, Mode=OneWay, Converter={x:Static core:Converters.Period}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Count" IsReadOnly="True">
+					<DataTemplate x:DataType="transactions:TransactionScheduleOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+							Text="{Binding Count, Mode=OneWay, StringFormat=\{0:N0\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<UserControl Grid.Column="2" Content="{Binding Details}" />
+
+		<DataGrid
+			Grid.Column="3"
+			IsVisible="{Binding PlannedTransactions, Converter={x:Static ObjectConverters.IsNotNull}}"
+			x:Name="TransactionDataGrid"
+			VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+			VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"
+			ItemsSource="{Binding PlannedTransactions, Mode=OneWay}"
+			IsEnabled="False"
+			AutoGenerateColumns="False" IsReadOnly="True"
+			CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn
+					Header="Date" IsReadOnly="True"
+					SortMemberPath="Date" CanUserSort="True">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<TextBlock
+							HorizontalAlignment="Right" VerticalAlignment="Top"
+							Margin="5 0"
+							Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowUserCurrency}">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock Text="{Binding UserCurrency}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock
+										HorizontalAlignment="Right" VerticalAlignment="Top"
+										Margin="5 0"
+										Text="{Binding UserAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock Text="{Binding UserAccount}" Padding="0 0 5 0" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserResize="False" CanUserSort="False" IsReadOnly="True">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock Text="{Binding Direction}" Padding="0 0 5 0" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock Text="{Binding DisplayedAccount}" Padding="0 0 5 0" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowOtherAmount}">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock
+										Padding="0 0 5 0"
+										Text="{Binding OtherCurrencyFormatted, Mode=OneWay}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn CanUserSort="False" IsReadOnly="True" IsVisible="{Binding ShowOtherAmount}">
+					<DataTemplate DataType="transactions:TransactionOverview">
+						<ItemsControl Margin="0 1" ItemsSource="{Binding Transfers, Mode=OneWay}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Vertical" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="transactions:TransferSummary">
+									<TextBlock
+										HorizontalAlignment="Right" VerticalAlignment="Top" Margin="5 0"
+										Text="{Binding OtherAmountFormatted, Mode=OneWay}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+	</Grid>
+</UserControl>

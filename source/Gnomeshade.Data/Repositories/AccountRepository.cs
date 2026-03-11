@@ -39,7 +39,16 @@ public sealed class AccountRepository : NamedRepository<AccountEntity>
 	protected override string InsertSql => Queries.Account.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Account.SelectAll;
+	protected override string TableName => "accounts a";
+
+	/// <inheritdoc />
+	protected override string ExistsSql =>
+		$"""
+		SELECT 1
+		FROM {TableName}
+		LEFT JOIN accounts_in_currency aic ON a.id = aic.account_id
+		WHERE {FindSql} AND {NotDeleted} LIMIT 1;
+		""";
 
 	/// <inheritdoc />
 	protected override string FindSql => "a.id = @id";

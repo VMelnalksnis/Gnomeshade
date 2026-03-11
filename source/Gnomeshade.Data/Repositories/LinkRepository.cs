@@ -28,7 +28,7 @@ public sealed class LinkRepository : Repository<LinkEntity>
 	protected override string InsertSql => Queries.Link.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Link.SelectAll;
+	protected override string TableName => "links";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Link.Update;

@@ -21,14 +21,16 @@ public sealed class TransactionOverview : PropertyChangedBase
 	/// <param name="transfers">All transfers of the transaction.</param>
 	/// <param name="purchases">All purchases of the transaction.</param>
 	/// <param name="loanPayments">All loan payments of the transaction.</param>
+	/// <param name="projection">Whether this transaction is a projection.</param>
 	public TransactionOverview(
 		Guid id,
 		DateTimeOffset? bookedAt,
 		DateTimeOffset? valuedAt,
 		DateTimeOffset? reconciledAt,
-		List<TransferSummary> transfers,
-		List<Purchase> purchases,
-		List<LoanPayment> loanPayments)
+		IReadOnlyCollection<TransferSummary> transfers,
+		IReadOnlyCollection<PurchaseBase> purchases,
+		IReadOnlyCollection<LoanPaymentBase> loanPayments,
+		bool projection = false)
 	{
 		Id = id;
 		BookedAt = bookedAt;
@@ -37,6 +39,7 @@ public sealed class TransactionOverview : PropertyChangedBase
 		Transfers = transfers;
 		Purchases = purchases;
 		LoanPayments = loanPayments;
+		Projection = projection;
 	}
 
 	/// <summary>Gets the id of the transactions.</summary>
@@ -58,9 +61,12 @@ public sealed class TransactionOverview : PropertyChangedBase
 	public bool Reconciled => ReconciledAt is not null;
 
 	/// <summary>Gets all transfers of the transaction.</summary>
-	public List<TransferSummary> Transfers { get; }
+	public IReadOnlyCollection<TransferSummary> Transfers { get; }
 
-	internal List<Purchase> Purchases { get; }
+	/// <summary>Gets a value indicating whether this transaction is a projection.</summary>
+	public bool Projection { get; }
 
-	internal List<LoanPayment> LoanPayments { get; }
+	internal IReadOnlyCollection<PurchaseBase> Purchases { get; }
+
+	internal IReadOnlyCollection<LoanPaymentBase> LoanPayments { get; }
 }

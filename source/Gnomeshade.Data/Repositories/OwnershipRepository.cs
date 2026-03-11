@@ -26,7 +26,7 @@ public sealed class OwnershipRepository(ILogger<OwnershipRepository> logger, DbC
 	protected override string InsertSql => Queries.Ownership.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Ownership.SelectAll;
+	protected override string TableName => "ownerships o";
 
 	/// <inheritdoc />
 	protected override string SelectSql => Queries.Ownership.Select;

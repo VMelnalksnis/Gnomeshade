@@ -24,7 +24,7 @@
 			<Button
 				Width="140"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5"
-				IsVisible="{Binding !Transfers.IsReadOnly, FallbackValue=false}"
+				IsVisible="{Binding !IsReadOnly, FallbackValue=false}"
 				IsEnabled="{Binding CanSave}"
 				Command="{Binding Reconcile}">
 				Reconcile
@@ -33,7 +33,7 @@
 			<Button
 				Width="140"
 				HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="5"
-				IsVisible="{Binding Transfers.IsReadOnly, FallbackValue=false}"
+				IsVisible="{Binding IsReadOnly, FallbackValue=false}"
 				Command="{Binding Edit}">
 				Edit
 			</Button>

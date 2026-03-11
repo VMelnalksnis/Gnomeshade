@@ -16,6 +16,7 @@ using Avalonia.Markup.Xaml;
 using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.Authentication;
 using Gnomeshade.Avalonia.Core.Configuration;
+using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Desktop.Authentication;
 using Gnomeshade.Desktop.Views;
 using Gnomeshade.WebApi.Client;
@@ -122,6 +123,7 @@ public sealed class App : Application
 		});
 
 		serviceCollection.AddGnomeshadeClient(configuration);
+		serviceCollection.AddSingleton<IGnomeshadeClient, DesignTimeGnomeshadeClient>(); // todo remove
 
 		serviceCollection
 			.AddViewModels()

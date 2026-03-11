@@ -22,11 +22,11 @@ public sealed record LoanPaymentEntity : Entity, IOwnableEntity, IModifiableEnti
 	/// <inheritdoc />
 	public Guid ModifiedByUserId { get; set; }
 
-	/// <summary>Gets or sets the id of the the loan this loan payment is a part of.</summary>
+	/// <summary>Gets or sets the id of the loan this loan payment is a part of.</summary>
 	/// <seealso cref="Loan2Entity"/>
 	public Guid LoanId { get; set; }
 
-	/// <summary>Gets or sets the id of the the transaction this loan payment is a part of.</summary>
+	/// <summary>Gets or sets the id of the transaction this loan payment is a part of.</summary>
 	/// <seealso cref="TransactionEntity"/>
 	public Guid TransactionId { get; set; }
 

@@ -124,7 +124,7 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc cref="AutoCompleteSelectors.Currency"/>
 	public AutoCompleteSelector<object> CurrencySelector => AutoCompleteSelectors.Currency;
 
-	/// <inheritdoc cref="Transfer.BookedAt"/>
+	/// <inheritdoc cref="TransferBase.BookedAt"/>
 	public ZonedDateTime? BookedAt => BookingDate?.InZoneStrictly(_dateTimeZoneProvider.GetSystemDefault());
 
 	/// <inheritdoc cref="Transfer.ValuedAt"/>
@@ -152,13 +152,10 @@ public sealed partial class TransferUpsertionViewModel : UpsertionViewModel
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var accountsTask = GnomeshadeClient.GetAccountsAsync();
-		var currenciesTask = GnomeshadeClient.GetCurrenciesAsync();
-
-		await Task.WhenAll(accountsTask, currenciesTask);
-
-		Accounts = accountsTask.Result;
-		Currencies = currenciesTask.Result;
+		(Accounts, Currencies) = await
+			(GnomeshadeClient.GetAccountsAsync(),
+			GnomeshadeClient.GetCurrenciesAsync())
+			.WhenAll();
 
 		if (Id is not { } transferId)
 		{

@@ -1,0 +1,18 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:transactions="clr-namespace:Gnomeshade.Avalonia.Core.Transactions;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="900"
+	d:DataContext="{x:Static design:DesignTimeData.PlannedTransactionUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.PlannedTransactionUpsertionView"
+	x:DataType="transactions:PlannedTransactionUpsertionViewModel">
+
+	<StackPanel Orientation="Vertical" MinWidth="300">
+		<UserControl Content="{Binding Transfers}" Margin="0 10" />
+		<UserControl Content="{Binding Purchases}" Margin="0 10" />
+		<UserControl Content="{Binding Loans}" Margin="0 10" />
+	</StackPanel>
+</UserControl>

@@ -1,0 +1,53 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:purchases="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Purchases;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.PlannedPurchaseUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Purchases.PlannedPurchaseUpsertionView"
+	x:DataType="purchases:PlannedPurchaseUpsertionViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<WrapPanel>
+			<StackPanel Orientation="Horizontal">
+				<AutoCompleteBox
+					Watermark="Product"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding Products}"
+					ItemSelector="{Binding ProductSelector}"
+					SelectedItem="{Binding Product, Mode=TwoWay}" />
+				<TextBox
+					Watermark="{Binding UnitName, StringFormat='Amount ({0})'}"
+					Text="{Binding Amount}" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBox
+					Watermark="Price"
+					Text="{Binding Price}" />
+				<AutoCompleteBox
+					Watermark="Currency"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding Currencies}"
+					ItemSelector="{Binding CurrencySelector}"
+					SelectedItem="{Binding Currency, Mode=TwoWay}" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<AutoCompleteBox
+					Watermark="Project"
+					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
+					IsTextCompletionEnabled="True"
+					ItemsSource="{Binding Projects}"
+					ItemSelector="{Binding ProjectSelector}"
+					SelectedItem="{Binding Project, Mode=TwoWay}" />
+
+				<TextBox Text="{Binding Order}" Watermark="Order" HorizontalAlignment="Left" />
+			</StackPanel>
+		</WrapPanel>
+	</StackPanel>
+</UserControl>

@@ -1,0 +1,104 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:transfers="clr-namespace:Gnomeshade.Avalonia.Core.Transactions.Transfers;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+	d:DataContext="{x:Static design:DesignTimeData.PlannedTransferViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.Transfers.PlannedTransferView"
+	x:DataType="transfers:PlannedTransferViewModel">
+
+	<StackPanel Orientation="Vertical" Spacing="5">
+		<DataGrid
+			x:Name="DataGrid"
+			VerticalAlignment="Stretch"
+			ItemsSource="{Binding DataGridView, Mode=TwoWay}"
+			SelectedItem="{Binding Selected, Mode=TwoWay}" SelectionMode="Single"
+			AutoGenerateColumns="False" IsReadOnly="False"
+			HorizontalScrollBarVisibility="Auto"
+			CanUserReorderColumns="False" CanUserResizeColumns="True" CanUserSortColumns="False">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn
+					Header="Date" IsReadOnly="True"
+					SortMemberPath="Date" CanUserSort="True">
+					<DataTemplate DataType="transfers:TransferOverview">
+						<TextBlock
+							Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Right"
+							Text="{Binding Date, Mode=OneWay, StringFormat=\{0:g\}}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Source" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Left">
+							<TextBlock Text="{Binding SourceCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding SourceAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							Text="{Binding SourceAccount, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="→" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Target" IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<StackPanel
+							Orientation="Horizontal" Spacing="5" Margin="5 0"
+							VerticalAlignment="Center" HorizontalAlignment="Left">
+							<TextBlock Text="{Binding TargetCurrency, Mode=OneWay}" />
+							<TextBlock Text="{Binding TargetAmount, Mode=OneWay, StringFormat=\{0:N2\}}" />
+						</StackPanel>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn IsReadOnly="True">
+					<DataTemplate x:DataType="transfers:TransferOverview">
+						<TextBlock
+							VerticalAlignment="Center" HorizontalAlignment="Left"
+							Text="{Binding TargetAccount, Mode=OneWay}" />
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="SelectionChanged" SourceObject="{Binding #DataGrid}">
+					<InvokeCommandAction Command="{Binding UpdateSelection}" />
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+		</DataGrid>
+
+		<UserControl Content="{Binding Details}" />
+
+		<WrapPanel>
+
+			<Button IsEnabled="{Binding Details.CanSave}" Command="{Binding Details.SaveAsync}">
+				Save
+			</Button>
+
+			<Button
+				IsVisible="{Binding Details.CanCreate}"
+				Command="{Binding Details.CreateAccount}" CommandParameter="{Binding $parent[Window]}">
+				Create account
+			</Button>
+
+			<Button IsVisible="{Binding CanDelete}" Command="{Binding DeleteSelected}">
+				Delete Selected
+			</Button>
+		</WrapPanel>
+
+	</StackPanel>
+
+</UserControl>

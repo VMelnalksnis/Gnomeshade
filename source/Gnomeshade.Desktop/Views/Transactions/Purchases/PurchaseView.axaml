@@ -12,6 +12,13 @@
 	x:DataType="purchases:PurchaseViewModel">
 
 	<StackPanel Orientation="Vertical">
+		<StackPanel.IsVisible>
+			<MultiBinding Converter="{x:Static BoolConverters.Or}">
+				<Binding Path="!IsReadOnly"/>
+				<Binding Path="Rows" Converter="{x:Static core:Converters.NotEmpty}"/>
+			</MultiBinding>
+		</StackPanel.IsVisible>
+
 		<StackPanel
 			Orientation="Horizontal" Spacing="5"
 			IsVisible="{Binding Rows, Converter={x:Static core:Converters.Any}}">

@@ -7,11 +7,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.Avalonia.Core.Reports.Splits;
 using Gnomeshade.WebApi.Client;
 using Gnomeshade.WebApi.Models.Accounts;
+using Gnomeshade.WebApi.Models.Transactions;
 
 using LiveChartsCore.Defaults;
 using LiveChartsCore.Kernel.Sketches;
@@ -53,6 +55,10 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	/// <summary>Gets or sets the selected split from <see cref="Splits"/>.</summary>
 	[Notify]
 	private IReportSplit? _selectedSplit = SplitProvider.MonthlySplit;
+
+	/// <summary>Gets or sets a value indicating whether to include projections in the report.</summary>
+	[Notify]
+	private bool _includeProjections = true;
 
 	/// <summary>Gets the y axes for <see cref="Series"/>.</summary>
 	[Notify(Setter.Private)]
@@ -103,11 +109,16 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 	/// <inheritdoc />
 	protected override async Task Refresh()
 	{
-		var transfersTask = _gnomeshadeClient.GetTransfersAsync();
+		var cancellation = new CancellationTokenSource();
+		var task = (
+			_gnomeshadeClient.GetTransfersAsync(cancellation.Token),
+			_gnomeshadeClient.GetPlannedTransfers(cancellation.Token))
+			.WhenAll();
+
 		var (counterparty, allAccounts, currencies) = await
-			(_gnomeshadeClient.GetMyCounterpartyAsync(),
-			_gnomeshadeClient.GetAccountsAsync(),
-			_gnomeshadeClient.GetCurrenciesAsync())
+			(_gnomeshadeClient.GetMyCounterpartyAsync(cancellation.Token),
+			_gnomeshadeClient.GetAccountsAsync(cancellation.Token),
+			_gnomeshadeClient.GetCurrenciesAsync(cancellation.Token))
 			.WhenAll();
 
 		var selected = SelectedAccounts.Select(account => account.Id).ToArray();
@@ -123,6 +134,7 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 
 		if (SelectedSplit is not { } reportSplit)
 		{
+			await cancellation.CancelAsync();
 			return;
 		}
 
@@ -132,7 +144,22 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 			.SelectMany(account => account.Currencies.Where(aic => aic.CurrencyId == (SelectedCurrency?.Id ?? account.PreferredCurrencyId)).Select(aic => aic.Id))
 			.ToArray();
 
-		var transfers = (await transfersTask)
+		var (actualTransfers, plannedTransfers) = await task;
+		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
+
+		IEnumerable<Transfer> allTransfers = actualTransfers;
+		if (IncludeProjections)
+		{
+			var filtered = plannedTransfers
+				.Select(PlannedTransferSelector)
+				.Where(tuple =>
+					(tuple.Planned.SourceAccountId is { } sourceId && inCurrencyIds.Contains(sourceId)) ||
+					(tuple.Planned.TargetAccountId is { } targetId && inCurrencyIds.Contains(targetId)))
+				.Select(tuple => tuple.Transfer);
+			allTransfers = allTransfers.Concat(filtered);
+		}
+
+		var transfers = allTransfers
 			.Where(transfer =>
 				inCurrencyIds.Contains(transfer.SourceAccountId) ||
 				inCurrencyIds.Contains(transfer.TargetAccountId))
@@ -141,7 +168,6 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 			.ThenBy(transfer => transfer.ModifiedAt)
 			.ToArray();
 
-		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
 		var currentTime = _clock.GetCurrentInstant();
 		var dates = transfers
 			.Select(transfer => transfer.ValuedAt ?? transfer.BookedAt!.Value)
@@ -185,6 +211,32 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		XAxes = [reportSplit.GetXAxis(startTime, endTime)];
 	}
 
+	private static (PlannedTransfer Planned, Transfer Transfer) PlannedTransferSelector(PlannedTransfer plannedTransfer)
+	{
+		var transfer = new Transfer
+		{
+			Id = plannedTransfer.Id,
+			CreatedAt = plannedTransfer.CreatedAt,
+			OwnerId = plannedTransfer.OwnerId,
+			CreatedByUserId = plannedTransfer.CreatedByUserId,
+			ModifiedAt = plannedTransfer.ModifiedAt,
+			ModifiedByUserId = plannedTransfer.ModifiedByUserId,
+			TransactionId = plannedTransfer.TransactionId,
+			SourceAmount = plannedTransfer.SourceAmount,
+			SourceAccountId = plannedTransfer.SourceAccountId ?? default,
+			TargetAmount = plannedTransfer.TargetAmount,
+			TargetAccountId = plannedTransfer.TargetAccountId ?? default,
+			BankReference = null,
+			ExternalReference = null,
+			InternalReference = null,
+			Order = plannedTransfer.Order,
+			BookedAt = plannedTransfer.BookedAt,
+			ValuedAt = null,
+		};
+
+		return (plannedTransfer, transfer);
+	}
+
 	private void OnPropertyChanging(object? sender, PropertyChangingEventArgs e)
 	{
 		if (e.PropertyName is nameof(SelectedAccounts))
@@ -201,6 +253,11 @@ public sealed partial class BalanceReportViewModel : ViewModelBase
 		}
 
 		if (e.PropertyName is nameof(SelectedSplit) && SelectedSplit is not null)
+		{
+			await RefreshAsync();
+		}
+
+		if (e.PropertyName is nameof(IncludeProjections))
 		{
 			await RefreshAsync();
 		}

@@ -1,0 +1,39 @@
+﻿<UserControl
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:core="clr-namespace:Gnomeshade.Avalonia.Core;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:design="clr-namespace:Gnomeshade.Avalonia.Core.DesignTime;assembly=Gnomeshade.Avalonia.Core"
+	xmlns:transactions="clr-namespace:Gnomeshade.Avalonia.Core.Transactions;assembly=Gnomeshade.Avalonia.Core"
+	mc:Ignorable="d" d:DataContext="{x:Static design:DesignTimeData.TransactionScheduleUpsertionViewModel}"
+	x:Class="Gnomeshade.Desktop.Views.Transactions.TransactionScheduleUpsertionView"
+	x:DataType="transactions:TransactionScheduleUpsertionViewModel">
+
+	<StackPanel Orientation="Vertical">
+		<WrapPanel>
+			<TextBox TextWrapping="Wrap" MinWidth="300" Watermark="Name" Text="{Binding Name}" />
+
+			<TextBox
+				Text="{Binding StartingAt, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
+				MinWidth="300" Watermark="Starting at" />
+
+
+			<StackPanel Orientation="Horizontal">
+				<TextBox
+					Text="{Binding Period, Mode=TwoWay, Converter={x:Static core:Converters.Period}}"
+					Watermark="Period" />
+
+				<TextBox Text="{Binding Count}" Watermark="Count" HorizontalAlignment="Left" />
+			</StackPanel>
+		</WrapPanel>
+
+		<Button
+			Width="140" Margin="5 0" HorizontalContentAlignment="Center"
+			IsEnabled="{Binding CanSave}" Command="{Binding SaveAsync}">
+			Save
+		</Button>
+
+		<UserControl Content="{Binding TemplateTransaction}"/>
+	</StackPanel>
+</UserControl>

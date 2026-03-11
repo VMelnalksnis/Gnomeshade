@@ -271,6 +271,32 @@ public sealed class TransactionsController : CreatableBase<TransactionRepository
 		await using var dbTransaction = await DbConnection.OpenAndBeginTransaction();
 
 		var userId = ApplicationUser.Id;
+		var tasks = new Task<TransactionEntity>[sourceIds.Length];
+		for (var i = 0; i < sourceIds.Length; i++)
+		{
+			tasks[i] = Repository.GetByIdAsync(sourceIds[i], userId, dbTransaction);
+		}
+
+		var sourceTransactions = await Task.WhenAll(tasks);
+		foreach (var transaction in sourceTransactions)
+		{
+			if (transaction.Planned)
+			{
+				ModelState.AddModelError(nameof(sourceIds), $"Source transaction {transaction.Id} is planned; only {nameof(targetId)} can be planned");
+			}
+		}
+
+		if (!ModelState.IsValid)
+		{
+			return BadRequest();
+		}
+
+		var targetTransaction = await Repository.GetByIdAsync(targetId, userId, dbTransaction);
+		if (targetTransaction.Planned)
+		{
+			throw new NotImplementedException("Planned transaction merging is not supported");
+		}
+
 		foreach (var sourceId in sourceIds)
 		{
 			await Repository.MergeAsync(targetId, sourceId, userId, dbTransaction);

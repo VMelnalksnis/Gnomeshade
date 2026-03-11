@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using Gnomeshade.WebApi.Models.Accounts;
 using Gnomeshade.WebApi.Models.Authentication;
 using Gnomeshade.WebApi.Models.Importing;
+using Gnomeshade.WebApi.Models.Loans;
 using Gnomeshade.WebApi.Models.Owners;
 using Gnomeshade.WebApi.Models.Products;
 using Gnomeshade.WebApi.Models.Projects;
@@ -51,13 +52,22 @@ namespace Gnomeshade.WebApi.Models;
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(RegistrationModel))]
 [JsonSerializable(typeof(List<User>))]
-[JsonSerializable(typeof(List<Loans.Loan>))]
-[JsonSerializable(typeof(Loans.LoanCreation))]
-[JsonSerializable(typeof(List<Loans.LoanPayment>))]
-[JsonSerializable(typeof(Loans.LoanPaymentCreation))]
+[JsonSerializable(typeof(List<Loan>))]
+[JsonSerializable(typeof(LoanCreation))]
+[JsonSerializable(typeof(List<LoanPayment>))]
+[JsonSerializable(typeof(LoanPaymentCreation))]
 #pragma warning disable CS0612 // Type or member is obsolete
 [JsonSerializable(typeof(List<LegacyLoan>))]
 #pragma warning restore CS0612 // Type or member is obsolete
 [JsonSerializable(typeof(List<Project>))]
 [JsonSerializable(typeof(ProjectCreation))]
+[JsonSerializable(typeof(List<TransactionSchedule>))]
+[JsonSerializable(typeof(TransactionScheduleCreation))]
+[JsonSerializable(typeof(List<PlannedTransaction>))]
+[JsonSerializable(typeof(PlannedTransactionCreation))]
+[JsonSerializable(typeof(List<PlannedTransfer>))]
+[JsonSerializable(typeof(PlannedTransferCreation))]
+[JsonSerializable(typeof(List<PlannedPurchase>))]
+[JsonSerializable(typeof(PlannedPurchaseCreation))]
+[JsonSerializable(typeof(List<PlannedLoanPayment>))]
 public sealed partial class GnomeshadeSerializerContext : JsonSerializerContext;

@@ -44,6 +44,10 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 	[Notify]
 	private IReportSplit? _selectedSplit = SplitProvider.MonthlySplit;
 
+	/// <summary>Gets or sets a value indicating whether to include projections in the report.</summary>
+	[Notify]
+	private bool _includeProjections = true;
+
 	/// <summary>Gets the data series of amount spent per month per category.</summary>
 	[Notify(Setter.Private)]
 	private List<StackedColumnSeries<IndexedPoint>> _series = [];
@@ -86,15 +90,26 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 			return;
 		}
 
-		var accounts = await _gnomeshadeClient.GetAccountsAsync();
+		var (accounts, allTransactions, plannedTransactions, products) = await
+			(_gnomeshadeClient.GetAccountsAsync(),
+			_gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue)),
+			_gnomeshadeClient.GetPlannedTransactions(new Interval(Instant.MinValue, Instant.MaxValue)),
+			_gnomeshadeClient.GetProductsAsync())
+			.WhenAll();
+
 		var accountsInCurrency = accounts.SelectMany(account => account.Currencies).ToArray();
-		var allTransactions = await _gnomeshadeClient.GetDetailedTransactionsAsync(new(Instant.MinValue, Instant.MaxValue));
 		var displayableTransactions = allTransactions
 			.Select(transaction => transaction with { TransferBalance = -transaction.TransferBalance })
 			.Where(transaction => transaction.TransferBalance > 0)
 			.ToArray();
 
 		var timeZone = _dateTimeZoneProvider.GetSystemDefault();
+
+		if (IncludeProjections)
+		{
+			var planned = await Task.WhenAll(plannedTransactions.Select(Selector));
+			displayableTransactions = displayableTransactions.Concat(planned).ToArray();
+		}
 
 		var transactions = new TransactionData[displayableTransactions.Length];
 		for (var i = 0; i < displayableTransactions.Length; i++)
@@ -133,11 +148,9 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		var endTime = new ZonedDateTime(dates.Max(), timeZone);
 		var splits = reportSplit.GetSplits(startTime, endTime).ToArray();
 
-		var products = await _gnomeshadeClient.GetProductsAsync();
-		var categories = await _gnomeshadeClient.GetCategoriesAsync();
-		var nodes = categories
+		var nodes = Categories
 			.Where(category => category.CategoryId == SelectedCategory?.Id || category.Id == SelectedCategory?.Id)
-			.Select(category => CategoryNode.FromCategory(category, categories))
+			.Select(category => CategoryNode.FromCategory(category, Categories))
 			.ToList();
 
 		var uncategorizedTransfers = transactions
@@ -185,18 +198,14 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 				for (var purchaseIndex = 0; purchaseIndex < purchasesToSum.Length; purchaseIndex++)
 				{
 					var purchase = purchasesToSum[purchaseIndex];
-					var sourceCurrencyIds = purchase.SourceCurrencyIds;
-					var targetCurrencyIds = purchase.TargetCurrencyIds;
 
-					if (sourceCurrencyIds.Length is not 1 || targetCurrencyIds.Length is not 1)
+					if (purchase.SourceCurrencyIds is not [var sourceCurrency] ||
+						purchase.TargetCurrencyIds is not [var targetCurrency])
 					{
 						// todo cannot handle multiple currencies (#686)
 						sum += purchase.Purchase.Price;
 						continue;
 					}
-
-					var sourceCurrency = sourceCurrencyIds.Single();
-					var targetCurrency = targetCurrencyIds.Single();
 
 					if (sourceCurrency == targetCurrency)
 					{
@@ -219,9 +228,82 @@ public sealed partial class CategoryReportViewModel : ViewModelBase
 		XAxes = [reportSplit.GetXAxis(startTime, endTime)];
 	}
 
+	private async Task<DetailedTransaction> Selector(PlannedTransaction transaction)
+	{
+		var plannedTransfers = await _gnomeshadeClient.GetPlannedTransfers(transaction.Id);
+		var plannedPurchases = await _gnomeshadeClient.GetPlannedPurchases(transaction.Id);
+		var startTime = plannedTransfers.Select(transfer => transfer.BookedAt).Max()!.Value;
+
+		var transfers = plannedTransfers.Select(plannedTransfer => new Transfer
+		{
+			Id = plannedTransfer.Id,
+			CreatedAt = plannedTransfer.CreatedAt,
+			OwnerId = plannedTransfer.OwnerId,
+			CreatedByUserId = plannedTransfer.CreatedByUserId,
+			ModifiedAt = plannedTransfer.ModifiedAt,
+			ModifiedByUserId = plannedTransfer.ModifiedByUserId,
+			TransactionId = plannedTransfer.TransactionId,
+			SourceAmount = plannedTransfer.SourceAmount,
+			SourceAccountId = plannedTransfer.SourceAccountId ?? default,
+			TargetAmount = plannedTransfer.TargetAmount,
+			TargetAccountId = plannedTransfer.TargetAccountId ?? default,
+			BankReference = null,
+			ExternalReference = null,
+			InternalReference = null,
+			Order = plannedTransfer.Order,
+			BookedAt = startTime,
+			ValuedAt = null,
+		}).ToList();
+
+		var purchases = plannedPurchases.Select(plannedPurchase => new Purchase
+		{
+			Id = plannedPurchase.Id,
+			CreatedAt = plannedPurchase.CreatedAt,
+			OwnerId = plannedPurchase.OwnerId,
+			CreatedByUserId = plannedPurchase.CreatedByUserId,
+			ModifiedAt = plannedPurchase.ModifiedAt,
+			ModifiedByUserId = plannedPurchase.ModifiedByUserId,
+			TransactionId = plannedPurchase.TransactionId,
+			Price = plannedPurchase.Price,
+			CurrencyId = plannedPurchase.CurrencyId,
+			ProductId = plannedPurchase.ProductId,
+			Amount = plannedPurchase.Amount,
+			DeliveryDate = null,
+			Order = plannedPurchase.Order,
+		}).ToList();
+
+		return new()
+		{
+			Id = transaction.Id,
+			OwnerId = transaction.OwnerId,
+			CreatedAt = transaction.CreatedAt,
+			CreatedByUserId = transaction.CreatedByUserId,
+			ModifiedAt = transaction.ModifiedAt,
+			ModifiedByUserId = transaction.ModifiedByUserId,
+			Description = null,
+			ImportedAt = null,
+			ReconciledAt = null,
+			RefundedBy = null,
+			BookedAt = startTime,
+			ValuedAt = null,
+			Transfers = transfers,
+			TransferBalance = transfers.Select(transfer => transfer.SourceAmount).Sum(), // todo
+			Purchases = purchases,
+			PurchaseTotal = purchases.Select(purchase => purchase.Price).Sum(),
+			LoanPayments = [],
+			LoanTotal = 0,
+			Links = [],
+		};
+	}
+
 	private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName is nameof(SelectedSplit) && SelectedSplit is not null)
+		{
+			await RefreshAsync();
+		}
+
+		if (e.PropertyName is nameof(IncludeProjections))
 		{
 			await RefreshAsync();
 		}

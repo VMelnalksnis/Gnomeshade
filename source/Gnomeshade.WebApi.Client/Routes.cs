@@ -50,6 +50,29 @@ public static class Routes
 		return string.Join("&", parameters.Select(pair => $"{pair.Key}={Format(pair.Value)}"));
 	}
 
+	private static string DateRangeUri(string baseUri, Interval interval)
+	{
+		var keyValues = new List<KeyValuePair<Instant, string>>(2);
+		if (interval.HasStart)
+		{
+			keyValues.Add(new(interval.Start, "from"));
+		}
+
+		if (interval.HasEnd)
+		{
+			keyValues.Add(new(interval.End, "to"));
+		}
+
+		if (keyValues.Count is 0)
+		{
+			return baseUri;
+		}
+
+		var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key}");
+		var query = string.Join('&', parameters);
+		return $"{baseUri}?{query}";
+	}
+
 	/// <summary>Account routes.</summary>
 	public static class Accounts
 	{
@@ -77,9 +100,9 @@ public static class Routes
 		/// <summary>Gets the relative uri for all transactions within the specified interval.</summary>
 		/// <param name="interval">The interval for which to get transactions.</param>
 		/// <returns>Relative uri for all transaction with a query for the specified interval.</returns>
-		public static string DateRangeUri(Interval interval) => DateRangeUri(Uri, interval);
+		public static string DateRangeUri(Interval interval) => Routes.DateRangeUri(Uri, interval);
 
-		internal static string DetailedDateRangeUri(Interval interval) => DateRangeUri(_detailedUri, interval);
+		internal static string DetailedDateRangeUri(Interval interval) => Routes.DateRangeUri(_detailedUri, interval);
 
 		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
 
@@ -98,29 +121,53 @@ public static class Routes
 		internal static string RelatedUri(Guid id) => $"{IdUri(id)}/Related";
 
 		internal static string RelatedUri(Guid id, Guid relatedId) => $"{RelatedUri(id)}/{Format(relatedId)}";
+	}
 
-		private static string DateRangeUri(string baseUri, Interval interval)
-		{
-			var keyValues = new List<KeyValuePair<Instant, string>>(2);
-			if (interval.HasStart)
-			{
-				keyValues.Add(new(interval.Start, "from"));
-			}
+	internal static class TransactionSchedules
+	{
+		internal const string Uri = $"{V1}/TransactionSchedules";
 
-			if (interval.HasEnd)
-			{
-				keyValues.Add(new(interval.End, "to"));
-			}
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+	}
 
-			if (!keyValues.Any())
-			{
-				return baseUri;
-			}
+	internal static class PlannedTransactions
+	{
+		internal const string Uri = $"{V1}/Transactions/Planned";
 
-			var parameters = keyValues.Select(pair => $"{pair.Value}={pair.Key}");
-			var query = string.Join('&', parameters);
-			return $"{baseUri}?{query}";
-		}
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string DateRangeUri(Interval interval) => Routes.DateRangeUri(Uri, interval);
+	}
+
+	internal static class PlannedTransfers
+	{
+		internal const string Uri = $"{V1}/Transfers/Planned";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string TransactionUri(Guid transactionId) => $"{PlannedTransactions.IdUri(transactionId)}/Transfers";
+	}
+
+	internal static class PlannedPurchases
+	{
+		internal const string Uri = $"{V1}/Purchases/Planned";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string TransactionUri(Guid transactionId) => $"{PlannedTransactions.IdUri(transactionId)}/Purchases";
+	}
+
+	internal static class PlannedLoanPayments
+	{
+		internal const string Uri = $"{V2}/{nameof(LoanPayments)}/Planned";
+
+		internal static string IdUri(Guid id) => $"{Uri}/{Format(id)}";
+
+		internal static string ForLoan(Guid loanId) =>
+			$"{V2}/{nameof(Loans)}/{Format(loanId)}/{nameof(LoanPayments)}";
+
+		internal static string ForTransaction(Guid transactionId) =>
+			$"{V2}/{nameof(Transactions)}/{Format(transactionId)}/{nameof(LoanPayments)}"; // todo
 	}
 
 	internal static class Products

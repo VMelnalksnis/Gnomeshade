@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Gnomeshade.Avalonia.Core.DesignTime;
 using Gnomeshade.Avalonia.Core.Reports;
 
+using LiveChartsCore.Defaults;
+
 using NodaTime;
 
 namespace Gnomeshade.Avalonia.Core.Tests.Reports;
@@ -40,19 +42,20 @@ public sealed class BalanceReportViewModelTests
 			_viewModel.Currencies.Should().HaveCount(2);
 			_viewModel.SelectedCurrency.Should().BeNull();
 
-			var point = _viewModel.Series.Should().ContainSingle().Which.Values.Should().ContainSingle().Subject;
-
-			point.Open.Should().Be(0);
-			point.Low.Should().Be(0);
-			point.High.Should().Be(0);
-			point.Close.Should().Be(0);
+			var series = _viewModel.Series.Should().ContainSingle().Subject;
+			series
+				.Values.Should()
+				.HaveCount(14)
+				.And.Subject.First().Should()
+				.BeEquivalentTo(new FinancialPointI(0, 0, 0, 0));
 		}
 
-		_viewModel.SelectedAccounts.Add(_viewModel.UserAccounts.First());
+		_viewModel.SelectedAccounts.Add(_viewModel.UserAccounts.Single(account => account.Name is "Cash"));
 
 		using (new AssertionScope())
 		{
-			var point = _viewModel.Series.Should().ContainSingle().Which.Values.Should().ContainSingle().Subject;
+			var series = _viewModel.Series.Should().ContainSingle().Subject;
+			var point = series.Values.Should().ContainSingle().Subject;
 
 			point.Open.Should().Be(0);
 			point.Low.Should().Be(0);
@@ -61,16 +64,16 @@ public sealed class BalanceReportViewModelTests
 		}
 
 		_viewModel.SelectedAccounts.Clear();
-		_viewModel.SelectedAccounts.Add(_viewModel.UserAccounts.Last());
+		_viewModel.SelectedAccounts.Add(_viewModel.UserAccounts.Single(account => account.Name is "Spending"));
 
 		using (new AssertionScope())
 		{
-			var point = _viewModel.Series.Should().ContainSingle().Which.Values.Should().ContainSingle().Subject;
-
-			point.Open.Should().Be(0);
-			point.Low.Should().Be(-127.3);
-			point.High.Should().Be(0);
-			point.Close.Should().Be(-127.3);
+			var series = _viewModel.Series.Should().ContainSingle().Subject;
+			series
+				.Values.Should()
+				.HaveCount(14)
+				.And.Subject.First().Should()
+				.BeEquivalentTo(new FinancialPointI(0, 0, -127.3, -127.3));
 		}
 	}
 }

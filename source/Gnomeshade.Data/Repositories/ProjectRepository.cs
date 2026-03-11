@@ -25,7 +25,7 @@ public sealed class ProjectRepository(ILogger<ProjectRepository> logger, DbConne
 	protected override string InsertSql => Queries.Project.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Project.SelectAll;
+	protected override string TableName => "projects";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Project.Update;

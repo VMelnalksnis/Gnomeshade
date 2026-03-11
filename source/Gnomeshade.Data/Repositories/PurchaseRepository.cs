@@ -39,7 +39,7 @@ public sealed class PurchaseRepository : TransactionItemRepository<PurchaseEntit
 	protected override string InsertSql => Queries.Purchase.Insert;
 
 	/// <inheritdoc />
-	protected override string SelectAllSql => Queries.Purchase.SelectAll;
+	protected override string TableName => "purchases";
 
 	/// <inheritdoc />
 	protected override string UpdateSql => Queries.Purchase.Update;

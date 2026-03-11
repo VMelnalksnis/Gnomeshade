@@ -79,6 +79,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 		About = activityService.Create<Window>(ShowAboutWindow, "Waiting for About window to be closed");
 		License = activityService.Create<Window>(ShowLicenseWindow, "Waiting for License window to be closed");
 		NavigateBack = activityService.Create(NavigateBackAsync, () => _navigationHistory.Count is not 0, "Navigating back");
+		TransactionSchedules = activityService.Create(SwitchTo<TransactionScheduleViewModel>, "Switching to transaction schedules");
 
 		PropertyChanging += OnPropertyChanging;
 	}
@@ -94,6 +95,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
 	/// <summary>Gets a command for switching to the previous <see cref="ActiveView"/>.</summary>
 	public CommandBase NavigateBack { get; }
+
+	/// <summary>Gets a command for switching the <see cref="ActiveView"/> to <see cref="TransactionScheduleViewModel"/>.</summary>
+	public CommandBase TransactionSchedules { get; }
 
 	/// <summary>Gets a value indicating whether it's possible to log out.</summary>
 	public bool CanLogOut => ActiveView is not null and not LoginViewModel and not ConfigurationWizardViewModel;
@@ -241,6 +245,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 	private async Task InitializeActiveViewAsync()
 	{
 		// The first notification does not show up, and subsequent calls work after some delay
+		// todo if the app starts too fast the first notification still does not show up
 		ActivityService.ShowNotification(new(null, null, expiration: TimeSpan.FromMilliseconds(1)));
 
 		if (ActiveView is not null)

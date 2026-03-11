@@ -113,8 +113,7 @@ public abstract class CreatableBase<TRepository, TEntity, TModel, TCreation> : F
 			return result;
 		}
 
-		var conflictingEntity = await Repository.FindByIdAsync(id, dbTransaction);
-		if (conflictingEntity is null)
+		if (!await Repository.ExistsAsync(id, dbTransaction))
 		{
 			var result = await CreateNewAsync(id, creation, user, dbTransaction);
 			await dbTransaction.CommitAsync();
