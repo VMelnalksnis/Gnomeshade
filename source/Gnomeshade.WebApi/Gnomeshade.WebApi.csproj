@@ -54,6 +54,11 @@
 		<ProjectReference Include="..\Gnomeshade.WebApi.Client\Gnomeshade.WebApi.Client.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<TrimmerRootAssembly Include="System.ComponentModel.TypeConverter" />
+		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Mvc.Core" />
+	</ItemGroup>
+
 	<Target Name="JavascriptLibraries" BeforeTargets="Build;Publish">
 		<Exec WorkingDirectory="./Node" Command="npm ci" Condition="'$(ContinuousIntegrationBuild)' == 'true'"/>
 

@@ -57,9 +57,4 @@
 			<Link>stylecop.json</Link>
 		</AdditionalFiles>
 	</ItemGroup>
-
-	<ItemGroup>
-		<TrimmerRootAssembly Include="System.ComponentModel.TypeConverter" />
-		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Mvc.Core" />
-	</ItemGroup>
 </Project>
