@@ -28,15 +28,15 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.1.0
-      - uses: actions/setup-node@v6.2.0
+      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-node@v6.4.0
         with:
-          node-version: 18
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v5.0.3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -56,7 +56,7 @@ jobs:
           OpenTelemetry__Enabled: false
 
       - name: Gather Code Coverage
-        uses: codecov/codecov-action@v5.5.2
+        uses: codecov/codecov-action@v6.0.0
         if: always()
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -75,17 +75,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.1.0
-      - uses: actions/setup-node@v6.2.0
+      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-node@v6.4.0
         with:
-          node-version: 18
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - run: echo "BUILD_TAG=-test"
 
       - name: Cache NuGet packages
-        uses: actions/cache@v5.0.3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -97,7 +97,7 @@ jobs:
       - name: Build debian package
         run: deployment/debian.sh "${{ steps.publish.outputs.artifact }}" "${{ github.run_number }}"
 
-      - uses: actions/upload-artifact@v6.0.0
+      - uses: actions/upload-artifact@v7.0.1
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
           path: "**/*.deb"
@@ -117,14 +117,14 @@ jobs:
           - ubuntu2404
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/download-artifact@v7.0.0
+      - uses: actions/download-artifact@v8.0.1
         id: download
         with:
           name: Gnomeshade.WebApi_linux-x64.deb
 
       - run: mv ${{ steps.download.outputs.download-path }}/gnomeshade.deb ./deployment/ansible/gnomeshade/molecule/default/gnomeshade.deb
 
-      - uses: gofrolist/molecule-action@v2.7.88
+      - uses: gofrolist/molecule-action@v2.7.96
         with:
           molecule_working_dir: './deployment/ansible/gnomeshade'
         env:
@@ -144,15 +144,15 @@ jobs:
     if: false # ReSharper is not compatible with Avalonia 12
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.1.0
-      - uses: actions/setup-node@v6.2.0
+      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-node@v6.4.0
         with:
-          node-version: 18
+          node-version: 24
           cache: 'npm'
           cache-dependency-path: 'source/Gnomeshade.WebApi/Node/package-lock.json'
 
       - name: Cache NuGet packages
-        uses: actions/cache@v5.0.3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
