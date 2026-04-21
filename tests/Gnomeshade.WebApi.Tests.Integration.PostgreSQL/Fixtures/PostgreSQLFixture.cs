@@ -24,8 +24,7 @@ internal sealed class PostgreSQLFixture : WebserverFixture
 	{
 		Name = version;
 
-		_databaseContainer = new PostgreSqlBuilder()
-			.WithImage($"postgres:{version}")
+		_databaseContainer = new PostgreSqlBuilder($"postgres:{version}")
 			.WithTmpfsMount("/var/lib/postgresql/data")
 			.WithEnvironment("PGDATA", "/var/lib/postgresql/data")
 			.WithCommand("-c", "fsync=off")

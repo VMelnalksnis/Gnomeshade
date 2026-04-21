@@ -15,20 +15,20 @@
 		<TextBox
 			IsVisible="{Binding IsImported}" IsEnabled="False" MinWidth="150"
 			Text="{Binding ImportDate, Converter={x:Static core:Converters.LocalDateTime}}"
-			Watermark="Imported at" UseFloatingWatermark="True" />
+			PlaceholderText="Imported at" UseFloatingPlaceholder="True" />
 
 		<TextBox
 			IsVisible="{Binding Reconciled}" IsEnabled="False" MinWidth="150"
 			Text="{Binding ReconciliationDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
-			Watermark="Reconciled at" UseFloatingWatermark="True" />
+			PlaceholderText="Reconciled at" UseFloatingPlaceholder="True" />
 
 		<TextBox
 			IsVisible="{Binding IsRefunded}" IsEnabled="False" MinWidth="150"
 			Text="{Binding RefundDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
-			Watermark="Refunded at" UseFloatingWatermark="True" />
+			PlaceholderText="Refunded at" UseFloatingPlaceholder="True" />
 
 		<AutoCompleteBox
-			Watermark="Owner" HorizontalAlignment="Left" MinWidth="150"
+			PlaceholderText="Owner" HorizontalAlignment="Left" MinWidth="150"
 			IsEnabled="{Binding !Reconciled}"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
@@ -38,7 +38,7 @@
 
 		<TextBox
 			IsEnabled="{Binding !Reconciled}" MinWidth="150" HorizontalContentAlignment="Stretch"
-			Watermark="Description" UseFloatingWatermark="True"
+			PlaceholderText="Description" UseFloatingPlaceholder="True"
 			TextWrapping="Wrap"
 			Text="{Binding Description}" AcceptsReturn="True" />
 	</WrapPanel>

@@ -13,20 +13,20 @@
 	<StackPanel Orientation="Vertical">
 		<WrapPanel>
 			<StackPanel Orientation="Horizontal">
-				<TextBox MinWidth="300" Watermark="Name" Text="{Binding Name}" />
-				<TextBox Watermark="Symbol" Text="{Binding Symbol}" />
+				<TextBox MinWidth="300" PlaceholderText="Name" Text="{Binding Name}" />
+				<TextBox PlaceholderText="Symbol" Text="{Binding Symbol}" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
 				<AutoCompleteBox
-					MinWidth="300" Watermark="Parent unit"
+					MinWidth="300" PlaceholderText="Parent unit"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding UnitSelector}"
 					ItemsSource="{Binding Units}"
 					SelectedItem="{Binding ParentUnit, Mode=TwoWay}"/>
 
-				<TextBox Watermark="Multiplier" Text="{Binding  Multiplier}" />
+				<TextBox PlaceholderText="Multiplier" Text="{Binding  Multiplier}" />
 			</StackPanel>
 		</WrapPanel>
 

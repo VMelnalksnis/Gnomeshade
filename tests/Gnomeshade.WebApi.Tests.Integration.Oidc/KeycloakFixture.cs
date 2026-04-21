@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Gnomeshade.WebApi.Client;
@@ -13,6 +14,8 @@ using Gnomeshade.WebApi.Client;
 using Microsoft.Extensions.Configuration;
 
 using NodaTime;
+
+using Testcontainers.Keycloak;
 
 using VMelnalksnis.Testcontainers.Keycloak;
 using VMelnalksnis.Testcontainers.Keycloak.Configuration;
@@ -26,6 +29,8 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	internal const string ApiBaseUri = "https://localhost:5001/";
 	internal const string DesktopBaseUri = "http://localhost:8297/";
 	private const string _databasePath = "gnomeshade.db";
+
+	private static int _keycloakPublicPort = 45278;
 
 	private readonly KeycloakContainer _keycloak;
 	private GnomeshadeWebApplicationFactory _application = null!;
@@ -53,15 +58,25 @@ public sealed class KeycloakFixture : IAsyncDisposable
 			RedirectUris = [DesktopBaseUri],
 		};
 
-		var realmConfiguration = new RealmConfiguration(
+		RealmConfiguration = new(
 			"demorealm",
 			new List<KeycloakClient> { Client, DesktopClient },
 			new List<User> { User });
 
-		_keycloak = new KeycloakBuilder().WithRealm(realmConfiguration).Build();
+		var publicPort = Interlocked.Increment(ref _keycloakPublicPort);
+
+		_keycloak = new KeycloakBuilder("quay.io/keycloak/keycloak:26.5.6")
+			.WithUsername("admin")
+			.WithPassword("admin")
+			.WithPortBinding(publicPort, KeycloakBuilder.KeycloakPort)
+			.WithEnvironment("KC_HOSTNAME", $"http://localhost:{publicPort}")
+			.WithEnvironment("KC_HOSTNAME_BACKCHANNEL_DYNAMIC", "true")
+			.Build();
 	}
 
 	internal Realm Realm { get; private set; } = null!;
+
+	internal RealmConfiguration RealmConfiguration { get; }
 
 	internal KeycloakClient Client { get; }
 
@@ -78,18 +93,22 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	public async Task Initialize()
 	{
 		await _keycloak.StartAsync();
+		await _keycloak.ConfigureRealm(RealmConfiguration, "admin", "admin");
 
-		Realm = _keycloak.Realm;
+		Realm = RealmConfiguration.GetRealm(_keycloak);
+
+		var keycloakRealmBaseUrl = $"http://localhost:{_keycloak.GetMappedPublicPort(KeycloakBuilder.KeycloakPort)}/realms/{Realm.Name}";
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
 				{ "ConnectionStrings:Gnomeshade", $"Data Source={_databasePath}" },
 				{ "Database:Provider", "Sqlite" },
-				{ "Oidc:Keycloak:ServerRealm", Realm.ServerRealm.ToString() },
-				{ "Oidc:Keycloak:Metadata", Realm.Metadata.ToString() },
+				{ "Oidc:Keycloak:ServerRealm", keycloakRealmBaseUrl },
+				{ "Oidc:Keycloak:Metadata", $"{keycloakRealmBaseUrl}/.well-known/openid-configuration" },
 				{ "Oidc:Keycloak:ClientId", Client.Name },
 				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
 				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
+				{ "OpenTelemetry:Enabled", "false" },
 			})
 			.AddEnvironmentVariables()
 			.Build();

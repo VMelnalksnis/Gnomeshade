@@ -53,6 +53,7 @@ public abstract class WebserverFixture : IAsyncDisposable
 			{
 				{ "Paperless:BaseAddress", "https://localhost/" },
 				{ "Paperless:Token", "not-used" },
+				{ "OpenTelemetry:Enabled", "false" },
 			})
 			.AddConfiguration(GetAdditionalConfiguration())
 			.AddEnvironmentVariables()

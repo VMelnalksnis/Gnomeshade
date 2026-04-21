@@ -15,7 +15,7 @@
 		<TextBox
 			Grid.Row="0" Grid.Column="1"
 			AcceptsReturn="False"
-			Watermark="Counterparty"
+			PlaceholderText="Counterparty"
 			Text="{Binding FilterText, Mode=TwoWay}" />
 
 		<CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding InvertCurrency}" />
@@ -23,7 +23,7 @@
 			Grid.Row="2" Grid.Column="1"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Watermark="Currency"
+			PlaceholderText="Currency"
 			ItemsSource="{Binding Currencies}"
 			ItemSelector="{Binding CurrencySelector}"
 			SelectedItem="{Binding SelectedCurrency, Mode=TwoWay}" />

@@ -106,12 +106,14 @@ public class Startup
 			.AddTransient<Mapper>()
 			.AddSingleton<AutoMapper.IConfigurationProvider>(_ =>
 			{
-				var config = new MapperConfiguration(options =>
-				{
-					options.AllowNullCollections = true;
-					options.CreateMapsForV1_0();
-					options.CreateMapsForV2_0();
-				});
+				var config = new MapperConfiguration(
+					options =>
+					{
+						options.AllowNullCollections = true;
+						options.CreateMapsForV1_0();
+						options.CreateMapsForV2_0();
+					});
+
 				config.CompileMappings();
 				return config;
 			});

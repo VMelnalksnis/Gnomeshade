@@ -11,11 +11,11 @@
 	x:DataType="products:CategoryUpsertionViewModel">
 
 	<StackPanel Orientation="Vertical">
-		<TextBox Watermark="Name" UseFloatingWatermark="True" Text="{Binding Name}" />
-		<TextBox AcceptsReturn="True" Watermark="Description" UseFloatingWatermark="True" Text="{Binding Description}" />
+		<TextBox PlaceholderText="Name" UseFloatingPlaceholder="True" Text="{Binding Name}" />
+		<TextBox AcceptsReturn="True" PlaceholderText="Description" UseFloatingPlaceholder="True" Text="{Binding Description}" />
 
 		<AutoCompleteBox
-			Watermark="Category"
+			PlaceholderText="Category"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />

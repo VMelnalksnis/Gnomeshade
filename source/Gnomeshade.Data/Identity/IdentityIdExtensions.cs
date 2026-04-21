@@ -18,7 +18,7 @@ public static class IdentityIdExtensions
 	/// <exception cref="ArgumentNullException"><paramref name="id"/> is <c>null</c>.</exception>
 	public static Guid ConvertIdFromString(this string? id)
 	{
-		ArgumentNullException.ThrowIfNull(id, nameof(id));
+		ArgumentNullException.ThrowIfNull(id);
 		return Guid.ParseExact(id, _guidFormat);
 	}
 

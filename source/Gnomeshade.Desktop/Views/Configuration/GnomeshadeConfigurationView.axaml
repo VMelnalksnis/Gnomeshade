@@ -11,6 +11,6 @@
 	x:DataType="configuration:GnomeshadeConfigurationViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="5">
-		<TextBox Watermark="Base address" Text="{Binding BaseAddress}" />
+		<TextBox PlaceholderText="Base address" Text="{Binding BaseAddress}" />
 	</StackPanel>
 </UserControl>

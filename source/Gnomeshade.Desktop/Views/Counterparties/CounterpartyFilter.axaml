@@ -14,7 +14,7 @@
 		<TextBox
 			Grid.Row="0" Grid.Column="1"
 			AcceptsReturn="False"
-			Watermark="Counterparty"
+			PlaceholderText="Counterparty"
 			Text="{Binding FilterText, Mode=TwoWay}" />
 	</Grid>
 </UserControl>

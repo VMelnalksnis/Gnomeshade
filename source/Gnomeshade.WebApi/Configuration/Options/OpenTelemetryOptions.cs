@@ -16,7 +16,7 @@ public sealed class OpenTelemetryOptions
 	internal const string SectionName = "OpenTelemetry";
 
 	/// <summary>Gets a value indicating whether to enable Open Telemetry.</summary>
-	public bool Enabled { get; init; } = true;
+	public bool Enabled { get; init; } = false;
 
 	/// <summary>Gets the name of the service.</summary>
 	[Required]

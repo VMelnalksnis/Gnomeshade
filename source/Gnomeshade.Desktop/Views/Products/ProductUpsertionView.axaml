@@ -13,18 +13,18 @@
 
 	<StackPanel Orientation="Vertical">
 		<WrapPanel>
-			<TextBox TextWrapping="Wrap" MinWidth="300" Watermark="Name" Text="{Binding Name}" />
+			<TextBox TextWrapping="Wrap" MinWidth="300" PlaceholderText="Name" Text="{Binding Name}" />
 
 			<StackPanel Orientation="Horizontal">
 				<AutoCompleteBox
-					Watermark="Unit"
+					PlaceholderText="Unit"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 					ItemSelector="{Binding UnitSelector}" ItemsSource="{Binding Units}"
 					SelectedItem="{Binding SelectedUnit, Mode=TwoWay}">
 				</AutoCompleteBox>
 
 				<AutoCompleteBox
-					Watermark="Category"
+					PlaceholderText="Category"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 					ItemSelector="{Binding CategorySelector}" ItemsSource="{Binding Categories}"
 					SelectedItem="{Binding SelectedCategory, Mode=TwoWay}">
@@ -33,10 +33,10 @@
 
 			<TextBox
 				MinWidth="300" AcceptsReturn="True"
-				Watermark="Description" Text="{Binding Description}" />
+				PlaceholderText="Description" Text="{Binding Description}" />
 
 
-			<TextBox Watermark="SKU" Text="{Binding Sku}" />
+			<TextBox PlaceholderText="SKU" Text="{Binding Sku}" />
 		</WrapPanel>
 
 		<Button

@@ -12,7 +12,7 @@
 	<WrapPanel>
 		<WrapPanel>
 			<AutoCompleteBox
-				Watermark="Loan"
+				PlaceholderText="Loan"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				ItemsSource="{Binding Loans}"
@@ -21,8 +21,8 @@
 		</WrapPanel>
 
 		<WrapPanel>
-			<TextBox Watermark="Amount" Text="{Binding Amount}" />
-			<TextBox Watermark="Interest" Text="{Binding Interest}" />
+			<TextBox PlaceholderText="Amount" Text="{Binding Amount}" />
+			<TextBox PlaceholderText="Interest" Text="{Binding Interest}" />
 		</WrapPanel>
 	</WrapPanel>
 </UserControl>

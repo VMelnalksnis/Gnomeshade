@@ -11,7 +11,7 @@
 
 	<StackPanel Orientation="Horizontal">
 		<TextBox
-			MinWidth="300" Watermark="Link" UseFloatingWatermark="True"
+			MinWidth="300" PlaceholderText="Link" UseFloatingPlaceholder="True"
 			Text="{Binding UriValue}" TextWrapping="Wrap" />
 	</StackPanel>
 </UserControl>

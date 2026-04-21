@@ -12,11 +12,11 @@
 
 	<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto">
 
-		<TextBox Grid.Row="0" Grid.Column="0" Watermark="Nordigen Country" Text="{Binding NordigenCountry}" />
+		<TextBox Grid.Row="0" Grid.Column="0" PlaceholderText="Nordigen Country" Text="{Binding NordigenCountry}" />
 
 		<AutoCompleteBox
 			Grid.Row="1" Grid.Column="0"
-			Watermark="Nordigen Institution"
+			PlaceholderText="Nordigen Institution"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemsSource="{Binding Institutions}"
 			SelectedItem="{Binding SelectedInstitutionId}" />

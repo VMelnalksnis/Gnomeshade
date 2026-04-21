@@ -11,8 +11,8 @@
 	x:DataType="configuration:AuthenticationConfigurationViewModel">
 
 	<StackPanel Orientation="Vertical" Spacing="5">
-		<TextBox Watermark="Base address" Text="{Binding Authority}" />
-		<TextBox Watermark="Client Id" Text="{Binding ClientId}" />
-		<TextBox Watermark="Client Secret" Text="{Binding ClientSecret}" PasswordChar="*" />
+		<TextBox PlaceholderText="Base address" Text="{Binding Authority}" />
+		<TextBox PlaceholderText="Client Id" Text="{Binding ClientId}" />
+		<TextBox PlaceholderText="Client Secret" Text="{Binding ClientSecret}" PasswordChar="*" />
 	</StackPanel>
 </UserControl>

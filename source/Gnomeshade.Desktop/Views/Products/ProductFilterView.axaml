@@ -14,7 +14,7 @@
 		<CheckBox Grid.Row="0" Grid.Column="0" IsEnabled="False" />
 		<TextBox
 			Grid.Row="0" Grid.Column="1"
-			Watermark="Name" AcceptsReturn="False"
+			PlaceholderText="Name" AcceptsReturn="False"
 			Text="{Binding FilterText, Mode=TwoWay}"/>
 
 		<CheckBox Grid.Row="2" Grid.Column="0" IsEnabled="False" />
@@ -22,7 +22,7 @@
 			Grid.Row="2" Grid.Column="1"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Watermark="Unit"
+			PlaceholderText="Unit"
 			ItemsSource="{Binding Units}"
 			ItemSelector="{Binding UnitSelector}"
 			SelectedItem="{Binding SelectedUnit, Mode=TwoWay}" />
@@ -32,7 +32,7 @@
 			Grid.Row="4" Grid.Column="1"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 			IsTextCompletionEnabled="True"
-			Watermark="Category"
+			PlaceholderText="Category"
 			ItemsSource="{Binding Categories}"
 			ItemSelector="{Binding CategorySelector}"
 			SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" />

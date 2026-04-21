@@ -27,7 +27,7 @@ internal sealed class MockProtocolHandler : IGnomeshadeProtocolHandler
 		httpListener.Prefixes.Add(_uriPrefix);
 		httpListener.Start();
 
-		var context = await httpListener.GetContextAsync();
+		var context = await httpListener.GetContextAsync().WaitAsync(cancellationToken);
 		var result = HandeRequest(context);
 		context.Response.Close();
 

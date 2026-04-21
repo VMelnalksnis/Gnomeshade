@@ -13,11 +13,11 @@
 	<Grid ColumnDefinitions="*" RowDefinitions="Auto,*">
 		<StackPanel Grid.Row="0" Orientation="Vertical">
 			<WrapPanel>
-				<TextBox MinWidth="300" Watermark="Name" Text="{Binding Name}" />
+				<TextBox MinWidth="300" PlaceholderText="Name" Text="{Binding Name}" />
 
 				<AutoCompleteBox
 					MinWidth="300"
-					Watermark="Owner"
+					PlaceholderText="Owner"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding OwnerSelector}"
@@ -28,7 +28,7 @@
 			<WrapPanel>
 				<AutoCompleteBox
 					MinWidth="300"
-					Watermark="Issuer"
+					PlaceholderText="Issuer"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding CounterpartySelector}"
@@ -37,7 +37,7 @@
 
 				<AutoCompleteBox
 					MinWidth="300"
-					Watermark="Receiver"
+					PlaceholderText="Receiver"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding CounterpartySelector}"
@@ -46,11 +46,11 @@
 			</WrapPanel>
 
 			<WrapPanel>
-				<TextBox MinWidth="150" Watermark="Principal" Text="{Binding Principal}" />
+				<TextBox MinWidth="150" PlaceholderText="Principal" Text="{Binding Principal}" />
 
 				<AutoCompleteBox
 					MinWidth="150"
-					Watermark="Currency"
+					PlaceholderText="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding CurrencySelector}"

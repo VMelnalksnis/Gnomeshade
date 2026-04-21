@@ -141,6 +141,7 @@ jobs:
   resharper:
     name: Resharper
     runs-on: ubuntu-latest
+    if: false # ReSharper is not compatible with Avalonia 12
     steps:
       - uses: actions/checkout@v6.0.2
       - uses: actions/setup-dotnet@v5.1.0

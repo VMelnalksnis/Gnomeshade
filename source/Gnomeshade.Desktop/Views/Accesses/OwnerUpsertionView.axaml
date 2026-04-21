@@ -17,7 +17,7 @@
 			MinWidth="300"
 			AcceptsReturn="False"
 			x:Name="AccountName"
-			Watermark="Name"
+			PlaceholderText="Name"
 			Text="{Binding Name}" />
 
 		<DataGrid
@@ -54,14 +54,14 @@
 
 		<AutoCompleteBox
 			Grid.Row="2"
-			Watermark="User"
+			PlaceholderText="User"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding CounterpartySelector}" ItemsSource="{Binding AddableCounterparties}"
 			SelectedItem="{Binding SelectedCounterparty, Mode=TwoWay}"/>
 
 		<AutoCompleteBox
 			Grid.Row="3"
-			Watermark="Access"
+			PlaceholderText="Access"
 			MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 			ItemSelector="{Binding AccessSelector}" ItemsSource="{Binding Accesses}"
 			SelectedItem="{Binding SelectedAccess, Mode=TwoWay}"/>

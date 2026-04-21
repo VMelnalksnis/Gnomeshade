@@ -15,13 +15,15 @@ public class MappingTests
 	[Test]
 	public void AutoMapperTests()
 	{
-		var mapper = new MapperConfiguration(options =>
-		{
-			options.AllowNullCollections = true;
-			options.CreateMapsForV1_0();
-			options.CreateMap<NullableSource, NullableTarget>();
-			options.CreateMap<NullableSource, NonNullableTarget>();
-		}).CreateMapper();
+		var mapper = new MapperConfiguration(
+				options =>
+				{
+					options.AllowNullCollections = true;
+					options.CreateMapsForV1_0();
+					options.CreateMap<NullableSource, NullableTarget>();
+					options.CreateMap<NullableSource, NonNullableTarget>();
+				})
+			.CreateMapper();
 
 		var source = new NullableSource { Bytes = default };
 		var nullableTarget = mapper.Map<NullableTarget>(source);

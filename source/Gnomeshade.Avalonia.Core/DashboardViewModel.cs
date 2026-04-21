@@ -230,7 +230,7 @@ public sealed partial class DashboardViewModel : ViewModelBase
 			.Where(series => series.Values?.Sum() < 0)
 			.Select(series =>
 			{
-				series.Values = series.Values?.Select(x => -x) ?? [];
+				series.Values = series.Values?.Select(x => -x).ToArray() ?? [];
 				return series;
 			})
 			.ToArray();

@@ -12,11 +12,11 @@
 
 	<StackPanel Orientation="Vertical">
 		<WrapPanel>
-			<TextBox MinWidth="300" Watermark="Name" Text="{Binding Name}" />
+			<TextBox MinWidth="300" PlaceholderText="Name" Text="{Binding Name}" />
 
 			<AutoCompleteBox
 				MinWidth="300"
-				Watermark="Counterparty"
+				PlaceholderText="Counterparty"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				ItemSelector="{Binding CounterpartySelector}"
@@ -27,7 +27,7 @@
 		<WrapPanel>
 			<AutoCompleteBox
 				MinWidth="300"
-				Watermark="Preferred currency"
+				PlaceholderText="Preferred currency"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				ItemSelector="{Binding CurrencySelector}"
@@ -36,7 +36,7 @@
 
 			<AutoCompleteBox
 				MinWidth="300"
-				Watermark="Owner"
+				PlaceholderText="Owner"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				ItemSelector="{Binding OwnerSelector}"
@@ -45,9 +45,9 @@
 		</WrapPanel>
 
 		<WrapPanel>
-			<TextBox MinWidth="300" Watermark="Account number" Text="{Binding AccountNumber}" />
-			<TextBox MinWidth="300" Watermark="IBAN" Text="{Binding Iban}" />
-			<TextBox MinWidth="300" Watermark="BIC" Text="{Binding Bic}" />
+			<TextBox MinWidth="300" PlaceholderText="Account number" Text="{Binding AccountNumber}" />
+			<TextBox MinWidth="300" PlaceholderText="IBAN" Text="{Binding Iban}" />
+			<TextBox MinWidth="300" PlaceholderText="BIC" Text="{Binding Bic}" />
 		</WrapPanel>
 
 		<WrapPanel>
@@ -66,7 +66,7 @@
 
 			<StackPanel Orientation="Horizontal">
 				<AutoCompleteBox
-					MinWidth="150" VerticalAlignment="Top" Watermark="Additional currency"
+					MinWidth="150" VerticalAlignment="Top" PlaceholderText="Additional currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemSelector="{Binding CurrencySelector}"

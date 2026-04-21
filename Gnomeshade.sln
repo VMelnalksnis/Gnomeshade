@@ -60,7 +60,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\build-and-test.yml = .github\workflows\build-and-test.yml
 		.github\workflows\release.yml = .github\workflows\release.yml
-		.github\workflows\nuget-vulnerabilities.yml = .github\workflows\nuget-vulnerabilities.yml
 		.github\workflows\package-cleanup.yml = .github\workflows\package-cleanup.yml
 	EndProjectSection
 EndProject

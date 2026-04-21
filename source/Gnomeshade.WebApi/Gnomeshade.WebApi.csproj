@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<RuntimeIdentifiers>linux-x64;linux-musl-x64</RuntimeIdentifiers>
+		<TargetFramework>net10.0</TargetFramework>
+		<RuntimeIdentifiers>linux-x64;linux-musl-x64;win-x64</RuntimeIdentifiers>
 		<StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
 
 		<PublishTrimmed>true</PublishTrimmed>
 		<TrimMode>partial</TrimMode>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<InvariantGlobalization>true</InvariantGlobalization>
-		<EnableConfigurationBindingGenerator>false</EnableConfigurationBindingGenerator>
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+		<MvcEnhancedModelMetadataSupport>true</MvcEnhancedModelMetadataSupport>
 
 		<NoWarn>$(NoWarn); CS8002</NoWarn>
 		<SignAssembly>true</SignAssembly>
@@ -42,7 +43,6 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.Process" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
-		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="VMelnalksnis.ISO20022DotNet" />
 		<PackageReference Include="VMelnalksnis.NordigenDotNet.DependencyInjection" />
 		<PackageReference Include="VMelnalksnis.PaperlessDotNet.DependencyInjection" />

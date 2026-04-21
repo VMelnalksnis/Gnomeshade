@@ -15,38 +15,8 @@
 		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.25547.20250602/License"
 	},
 	{
-		"Id": "Avalonia.BuildServices",
-		"Version": "0.0.29",
-		"License": "MIT"
-	},
-	{
 		"Id": "Bogus",
-		"Version": "35.6.3",
-		"License": "MIT"
-	},
-	{
-		"Id": "Docker.DotNet",
-		"Version": "3.125.15",
-		"License": "MIT"
-	},
-	{
-		"Id": "Docker.DotNet.X509",
-		"Version": "3.125.15",
-		"License": "MIT"
-	},
-	{
-		"Id": "Testcontainers",
-		"Version": "3.2.0",
-		"License": "MIT"
-	},
-	{
-		"Id": "Testcontainers",
-		"Version": "3.5.0",
-		"License": "MIT"
-	},
-	{
-		"Id": "Testcontainers.PostgreSql",
-		"Version": "3.5.0",
+		"Version": "35.6.5",
 		"License": "MIT"
 	}
 ]

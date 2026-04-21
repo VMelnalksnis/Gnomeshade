@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
 		<AssemblyTitle>Gnomeshade</AssemblyTitle>
@@ -13,8 +13,6 @@
 		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 		<SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
 		<EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
-
-		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(ContinuousIntegrationBuild)' != 'true'">
@@ -33,10 +31,6 @@
 		<PackageReference Include="Serilog.Sinks.File"/>
 		<PackageReference Include="Serilog.Sinks.Trace"/>
 		<PackageReference Include="Xaml.Behaviors.Avalonia"/>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
-		<PackageReference Include="Avalonia.Diagnostics"/>
 	</ItemGroup>
 
 	<ItemGroup>

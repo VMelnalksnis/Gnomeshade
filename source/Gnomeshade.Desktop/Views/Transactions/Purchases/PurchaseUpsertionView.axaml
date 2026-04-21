@@ -14,23 +14,23 @@
 		<WrapPanel>
 			<StackPanel Orientation="Horizontal">
 				<AutoCompleteBox
-					Watermark="Product"
+					PlaceholderText="Product"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemsSource="{Binding Products}"
 					ItemSelector="{Binding ProductSelector}"
 					SelectedItem="{Binding Product, Mode=TwoWay}" />
 				<TextBox
-					Watermark="{Binding UnitName, StringFormat='Amount ({0})'}"
+					PlaceholderText="{Binding UnitName, StringFormat='Amount ({0})'}"
 					Text="{Binding Amount}" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
 				<TextBox
-					Watermark="Price"
+					PlaceholderText="Price"
 					Text="{Binding Price}" />
 				<AutoCompleteBox
-					Watermark="Currency"
+					PlaceholderText="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemsSource="{Binding Currencies}"
@@ -41,17 +41,17 @@
 			<StackPanel Orientation="Horizontal">
 				<TextBox
 					Text="{Binding DeliveryDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
-					Watermark="Delivered at" />
+					PlaceholderText="Delivered at" />
 
 				<AutoCompleteBox
-					Watermark="Project"
+					PlaceholderText="Project"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemsSource="{Binding Projects}"
 					ItemSelector="{Binding ProjectSelector}"
 					SelectedItem="{Binding Project, Mode=TwoWay}" />
 
-				<TextBox Text="{Binding Order}" Watermark="Order" HorizontalAlignment="Left" />
+				<TextBox Text="{Binding Order}" PlaceholderText="Order" HorizontalAlignment="Left" />
 			</StackPanel>
 		</WrapPanel>
 	</StackPanel>

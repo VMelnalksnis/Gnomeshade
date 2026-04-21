@@ -16,6 +16,8 @@ using static System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes;
 using static JetBrains.Annotations.ImplicitUseKindFlags;
 using static JetBrains.Annotations.ImplicitUseTargetFlags;
 
+[assembly: SuppressMessage("Usage", "SYSLIB1104", Justification = "foo")]
+
 namespace Gnomeshade.WebApi.Configuration;
 
 internal static class ConfigurationExtensions

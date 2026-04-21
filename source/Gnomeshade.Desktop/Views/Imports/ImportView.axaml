@@ -16,7 +16,7 @@
 				VerticalAlignment="Center"
 				Text="{Binding Country}" AcceptsReturn="False" />
 			<AutoCompleteBox
-				Watermark="Institution"
+				PlaceholderText="Institution"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal" IsTextCompletionEnabled="True"
 				ItemsSource="{Binding Institutions}"
 				SelectedItem="{Binding SelectedInstitution}" />

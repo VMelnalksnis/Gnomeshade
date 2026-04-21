@@ -50,7 +50,9 @@ dpkg-deb --root-owner-group -Zxz --build gnomeshade
 
 # unstripped-binary-or-object suppressed because gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
 # cannot be stripped without corrupting the application
+# embedded-library suppressed because in .NET 9, the Runtime contains a statically linked version of zlib-ng.
 lintian \
 	--suppress-tags dir-or-file-in-opt,dir-or-file-in-etc-opt \
 	--suppress-tags unstripped-binary-or-object \
+	--suppress-tags embedded-library \
 	gnomeshade.deb

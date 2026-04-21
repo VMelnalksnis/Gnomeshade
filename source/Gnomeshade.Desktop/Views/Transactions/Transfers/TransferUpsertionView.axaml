@@ -13,7 +13,7 @@
 	<StackPanel Orientation="Vertical">
 		<WrapPanel>
 			<AutoCompleteBox
-				Watermark="Source account" MinWidth="300"
+				PlaceholderText="Source account" MinWidth="300"
 				x:Name="SourceAccount"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
@@ -21,9 +21,9 @@
 				ItemSelector="{Binding AccountSelector}"
 				SelectedItem="{Binding SourceAccount, Mode=TwoWay}" />
 			<StackPanel Orientation="Horizontal">
-				<TextBox Watermark="Amount" Text="{Binding SourceAmount}" />
+				<TextBox PlaceholderText="Amount" Text="{Binding SourceAmount}" />
 				<AutoCompleteBox
-					Watermark="Currency"
+					PlaceholderText="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemsSource="{Binding SourceCurrencies}"
@@ -34,7 +34,7 @@
 
 		<WrapPanel>
 			<AutoCompleteBox
-				Watermark="Target account" MinWidth="300"
+				PlaceholderText="Target account" MinWidth="300"
 				MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 				IsTextCompletionEnabled="True"
 				ItemsSource="{Binding Accounts}"
@@ -42,10 +42,10 @@
 				SelectedItem="{Binding TargetAccount, Mode=TwoWay}" />
 			<StackPanel Orientation="Horizontal">
 				<TextBox
-					Watermark="Amount" Text="{Binding TargetAmount}"
+					PlaceholderText="Amount" Text="{Binding TargetAmount}"
 					IsReadOnly="{Binding IsTargetAmountReadOnly}" />
 				<AutoCompleteBox
-					Watermark="Currency"
+					PlaceholderText="Currency"
 					MinimumPrefixLength="1" FilterMode="ContainsOrdinal"
 					IsTextCompletionEnabled="True"
 					ItemsSource="{Binding TargetCurrencies}"
@@ -58,21 +58,21 @@
 			<StackPanel Orientation="Horizontal">
 				<TextBox
 					Text="{Binding BookingDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
-					Watermark="Booked at" />
+					PlaceholderText="Booked at" />
 
 				<TextBox
 					Text="{Binding ValueDate, Mode=TwoWay, Converter={x:Static core:Converters.LocalDateTime}}"
-					Watermark="Valued at" />
+					PlaceholderText="Valued at" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<TextBox Watermark="Bank transaction id" Text="{Binding BankReference}" />
-				<TextBox Watermark="External reference" Text="{Binding ExternalReference}" />
+				<TextBox PlaceholderText="Bank transaction id" Text="{Binding BankReference}" />
+				<TextBox PlaceholderText="External reference" Text="{Binding ExternalReference}" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<TextBox Watermark="Internal reference" Text="{Binding InternalReference}" />
-				<TextBox HorizontalAlignment="Left" Text="{Binding Order}" Watermark="Order" />
+				<TextBox PlaceholderText="Internal reference" Text="{Binding InternalReference}" />
+				<TextBox HorizontalAlignment="Left" Text="{Binding Order}" PlaceholderText="Order" />
 			</StackPanel>
 		</WrapPanel>
 	</StackPanel>

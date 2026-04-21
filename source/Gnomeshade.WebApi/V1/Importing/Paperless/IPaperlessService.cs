@@ -21,7 +21,7 @@ public interface IPaperlessService
 	/// <summary>Gets the paperless <see cref="Document"/> at the specified <paramref name="uri"/>.</summary>
 	/// <param name="uri">The uri of the document.</param>
 	/// <returns>The document if it exists; otherwise <c>null</c>.</returns>
-	/// <seealso cref="IDocumentClient.Get"/>
+	/// <seealso cref="IDocumentClient.Get(int, System.Threading.CancellationToken)"/>
 	public Task<Document?> GetPaperlessDocument(string uri);
 
 	/// <summary>Adds purchases parsed from <paramref name="document"/> to <paramref name="transactionId"/>.</summary>

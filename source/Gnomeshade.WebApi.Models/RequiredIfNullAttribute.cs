@@ -25,7 +25,9 @@ internal sealed class RequiredIfNullAttribute : RequiredAttribute
 		}
 
 		var instanceType = validationContext.ObjectInstance.GetType();
+#pragma warning disable IL2075
 		var propertyInfo = instanceType.GetProperty(_propertyName);
+#pragma warning restore IL2075
 		if (propertyInfo is null)
 		{
 			throw new MissingMemberException(instanceType.FullName, _propertyName);

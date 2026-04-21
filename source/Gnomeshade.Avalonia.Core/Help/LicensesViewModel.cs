@@ -41,7 +41,7 @@ public sealed partial class LicensesViewModel : ViewModelBase
 		Description = """
 Gnomeshade is licensed under the GNU Affero General Public License 3.0 (AGPL 3.0).
 Below is a list of all packages and their licenses, grouped by projects, which Gnomeshade depends on.
-(Note: your copy of this product may not contain code covered by one or more of the licenses list here, depending on the exact product and version you choose.)
+(Note: your copy of this product may not contain code covered by one or more of the licenses listed here, depending on the exact product and version you choose.)
 """;
 
 		OpenProject = activityService.Create(OpenSelected, () => TryGetUrl(out _), "Opening project information");

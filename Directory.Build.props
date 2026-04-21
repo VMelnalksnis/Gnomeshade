@@ -15,6 +15,10 @@
 		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<EnablePackageVersionOverride>false</EnablePackageVersionOverride>
 		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+
+		<NuGetAudit>true</NuGetAudit>
+		<NuGetAuditLevel>low</NuGetAuditLevel>
+		<NugetAuditMode>all</NugetAuditMode>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -45,8 +49,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<NuGetAuditSuppress Include="https://github.com/advisories/GHSA-rvv3-g6hj-g44x"/>
+	</ItemGroup>
+
+	<ItemGroup>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
 			<Link>stylecop.json</Link>
 		</AdditionalFiles>
+	</ItemGroup>
+
+	<ItemGroup>
+		<TrimmerRootAssembly Include="System.ComponentModel.TypeConverter" />
+		<TrimmerRootAssembly Include="Microsoft.AspNetCore.Mvc.Core" />
 	</ItemGroup>
 </Project>

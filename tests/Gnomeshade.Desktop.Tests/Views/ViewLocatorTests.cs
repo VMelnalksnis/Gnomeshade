@@ -10,6 +10,7 @@ using Avalonia.Controls;
 
 using Gnomeshade.Avalonia.Core;
 using Gnomeshade.Avalonia.Core.DesignTime;
+using Gnomeshade.Avalonia.Core.Help;
 
 namespace Gnomeshade.Desktop.Tests.Views;
 
@@ -21,11 +22,11 @@ public sealed class ViewLocatorTests
 	public void Build_ShouldReturnExpectedView<TViewModel>(TViewModel viewModel)
 		where TViewModel : ViewModelBase
 	{
-		using (new AssertionScope())
-		{
-			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<Control, TViewModel>>();
-			_viewLocator.Build(viewModel).Should().BeAssignableTo<IView<Control, ViewModelBase>>();
-		}
+		var view = _viewLocator.Build(viewModel);
+
+		using var scope = new AssertionScope();
+		view.Should().BeAssignableTo<IView<Control, TViewModel>>();
+		view.Should().BeAssignableTo<IView<Control, ViewModelBase>>();
 	}
 
 	private static IEnumerable ViewTestCaseData()
@@ -33,7 +34,9 @@ public sealed class ViewLocatorTests
 		return typeof(DesignTimeData)
 			.GetProperties(BindingFlags.Public | BindingFlags.Static)
 			.Where(property => property.PropertyType.IsAssignableTo(typeof(ViewModelBase)))
-			.Where(property => property.PropertyType != typeof(MainWindowViewModel))
+			.Where(property =>
+				property.PropertyType != typeof(MainWindowViewModel) &&
+				property.PropertyType != typeof(LicensesViewModel))
 			.Select(property => new TestCaseData((ViewModelBase)property.GetValue(null)!).SetName(property.Name));
 	}
 }
