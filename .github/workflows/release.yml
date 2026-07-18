@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-dotnet@v6.0.0
 
       - run: $env:BUILD_TAG = "-nightly"
         if: ${{ !(startsWith(github.ref, 'refs/tags/')) }}
@@ -61,7 +61,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-dotnet@v6.0.0
       - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24
@@ -122,7 +122,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-dotnet@v5.2.0
+      - uses: actions/setup-dotnet@v6.0.0
 
       - name: Cache NuGet packages
         uses: actions/cache@v5.0.5
