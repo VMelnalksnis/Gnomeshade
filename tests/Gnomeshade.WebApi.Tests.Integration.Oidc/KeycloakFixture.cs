@@ -65,7 +65,7 @@ public sealed class KeycloakFixture : IAsyncDisposable
 
 		var publicPort = Interlocked.Increment(ref _keycloakPublicPort);
 
-		_keycloak = new KeycloakBuilder("quay.io/keycloak/keycloak:26.5.6")
+		_keycloak = new KeycloakBuilder("quay.io/keycloak/keycloak:26.8.1")
 			.WithUsername("admin")
 			.WithPassword("admin")
 			.WithPortBinding(publicPort, KeycloakBuilder.KeycloakPort)

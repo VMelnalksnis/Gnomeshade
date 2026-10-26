@@ -17,11 +17,11 @@ public static class WebserverSetup
 {
 	internal static List<WebserverFixture> WebserverFixtures { get; } = new List<PostgreSQLFixture>
 	{
-		new("18.3-bookworm"),
-		new("17.9-bookworm"),
-		new("16.13-bookworm"),
-		new("15.17-bookworm"),
-		new("14.22-bookworm"),
+		new("18.6-bookworm"),
+		new("17.11-bookworm"),
+		new("16.15-bookworm"),
+		new("15.19-bookworm"),
+		new("14.24-bookworm"),
 	}.Cast<WebserverFixture>().ToList();
 
 	[OneTimeSetUp]

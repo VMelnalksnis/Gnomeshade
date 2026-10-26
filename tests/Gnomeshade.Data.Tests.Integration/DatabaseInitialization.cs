@@ -23,7 +23,7 @@ public class DatabaseInitialization
 
 	static DatabaseInitialization()
 	{
-		_postgreSqlContainer = new PostgreSqlBuilder("postgres:18.3-bookworm").Build();
+		_postgreSqlContainer = new PostgreSqlBuilder("postgres:18.6-bookworm").Build();
 		_postgreSqlContainer.StartAsync().GetAwaiter().GetResult();
 
 		var configuration = new ConfigurationBuilder()
