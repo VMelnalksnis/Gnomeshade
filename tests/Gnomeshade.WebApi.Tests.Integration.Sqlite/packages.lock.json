@@ -132,6 +132,19 @@
         "resolved": "1.3.151-beta",
         "contentHash": "AGruKOaxfcJ/QFaJ5Um3SqHgenUFxNu2Gbksuq2piz6uwFwS/xWgwXQXrHJeLmOLG/W9BZ90v7by+SnwoUlEpg=="
       },
+      "Testcontainers": {
+        "type": "Direct",
+        "requested": "[4.16.0, )",
+        "resolved": "4.16.0",
+        "contentHash": "JmMUZk6ZXQovbGQjaMB+YxOR0PbJTdYjOYjRcrm5LrA2dhLVMuCbhVGGunzCGIQfFMUB5Lno2LPOHMMuaGmuIg==",
+        "dependencies": {
+          "Docker.DotNet.Enhanced": "4.3.3",
+          "Docker.DotNet.Enhanced.X509": "4.3.3",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "SSH.NET": "2026.0.0",
+          "SharpZipLib": "1.4.2"
+        }
+      },
       "Verify.NUnit": {
         "type": "Direct",
         "requested": "[32.0.1, )",
@@ -143,16 +156,6 @@
           "NUnit": "4.6.1",
           "SimpleInfoName": "3.2.0",
           "Verify": "32.0.1"
-        }
-      },
-      "VMelnalksnis.Testcontainers.Keycloak": {
-        "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "8h3NJPseHyR8M9L0NJMJHNmo4m3kThumeKtTZS1WKwlJYMUgOKq7h8PMyqyN7eILvZVBcAyAuY1AE9LOmkxg5Q==",
-        "dependencies": {
-          "Testcontainers": "4.11.0",
-          "Testcontainers.Keycloak": "4.11.0"
         }
       },
       "Argon": {
@@ -1016,14 +1019,6 @@
           "System.Drawing.Common": "6.0.0"
         }
       },
-      "Testcontainers.Keycloak": {
-        "type": "Transitive",
-        "resolved": "4.11.0",
-        "contentHash": "QmHybKqG8+Q71fdQtFkwzLvvCOQ0rKfFwAt6DNqUf+Q+4OmfX4ZkCM8bQ00E79Kc04xSoEN55iHOUwuoZRF/kQ==",
-        "dependencies": {
-          "Testcontainers": "4.11.0"
-        }
-      },
       "Verify": {
         "type": "Transitive",
         "resolved": "32.0.1",
@@ -1637,19 +1632,6 @@
         "contentHash": "DMamYj+m40rOgnGdAp+4iQ+NXIMup2oYVs/zIOZtal0Dar6CXjCF9/SkepEn42TKNO29wAx0xyLfOXj1VjEIXg==",
         "dependencies": {
           "Swashbuckle.AspNetCore.Swagger": "10.3.1"
-        }
-      },
-      "Testcontainers": {
-        "type": "CentralTransitive",
-        "requested": "[4.16.0, )",
-        "resolved": "4.16.0",
-        "contentHash": "JmMUZk6ZXQovbGQjaMB+YxOR0PbJTdYjOYjRcrm5LrA2dhLVMuCbhVGGunzCGIQfFMUB5Lno2LPOHMMuaGmuIg==",
-        "dependencies": {
-          "Docker.DotNet.Enhanced": "4.3.3",
-          "Docker.DotNet.Enhanced.X509": "4.3.3",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
-          "SSH.NET": "2026.0.0",
-          "SharpZipLib": "1.4.2"
         }
       },
       "VMelnalksnis.ISO20022DotNet": {

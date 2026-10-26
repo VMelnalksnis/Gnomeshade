@@ -13,7 +13,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
 		<PackageReference Include="Testcontainers.PostgreSql" />
-		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
 	</ItemGroup>
 
 	<ItemGroup>

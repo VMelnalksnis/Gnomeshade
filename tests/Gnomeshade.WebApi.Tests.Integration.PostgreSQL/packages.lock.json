@@ -154,16 +154,6 @@
           "Verify": "32.0.1"
         }
       },
-      "VMelnalksnis.Testcontainers.Keycloak": {
-        "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "8h3NJPseHyR8M9L0NJMJHNmo4m3kThumeKtTZS1WKwlJYMUgOKq7h8PMyqyN7eILvZVBcAyAuY1AE9LOmkxg5Q==",
-        "dependencies": {
-          "Testcontainers": "4.11.0",
-          "Testcontainers.Keycloak": "4.11.0"
-        }
-      },
       "Argon": {
         "type": "Transitive",
         "resolved": "0.37.0",
@@ -1023,14 +1013,6 @@
         "contentHash": "IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
         "dependencies": {
           "System.Drawing.Common": "6.0.0"
-        }
-      },
-      "Testcontainers.Keycloak": {
-        "type": "Transitive",
-        "resolved": "4.11.0",
-        "contentHash": "QmHybKqG8+Q71fdQtFkwzLvvCOQ0rKfFwAt6DNqUf+Q+4OmfX4ZkCM8bQ00E79Kc04xSoEN55iHOUwuoZRF/kQ==",
-        "dependencies": {
-          "Testcontainers": "4.11.0"
         }
       },
       "Verify": {

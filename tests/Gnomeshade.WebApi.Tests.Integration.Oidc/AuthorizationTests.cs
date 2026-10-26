@@ -58,15 +58,15 @@ public sealed class AuthorizationTests
 				var handler = provider.GetRequiredService<IGnomeshadeProtocolHandler>();
 				var httpClient = provider.GetRequiredService<IHttpClientFactory>().CreateClient("Keycloak");
 				var internalClient = _fixture.CreateHttpClient();
-				return new(handler, httpClient, internalClient, _fixture.User.Username, _fixture.User.Password);
+				return new(handler, httpClient, internalClient, KeycloakFixture.Username, KeycloakFixture.Password);
 			})
 			.AddSingleton<IBrowser, MockBrowser>(provider => provider.GetRequiredService<MockBrowser>())
 			.AddSingleton<IGnomeshadeProtocolHandler, MockProtocolHandler>(_ => new(KeycloakFixture.DesktopBaseUri))
 			.AddTransient<OidcClient>(provider => new(new()
 			{
-				Authority = _fixture.Realm.ServerRealm.ToString(),
-				ClientId = _fixture.DesktopClient.Name,
-				ClientSecret = _fixture.DesktopClient.Secret,
+				Authority = _fixture.RealmBaseUrl,
+				ClientId = KeycloakFixture.DesktopClientId,
+				ClientSecret = _fixture.DesktopClientSecret,
 				Scope = "openid profile",
 				RedirectUri = KeycloakFixture.DesktopBaseUri,
 				Browser = provider.GetRequiredService<IBrowser>(),
