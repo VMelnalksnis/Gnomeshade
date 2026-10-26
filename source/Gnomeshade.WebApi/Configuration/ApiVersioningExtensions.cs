@@ -23,7 +23,9 @@ internal static class ApiVersioningExtensions
 			.AddApiVersioning(options =>
 			{
 				options.DefaultApiVersion = new(1, 0);
+#pragma warning disable AV0016 // Existing clients might not specify an API version
 				options.AssumeDefaultVersionWhenUnspecified = true;
+#pragma warning restore AV0016
 				options.ReportApiVersions = true;
 				options.ApiVersionReader = new UrlSegmentApiVersionReader();
 			})

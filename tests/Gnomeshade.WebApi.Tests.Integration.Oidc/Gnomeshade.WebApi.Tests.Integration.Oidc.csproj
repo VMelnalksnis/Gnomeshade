@@ -8,12 +8,18 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="IdentityModel.OidcClient" />
 		<PackageReference Include="HtmlAgilityPack" />
-		<PackageReference Include="VMelnalksnis.Testcontainers.Keycloak" />
+		<PackageReference Include="Testcontainers.Keycloak" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\source\Gnomeshade.Avalonia.Core\Gnomeshade.Avalonia.Core.csproj" />
 		<ProjectReference Include="..\..\source\Gnomeshade.WebApi\Gnomeshade.WebApi.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="realm.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

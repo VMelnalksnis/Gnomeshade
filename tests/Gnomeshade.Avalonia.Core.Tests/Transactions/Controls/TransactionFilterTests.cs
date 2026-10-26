@@ -26,7 +26,7 @@ public sealed class TransactionFilterTests
 			null,
 			[
 				new(new(), "EUR", false, 100, "Foo", "→", false, "Bar", "Bar", "EUR", 100),
-				new(new(), "EUR", false, 100, "Foo", "←", false, "Bar", "Bar", "EUR", 100)
+				new(new(), "EUR", false, 100, "Foo", "←", false, "Bar", "Bar", "EUR", 100),
 			],
 			[],
 			[]);

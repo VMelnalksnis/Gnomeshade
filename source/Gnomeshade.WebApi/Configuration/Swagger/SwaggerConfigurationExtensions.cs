@@ -13,7 +13,7 @@ using Gnomeshade.WebApi.OpenApi;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -89,7 +89,7 @@ internal static class SwaggerConfigurationExtensions
 	private static void AddSecurity(SwaggerGenOptions options)
 	{
 		const string jwtSecurityDefinition = "JWT";
-		options.AddSecurityDefinition(jwtSecurityDefinition, new()
+		options.AddSecurityDefinition(jwtSecurityDefinition, new OpenApiSecurityScheme
 		{
 			Description = "JWT Authorization header using the Bearer scheme.",
 			BearerFormat = "JWT",
@@ -98,15 +98,9 @@ internal static class SwaggerConfigurationExtensions
 			Type = SecuritySchemeType.Http,
 		});
 
-		options.AddSecurityRequirement(new()
+		options.AddSecurityRequirement(document => new()
 		{
-			{
-				new()
-				{
-					Reference = new() { Type = ReferenceType.SecurityScheme, Id = jwtSecurityDefinition },
-				},
-				new List<string>()
-			},
+			{ new(jwtSecurityDefinition, document), new List<string>() },
 		});
 	}
 }

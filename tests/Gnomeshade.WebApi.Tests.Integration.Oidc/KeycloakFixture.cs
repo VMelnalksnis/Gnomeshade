@@ -17,17 +17,17 @@ using NodaTime;
 
 using Testcontainers.Keycloak;
 
-using VMelnalksnis.Testcontainers.Keycloak;
-using VMelnalksnis.Testcontainers.Keycloak.Configuration;
-
-using KeycloakClient = VMelnalksnis.Testcontainers.Keycloak.Configuration.Client;
-
 namespace Gnomeshade.WebApi.Tests.Integration.Oidc;
 
 public sealed class KeycloakFixture : IAsyncDisposable
 {
 	internal const string ApiBaseUri = "https://localhost:5001/";
 	internal const string DesktopBaseUri = "http://localhost:8297/";
+	internal const string ClientId = "gnomeshade";
+	internal const string DesktopClientId = "gnomeshade_desktop";
+	internal const string Username = "john.doe";
+	internal const string Password = "password123";
+	private const string _realmName = "demorealm";
 	private const string _databasePath = "gnomeshade.db";
 
 	private static int _keycloakPublicPort = 45278;
@@ -39,74 +39,38 @@ public sealed class KeycloakFixture : IAsyncDisposable
 	{
 		File.Delete(_databasePath);
 
-		var mapper = new ClientProtocolMapper("audience-mapping", "openid-connect", "oidc-audience-mapper")
-		{
-			IncludedClientAudience = "gnomeshade",
-		};
-
-		Client = new("gnomeshade")
-		{
-			Mappers = [mapper],
-			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = [$"{ApiBaseUri}*"],
-		};
-
-		DesktopClient = new("gnomeshade_desktop")
-		{
-			Mappers = [mapper],
-			Secret = Guid.NewGuid().ToString(),
-			RedirectUris = [DesktopBaseUri],
-		};
-
-		RealmConfiguration = new(
-			"demorealm",
-			new List<KeycloakClient> { Client, DesktopClient },
-			new List<User> { User });
-
 		var publicPort = Interlocked.Increment(ref _keycloakPublicPort);
 
-		_keycloak = new KeycloakBuilder("quay.io/keycloak/keycloak:26.5.6")
-			.WithUsername("admin")
-			.WithPassword("admin")
+		_keycloak = new KeycloakBuilder("quay.io/keycloak/keycloak:26.8.1")
 			.WithPortBinding(publicPort, KeycloakBuilder.KeycloakPort)
 			.WithEnvironment("KC_HOSTNAME", $"http://localhost:{publicPort}")
 			.WithEnvironment("KC_HOSTNAME_BACKCHANNEL_DYNAMIC", "true")
+			.WithEnvironment("GNOMESHADE_TEST_CLIENT_SECRET", ClientSecret)
+			.WithEnvironment("GNOMESHADE_TEST_DESKTOP_CLIENT_SECRET", DesktopClientSecret)
+			.WithRealm(Path.Combine(AppContext.BaseDirectory, "realm.json"))
 			.Build();
 	}
 
-	internal Realm Realm { get; private set; } = null!;
+	internal string ClientSecret { get; } = Guid.NewGuid().ToString();
 
-	internal RealmConfiguration RealmConfiguration { get; }
+	internal string DesktopClientSecret { get; } = Guid.NewGuid().ToString();
 
-	internal KeycloakClient Client { get; }
-
-	internal KeycloakClient DesktopClient { get; }
-
-	internal User User { get; } = new("john.doe", "password123")
-	{
-		Email = "john.doe@example.com",
-		EmailVerified = true,
-		FirstName = "John",
-		LastName = "Doe",
-	};
+	internal string RealmBaseUrl { get; private set; } = null!;
 
 	public async Task Initialize()
 	{
 		await _keycloak.StartAsync();
-		await _keycloak.ConfigureRealm(RealmConfiguration, "admin", "admin");
 
-		Realm = RealmConfiguration.GetRealm(_keycloak);
-
-		var keycloakRealmBaseUrl = $"http://localhost:{_keycloak.GetMappedPublicPort(KeycloakBuilder.KeycloakPort)}/realms/{Realm.Name}";
+		RealmBaseUrl = $"http://localhost:{_keycloak.GetMappedPublicPort(KeycloakBuilder.KeycloakPort)}/realms/{_realmName}";
 		var configuration = new ConfigurationBuilder()
 			.AddInMemoryCollection(new Dictionary<string, string?>
 			{
 				{ "ConnectionStrings:Gnomeshade", $"Data Source={_databasePath}" },
 				{ "Database:Provider", "Sqlite" },
-				{ "Oidc:Keycloak:ServerRealm", keycloakRealmBaseUrl },
-				{ "Oidc:Keycloak:Metadata", $"{keycloakRealmBaseUrl}/.well-known/openid-configuration" },
-				{ "Oidc:Keycloak:ClientId", Client.Name },
-				{ "Oidc:Keycloak:ClientSecret", Client.Secret },
+				{ "Oidc:Keycloak:ServerRealm", RealmBaseUrl },
+				{ "Oidc:Keycloak:Metadata", $"{RealmBaseUrl}/.well-known/openid-configuration" },
+				{ "Oidc:Keycloak:ClientId", ClientId },
+				{ "Oidc:Keycloak:ClientSecret", ClientSecret },
 				{ "Oidc:Keycloak:RequireHttpsMetadata", "false" },
 				{ "OpenTelemetry:Enabled", "false" },
 			})

@@ -1,0 +1,71 @@
+{
+	"realm": "demorealm",
+	"enabled": true,
+	"clients": [
+		{
+			"clientId": "gnomeshade",
+			"enabled": true,
+			"protocol": "openid-connect",
+			"publicClient": false,
+			"clientAuthenticatorType": "client-secret",
+			"secret": "${GNOMESHADE_TEST_CLIENT_SECRET}",
+			"redirectUris": [
+				"https://localhost:5001/*"
+			],
+			"protocolMappers": [
+				{
+					"name": "audience-mapping",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"consentRequired": false,
+					"config": {
+						"included.client.audience": "gnomeshade",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
+					}
+				}
+			]
+		},
+		{
+			"clientId": "gnomeshade_desktop",
+			"enabled": true,
+			"protocol": "openid-connect",
+			"publicClient": false,
+			"clientAuthenticatorType": "client-secret",
+			"secret": "${GNOMESHADE_TEST_DESKTOP_CLIENT_SECRET}",
+			"redirectUris": [
+				"http://localhost:8297/"
+			],
+			"protocolMappers": [
+				{
+					"name": "audience-mapping",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"consentRequired": false,
+					"config": {
+						"included.client.audience": "gnomeshade",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
+					}
+				}
+			]
+		}
+	],
+	"users": [
+		{
+			"username": "john.doe",
+			"enabled": true,
+			"email": "john.doe@example.com",
+			"emailVerified": true,
+			"firstName": "John",
+			"lastName": "Doe",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password123",
+					"temporary": false
+				}
+			]
+		}
+	]
+}

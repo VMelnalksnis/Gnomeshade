@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -26,12 +26,13 @@ internal sealed class UnauthorizedOperationFilter : IOperationFilter
 	{
 		if ((!HasAuthorizationAttribute(context.MethodInfo) &&
 			!HasAuthorizationAttribute(context.MethodInfo?.DeclaringType)) ||
-			operation.Responses.ContainsKey(_unauthorizedCode))
+			(operation.Responses?.ContainsKey(_unauthorizedCode) ?? false))
 		{
 			return;
 		}
 
-		operation.Responses.Add(_unauthorizedCode, new() { Description = "Unauthorized" });
+		operation.Responses ??= new();
+		operation.Responses.Add(_unauthorizedCode, new OpenApiResponse { Description = "Unauthorized" });
 	}
 
 	private static bool HasAuthorizationAttribute(ICustomAttributeProvider? customAttributeProvider)

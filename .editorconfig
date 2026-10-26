@@ -45,11 +45,20 @@ dotnet_diagnostic.SA1118.severity = none
 # SA1309: Field names should not begin with underscore
 dotnet_diagnostic.SA1309.severity = none
 
+# SA1315: Parameters should match inherited names - renaming action parameters changes model binding
+dotnet_diagnostic.SA1315.severity = none
+
+# SA1504: All accessors should be single-line or multi-line - prevents expression bodied getters with block bodied setters
+dotnet_diagnostic.SA1504.severity = none
+
 # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1512.severity = none
 
 # SA1600: Elements should be documented
 dotnet_diagnostic.SA1600.severity = none
+
+# SA1611: Element parameters should be documented - primary constructor parameters are documented by the base class
+dotnet_diagnostic.SA1611.severity = none
 
 dotnet_naming_rule.private_members_with_underscore.symbols  = private_fields
 dotnet_naming_rule.private_members_with_underscore.style    = prefix_underscore

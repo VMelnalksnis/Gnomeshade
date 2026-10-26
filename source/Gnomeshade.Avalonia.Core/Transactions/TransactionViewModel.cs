@@ -30,7 +30,7 @@ public sealed partial class TransactionViewModel : OverviewViewModel<Transaction
 	private static readonly DataGridSortDescription[] _sortDescriptions =
 	[
 		DataGridSortDescription.FromComparer(new TransactionOverviewComparer(overview => overview?.Date), Descending),
-		DataGridSortDescription.FromComparer(new TransactionOverviewComparer(overview => overview?.ReconciledAt), Descending)
+		DataGridSortDescription.FromComparer(new TransactionOverviewComparer(overview => overview?.ReconciledAt), Descending),
 	];
 
 	private readonly IGnomeshadeClient _gnomeshadeClient;

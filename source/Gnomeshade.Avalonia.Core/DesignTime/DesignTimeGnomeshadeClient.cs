@@ -66,7 +66,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 			Currencies =
 			[
 				new() { Id = Guid.NewGuid(), CurrencyId = euro.Id, CurrencyAlphabeticCode = euro.AlphabeticCode },
-				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode }
+				new() { Id = Guid.NewGuid(), CurrencyId = usd.Id, CurrencyAlphabeticCode = usd.AlphabeticCode },
 			],
 		};
 		var spending = new Account
@@ -120,7 +120,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				TargetAmount = 1.95m,
 				TargetAccountId = cash.Currencies.First().Id,
 				BookedAt = SystemClock.Instance.GetCurrentInstant(),
-			}
+			},
 
 		];
 
@@ -145,20 +145,20 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				Amount = 500,
 				ProductId = bread.Id,
 				DeliveryDate = SystemClock.Instance.GetCurrentInstant(),
-			}
+			},
 
 		];
 
 		_links =
 		[
 			new() { Id = Guid.Empty, Uri = "https://localhost/documents/1" },
-			new() { Id = Guid.NewGuid(), Uri = "https://localhost/documents/1" }
+			new() { Id = Guid.NewGuid(), Uri = "https://localhost/documents/1" },
 		];
 
 		_transactionLinks =
 		[
 			new(Guid.Empty, Guid.Empty),
-			new(Guid.Empty, _links.Last().Id)
+			new(Guid.Empty, _links.Last().Id),
 		];
 
 		var owner = new Access { Id = Guid.NewGuid(), Name = "Owner" };
@@ -168,20 +168,20 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 		_users =
 		[
 			new() { Id = counterparty.Id },
-			new() { Id = otherCounterparty.Id }
+			new() { Id = otherCounterparty.Id },
 		];
 
 		_owners =
 		[
 			new() { Id = counterparty.Id, Name = "Private" },
-			new() { Id = otherCounterparty.Id, Name = "Private" }
+			new() { Id = otherCounterparty.Id, Name = "Private" },
 		];
 
 		_ownerships =
 		[
 			new() { Id = counterparty.Id, OwnerId = counterparty.Id, UserId = counterparty.Id, AccessId = owner.Id },
 			new() { Id = otherCounterparty.Id, OwnerId = otherCounterparty.Id, UserId = otherCounterparty.Id, AccessId = owner.Id },
-			new() { Id = Guid.NewGuid(), OwnerId = counterparty.Id, UserId = otherCounterparty.Id, AccessId = read.Id }
+			new() { Id = Guid.NewGuid(), OwnerId = counterparty.Id, UserId = otherCounterparty.Id, AccessId = read.Id },
 		];
 
 		_loans =
@@ -194,7 +194,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				ReceivingCounterpartyId = counterparty.Id,
 				Principal = 100_000,
 				CurrencyId = euro.Id,
-			}
+			},
 		];
 
 		_loanPayments =
@@ -206,7 +206,7 @@ public sealed class DesignTimeGnomeshadeClient : IGnomeshadeClient
 				TransactionId = Guid.Empty,
 				Amount = 500m,
 				Interest = 150m,
-			}
+			},
 		];
 
 		_projects =

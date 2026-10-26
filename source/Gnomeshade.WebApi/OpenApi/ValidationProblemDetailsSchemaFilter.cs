@@ -2,11 +2,12 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
+using System.Text.Json.Nodes;
+
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Gnomeshade.WebApi.OpenApi;
 
@@ -17,6 +18,9 @@ internal sealed class ValidationProblemDetailsSchemaFilter : SchemaFilter<Valida
 	/// <inheritdoc/>
 	protected override void ApplyFilter(OpenApiSchema schema)
 	{
-		schema.Properties["status"].Default = new OpenApiInteger(400);
+		if (schema.Properties?["status"] is OpenApiSchema statusSchema)
+		{
+			statusSchema.Default = JsonValue.Create(400);
+		}
 	}
 }

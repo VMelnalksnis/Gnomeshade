@@ -5,7 +5,7 @@
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -18,11 +18,12 @@ internal sealed class InternalServerErrorOperationFilter : IOperationFilter
 	/// <inheritdoc/>
 	public void Apply(OpenApiOperation operation, OperationFilterContext context)
 	{
+		operation.Responses ??= new();
 		if (operation.Responses.ContainsKey("500"))
 		{
 			return;
 		}
 
-		operation.Responses.Add("500", new() { Description = "Internal Server Error" });
+		operation.Responses.Add("500", new OpenApiResponse { Description = "Internal Server Error" });
 	}
 }

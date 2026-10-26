@@ -4,7 +4,7 @@
 
 using JetBrains.Annotations;
 
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using NodaTime;
 
@@ -16,7 +16,7 @@ internal sealed class InstantSchemaFilter : SchemaFilter<Instant>
 	/// <inheritdoc/>
 	protected override void ApplyFilter(OpenApiSchema schema)
 	{
-		schema.Type = "string";
+		schema.Type = JsonSchemaType.String;
 		schema.Format = "date-time";
 	}
 }

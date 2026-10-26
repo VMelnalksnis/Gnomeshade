@@ -1,5 +1,5 @@
 ﻿{
-  openapi: 3.0.1,
+  openapi: 3.0.4,
   info: {
     title: Gnomeshade API,
     description: Personal finance tracking API,
@@ -2005,5 +2005,16 @@
   },
   security: [
     {}
+  ],
+  tags: [
+    {
+      name: LoanPayments
+    },
+    {
+      name: Loans
+    },
+    {
+      name: Transactions
+    }
   ]
 }
