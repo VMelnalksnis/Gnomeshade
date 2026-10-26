@@ -202,7 +202,7 @@ public sealed class EndpointTests(WebserverFixture fixture) : WebserverTests(fix
 		var token = htmlDocument.DocumentNode
 			.SelectSingleNode("//form[@id='account']/input[@name='__RequestVerificationToken']")
 			?.Attributes["value"]
-			.Value;
+			?.Value;
 
 		var formContent = new FormUrlEncodedContent(
 		[

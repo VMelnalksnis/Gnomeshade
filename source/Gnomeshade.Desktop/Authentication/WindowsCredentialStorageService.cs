@@ -41,11 +41,11 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 	/// <inheritdoc />
 	public void StoreRefreshToken(string token)
 	{
-		var credentials = new NetworkCredential().ToICredential();
+		var credentials = new NetworkCredential().ToICredential()!;
 		credentials.TargetName = GetCredentialName();
 		credentials.CredentialBlob = token;
 		credentials.Attributes = new Dictionary<string, object> { { _tokenAttributeName, true } };
-		credentials.Persistance = Persistance.LocalMachine;
+		credentials.Persistence = Persistence.LocalMachine;
 		credentials.SaveCredential(true);
 	}
 
@@ -67,7 +67,7 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 		}
 
 		token = credential.CredentialBlob;
-		return true;
+		return token is not null;
 	}
 
 	/// <inheritdoc />
@@ -94,7 +94,7 @@ public sealed class WindowsCredentialStorageService : ICredentialStorageService
 
 		username = credential.UserName;
 		password = credential.CredentialBlob;
-		return true;
+		return password is not null;
 	}
 
 	/// <inheritdoc />

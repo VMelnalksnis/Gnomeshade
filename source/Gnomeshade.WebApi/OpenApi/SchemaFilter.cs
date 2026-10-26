@@ -2,7 +2,7 @@
 // Licensed under the GNU Affero General Public License v3.0 or later.
 // See LICENSE.txt file in the project root for full license information.
 
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -13,14 +13,14 @@ namespace Gnomeshade.WebApi.OpenApi;
 internal abstract class SchemaFilter<T> : ISchemaFilter
 {
 	/// <inheritdoc/>
-	public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+	public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
 	{
-		if (typeof(T) != context.Type)
+		if (typeof(T) != context.Type || schema is not OpenApiSchema openApiSchema)
 		{
 			return;
 		}
 
-		ApplyFilter(schema);
+		ApplyFilter(openApiSchema);
 	}
 
 	/// <inheritdoc cref="Apply"/>

@@ -1,18 +1,8 @@
 [
 	{
-		"Id": "Ardalis.SmartEnum",
-		"Version": "2.1.0",
-		"License": "MIT"
-	},
-	{
-		"Id": "Ardalis.SmartEnum.SystemTextJson",
-		"Version": "2.1.0",
-		"License": "MIT"
-	},
-	{
 		"Id": "Avalonia.Angle.Windows.Natives",
-		"Version": "2.1.25547.20250602",
-		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.25547.20250602/License"
+		"Version": "2.1.27548.20260419",
+		"License": "https://www.nuget.org/packages/Avalonia.Angle.Windows.Natives/2.1.27548.20260419/License"
 	},
 	{
 		"Id": "Bogus",

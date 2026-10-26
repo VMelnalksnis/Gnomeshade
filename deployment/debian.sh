@@ -17,7 +17,7 @@ unzip "$archive_path" -d gnomeshade/opt/gnomeshade
 
 chmod +x gnomeshade/opt/gnomeshade/Gnomeshade.WebApi
 
-chmod 0755 gnomeshade/opt/gnomeshade/libe_sqlite3.so
+chmod 0644 gnomeshade/opt/gnomeshade/libe_sqlite3.so
 strip gnomeshade/opt/gnomeshade/libe_sqlite3.so
 
 mkdir -p gnomeshade/DEBIAN

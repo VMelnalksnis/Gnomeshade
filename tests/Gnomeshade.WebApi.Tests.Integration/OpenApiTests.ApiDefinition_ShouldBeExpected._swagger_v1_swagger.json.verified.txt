@@ -1,5 +1,5 @@
 ﻿{
-  openapi: 3.0.1,
+  openapi: 3.0.4,
   info: {
     title: Gnomeshade API,
     description: Personal finance tracking API,
@@ -11039,5 +11039,73 @@
   },
   security: [
     {}
+  ],
+  tags: [
+    {
+      name: Access
+    },
+    {
+      name: Accounts
+    },
+    {
+      name: Authentication
+    },
+    {
+      name: Categories
+    },
+    {
+      name: Counterparties
+    },
+    {
+      name: Currencies
+    },
+    {
+      name: ExternalAuthentication
+    },
+    {
+      name: Health
+    },
+    {
+      name: Iso
+    },
+    {
+      name: Links
+    },
+    {
+      name: Loans
+    },
+    {
+      name: Nordigen
+    },
+    {
+      name: Owners
+    },
+    {
+      name: Ownerships
+    },
+    {
+      name: Paperless
+    },
+    {
+      name: Products
+    },
+    {
+      name: Projects
+    },
+    {
+      name: Purchases
+    },
+    {
+      name: Transactions
+    },
+    {
+      name: Transfers
+    },
+    {
+      name: Units
+    },
+    {
+      name: Users
+    }
   ]
 }

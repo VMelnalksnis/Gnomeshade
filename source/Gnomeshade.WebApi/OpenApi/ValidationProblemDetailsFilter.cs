@@ -8,7 +8,7 @@ using System.Linq;
 using JetBrains.Annotations;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -19,8 +19,14 @@ namespace Gnomeshade.WebApi.OpenApi;
 internal sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperationFilter
 {
 	/// <inheritdoc/>
-	void ISchemaFilter.Apply(OpenApiSchema swaggerDoc, SchemaFilterContext context)
+	void ISchemaFilter.Apply(IOpenApiSchema schema, SchemaFilterContext context)
 	{
+		if (context.Type == typeof(ValidationProblemDetails) ||
+			context.SchemaRepository.Schemas.ContainsKey(nameof(ValidationProblemDetails)))
+		{
+			return;
+		}
+
 		context.SchemaGenerator.GenerateSchema(typeof(ValidationProblemDetails), context.SchemaRepository);
 	}
 
@@ -36,14 +42,15 @@ internal sealed class ValidationProblemDetailsFilter : ISchemaFilter, IOperation
 				.ToArray();
 
 		if (apiControllerAttributes is null or [] ||
-			(operation.Parameters is [] && operation.RequestBody?.Required is not true))
+			(operation.Parameters is null or [] && operation.RequestBody?.Required is not true))
 		{
 			return;
 		}
 
+		operation.Responses ??= new();
 		operation.Responses.Add(
 			"400",
-			new()
+			new OpenApiResponse
 			{
 				Content = new Dictionary<string, OpenApiMediaType>
 				{

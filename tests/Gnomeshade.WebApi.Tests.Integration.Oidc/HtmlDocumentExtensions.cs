@@ -18,7 +18,7 @@ internal static class HtmlDocumentExtensions
 		string xpath)
 	{
 		var formNode = htmlDocument.DocumentNode.SelectSingleNode(xpath);
-		var action = formNode?.Attributes["action"].Value.Replace("&amp;", "&");
+		var action = formNode?.Attributes["action"]?.Value?.Replace("&amp;", "&");
 
 		var buttonNodes = formNode
 				?.SelectNodes($"{xpath}//button")

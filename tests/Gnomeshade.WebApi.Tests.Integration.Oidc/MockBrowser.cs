@@ -102,8 +102,8 @@ internal sealed class MockBrowser : Browser
 			.DocumentNode
 			.SelectSingleNode("//form")
 			?.Attributes["action"]
-			.Value
-			.Replace("&amp;", "&");
+			?.Value
+			?.Replace("&amp;", "&");
 
 		var formContent = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
 		{
