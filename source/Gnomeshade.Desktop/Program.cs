@@ -30,6 +30,7 @@ namespace Gnomeshade.Desktop;
 [SupportedOSPlatform("windows")]
 internal static class Program
 {
+	[STAThread]
 	public static void Main(string[] args)
 	{
 		SerilogConfiguration.InitializeBootstrapLogger();
