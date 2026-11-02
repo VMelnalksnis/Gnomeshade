@@ -12,13 +12,12 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - buster
-        - bullseye
+        - bookworm
+        - trixie
     - name: Ubuntu
       versions:
-        - bionic
-        - focal
         - jammy
+        - noble
 
   galaxy_tags:
     - gnomeshade
