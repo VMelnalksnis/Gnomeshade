@@ -81,7 +81,7 @@
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
 						  Icon="Logo.ico"
-						  Target="[#Gnomeshade.exe]"
+						  Target="[INSTALLFOLDER]Gnomeshade.exe"
 						  WorkingDirectory="INSTALLFOLDER"/>
 				<!--Remove application shortcut from Program Menu on uninstall-->
 				<RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
@@ -100,7 +100,7 @@
 						  Name="$(var.Name)"
 						  Description="$(var.Description)"
 						  Icon="Logo.ico"
-						  Target="[#Gnomeshade.exe]"
+						  Target="[INSTALLFOLDER]Gnomeshade.exe"
 						  WorkingDirectory="INSTALLFOLDER"/>
 
 				<RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall"/>
